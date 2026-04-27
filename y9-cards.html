@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KS3 HTML Top Trumps Pathway</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f5ef;
+    --bg2: #f2eee6;
+    --ink: #1f2933;
+    --muted: #657085;
+    --card: rgba(255, 255, 255, 0.88);
+    --card-strong: #ffffff;
+    --line: #e7dfd2;
+    --blue: #2563eb;
+    --blue-soft: #e8f0ff;
+    --green: #148457;
+    --green-soft: #e8f7ee;
+    --amber: #c76a14;
+    --amber-soft: #fff3df;
+    --purple: #7c3aed;
+    --purple-soft: #f1eaff;
+    --rose: #b83259;
+    --rose-soft: #ffeaf1;
+    --code: #f7f3ec;
+    --shadow: 0 18px 50px rgba(31, 41, 51, 0.08);
+  }
+
+  body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 15% 5%, #ffffff 0%, transparent 28%),
+      radial-gradient(circle at 85% 10%, #e8f0ff 0%, transparent 25%),
+      radial-gradient(circle at 15% 85%, #fff3df 0%, transparent 28%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .app-shell {
+    min-height: 100vh;
+  }
+
+  .hero {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 46px 24px 26px;
+  }
+
+  .course-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 750;
+    box-shadow: 0 10px 28px rgba(31, 41, 51, 0.06);
+    margin-bottom: 18px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 78px);
+    line-height: 0.95;
+    letter-spacing: -3px;
+    max-width: 760px;
+    margin-bottom: 18px;
+  }
+
+  .hero p {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 760px;
+  }
+
+  .hero-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .hero-panel h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .hero-panel ul {
+    list-style: none;
+    display: grid;
+    gap: 11px;
+    margin-top: 16px;
+  }
+
+  .hero-panel li {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: #ffffffa8;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .top-progress {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(16px);
+    background: rgba(248, 245, 239, 0.82);
+    border-top: 1px solid rgba(231, 223, 210, 0.7);
+    border-bottom: 1px solid rgba(231, 223, 210, 0.9);
+  }
+
+  .top-progress-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+
+  .progress-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .progress-badge {
+    background: var(--card-strong);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    width: min(320px, 28vw);
+    height: 9px;
+    background: #ebe4d8;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+    transition: width .25s ease;
+  }
+
+  .quick-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 1px;
+  }
+
+  .quick-nav button {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .quick-nav button:hover,
+  .quick-nav button.active {
+    color: var(--ink);
+    border-color: #d5cab9;
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+  }
+
+  .main {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 30px 24px 70px;
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 24px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 78px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(31, 41, 51, 0.05);
+  }
+
+  .sidebar-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    font-weight: 850;
+    padding: 4px 8px 12px;
+  }
+
+  .side-group {
+    margin-bottom: 16px;
+  }
+
+  .side-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 850;
+    margin: 10px 8px 8px;
+  }
+
+  .side-label.support { color: var(--amber); }
+  .side-label.starter { color: var(--green); }
+  .side-label.builder { color: var(--blue); }
+  .side-label.challenge { color: var(--purple); }
+
+  .side-item {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 10px 10px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .side-item:hover {
+    background: rgba(255,255,255,0.76);
+    border-color: var(--line);
+  }
+
+  .side-item.active {
+    background: var(--card-strong);
+    border-color: #d5cab9;
+    color: var(--ink);
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+    font-weight: 760;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-top: 4px;
+    background: #ded6c8;
+  }
+
+  .dot.done {
+    background: var(--green);
+  }
+
+  .lesson-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-head {
+    padding: 30px 32px 22px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(circle at top right, rgba(232, 240, 255, 0.85), transparent 36%),
+      rgba(255,255,255,0.52);
+  }
+
+  .step-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .step-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 900;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: .3px;
+    border: 1px solid transparent;
+  }
+
+  .tag.support { background: var(--amber-soft); color: var(--amber); border-color: #f1d4a9; }
+  .tag.starter { background: var(--green-soft); color: var(--green); border-color: #c7ead3; }
+  .tag.builder { background: var(--blue-soft); color: var(--blue); border-color: #cadbff; }
+  .tag.challenge { background: var(--purple-soft); color: var(--purple); border-color: #dacbff; }
+
+  .card-head h2 {
+    font-size: clamp(30px, 4vw, 52px);
+    line-height: 1.02;
+    letter-spacing: -1.8px;
+    max-width: 820px;
+    margin-bottom: 12px;
+  }
+
+  .card-head p {
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.65;
+    max-width: 850px;
+  }
+
+  .card-body {
+    padding: 28px 32px 32px;
+  }
+
+  .task-box {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 22px;
+  }
+
+  .task-box h3 {
+    font-size: 19px;
+    margin-bottom: 14px;
+  }
+
+  .task-box p, .task-box li {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .task-box ol, .task-box ul {
+    padding-left: 22px;
+  }
+
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .path-card {
+    border-radius: 26px;
+    padding: 22px;
+    min-height: 190px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: transform .16s ease, box-shadow .16s ease;
+  }
+
+  .path-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 38px rgba(31, 41, 51, 0.10);
+  }
+
+  .path-card h4 {
+    font-size: 21px;
+    margin: 10px 0 8px;
+  }
+
+  .path-card p {
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .path-card.starter { background: var(--green-soft); }
+  .path-card.builder { background: var(--blue-soft); }
+  .path-card.challenge { background: var(--purple-soft); }
+
+  .big-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid var(--line);
+    font-size: 22px;
+  }
+
+  .translation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.76);
+    border: 1px dashed #d8cdbc;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .translation strong {
+    color: var(--ink);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card-strong);
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    outline: none;
+  }
+
+  input[type="text"]:focus {
+    border-color: #b9c9ef;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .code-box {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--code);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .code-tab {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.8);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .window-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+  }
+
+  .red { background: #ff6b6b; }
+  .yellow { background: #f7c948; }
+  .green { background: #33c27f; }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2b3645;
+  }
+
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    background: var(--code);
+    border: 1px solid #eee2d2;
+    color: #9a4c0f;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  pre code {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  .editable-cell {
+    width: 100%;
+    min-height: 72px;
+    border: 0;
+    background: transparent;
+    padding: 8px 6px;
+    font: inherit;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+  }
+
+  .editable-cell:focus {
+    background: #fffaf2;
+    box-shadow: inset 0 0 0 2px #d8cdbc;
+    border-radius: 10px;
+  }
+
+  .editable-cell.small {
+    min-height: 46px;
+  }
+
+  .planning-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--card-strong);
+  }
+
+  .planning-table th, .planning-table td {
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    padding: 13px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 14px;
+  }
+
+  .planning-table th {
+    background: #f7efe3;
+    color: var(--ink);
+    font-weight: 850;
+  }
+
+  .planning-table tr:last-child td { border-bottom: 0; }
+  .planning-table th:last-child, .planning-table td:last-child { border-right: 0; }
+
+  .checklist label {
+    display: block;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .checklist label:first-child { border-top: 0; }
+  .checklist input { transform: scale(1.2); margin-right: 10px; }
+
+  .mini-preview {
+    max-width: 330px;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 18px;
+    background: var(--card-strong);
+    box-shadow: 0 12px 30px rgba(31,41,51,.07);
+  }
+
+  .mini-preview h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .image-placeholder {
+    height: 132px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--blue-soft), var(--purple-soft));
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-weight: 850;
+    margin-bottom: 12px;
+  }
+
+  .stats-preview {
+    background: var(--amber-soft);
+    border: 1px solid #f1d4a9;
+    border-radius: 18px;
+    padding: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    align-items: center;
+  }
+
+  .btn {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--ink);
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(31, 41, 51, 0.04);
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(31, 41, 51, 0.08);
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .btn-next {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    border-radius: 20px;
+    padding: 14px 16px;
+    line-height: 1.55;
+    font-size: 14px;
+    border: 1px solid transparent;
+  }
+
+  .feedback.success {
+    display: block;
+    color: var(--green);
+    border-color: #b8e2c7;
+    background: var(--green-soft);
+  }
+
+  .feedback.hint {
+    display: block;
+    color: var(--blue);
+    border-color: #c8d9ff;
+    background: var(--blue-soft);
+  }
+
+  .completion {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    min-height: 520px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+
+  .completion .trophy {
+    font-size: 76px;
+    margin-bottom: 18px;
+  }
+
+  .completion h2 {
+    font-size: clamp(34px, 5vw, 62px);
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+  }
+
+  .completion p {
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .resource-card {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .resource-card h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .resource-card p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  .link-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: white;
+    text-decoration: none;
+    font-weight: 850;
+    font-size: 14px;
+    border: 1px solid var(--ink);
+  }
+
+  .link-button.secondary {
+    background: var(--card-strong);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .warning-note {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: var(--amber-soft);
+    border: 1px solid #f1d4a9;
+    color: #8a480c;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .workflow-list {
+    counter-reset: steps;
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .workflow-item {
+    counter-increment: steps;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 14px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+
+  .workflow-item::before {
+    content: counter(steps);
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: white;
+    font-weight: 900;
+  }
+
+  .workflow-item h4 {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  .workflow-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 980px) {
+    .hero-grid, .main {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: static;
+      max-height: none;
+    }
+
+    .top-progress-inner {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .progress-track {
+      width: 220px;
+    }
+
+    .path-grid, .input-grid, .resource-grid {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      letter-spacing: -2px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero, .main {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .card-head, .card-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .top-progress-inner {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .hero-panel {
+      border-radius: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <header class="hero">
+    <div class="course-pill">🃏 KS3 HTML · Lesson 4</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Top Trumps: from one card to a full set.</h1>
+        <p>A friendly pathway lesson. Choose Starter, Builder, or Challenge, then work through small cards one step at a time. No panic, no missing-code problem — just build.</p>
+      </div>
+      <aside class="hero-panel">
+        <h2>Today’s mission</h2>
+        <p>Create a consistent 5-card Top Trumps set using HTML structure, CSS styling, and shared attributes.</p>
+        <ul>
+          <li><strong>Starter:</strong> use templates and clear steps.</li>
+          <li><strong>Builder:</strong> plan and duplicate your cards.</li>
+          <li><strong>Challenge:</strong> link and polish your project.</li>
+          <li><strong>Autosave:</strong> your typing stays after switching cards or refreshing.</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <section class="top-progress">
+    <div class="top-progress-inner">
+      <div class="progress-left">
+        <div class="progress-badge" id="scoreBadge">Completed: 0</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-badge" id="progressText">0 / 17</div>
+      </div>
+      <div class="quick-nav" id="quickNav"></div>
+    </div>
+  </section>
+
+  <main class="main">
+    <aside class="sidebar" id="sidebar"></aside>
+    <section id="content"></section>
+  </main>
+
+</div>
+
+<script>
+const cards = [
+  {
+    id: 1,
+    group: 'Support',
+    cls: 'support',
+    tag: 'Start Here',
+    title: 'Choose your pathway.',
+    desc: 'Pick the route that matches how confident you feel today. You can change pathway at any time.',
+    task: 'Which pathway should I choose?',
+    html: `
+      <div class="path-grid">
+        <div class="path-card starter" onclick="goTo(1)">
+          <div class="big-icon">🌱</div>
+          <h4>Starter</h4>
+          <p>I do not have the code, or I need clear steps and a template.</p>
+        </div>
+        <div class="path-card builder" onclick="goTo(5)">
+          <div class="big-icon">🛠️</div>
+          <h4>Builder</h4>
+          <p>I have some code and can edit it with reminders.</p>
+        </div>
+        <div class="path-card challenge" onclick="goTo(9)">
+          <div class="big-icon">🚀</div>
+          <h4>Challenge</h4>
+          <p>My cards work. I am ready to improve my project.</p>
+        </div>
+      </div>
+      <div class="translation"><strong>中文:</strong> 选择适合你信心程度的路径。你可以随时更换。<br><strong>日本語:</strong> 今日の自信に合うコースを選びましょう。途中で変更しても大丈夫です。</div>
+    `,
+    hint: 'Start with Starter if you are unsure. It still counts as good progress.'
+  },
+  {
+    id: 2,
+    group: 'Support',
+    cls: 'support',
+    tag: 'Set Up',
+    title: 'Open your HTML editor.',
+    desc: 'Before you start building, choose the correct Trinket setup for your pathway.',
+    task: 'Choose the correct Trinket option',
+    html: `
+      <div class="resource-grid">
+        <div class="resource-card">
+          <div class="big-icon">🌱</div>
+          <h4>Starter students</h4>
+          <p>Use the blank shared Trinket if you do not need to upload your own images.</p>
+          <a class="link-button" href="https://trinket.io/html/f30a58bbce1e" target="_blank" rel="noopener">Open blank Trinket</a>
+        </div>
+        <div class="resource-card">
+          <div class="big-icon">🛠️</div>
+          <h4>Builder / Challenge students</h4>
+          <p>Log in to your own Trinket account if you want to upload your own images or save your work properly.</p>
+          <a class="link-button secondary" href="https://trinket.io/" target="_blank" rel="noopener">Go to Trinket.io</a>
+        </div>
+      </div>
+      <div class="warning-note"><strong>Important:</strong> If you upload your own images, you should log in first. If you use the blank Trinket without logging in, focus on using online image links instead.</div>
+      <div class="translation"><strong>中文:</strong> 如果你要上传自己的图片，请先登录 Trinket。<br><strong>日本語:</strong> 自分の画像をアップロードする場合は、先にTrinketにログインしましょう。</div>
+    `,
+    hint: 'Starter students should use the blank Trinket link. Builder and Challenge students should log in if they need image uploads or saved projects.'
+  },
+
+  {
+    id: 3,
+    group: 'Starter Pathway',
+    cls: 'starter',
+    tag: 'Starter',
+    title: 'Step 1: Pick one simple theme.',
+    desc: 'Your Top Trumps set needs one clear theme with at least 5 different cards.',
+    task: 'Do this first',
+    html: `
+      <ol>
+        <li>Choose one theme.</li>
+        <li>Make sure you can create at least 5 different cards.</li>
+        <li>Write your theme below.</li>
+      </ol>
+      <div class="input-grid">
+        <input type="text" data-save-id="theme-choice" placeholder="My theme is... e.g. Mythical Creatures">
+        <div class="translation"><strong>中文:</strong> 我的主题是……<br><strong>日本語:</strong> 私のテーマは……</div>
+      </div>
+    `,
+    hint: 'Good themes: animals, superheroes, football players, cities, food, game characters, dinosaurs.'
+  },
+  {
+    id: 4,
+    group: 'Starter Pathway',
+    cls: 'starter',
+    tag: 'Starter',
+    title: 'Step 2: Choose the same 5 attributes.',
+    desc: 'Every card must use the same 5 score categories so the cards feel like one full set.',
+    task: 'Choose five attributes',
+    html: `
+      <p>Example set: <code>Power</code>, <code>Speed</code>, <code>Defence</code>, <code>Intelligence</code>, <code>Cool Factor</code></p>
+      <div class="input-grid">
+        <input type="text" data-save-id="attribute-1" placeholder="Attribute 1">
+        <input type="text" data-save-id="attribute-2" placeholder="Attribute 2">
+        <input type="text" data-save-id="attribute-3" placeholder="Attribute 3">
+        <input type="text" data-save-id="attribute-4" placeholder="Attribute 4">
+        <input type="text" data-save-id="attribute-5" placeholder="Attribute 5">
+      </div>
+      <div class="translation"><strong>中文:</strong> 每张卡都要使用相同的 5 个属性。<br><strong>日本語:</strong> すべてのカードで同じ5つの属性を使います。</div>
+    `,
+    hint: 'Use scores out of 100. Avoid changing the attribute names for different cards.'
+  },
+  {
+    id: 5,
+    group: 'Starter Pathway',
+    cls: 'starter',
+    tag: 'Starter',
+    title: 'Step 3: Copy the starter HTML.',
+    desc: 'Use this if you do not have your previous lesson code. Change only the card details first.',
+    task: 'Copy this into card1.html',
+    html: `
+      <div class="code-box">
+        <div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>card1.html</span></div>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Top Trumps Card&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;div class="card"&gt;
+    &lt;h1&gt;Card Name Here&lt;/h1&gt;
+    &lt;img src="PASTE_IMAGE_LINK_HERE" alt="Describe the image"&gt;
+    &lt;p&gt;Write a short description here.&lt;/p&gt;
+
+    &lt;div class="stats"&gt;
+      &lt;p&gt;Power: 80&lt;/p&gt;
+      &lt;p&gt;Speed: 70&lt;/p&gt;
+      &lt;p&gt;Defence: 65&lt;/p&gt;
+      &lt;p&gt;Intelligence: 90&lt;/p&gt;
+      &lt;p&gt;Cool Factor: 85&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    `,
+    hint: 'Do not delete div class="card" or div class="stats". They help your CSS work.'
+  },
+  {
+    id: 6,
+    group: 'Starter Pathway',
+    cls: 'starter',
+    tag: 'Starter',
+    title: 'Step 4: Copy the starter CSS.',
+    desc: 'This CSS gives your card a simple layout, border, spacing, and rounded corners.',
+    task: 'Copy this into style.css',
+    html: `
+      <div class="code-box">
+        <div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>style.css</span></div>
+<pre><code>body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.card {
+  background-color: white;
+  width: 300px;
+  padding: 20px;
+  margin: 20px auto;
+  border: 3px solid black;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.card img {
+  width: 250px;
+  border-radius: 10px;
+}
+
+.stats {
+  background-color: #eeeeee;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: left;
+}</code></pre>
+      </div>
+      <div class="translation"><strong>中文:</strong> CSS 控制网页的外观。<br><strong>日本語:</strong> CSSはウェブページの見た目を変えます。</div>
+    `,
+    hint: 'Make sure your HTML file and style.css file are in the same folder.'
+  },
+  {
+    id: 7,
+    group: 'Builder Pathway',
+    cls: 'builder',
+    tag: 'Builder',
+    title: 'Step 1: Plan all 5 cards.',
+    desc: 'Before coding more pages, plan all card names, descriptions, and scores.',
+    task: 'Use this planning table',
+    html: `
+      <table class="planning-table">
+        <thead><tr><th>Card</th><th>Name</th><th>Image idea</th><th>Description idea</th><th>Scores</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><textarea data-save-id="planning-card-1-name" class="editable-cell small" placeholder="Card name"></textarea></td>
+            <td><textarea data-save-id="planning-card-1-image" class="editable-cell" placeholder="Image idea or URL"></textarea></td>
+            <td><textarea data-save-id="planning-card-1-description" class="editable-cell" placeholder="Short description"></textarea></td>
+            <td><textarea data-save-id="planning-card-1-scores" class="editable-cell" placeholder="Power: 80&#10;Speed: 70"></textarea></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><textarea data-save-id="planning-card-2-name" class="editable-cell small" placeholder="Card name"></textarea></td>
+            <td><textarea data-save-id="planning-card-2-image" class="editable-cell" placeholder="Image idea or URL"></textarea></td>
+            <td><textarea data-save-id="planning-card-2-description" class="editable-cell" placeholder="Short description"></textarea></td>
+            <td><textarea data-save-id="planning-card-2-scores" class="editable-cell" placeholder="5 scores"></textarea></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><textarea data-save-id="planning-card-3-name" class="editable-cell small" placeholder="Card name"></textarea></td>
+            <td><textarea data-save-id="planning-card-3-image" class="editable-cell" placeholder="Image idea or URL"></textarea></td>
+            <td><textarea data-save-id="planning-card-3-description" class="editable-cell" placeholder="Short description"></textarea></td>
+            <td><textarea data-save-id="planning-card-3-scores" class="editable-cell" placeholder="5 scores"></textarea></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><textarea data-save-id="planning-card-4-name" class="editable-cell small" placeholder="Card name"></textarea></td>
+            <td><textarea data-save-id="planning-card-4-image" class="editable-cell" placeholder="Image idea or URL"></textarea></td>
+            <td><textarea data-save-id="planning-card-4-description" class="editable-cell" placeholder="Short description"></textarea></td>
+            <td><textarea data-save-id="planning-card-4-scores" class="editable-cell" placeholder="5 scores"></textarea></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><textarea data-save-id="planning-card-5-name" class="editable-cell small" placeholder="Card name"></textarea></td>
+            <td><textarea data-save-id="planning-card-5-image" class="editable-cell" placeholder="Image idea or URL"></textarea></td>
+            <td><textarea data-save-id="planning-card-5-description" class="editable-cell" placeholder="Short description"></textarea></td>
+            <td><textarea data-save-id="planning-card-5-scores" class="editable-cell" placeholder="5 scores"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="translation"><strong>Tip:</strong> Type directly into the table. Your typing will stay while this page is open.</div>
+    `,
+    hint: 'Plan first. It helps you avoid changing your theme halfway through.'
+  },
+  {
+    id: 8,
+    group: 'Builder Pathway',
+    cls: 'builder',
+    tag: 'Submit Planning',
+    title: 'Submit your planning screenshot.',
+    desc: 'Once your planning table is complete, take a screenshot and submit it to the planning Padlet.',
+    task: 'Planning submission steps',
+    html: `
+      <div class="workflow-list">
+        <div class="workflow-item">
+          <div>
+            <h4>Complete your planning table</h4>
+            <p>Make sure all 5 cards have a name, image idea, description idea, and scores.</p>
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <h4>Take a screenshot</h4>
+            <p>Screenshot only the planning table clearly. Make sure the text is readable.</p>
+          </div>
+        </div>
+        <div class="workflow-item">
+          <div>
+            <h4>Submit to Padlet</h4>
+            <p>Open the planning submission link. Add your name first, then upload the image before clicking Post.</p>
+          </div>
+        </div>
+      </div>
+      <div class="button-row">
+        <a class="link-button" href="https://padlet.com/mrdave/submission-request/VyDovAQK2kADvZQL?section=365785809" target="_blank" rel="noopener">Submit planning image</a>
+      </div>
+      <div class="warning-note"><strong>Before clicking Post:</strong> label your post with your name so your teacher knows it is yours.</div>
+    `,
+    hint: 'Use a clear screenshot. Your name must be visible in the Padlet post title or description.'
+  },
+
+  {
+    id: 9,
+    group: 'Builder Pathway',
+    cls: 'builder',
+    tag: 'Builder',
+    title: 'Step 2: Duplicate your first card.',
+    desc: 'Copy your first card file to make card2.html, card3.html, card4.html, and card5.html.',
+    task: 'Only change these parts',
+    html: `
+      <ul>
+        <li>Card name inside <code>&lt;h1&gt;</code></li>
+        <li>Image link inside <code>src="..."</code></li>
+        <li>Alt text inside <code>alt="..."</code></li>
+        <li>Description inside the paragraph</li>
+        <li>The five score numbers</li>
+      </ul>
+      <div class="translation"><strong>中文:</strong> 复制第一张卡，然后只更改内容。<br><strong>日本語:</strong> 1枚目のカードをコピーして、中身だけを変えます。</div>
+    `,
+    hint: 'Keep the same class names. Do not rename card or stats unless you also update the CSS.'
+  },
+  {
+    id: 10,
+    group: 'Builder Pathway',
+    cls: 'builder',
+    tag: 'Builder',
+    title: 'Step 3: Test each card.',
+    desc: 'Open each HTML file in your browser and check that it works before moving on.',
+    task: 'Testing checklist',
+    html: `
+      <div class="checklist">
+        <label><input type="checkbox" data-save-id="checkbox-1"> The page opens in the browser.</label>
+        <label><input type="checkbox" data-save-id="checkbox-2"> The image appears.</label>
+        <label><input type="checkbox" data-save-id="checkbox-3"> The CSS styling appears.</label>
+        <label><input type="checkbox" data-save-id="checkbox-4"> The five scores are visible.</label>
+        <label><input type="checkbox" data-save-id="checkbox-5"> The card matches the same layout as the other cards.</label>
+      </div>
+    `,
+    hint: 'If CSS does not appear, check the file name: style.css must match exactly.'
+  },
+  {
+    id: 11,
+    group: 'Builder Pathway',
+    cls: 'builder',
+    tag: 'Builder',
+    title: 'Step 4: Improve card consistency.',
+    desc: 'A good set looks consistent. That means the layout, image size, fonts, and stats box should match.',
+    task: 'Compare your cards',
+    html: `
+      <div class="input-grid">
+        <div>
+          <ul>
+            <li>Same card width</li>
+            <li>Same image width</li>
+            <li>Same five attribute names</li>
+            <li>Same font and border style</li>
+            <li>Different content on each card</li>
+          </ul>
+        </div>
+        <div class="mini-preview">
+          <h3>Example Card</h3>
+          <div class="image-placeholder">Image</div>
+          <p>A short description goes here.</p>
+          <div class="stats-preview">Power: 80<br>Speed: 70<br>Defence: 65<br>Intelligence: 90<br>Cool Factor: 85</div>
+        </div>
+      </div>
+    `,
+    hint: 'Different card content is good. Different card layout is usually confusing.'
+  },
+  {
+    id: 12,
+    group: 'Challenge Pathway',
+    cls: 'challenge',
+    tag: 'Challenge',
+    title: 'Challenge 1: Link your cards together.',
+    desc: 'Turn your cards into a mini website by adding links to move between pages.',
+    task: 'Add a link to another card',
+    html: `
+      <div class="code-box">
+        <div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>link example</span></div>
+<pre><code>&lt;a href="card2.html"&gt;Next Card&lt;/a&gt;
+&lt;a href="index.html"&gt;Back to Homepage&lt;/a&gt;</code></pre>
+      </div>
+      <p>Important: the file name must match exactly, including spelling and capital letters.</p>
+    `,
+    hint: 'If the link does not open, check that the target file exists in the same folder.'
+  },
+  {
+    id: 13,
+    group: 'Challenge Pathway',
+    cls: 'challenge',
+    tag: 'Challenge',
+    title: 'Challenge 2: Add a hover effect.',
+    desc: 'Use CSS to make the card react when the mouse moves over it.',
+    task: 'Try this CSS',
+    html: `
+      <div class="code-box">
+        <div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>style.css</span></div>
+<pre><code>.card:hover {
+  transform: scale(1.03);
+}</code></pre>
+      </div>
+      <p>This makes the card slightly larger when the mouse is over it.</p>
+    `,
+    hint: 'Hover effects should be small. Too much movement can distract from your card content.'
+  },
+
+  {
+    id: 14,
+    group: 'Support',
+    cls: 'support',
+    tag: 'Submit Final',
+    title: 'Submit your finished Top Trumps project.',
+    desc: 'When your cards are ready, submit either your shared Trinket link or your downloaded website ZIP file.',
+    task: 'Final submission steps',
+    html: `
+      <div class="resource-grid">
+        <div class="resource-card">
+          <div class="big-icon">🔗</div>
+          <h4>If you used your own Trinket account</h4>
+          <p>Share your Trinket project and submit the shared link to Padlet.</p>
+        </div>
+        <div class="resource-card">
+          <div class="big-icon">📦</div>
+          <h4>If you used the blank Trinket</h4>
+          <p>Use Trinket’s download feature to download your website files as a ZIP, then upload the ZIP to Padlet.</p>
+        </div>
+      </div>
+      <div class="button-row">
+        <a class="link-button" href="https://padlet.com/mrdave/submission-request/VyDovAQK2kADvZQL?section=365785877" target="_blank" rel="noopener">Submit final project</a>
+      </div>
+      <div class="warning-note"><strong>Before clicking Post:</strong> write your name clearly. Then add your shared Trinket link or upload your ZIP file.</div>
+    `,
+    hint: 'If you logged in, a shared Trinket link is best. If you did not log in, download the website files as a ZIP and upload the ZIP.'
+  },
+  {
+    id: 15,
+    group: 'Support',
+    cls: 'support',
+    tag: 'References',
+    title: 'HTML and CSS reference pages.',
+    desc: 'Use these if you want to add more styles, links, images, animations, or layout improvements.',
+    task: 'Extension reference pages',
+    html: `
+      <div class="resource-grid">
+        <div class="resource-card">
+          <div class="big-icon">📄</div>
+          <h4>HTML reference</h4>
+          <p>Use these pages to check HTML tags such as headings, paragraphs, images, links, and div containers.</p>
+          <a class="link-button secondary" href="https://www.w3schools.com/html/" target="_blank" rel="noopener">W3Schools HTML</a>
+        </div>
+        <div class="resource-card">
+          <div class="big-icon">🎨</div>
+          <h4>CSS reference</h4>
+          <p>Use these pages to improve colours, fonts, borders, spacing, rounded corners, and hover effects.</p>
+          <a class="link-button secondary" href="https://www.w3schools.com/css/" target="_blank" rel="noopener">W3Schools CSS</a>
+        </div>
+        <div class="resource-card">
+          <div class="big-icon">✨</div>
+          <h4>CSS animations</h4>
+          <p>Use this only if your main cards already work. Animation should improve the page, not distract from it.</p>
+          <a class="link-button secondary" href="https://www.w3schools.com/css/css3_animations.asp" target="_blank" rel="noopener">CSS Animations</a>
+        </div>
+        <div class="resource-card">
+          <div class="big-icon">🧩</div>
+          <h4>CSS hover effects</h4>
+          <p>Use hover effects to make cards respond when the mouse moves over them.</p>
+          <a class="link-button secondary" href="https://www.w3schools.com/cssref/sel_hover.php" target="_blank" rel="noopener">CSS :hover</a>
+        </div>
+      </div>
+    `,
+    hint: 'Reference pages are for extension. Complete your basic 5-card set first.'
+  },
+  {
+    id: 16,
+    group: 'Support',
+    cls: 'support',
+    tag: 'EAL Support',
+    title: 'Keyword support.',
+    desc: 'Use this vocabulary support if you are unsure what the project instructions mean.',
+    task: 'English, Mandarin, Japanese',
+    html: `
+      <table class="planning-table">
+        <thead><tr><th>English</th><th>中文</th><th>日本語</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Theme</td><td>主题</td><td>テーマ</td><td>The main idea for all cards.</td></tr>
+          <tr><td>Attribute</td><td>属性 / 特征</td><td>属性 / 特ちょう</td><td>A score category, such as speed or power.</td></tr>
+          <tr><td>Description</td><td>描述</td><td>説明</td><td>A short explanation of the card.</td></tr>
+          <tr><td>Structure</td><td>结构</td><td>構造</td><td>How the HTML is organised.</td></tr>
+          <tr><td>Consistent</td><td>一致的</td><td>一貫した</td><td>Keeping the same format.</td></tr>
+          <tr><td>Duplicate</td><td>复制</td><td>複製する</td><td>Copy and then change details.</td></tr>
+        </tbody>
+      </table>
+    `,
+    hint: 'Use the translated words to help you understand, but write your final code using English HTML tags.'
+  },
+  {
+    id: 17,
+    group: 'Support',
+    cls: 'support',
+    tag: 'Finish',
+    title: 'Final project checklist.',
+    desc: 'Use this before you tell your teacher that your work is finished.',
+    task: 'Tick what you have completed',
+    html: `
+      <div class="checklist">
+        <label><input type="checkbox" data-save-id="checkbox-6"> I chose one clear theme.</label>
+        <label><input type="checkbox" data-save-id="checkbox-7"> I planned five different cards.</label>
+        <label><input type="checkbox" data-save-id="checkbox-8"> I used the same five attributes on every card.</label>
+        <label><input type="checkbox" data-save-id="checkbox-9"> Each card has a name, image, description, and scores.</label>
+        <label><input type="checkbox" data-save-id="checkbox-10"> My HTML links to style.css.</label>
+        <label><input type="checkbox" data-save-id="checkbox-11"> I tested each card in the browser.</label>
+        <label><input type="checkbox" data-save-id="checkbox-12"> My card set looks consistent.</label>
+      </div>
+    `,
+    hint: 'Aim for at least 2 working cards today. Five cards can be completed across the project lessons.'
+  }
+];
+
+let current = 0;
+let completed = {};
+
+const SAVE_KEY = 'topTrumpsLesson4Autosave_v3';
+
+function getBlankSaveData() {
+  return { current: 0, completed: {}, fields: {} };
+}
+
+function loadSaveData() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    return raw ? { ...getBlankSaveData(), ...JSON.parse(raw) } : getBlankSaveData();
+  } catch (e) {
+    return getBlankSaveData();
+  }
+}
+
+let saveData = loadSaveData();
+current = Math.min(saveData.current || 0, cards.length - 1);
+completed = saveData.completed || {};
+
+function writeSaveData() {
+  saveData.current = current;
+  saveData.completed = completed;
+  localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+}
+
+function autosizeTextarea(el) {
+  if (!el || el.tagName !== 'TEXTAREA') return;
+  el.style.height = 'auto';
+  el.style.height = Math.max(el.scrollHeight, el.classList.contains('small') ? 46 : 72) + 'px';
+}
+
+function restoreFields() {
+  document.querySelectorAll('[data-save-id]').forEach(el => {
+    const key = el.getAttribute('data-save-id');
+    if (Object.prototype.hasOwnProperty.call(saveData.fields, key)) {
+      if (el.type === 'checkbox') {
+        el.checked = !!saveData.fields[key];
+      } else {
+        el.value = saveData.fields[key];
+      }
+    }
+    autosizeTextarea(el);
+  });
+}
+
+function attachAutosaveListeners() {
+  document.querySelectorAll('[data-save-id]').forEach(el => {
+    const key = el.getAttribute('data-save-id');
+
+    const saveField = () => {
+      saveData.fields[key] = el.type === 'checkbox' ? el.checked : el.value;
+      autosizeTextarea(el);
+      writeSaveData();
+    };
+
+    el.addEventListener('input', saveField);
+    el.addEventListener('change', saveField);
+    el.addEventListener('blur', saveField);
+  });
+}
+
+function clearSavedWork() {
+  const ok = confirm('Clear saved progress and typed work on this device?');
+  if (!ok) return;
+  localStorage.removeItem(SAVE_KEY);
+  saveData = getBlankSaveData();
+  current = 0;
+  completed = {};
+  renderCard();
+}
+
+
+function groupShortName(group) {
+  if (group.includes('Starter')) return 'Starter';
+  if (group.includes('Builder')) return 'Builder';
+  if (group.includes('Challenge')) return 'Challenge';
+  return 'Support';
+}
+
+function renderQuickNav() {
+  const groups = [
+    { label: 'Start', index: 0 },
+    { label: 'Trinket', index: 1 },
+    { label: 'Starter', index: 2 },
+    { label: 'Builder', index: 6 },
+    { label: 'Challenge', index: 11 },
+    { label: 'Submit', index: 13 },
+    { label: 'EAL', index: 15 },
+    { label: 'Finish', index: 16 }
+  ];
+
+  document.getElementById('quickNav').innerHTML = groups.map(g => {
+    const nextIndex = groups[groups.indexOf(g) + 1]?.index ?? cards.length;
+    const active = current >= g.index && current < nextIndex;
+    return `<button class="${active ? 'active' : ''}" onclick="goTo(${g.index})">${g.label}</button>`;
+  }).join('');
+}
+
+
+function setupEditableCells() {
+  document.querySelectorAll('.editable-cell').forEach(cell => {
+    cell.addEventListener('input', () => {
+      cell.style.height = 'auto';
+      cell.style.height = cell.scrollHeight + 'px';
+    });
+  });
+}
+
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  let html = '<div class="sidebar-title">Lesson Cards</div>';
+  let group = '';
+
+  cards.forEach((card, index) => {
+    if (card.group !== group) {
+      if (group !== '') html += '</div>';
+      group = card.group;
+      html += `<div class="side-group"><div class="side-label ${card.cls}">${card.group}</div>`;
+    }
+
+    html += `
+      <div class="side-item ${index === current ? 'active' : ''}" onclick="goTo(${index})">
+        <span class="dot ${completed[card.id] ? 'done' : ''}"></span>
+        <span>${card.id}. ${card.title}</span>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  sidebar.innerHTML = html;
+}
+
+function renderCard() {
+  const card = cards[current];
+  document.getElementById('content').innerHTML = `
+    <article class="lesson-card">
+      <div class="card-head">
+        <div class="step-meta">
+          <div class="step-number">${card.id}</div>
+          <span class="tag ${card.cls}">${card.tag}</span>
+        </div>
+        <h2>${card.title}</h2>
+        <p>${card.desc}</p>
+      </div>
+
+      <div class="card-body">
+        <section class="task-box">
+          <h3>${card.task}</h3>
+          ${card.html}
+        </section>
+
+        <div class="button-row">
+          <button class="btn" onclick="prev()" ${current === 0 ? 'disabled' : ''}>← Back</button>
+          <button class="btn btn-primary" onclick="markDone()">Mark done</button>
+          <button class="btn btn-next" onclick="next()">${current === cards.length - 1 ? 'Finish' : 'Next →'}</button>
+          <button class="btn" onclick="showHint()">Hint</button>
+          <button class="btn" onclick="clearSavedWork()">Clear saved work</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </article>
+  `;
+
+  renderSidebar();
+  renderQuickNav();
+  updateProgress();
+  setupEditableCells();
+  restoreFields();
+  attachAutosaveListeners();
+  writeSaveData();
+}
+
+
+function saveLiveFieldsBeforeRender() {
+  document.querySelectorAll('[data-save-id]').forEach(el => {
+    const key = el.getAttribute('data-save-id');
+    saveData.fields[key] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+  writeSaveData();
+}
+
+function goTo(index) {
+  saveLiveFieldsBeforeRender();
+  current = index;
+  renderCard();
+}
+
+function next() {
+  saveLiveFieldsBeforeRender();
+  if (current < cards.length - 1) {
+    current++;
+    renderCard();
+  } else {
+    showCompletion();
+  }
+}
+
+function prev() {
+  saveLiveFieldsBeforeRender();
+  if (current > 0) {
+    current--;
+    renderCard();
+  }
+}
+
+function markDone() {
+  const card = cards[current];
+  completed[card.id] = true;
+  writeSaveData();
+  renderSidebar();
+  updateProgress();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback success';
+  fb.textContent = 'Marked as done. Move to the next card when you are ready.';
+}
+
+function showHint() {
+  const card = cards[current];
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback hint';
+  fb.textContent = card.hint;
+}
+
+function updateProgress() {
+  const done = Object.values(completed).filter(Boolean).length;
+  const total = cards.length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('scoreBadge').textContent = `Completed: ${done}`;
+  document.getElementById('progressText').textContent = `${done} / ${total}`;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function showCompletion() {
+  const done = Object.values(completed).filter(Boolean).length;
+  document.getElementById('content').innerHTML = `
+    <section class="completion">
+      <div>
+        <div class="trophy">🏆</div>
+        <h2>Pathway complete.</h2>
+        <p>You marked ${done} out of ${cards.length} cards as done.</p>
+        <p>Now review your HTML files and test your Top Trumps card set in the browser.</p>
+        <div class="button-row" style="justify-content:center;">
+          <button class="btn btn-primary" onclick="goTo(0)">Back to start</button>
+        </div>
+      </div>
+    </section>
+  `;
+  renderSidebar();
+  renderQuickNav();
+}
+
+renderCard();
+</script>
+</body>
+</html>
