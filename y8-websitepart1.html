@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KS3 HTML Course | Website Building Blocks</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f5ef;
+    --bg2: #f2eee6;
+    --ink: #1f2933;
+    --muted: #657085;
+    --card: rgba(255, 255, 255, 0.88);
+    --card-strong: #ffffff;
+    --line: #e7dfd2;
+    --blue: #2563eb;
+    --blue-soft: #e8f0ff;
+    --green: #148457;
+    --green-soft: #e8f7ee;
+    --amber: #c76a14;
+    --amber-soft: #fff3df;
+    --purple: #7c3aed;
+    --purple-soft: #f1eaff;
+    --rose: #b83259;
+    --rose-soft: #ffeaf1;
+    --code: #f7f3ec;
+    --dark-code: #172033;
+    --shadow: 0 18px 50px rgba(31, 41, 51, 0.08);
+  }
+
+  body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 15% 5%, #ffffff 0%, transparent 28%),
+      radial-gradient(circle at 85% 10%, #e8f0ff 0%, transparent 25%),
+      radial-gradient(circle at 15% 85%, #fff3df 0%, transparent 28%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .app-shell { min-height: 100vh; }
+
+  .hero {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 46px 40px 26px;
+  }
+
+  .course-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 750;
+    box-shadow: 0 10px 28px rgba(31, 41, 51, 0.06);
+    margin-bottom: 18px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -3px;
+    max-width: 760px;
+    margin-bottom: 18px;
+  }
+
+  .hero p {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 760px;
+  }
+
+  .hero-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .hero-panel h2 { font-size: 18px; margin-bottom: 10px; }
+  .hero-panel ul { list-style: none; display: grid; gap: 11px; margin-top: 16px; }
+  .hero-panel li {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: #ffffffa8;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .browser-mini {
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: #fff;
+  }
+
+  .browser-top {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fffaf2;
+  }
+
+  .window-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+  .red { background: #ff6b6b; }
+  .yellow { background: #f7c948; }
+  .green { background: #33c27f; }
+
+  .browser-body { padding: 18px; display: grid; gap: 10px; }
+  .fake-h1 { height: 20px; width: 70%; background: var(--green); border-radius: 999px; }
+  .fake-line { height: 12px; background: #ded6c8; border-radius: 999px; }
+  .fake-line.short { width: 60%; }
+  .fake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+  .fake-box { height: 48px; border-radius: 16px; background: var(--blue-soft); border: 1px solid var(--line); }
+  .fake-box:nth-child(2) { background: var(--amber-soft); }
+  .fake-box:nth-child(3) { background: var(--purple-soft); }
+
+  .top-progress {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(16px);
+    background: rgba(248, 245, 239, 0.82);
+    border-top: 1px solid rgba(231, 223, 210, 0.7);
+    border-bottom: 1px solid rgba(231, 223, 210, 0.9);
+  }
+
+  .top-progress-inner {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+
+  .progress-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .progress-badge {
+    background: var(--card-strong);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    width: min(520px, 34vw);
+    height: 9px;
+    background: #ebe4d8;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+    transition: width .25s ease;
+  }
+
+  .quick-nav { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 1px; }
+  .quick-nav button {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .quick-nav button:hover, .quick-nav button.active {
+    color: var(--ink);
+    border-color: #d5cab9;
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+  }
+
+  .main {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 30px 40px 70px;
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 78px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(31, 41, 51, 0.05);
+  }
+
+  .sidebar-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    font-weight: 850;
+    padding: 4px 8px 12px;
+  }
+
+  .side-group { margin-bottom: 16px; }
+  .side-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 850;
+    margin: 10px 8px 8px;
+  }
+  .side-label.lesson { color: var(--green); }
+  .side-label.editor { color: var(--blue); }
+  .side-label.quiz { color: var(--purple); }
+
+  .side-item {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 10px 10px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .side-item:hover { background: rgba(255,255,255,0.76); border-color: var(--line); }
+  .side-item.active {
+    background: var(--card-strong);
+    border-color: #d5cab9;
+    color: var(--ink);
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+    font-weight: 760;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 999px; margin-top: 4px; background: #ded6c8; }
+  .dot.done { background: var(--green); }
+
+  .course-area { display: grid; gap: 24px; min-width: 0; }
+  .lesson-card { width: 100%; }
+  .lesson-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-head {
+    padding: 30px 32px 22px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(circle at top right, rgba(232, 240, 255, 0.85), transparent 36%),
+      rgba(255,255,255,0.52);
+  }
+
+  .step-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .step-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 900;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: .3px;
+    border: 1px solid transparent;
+  }
+  .tag.lesson { background: var(--green-soft); color: var(--green); border-color: #c7ead3; }
+  .tag.editor { background: var(--blue-soft); color: var(--blue); border-color: #cadbff; }
+  .tag.quiz { background: var(--purple-soft); color: var(--purple); border-color: #dacbff; }
+
+  .card-head h2 {
+    font-size: clamp(30px, 4vw, 52px);
+    line-height: 1.02;
+    letter-spacing: -1.8px;
+    max-width: 820px;
+    margin-bottom: 12px;
+  }
+
+  .card-head p { color: var(--muted); font-size: 18px; line-height: 1.65; max-width: 850px; }
+  .card-body { padding: 28px 32px 32px; }
+
+  .task-box {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 22px;
+  }
+
+  .task-box h3 { font-size: 19px; margin-bottom: 14px; }
+  .task-box p, .task-box li { font-size: 16px; line-height: 1.75; color: var(--muted); }
+  .task-box ul, .task-box ol { padding-left: 22px; }
+
+  .sample-grid, .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .sample-card {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 18px;
+  }
+  .sample-card h4 { font-size: 18px; margin-bottom: 8px; }
+  .sample-card p { color: var(--muted); font-size: 15px; line-height: 1.65; margin-bottom: 12px; }
+
+  code, pre, textarea.code-input { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+  code {
+    background: var(--code);
+    border: 1px solid #eee2d2;
+    color: #9a4c0f;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  .code-box {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--code);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .code-tab {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.8);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 750;
+  }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2b3645;
+  }
+  pre code { border: 0; background: transparent; color: inherit; padding: 0; }
+
+  .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; align-items: center; }
+  .btn {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--ink);
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(31, 41, 51, 0.04);
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(31, 41, 51, 0.08); }
+  .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn-next { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-blue { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    border-radius: 20px;
+    padding: 14px 16px;
+    line-height: 1.55;
+    font-size: 14px;
+    border: 1px solid transparent;
+  }
+  .feedback.success { display: block; color: var(--green); border-color: #b8e2c7; background: var(--green-soft); }
+  .feedback.hint { display: block; color: var(--blue); border-color: #c8d9ff; background: var(--blue-soft); }
+  .feedback.error { display: block; color: var(--rose); border-color: #f5bdcd; background: var(--rose-soft); }
+
+  .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  .editor-panel {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: rgba(255,255,255,0.72);
+    overflow: hidden;
+  }
+  .editor-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--muted);
+    background: rgba(255,255,255,0.76);
+  }
+  textarea.code-input {
+    width: 100%;
+    min-height: 410px;
+    resize: vertical;
+    border: 0;
+    outline: none;
+    background: var(--dark-code);
+    color: #f7fbff;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  iframe {
+    width: 100%;
+    min-height: 410px;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .answer-input {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card-strong);
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    outline: none;
+    margin-top: 12px;
+  }
+  textarea.answer-input { min-height: 88px; resize: vertical; font-family: "SFMono-Regular", Consolas, monospace; font-size: 14px; }
+  .answer-input:focus { border-color: #b9c9ef; box-shadow: 0 0 0 4px rgba(37,99,235,.08); }
+
+  .quiz-card { border-left: 7px solid var(--purple); }
+  .quiz-card .card-head { background: radial-gradient(circle at top right, rgba(241, 234, 255, 0.9), transparent 42%), rgba(255,255,255,0.52); }
+  .quiz-mini {
+    display: inline-flex;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 850;
+    color: var(--purple);
+    background: var(--purple-soft);
+    border: 1px solid #dacbff;
+    margin-top: 10px;
+  }
+
+  .score-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .score-panel strong { font-size: 34px; letter-spacing: -1px; }
+  .score-panel span { color: var(--muted); }
+
+  .completion {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    min-height: 520px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  .completion .trophy { font-size: 76px; margin-bottom: 18px; }
+  .completion h2 { font-size: clamp(34px, 5vw, 62px); letter-spacing: -2px; margin-bottom: 12px; }
+  .completion p { color: var(--muted); font-size: 18px; line-height: 1.7; }
+
+  .tiny { color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .footer-note { color: var(--muted); text-align: center; padding: 10px 0 30px; font-size: 13px; }
+
+  @media (max-width: 980px) {
+    .hero-grid, .main, .editor-grid { grid-template-columns: 1fr; }
+    .sidebar { position: static; max-height: none; }
+    .top-progress-inner { align-items: flex-start; flex-direction: column; }
+    .progress-track { width: 220px; }
+    .sample-grid, .info-grid { grid-template-columns: 1fr; }
+    h1 { letter-spacing: -2px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero, .main { padding-left: 16px; padding-right: 16px; }
+    .card-head, .card-body { padding-left: 20px; padding-right: 20px; }
+    .top-progress-inner { padding-left: 16px; padding-right: 16px; }
+    .hero-panel { border-radius: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="hero" id="top">
+    <div class="course-pill">🌐 KS3 HTML · Website Building Blocks</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Build your first website, one tag at a time.</h1>
+        <p>A friendly HTML course for Year 8. Learn simple tags, try code in the live editor, then answer 16 quick syntax questions.</p>
+      </div>
+      <aside class="hero-panel">
+        <h2>Today’s mission</h2>
+        <p>Understand how HTML structures a page and how inline CSS changes the appearance.</p>
+        <ul>
+          <li><strong>Read:</strong> small lesson cards with short examples.</li>
+          <li><strong>Try:</strong> use the live HTML editor and preview.</li>
+          <li><strong>Check:</strong> complete 16 auto-marked questions.</li>
+          <li><strong>Build:</strong> create a simple profile web page.</li>
+        </ul>
+        <div class="browser-mini">
+          <div class="browser-top"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span></div>
+          <div class="browser-body"><div class="fake-h1"></div><div class="fake-line"></div><div class="fake-line short"></div><div class="fake-grid"><div class="fake-box"></div><div class="fake-box"></div><div class="fake-box"></div></div></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section class="top-progress">
+    <div class="top-progress-inner">
+      <div class="progress-left">
+        <div class="progress-badge" id="scoreBadge">Score: 0</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-badge" id="progressText">0 / 16</div>
+      </div>
+      <div class="quick-nav" id="quickNav"></div>
+    </div>
+  </section>
+
+  <main class="main">
+    <aside class="sidebar" id="sidebar"></aside>
+    <section class="course-area" id="content"></section>
+  </main>
+  <p class="footer-note">KS3 HTML Course · HTML tags · Inline CSS · Live preview · 16 auto-marked syntax checks</p>
+</div>
+
+<script>
+const starterCode = `<!DOCTYPE html>
+<html>
+<head>
+  <title>My First Web Page</title>
+</head>
+<body style="font-family:Arial; background-color:#f8f5ef;">
+
+  <h1 style="color:green;">My First Website</h1>
+  <p>Hello! This is my first paragraph.</p>
+  <p>I am learning <b>HTML</b> and <em>CSS</em>.</p>
+
+  <h2 style="color:blue;">Things I like</h2>
+  <ul>
+    <li>Coding</li>
+    <li>Games</li>
+    <li>Design</li>
+  </ul>
+
+</body>
+</html>`;
+
+const challengeCode = `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Profile Page</title>
+</head>
+<body style="font-family:Arial; background-color:#fff3df;">
+
+  <!-- Challenge:
+  1. Add one h1 heading.
+  2. Add two paragraphs.
+  3. Make one word bold.
+  4. Make one word emphasised using em.
+  5. Add a colour to one heading using style="color:...;"
+  -->
+
+</body>
+</html>`;
+
+const lessons = [
+  {
+    group: 'Lesson Cards', cls: 'lesson', title: 'What is HTML?', tag: 'Lesson 1',
+    desc: 'HTML stands for HyperText Markup Language. It uses tags to organise the parts of a web page.',
+    body: `<p>Think of HTML tags like building blocks. They help the browser understand headings, paragraphs, lists, and important text.</p>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>HTML example</span></div><pre><code>&lt;h1&gt;My First Website&lt;/h1&gt;
+&lt;p&gt;This is my first paragraph.&lt;/p&gt;</code></pre></div>
+      <div class="sample-grid"><div class="sample-card"><h4>Key idea</h4><p>HTML gives the web page structure.</p></div><div class="sample-card"><h4>Remember</h4><p>Tags normally use angle brackets, like <code>&lt;p&gt;</code>.</p></div></div>`
+  },
+  {
+    group: 'Lesson Cards', cls: 'lesson', title: 'Opening and closing tags', tag: 'Lesson 2',
+    desc: 'Most HTML elements have an opening tag and a closing tag. The closing tag usually includes a slash.',
+    body: `<div class="info-grid"><div class="sample-card"><h4>Opening tag</h4><p><code>&lt;p&gt;</code> starts a paragraph.</p></div><div class="sample-card"><h4>Closing tag</h4><p><code>&lt;/p&gt;</code> ends a paragraph.</p></div></div>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>complete tag pair</span></div><pre><code>&lt;p&gt;This text is inside a paragraph tag.&lt;/p&gt;</code></pre></div>`
+  },
+  {
+    group: 'Lesson Cards', cls: 'lesson', title: 'Useful HTML tags', tag: 'Lesson 3',
+    desc: 'Use simple tags to create headings, paragraphs, bold text, emphasis, quotes, and bullet points.',
+    body: `<div class="sample-grid">
+        <div class="sample-card"><h4>Text structure</h4><p><code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;p&gt;</code></p></div>
+        <div class="sample-card"><h4>Text formatting</h4><p><code>&lt;b&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;q&gt;</code></p></div>
+        <div class="sample-card"><h4>Bullet list</h4><p><code>&lt;ul&gt;</code> starts the list. <code>&lt;li&gt;</code> creates each item.</p></div>
+        <div class="sample-card"><h4>Good habit</h4><p>Only format important words, not everything.</p></div>
+      </div>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>formatting example</span></div><pre><code>&lt;h1&gt;My Hobby&lt;/h1&gt;
+&lt;p&gt;I enjoy &lt;b&gt;coding&lt;/b&gt; websites.&lt;/p&gt;
+&lt;p&gt;HTML can be &lt;em&gt;creative&lt;/em&gt;.&lt;/p&gt;</code></pre></div>`
+  },
+  {
+    group: 'Lesson Cards', cls: 'lesson', title: 'Inline CSS with style', tag: 'Lesson 4',
+    desc: 'The style attribute changes the appearance of one HTML element. Use color, not colour.',
+    body: `<p>Inline CSS is useful for beginner practice. It changes one element at a time.</p>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>inline CSS example</span></div><pre><code>&lt;h2 style="color:red;"&gt;Important title&lt;/h2&gt;
+&lt;p style="font-family:Arial;"&gt;This paragraph uses Arial.&lt;/p&gt;</code></pre></div>
+      <div class="sample-card" style="margin-top:14px;"><h4>Common exam trap</h4><p>CSS uses American spelling: <code>color</code>. The browser may not understand <code>colour</code>.</p></div>`
+  },
+  {
+    group: 'Editor', cls: 'editor', title: 'Try the live HTML editor', tag: 'Live Editor',
+    desc: 'Type HTML and CSS on the left. Click Run Code to see the web page preview on the right.',
+    body: `<p class="tiny">Use this like a simple Trinket-style editor for testing tags, inline CSS, and web page structure.</p>
+      <div class="button-row"><button class="btn btn-blue" onclick="runCode()">Run Code</button><button class="btn" onclick="resetCode()">Reset Example</button><button class="btn" onclick="loadChallenge()">Load Challenge Template</button></div>
+      <div class="editor-grid"><div class="editor-panel"><div class="editor-label"><span>Code editor</span><span>HTML + CSS</span></div><textarea class="code-input" id="codeEditor" spellcheck="false"></textarea></div><div class="editor-panel"><div class="editor-label"><span>Live preview</span><span>Browser view</span></div><iframe id="preview" title="HTML live preview"></iframe></div></div>`
+  }
+];
+
+const questions = [
+  {q:'What does HTML stand for?', hint:'Write the full name.', type:'text', check:a=>norm(a).includes('hypertext markup language'), correct:'HyperText Markup Language'},
+  {q:'Write the HTML tag that creates the largest main heading.', hint:'Only write the tag.', type:'code', check:a=>compact(a)==='<h1>'||compact(a)==='<h1></h1>', correct:'&lt;h1&gt;'},
+  {q:'Write a complete h1 heading that displays: My Website', hint:'Use opening and closing h1 tags.', type:'code', check:a=>compact(a)==='<h1>mywebsite</h1>', correct:'&lt;h1&gt;My Website&lt;/h1&gt;'},
+  {q:'Write a complete paragraph that displays: I am learning HTML', hint:'Use p tags.', type:'code', check:a=>compact(a)==='<p>iamlearninghtml</p>', correct:'&lt;p&gt;I am learning HTML&lt;/p&gt;'},
+  {q:'Write HTML to make the word coding bold.', hint:'Use b tags.', type:'code', check:a=>compact(a)==='<b>coding</b>'||compact(a)==='<strong>coding</strong>', correct:'&lt;b&gt;coding&lt;/b&gt;'},
+  {q:'Write HTML to make the word creative italic/emphasised.', hint:'Use em tags from the lesson.', type:'code', check:a=>compact(a)==='<em>creative</em>'||compact(a)==='<i>creative</i>', correct:'&lt;em&gt;creative&lt;/em&gt;'},
+  {q:'Write an h2 heading that says Title and makes the text red using inline CSS.', hint:'Use style="color:red;".', type:'code', check:a=>{const c=compact(a).replace(/'/g,'"');return c==='<h2style="color:red;">title</h2>'||c==='<h2style="color:red">title</h2>';}, correct:'&lt;h2 style="color:red;"&gt;Title&lt;/h2&gt;'},
+  {q:'Which spelling works in CSS: color or colour?', hint:'HTML/CSS uses American spelling.', type:'text', check:a=>norm(a)==='color', correct:'color'},
+  {q:'Write a complete quoted text element that displays: Hello', hint:'Use q tags.', type:'code', check:a=>compact(a)==='<q>hello</q>', correct:'&lt;q&gt;Hello&lt;/q&gt;'},
+  {q:'Write the two tags needed to start and end a bulleted list.', hint:'Use unordered list tags.', type:'code', check:a=>compact(a)==='<ul></ul>', correct:'&lt;ul&gt;&lt;/ul&gt;'},
+  {q:'Write one list item that displays: Games', hint:'Use li tags.', type:'code', check:a=>compact(a)==='<li>games</li>', correct:'&lt;li&gt;Games&lt;/li&gt;'},
+  {q:'Write a paragraph that says Hello and uses Arial through inline CSS.', hint:'Use style="font-family:Arial;".', type:'code', check:a=>{const c=compact(a).replace(/'/g,'"');return c==='<pstyle="font-family:arial;">hello</p>'||c==='<pstyle="font-family:arial">hello</p>';}, correct:'&lt;p style="font-family:Arial;"&gt;Hello&lt;/p&gt;'},
+  {q:'Fix this HTML: <h1>Search engines<h1>', hint:'The closing tag needs a slash.', type:'code', check:a=>compact(a)==='<h1>searchengines</h1>', correct:'&lt;h1&gt;Search engines&lt;/h1&gt;'},
+  {q:'Find the mistake in this CSS: style="colour:blue;"', hint:'Write the corrected style attribute.', type:'code', check:a=>compact(a).replace(/'/g,'"')==='style="color:blue;"'||compact(a).replace(/'/g,'"')==='style="color:blue"', correct:'style="color:blue;"'},
+  {q:'Write a short webpage body with one h1 and one paragraph about yourself.', hint:'Must include body, h1, p, and closing tags.', type:'code', check:a=>{const c=compact(a);return c.includes('<body>')&&c.includes('</body>')&&c.includes('<h1>')&&c.includes('</h1>')&&c.includes('<p>')&&c.includes('</p>');}, correct:'&lt;body&gt;&lt;h1&gt;About Me&lt;/h1&gt;&lt;p&gt;I like coding.&lt;/p&gt;&lt;/body&gt;'},
+  {q:'Write a longer profile webpage about yourself. Include one h1 heading, at least two paragraphs, one bold word, one emphasised word, and one inline colour style.', hint:'Use body, h1, two p tags, b, em, and style="color:...;".', type:'code', check:a=>{const c=compact(a).replace(/'/g,'"'); const pCount=(c.match(/<p/g)||[]).length; return c.includes('<body')&&c.includes('</body>')&&c.includes('<h1')&&c.includes('</h1>')&&pCount>=2&&(c.includes('<b>')||c.includes('<strong>'))&&(c.includes('<em>')||c.includes('<i>'))&&c.includes('style=')&&c.includes('color:');}, correct:'&lt;body&gt;&lt;h1 style="color:green;"&gt;About Me&lt;/h1&gt;&lt;p&gt;My name is David and I enjoy &lt;b&gt;coding&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;I feel &lt;em&gt;proud&lt;/em&gt; when my website works.&lt;/p&gt;&lt;/body&gt;'}
+];
+
+let current = 0;
+let answered = new Array(questions.length).fill(false);
+const SAVE_KEY = 'ks3HtmlCourseCardStyle_v2';
+try { const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); if (saved.answered) answered = saved.answered; } catch(e) {}
+
+function norm(value){ return value.toLowerCase().replace(/\s+/g,' ').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").trim(); }
+function compact(value){ return norm(value).replace(/\s/g,''); }
+function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify({answered})); }
+
+function allItems(){ return [...lessons, ...questions.map((q,i)=>({group:'Quiz', cls:'quiz', title:`Question ${i+1}`, tag:q.type==='code'?'Syntax':'Knowledge', desc:q.q, questionIndex:i}))]; }
+
+function renderQuickNav(){
+  const nav = [{label:'Lessons', index:0},{label:'Editor', index:4},{label:'Quiz', index:5}];
+  document.getElementById('quickNav').innerHTML = nav.map((n,idx)=>{
+    const next = nav[idx+1]?.index ?? 999;
+    const active = current >= n.index && current < next;
+    return `<button class="${active?'active':''}" onclick="goTo(${n.index})">${n.label}</button>`;
+  }).join('');
+}
+
+function renderSidebar(){
+  const items = allItems();
+  const sidebar = document.getElementById('sidebar');
+  let html = '<div class="sidebar-title">Course Cards</div>';
+  let group = '';
+  items.forEach((item, index)=>{
+    if(item.group !== group){ if(group) html += '</div>'; group = item.group; html += `<div class="side-group"><div class="side-label ${item.cls}">${group}</div>`; }
+    const done = index < lessons.length || answered[item.questionIndex];
+    html += `<div class="side-item ${index===current?'active':''}" onclick="goTo(${index})"><span class="dot ${done?'done':''}"></span><span>${index+1}. ${item.title}</span></div>`;
+  });
+  html += '</div>';
+  sidebar.innerHTML = html;
+}
+
+function updateProgress(){
+  const score = answered.filter(Boolean).length;
+  document.getElementById('scoreBadge').textContent = `Score: ${score}`;
+  document.getElementById('progressText').textContent = `${score} / ${questions.length}`;
+  document.getElementById('progressFill').style.width = `${(score/questions.length)*100}%`;
+}
+
+function goTo(index){
+  const pageY = window.scrollY;
+  const sidebar = document.getElementById("sidebar");
+  const sidebarY = sidebar ? sidebar.scrollTop : 0;
+  current = index;
+  renderCard();
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: pageY, left: 0, behavior: "auto" });
+    const newSidebar = document.getElementById("sidebar");
+    if (newSidebar) newSidebar.scrollTop = sidebarY;
+  });
+}
+function next(){ if(current < allItems().length - 1){ current++; renderCard(); } else { showCompletion(); } }
+function prev(){ if(current > 0){ current--; renderCard(); } }
+
+function renderCard(){
+  const items = allItems();
+  const item = items[current];
+  if(item.questionIndex !== undefined) return renderQuestion(item.questionIndex);
+  document.getElementById('content').innerHTML = `<article class="lesson-card">
+    <div class="card-head"><div class="step-meta"><div class="step-number">${current+1}</div><span class="tag ${item.cls}">${item.tag}</span></div><h2>${item.title}</h2><p>${item.desc}</p></div>
+    <div class="card-body"><section class="task-box"><h3>Read and try</h3>${item.body}</section><div class="button-row"><button class="btn" onclick="prev()" ${current===0?'disabled':''}>← Back</button><button class="btn btn-next" onclick="next()">Next →</button><button class="btn" onclick="showLessonHint()">Hint</button></div><div class="feedback" id="feedback"></div></div>
+  </article>`;
+  renderSidebar(); renderQuickNav(); updateProgress();
+  if(item.title.includes('live HTML editor')) { document.getElementById('codeEditor').value = starterCode; runCode(); }
+}
+
+function showLessonHint(){
+  const hints = ['HTML structures a web page, like bricks in a wall.','Closing tags usually need a slash.','Use tags only around the text you want to change.','Use color, not colour.','Run the code after each small change.'];
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback hint';
+  fb.textContent = hints[Math.min(current, hints.length-1)];
+}
+
+function renderQuestion(qIndex){
+  const q = questions[qIndex];
+  document.getElementById('content').innerHTML = `<article class="lesson-card quiz-card">
+    <div class="card-head"><div class="step-meta"><div class="step-number">${qIndex+1}</div><span class="tag quiz">${q.type==='code'?'Syntax':'Knowledge'}</span></div><h2>Question ${qIndex+1}</h2><p>${escapeHtml(q.q)}</p><span class="quiz-mini">Hint: ${q.hint}</span></div>
+    <div class="card-body"><section class="task-box"><h3>Your answer</h3>${q.type==='code'?`<textarea class="answer-input" id="answer${qIndex}" rows="4" spellcheck="false"></textarea>`:`<input class="answer-input" id="answer${qIndex}" type="text" />`}
+      <div class="button-row"><button class="btn btn-primary" onclick="checkAnswer(${qIndex})">Check answer</button><button class="btn" onclick="showAnswer(${qIndex})">Show answer</button>${q.type==='code'?`<button class="btn btn-blue" onclick="tryInEditor(${qIndex})">Try in editor</button>`:''}</div><div class="feedback" id="feedback${qIndex}"></div></section><div class="button-row"><button class="btn" onclick="prev()">← Back</button><button class="btn btn-next" onclick="next()">Next →</button></div></div>
+  </article>`;
+  renderSidebar(); renderQuickNav(); updateProgress();
+}
+
+function checkAnswer(index){
+  const input = document.getElementById(`answer${index}`);
+  const feedback = document.getElementById(`feedback${index}`);
+  if(questions[index].check(input.value)){
+    answered[index] = true; save();
+    feedback.className = 'feedback success';
+    feedback.textContent = 'Correct. Good use of HTML/CSS syntax.';
+  } else {
+    feedback.className = 'feedback error';
+    feedback.textContent = 'Not quite. Check your opening tags, closing tags, spelling, quotation marks, or punctuation.';
+  }
+  renderSidebar(); updateProgress();
+}
+
+function showAnswer(index){
+  const feedback = document.getElementById(`feedback${index}`);
+  feedback.className = 'feedback hint';
+  feedback.innerHTML = `Model answer: <code>${questions[index].correct}</code>`;
+}
+
+function runCode(){
+  const editor = document.getElementById('codeEditor');
+  const preview = document.getElementById('preview');
+  if(!editor || !preview) return;
+  const doc = preview.contentDocument || preview.contentWindow.document;
+  doc.open(); doc.write(editor.value); doc.close();
+}
+function resetCode(){ const editor = document.getElementById('codeEditor'); if(editor){ editor.value = starterCode; runCode(); } }
+function loadChallenge(){ const editor = document.getElementById('codeEditor'); if(editor){ editor.value = challengeCode; runCode(); } }
+function tryInEditor(index){
+  current = 4; renderCard();
+  setTimeout(()=>{
+    const q = questions[index];
+    const raw = document.getElementById(`answer${index}`)?.value?.trim();
+    const example = raw || q.correct.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+    document.getElementById('codeEditor').value = `<!DOCTYPE html>\n<html>\n<head>\n  <title>Question ${index+1} Test</title>\n</head>\n<body style="font-family:Arial;">\n\n${example}\n\n</body>\n</html>`;
+    runCode();
+  }, 80);
+}
+function resetQuiz(){ answered = new Array(questions.length).fill(false); save(); renderCard(); }
+function showCompletion(){
+  document.getElementById('content').innerHTML = `<section class="completion"><div><div class="trophy">🏆</div><h2>Course complete.</h2><p>You scored ${answered.filter(Boolean).length} out of ${questions.length}.</p><p>Review any questions that are not marked green, then try building your own profile web page.</p><div class="button-row" style="justify-content:center;"><button class="btn btn-primary" onclick="goTo(0)">Back to start</button><button class="btn" onclick="resetQuiz()">Reset quiz</button></div></div></section>`;
+  renderSidebar(); renderQuickNav(); updateProgress();
+}
+
+renderCard();
+</script>
+</body>
+</html>
