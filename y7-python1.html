@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Year 7 Python Course: Print and Comments</title>
+<style>
+  :root{
+    --bg:#f6f8ff; --paper:#ffffff; --ink:#172033; --muted:#64748b;
+    --line:#dbe5f5; --blue:#2563eb; --blue2:#dbeafe; --green:#15803d;
+    --green2:#dcfce7; --red:#dc2626; --red2:#fee2e2; --orange:#f97316;
+    --purple:#7c3aed; --code:#0f172a; --code2:#111827; --soft:#eef4ff;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#fff 0%,var(--bg) 55%,#eef6ff 100%);color:var(--ink);}
+  .app{display:grid;grid-template-columns:300px 1fr;min-height:100vh}.side{background:rgba(255,255,255,.88);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow:auto;padding:20px 14px}.brand{display:flex;align-items:center;gap:12px;padding:10px 10px 18px}.logo{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:grid;place-items:center;color:white;font-size:25px;box-shadow:0 12px 24px rgba(37,99,235,.2)}h1{font-size:19px;line-height:1.1;margin:0}.subtitle{font-size:12px;color:var(--muted);margin-top:5px}.progressCard{background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:14px;margin:0 4px 18px}.progressText{font-size:13px;font-weight:800;margin-bottom:10px}.bar{height:12px;background:#fff;border-radius:99px;overflow:hidden;border:1px solid var(--line)}.fill{height:100%;width:0;background:linear-gradient(90deg,#2563eb,#22c55e);border-radius:99px;transition:.3s}.menuTitle{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:900;margin:18px 12px 8px}.item{border:1px solid transparent;border-radius:14px;padding:10px 12px;margin:5px 4px;display:flex;gap:10px;align-items:center;cursor:pointer;color:#475569;font-size:13px;line-height:1.25}.item:hover{background:#f8fbff;border-color:var(--line)}.item.active{background:#eaf2ff;border-color:#bfdbfe;color:#10203f;font-weight:800}.dot{width:12px;height:12px;border-radius:50%;background:#cbd5e1;flex:0 0 12px}.dot.done{background:var(--green)}.dot.wrong{background:var(--red)}.main{padding:32px;max-width:1200px;width:100%;margin:auto}.hero,.card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:28px;box-shadow:0 18px 45px rgba(15,23,42,.06)}.hero{padding:28px 32px;margin-bottom:22px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.badge{display:inline-block;background:#1d4ed8;color:#fff;font-weight:900;font-size:12px;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:8px 13px;margin-bottom:12px}.badge.ext{background:var(--purple)}.hero h2{font-size:42px;line-height:1;margin:0 0 12px}.hero p{font-size:19px;line-height:1.55;color:#43546d;margin:0}.heroIcon{font-size:86px}.card{padding:24px;margin-bottom:20px}.task h3,.runner h3{font-size:18px;margin:0 0 12px;color:#1d4ed8}.task p,.task li{font-size:18px;line-height:1.65;color:#334155}.task ul{margin:8px 0 0;padding-left:26px}.pill{display:inline-block;background:#f1f5f9;border:1px solid #dbe4f0;border-radius:999px;padding:4px 10px;font-size:14px;font-weight:800;color:#334155}.codebox{background:var(--code);color:#e5e7eb;border-radius:20px;overflow:hidden;border:1px solid #263449}.codetop{background:#111827;padding:12px 16px;color:#94a3b8;font-size:13px;display:flex;gap:8px;align-items:center}.win{width:11px;height:11px;border-radius:50%;display:inline-block}.r{background:#ef4444}.y{background:#f59e0b}.g{background:#22c55e}.codebox textarea{width:100%;min-height:220px;background:#0f172a;color:#f8fafc;border:0;outline:0;resize:vertical;padding:20px;font:17px/1.6 Consolas,Monaco,monospace;tab-size:4}.runnerGrid{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,.8fr);gap:18px}.console{background:#07111f;color:#d1fae5;border-radius:18px;min-height:220px;padding:18px;font:16px/1.55 Consolas,Monaco,monospace;white-space:pre-wrap;overflow:auto;border:1px solid #1f2937}.console.empty{color:#94a3b8}.btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}.btn{border:0;border-radius:14px;padding:13px 20px;font-size:16px;font-weight:900;cursor:pointer;transition:.15s}.btn:hover{transform:translateY(-1px)}.btn.primary{background:var(--blue);color:#fff}.btn.green{background:var(--green);color:#fff}.btn.light{background:#fff;color:#334155;border:1px solid var(--line)}.btn.orange{background:var(--orange);color:white}.feedback{display:none;margin-top:16px;border-radius:18px;padding:16px 18px;font-size:17px;line-height:1.5;white-space:pre-wrap}.feedback.good{display:block;background:var(--green2);border:1px solid #86efac;color:#14532d}.feedback.bad{display:block;background:var(--red2);border:1px solid #fecaca;color:#7f1d1d}.feedback.hint{display:block;background:#dbeafe;border:1px solid #93c5fd;color:#1e3a8a}.mini{font-size:14px;color:var(--muted);line-height:1.5}.kbd{font-family:Consolas,monospace;background:#fff;border:1px solid var(--line);border-bottom:3px solid #cbd5e1;border-radius:8px;padding:2px 8px;color:#111827}.complete{text-align:center;padding:70px 30px}.complete .trophy{font-size:90px}.complete h2{font-size:46px;margin:10px}.complete p{font-size:21px;color:#475569}.scoreBig{font-size:64px;color:var(--blue);font-weight:1000;margin:20px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.note{background:#fff7ed;border:1px solid #fed7aa;border-radius:18px;padding:14px 16px;color:#7c2d12;font-size:16px;line-height:1.5}
+  @media(max-width:900px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.runnerGrid,.hero,.two{grid-template-columns:1fr}.hero h2{font-size:32px}.main{padding:18px}.side{display:block}.item{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">🐍</div><div><h1>Python Print Course</h1><div class="subtitle">Year 7 Unit 1 · print() and comments</div></div></div>
+    <div class="progressCard"><div class="progressText" id="progressText">0 / 20 completed</div><div class="bar"><div class="fill" id="barFill"></div></div><div class="mini" style="margin-top:10px">Tip: Use <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to run code.</div></div>
+    <div class="menuTitle">Course Questions</div><nav id="menu"></nav>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+<script>
+const lessons = [
+{t:'First Output', tag:'Print Basics', goal:'Use print() to display one sentence.', task:'Write one line of Python that prints exactly: Hello Year 7', starter:'# Write your code below\n', expected:'Hello Year 7', checks:[cPrint(), out('Hello Year 7')]},
+{t:'Use Quotes', tag:'Syntax Check', goal:'Practise putting text inside quotation marks.', task:'Print exactly: Python needs quotes', starter:'print()\n', expected:'Python needs quotes', checks:[cContains('"Python needs quotes"','Put the sentence inside quotation marks.'), out('Python needs quotes')]},
+{t:'Capital Letters Matter', tag:'Syntax Check', goal:'Identify that Python commands must be spelt correctly.', task:'Fix the code so it prints: I fixed the syntax', starter:'Print("I fixed the syntax")\n', expected:'I fixed the syntax', checks:[cNoContains('Print(','Python uses lowercase print, not capital Print.'), cPrint(), out('I fixed the syntax')]},
+{t:'Missing Brackets', tag:'Debugging', goal:'Fix brackets in a print statement.', task:'Fix the broken code so it prints exactly: Brackets are important', starter:'print "Brackets are important"\n', expected:'Brackets are important', checks:[cContains('print(','Use print() with brackets.'), out('Brackets are important')]},
+{t:'Two Lines', tag:'Multiple Prints', goal:'Use two print statements to create two lines of output.', task:'Print these on separate lines: My first program and I can use print', starter:'# Line 1\n# Line 2\n', expected:'My first program\nI can use print', checks:[cCount('print(',2,'Use two print statements.'), out('My first program\nI can use print')]},
+{t:'Three-Line Introduction', tag:'Multiple Prints', goal:'Create a short introduction using three print statements.', task:'Print these three lines exactly: My name is Alex / I am in Year 7 / I am learning Python', starter:'# Write three print statements\n', expected:'My name is Alex\nI am in Year 7\nI am learning Python', checks:[cCount('print(',3,'Use three print statements.'), out('My name is Alex\nI am in Year 7\nI am learning Python')]},
+{t:'Numbers in Print', tag:'Print Numbers', goal:'Print a number without quotation marks.', task:'Print the number 2026 only. Do not use quotation marks around the number.', starter:'# Print a number\n', expected:'2026', checks:[cContains('2026','Your code should include the number 2026.'), cNoContains('"2026"','For this question, print the number without quotes.'), out('2026')]},
+{t:'Text and Number', tag:'Comma Printing', goal:'Use a comma to print text and a number together.', task:'Use one print statement with a comma to print: I am 12', starter:'print("I am", )\n', expected:'I am 12', checks:[cContains(',', 'Use a comma inside print().'), cContains('12','Add the number 12.'), out('I am 12')]},
+{t:'Print Several Words', tag:'Comma Printing', goal:'Use commas to print several pieces of text.', task:'Use one print statement with commas to print: Python is fun', starter:'print("Python", , )\n', expected:'Python is fun', checks:[cContains(',', 'Use commas between the items.'), out('Python is fun')]},
+{t:'Blank Line', tag:'Formatting Output', goal:'Use print() to create an empty line.', task:'Print Hello, then a blank line, then Goodbye.', starter:'# Use print() for a blank line\n', expected:'Hello\n\nGoodbye', checks:[cCount('print(',3,'Use three print statements, including print() for the blank line.'), cContains('print()','Use print() to create an empty line.'), out('Hello\n\nGoodbye')]},
+{t:'Comment First', tag:'Comments', goal:'Use a comment to explain your code.', task:'Add a comment that says My first Python comment. Then print: Comments do not run', starter:'# Write your comment below\n\nprint("Comments do not run")\n', expected:'Comments do not run', checks:[cContains('# My first Python comment','Your comment should start with # and say: My first Python comment'), out('Comments do not run')]},
+{t:'Comment or Code?', tag:'Comments', goal:'Understand that comments are ignored by Python.', task:'Fix the code so only This line runs is printed. The other sentence should stay as a comment.', starter:'print("This line runs")\nprint("This line should be a comment")\n', expected:'This line runs', checks:[cContains('# print("This line should be a comment")','Turn the second print statement into a comment.'), out('This line runs')]},
+{t:'Plan with Comments', tag:'Comments', goal:'Use comments as a simple plan before coding.', task:'Write two comments first: Step 1: say hello and Step 2: say goodbye. Then print Hello and Goodbye on separate lines.', starter:'# Step 1: say hello\n# Step 2: say goodbye\n', expected:'Hello\nGoodbye', checks:[cContains('# Step 1: say hello','Include the first planning comment.'), cContains('# Step 2: say goodbye','Include the second planning comment.'), out('Hello\nGoodbye')]},
+{t:'Find the Syntax Error', tag:'Debugging', goal:'Fix quotation mark syntax.', task:'Fix the code so it prints exactly: I found the error', starter:'print("I found the error)\n', expected:'I found the error', checks:[cContains('"I found the error"','The text needs opening and closing quotation marks.'), out('I found the error')]},
+{t:'A Small Menu', tag:'Layout', goal:'Use print statements to create a simple menu.', task:'Print this menu on three lines: 1. Start / 2. Help / 3. Quit', starter:'# Create a menu\n', expected:'1. Start\n2. Help\n3. Quit', checks:[cCount('print(',3,'Use three print statements.'), out('1. Start\n2. Help\n3. Quit')]},
+{t:'ASCII Face', tag:'Creative Print', goal:'Use print to create a small text picture.', task:'Print this face on three lines:  ^_^  / (o o) /  \_/ ', starter:'# Create the face using print\n', expected:'^_^\n(o o)\n\\_/', checks:[cCount('print(',3,'Use three print statements.'), out('^_^\n(o o)\n\\_/')]},
+{t:'Escape Apostrophe', tag:'Extension Syntax', goal:'Print a sentence with an apostrophe safely.', task:'Print exactly: Python\'s print is useful', starter:'# You can use double quotes around the sentence\n', expected:"Python's print is useful", checks:[out("Python's print is useful")]},
+{t:'Quotes Inside Text', tag:'Extension Syntax', goal:'Print quotation marks as part of the output.', task:'Print exactly: She said, "Hello"', starter:'# Tip: use single quotes outside, or escape the inner quotes\n', expected:'She said, "Hello"', checks:[out('She said, "Hello"')]},
+{t:'New Line Shortcut', tag:'Extension', goal:'Use the newline character \\n inside one print statement.', task:'Use one print statement only to print Red, Blue and Green on separate lines.', starter:'# Use \\n inside the text\n', expected:'Red\nBlue\nGreen', checks:[cCount('print(',1,'Use one print statement only.'), cContains('\\n','Use the newline shortcut \\n inside the string.'), out('Red\nBlue\nGreen')]},
+{t:'Final Challenge', tag:'Final Task', goal:'Combine comments, print, commas and neat output.', task:'Create a short student ID card. Include at least two comments. Output must be exactly four lines: STUDENT CARD / Name: Alex / Year: 7 / Subject: Python', starter:'# Final challenge\n# Plan your output before coding\n', expected:'STUDENT CARD\nName: Alex\nYear: 7\nSubject: Python', checks:[cMinComments(2), cCount('print(',4,'Use four print statements.'), out('STUDENT CARD\nName: Alex\nYear: 7\nSubject: Python')]}
+];
+let current=0, completed={}, wrong={}, work={};
+const PYODIDE_URL='https://cdn.jsdelivr.net/pyodide/v0.25.1/full/';let pyodide=null, loading=false;
+function cPrint(){return {type:'printCall',msg:'Use the Python command print(). It is okay to write print( ) or print ( ).' }}
+function cContains(value,msg){return {type:'contains',value,msg}}
+function cNoContains(value,msg){return {type:'noContains',value,msg}}
+function cCount(value,count,msg){return {type:'count',value,count,msg}}
+function cMinComments(count){return {type:'minComments',count,msg:`Use at least ${count} comment lines starting with #.`}}
+function out(value){return {type:'output',value,msg:'The output must match the expected output exactly.'}}
+function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function state(i=current){if(!work[i]) work[i]={code:lessons[i].starter, console:''}; return work[i]}
+function renderMenu(){document.getElementById('menu').innerHTML=lessons.map((l,i)=>`<div class="item ${i===current?'active':''}" onclick="go(${i})"><span class="dot ${completed[i]?'done':wrong[i]?'wrong':''}"></span><span>${i+1}. ${l.t}</span></div>`).join('')}
+function render(){const l=lessons[current], s=state(); document.getElementById('main').innerHTML=`
+ <section class="hero"><div><span class="badge ${current>=16?'ext':''}">${l.tag}</span><h2>${current+1}. ${l.t}</h2><p>${l.goal}</p></div><div class="heroIcon">${current<10?'💬':current<16?'#️⃣':'⭐'}</div></section>
+ <section class="card task"><h3>Your Task</h3><p>${l.task}</p><div class="note"><strong>Remember:</strong> Python needs lowercase <span class="pill">print</span>, brackets <span class="pill">()</span>, and quotation marks for text.</div></section>
+ <section class="card"><div class="codebox"><div class="codetop"><span class="win r"></span><span class="win y"></span><span class="win g"></span><span>answer_${current+1}.py</span></div><textarea id="editor" spellcheck="false" oninput="state().code=this.value" onkeydown="keyRun(event)">${esc(s.code)}</textarea></div><div class="two" style="margin-top:16px"><div class="card" style="margin:0;padding:16px"><h3 style="margin:0 0 8px;color:#15803d">Expected Output</h3><pre style="font:17px/1.5 Consolas,monospace;margin:0;white-space:pre-wrap">${esc(l.expected)}</pre></div><div class="card" style="margin:0;padding:16px"><h3 style="margin:0 0 8px;color:#7c3aed">Quick Syntax Check</h3><p class="mini">Check for: lowercase print, brackets, matching quotes, comments beginning with #.</p></div></div></section>
+ <section class="card runner"><h3>Run Your Code</h3><div class="runnerGrid"><div><p class="mini">Run your program here. The first run may take a few seconds while Python loads.</p><div class="btns"><button class="btn primary" onclick="runCode()">▶ Run Code</button><button class="btn green" onclick="check()">✓ Check Answer</button><button class="btn light" onclick="hint()">Hint</button><button class="btn light" onclick="resetQ()">Reset</button></div></div><pre id="console" class="console ${s.console?'':'empty'}">${esc(s.console||'Output will appear here...')}</pre></div><div class="feedback" id="fb"></div><div class="btns"><button class="btn light" onclick="prev()" ${current===0?'disabled':''}>Previous</button><button class="btn orange" onclick="next()">${current===lessons.length-1?'Finish Course':'Next Question'}</button></div></section>`; renderMenu(); progress();}
+function progress(){const done=Object.keys(completed).length; document.getElementById('progressText').textContent=`${done} / ${lessons.length} completed`; document.getElementById('barFill').style.width=(done/lessons.length*100)+'%'}
+function go(i){current=i;render()} function next(){if(current<lessons.length-1){current++;render()}else complete()} function prev(){if(current>0){current--;render()}}
+function resetQ(){work[current]={code:lessons[current].starter,console:''}; delete completed[current]; delete wrong[current]; render()}
+function hint(){const fb=document.getElementById('fb'); fb.className='feedback hint'; fb.textContent='Hint: Try reading the expected output first. Your printed result must look exactly the same. Comments start with # and do not appear in the output.'}
+function keyRun(e){if(e.key==='Tab'){e.preventDefault(); const el=e.target; el.setRangeText('    ',el.selectionStart,el.selectionEnd,'end'); state().code=el.value} if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault(); runCode()}}
+async function loadPy(){if(pyodide)return pyodide; if(loading)return new Promise(r=>setTimeout(async()=>r(await loadPy()),300)); loading=true; writeConsole('Loading Python... please wait.'); await new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=PYODIDE_URL+'pyodide.js';sc.onload=res;sc.onerror=()=>rej(Error('Could not load Python. Check internet connection.'));document.head.appendChild(sc)}); pyodide=await loadPyodide({indexURL:PYODIDE_URL}); loading=false; return pyodide}
+function writeConsole(t){state().console=t; const c=document.getElementById('console'); if(c){c.textContent=t||'Output will appear here...'; c.classList.toggle('empty',!t)}}
+async function execute(code){const py=await loadPy(); let out=''; py.setStdout({batched:(s)=>{out += s+'\n'; writeConsole(out.trimEnd())}}); py.setStderr({batched:(s)=>{out += s+'\n'; writeConsole(out.trimEnd())}}); try{await py.runPythonAsync(code); return {ok:true,out:out.trimEnd()}}catch(e){out += String(e); writeConsole(out); return {ok:false,out:out.trimEnd()}}}
+async function runCode(){const code=document.getElementById('editor').value; state().code=code; if(!code.trim()){writeConsole('Type your Python code first.');return} await execute(code)}
+
+function codeWithoutFullLineComments(code){
+  return String(code).split('\n').filter(line => !line.trim().startsWith('#')).join('\n');
+}
+function normalizeLooseText(value){
+  return String(value).toLowerCase().replace(/\s+/g, '').replace(/[\"'`]/g, '');
+}
+function quotedParts(value){
+  const parts = [];
+  const re = /["']([^"']+)["']/g;
+  let match;
+  while((match = re.exec(String(value))) !== null){
+    parts.push(match[1]);
+  }
+  return parts;
+}
+function hasMatchingComment(code, value){
+  const wanted = String(value).trim().replace(/^#/, '').trim();
+  const wantedLoose = normalizeLooseText(wanted);
+  const quoted = quotedParts(wanted).map(normalizeLooseText);
+
+  return String(code).split('\n').some(line => {
+    const trimmed = line.trim();
+    if(!trimmed.startsWith('#')) return false;
+
+    const comment = trimmed.replace(/^#/, '').trim();
+    const commentLoose = normalizeLooseText(comment);
+
+    if(comment.includes(wanted)) return true;
+    if(commentLoose.includes(wantedLoose)) return true;
+    return quoted.some(part => part && commentLoose.includes(part));
+  });
+}
+function containsFlexible(code,value){
+  const raw = String(code);
+  const executable = codeWithoutFullLineComments(raw);
+
+  // Keep comment checks on the raw code, because comments are the answer in those questions.
+  // Accept #print(...), # print(...), and small spacing differences after #.
+  if(String(value).trim().startsWith('#')) return hasMatchingComment(raw, value);
+
+  // Syntax checks should ignore starter comments such as "# Use print() for a blank line".
+  if(value==='print(') return /\bprint\s*\(/.test(executable);
+  if(value==='Print(') return /\bPrint\s*\(/.test(executable);
+  if(value==='print()') return /\bprint\s*\(\s*\)/.test(executable);
+  return executable.includes(value);
+}
+function countFlexible(code,value){
+  const executable = codeWithoutFullLineComments(code);
+  if(value==='print(') return (executable.match(/\bprint\s*\(/g)||[]).length;
+  const safe=value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return (executable.match(new RegExp(safe,'g'))||[]).length;
+}
+function norm(s){return String(s).replace(/\r/g,'').trimEnd()}
+async function check(){const l=lessons[current], code=document.getElementById('editor').value; state().code=code; const fb=document.getElementById('fb'); for(const ch of l.checks){if(ch.type==='printCall'&&!/\bprint\s*\(/.test(code)) return fail(ch.msg); if(ch.type==='contains'&&!containsFlexible(code,ch.value)) return fail(ch.msg); if(ch.type==='noContains'&&containsFlexible(code,ch.value)) return fail(ch.msg); if(ch.type==='count'&&countFlexible(code,ch.value)!==ch.count) return fail(ch.msg); if(ch.type==='minComments'&&(code.split('\n').filter(x=>x.trim().startsWith('#')).length<ch.count)) return fail(ch.msg)}
+ const res=await execute(code); if(!res.ok) return fail('Your code has a Python error. Read the console output and fix the syntax.'); const exp=l.expected; if(norm(res.out)!==norm(exp)) return fail(`Your code runs, but the output is not exact.\n\nExpected:\n${exp}\n\nGot:\n${res.out||'[no output]'}`); completed[current]=true; delete wrong[current]; fb.className='feedback good'; fb.textContent='Correct. Well done. You are ready for the next question.'; renderMenu(); progress();}
+function fail(msg){wrong[current]=true; delete completed[current]; const fb=document.getElementById('fb'); fb.className='feedback bad'; fb.textContent=msg; renderMenu(); progress();}
+function complete(){const done=Object.keys(completed).length; document.getElementById('main').innerHTML=`<section class="card complete"><div class="trophy">🏆</div><h2>Course Complete</h2><p>You completed the Python print and comments course.</p><div class="scoreBig">${done} / ${lessons.length}</div><p>${done>=18?'Excellent work. You are ready to use print() confidently.':'Review the red questions and try again to improve your score.'}</p><button class="btn primary" onclick="current=0;render()">Review Course</button></section>`}
+render();
+</script>
+</body>
+</html>
