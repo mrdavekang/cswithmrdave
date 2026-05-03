@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KS3 HTML Course | Website Building Blocks · Activities · Mandarin Support</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f5ef;
+    --bg2: #f2eee6;
+    --ink: #1f2933;
+    --muted: #657085;
+    --card: rgba(255, 255, 255, 0.88);
+    --card-strong: #ffffff;
+    --line: #e7dfd2;
+    --blue: #2563eb;
+    --blue-soft: #e8f0ff;
+    --green: #148457;
+    --green-soft: #e8f7ee;
+    --amber: #c76a14;
+    --amber-soft: #fff3df;
+    --purple: #7c3aed;
+    --purple-soft: #f1eaff;
+    --rose: #b83259;
+    --rose-soft: #ffeaf1;
+    --code: #f7f3ec;
+    --dark-code: #172033;
+    --shadow: 0 18px 50px rgba(31, 41, 51, 0.08);
+  }
+
+  body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 15% 5%, #ffffff 0%, transparent 28%),
+      radial-gradient(circle at 85% 10%, #e8f0ff 0%, transparent 25%),
+      radial-gradient(circle at 15% 85%, #fff3df 0%, transparent 28%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .app-shell { min-height: 100vh; }
+
+  .hero {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 46px 40px 26px;
+  }
+
+  .course-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 750;
+    box-shadow: 0 10px 28px rgba(31, 41, 51, 0.06);
+    margin-bottom: 18px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -3px;
+    max-width: 760px;
+    margin-bottom: 18px;
+  }
+
+  .hero p {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 760px;
+  }
+
+  .hero-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .hero-panel h2 { font-size: 18px; margin-bottom: 10px; }
+  .hero-panel ul { list-style: none; display: grid; gap: 11px; margin-top: 16px; }
+  .hero-panel li {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: #ffffffa8;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .browser-mini {
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: #fff;
+  }
+
+  .browser-top {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fffaf2;
+  }
+
+  .window-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+  .red { background: #ff6b6b; }
+  .yellow { background: #f7c948; }
+  .green { background: #33c27f; }
+
+  .browser-body { padding: 18px; display: grid; gap: 10px; }
+  .fake-h1 { height: 20px; width: 70%; background: var(--green); border-radius: 999px; }
+  .fake-line { height: 12px; background: #ded6c8; border-radius: 999px; }
+  .fake-line.short { width: 60%; }
+  .fake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+  .fake-box { height: 48px; border-radius: 16px; background: var(--blue-soft); border: 1px solid var(--line); }
+  .fake-box:nth-child(2) { background: var(--amber-soft); }
+  .fake-box:nth-child(3) { background: var(--purple-soft); }
+
+  .top-progress {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(16px);
+    background: rgba(248, 245, 239, 0.82);
+    border-top: 1px solid rgba(231, 223, 210, 0.7);
+    border-bottom: 1px solid rgba(231, 223, 210, 0.9);
+  }
+
+  .top-progress-inner {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+
+  .progress-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .progress-badge {
+    background: var(--card-strong);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    width: min(520px, 34vw);
+    height: 9px;
+    background: #ebe4d8;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+    transition: width .25s ease;
+  }
+
+  .quick-nav { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 1px; }
+  .quick-nav button {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .quick-nav button:hover, .quick-nav button.active {
+    color: var(--ink);
+    border-color: #d5cab9;
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+  }
+
+  .main {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 30px 40px 70px;
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 78px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(31, 41, 51, 0.05);
+  }
+
+  .sidebar-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    font-weight: 850;
+    padding: 4px 8px 12px;
+  }
+
+  .side-group { margin-bottom: 16px; }
+  .side-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 850;
+    margin: 10px 8px 8px;
+  }
+  .side-label.lesson { color: var(--green); }
+  .side-label.editor { color: var(--blue); }
+  .side-label.quiz { color: var(--purple); }
+
+  .side-item {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 10px 10px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .side-item:hover { background: rgba(255,255,255,0.76); border-color: var(--line); }
+  .side-item.active {
+    background: var(--card-strong);
+    border-color: #d5cab9;
+    color: var(--ink);
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+    font-weight: 760;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 999px; margin-top: 4px; background: #ded6c8; }
+  .dot.done { background: var(--green); }
+
+  .course-area { display: grid; gap: 24px; min-width: 0; }
+  .lesson-card { width: 100%; }
+  .lesson-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-head {
+    padding: 30px 32px 22px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(circle at top right, rgba(232, 240, 255, 0.85), transparent 36%),
+      rgba(255,255,255,0.52);
+  }
+
+  .step-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .step-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 900;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: .3px;
+    border: 1px solid transparent;
+  }
+  .tag.lesson { background: var(--green-soft); color: var(--green); border-color: #c7ead3; }
+  .tag.editor { background: var(--blue-soft); color: var(--blue); border-color: #cadbff; }
+  .tag.quiz { background: var(--purple-soft); color: var(--purple); border-color: #dacbff; }
+
+  .card-head h2 {
+    font-size: clamp(30px, 4vw, 52px);
+    line-height: 1.02;
+    letter-spacing: -1.8px;
+    max-width: 820px;
+    margin-bottom: 12px;
+  }
+
+  .card-head p { color: var(--muted); font-size: 18px; line-height: 1.65; max-width: 850px; }
+  .card-body { padding: 28px 32px 32px; }
+
+  .task-box {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 22px;
+  }
+
+  .task-box h3 { font-size: 19px; margin-bottom: 14px; }
+  .task-box p, .task-box li { font-size: 16px; line-height: 1.75; color: var(--muted); }
+  .task-box ul, .task-box ol { padding-left: 22px; }
+
+  .sample-grid, .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .sample-card {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 18px;
+  }
+  .sample-card h4 { font-size: 18px; margin-bottom: 8px; }
+  .sample-card p { color: var(--muted); font-size: 15px; line-height: 1.65; margin-bottom: 12px; }
+
+  code, pre, textarea.code-input { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+  code {
+    background: var(--code);
+    border: 1px solid #eee2d2;
+    color: #9a4c0f;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  .code-box {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--code);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .code-tab {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.8);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 750;
+  }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2b3645;
+  }
+  pre code { border: 0; background: transparent; color: inherit; padding: 0; }
+
+  .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; align-items: center; }
+  .btn {
+    border: 1px solid var(--line);
+    background: var(--card-strong);
+    color: var(--ink);
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(31, 41, 51, 0.04);
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(31, 41, 51, 0.08); }
+  .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn-next { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-blue { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    border-radius: 20px;
+    padding: 14px 16px;
+    line-height: 1.55;
+    font-size: 14px;
+    border: 1px solid transparent;
+  }
+  .feedback.success { display: block; color: var(--green); border-color: #b8e2c7; background: var(--green-soft); }
+  .feedback.hint { display: block; color: var(--blue); border-color: #c8d9ff; background: var(--blue-soft); }
+  .feedback.error { display: block; color: var(--rose); border-color: #f5bdcd; background: var(--rose-soft); }
+
+  .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  .editor-panel {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: rgba(255,255,255,0.72);
+    overflow: hidden;
+  }
+  .editor-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--muted);
+    background: rgba(255,255,255,0.76);
+  }
+  textarea.code-input {
+    width: 100%;
+    min-height: 410px;
+    resize: vertical;
+    border: 0;
+    outline: none;
+    background: var(--dark-code);
+    color: #f7fbff;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  iframe {
+    width: 100%;
+    min-height: 410px;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .answer-input {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card-strong);
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    outline: none;
+    margin-top: 12px;
+  }
+  textarea.answer-input { min-height: 88px; resize: vertical; font-family: "SFMono-Regular", Consolas, monospace; font-size: 14px; }
+  .answer-input:focus { border-color: #b9c9ef; box-shadow: 0 0 0 4px rgba(37,99,235,.08); }
+
+  .quiz-card { border-left: 7px solid var(--purple); }
+  .quiz-card .card-head { background: radial-gradient(circle at top right, rgba(241, 234, 255, 0.9), transparent 42%), rgba(255,255,255,0.52); }
+  .quiz-mini {
+    display: inline-flex;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 850;
+    color: var(--purple);
+    background: var(--purple-soft);
+    border: 1px solid #dacbff;
+    margin-top: 10px;
+  }
+
+  .score-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .score-panel strong { font-size: 34px; letter-spacing: -1px; }
+  .score-panel span { color: var(--muted); }
+
+  .completion {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    min-height: 520px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  .completion .trophy { font-size: 76px; margin-bottom: 18px; }
+  .completion h2 { font-size: clamp(34px, 5vw, 62px); letter-spacing: -2px; margin-bottom: 12px; }
+  .completion p { color: var(--muted); font-size: 18px; line-height: 1.7; }
+
+  .tiny { color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .zh { color: var(--muted); font-weight: 650; }
+  .zh-note { color: var(--muted); font-size: 14px; line-height: 1.65; margin-top: 10px; }
+  .zh-inline { color: var(--muted); font-weight: 650; }
+  .footer-note { color: var(--muted); text-align: center; padding: 10px 0 30px; font-size: 13px; }
+
+
+  /* Compact navigation + embedded question editor */
+  .main { grid-template-columns: 230px minmax(0, 1fr); }
+  .sidebar {
+    max-height: none;
+    overflow: visible;
+    padding: 14px;
+  }
+  .side-summary {
+    background: var(--card-strong);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .side-summary strong { font-size: 24px; letter-spacing: -0.6px; }
+  .side-summary span { display: block; color: var(--muted); font-size: 12px; line-height: 1.45; margin-top: 2px; }
+  .side-jump {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.78);
+    color: var(--muted);
+    border-radius: 16px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 10px;
+    align-items: start;
+    text-align: left;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 760;
+  }
+  .side-jump:hover, .side-jump.active {
+    background: var(--card-strong);
+    color: var(--ink);
+    border-color: #d5cab9;
+    box-shadow: 0 8px 20px rgba(31, 41, 51, 0.06);
+  }
+  .side-jump small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; font-weight: 650; }
+  .jump-dot { width: 10px; height: 10px; border-radius: 999px; margin-top: 4px; background: #ded6c8; }
+  .jump-dot.done { background: var(--green); }
+  .jump-dot.activity { background: var(--purple); }
+
+  .answer-preview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+    gap: 16px;
+    align-items: stretch;
+    margin-top: 12px;
+  }
+  textarea.answer-input.code-answer {
+    min-height: 230px;
+    margin-top: 0;
+    resize: vertical;
+    border: 0;
+    border-radius: 0;
+    background: var(--dark-code);
+    color: #f7fbff;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  textarea.answer-input.code-answer.big-task { min-height: 390px; }
+  .answer-preview-grid iframe { min-height: 230px; }
+  .answer-preview-grid iframe.big-task { min-height: 390px; }
+  .text-answer-wrap { margin-top: 12px; }
+  .question-note {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 980px) {
+    .hero-grid, .main, .editor-grid, .answer-preview-grid { grid-template-columns: 1fr; }
+    .sidebar { position: static; max-height: none; }
+    .top-progress-inner { align-items: flex-start; flex-direction: column; }
+    .progress-track { width: 220px; }
+    .sample-grid, .info-grid { grid-template-columns: 1fr; }
+    h1 { letter-spacing: -2px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero, .main { padding-left: 16px; padding-right: 16px; }
+    .card-head, .card-body { padding-left: 20px; padding-right: 20px; }
+    .top-progress-inner { padding-left: 16px; padding-right: 16px; }
+    .hero-panel { border-radius: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="hero" id="top">
+    <div class="course-pill">🌐 KS3 HTML · Website Building Blocks · 网页构建基础</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Build your first website, one tag at a time. <span class="zh">一步一步，用标签建立你的第一个网站。</span></h1>
+        <p>A friendly HTML course for Year 8. <span class="zh">适合八年级的 HTML 课程。</span> Learn what each tag is for, answer meaningful mini-tasks, then complete 2 big activities with a live preview built into each code task. <span class="zh">理解每个标签的用途，完成小练习，再完成两个大活动。</span></p>
+      </div>
+      <aside class="hero-panel">
+        <h2>Today’s mission <span class="zh">今日任务</span></h2>
+        <p>Understand how HTML structures a page and how inline CSS changes the appearance. <span class="zh">理解 HTML 如何组织网页内容，以及 inline CSS 如何改变外观。</span></p>
+        <ul>
+          <li><strong>Read 阅读:</strong> small lesson cards with short examples. <span class="zh">阅读简短例子。</span></li>
+          <li><strong>Try 尝试:</strong> use the built-in preview inside each code question. <span class="zh">在每题中使用预览。</span></li>
+          <li><strong>Check 检查:</strong> complete meaningful mini-tasks before each big activity. <span class="zh">在大活动前完成小练习。</span></li>
+          <li><strong>Build 制作:</strong> complete Activity 1 for HTML structure and Activity 2 for inline styling. <span class="zh">活动 1 建结构，活动 2 加样式。</span></li>
+        </ul>
+        <div class="browser-mini">
+          <div class="browser-top"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span></div>
+          <div class="browser-body"><div class="fake-h1"></div><div class="fake-line"></div><div class="fake-line short"></div><div class="fake-grid"><div class="fake-box"></div><div class="fake-box"></div><div class="fake-box"></div></div></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section class="top-progress">
+    <div class="top-progress-inner">
+      <div class="progress-left">
+        <div class="progress-badge" id="scoreBadge">Score: 0</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-badge" id="progressText">0 / 20</div>
+      </div>
+      <div class="quick-nav" id="quickNav"></div>
+    </div>
+  </section>
+
+  <main class="main">
+    <aside class="sidebar" id="sidebar"></aside>
+    <section class="course-area" id="content"></section>
+  </main>
+  <p class="footer-note">KS3 HTML Course · Meaningful HTML tasks · Inline CSS · Built-in preview · 20 structured checks · Q10 and Q20 are big activities · 中文辅助说明已加入</p>
+</div>
+
+<script>
+const starterCode = `<!DOCTYPE html>
+<html>
+<head>
+  <title>My First Web Page</title>
+</head>
+<body style="font-family:Arial; background-color:#f8f5ef;">
+
+  <h1 style="color:green;">My First Website</h1>
+  <p>Hello! This is my first paragraph.</p>
+  <p>I am learning <b>HTML</b> and <em>CSS</em>.</p>
+
+  <h2 style="color:blue;">Things I like</h2>
+  <ul>
+    <li>Coding</li>
+    <li>Games</li>
+    <li>Design</li>
+  </ul>
+
+</body>
+</html>`;
+
+const challengeCode = `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Profile Page</title>
+</head>
+<body style="font-family:Arial; background-color:#fff3df;">
+
+  <!-- Challenge 挑战:
+  1. Add one h1 heading. 加一个 h1 主标题。
+  2. Add two paragraphs. 加两个段落。
+  3. Make one word bold. 用 b 标签突出一个词。
+  4. Make one word emphasised using em. 用 em 标签强调一个词。
+  5. Add a colour to one heading using style="color:...;" 给一个标题加颜色。
+  -->
+
+</body>
+</html>`;
+
+const lessons = [
+  {
+    group: 'Lesson Cards · 学习卡', cls: 'lesson', title: 'What is HTML? HTML 是什么？', tag: 'Lesson 1 · 第1课',
+    desc: 'HTML stands for HyperText Markup Language（超文本标记语言）. It uses tags（标签）to organise the parts of a web page（组织网页内容）.',
+    body: `<p>Think of HTML tags like building blocks. <span class="zh">把 HTML 标签想成积木。</span> They help the browser understand headings, paragraphs, lists, and important text. <span class="zh">它们帮助浏览器理解标题、段落、列表和重点文字。</span></p>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>HTML example · HTML 例子</span></div><pre><code>&lt;h1&gt;My First Website&lt;/h1&gt;
+&lt;p&gt;This is my first paragraph.&lt;/p&gt;</code></pre></div>
+      <div class="sample-grid"><div class="sample-card"><h4>Key idea 重点</h4><p>HTML gives the web page structure. <span class="zh">HTML 给网页结构。</span></p></div><div class="sample-card"><h4>Remember 记住</h4><p>Tags normally use angle brackets, like <code>&lt;p&gt;</code>. <span class="zh">标签通常使用尖括号。</span></p></div></div>`
+  },
+  {
+    group: 'Lesson Cards · 学习卡', cls: 'lesson', title: 'Opening and closing tags 开始与结束标签', tag: 'Lesson 2 · 第2课',
+    desc: 'Most HTML elements have an opening tag（开始标签）and a closing tag（结束标签）. The closing tag usually includes a slash（斜线 /）.',
+    body: `<div class="info-grid"><div class="sample-card"><h4>Opening tag 开始标签</h4><p><code>&lt;p&gt;</code> starts a paragraph. <span class="zh">开始一个段落。</span></p></div><div class="sample-card"><h4>Closing tag 结束标签</h4><p><code>&lt;/p&gt;</code> ends a paragraph. <span class="zh">结束一个段落。</span></p></div></div>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>complete tag pair · 完整标签配对</span></div><pre><code>&lt;p&gt;This text is inside a paragraph tag.&lt;/p&gt;</code></pre></div>`
+  },
+  {
+    group: 'Lesson Cards · 学习卡', cls: 'lesson', title: 'Useful HTML tags 常用 HTML 标签', tag: 'Lesson 3 · 第3课',
+    desc: 'Use simple tags to create headings（标题）, paragraphs（段落）, bold text（粗体）, emphasis（强调）, quotes（引用）, and bullet points（项目符号）.',
+    body: `<div class="sample-grid">
+        <div class="sample-card"><h4>Text structure 文字结构</h4><p><code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;p&gt;</code></p></div>
+        <div class="sample-card"><h4>Text formatting 文字格式</h4><p><code>&lt;b&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;q&gt;</code></p></div>
+        <div class="sample-card"><h4>Bullet list 项目列表</h4><p><code>&lt;ul&gt;</code> starts the list. <span class="zh">开始列表。</span> <code>&lt;li&gt;</code> creates each item. <span class="zh">创建每个项目。</span></p></div>
+        <div class="sample-card"><h4>Good habit 好习惯</h4><p>Only format important words, not everything. <span class="zh">只突出重要词，不要全部都加格式。</span></p></div>
+      </div>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>formatting example · 格式例子</span></div><pre><code>&lt;h1&gt;My Hobby&lt;/h1&gt;
+&lt;p&gt;I enjoy &lt;b&gt;coding&lt;/b&gt; websites.&lt;/p&gt;
+&lt;p&gt;HTML can be &lt;em&gt;creative&lt;/em&gt;.&lt;/p&gt;</code></pre></div>`
+  },
+  {
+    group: 'Lesson Cards · 学习卡', cls: 'lesson', title: 'Inline CSS with style 行内 CSS 样式', tag: 'Lesson 4 · 第4课',
+    desc: 'The style attribute（style 属性）changes the appearance（外观）of one HTML element. Use color, not colour（CSS 使用美式拼写 color）.',
+    body: `<p>Inline CSS is useful for beginner practice. <span class="zh">行内 CSS 适合初学者练习。</span> It changes one element at a time. <span class="zh">它一次改变一个元素。</span></p>
+      <div class="code-box"><div class="code-tab"><span class="window-dot red"></span><span class="window-dot yellow"></span><span class="window-dot green"></span><span>inline CSS example · 行内 CSS 例子</span></div><pre><code>&lt;h2 style="color:red;"&gt;Important title&lt;/h2&gt;
+&lt;p style="font-family:Arial;"&gt;This paragraph uses Arial.&lt;/p&gt;</code></pre></div>
+      <div class="sample-card" style="margin-top:14px;"><h4>Common exam trap 常见陷阱</h4><p>CSS uses American spelling: <code>color</code>. <span class="zh">CSS 使用美式拼写。</span> The browser may not understand <code>colour</code>. <span class="zh">浏览器可能不理解 colour。</span></p></div>`
+  }
+];
+
+const questions = [
+  {
+    q:'Q1. What does HTML stand for? HTML 的全称是什么？',
+    hint:'Write the full name. 写出完整名称。',
+    type:'text',
+    check:a=>norm(a).includes('hypertext markup language'),
+    correct:'HyperText Markup Language（超文本标记语言）'
+  },
+  {
+    q:'Q2. What job does HTML do on a web page? HTML 在网页中的作用是什么？',
+    hint:'Use the idea of structure or organising content. 用“结构”或“组织内容”的意思回答。',
+    type:'text',
+    check:a=>{const n=norm(a); return n.includes('structure') || n.includes('organise') || n.includes('organize') || n.includes('content') || n.includes('parts');},
+    correct:'HTML structures and organises the content on a web page. HTML 用来组织网页内容和结构。'
+  },
+  {
+    q:'Q3. Your page needs one main title: My Favourite Place. Which HTML tag is best for the main title? 如果网页需要一个主标题，最适合用哪个标签？',
+    hint:'Think about the most important heading on the page. 想一想网页中最重要的标题。',
+    type:'text',
+    check:a=>{const c=compact(a); const n=norm(a); return c.includes('h1') || n.includes('heading 1') || n.includes('main heading');},
+    correct:'Use h1 for the main title. 主标题使用 h1。'
+  },
+  {
+    q:'Q4. Under the title, you want to write a short description for the reader. Which HTML tag is best for normal paragraph text? 如果要写一小段说明，最适合用哪个标签？',
+    hint:'Think about paragraph text, not a heading. 这是段落文字，不是标题。',
+    type:'text',
+    check:a=>{const c=compact(a); const n=norm(a); return c.includes('p') || n.includes('paragraph');},
+    correct:'Use p for normal paragraph text. 普通段落文字使用 p。'
+  },
+  {
+    q:'Q5. Look at this code: <p>I enjoy <b>coding</b> websites.</p> What word will appear in bold? 哪个词会变成粗体？',
+    hint:'Only the word inside the b tags changes. 只有 b 标签里面的词会改变。',
+    type:'text',
+    check:a=>norm(a)==='coding',
+    correct:'coding'
+  },
+  {
+    q:'Q6. Improve this sentence for a web page by making one important word bold: I am proud of my first website. 选择一个重要词并加粗，让句子更适合网页。',
+    hint:'Keep the sentence meaningful. Use b tags around one important word only. 保持句子有意义，只把一个重要词放进 b 标签。',
+    type:'code',
+    check:a=>{const c=compact(a); return c.includes('<p>')&&c.includes('</p>')&&c.includes('<b>')&&c.includes('</b>')&&c.includes('iam')&&c.includes('website');},
+    correct:'&lt;p&gt;I am &lt;b&gt;proud&lt;/b&gt; of my first website.&lt;/p&gt;'
+  },
+  {
+    q:'Q7. A hobby page needs a bulleted list with two hobbies or interests. Create the list using meaningful list items. 制作一个包含两个兴趣的项目列表。',
+    hint:'Use one ul list and at least two li items. Choose your own hobbies. 使用一个 ul，并至少加入两个 li 项目。',
+    type:'code',
+    check:a=>{const c=compact(a); const li=(c.match(/<li>/g)||[]).length; return c.includes('<ul>')&&c.includes('</ul>')&&li>=2&&c.includes('</li>');},
+    correct:'&lt;ul&gt;&lt;li&gt;Football&lt;/li&gt;&lt;li&gt;Gaming&lt;/li&gt;&lt;/ul&gt;'
+  },
+  {
+    q:'Q8. Debug this heading so the opening and closing tags match: <h1>My School</h2> 修改错误，让开始和结束标签一致。',
+    hint:'The closing tag should match the opening tag. 结束标签应该和开始标签配对。',
+    type:'code',
+    check:a=>compact(a)==='<h1>myschool</h1>',
+    correct:'&lt;h1&gt;My School&lt;/h1&gt;'
+  },
+  {
+    q:'Q9. Create a small page section in a sensible order: main heading first, then one paragraph, then a two-item list. 按合理顺序建立网页小部分：主标题、段落、两个项目的列表。',
+    hint:'The reader should see the title before the details. 读者应该先看到标题，再看到细节。',
+    type:'code',
+    check:a=>{const c=compact(a); const h=c.indexOf('<h1'); const p=c.indexOf('<p'); const u=c.indexOf('<ul>'); const li=(c.match(/<li>/g)||[]).length; return h>=0&&p>h&&u>p&&c.includes('</h1>')&&c.includes('</p>')&&c.includes('</ul>')&&li>=2;},
+    correct:'&lt;h1&gt;About Me&lt;/h1&gt;&lt;p&gt;I enjoy learning new things.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Coding&lt;/li&gt;&lt;li&gt;Design&lt;/li&gt;&lt;/ul&gt;'
+  },
+  {
+    title:'Activity 1 – Question 10 活动1 · 第10题',
+    menuTitle:'Activity 1 · Q10 活动1',
+    activity:1,
+    q:'Build the structure of a simple personal profile web page. 建立一个简单个人介绍网页的结构。Your page must include a body section, one meaningful h1 title, at least two meaningful paragraphs, one bold word, one emphasised word, and a bulleted list with at least two meaningful items. 网页必须有 body、一个有意义的 h1、至少两个有意义的段落、一个粗体词、一个强调词，以及至少两个项目的列表。Focus on structure only. Do not add colour yet. 只关注结构，暂时不要加颜色。',
+    hint:'Think like a reader: title first, introduction next, details after that. 像读者一样思考：先标题，再介绍，最后细节。Use matching opening and closing tags. 使用配对的开始和结束标签。',
+    type:'code',
+    check:a=>{const c=compact(a); const pCount=(c.match(/<p/g)||[]).length; const liCount=(c.match(/<li>/g)||[]).length; return c.includes('<body')&&c.includes('</body>')&&c.includes('<h1')&&c.includes('</h1>')&&pCount>=2&&(c.includes('<b>')||c.includes('<strong>'))&&(c.includes('<em>')||c.includes('<i>'))&&c.includes('<ul>')&&c.includes('</ul>')&&liCount>=2;},
+    correct:'&lt;body&gt;&lt;h1&gt;About Me&lt;/h1&gt;&lt;p&gt;Welcome to my profile page.&lt;/p&gt;&lt;p&gt;I am learning &lt;b&gt;HTML&lt;/b&gt; and I feel &lt;em&gt;confident&lt;/em&gt;.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Coding&lt;/li&gt;&lt;li&gt;Football&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;'
+  },
+  {
+    q:'Q11. What does the style attribute allow you to change? style 属性可以改变什么？',
+    hint:'Think about the look or appearance of one HTML element. 想一想一个 HTML 元素的外观。',
+    type:'text',
+    check:a=>{const n=norm(a); return n.includes('appearance') || n.includes('look') || n.includes('colour') || n.includes('color') || n.includes('font') || n.includes('style');},
+    correct:'The style attribute changes the appearance of one HTML element. style 属性改变一个 HTML 元素的外观。'
+  },
+  {
+    q:'Q12. CSS uses American spelling. Which spelling works in CSS: color or colour? CSS 使用美式拼写，应该写 color 还是 colour？',
+    hint:'The browser expects the American spelling. 浏览器需要美式拼写。',
+    type:'text',
+    check:a=>norm(a)==='color',
+    correct:'color'
+  },
+  {
+    q:'Q13. Only the main title should be blue. Add inline CSS to this heading: <h1>My Hobby Page</h1> 只让主标题变成蓝色，请加入行内 CSS。',
+    hint:'Add style="color:blue;" to the opening h1 tag. 把 style="color:blue;" 加进 h1 的开始标签。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"');return c.includes('<h1style="')&&c.includes('color:blue')&&c.includes('>myhobbypage</h1>')&&!c.includes('colour');},
+    correct:'&lt;h1 style="color:blue;"&gt;My Hobby Page&lt;/h1&gt;'
+  },
+  {
+    q:'Q14. Make the whole page use Arial by writing a body opening tag with inline CSS. 用行内 CSS 让整个网页使用 Arial 字体。',
+    hint:'Use font-family inside the body style attribute. 在 body 的 style 属性里使用 font-family。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"');return c.startsWith('<bodystyle="')&&c.includes('font-family:arial')&&c.endsWith('>');},
+    correct:'&lt;body style="font-family:Arial;"&gt;'
+  },
+  {
+    q:'Q15. The page background is plain. Write a body opening tag that adds a light background colour. 网页背景太普通，请写一个 body 开始标签来加入浅色背景。',
+    hint:'Use background-color, not background-colour. 使用 background-color，不要写 background-colour。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"');return c.startsWith('<bodystyle="')&&c.includes('background-color:')&&c.endsWith('>')&&!c.includes('colour');},
+    correct:'&lt;body style="background-color:lightyellow;"&gt;'
+  },
+  {
+    q:'Q16. Write one meaningful paragraph about a favourite website and make the paragraph text green using inline CSS. 写一个关于你喜欢的网站的有意义段落，并用行内 CSS 把段落文字变成绿色。',
+    hint:'The style should be on the p tag. Use color:green;. style 应该放在 p 标签里，使用 color:green;。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"');return c.startsWith('<pstyle="')&&c.includes('color:green')&&c.includes('</p>')&&!c.includes('colour')&&c.length>35;},
+    correct:'&lt;p style="color:green;"&gt;I like using websites that help me learn.&lt;/p&gt;'
+  },
+  {
+    q:'Q17. What will this code change on the page? <h2 style="color:red;">Warning</h2> 这段代码会让网页发生什么改变？',
+    hint:'Explain what the reader will see. 解释读者会看到什么。',
+    type:'text',
+    check:a=>{const n=norm(a); return n.includes('warning')&&((n.includes('red')||n.includes('colour')||n.includes('color')))&&(n.includes('heading')||n.includes('h2')||n.includes('text'));},
+    correct:'It displays Warning as a red h2 heading. 它会显示一个红色的 h2 标题：Warning。'
+  },
+  {
+    q:'Q18. Fix the styling error: <p style="colour:green;">Useful link</p> 修正 style 中的拼写错误。',
+    hint:'Only the CSS spelling is wrong. 只有 CSS 拼写错了。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"');return c==='<pstyle="color:green;">usefullink</p>'||c==='<pstyle="color:green">usefullink</p>';},
+    correct:'&lt;p style="color:green;"&gt;Useful link&lt;/p&gt;'
+  },
+  {
+    q:'Q19. Why can inline styling take a long time on a large website? 为什么大型网站使用行内样式会很费时间？',
+    hint:'Think about changing many headings or paragraphs one by one. 想一想如果要一个一个修改很多标题或段落。',
+    type:'text',
+    check:a=>{const n=norm(a); return (n.includes('each')||n.includes('every')||n.includes('one by one')||n.includes('repeated')||n.includes('many'))&&(n.includes('change')||n.includes('edit')||n.includes('style')||n.includes('tag')||n.includes('time'));},
+    correct:'Inline styling can take a long time because each repeated tag must be changed one by one. 行内样式可能很耗时，因为重复的标签需要一个一个修改。'
+  },
+  {
+    title:'Activity 2 – Question 20 活动2 · 第20题',
+    menuTitle:'Activity 2 · Q20 活动2',
+    activity:2,
+    q:'Upgrade your Activity 1 profile page using inline CSS. 使用行内 CSS 升级活动 1 的个人介绍网页。Your page must include a body style with font-family or background-color, one styled h1 heading using color, at least two meaningful paragraphs, one bold or emphasised word, and a bulleted list. 网页必须包含 body 的字体或背景样式、一个使用 color 的 h1 标题、至少两个有意义的段落、一个粗体或强调词，以及一个项目列表。Use color, not colour. 使用 color，不要写 colour。',
+    hint:'Start with your Activity 1 code, then add style attributes to the body, h1, or paragraph tags. 从活动 1 的代码开始，然后给 body、h1 或 p 标签加入 style 属性。',
+    type:'code',
+    check:a=>{const c=compact(a).replace(/'/g,'"'); const pCount=(c.match(/<p/g)||[]).length; const liCount=(c.match(/<li>/g)||[]).length; const styleCount=(c.match(/style="/g)||[]).length; return c.includes('<body')&&c.includes('</body>')&&c.includes('<h1')&&c.includes('</h1>')&&pCount>=2&&liCount>=2&&c.includes('<ul>')&&c.includes('</ul>')&&(c.includes('<b>')||c.includes('<strong>')||c.includes('<em>')||c.includes('<i>'))&&styleCount>=2&&c.includes('color:')&&!c.includes('colour')&&(c.includes('font-family:')||c.includes('background-color:'));},
+    correct:'&lt;body style="font-family:Arial; background-color:#f8f5ef;"&gt;&lt;h1 style="color:green;"&gt;About Me&lt;/h1&gt;&lt;p style="color:#1f2933;"&gt;Welcome to my profile page.&lt;/p&gt;&lt;p&gt;I am learning &lt;b&gt;HTML&lt;/b&gt; and I feel &lt;em&gt;confident&lt;/em&gt;.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Coding&lt;/li&gt;&lt;li&gt;Football&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;'
+  }
+];
+
+let current = 0;
+let answered = new Array(questions.length).fill(false);
+let answers = new Array(questions.length).fill('');
+const SAVE_KEY = 'ks3HtmlCourseCardStyle_v5_meaningful_tasks';
+try {
+  const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+  if (Array.isArray(saved.answered)) answered = saved.answered.slice(0, questions.length).concat(new Array(Math.max(0, questions.length - saved.answered.length)).fill(false));
+  if (Array.isArray(saved.answers)) answers = saved.answers.slice(0, questions.length).concat(new Array(Math.max(0, questions.length - saved.answers.length)).fill(''));
+} catch(e) {}
+
+function norm(value){ return String(value || '').toLowerCase().replace(/\s+/g,' ').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").trim(); }
+function compact(value){ return norm(value).replace(/\s/g,''); }
+function escapeHtml(text){ return String(text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify({answered, answers})); }
+
+function saveCurrentState(){
+  const activeAnswer = document.querySelector('[id^="answer"]');
+  if(activeAnswer){
+    const index = Number(activeAnswer.id.replace('answer',''));
+    if(!Number.isNaN(index)) answers[index] = activeAnswer.value;
+  }
+  save();
+}
+function updateAnswer(index){
+  const input = document.getElementById(`answer${index}`);
+  if(input){ answers[index] = input.value; save(); }
+}
+function itemIndexForQuestion(qIndex){ return lessons.length + qIndex; }
+function allItems(){
+  return [...lessons, ...questions.map((q,i)=>({
+    group:'Practice and Activities · 练习与活动',
+    cls:q.activity?'editor':'quiz',
+    title:q.menuTitle || `Question ${i+1}`,
+    tag:q.activity?'Big Task 大任务':(q.type==='code'?'Syntax 语法':'Knowledge 知识'),
+    desc:q.q,
+    questionIndex:i
+  }))];
+}
+
+function rangeComplete(start, end){
+  return answered.slice(start, end + 1).every(Boolean);
+}
+function isActiveRange(start, end){
+  const qIndex = current - lessons.length;
+  return qIndex >= start && qIndex <= end;
+}
+function renderQuickNav(){
+  const nav = [
+    {label:'Lessons 学习', index:0, active: current < lessons.length},
+    {label:'Q1–Q9 结构', index:itemIndexForQuestion(0), active:isActiveRange(0,8)},
+    {label:'Activity 1 活动1', index:itemIndexForQuestion(9), active:isActiveRange(9,9)},
+    {label:'Q11–Q19 样式', index:itemIndexForQuestion(10), active:isActiveRange(10,18)},
+    {label:'Activity 2 活动2', index:itemIndexForQuestion(19), active:isActiveRange(19,19)}
+  ];
+  document.getElementById('quickNav').innerHTML = nav.map(n=>`<button class="${n.active?'active':''}" onclick="goTo(${n.index})">${n.label}</button>`).join('');
+}
+
+function jumpButton(label, sub, index, active, done, activity=false){
+  return `<button class="side-jump ${active?'active':''}" onclick="goTo(${index})"><span class="jump-dot ${done?'done':''} ${activity?'activity':''}"></span><span>${label}<small>${sub}</small></span></button>`;
+}
+function renderSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  const score = answered.filter(Boolean).length;
+  const qIndex = current - lessons.length;
+  let html = '<div class="sidebar-title">Course Path 学习路线</div>';
+  html += `<div class="side-summary"><strong>${score}/${questions.length}</strong><span>answers checked · 已检查答案</span></div>`;
+  html += '<div class="side-group"><div class="side-label lesson">Learn 学习</div>';
+  html += jumpButton('Lesson cards 学习卡', 'HTML 标签 + 行内 CSS', 0, current < lessons.length, true);
+  html += '</div><div class="side-group"><div class="side-label quiz">Practice 练习</div>';
+  html += jumpButton('Q1–Q9', 'structure practice 结构练习', itemIndexForQuestion(0), isActiveRange(0,8), rangeComplete(0,8));
+  html += jumpButton('Activity 1 · Q10', 'build the page structure 建立网页结构', itemIndexForQuestion(9), isActiveRange(9,9), answered[9], true);
+  html += jumpButton('Q11–Q19', 'style practice 样式练习', itemIndexForQuestion(10), isActiveRange(10,18), rangeComplete(10,18));
+  html += jumpButton('Activity 2 · Q20', 'style the full page 为完整网页加样式', itemIndexForQuestion(19), isActiveRange(19,19), answered[19], true);
+  html += '</div>';
+  if(qIndex >= 0){ html += `<p class="tiny" style="padding:8px 8px 0;">Current: Question ${qIndex+1} · 当前：第${qIndex+1}题</p>`; }
+  sidebar.innerHTML = html;
+}
+
+function updateProgress(){
+  const score = answered.filter(Boolean).length;
+  document.getElementById('scoreBadge').textContent = `Score 分数: ${score}`;
+  document.getElementById('progressText').textContent = `${score} / ${questions.length}`;
+  document.getElementById('progressFill').style.width = `${(score/questions.length)*100}%`;
+}
+
+function goTo(index){
+  saveCurrentState();
+  current = index;
+  renderCard();
+}
+function next(){
+  saveCurrentState();
+  if(current < allItems().length - 1){ current++; renderCard(); } else { showCompletion(); }
+}
+function prev(){
+  saveCurrentState();
+  if(current > 0){ current--; renderCard(); }
+}
+
+function renderCard(){
+  const items = allItems();
+  const item = items[current];
+  if(item.questionIndex !== undefined) return renderQuestion(item.questionIndex);
+  document.getElementById('content').innerHTML = `<article class="lesson-card">
+    <div class="card-head"><div class="step-meta"><div class="step-number">${current+1}</div><span class="tag ${item.cls}">${item.tag}</span></div><h2>${item.title}</h2><p>${item.desc}</p></div>
+    <div class="card-body"><section class="task-box"><h3>Read and try 阅读并尝试</h3>${item.body}</section><div class="button-row"><button class="btn" onclick="prev()" ${current===0?'disabled':''}>← Back 返回</button><button class="btn btn-next" onclick="next()">Next 下一题 →</button><button class="btn" onclick="showLessonHint()">Hint 提示</button></div><div class="feedback" id="feedback"></div></div>
+  </article>`;
+  renderSidebar(); renderQuickNav(); updateProgress();
+}
+
+function showLessonHint(){
+  const hints = ['HTML structures a web page, like bricks in a wall. HTML 像砖块一样组织网页结构。','Closing tags usually need a slash. 结束标签通常需要斜线 /。','Use tags only around the text you want to change. 只把标签放在你想改变的文字周围。','Use color, not colour. 使用 color，不要写 colour。'];
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback hint';
+  fb.textContent = hints[Math.min(current, hints.length-1)];
+}
+
+function makePreviewDocument(code, index){
+  const raw = String(code || '').trim();
+  const content = raw || '<p>Your preview will appear here. 你的预览会出现在这里。</p>';
+  const c = compact(content);
+  if(c.includes('<html')) return content;
+  if(c.includes('<body')) return `<!DOCTYPE html>\n<html>\n<head>\n  <title>Question ${index+1} Preview</title>\n</head>\n${content}\n</html>`;
+  return `<!DOCTYPE html>\n<html>\n<head>\n  <title>Question ${index+1} Preview</title>\n</head>\n<body style="font-family:Arial; padding:24px;">\n${content}\n</body>\n</html>`;
+}
+function runAnswerPreview(index){
+  const input = document.getElementById(`answer${index}`);
+  const preview = document.getElementById(`preview${index}`);
+  if(!input || !preview) return;
+  answers[index] = input.value;
+  save();
+  const doc = preview.contentDocument || preview.contentWindow.document;
+  doc.open(); doc.write(makePreviewDocument(input.value, index)); doc.close();
+}
+function loadStarterIntoAnswer(index){
+  const input = document.getElementById(`answer${index}`);
+  if(!input) return;
+  if(questions[index].activity === 1){
+    input.value = `<body>\n  <h1>My Home Page</h1>\n\n  <p>Welcome to my first web page.</p>\n  <p>I am learning <b>HTML</b> and <em>web design</em>.</p>\n\n  <ul>\n    <li>Games</li>\n    <li>Music</li>\n  </ul>\n</body>`;
+  } else if(questions[index].activity === 2){
+    input.value = `<body style="font-family:Arial; background-color:#f8f5ef;">\n  <h1 style="color:green;">My Home Page</h1>\n\n  <p style="color:#1f2933;">Welcome to my first web page.</p>\n  <p>I am learning <b>HTML</b> and I feel <em>proud</em>.</p>\n\n  <ul>\n    <li>Games</li>\n    <li>Music</li>\n  </ul>\n</body>`;
+  } else {
+    input.value = questions[index].correct.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  }
+  updateAnswer(index);
+  runAnswerPreview(index);
+}
+function clearAnswer(index){
+  const input = document.getElementById(`answer${index}`);
+  if(!input) return;
+  input.value = '';
+  updateAnswer(index);
+  if(questions[index].type === 'code') runAnswerPreview(index);
+}
+
+function renderQuestion(qIndex){
+  const q = questions[qIndex];
+  const heading = q.title || `Question ${qIndex+1}`;
+  const tagText = q.activity ? 'Big Activity 大活动' : (q.type==='code'?'Syntax 语法':'Knowledge 知识');
+  const tagClass = q.activity ? 'editor' : 'quiz';
+  const textAreaRows = q.activity ? 14 : 5;
+  const answerHtml = q.type === 'code'
+    ? `<div class="answer-preview-grid"><div class="editor-panel"><div class="editor-label"><span>${q.activity ? 'HTML code answer · HTML 代码答案' : 'HTML answer · HTML 答案'}</span><span>saved automatically · 自动保存</span></div><textarea class="answer-input code-answer ${q.activity ? 'big-task' : ''}" id="answer${qIndex}" rows="${textAreaRows}" spellcheck="false" oninput="updateAnswer(${qIndex}); runAnswerPreview(${qIndex})"></textarea></div><div class="editor-panel"><div class="editor-label"><span>Live preview 即时预览</span><span>browser view 浏览器视图</span></div><iframe id="preview${qIndex}" class="${q.activity ? 'big-task' : ''}" title="Question ${qIndex+1} live preview"></iframe></div></div><p class="question-note">Your code is saved when you type, so it will stay when you move to another question. 你输入的代码会自动保存，切换题目后不会消失。</p>`
+    : `<div class="text-answer-wrap"><input class="answer-input" id="answer${qIndex}" type="text" oninput="updateAnswer(${qIndex})" /></div><p class="question-note">Your answer is saved when you type, so it will stay when you move to another question. 你输入的答案会自动保存，切换题目后不会消失。</p>`;
+  const codeButtons = q.type === 'code' ? `<button class="btn btn-blue" onclick="runAnswerPreview(${qIndex})">Run preview 运行预览</button><button class="btn" onclick="loadStarterIntoAnswer(${qIndex})">Load example 加载例子</button><button class="btn" onclick="clearAnswer(${qIndex})">Clear 清除</button>` : '';
+  document.getElementById('content').innerHTML = `<article class="lesson-card quiz-card">
+    <div class="card-head"><div class="step-meta"><div class="step-number">${qIndex+1}</div><span class="tag ${tagClass}">${tagText}</span></div><h2>${heading}</h2><p>${escapeHtml(q.q)}</p><span class="quiz-mini">Hint 提示: ${q.hint}</span></div>
+    <div class="card-body"><section class="task-box"><h3>${q.activity ? 'Big task answer 大任务答案' : 'Your answer 你的答案'}</h3>${answerHtml}
+      <div class="button-row"><button class="btn btn-primary" onclick="checkAnswer(${qIndex})">Check answer 检查答案</button><button class="btn" onclick="showAnswer(${qIndex})">Show answer 显示答案</button>${codeButtons}</div><div class="feedback" id="feedback${qIndex}"></div></section><div class="button-row"><button class="btn" onclick="prev()">← Back 返回</button><button class="btn btn-next" onclick="next()">Next 下一题 →</button></div></div>
+  </article>`;
+  const input = document.getElementById(`answer${qIndex}`);
+  if(input){ input.value = answers[qIndex] || ''; }
+  renderSidebar(); renderQuickNav(); updateProgress();
+  if(q.type === 'code') runAnswerPreview(qIndex);
+}
+
+function checkAnswer(index){
+  const input = document.getElementById(`answer${index}`);
+  const feedback = document.getElementById(`feedback${index}`);
+  if(input){ answers[index] = input.value; }
+  if(questions[index].check(input ? input.value : '')){
+    answered[index] = true; save();
+    feedback.className = 'feedback success';
+    feedback.textContent = 'Correct. Good use of HTML/CSS syntax. HTML/CSS 语法使用正确。';
+  } else {
+    feedback.className = 'feedback error';
+    feedback.textContent = 'Not quite. Check your opening tags, closing tags, spelling, quotation marks, or punctuation. 还不完全正确。请检查开始标签、结束标签、拼写、引号或标点。';
+  }
+  renderSidebar(); updateProgress();
+}
+
+function showAnswer(index){
+  const feedback = document.getElementById(`feedback${index}`);
+  feedback.className = 'feedback hint';
+  feedback.innerHTML = `Model answer 参考答案: <code>${questions[index].correct}</code>`;
+}
+
+function resetQuiz(){
+  answered = new Array(questions.length).fill(false);
+  answers = new Array(questions.length).fill('');
+  save();
+  renderCard();
+}
+function showCompletion(){
+  saveCurrentState();
+  document.getElementById('content').innerHTML = `<section class="completion"><div><div class="trophy">🏆</div><h2>Course complete. 课程完成。</h2><p>You scored ${answered.filter(Boolean).length} out of ${questions.length}.</p><p>Review any questions that are not marked green, then try improving your Activity 2 webpage. 复习没有变成绿色的题目，然后继续改进活动 2 的网页。</p><div class="button-row" style="justify-content:center;"><button class="btn btn-primary" onclick="goTo(0)">Back to start 回到开始</button><button class="btn" onclick="resetQuiz()">Reset quiz 重置练习</button></div></div></section>`;
+  renderSidebar(); renderQuickNav(); updateProgress();
+}
+
+renderCard();
+</script>
+</body>
+</html>
