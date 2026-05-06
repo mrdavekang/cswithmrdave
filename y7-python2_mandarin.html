@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Y7 Python Unit 2 Course - Variables, Input and Output | Mandarin Support</title>
+<style>
+  :root {
+    --bg: #f7f8fc;
+    --paper: #ffffff;
+    --ink: #111827;
+    --muted: #64748b;
+    --line: #dbe3ef;
+    --blue: #2563eb;
+    --blue2: #dbeafe;
+    --green: #15803d;
+    --green2: #dcfce7;
+    --red: #b91c1c;
+    --red2: #fee2e2;
+    --yellow: #facc15;
+    --code: #101827;
+    --codeText: #f8fafc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "Aptos", "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at top left, #fff 0, #f8fafc 45%, #eef4ff 100%);
+    color: var(--ink);
+  }
+  button, textarea { font: inherit; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 14px 24px; backdrop-filter: blur(12px);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 280px; }
+  .logo { width: 44px; height: 44px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 14px; background: #fff; font-size: 24px; }
+  .brand h1 { margin: 0; font-size: 20px; line-height: 1.05; font-weight: 900; letter-spacing: -0.02em; }
+  .brand p { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-weight: 700; }
+  .progress-area { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end; }
+  .pill { border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; background: var(--paper); color: var(--muted); font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .bar { width: min(280px, 25vw); height: 13px; background: #e8eef8; border-radius: 999px; overflow: hidden; border: 1px solid #d5e0ef; }
+  .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--blue), var(--green)); transition: width .25s ease; }
+  .layout { display: grid; grid-template-columns: 292px 1fr; min-height: calc(100vh - 73px); }
+  .sidebar { background: rgba(255,255,255,0.86); border-right: 1px solid var(--line); padding: 20px 12px; overflow-y: auto; }
+  .side-title { font-weight: 1000; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin: 0 10px 12px; }
+  .topic { margin: 18px 10px 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 1000; color: var(--blue); }
+  .navitem {
+    display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 8px;
+    border: 1px solid transparent; padding: 9px 9px; margin: 3px 0; border-radius: 14px; cursor: pointer;
+    color: #334155; font-size: 13px;
+  }
+  .navitem:hover { background: #f1f5f9; }
+  .navitem.active { background: #eff6ff; border-color: #bfdbfe; color: #111827; font-weight: 900; }
+  .num { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 9px; background: #f1f5f9; font-weight: 1000; font-size: 12px; }
+  .navitem.done .num { background: var(--green2); color: var(--green); }
+  .navitem.wrong .num { background: var(--red2); color: var(--red); }
+  .status { font-size: 13px; }
+  .main { padding: 30px; overflow-y: auto; }
+  .hero {
+    background: var(--paper); border: 2px solid #111827; border-radius: 28px;
+    box-shadow: 0 12px 0 #111827; padding: 28px; margin-bottom: 28px;
+    display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: start;
+  }
+  .kicker { display: inline-block; background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 1000; text-transform: uppercase; letter-spacing: .08em; }
+  .hero h2 { margin: 14px 0 10px; font-size: clamp(34px, 5vw, 70px); line-height: .95; letter-spacing: -0.04em; font-weight: 1000; }
+  .hero .skill { font-size: 20px; line-height: 1.35; font-weight: 850; color: #263244; max-width: 900px; }
+  .hero-icon { width: 130px; height: 130px; border: 2px solid #111827; border-radius: 30px; display: grid; place-items: center; font-size: 64px; background: #f8fafc; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 24px; margin-bottom: 18px; }
+  .task-title { margin: 0 0 10px; font-size: 26px; font-weight: 1000; }
+  .task-text { margin: 0; color: #263244; font-size: 19px; line-height: 1.5; }
+  code { background: #f1f5f9; border: 1px solid #dbe3ef; border-radius: 8px; padding: 2px 6px; font-family: "Cascadia Code", Consolas, monospace; font-size: .92em; color: #9a3412; }
+  .grid { display: grid; grid-template-columns: minmax(0,1.08fr) minmax(320px,.92fr); gap: 18px; }
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
+  .panel-head { height: 48px; background: #f8fafc; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; padding: 0 16px; color: var(--muted); font-weight: 900; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; } .r { background:#ef4444; } .y { background:#f59e0b; } .g { background:#22c55e; }
+  .filename { margin-left: 8px; }
+  textarea { width: 100%; border: 0; outline: none; resize: vertical; }
+  .editor { min-height: 300px; background: var(--code); color: var(--codeText); padding: 20px; font-family: "Cascadia Code", Consolas, monospace; font-size: 18px; line-height: 1.65; tab-size: 4; }
+  .runner-body { padding: 18px; }
+  .input-label { display: block; font-size: 13px; color: var(--muted); font-weight: 1000; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
+  .stdin { min-height: 78px; border: 1px solid var(--line); border-radius: 14px; padding: 14px; font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; line-height: 1.5; background: #f8fafc; color: #111827; margin-bottom: 14px; }
+  .console { min-height: 204px; background: #0b1220; color: #e2e8f0; border-radius: 16px; padding: 16px; overflow: auto; white-space: pre-wrap; font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; line-height: 1.5; border: 1px solid #1e293b; }
+  .console.muted { color: #94a3b8; }
+  .btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+  .btn { border: 2px solid var(--ink); border-radius: 14px; padding: 11px 16px; font-weight: 1000; cursor: pointer; background: #fff; box-shadow: 0 4px 0 var(--ink); transform: translateY(0); transition: .12s ease; }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 0 var(--ink); }
+  .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+  .primary { background: var(--blue); color: #fff; }
+  .good { background: var(--green); color: #fff; }
+  .soft { background: #f8fafc; color: #334155; }
+  .feedback { display: none; border-radius: 18px; padding: 16px 18px; margin-top: 18px; font-size: 17px; line-height: 1.45; font-weight: 800; white-space: pre-wrap; }
+  .feedback.show { display: block; }
+  .feedback.success { background: var(--green2); border: 2px solid var(--green); color: #14532d; }
+  .feedback.error { background: var(--red2); border: 2px solid var(--red); color: #7f1d1d; }
+  .feedback.hint { background: var(--blue2); border: 2px solid var(--blue); color: #1e3a8a; }
+  .expected { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 18px; padding: 16px; margin-top: 12px; }
+  .expected h4 { margin: 0 0 8px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .expected pre { margin: 0; white-space: pre-wrap; font-family: "Cascadia Code", Consolas, monospace; color: #166534; font-size: 15px; line-height: 1.5; }
+  .lang-note { margin-top: 10px; font-size: 14px; color: var(--muted); font-weight: 750; }
+  .zh-term { color: #475569; }
+  .completion { min-height: 70vh; display: grid; place-items: center; text-align: center; }
+  .completion-card { max-width: 820px; background: #fff; border: 2px solid #111827; box-shadow: 0 12px 0 #111827; border-radius: 32px; padding: 44px; }
+  .completion-card h2 { font-size: 58px; margin: 0 0 12px; line-height: .95; }
+  .bigscore { font-size: 72px; font-weight: 1000; color: var(--blue); margin: 20px 0; }
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .grid { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-icon { display: none; }
+    .topbar { align-items: flex-start; flex-direction: column; }
+    .progress-area { width: 100%; justify-content: flex-start; }
+    .bar { width: 100%; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="logo">🐍</div><div><h1>Y7 Python Unit 2</h1><p>Variables • Input • Output<br>变量 • 输入 • 输出</p></div></div>
+    <div class="progress-area">
+      <span class="pill" id="scorePill">Score: 0 / 20</span>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+      <span class="pill" id="progressPill">0 / 20 complete</span>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main" id="main"></main>
+  </div>
+<script>
+const EXERCISES = [{"id": 1, "topic": "Variables", "title": "Store a name 存储名字", "skill": "Create a variable and print it. 创建变量并输出它。", "task": "Create a variable called <code>name</code> that stores <code>\"Ava\"</code>. Then print the variable. 创建一个名为 <code>name</code> 的变量，存储 <code>\"Ava\"</code>，然后输出这个变量。", "starter": "# Question 1 题目 1\n# Create the variable, then print it 创建变量，然后输出它\n\n", "hint": "Use: name = \"Ava\" then print(name). 使用：name = \"Ava\"，然后 print(name)。", "runCases": [{"inputs": [], "expected": "Ava"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*[\\\"']Ava[\\\"']", "msg": "Create a variable called name that stores \"Ava\". 创建一个名为 name 的变量，存储 \"Ava\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*name\\s*\\)", "msg": "Print the variable name, not the word in quotes. 输出变量 name，不要输出引号里的单词。"}], "topicDisplay": "Variables 变量"}, {"id": 2, "topic": "Variables", "title": "Store a subject 存储科目", "skill": "Create a text variable and print it. 创建文本变量并输出它。", "task": "Create a variable called <code>subject</code> that stores <code>\"Computing\"</code>. Then print the variable <code>subject</code>. 创建一个名为 <code>subject</code> 的变量，存储 <code>\"Computing\"</code>，然后输出变量 <code>subject</code>。", "starter": "# Question 2 题目 2\n# Store a subject, then print it 存储科目，然后输出它\n\n", "hint": "Use: subject = \"Computing\" then print(subject). 使用：subject = \"Computing\"，然后 print(subject)。", "runCases": [{"inputs": [], "expected": "Computing"}], "requirements": [{"type": "pattern", "pattern": "\\bsubject\\s*=\\s*[\\\"']Computing[\\\"']", "msg": "Create a variable called subject that stores \"Computing\". 创建一个名为 subject 的变量，存储 \"Computing\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*subject\\s*\\)", "msg": "Print the variable subject. 输出变量 subject。"}], "topicDisplay": "Variables 变量"}, {"id": 3, "topic": "Variables", "title": "Fix the quotes 修正引号", "skill": "Use quotes for strings. 字符串需要使用引号。", "task": "Store the text <code>\"Tenby\"</code> in a variable called <code>school</code>. Then print it. 把文本 <code>\"Tenby\"</code> 存入名为 <code>school</code> 的变量，然后输出它。", "starter": "# Question 3 题目 3\n# Text needs quotation marks 文本需要引号\n\n", "hint": "Text values need quotes, like this: school = \"Tenby\". 文本值需要引号，例如：school = \"Tenby\"。", "runCases": [{"inputs": [], "expected": "Tenby"}], "requirements": [{"type": "pattern", "pattern": "\\bschool\\s*=\\s*[\\\"']Tenby[\\\"']", "msg": "Store \"Tenby\" as text using quotation marks. 使用引号把 \"Tenby\" 存为文本。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*school\\s*\\)", "msg": "Print the variable school. 输出变量 school。"}], "topicDisplay": "Variables 变量"}, {"id": 4, "topic": "Variables", "title": "Store a number 存储数字", "skill": "Store and print a number. 存储并输出数字。", "task": "Create a variable called <code>score</code> that stores the number <code>10</code>. Then print it. 创建一个名为 <code>score</code> 的变量，存储数字 <code>10</code>，然后输出它。", "starter": "# Question 4 题目 4\n# Numbers do not need quotation marks 数字不需要引号\n\n", "hint": "Use score = 10. Numbers do not need quotes. 使用 score = 10。数字不需要引号。", "runCases": [{"inputs": [], "expected": "10"}], "requirements": [{"type": "pattern", "pattern": "\\bscore\\s*=\\s*10\\b", "msg": "Create score = 10 without quotation marks. 创建 score = 10，不要加引号。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*score\\s*\\)", "msg": "Print the variable score. 输出变量 score。"}], "topicDisplay": "Variables 变量"}, {"id": 5, "topic": "Variables", "title": "Change a variable 改变变量", "skill": "Understand reassignment. 理解重新赋值。", "task": "Create <code>level = \"Beginner\"</code>. Then change <code>level</code> to <code>\"Improving\"</code>. Print <code>level</code> at the end. 创建 <code>level = \"Beginner\"</code>，然后把 <code>level</code> 改为 <code>\"Improving\"</code>，最后输出 <code>level</code>。", "starter": "# Question 5 题目 5\n# A variable can be changed 变量可以被改变\n\n", "hint": "Assign level twice. Python uses the newest value. 给 level 赋值两次，Python 会使用最新的值。", "runCases": [{"inputs": [], "expected": "Improving"}], "requirements": [{"type": "countPattern", "pattern": "\\blevel\\s*=", "min": 2, "msg": "Assign a value to level twice. 给 level 赋值两次。"}, {"type": "pattern", "pattern": "\\blevel\\s*=\\s*[\\\"']Improving[\\\"']", "msg": "Change level to \"Improving\". 把 level 改为 \"Improving\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*level\\s*\\)", "msg": "Print level at the end. 最后输出 level。"}], "topicDisplay": "Variables 变量"}, {"id": 6, "topic": "Output", "title": "Say hello with a variable 用变量打招呼", "skill": "Print text and a variable together. 同时输出文本和变量。", "task": "Create <code>name = \"Zara\"</code>. Then print <code>Hello Zara</code> using a comma and the variable. 创建 <code>name = \"Zara\"</code>，然后使用逗号和变量输出 <code>Hello Zara</code>。", "starter": "# Question 6 题目 6\n# Print text and a variable together 同时输出文本和变量\n\n", "hint": "Use print(\"Hello\", name). 使用 print(\"Hello\", name)。", "runCases": [{"inputs": [], "expected": "Hello Zara"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*[\\\"']Zara[\\\"']", "msg": "Create name = \"Zara\". 创建 name = \"Zara\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Hello[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Use a comma to print the text and the variable. 使用逗号来输出文本和变量。"}], "topicDisplay": "Output 输出"}, {"id": 7, "topic": "Output", "title": "Print two variables 输出两个变量", "skill": "Print more than one variable. 输出多于一个变量。", "task": "Create <code>first_name = \"Ali\"</code> and <code>form = \"7N\"</code>. Print them on the same line. 创建 <code>first_name = \"Ali\"</code> 和 <code>form = \"7N\"</code>，并在同一行输出它们。", "starter": "# Question 7 题目 7\n# Print two variables on the same line 在同一行输出两个变量\n\n", "hint": "Use print(first_name, form). 使用 print(first_name, form)。", "runCases": [{"inputs": [], "expected": "Ali 7N"}], "requirements": [{"type": "pattern", "pattern": "\\bfirst_name\\s*=\\s*[\\\"']Ali[\\\"']", "msg": "Create first_name = \"Ali\". 创建 first_name = \"Ali\"。"}, {"type": "pattern", "pattern": "\\bform\\s*=\\s*[\\\"']7N[\\\"']", "msg": "Create form = \"7N\". 创建 form = \"7N\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*first_name\\s*,\\s*form\\s*\\)", "msg": "Print first_name and form together. 同时输出 first_name 和 form。"}], "topicDisplay": "Output 输出"}, {"id": 8, "topic": "Input", "title": "Ask for a name 询问名字", "skill": "Use input() and store the answer. 使用 input() 并存储答案。", "task": "Ask <code>What is your name? </code> and store it in <code>name</code>. Then print <code>Hello</code> followed by the name. 使用 <code>What is your name? </code> 询问名字，并存入 <code>name</code>，然后输出 <code>Hello</code> 和名字。", "starter": "# Question 8 题目 8\n# Ask for the user's name 询问用户的名字\n\n", "hint": "Use name = input(\"What is your name? \") then print(\"Hello\", name). 使用 name = input(\"What is your name? \")，然后 print(\"Hello\", name)。", "runCases": [{"inputs": ["Maya"], "expected": "What is your name? Maya\nHello Maya"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*input\\s*\\(\\s*[\\\"']What is your name\\?\\s*[\\\"']\\s*\\)", "msg": "Use the exact prompt: input(\"What is your name? \" ). 使用完全一样的提示文字：input(\"What is your name? \" )。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Hello[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Print Hello followed by the variable name. 输出 Hello，然后输出变量 name。"}], "topicDisplay": "Input 输入"}, {"id": 9, "topic": "Input", "title": "Favourite colour 最喜欢的颜色", "skill": "Use input() in a sentence. 在句子中使用 input()。", "task": "Ask <code>What is your favourite colour? </code> and store it in <code>colour</code>. Print <code>Your favourite colour is blue</code> when the input is blue. 使用 <code>What is your favourite colour? </code> 询问颜色，并存入 <code>colour</code>。当输入是 blue 时，输出 <code>Your favourite colour is blue</code>。", "starter": "# Question 9 题目 9\n# Ask for a favourite colour 询问最喜欢的颜色\n\n", "hint": "Use colour = input(...), then print(\"Your favourite colour is\", colour). 使用 colour = input(...)，然后 print(\"Your favourite colour is\", colour)。", "runCases": [{"inputs": ["blue"], "expected": "What is your favourite colour? blue\nYour favourite colour is blue"}], "requirements": [{"type": "pattern", "pattern": "\\bcolour\\s*=\\s*input\\s*\\(\\s*[\\\"']What is your favourite colour\\?\\s*[\\\"']\\s*\\)", "msg": "Store the input in a variable called colour. 把输入存入名为 colour 的变量。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Your favourite colour is[\\\"']\\s*,\\s*colour\\s*\\)", "msg": "Print the message followed by the colour variable. 输出信息，然后输出 colour 变量。"}], "topicDisplay": "Input 输入"}, {"id": 10, "topic": "Input", "title": "Favourite hobby 最喜欢的爱好", "skill": "Store input and reuse it. 存储输入并再次使用它。", "task": "Ask <code>What is your hobby? </code> and store it in <code>hobby</code>. Then print <code>Cool! You like drawing</code> when the input is drawing. 使用 <code>What is your hobby? </code> 询问爱好，并存入 <code>hobby</code>。当输入是 drawing 时，输出 <code>Cool! You like drawing</code>。", "starter": "# Question 10 题目 10\n# Ask for a hobby 询问爱好\n\n", "hint": "Use print(\"Cool! You like\", hobby). 使用 print(\"Cool! You like\", hobby)。", "runCases": [{"inputs": ["drawing"], "expected": "What is your hobby? drawing\nCool! You like drawing"}], "requirements": [{"type": "pattern", "pattern": "\\bhobby\\s*=\\s*input\\s*\\(\\s*[\\\"']What is your hobby\\?\\s*[\\\"']\\s*\\)", "msg": "Store the answer in hobby. 把答案存入 hobby。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Cool! You like[\\\"']\\s*,\\s*hobby\\s*\\)", "msg": "Print the sentence using the hobby variable. 使用 hobby 变量输出句子。"}], "topicDisplay": "Input 输入"}, {"id": 11, "topic": "Input", "title": "Two questions 两个问题", "skill": "Use two inputs. 使用两个 input()。", "task": "Ask for a name and favourite food. Use these exact prompts: <code>Enter your name: </code> and <code>Enter your favourite food: </code>. Print <code>Ben likes pizza</code> when the inputs are Ben and pizza. 询问名字和最喜欢的食物。必须使用这些完全一样的提示文字：<code>Enter your name: </code> 和 <code>Enter your favourite food: </code>。当输入是 Ben 和 pizza 时，输出 <code>Ben likes pizza</code>。", "starter": "# Question 11 题目 11\n# Ask two questions 询问两个问题\n\n", "hint": "You need two variables, then print(name, \"likes\", food). 你需要两个变量，然后使用 print(name, \"likes\", food)。", "runCases": [{"inputs": ["Ben", "pizza"], "expected": "Enter your name: Ben\nEnter your favourite food: pizza\nBen likes pizza"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter your name:\\s*[\\\"']\\s*\\)", "msg": "Ask for the name using the exact prompt. 使用完全一样的提示文字询问名字。"}, {"type": "pattern", "pattern": "\\bfood\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter your favourite food:\\s*[\\\"']\\s*\\)", "msg": "Ask for the food using the exact prompt. 使用完全一样的提示文字询问食物。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*name\\s*,\\s*[\\\"']likes[\\\"']\\s*,\\s*food\\s*\\)", "msg": "Print name, \"likes\", food. 输出 name、\"likes\" 和 food。"}], "topicDisplay": "Input 输入"}, {"id": 12, "topic": "Comments", "title": "Add a comment 添加注释", "skill": "Use comments to explain code. 使用注释解释代码。", "task": "Add at least one comment using <code>#</code>. Then create <code>school = \"TTA\"</code> and print it. 使用 <code>#</code> 至少添加一个注释，然后创建 <code>school = \"TTA\"</code> 并输出它。", "starter": "# Question 12 题目 12\n# Add your own comment below 在下面添加你自己的注释\n\n", "hint": "A comment starts with #. Example: # This stores my school name. 注释以 # 开始，例如：# This stores my school name", "runCases": [{"inputs": [], "expected": "TTA"}], "requirements": [{"type": "comment", "msg": "Add at least one comment using #. 使用 # 至少添加一个注释。"}, {"type": "pattern", "pattern": "\\bschool\\s*=\\s*[\\\"']TTA[\\\"']", "msg": "Create school = \"TTA\". 创建 school = \"TTA\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*school\\s*\\)", "msg": "Print the variable school. 输出变量 school。"}], "topicDisplay": "Comments 注释"}, {"id": 13, "topic": "Comments", "title": "Comment out one line 注释掉一行", "skill": "Use # to stop one line from running. 使用 # 让一行代码不运行。", "task": "Use <code>#</code> to stop the first print line from running. The output should only show <code>This should appear</code>. 使用 <code>#</code> 让第一行 print 不运行。输出应该只显示 <code>This should appear</code>。", "starter": "# Question 13 题目 13\n# Put # before the first print line below 在下面第一行 print 前面加 #\nprint(\"This should not appear\")\nprint(\"This should appear\")\n", "hint": "Put # at the start of the line you do not want Python to run. #print(...) is accepted. 把 # 放在你不想让 Python 运行的那一行开头。#print(...) 也可以。", "runCases": [{"inputs": [], "expected": "This should appear"}], "requirements": [{"type": "lineCommentContains", "text": "This should not appear", "msg": "Use # to comment out the first print line. 使用 # 注释掉第一行 print。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']This should appear[\\\"']\\s*\\)", "msg": "Keep the second print line running. 保持第二行 print 运行。"}], "topicDisplay": "Comments 注释"}, {"id": 14, "topic": "Debugging", "title": "Fix the variable name 修正变量名", "skill": "Use the same variable name correctly. 正确使用完全相同的变量名。", "task": "Fix the code so it prints <code>Mia</code>. The variable name must match exactly. 修正代码，让它输出 <code>Mia</code>。变量名必须完全一致。", "starter": "# Question 14 题目 14\n# Fix the variable name error 修正变量名错误\nstudent_name = \"Mia\"\nprint(studentname)\n", "hint": "The variable is called student_name, not studentname. 变量名是 student_name，不是 studentname。", "runCases": [{"inputs": [], "expected": "Mia"}], "requirements": [{"type": "pattern", "pattern": "\\bstudent_name\\s*=\\s*[\\\"']Mia[\\\"']", "msg": "Keep the variable student_name = \"Mia\". 保留变量 student_name = \"Mia\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*student_name\\s*\\)", "msg": "Print student_name with the underscore. 输出带下划线的 student_name。"}], "topicDisplay": "Debugging 调试"}, {"id": 15, "topic": "Variables", "title": "Points update 更新分数", "skill": "Update a variable value. 更新变量的值。", "task": "Create <code>points = 0</code>, then change it to <code>5</code>. Print <code>Points: 5</code> using a comma and the variable. 创建 <code>points = 0</code>，然后把它改为 <code>5</code>。使用逗号和变量输出 <code>Points: 5</code>。", "starter": "# Question 15 题目 15\n# Update the points variable 更新 points 变量\n\n", "hint": "Use points = 0, then points = 5, then print(\"Points:\", points). 使用 points = 0，然后 points = 5，最后 print(\"Points:\", points)。", "runCases": [{"inputs": [], "expected": "Points: 5"}], "requirements": [{"type": "countPattern", "pattern": "\\bpoints\\s*=", "min": 2, "msg": "Assign points twice. 给 points 赋值两次。"}, {"type": "pattern", "pattern": "\\bpoints\\s*=\\s*5\\b", "msg": "Change points to 5. 把 points 改为 5。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Points:[\\\"']\\s*,\\s*points\\s*\\)", "msg": "Print \"Points:\" followed by points. 输出 \"Points:\"，然后输出 points。"}], "topicDisplay": "Variables 变量"}, {"id": 16, "topic": "Input", "title": "Choose an animal 选择动物", "skill": "Input with a prompt. 使用带提示文字的 input()。", "task": "Ask <code>Choose an animal: </code> and store it in <code>animal</code>. Print <code>You chose dog</code> when the input is dog. 使用 <code>Choose an animal: </code> 询问动物，并存入 <code>animal</code>。当输入是 dog 时，输出 <code>You chose dog</code>。", "starter": "# Question 16 题目 16\n# Ask the user to choose an animal 让用户选择动物\n\n", "hint": "Use animal = input(\"Choose an animal: \"), then print(\"You chose\", animal). 使用 animal = input(\"Choose an animal: \")，然后 print(\"You chose\", animal)。", "runCases": [{"inputs": ["dog"], "expected": "Choose an animal: dog\nYou chose dog"}], "requirements": [{"type": "pattern", "pattern": "\\banimal\\s*=\\s*input\\s*\\(\\s*[\\\"']Choose an animal:\\s*[\\\"']\\s*\\)", "msg": "Store the input in animal. 把输入存入 animal。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']You chose[\\\"']\\s*,\\s*animal\\s*\\)", "msg": "Print the message using animal. 使用 animal 输出信息。"}], "topicDisplay": "Input 输入"}, {"id": 17, "topic": "Input", "title": "Digital name badge 电子名牌", "skill": "Use two inputs and labelled output. 使用两个 input() 和标签式输出。", "task": "Ask <code>Enter name: </code> and <code>Enter form: </code>. Store them in <code>name</code> and <code>form</code>. Print two labelled lines: <code>Name: Jay</code> and <code>Form: 7A</code>. 使用 <code>Enter name: </code> 和 <code>Enter form: </code> 询问，并存入 <code>name</code> 和 <code>form</code>。输出两行带标签的信息：<code>Name: Jay</code> 和 <code>Form: 7A</code>。", "starter": "# Question 17 题目 17\n# Create a digital name badge 创建电子名牌\n\n", "hint": "Use two input lines with Enter name: and Enter form:, then two print lines. 使用两行 input：Enter name: 和 Enter form:，然后使用两行 print。", "runCases": [{"inputs": ["Jay", "7A"], "expected": "Enter name: Jay\nEnter form: 7A\nName: Jay\nForm: 7A"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter name:\\s*[\\\"']\\s*\\)", "msg": "Ask for Enter name: and store it in name. 询问 Enter name: 并存入 name。"}, {"type": "pattern", "pattern": "\\bform\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter form:\\s*[\\\"']\\s*\\)", "msg": "Ask for Enter form: and store it in form. 询问 Enter form: 并存入 form。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Name:[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Print Name: followed by name. 输出 Name:，然后输出 name。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Form:[\\\"']\\s*,\\s*form\\s*\\)", "msg": "Print Form: followed by form. 输出 Form:，然后输出 form。"}], "topicDisplay": "Input 输入"}, {"id": 18, "topic": "Output", "title": "Profile labels 个人资料标签", "skill": "Print clear labelled output. 输出清晰的标签式信息。", "task": "Create <code>name = \"Lina\"</code> and <code>subject = \"Computing\"</code>. Print <code>Student: Lina</code> and <code>Subject: Computing</code> on separate lines. 创建 <code>name = \"Lina\"</code> 和 <code>subject = \"Computing\"</code>，并分两行输出 <code>Student: Lina</code> 和 <code>Subject: Computing</code>。", "starter": "# Question 18 题目 18\n# Print a simple profile 输出简单个人资料\n\n", "hint": "Use print(\"Student:\", name) and print(\"Subject:\", subject). 使用 print(\"Student:\", name) 和 print(\"Subject:\", subject)。", "runCases": [{"inputs": [], "expected": "Student: Lina\nSubject: Computing"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*[\\\"']Lina[\\\"']", "msg": "Create name = \"Lina\". 创建 name = \"Lina\"。"}, {"type": "pattern", "pattern": "\\bsubject\\s*=\\s*[\\\"']Computing[\\\"']", "msg": "Create subject = \"Computing\". 创建 subject = \"Computing\"。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Student:[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Print Student: followed by name. 输出 Student:，然后输出 name。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Subject:[\\\"']\\s*,\\s*subject\\s*\\)", "msg": "Print Subject: followed by subject. 输出 Subject:，然后输出 subject。"}], "topicDisplay": "Output 输出"}, {"id": 19, "topic": "Challenge", "title": "My introduction 我的自我介绍", "skill": "Combine input, variables and output. 结合 input、变量和输出。", "task": "Ask <code>What is your name? </code> and <code>What is your age? </code>. Store them in <code>name</code> and <code>age</code>. Print <code>My name is Kai</code> and <code>I am 12 years old</code> when the inputs are Kai and 12. 使用 <code>What is your name? </code> 和 <code>What is your age? </code> 询问，并存入 <code>name</code> 和 <code>age</code>。当输入是 Kai 和 12 时，输出 <code>My name is Kai</code> 和 <code>I am 12 years old</code>。", "starter": "# Question 19 题目 19\n# Build a short introduction 创建简短自我介绍\n\n", "hint": "You do not need int() yet. The age can stay as text. 你暂时不需要 int()，age 可以保持为文本。", "runCases": [{"inputs": ["Kai", "12"], "expected": "What is your name? Kai\nWhat is your age? 12\nMy name is Kai\nI am 12 years old"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*input\\s*\\(\\s*[\\\"']What is your name\\?\\s*[\\\"']\\s*\\)", "msg": "Ask for the name and store it in name. 询问名字并存入 name。"}, {"type": "pattern", "pattern": "\\bage\\s*=\\s*input\\s*\\(\\s*[\\\"']What is your age\\?\\s*[\\\"']\\s*\\)", "msg": "Ask for the age and store it in age. 询问年龄并存入 age。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']My name is[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Print My name is followed by name. 输出 My name is，然后输出 name。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']I am[\\\"']\\s*,\\s*age\\s*,\\s*[\\\"']years old[\\\"']\\s*\\)", "msg": "Print I am, age, years old. 输出 I am、age 和 years old。"}], "topicDisplay": "Challenge 挑战"}, {"id": 20, "topic": "Extension", "title": "Personal profile program 个人资料程序", "skill": "Create a complete input/output program. 创建完整的输入/输出程序。", "task": "Create a profile program. Ask for <code>Enter name: </code>, <code>Enter favourite subject: </code>, and <code>Enter learning goal: </code>. Print the profile exactly like the expected output. 创建一个个人资料程序。询问 <code>Enter name: </code>、<code>Enter favourite subject: </code> 和 <code>Enter learning goal: </code>。输出必须和预期输出完全一样。", "starter": "# Question 20 Extension 题目 20 延伸挑战\n# Create a personal profile program 创建个人资料程序\n\n", "hint": "Use three input lines with Enter prompts, then four print lines. Remember commas when printing labels and variables. 使用三行带 Enter 提示的 input，然后使用四行 print。输出标签和变量时记得用逗号。", "runCases": [{"inputs": ["Kai", "Computing", "learn Python"], "expected": "Enter name: Kai\nEnter favourite subject: Computing\nEnter learning goal: learn Python\n--- Profile ---\nName: Kai\nFavourite subject: Computing\nGoal: learn Python"}], "requirements": [{"type": "pattern", "pattern": "\\bname\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter name:\\s*[\\\"']\\s*\\)", "msg": "Ask for Enter name: and store it in name. 询问 Enter name: 并存入 name。"}, {"type": "pattern", "pattern": "\\bfavourite_subject\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter favourite subject:\\s*[\\\"']\\s*\\)", "msg": "Ask for Enter favourite subject: and store it in favourite_subject. 询问 Enter favourite subject: 并存入 favourite_subject。"}, {"type": "pattern", "pattern": "\\bgoal\\s*=\\s*input\\s*\\(\\s*[\\\"']Enter learning goal:\\s*[\\\"']\\s*\\)", "msg": "Ask for Enter learning goal: and store it in goal. 询问 Enter learning goal: 并存入 goal。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']--- Profile ---[\\\"']\\s*\\)", "msg": "Print the heading --- Profile ---. 输出标题 --- Profile ---。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Name:[\\\"']\\s*,\\s*name\\s*\\)", "msg": "Print Name: followed by name. 输出 Name:，然后输出 name。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Favourite subject:[\\\"']\\s*,\\s*favourite_subject\\s*\\)", "msg": "Print Favourite subject: followed by favourite_subject. 输出 Favourite subject:，然后输出 favourite_subject。"}, {"type": "pattern", "pattern": "\\bprint\\s*\\(\\s*[\\\"']Goal:[\\\"']\\s*,\\s*goal\\s*\\)", "msg": "Print Goal: followed by goal. 输出 Goal:，然后输出 goal。"}], "topicDisplay": "Extension 延伸"}];
+const STORAGE_KEY = 'y7-python-unit2-course-mandarin-v2';
+const PYODIDE_BASE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/';
+const PYTHON_RUNNER_WRAPPER = String.raw`
+import builtins, js, sys, traceback
+
+def __browser_input(prompt=""):
+    return js.pyInput(str(prompt))
+
+class __BrowserWriter:
+    def write(self, data):
+        if data is not None and data != "":
+            js.pyWrite(str(data))
+    def flush(self):
+        pass
+
+builtins.input = __browser_input
+sys.stdout = __BrowserWriter()
+sys.stderr = __BrowserWriter()
+try:
+    exec(js.__studentCode, {"__name__": "__main__"})
+except Exception:
+    js.pyMarkError()
+    traceback.print_exc()
+`;
+
+let state = loadState();
+let currentIndex = state.currentIndex || 0;
+let pyodidePromise = null;
+let pyodideReady = false;
+let pyodideLoading = false;
+let runnerBusy = false;
+let runtimeError = '';
+let activeSession = null;
+
+function defaultState() {
+  const work = {};
+  EXERCISES.forEach(ex => {
+    work[ex.id] = {
+      code: ex.starter || '',
+      stdin: getDefaultInput(ex),
+      console: ''
+    };
+  });
+  return { currentIndex: 0, completed: {}, work };
+}
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const fresh = defaultState();
+    if (!saved || typeof saved !== 'object') return fresh;
+    EXERCISES.forEach(ex => {
+      if (!saved.work) saved.work = {};
+      if (!saved.work[ex.id]) saved.work[ex.id] = fresh.work[ex.id];
+      if (typeof saved.work[ex.id].code !== 'string') saved.work[ex.id].code = ex.starter || '';
+      if (typeof saved.work[ex.id].stdin !== 'string') saved.work[ex.id].stdin = getDefaultInput(ex);
+      if (typeof saved.work[ex.id].console !== 'string') saved.work[ex.id].console = '';
+    });
+    if (!saved.completed) saved.completed = {};
+    return saved;
+  } catch (e) { return defaultState(); }
+}
+function saveState() {
+  state.currentIndex = currentIndex;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function getDefaultInput(ex) {
+  const c = ex.runCases && ex.runCases[0];
+  return c && c.inputs ? c.inputs.join('\n') : '';
+}
+function work(ex) { return state.work[ex.id]; }
+
+function topicLabel(topic) {
+  const ex = EXERCISES.find(e => e.topic === topic && e.topicDisplay);
+  return ex ? ex.topicDisplay : topic;
+}
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let html = '<p class="side-title">Course Questions 课程题目</p>';
+  let topic = '';
+  EXERCISES.forEach((ex, i) => {
+    if (ex.topic !== topic) { topic = ex.topic; html += `<div class="topic">${escapeHTML(topicLabel(topic))}</div>`; }
+    const status = state.completed[ex.id];
+    const cls = ['navitem', i === currentIndex ? 'active' : '', status === true ? 'done' : status === false ? 'wrong' : ''].join(' ');
+    const mark = status === true ? '✓' : status === false ? '!' : '';
+    html += `<div class="${cls}" onclick="goTo(${i})"><span class="num">${ex.id}</span><span>${escapeHTML(ex.title)}</span><span class="status">${mark}</span></div>`;
+  });
+  sb.innerHTML = html;
+}
+
+function renderExercise() {
+  const ex = EXERCISES[currentIndex];
+  const w = work(ex);
+  const firstCase = ex.runCases && ex.runCases[0];
+  const expected = firstCase ? firstCase.expected : '';
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <section class="hero">
+      <div>
+        <span class="kicker">Question 题目 ${ex.id} of ${EXERCISES.length} • ${escapeHTML(topicLabel(ex.topic))}</span>
+        <h2>${escapeHTML(ex.title)}</h2>
+        <div class="skill">${escapeHTML(ex.skill)}</div>
+      </div>
+      <div class="hero-icon">${iconForTopic(ex.topic)}</div>
+    </section>
+    <section class="card">
+      <h3 class="task-title">Your task 你的任务</h3>
+      <p class="task-text">${ex.task}</p><p class="lang-note">Mandarin support is shown inline. Python code words must stay in English. 中文支持已嵌入说明中；Python 代码词必须保持英文。</p>
+      ${expected ? `<div class="expected"><h4>Expected output for the test input 测试输入的预期输出</h4><pre>${escapeHTML(expected)}</pre></div>` : ''}
+    </section>
+    <section class="grid">
+      <div class="panel">
+        <div class="panel-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="filename">answer_${ex.id}.py</span></div>
+        <textarea class="editor" id="codeEditor" spellcheck="false" oninput="saveCode(this.value)" onkeydown="handleTab(event)">${escapeHTML(w.code)}</textarea>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="dot g"></span><span class="filename" id="runtimeLabel">${runtimeLabel()}</span></div>
+        <div class="runner-body">
+          <label class="input-label" for="stdinEditor">Program input 程序输入</label>
+          <textarea class="stdin" id="stdinEditor" spellcheck="false" oninput="saveInput(this.value)" onkeydown="runShortcut(event)">${escapeHTML(w.stdin)}</textarea>
+          <div class="btnrow" style="margin-top:0; margin-bottom:14px;">
+            <button class="btn primary" id="runBtn" onclick="runVisibleCode()">Run Code 运行代码</button>
+            <button class="btn soft" onclick="resetInput()">Reset Input 重置输入</button>
+            <button class="btn soft" onclick="clearConsole()">Clear Output 清除输出</button>
+          </div>
+          <label class="input-label">Console output 控制台输出</label>
+          <pre class="console${w.console ? '' : ' muted'}" id="console">${escapeHTML(w.console || 'Click Run Code to see the output here. 点击 Run Code 查看输出。')}</pre>
+        </div>
+      </div>
+    </section>
+    <div class="btnrow">
+      <button class="btn soft" onclick="previousQuestion()" ${currentIndex === 0 ? 'disabled' : ''}>Previous 上一题</button>
+      <button class="btn primary" onclick="checkAnswer()">Check Answer 检查答案</button>
+      <button class="btn good" onclick="nextQuestion()">${currentIndex === EXERCISES.length - 1 ? 'Finish 完成' : 'Next 下一题'}</button>
+      <button class="btn soft" onclick="showHint()">Hint 提示</button>
+      <button class="btn soft" onclick="resetQuestion()">Reset Question 重置本题</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  `;
+  renderSidebar();
+  updateProgress();
+  updateRuntimeControls();
+  saveState();
+}
+function iconForTopic(topic) {
+  return {Variables:'📦', Output:'💬', Input:'⌨️', Comments:'📝', Debugging:'🐞', Challenge:'🚀', Extension:'⭐'}[topic] || '🐍';
+}
+function runtimeLabel() {
+  if (runtimeError) return 'Python unavailable / Python 无法使用';
+  if (runnerBusy) return 'Running... / 正在运行...';
+  if (pyodideLoading) return 'Loading Python... / 正在加载 Python...';
+  if (pyodideReady) return 'Python ready / Python 已准备好';
+  return 'Python loads on first run / 第一次运行时加载 Python';
+}
+function updateRuntimeControls() {
+  const label = document.getElementById('runtimeLabel');
+  const runBtn = document.getElementById('runBtn');
+  if (label) label.textContent = runtimeLabel();
+  if (runBtn) runBtn.disabled = runnerBusy || pyodideLoading;
+}
+function saveCode(value) {
+  const ex = EXERCISES[currentIndex];
+  work(ex).code = value;
+  saveState();
+}
+function saveInput(value) {
+  const ex = EXERCISES[currentIndex];
+  work(ex).stdin = value;
+  saveState();
+}
+function setConsole(text) {
+  const ex = EXERCISES[currentIndex];
+  work(ex).console = text;
+  const c = document.getElementById('console');
+  if (c) { c.textContent = text || 'Click Run Code to see the output here. 点击 Run Code 查看输出。'; c.classList.toggle('muted', !text); }
+  saveState();
+}
+function clearConsole() { setConsole(''); }
+function resetInput() {
+  const ex = EXERCISES[currentIndex];
+  work(ex).stdin = getDefaultInput(ex);
+  const el = document.getElementById('stdinEditor');
+  if (el) el.value = work(ex).stdin;
+  saveState();
+}
+function resetQuestion() {
+  const ex = EXERCISES[currentIndex];
+  state.work[ex.id] = { code: ex.starter || '', stdin: getDefaultInput(ex), console: '' };
+  delete state.completed[ex.id];
+  renderExercise();
+}
+function handleTab(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = e.target.selectionStart, end = e.target.selectionEnd;
+    e.target.setRangeText('    ', s, end, 'end');
+    saveCode(e.target.value);
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runVisibleCode(); }
+}
+function runShortcut(e) { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runVisibleCode(); } }
+
+function goTo(i) { currentIndex = i; renderExercise(); }
+function previousQuestion() { if (currentIndex > 0) { currentIndex--; renderExercise(); } }
+function nextQuestion() {
+  if (currentIndex < EXERCISES.length - 1) { currentIndex++; renderExercise(); }
+  else showCompletion();
+}
+function showHint() { showFeedback('hint', EXERCISES[currentIndex].hint); }
+function showFeedback(kind, text) {
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback show ${kind}`;
+  fb.textContent = text;
+}
+function updateProgress() {
+  const total = EXERCISES.length;
+  const done = Object.values(state.completed).filter(Boolean).length;
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('scorePill').textContent = `Score 分数: ${done} / ${total}`;
+  document.getElementById('progressPill').textContent = `${done} / ${total} complete 已完成`;
+}
+
+function stripComments(code) {
+  return code.split(/\r?\n/).map(line => {
+    let quote = null, out = '';
+    for (let i=0; i<line.length; i++) {
+      const ch = line[i], prev = line[i-1];
+      if ((ch === '"' || ch === "'") && prev !== '\\') { quote = quote === ch ? null : (quote || ch); }
+      if (ch === '#' && !quote) break;
+      out += ch;
+    }
+    return out;
+  }).join('\n');
+}
+function hasComment(code) { return code.split(/\r?\n/).some(line => /^\s*#/.test(line) && !/^\s*#\s*Question\s+\d+/i.test(line) && !/^\s*#\s*(Add|Ask|Create|Text|Numbers|A variable|Print|Fix|Use|Put|Build)/i.test(line)); }
+function hasCommentedLineContaining(code, text) {
+  return code.split(/\r?\n/).some(line => /^\s*#/.test(line) && line.includes(text));
+}
+function checkRequirements(ex, code) {
+  const cleaned = stripComments(code);
+  for (const req of ex.requirements || []) {
+    if (req.type === 'pattern') {
+      const re = new RegExp(req.pattern, req.flags || 'i');
+      if (!re.test(cleaned)) return req.msg;
+    }
+    if (req.type === 'countPattern') {
+      const re = new RegExp(req.pattern, req.flags || 'gi');
+      const matches = cleaned.match(re) || [];
+      if (matches.length < req.min) return req.msg;
+    }
+    if (req.type === 'comment') {
+      if (!hasComment(code)) return req.msg;
+    }
+    if (req.type === 'lineCommentContains') {
+      if (!hasCommentedLineContaining(code, req.text)) return req.msg;
+    }
+  }
+  return '';
+}
+function normaliseOutput(text) {
+  return String(text || '').replace(/\r/g,'').split('\n').map(line => line.replace(/\s+$/,'')).join('\n').trim();
+}
+async function checkAnswer() {
+  const ex = EXERCISES[currentIndex];
+  const code = work(ex).code;
+  const reqError = checkRequirements(ex, code);
+  if (reqError) {
+    state.completed[ex.id] = false; saveState(); renderSidebar(); updateProgress();
+    showFeedback('error', reqError);
+    return;
+  }
+  runnerBusy = true; updateRuntimeControls();
+  try {
+    for (const runCase of ex.runCases || []) {
+      const result = await executePython(code, runCase.inputs || [], false);
+      const got = normaliseOutput(result.output);
+      const expected = normaliseOutput(runCase.expected);
+      if (result.hadError) {
+        state.completed[ex.id] = false;
+        setConsole(result.output);
+        showFeedback('error', 'Your code has an error when Python runs it. Check the console output, then fix your code.\n你的代码在运行时出现错误。请查看控制台输出，然后修正代码。');
+        renderSidebar(); updateProgress(); saveState();
+        return;
+      }
+      if (result.missingInput) {
+        state.completed[ex.id] = false;
+        work(ex).stdin = (runCase.inputs || []).join('\n');
+        setConsole(result.output);
+        showFeedback('error', 'Your program asked for more input than expected. I loaded the test input so you can run it and check.\n你的程序要求了比预期更多的输入。我已载入测试输入，方便你运行检查。');
+        renderExercise();
+        return;
+      }
+      if (got !== expected) {
+        state.completed[ex.id] = false;
+        work(ex).stdin = (runCase.inputs || []).join('\n');
+        setConsole(result.output || '[Program finished with no output]');
+        showFeedback('error', `Your code ran, but the output is not correct yet.\n\nExpected:\n${expected || '[no output]'}\n\nGot:\n${got || '[no output]'}`);
+        renderSidebar(); updateProgress(); saveState();
+        return;
+      }
+    }
+    state.completed[ex.id] = true;
+    showFeedback('success', 'Correct. Your code matches the task and passes the Python check.\n正确。你的代码符合任务要求，并通过了 Python 检查。');
+  } catch (e) {
+    state.completed[ex.id] = false;
+    showFeedback('error', 'The Python runner could not load. Check your internet connection, then try Run Code again.\nPython 运行器无法加载。请检查网络连接，然后再次点击 Run Code。');
+  } finally {
+    runnerBusy = false; updateRuntimeControls(); renderSidebar(); updateProgress(); saveState();
+  }
+}
+
+async function runVisibleCode() {
+  const ex = EXERCISES[currentIndex];
+  const code = work(ex).code;
+  const inputs = work(ex).stdin ? work(ex).stdin.split(/\r?\n/) : [];
+  runnerBusy = true; updateRuntimeControls(); setConsole('');
+  try {
+    const result = await executePython(code, inputs, true);
+    if (!result.output) setConsole('[Program finished with no output]');
+  } catch (e) {
+    setConsole('Python runner could not load. Check your internet connection, then try again.\nPython 运行器无法加载。请检查网络连接，然后再试一次。');
+  } finally { runnerBusy = false; updateRuntimeControls(); }
+}
+async function ensurePyodide() {
+  if (pyodidePromise) return pyodidePromise;
+  pyodideLoading = true; updateRuntimeControls();
+  pyodidePromise = (async () => {
+    await loadPyodideScript();
+    const pyodide = await window.loadPyodide({ indexURL: PYODIDE_BASE_URL });
+    pyodideReady = true;
+    return pyodide;
+  })().catch(err => { runtimeError = err.message || String(err); pyodidePromise = null; throw err; }).finally(() => { pyodideLoading = false; updateRuntimeControls(); });
+  return pyodidePromise;
+}
+function loadPyodideScript() {
+  if (typeof window.loadPyodide === 'function') return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = PYODIDE_BASE_URL + 'pyodide.js';
+    s.async = true;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Could not load Pyodide. 无法加载 Pyodide。'));
+    document.head.appendChild(s);
+  });
+}
+function createSession(inputs, show) {
+  return {
+    inputs: [...inputs], index: 0, output: '', hadError: false, missingInput: false, show,
+    write(chunk) {
+      this.output += chunk;
+      if (this.show) setConsole(this.output);
+    },
+    input(prompt) {
+      if (prompt) this.write(prompt);
+      if (this.index >= this.inputs.length) { this.missingInput = true; this.write('[No input provided]\n'); return ''; }
+      const value = this.inputs[this.index++];
+      this.write(value + '\n');
+      return value;
+    }
+  };
+}
+window.pyWrite = chunk => { if (activeSession) activeSession.write(String(chunk)); };
+window.pyInput = prompt => activeSession ? activeSession.input(String(prompt || '')) : '';
+window.pyMarkError = () => { if (activeSession) activeSession.hadError = true; };
+async function executePython(code, inputs, show) {
+  const pyodide = await ensurePyodide();
+  activeSession = createSession(inputs, show);
+  window.__studentCode = code;
+  try { await pyodide.runPythonAsync(PYTHON_RUNNER_WRAPPER); }
+  catch (e) { activeSession.hadError = true; activeSession.write('Runner error: ' + (e.message || e) + '\n'); }
+  const result = { output: activeSession.output, hadError: activeSession.hadError, missingInput: activeSession.missingInput };
+  activeSession = null; delete window.__studentCode;
+  return result;
+}
+function showCompletion() {
+  const done = Object.values(state.completed).filter(Boolean).length;
+  const total = EXERCISES.length;
+  document.getElementById('main').innerHTML = `<div class="completion"><div class="completion-card"><div style="font-size:86px">🏆</div><h2>Course Complete<br>课程完成</h2><p class="task-text">You finished the Y7 Unit 2 Python course.<br>你已经完成 Year 7 Python Unit 2 课程。</p><div class="bigscore">${done} / ${total}</div><div class="btnrow" style="justify-content:center"><button class="btn primary" onclick="goTo(0)">Review Course 复习课程</button><button class="btn soft" onclick="restartCourse()">Restart All 重新开始</button></div></div></div>`;
+  renderSidebar(); updateProgress(); saveState();
+}
+function restartCourse() {
+  if (!confirm('Restart all questions and clear saved work?\n是否重新开始所有题目并清除已保存的答案？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = defaultState(); currentIndex = 0; renderExercise();
+}
+function escapeHTML(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+renderExercise();
+</script>
+</body>
+</html>
