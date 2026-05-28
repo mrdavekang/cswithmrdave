@@ -1,0 +1,1994 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Life Balance Calendar</title>
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React 18 -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Recharts (and its peers) -->
+  <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <script crossorigin src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+
+  <!-- Babel for in-browser JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html, body, #root { height: 100%; }
+    body {
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #eef2ff 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, #fdf2f8 0%, transparent 55%),
+        #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: saturate(140%) blur(8px);
+      -webkit-backdrop-filter: saturate(140%) blur(8px);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 18px;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02), 0 12px 32px -16px rgba(15, 23, 42, 0.12);
+    }
+    .soft-shadow { box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18); }
+    .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 999px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .focus-ring:focus { outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="env,react">
+  /* =========================================================================
+     Life Balance Calendar
+     Single-file React app. No external state libraries.
+     ========================================================================= */
+
+  const { useState, useEffect, useMemo, useCallback, useRef } = React;
+  const {
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    Cell, LabelList, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  } = Recharts;
+
+  /* ---------- Constants ---------- */
+
+  // Colour palette presets. Each tag picks one of these by id; new colour swatches
+  // can be added here without touching any other part of the app.
+  const COLOR_PRESETS = [
+    { id: "indigo",    bg:"#eef2ff", fg:"#4338ca", solid:"#6366f1", soft:"#c7d2fe" },
+    { id: "rose",      bg:"#fdf2f8", fg:"#be185d", solid:"#ec4899", soft:"#fbcfe8" },
+    { id: "amber",     bg:"#fffbeb", fg:"#b45309", solid:"#f59e0b", soft:"#fde68a" },
+    { id: "sky",       bg:"#eff6ff", fg:"#1d4ed8", solid:"#3b82f6", soft:"#bfdbfe" },
+    { id: "violet",    bg:"#f5f3ff", fg:"#6d28d9", solid:"#8b5cf6", soft:"#ddd6fe" },
+    { id: "emerald",   bg:"#ecfdf5", fg:"#047857", solid:"#10b981", soft:"#a7f3d0" },
+    { id: "teal",      bg:"#f0fdfa", fg:"#0f766e", solid:"#14b8a6", soft:"#99f6e4" },
+    { id: "cyan",      bg:"#ecfeff", fg:"#0e7490", solid:"#06b6d4", soft:"#a5f3fc" },
+    { id: "orange",    bg:"#fff7ed", fg:"#c2410c", solid:"#f97316", soft:"#fed7aa" },
+    { id: "lime",      bg:"#f7fee7", fg:"#4d7c0f", solid:"#84cc16", soft:"#d9f99d" },
+    { id: "fuchsia",   bg:"#fdf4ff", fg:"#a21caf", solid:"#d946ef", soft:"#f5d0fe" },
+    { id: "slate",     bg:"#f1f5f9", fg:"#334155", solid:"#64748b", soft:"#cbd5e1" },
+  ];
+
+  const FALLBACK_COLOR = { bg:"#f1f5f9", fg:"#334155", solid:"#94a3b8", soft:"#cbd5e1" };
+
+  const colorById = (id) => COLOR_PRESETS.find((p) => p.id === id) || COLOR_PRESETS[0];
+
+  // Starter tags — fixed:true means the name can't be renamed or deleted by the user
+  // (they can still recolour them).
+  const DEFAULT_TAGS = [
+    { name: "Personal Development", colorId: "indigo", fixed: true },
+    { name: "Fun",                  colorId: "rose",   fixed: true },
+    { name: "Chores",               colorId: "amber",  fixed: true },
+    { name: "Work",                 colorId: "sky",    fixed: true },
+    { name: "Sleep",                colorId: "violet", fixed: true },
+  ];
+
+  const RETIRED_PRESET_TAGS = new Set([
+    "Health",
+    "Family & Friends",
+    "Meals",
+    "Exercise",
+    "Finance",
+    "Mindfulness",
+    "Errands",
+  ]);
+
+  // Pick the next preset that isn't already used by an existing tag, for sensible defaults
+  // when the user adds a new tag.
+  const nextUnusedColor = (tags) => {
+    const used = new Set(tags.map((t) => t.colorId));
+    return (COLOR_PRESETS.find((p) => !used.has(p.id)) || COLOR_PRESETS[0]).id;
+  };
+
+  // Resolve a tag name → colour object, falling back gracefully if the tag was deleted.
+  const tagColorsFor = (name, tags) => {
+    const t = tags.find((x) => x.name === name);
+    return t ? colorById(t.colorId) : FALLBACK_COLOR;
+  };
+
+  // React context so every component can read the live tag list without prop drilling.
+  const TagsContext = React.createContext({
+    tags: DEFAULT_TAGS,
+    setTags: () => {},
+    getColors: (name) => tagColorsFor(name, DEFAULT_TAGS),
+    tagNames: DEFAULT_TAGS.map((t) => t.name),
+  });
+  const useTags = () => React.useContext(TagsContext);
+
+  const STORAGE_KEY = "lifeBalanceCalendar.activities.v1";
+  const TAGS_STORAGE_KEY = "lifeBalanceCalendar.tags.v1";
+  const ANALYTICS_HIDDEN_TAGS_STORAGE_KEY = "lifeBalanceCalendar.analytics.hiddenTags.v1";
+
+  const loadTags = () => {
+    try {
+      const raw = localStorage.getItem(TAGS_STORAGE_KEY);
+      if (!raw) return DEFAULT_TAGS;
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr) || arr.length === 0) return DEFAULT_TAGS;
+      // Defensive: keep only well-shaped entries and ensure each fixed default exists.
+      const cleaned = arr
+        .filter((t) => t && typeof t.name === "string" && t.name.trim())
+        .map((t) => ({
+          name: t.name.trim(),
+          colorId: typeof t.colorId === "string" ? t.colorId : "slate",
+          fixed: !!t.fixed,
+        }))
+        .filter((t) => !(t.fixed && RETIRED_PRESET_TAGS.has(t.name)));
+      const byName = new Map(cleaned.map((t) => [t.name, t]));
+      for (const def of DEFAULT_TAGS) {
+        if (!byName.has(def.name)) byName.set(def.name, def);
+        else byName.get(def.name).fixed = true; // re-assert fixed flag
+      }
+      return Array.from(byName.values());
+    } catch (e) {
+      return DEFAULT_TAGS;
+    }
+  };
+
+  const saveTags = (tags) => {
+    try { localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(tags)); }
+    catch (e) { console.warn("Failed to save tags", e); }
+  };
+
+  const loadHiddenAnalyticsTags = () => {
+    try {
+      const raw = localStorage.getItem(ANALYTICS_HIDDEN_TAGS_STORAGE_KEY);
+      const parsed = JSON.parse(raw || "[]");
+      return Array.isArray(parsed) ? parsed.filter((t) => typeof t === "string") : [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const saveHiddenAnalyticsTags = (tags) => {
+    try { localStorage.setItem(ANALYTICS_HIDDEN_TAGS_STORAGE_KEY, JSON.stringify(tags)); }
+    catch (e) { console.warn("Failed to save hidden analytics tags", e); }
+  };
+
+  /* ---------- Helpers ---------- */
+
+  const uid = () =>
+    "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+
+  const pad2 = (n) => String(n).padStart(2, "0");
+
+  // 'YYYY-MM-DD' for a local Date
+  const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+
+  const parseYMD = (s) => {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
+  const minutesFromHM = (hm) => {
+    if (!hm) return 0;
+    const [h, m] = hm.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  // Reverse: minutes-from-midnight back to "HH:MM". 1440 wraps to "00:00" (next day).
+  const minToHM = (min) => {
+    const v = Math.max(0, Math.min(24 * 60, Math.round(min)));
+    if (v >= 24 * 60) return "00:00";
+    return `${pad2(Math.floor(v / 60))}:${pad2(v % 60)}`;
+  };
+
+  // True if the activity's time range wraps past midnight (e.g. Sleep 23:00–07:00).
+  const wrapsMidnight = (a) =>
+    minutesFromHM(a.endTime) <= minutesFromHM(a.startTime);
+
+  // Duration in hours. Sleep spanning midnight wraps to next day.
+  const durationHours = (a) => {
+    const start = minutesFromHM(a.startTime);
+    let end = minutesFromHM(a.endTime);
+    if (end <= start) end += 24 * 60; // wrap around midnight (mainly sleep)
+    return (end - start) / 60;
+  };
+
+  const formatHours = (h) => {
+    if (!isFinite(h)) return "0h";
+    if (h === 0) return "0h";
+    const whole = Math.floor(h);
+    const mins = Math.round((h - whole) * 60);
+    if (whole === 0) return `${mins}m`;
+    if (mins === 0) return `${whole}h`;
+    return `${whole}h ${mins}m`;
+  };
+
+  const formatTimeRange = (a) => `${a.startTime} – ${a.endTime}`;
+
+  const formatPrettyDate = (s) => {
+    const d = parseYMD(s);
+    return d.toLocaleDateString(undefined, {
+      weekday: "short", month: "short", day: "numeric", year: "numeric",
+    });
+  };
+
+  const safeDomId = (s) => String(s).replace(/[^a-zA-Z0-9_-]+/g, "-");
+
+  /* ---------- Date range filters ---------- */
+
+  const startOfDay = (d) => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
+  const endOfDay   = (d) => { const x = new Date(d); x.setHours(23,59,59,999); return x; };
+
+  const startOfWeek = (d) => {
+    const x = startOfDay(d);
+    // Monday-start week
+    const day = (x.getDay() + 6) % 7;
+    x.setDate(x.getDate() - day);
+    return x;
+  };
+  const endOfWeek = (d) => {
+    const x = startOfWeek(d);
+    x.setDate(x.getDate() + 6);
+    return endOfDay(x);
+  };
+
+  const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+  const endOfMonth   = (d) => endOfDay(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+
+  const FILTERS = ["Today", "This week", "This month", "All time", "Custom"];
+
+  const filterRange = (filter, custom) => {
+    const now = new Date();
+    if (filter === "Today")      return { from: startOfDay(now),  to: endOfDay(now) };
+    if (filter === "This week")  return { from: startOfWeek(now), to: endOfWeek(now) };
+    if (filter === "This month") return { from: startOfMonth(now),to: endOfMonth(now) };
+    if (filter === "All time")   return { from: null, to: null };
+    if (filter === "Custom") {
+      const from = custom.from ? startOfDay(parseYMD(custom.from)) : null;
+      const to   = custom.to   ? endOfDay(parseYMD(custom.to))     : null;
+      return { from, to };
+    }
+    return { from: null, to: null };
+  };
+
+  const activityInRange = (a, range) => {
+    if (!range.from && !range.to) return true;
+    const d = parseYMD(a.date);
+    if (range.from && d < startOfDay(range.from)) return false;
+    if (range.to && d > endOfDay(range.to)) return false;
+    return true;
+  };
+
+  /* ---------- Storage ---------- */
+
+  const loadActivities = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(
+        (a) => a && a.id && a.title && a.date && a.startTime && a.endTime &&
+               typeof a.tag === "string" && a.tag.trim()
+      );
+    } catch (e) {
+      console.warn("Failed to load activities", e);
+      return [];
+    }
+  };
+
+  const saveActivities = (list) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    catch (e) { console.warn("Failed to save activities", e); }
+  };
+
+  /* ---------- Small UI atoms ---------- */
+
+  const TagBadge = ({ tag, size = "sm" }) => {
+    const { getColors } = useTags();
+    const c = getColors(tag);
+    const pad = size === "lg" ? "px-3 py-1 text-sm" : "px-2 py-0.5 text-xs";
+    return (
+      <span
+        className={`inline-flex items-center gap-1.5 rounded-full font-medium ${pad}`}
+        style={{ background: c.bg, color: c.fg }}
+      >
+        <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.solid }} />
+        {tag}
+      </span>
+    );
+  };
+
+  const Button = ({ children, variant = "primary", className = "", ...rest }) => {
+    const base =
+      "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus-ring " +
+      "px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed";
+    const styles = {
+      primary:  "bg-slate-900 text-white hover:bg-slate-800",
+      secondary:"bg-white text-slate-700 border border-slate-200 hover:bg-slate-50",
+      ghost:    "bg-transparent text-slate-600 hover:bg-slate-100",
+      danger:   "bg-rose-600 text-white hover:bg-rose-500",
+    };
+    return (
+      <button className={`${base} ${styles[variant] || styles.primary} ${className}`} {...rest}>
+        {children}
+      </button>
+    );
+  };
+
+  const IconPlus = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+  );
+  const IconChevL = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  );
+  const IconChevR = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 6l6 6-6 6"/>
+    </svg>
+  );
+  const IconCalendar = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>
+    </svg>
+  );
+  const IconChart = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20V10M10 20V4M16 20v-6M22 20H2"/>
+    </svg>
+  );
+
+  /* ---------- Activity Modal (add / edit) ---------- */
+
+  const emptyDraft = (preselectDate) => ({
+    id: null,
+    title: "",
+    date: preselectDate || ymd(new Date()),
+    startTime: "09:00",
+    endTime: "10:00",
+    tag: "",
+    notes: "",
+  });
+
+  function ActivityModal({ open, draft, onClose, onSave, onDelete, onManageTags }) {
+    const { tags, setTags, tagNames } = useTags();
+    const [form, setForm] = useState(emptyDraft());
+    const [newTagName, setNewTagName] = useState("");
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+      if (open) {
+        setForm(draft ? { ...draft } : emptyDraft());
+        setNewTagName("");
+        setError("");
+      }
+    }, [open, draft]);
+
+    if (!open) return null;
+
+    const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+    const addTagOption = (name) => {
+      const existing = tags.find((t) => t.name.toLowerCase() === name.toLowerCase());
+      if (existing) return existing.name;
+
+      setTags((list) => {
+        const duplicate = list.find((t) => t.name.toLowerCase() === name.toLowerCase());
+        if (duplicate) return list;
+        return [...list, { name, colorId: nextUnusedColor(list), fixed: false }];
+      });
+      return name;
+    };
+
+    const addNewTag = () => {
+      const name = newTagName.trim();
+      if (!name) { setError("Type a tag name first."); return; }
+
+      update("tag", addTagOption(name));
+      setNewTagName("");
+      setError("");
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!form.title.trim()) { setError("Please give your activity a title."); return; }
+      if (!form.date)        { setError("Please pick a date."); return; }
+      if (!form.startTime || !form.endTime) { setError("Start and end time are required."); return; }
+      let selectedTag = form.tag.trim();
+      if (!selectedTag && newTagName.trim()) {
+        selectedTag = addTagOption(newTagName.trim());
+      }
+      if (!selectedTag) { setError("Please select a tag."); return; }
+      // Allow sleep wrap, but require non-equal times.
+      if (form.startTime === form.endTime) {
+        setError("End time must be different from start time.");
+        return;
+      }
+      // For non-Sleep tags, end must be after start.
+      if (selectedTag !== "Sleep") {
+        if (minutesFromHM(form.endTime) <= minutesFromHM(form.startTime)) {
+          setError("End time must be later than start time.");
+          return;
+        }
+      }
+      onSave({ ...form, id: form.id || uid(), title: form.title.trim(), tag: selectedTag, notes: form.notes.trim() });
+    };
+
+    const isEdit = !!form.id;
+    const durHrs = durationHours(form);
+
+    return (
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative card w-full max-w-lg p-6 sm:p-7 soft-shadow">
+          <div className="flex items-start justify-between mb-5">
+            <div>
+              <h3 className="text-lg font-semibold tracking-tight">
+                {isEdit ? "Edit activity" : "New activity"}
+              </h3>
+              <p className="text-sm text-slate-500 mt-0.5">
+                {isEdit ? "Update the details below." : "Plan something for your day."}
+              </p>
+            </div>
+            <button onClick={onClose}
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 6l12 12M18 6L6 18"/>
+              </svg>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-500 mb-1.5">Title</label>
+              <input
+                autoFocus
+                type="text"
+                value={form.title}
+                onChange={(e) => update("title", e.target.value)}
+                placeholder="e.g. Morning run"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Date</label>
+                <input
+                  type="date"
+                  value={form.date}
+                  onChange={(e) => update("date", e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Start</label>
+                <input
+                  type="time"
+                  value={form.startTime}
+                  onChange={(e) => update("startTime", e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">End</label>
+                <input
+                  type="time"
+                  value={form.endTime}
+                  onChange={(e) => update("endTime", e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-medium text-slate-500">Tag</label>
+                  {onManageTags && (
+                    <button type="button" onClick={onManageTags}
+                            className="text-[11px] text-indigo-600 hover:underline">
+                      Manage tags →
+                    </button>
+                  )}
+                </div>
+                <select
+                  value={form.tag}
+                  onChange={(e) => update("tag", e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring"
+                >
+                  <option value="" disabled>Select a tag</option>
+                  {tagNames.map((t) => <option key={t} value={t}>{t}</option>)}
+                  {!tagNames.includes(form.tag) && form.tag && (
+                    <option value={form.tag}>{form.tag} (deleted)</option>
+                  )}
+                </select>
+                <div className="mt-2 flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addNewTag();
+                      }
+                    }}
+                    placeholder="Add a tag option"
+                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus-ring"
+                  />
+                  <Button type="button" variant="secondary" className="shrink-0 px-3" onClick={addNewTag}>
+                    <IconPlus/> Add
+                  </Button>
+                </div>
+              </div>
+              <div className="flex items-end">
+                <div className="text-sm text-slate-500">
+                  Duration: <span className="font-medium text-slate-900">{formatHours(durHrs)}</span>
+                  {form.tag === "Sleep" && minutesFromHM(form.endTime) <= minutesFromHM(form.startTime) && (
+                    <span className="ml-2 text-xs text-slate-400">(wraps midnight)</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-500 mb-1.5">Notes (optional)</label>
+              <textarea
+                value={form.notes}
+                onChange={(e) => update("notes", e.target.value)}
+                rows={3}
+                placeholder="Anything worth remembering…"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm focus-ring resize-none"
+              />
+            </div>
+
+            {error && (
+              <div className="rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm px-3 py-2">
+                {error}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-2">
+              <div>
+                {isEdit && (
+                  <Button type="button" variant="danger" onClick={() => onDelete(form.id)}>
+                    Delete
+                  </Button>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Calendar View ---------- */
+
+  const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  function buildMonthGrid(cursor) {
+    // Monday-start grid containing the given month.
+    const first = startOfMonth(cursor);
+    const startDow = (first.getDay() + 6) % 7; // Mon=0
+    const gridStart = new Date(first);
+    gridStart.setDate(first.getDate() - startDow);
+    const cells = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      cells.push(d);
+    }
+    return cells;
+  }
+
+  /* ---------- Day Timeline (24-hour, drag to create / move / resize) ---------- */
+
+  function DayTimeline({ date, activities, onCreate, onUpdate, onOpenEdit, onOpenAdd, onChangeDate }) {
+    const { getColors } = useTags();
+    const HOUR_HEIGHT = 60;        // 1 px per minute → 1440 px total
+    const TOTAL_HEIGHT = 24 * HOUR_HEIGHT;
+    const SNAP_MIN = 15;
+    const MIN_DURATION = 15;
+    const MOVE_THRESHOLD = 4;       // px before a press counts as a drag
+
+    const containerRef = useRef(null);
+    const scrollerRef = useRef(null);
+    const [drag, setDrag] = useState(null);
+    const dragRef = useRef(null);
+    const activitiesRef = useRef(activities);
+    activitiesRef.current = activities;
+
+    const startMinOf = (a) => minutesFromHM(a.startTime);
+    // For drawing, clip wraps at midnight on the event's own date.
+    const endMinForDisplay = (a) => {
+      const s = minutesFromHM(a.startTime);
+      let e = minutesFromHM(a.endTime);
+      if (e <= s) e = 24 * 60;
+      return e;
+    };
+
+    const dayItems = useMemo(
+      () => activities.filter((a) => a.date === date)
+                      .sort((a, b) => startMinOf(a) - startMinOf(b)),
+      [activities, date]
+    );
+
+    // Overlap layout: group transitively-overlapping events, then greedily assign columns.
+    const layout = useMemo(() => {
+      const m = new Map();
+      const groups = [];
+      let cur = null;
+      for (const a of dayItems) {
+        const s = startMinOf(a), e = endMinForDisplay(a);
+        if (cur && cur.endMax > s) {
+          cur.events.push(a);
+          cur.endMax = Math.max(cur.endMax, e);
+        } else {
+          if (cur) groups.push(cur);
+          cur = { events: [a], endMax: e };
+        }
+      }
+      if (cur) groups.push(cur);
+      for (const g of groups) {
+        const colEnds = [];
+        for (const a of g.events) {
+          const s = startMinOf(a), e = endMinForDisplay(a);
+          let col = colEnds.findIndex((end) => end <= s);
+          if (col === -1) { colEnds.push(e); col = colEnds.length - 1; }
+          else { colEnds[col] = e; }
+          m.set(a.id, { col, total: 0 });
+        }
+        const total = colEnds.length;
+        for (const a of g.events) m.get(a.id).total = total;
+      }
+      return m;
+    }, [dayItems]);
+
+    const yToMin = (clientY) => {
+      if (!containerRef.current) return 0;
+      const rect = containerRef.current.getBoundingClientRect();
+      return Math.max(0, Math.min(24 * 60, clientY - rect.top));
+    };
+    const snap = (min) => Math.round(min / SNAP_MIN) * SNAP_MIN;
+    const snapDown = (min) => Math.floor(min / SNAP_MIN) * SNAP_MIN;
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+    /* --- pointer down handlers --- */
+
+    const onBgPointerDown = (e) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      // Don't start a create-drag if the press began on an event or its handle.
+      if (e.target.closest('[data-event="true"]') || e.target.closest('[data-handle="true"]')) return;
+      e.preventDefault();
+      const anchor = snapDown(yToMin(e.clientY));
+      const d = {
+        kind: "create",
+        anchor,
+        anchorY: e.clientY,
+        startMin: anchor,
+        endMin: Math.min(24 * 60, anchor + SNAP_MIN),
+        moved: false,
+      };
+      dragRef.current = d;
+      setDrag(d);
+    };
+
+    const onEventPointerDown = (e, a) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      if (e.target.closest('[data-handle="true"]')) return;
+      e.stopPropagation();
+      e.preventDefault();
+      const wraps = wrapsMidnight(a);
+      const start = startMinOf(a);
+      const end = endMinForDisplay(a);
+      const d = {
+        kind: "move",
+        id: a.id,
+        wraps,
+        dur: end - start,
+        offset: yToMin(e.clientY) - start,
+        anchorY: e.clientY,
+        startMin: start,
+        endMin: end,
+        moved: false,
+      };
+      dragRef.current = d;
+      setDrag(d);
+    };
+
+    const onHandlePointerDown = (e, a, edge) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      e.stopPropagation();
+      e.preventDefault();
+      const start = startMinOf(a);
+      const end = endMinForDisplay(a);
+      const d = {
+        kind: edge === "top" ? "resize-top" : "resize-bottom",
+        id: a.id,
+        wraps: wrapsMidnight(a),
+        anchorY: e.clientY,
+        startMin: start,
+        endMin: end,
+        moved: true,
+      };
+      dragRef.current = d;
+      setDrag(d);
+    };
+
+    /* --- global pointer move / up while a drag is active --- */
+
+    useEffect(() => {
+      if (!drag) return;
+      const onMove = (e) => {
+        const d = dragRef.current;
+        if (!d) return;
+        const minRaw = yToMin(e.clientY);
+        const minSnapped = snap(minRaw);
+        const movedNow = d.moved || Math.abs(e.clientY - d.anchorY) > MOVE_THRESHOLD;
+        let next = null;
+        if (d.kind === "create") {
+          const start = Math.min(d.anchor, minSnapped);
+          const end   = Math.max(d.anchor + SNAP_MIN, minSnapped);
+          next = { ...d, startMin: start, endMin: Math.min(24 * 60, end), moved: movedNow };
+        } else if (d.kind === "move") {
+          const newStart = clamp(snap(minRaw - d.offset), 0, 24 * 60 - d.dur);
+          next = { ...d, startMin: newStart, endMin: newStart + d.dur, moved: movedNow };
+        } else if (d.kind === "resize-top") {
+          next = { ...d, startMin: clamp(minSnapped, 0, d.endMin - MIN_DURATION) };
+        } else if (d.kind === "resize-bottom") {
+          next = { ...d, endMin: clamp(minSnapped, d.startMin + MIN_DURATION, 24 * 60) };
+        }
+        if (next) {
+          dragRef.current = next;
+          setDrag(next);
+        }
+      };
+      const onUp = () => {
+        const d = dragRef.current;
+        dragRef.current = null;
+        setDrag(null);
+        if (!d) return;
+        if (d.kind === "create") {
+          if (d.moved && d.endMin - d.startMin >= MIN_DURATION) {
+            onOpenAdd({
+              date,
+              startTime: minToHM(d.startMin),
+              endTime: minToHM(d.endMin),
+            });
+          } else {
+            onOpenAdd({
+              date,
+              startTime: minToHM(d.anchor),
+              endTime: minToHM(Math.min(24 * 60, d.anchor + 30)),
+            });
+          }
+        } else if (d.kind === "move") {
+          const orig = activitiesRef.current.find((x) => x.id === d.id);
+          if (!d.moved) {
+            if (orig) onOpenEdit(orig);
+          } else if (orig) {
+            // If the event already wraps midnight, only shift the start; let the wrap end stay put.
+            if (d.wraps) {
+              onUpdate(d.id, { startTime: minToHM(d.startMin) });
+            } else {
+              onUpdate(d.id, {
+                startTime: minToHM(d.startMin),
+                endTime: minToHM(d.endMin),
+              });
+            }
+          }
+        } else if (d.kind === "resize-top") {
+          onUpdate(d.id, { startTime: minToHM(d.startMin) });
+        } else if (d.kind === "resize-bottom") {
+          // Don't overwrite a wrap end via drag — the visible portion ends at midnight only.
+          if (!d.wraps) {
+            onUpdate(d.id, { endTime: minToHM(d.endMin) });
+          }
+        }
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
+      return () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [drag !== null]);
+
+    // Scroll into a sensible viewport on first paint (8am, or the now-line if today).
+    const isToday = date === ymd(new Date());
+    const nowMin = isToday ? new Date().getHours() * 60 + new Date().getMinutes() : null;
+    useEffect(() => {
+      if (!scrollerRef.current) return;
+      const target = nowMin != null ? Math.max(0, nowMin - 120) : 8 * 60;
+      scrollerRef.current.scrollTop = target;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [date]);
+
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+    const headerDate = parseYMD(date);
+
+    const dayTotal = dayItems.reduce((s, a) => s + durationHours(a), 0);
+
+    return (
+      <div className="card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { const d = parseYMD(date); d.setDate(d.getDate() - 1); onChangeDate(ymd(d)); }}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" aria-label="Previous day">
+              <IconChevL/>
+            </button>
+            <div className="leading-tight">
+              <div className="text-base font-semibold tracking-tight">
+                {headerDate.toLocaleDateString(undefined, { weekday: "long" })}
+              </div>
+              <div className="text-xs text-slate-500">
+                {headerDate.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+                {dayItems.length > 0 && (
+                  <span className="ml-2 text-slate-400">·  {dayItems.length} {dayItems.length === 1 ? "activity" : "activities"} · {formatHours(dayTotal)}</span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => { const d = parseYMD(date); d.setDate(d.getDate() + 1); onChangeDate(ymd(d)); }}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" aria-label="Next day">
+              <IconChevR/>
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="date" value={date}
+              onChange={(e) => e.target.value && onChangeDate(e.target.value)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm focus-ring"
+            />
+            <Button variant="secondary" onClick={() => onChangeDate(ymd(new Date()))}>Today</Button>
+            <Button onClick={() => onOpenAdd({ date, startTime: "09:00", endTime: "10:00" })}>
+              <IconPlus/> Add
+            </Button>
+          </div>
+        </div>
+
+        <div className="text-xs text-slate-500 mb-2">
+          Drag in empty space to create. Drag an event to move, drag the top or bottom edge to resize. Snaps to 15 minutes.
+        </div>
+
+        <div ref={scrollerRef}
+             className="overflow-y-auto scrollbar-thin border border-slate-200 rounded-xl bg-white"
+             style={{ maxHeight: "70vh" }}>
+          <div className="flex">
+            {/* Hour gutter */}
+            <div className="w-14 shrink-0 border-r border-slate-100 bg-slate-50/40 select-none">
+              {hours.map((h) => (
+                <div key={h} className="relative" style={{ height: HOUR_HEIGHT }}>
+                  <div className="absolute -top-2 right-1.5 text-[10px] text-slate-400 tabular-nums">
+                    {pad2(h)}:00
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Timeline body */}
+            <div
+              ref={containerRef}
+              className="relative flex-1"
+              style={{ height: TOTAL_HEIGHT, touchAction: "none" }}
+              onPointerDown={onBgPointerDown}
+            >
+              {/* Hour grid lines */}
+              {hours.map((h) => (
+                <div key={"hr" + h}
+                     className="absolute left-0 right-0 border-t border-slate-100"
+                     style={{ top: h * HOUR_HEIGHT }}/>
+              ))}
+              {/* Half-hour lines */}
+              {hours.map((h) => (
+                <div key={"hf" + h}
+                     className="absolute left-0 right-0 border-t border-dashed border-slate-100"
+                     style={{ top: h * HOUR_HEIGHT + HOUR_HEIGHT / 2 }}/>
+              ))}
+
+              {/* Now indicator */}
+              {nowMin != null && (
+                <div className="absolute left-0 right-0 flex items-center pointer-events-none"
+                     style={{ top: nowMin }}>
+                  <div className="-ml-1 h-2 w-2 rounded-full bg-rose-500"/>
+                  <div className="flex-1 h-px bg-rose-500"/>
+                </div>
+              )}
+
+              {/* Events */}
+              {dayItems.map((a) => {
+                const isDragging = drag && drag.id === a.id;
+                const start = isDragging ? drag.startMin : startMinOf(a);
+                const end   = isDragging ? drag.endMin   : endMinForDisplay(a);
+                const c = getColors(a.tag);
+                const info = layout.get(a.id) || { col: 0, total: 1 };
+                const widthPct = 100 / info.total;
+                const leftPct  = widthPct * info.col;
+                const wraps = wrapsMidnight(a);
+                return (
+                  <div
+                    key={a.id}
+                    data-event="true"
+                    onPointerDown={(e) => onEventPointerDown(e, a)}
+                    className="absolute rounded-lg overflow-hidden select-none cursor-grab active:cursor-grabbing"
+                    style={{
+                      top: start,
+                      height: Math.max(MIN_DURATION, end - start),
+                      left:  `calc(${leftPct}% + 4px)`,
+                      width: `calc(${widthPct}% - 8px)`,
+                      background: c.bg,
+                      color: c.fg,
+                      borderLeft: `3px solid ${c.solid}`,
+                      boxShadow: isDragging ? "0 12px 24px -10px rgba(15,23,42,0.25)" : "none",
+                      opacity: isDragging ? 0.95 : 1,
+                      zIndex: isDragging ? 20 : 1,
+                      touchAction: "none",
+                    }}
+                    title={`${a.title} · ${a.startTime}–${a.endTime}`}
+                  >
+                    {!wraps && (
+                      <div data-handle="true"
+                           onPointerDown={(e) => onHandlePointerDown(e, a, "top")}
+                           className="absolute top-0 left-0 right-0 h-1.5 cursor-ns-resize"
+                           style={{ touchAction: "none" }}/>
+                    )}
+                    <div className="px-2 py-1 text-[11px] leading-tight pointer-events-none">
+                      <div className="font-semibold truncate">{a.title}</div>
+                      <div className="opacity-70 truncate">
+                        {minToHM(start)} – {wraps ? a.endTime : minToHM(end)}
+                        {wraps && <span className="ml-1 opacity-70">(wraps)</span>}
+                      </div>
+                    </div>
+                    {!wraps && (
+                      <div data-handle="true"
+                           onPointerDown={(e) => onHandlePointerDown(e, a, "bottom")}
+                           className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize"
+                           style={{ touchAction: "none" }}/>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Create drag preview */}
+              {drag && drag.kind === "create" && (
+                <div className="absolute left-1 right-1 rounded-lg bg-indigo-100/70 border border-dashed border-indigo-400 pointer-events-none"
+                     style={{
+                       top: drag.startMin,
+                       height: Math.max(MIN_DURATION, drag.endMin - drag.startMin),
+                     }}>
+                  <div className="px-2 py-1 text-[11px] text-indigo-700 font-medium">
+                    {minToHM(drag.startMin)} – {minToHM(drag.endMin)}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Calendar View (month grid + day timeline) ---------- */
+
+  function CalendarView({ activities, onAdd, onEdit, onCreate, onUpdate }) {
+    const { tagNames, getColors } = useTags();
+    const [mode, setMode] = useState("day"); // "month" | "day"
+    const [cursor, setCursor] = useState(() => startOfMonth(new Date()));
+    const [selectedDate, setSelectedDate] = useState(() => ymd(new Date()));
+
+    const grid = useMemo(() => buildMonthGrid(cursor), [cursor]);
+
+    const byDate = useMemo(() => {
+      const m = new Map();
+      for (const a of activities) {
+        if (!m.has(a.date)) m.set(a.date, []);
+        m.get(a.date).push(a);
+      }
+      for (const arr of m.values()) {
+        arr.sort((x, y) => x.startTime.localeCompare(y.startTime));
+      }
+      return m;
+    }, [activities]);
+
+    const monthLabel = cursor.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    const todayStr = ymd(new Date());
+    const selectedList = byDate.get(selectedDate) || [];
+
+    // Per-tag summary across visible month
+    const monthSummary = useMemo(() => {
+      const totals = Object.fromEntries(tagNames.map((t) => [t, 0]));
+      const monthStart = startOfMonth(cursor);
+      const monthEnd = endOfMonth(cursor);
+      for (const a of activities) {
+        const d = parseYMD(a.date);
+        if (d >= monthStart && d <= monthEnd) {
+          if (!(a.tag in totals)) totals[a.tag] = 0;  // include unknown/legacy tags
+          totals[a.tag] += durationHours(a);
+        }
+      }
+      return totals;
+    }, [activities, cursor, tagNames]);
+
+    return (
+      <div className="space-y-3">
+        {/* Month / Day mode toggle */}
+        <div className="flex items-center justify-between px-1">
+          <div className="inline-flex rounded-xl bg-slate-100 p-1">
+            <button
+              onClick={() => setMode("month")}
+              className={
+                "rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+                (mode === "month" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")
+              }>Month</button>
+            <button
+              onClick={() => setMode("day")}
+              className={
+                "rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+                (mode === "day" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")
+              }>Day</button>
+          </div>
+          <div className="text-xs text-slate-500">
+            {mode === "day" ? formatPrettyDate(selectedDate) : "Double-click a day to open it."}
+          </div>
+        </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {mode === "day" ? (
+          <div className="lg:col-span-2">
+            <DayTimeline
+              date={selectedDate}
+              activities={activities}
+              onCreate={onCreate}
+              onUpdate={onUpdate}
+              onOpenEdit={onEdit}
+              onOpenAdd={onAdd}
+              onChangeDate={setSelectedDate}
+            />
+          </div>
+        ) : (
+        /* Calendar grid */
+        <div className="lg:col-span-2 card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"><IconChevL/></button>
+              <h2 className="text-lg font-semibold tracking-tight">{monthLabel}</h2>
+              <button
+                onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"><IconChevR/></button>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="secondary"
+                      onClick={() => { const t = new Date(); setCursor(startOfMonth(t)); setSelectedDate(ymd(t)); }}>
+                Today
+              </Button>
+              <Button onClick={() => onAdd(selectedDate)}><IconPlus/> Add</Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+            {WEEKDAYS.map((w) => (
+              <div key={w} className="text-xs font-medium text-slate-400 px-2">{w}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1.5">
+            {grid.map((d, i) => {
+              const key = ymd(d);
+              const inMonth = d.getMonth() === cursor.getMonth();
+              const isToday = key === todayStr;
+              const isSelected = key === selectedDate;
+              const items = byDate.get(key) || [];
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSelectedDate(key)}
+                  onDoubleClick={() => { setSelectedDate(key); setMode("day"); }}
+                  className={
+                    "relative text-left rounded-xl p-2 h-24 sm:h-28 border transition " +
+                    (inMonth ? "bg-white " : "bg-slate-50/60 ") +
+                    (isSelected
+                      ? "border-slate-900 ring-2 ring-slate-900/10"
+                      : "border-slate-200 hover:border-slate-300")
+                  }
+                >
+                  <div className="flex items-center justify-between">
+                    <span className={
+                      "text-xs " +
+                      (inMonth ? "text-slate-700 " : "text-slate-400 ") +
+                      (isToday ? "font-bold text-indigo-600" : "font-medium")
+                    }>
+                      {d.getDate()}
+                    </span>
+                    {items.length > 0 && (
+                      <span className="text-[10px] text-slate-400">{items.length}</span>
+                    )}
+                  </div>
+                  <div className="mt-1 space-y-1 overflow-hidden">
+                    {items.slice(0, 3).map((a) => {
+                      const c = getColors(a.tag);
+                      return (
+                        <div key={a.id}
+                          onClick={(e) => { e.stopPropagation(); onEdit(a); }}
+                          className="truncate text-[11px] rounded-md px-1.5 py-0.5"
+                          style={{ background: c.bg, color: c.fg }}
+                          title={`${a.title} • ${formatTimeRange(a)}`}>
+                          <span className="font-medium">{a.startTime}</span> {a.title}
+                        </div>
+                      );
+                    })}
+                    {items.length > 3 && (
+                      <div className="text-[10px] text-slate-400">+{items.length - 3} more</div>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        )}
+
+        {/* Side panel: selected day + month summary */}
+        <div className="space-y-5">
+          <div className="card p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="text-xs uppercase tracking-wider text-slate-400">Selected day</div>
+                <div className="text-base font-semibold mt-0.5">{formatPrettyDate(selectedDate)}</div>
+                {mode === "month" && (
+                  <button onClick={() => setMode("day")}
+                          className="text-xs text-indigo-600 hover:underline mt-0.5">
+                    Open in day view →
+                  </button>
+                )}
+              </div>
+              <Button variant="secondary" onClick={() => onAdd(selectedDate)}>
+                <IconPlus/> Add
+              </Button>
+            </div>
+
+            {selectedList.length === 0 ? (
+              <div className="text-sm text-slate-500 py-6 text-center">
+                Nothing planned. Add an activity to get started.
+              </div>
+            ) : (
+              <ul className="space-y-2 max-h-[420px] overflow-auto scrollbar-thin pr-1">
+                {selectedList.map((a) => {
+                  const c = getColors(a.tag);
+                  return (
+                    <li key={a.id}>
+                      <button
+                        onClick={() => onEdit(a)}
+                        className="w-full text-left rounded-xl border border-slate-200 bg-white hover:bg-slate-50 p-3 transition"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="font-medium truncate">{a.title}</div>
+                            <div className="text-xs text-slate-500 mt-0.5">
+                              {formatTimeRange(a)} · {formatHours(durationHours(a))}
+                            </div>
+                          </div>
+                          <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
+                                style={{ background: c.bg, color: c.fg }}>
+                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.solid }}/>
+                            {a.tag}
+                          </span>
+                        </div>
+                        {a.notes && (
+                          <div className="mt-2 text-xs text-slate-500 line-clamp-2">{a.notes}</div>
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <div className="card p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs uppercase tracking-wider text-slate-400">This month</div>
+              <div className="text-xs text-slate-400">
+                {cursor.toLocaleDateString(undefined, { month: "short" })}
+              </div>
+            </div>
+            <ul className="space-y-2">
+              {tagNames.map((t) => {
+                const hrs = monthSummary[t] || 0;
+                const c = getColors(t);
+                return (
+                  <li key={t} className="flex items-center justify-between text-sm">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: c.solid }}/>
+                      <span className="text-slate-700">{t}</span>
+                    </span>
+                    <span className="font-medium text-slate-900">{formatHours(hrs)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+      </div>
+    );
+  }
+
+  /* ---------- Analytics View ---------- */
+
+  function AnalyticsView({ activities, onEditActivity }) {
+    const { tagNames, getColors } = useTags();
+    const [filter, setFilter] = useState("This week");
+    const [custom, setCustom] = useState({ from: "", to: "" });
+    const [selectedTag, setSelectedTag] = useState(null);
+    const [hiddenTags, setHiddenTags] = useState(() => loadHiddenAnalyticsTags());
+    const [chartMode, setChartMode] = useState("bar");
+
+    const range = useMemo(() => filterRange(filter, custom), [filter, custom]);
+
+    const filtered = useMemo(
+      () => activities.filter((a) => activityInRange(a, range)),
+      [activities, range]
+    );
+
+    useEffect(() => { saveHiddenAnalyticsTags(hiddenTags); }, [hiddenTags]);
+
+    const hiddenTagSet = useMemo(() => new Set(hiddenTags), [hiddenTags]);
+
+    const allChartData = useMemo(() => {
+      // Start with the current tag list (so an empty bar is still shown for unused tags),
+      // then mix in any "orphan" tags that still have activities pointing at them.
+      const totals = Object.fromEntries(tagNames.map((t) => [t, 0]));
+      for (const a of filtered) {
+        if (!(a.tag in totals)) totals[a.tag] = 0;
+        totals[a.tag] += durationHours(a);
+      }
+      // Preserve tag order: current tags first, orphans appended at the end.
+      const orphans = Object.keys(totals).filter((t) => !tagNames.includes(t));
+      const ordered = [...tagNames, ...orphans];
+      return ordered.map((t) => {
+        const c = getColors(t);
+        return {
+          tag: t,
+          hours: Number((totals[t] || 0).toFixed(2)),
+          color: c.solid,
+          softColor: c.soft,
+          bgColor: c.bg,
+          fgColor: c.fg,
+        };
+      });
+    }, [filtered, tagNames, getColors]);
+
+    const chartData = useMemo(
+      () => allChartData.filter((d) => !hiddenTagSet.has(d.tag)),
+      [allChartData, hiddenTagSet]
+    );
+
+    const hiddenChartData = useMemo(
+      () => allChartData.filter((d) => hiddenTagSet.has(d.tag)),
+      [allChartData, hiddenTagSet]
+    );
+
+    const totalHours = chartData.reduce((s, d) => s + d.hours, 0);
+
+    const tagActivities = useMemo(() => {
+      if (!selectedTag) return [];
+      return filtered
+        .filter((a) => a.tag === selectedTag)
+        .sort((a, b) =>
+          a.date === b.date ? a.startTime.localeCompare(b.startTime) : a.date.localeCompare(b.date)
+        );
+    }, [filtered, selectedTag]);
+
+    // Toggle drilldown by tag. Use this for any click pathway.
+    const toggleTag = (tag) => {
+      if (!tag) return;
+      setSelectedTag((cur) => (cur === tag ? null : tag));
+    };
+
+    const hideTag = (tag) => {
+      if (!tag) return;
+      setSelectedTag((cur) => (cur === tag ? null : cur));
+      setHiddenTags((list) => list.includes(tag) ? list : [...list, tag]);
+    };
+
+    const showTag = (tag) => {
+      setHiddenTags((list) => list.filter((t) => t !== tag));
+    };
+
+    const showAllTags = () => setHiddenTags([]);
+
+    const barGradientId = (tag) => `bar-gradient-${safeDomId(tag)}`;
+
+    // Defensive: Recharts' click payload shape differs by version / event source.
+    // Try every place the tag could live.
+    const handleChartClick = (state) => {
+      if (!state) return;
+      const tag =
+        state?.activePayload?.[0]?.payload?.tag ||
+        state?.activePayload?.[0]?.tag ||
+        state?.payload?.tag ||
+        state?.tag;
+      toggleTag(tag);
+    };
+
+    return (
+      <div className="space-y-5">
+        <div className="card p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">Time by tag</h2>
+              <p className="text-sm text-slate-500 mt-0.5">
+                {filter === "All time"
+                  ? "All recorded activities."
+                  : filter === "Custom"
+                    ? (custom.from && custom.to)
+                        ? `${formatPrettyDate(custom.from)} → ${formatPrettyDate(custom.to)}`
+                        : "Pick a custom date range."
+                    : `${filter} · ${formatHours(totalHours)} total`}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={
+                    "rounded-full px-3 py-1.5 text-xs font-medium transition " +
+                    (filter === f
+                      ? "bg-slate-900 text-white"
+                      : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50")
+                  }
+                >
+                  {f}
+                </button>
+              ))}
+              <div className="inline-flex rounded-xl bg-slate-100 p-1">
+                {["bar", "radar"].map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setChartMode(mode)}
+                    className={
+                      "rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition " +
+                      (chartMode === mode
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-500 hover:text-slate-700")
+                    }
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {filter === "Custom" && (
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-slate-500">From</label>
+                <input type="date" value={custom.from}
+                  onChange={(e) => setCustom((c) => ({ ...c, from: e.target.value }))}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm focus-ring"/>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-slate-500">To</label>
+                <input type="date" value={custom.to}
+                  onChange={(e) => setCustom((c) => ({ ...c, to: e.target.value }))}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm focus-ring"/>
+              </div>
+            </div>
+          )}
+
+          <div className="h-[420px]">
+            {chartData.length === 0 ? (
+              <div className="h-full rounded-xl border border-dashed border-slate-200 bg-slate-50/70 flex items-center justify-center text-sm text-slate-500">
+                {chartMode === "bar" ? "All bars hidden." : "All radar points hidden."}
+              </div>
+            ) : chartMode === "radar" ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={chartData} margin={{ top: 24, right: 56, bottom: 24, left: 56 }}>
+                <PolarGrid stroke="#e2e8f0"/>
+                <PolarAngleAxis
+                  dataKey="tag"
+                  tick={{ fill: "#475569", fontSize: 12 }}
+                  tickFormatter={(t) => (t === "Personal Development" ? "Personal Dev." : t)}
+                />
+                <PolarRadiusAxis
+                  angle={90}
+                  axisLine={false}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
+                  tickFormatter={(v) => formatHours(v)}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12, border: "1px solid #e2e8f0",
+                    boxShadow: "0 10px 30px -12px rgba(15,23,42,0.18)", fontSize: 12,
+                  }}
+                  formatter={(v) => [`${formatHours(v)}`, "Time"]}
+                />
+                <Radar
+                  name="Time"
+                  dataKey="hours"
+                  stroke="#4f46e5"
+                  fill="#6366f1"
+                  fillOpacity={0.24}
+                  dot={{ r: 3, fill: "#4f46e5", strokeWidth: 0 }}
+                  activeDot={{ r: 5 }}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+            ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 16, right: 16, left: 0, bottom: 8 }}
+                onClick={handleChartClick}
+              >
+                <defs>
+                  {chartData.map((d, i) => (
+                    <linearGradient key={d.tag} id={barGradientId(d.tag)} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={d.color}>
+                        <animate attributeName="stop-color"
+                                 values={`${d.color};${d.softColor};${d.color}`}
+                                 dur={`${4 + (i % 3) * 0.35}s`}
+                                 repeatCount="indefinite"/>
+                      </stop>
+                      <stop offset="100%" stopColor={d.softColor}>
+                        <animate attributeName="stop-color"
+                                 values={`${d.softColor};${d.color};${d.softColor}`}
+                                 dur={`${4 + (i % 3) * 0.35}s`}
+                                 repeatCount="indefinite"/>
+                      </stop>
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false}/>
+                <XAxis
+                  dataKey="tag"
+                  tick={{ fill: "#475569", fontSize: 12 }}
+                  axisLine={{ stroke: "#e2e8f0" }}
+                  tickLine={false}
+                  interval={0}
+                  height={50}
+                  tickFormatter={(t) => (t === "Personal Development" ? "Personal Dev." : t)}
+                />
+                <YAxis
+                  tick={{ fill: "#94a3b8", fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  label={{ value: "Hours", angle: -90, position: "insideLeft", offset: 10,
+                           style: { fill: "#94a3b8", fontSize: 12 } }}
+                />
+                <Tooltip
+                  cursor={{ fill: "rgba(15,23,42,0.04)" }}
+                  contentStyle={{
+                    borderRadius: 12, border: "1px solid #e2e8f0",
+                    boxShadow: "0 10px 30px -12px rgba(15,23,42,0.18)", fontSize: 12,
+                  }}
+                  formatter={(v) => [`${formatHours(v)}`, "Time"]}
+                />
+                <Bar dataKey="hours" radius={[10,10,0,0]} cursor="pointer">
+                  {chartData.map((d) => (
+                    <Cell key={d.tag}
+                          fill={`url(#${barGradientId(d.tag)})`}
+                          fillOpacity={selectedTag && selectedTag !== d.tag ? 0.35 : 1}
+                          stroke={selectedTag === d.tag ? "#0f172a" : "transparent"}
+                          strokeWidth={selectedTag === d.tag ? 1.5 : 0}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => toggleTag(d.tag)}
+                    />
+                  ))}
+                  <LabelList dataKey="hours" position="top"
+                             formatter={(v) => (v > 0 ? formatHours(v) : "")}
+                             style={{ fill: "#475569", fontSize: 11 }}/>
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+            )}
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {chartData.map((d) => {
+              const c = getColors(d.tag);
+              const active = selectedTag === d.tag;
+              return (
+                <div
+                  key={d.tag}
+                  className={
+                    "inline-flex items-center overflow-hidden rounded-full text-xs font-medium transition border " +
+                    (active
+                      ? "border-slate-900 ring-2 ring-slate-900/10"
+                      : "border-transparent hover:border-slate-200")
+                  }
+                  style={{ background: c.bg, color: c.fg }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleTag(d.tag)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.solid }}/>
+                    {d.tag}
+                    <span className="ml-1 text-[10px] opacity-70 tabular-nums">{formatHours(d.hours)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => hideTag(d.tag)}
+                    className="border-l border-current/10 px-2 py-1 opacity-70 hover:opacity-100"
+                    aria-label={`Hide ${d.tag}`}
+                    title={`Hide ${d.tag}`}
+                  >
+                    ×
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {hiddenChartData.length > 0 && (
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-400">Hidden</span>
+              {hiddenChartData.map((d) => {
+                const c = getColors(d.tag);
+                return (
+                  <button
+                    key={d.tag}
+                    type="button"
+                    onClick={() => showTag(d.tag)}
+                    className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border border-slate-200 hover:border-slate-300"
+                    style={{ background: c.bg, color: c.fg }}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.solid }}/>
+                    {d.tag}
+                    <span className="ml-1 text-[10px] opacity-70">Show</span>
+                  </button>
+                );
+              })}
+              <button type="button" onClick={showAllTags}
+                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50">
+                Show all
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Drilldown */}
+        <div className="card p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-slate-400">Drilldown</div>
+              <div className="text-base font-semibold mt-0.5">
+                {selectedTag || "Pick a tag"}
+              </div>
+            </div>
+            {selectedTag && (
+              <button onClick={() => setSelectedTag(null)}
+                className="text-xs text-slate-500 hover:text-slate-900">Clear</button>
+            )}
+          </div>
+
+          {!selectedTag ? (
+            <div className="text-sm text-slate-500 py-6 text-center">
+              Pick a tag pill to see its activities here.
+            </div>
+          ) : tagActivities.length === 0 ? (
+            <div className="text-sm text-slate-500 py-6 text-center">
+              No activities in this tag for the selected range.
+            </div>
+          ) : (
+            <ul className="space-y-2 max-h-[420px] overflow-auto scrollbar-thin pr-1">
+              {tagActivities.map((a) => (
+                <li key={a.id}>
+                  <button
+                    onClick={() => onEditActivity(a)}
+                    className="w-full text-left rounded-xl border border-slate-200 bg-white hover:bg-slate-50 p-3 transition"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{a.title}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">
+                          {formatPrettyDate(a.date)} · {formatTimeRange(a)} · {formatHours(durationHours(a))}
+                        </div>
+                      </div>
+                    </div>
+                    {a.notes && (
+                      <div className="mt-2 text-xs text-slate-500 line-clamp-2">{a.notes}</div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Top Nav ---------- */
+
+  function TopNav({ tab, setTab, onAdd, onExport, onImport, onClear }) {
+    const fileInputRef = useRef(null);
+
+    return (
+      <header className="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-slate-200/70">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">
+              ◐
+            </div>
+            <div className="leading-tight">
+              <div className="text-sm font-semibold tracking-tight">Life Balance Calendar</div>
+              <div className="text-[11px] text-slate-500">Plan your time. See your balance.</div>
+            </div>
+          </div>
+
+          <nav className="ml-4 hidden sm:flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+            <button
+              onClick={() => setTab("calendar")}
+              className={
+                "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+                (tab === "calendar" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")
+              }>
+              <IconCalendar/> Calendar
+            </button>
+            <button
+              onClick={() => setTab("analytics")}
+              className={
+                "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+                (tab === "analytics" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")
+              }>
+              <IconChart/> Analytics
+            </button>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" onClick={onExport}>Export</Button>
+              <Button variant="ghost" onClick={() => fileInputRef.current?.click()}>Import</Button>
+              <input ref={fileInputRef} type="file" accept="application/json" className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) onImport(f); e.target.value = ""; }}/>
+              <Button variant="ghost" onClick={onClear}>Clear</Button>
+            </div>
+            <Button onClick={() => onAdd()}><IconPlus/> Add activity</Button>
+          </div>
+        </div>
+
+        {/* Mobile tabs */}
+        <div className="sm:hidden border-t border-slate-200/70 px-4 py-2 flex items-center gap-1">
+          <button
+            onClick={() => setTab("calendar")}
+            className={
+              "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+              (tab === "calendar" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")
+            }>Calendar</button>
+          <button
+            onClick={() => setTab("analytics")}
+            className={
+              "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition " +
+              (tab === "analytics" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")
+            }>Analytics</button>
+        </div>
+      </header>
+    );
+  }
+
+  /* ---------- Confirm dialog ---------- */
+
+  function ConfirmDialog({ open, title, body, confirmLabel = "Confirm", onConfirm, onClose }) {
+    if (!open) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onClick={onClose}/>
+        <div className="relative card w-full max-w-md p-6 soft-shadow">
+          <h3 className="text-base font-semibold">{title}</h3>
+          <p className="text-sm text-slate-500 mt-1.5">{body}</p>
+          <div className="flex items-center justify-end gap-2 mt-5">
+            <Button variant="secondary" onClick={onClose}>Cancel</Button>
+            <Button variant="danger" onClick={onConfirm}>{confirmLabel}</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Toast ---------- */
+
+  function Toast({ message }) {
+    if (!message) return null;
+    return (
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+        <div className="rounded-full bg-slate-900 text-white text-sm px-4 py-2 soft-shadow">
+          {message}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- App root ---------- */
+
+  function App() {
+    const [activities, setActivities] = useState(() => loadActivities());
+    const [tags, setTags] = useState(() => loadTags());
+    const [tab, setTab] = useState("calendar");
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalDraft, setModalDraft] = useState(null);
+    const [tagsModalOpen, setTagsModalOpen] = useState(false);
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [toast, setToast] = useState("");
+
+    // Persist on every change
+    useEffect(() => { saveActivities(activities); }, [activities]);
+    useEffect(() => { saveTags(tags); }, [tags]);
+
+    // Context value — components call useTags() to read tagNames / getColors live.
+    const tagsCtx = useMemo(() => ({
+      tags,
+      setTags,
+      tagNames: tags.map((t) => t.name),
+      getColors: (name) => tagColorsFor(name, tags),
+    }), [tags]);
+
+    // When a tag is deleted, reassign any activities pointing at it.
+    const reassignTag = useCallback((from, to) => {
+      setActivities((list) => list.map((a) => (a.tag === from ? { ...a, tag: to } : a)));
+    }, []);
+
+    const showToast = (msg) => {
+      setToast(msg);
+      setTimeout(() => setToast(""), 2200);
+    };
+
+    // Seed a friendly demo set on first run (only if empty AND no flag set)
+    useEffect(() => {
+      const seeded = localStorage.getItem("lifeBalanceCalendar.seeded");
+      if (!seeded && activities.length === 0) {
+        const today = new Date();
+        const day = (offset) => { const d = new Date(today); d.setDate(today.getDate() + offset); return ymd(d); };
+        const demo = [
+          { id: uid(), title: "Sleep",              date: day(-1), startTime: "23:00", endTime: "07:00", tag: "Sleep", notes: "" },
+          { id: uid(), title: "Deep work block",    date: day(0),  startTime: "09:00", endTime: "12:00", tag: "Work", notes: "Focus on roadmap." },
+          { id: uid(), title: "Lunch with friend",  date: day(0),  startTime: "12:30", endTime: "13:30", tag: "Fun",  notes: "" },
+          { id: uid(), title: "Reading: design",    date: day(0),  startTime: "18:00", endTime: "19:00", tag: "Personal Development", notes: "" },
+          { id: uid(), title: "Grocery run",        date: day(0),  startTime: "19:30", endTime: "20:15", tag: "Chores", notes: "" },
+          { id: uid(), title: "Workout",            date: day(1),  startTime: "07:00", endTime: "08:00", tag: "Personal Development", notes: "" },
+          { id: uid(), title: "Project review",     date: day(1),  startTime: "10:00", endTime: "11:30", tag: "Work", notes: "" },
+          { id: uid(), title: "Movie night",        date: day(2),  startTime: "20:00", endTime: "22:30", tag: "Fun",  notes: "" },
+        ];
+        setActivities(demo);
+        localStorage.setItem("lifeBalanceCalendar.seeded", "1");
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const openAdd = useCallback((arg) => {
+      // Accept either a date string or a partial draft object.
+      const base = emptyDraft();
+      if (typeof arg === "string") base.date = arg;
+      else if (arg && typeof arg === "object") Object.assign(base, arg);
+      setModalDraft(base);
+      setModalOpen(true);
+    }, []);
+
+    const openEdit = useCallback((a) => {
+      setModalDraft({ ...a });
+      setModalOpen(true);
+    }, []);
+
+    const handleSave = (a) => {
+      setActivities((list) => {
+        const exists = list.some((x) => x.id === a.id);
+        return exists ? list.map((x) => (x.id === a.id ? a : x)) : [...list, a];
+      });
+      setModalOpen(false);
+      showToast("Saved");
+    };
+
+    const handleDelete = (id) => {
+      setActivities((list) => list.filter((x) => x.id !== id));
+      setModalOpen(false);
+      showToast("Deleted");
+    };
+
+    // Direct create (used by the day timeline's drag-to-create).
+    const createActivity = useCallback((partial) => {
+      const a = {
+        id: uid(),
+        title: partial.title || "New activity",
+        date: partial.date || ymd(new Date()),
+        startTime: partial.startTime || "09:00",
+        endTime: partial.endTime || "10:00",
+        tag: partial.tag || "",
+        notes: partial.notes || "",
+      };
+      setActivities((list) => [...list, a]);
+      return a;
+    }, []);
+
+    // Patch an activity by id (used by drag-to-move and drag-to-resize).
+    const updateActivity = useCallback((id, patch) => {
+      setActivities((list) => list.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+    }, []);
+
+    const handleExport = () => {
+      const payload = { version: 2, activities, tags };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `life-balance-${ymd(new Date())}.json`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Exported");
+    };
+
+    const handleImport = (file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          // Accept both shapes:
+          //  - legacy: an array of activities
+          //  - v2:     { activities, tags }
+          const rawActs = Array.isArray(data) ? data : data?.activities;
+          const rawTags = Array.isArray(data?.tags) ? data.tags : null;
+          if (!Array.isArray(rawActs)) throw new Error("missing activities");
+
+          // Import tags first so the merged list is ready for activity tag validation.
+          let nextTags = tags;
+          if (rawTags) {
+            const cleaned = rawTags
+              .filter((t) => t && typeof t.name === "string" && t.name.trim())
+              .map((t) => ({
+                name: t.name.trim(),
+                colorId: typeof t.colorId === "string" ? t.colorId : "slate",
+                fixed: !!t.fixed,
+              }))
+              .filter((t) => !(t.fixed && RETIRED_PRESET_TAGS.has(t.name)));
+            const byName = new Map(cleaned.map((t) => [t.name, t]));
+            for (const def of DEFAULT_TAGS) {
+              if (!byName.has(def.name)) byName.set(def.name, def);
+              else byName.get(def.name).fixed = true;
+            }
+            nextTags = Array.from(byName.values());
+          }
+
+          // Auto-create tags for any activity tag we don't know about yet.
+          const knownNames = new Set(nextTags.map((t) => t.name));
+          for (const a of rawActs) {
+            if (a && typeof a.tag === "string" && a.tag.trim() && !knownNames.has(a.tag)) {
+              const newTag = {
+                name: a.tag.trim(),
+                colorId: nextUnusedColor(nextTags),
+                fixed: false,
+              };
+              nextTags = [...nextTags, newTag];
+              knownNames.add(newTag.name);
+            }
+          }
+
+          const valid = rawActs
+            .filter((a) => a && a.title && a.date && a.startTime && a.endTime &&
+                            typeof a.tag === "string" && a.tag.trim())
+            .map((a) => ({ ...a, id: a.id || uid(), notes: a.notes || "" }));
+
+          setTags(nextTags);
+          setActivities(valid);
+          showToast(`Imported ${valid.length} activities${rawTags ? `, ${nextTags.length} tags` : ""}`);
+        } catch (e) {
+          alert("That file doesn't look like a valid Life Balance export.");
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    const handleClear = () => setConfirmOpen(true);
+    const confirmClear = () => {
+      setActivities([]);
+      setConfirmOpen(false);
+      showToast("All data cleared");
+    };
+
+    return (
+      <TagsContext.Provider value={tagsCtx}>
+      <div className="min-h-full">
+        <TopNav
+          tab={tab} setTab={setTab}
+          onAdd={openAdd}
+          onExport={handleExport}
+          onImport={handleImport}
+          onClear={handleClear}
+        />
+
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+          {tab === "calendar" ? (
+            <CalendarView
+              activities={activities}
+              onAdd={openAdd}
+              onEdit={openEdit}
+              onCreate={createActivity}
+              onUpdate={updateActivity}
+            />
+          ) : (
+            <AnalyticsView
+              activities={activities}
+              onEditActivity={openEdit}
+            />
+          )}
+        </main>
+
+        <ActivityModal
+          open={modalOpen}
+          draft={modalDraft}
+          onClose={() => setModalOpen(false)}
+          onSave={handleSave}
+          onDelete={handleDelete}
+        />
+
+        <ConfirmDialog
+          open={confirmOpen}
+          title="Clear all activities?"
+          body="This will remove every saved activity from this browser. This can't be undone."
+          confirmLabel="Yes, clear everything"
+          onConfirm={confirmClear}
+          onClose={() => setConfirmOpen(false)}
+        />
+
+        <Toast message={toast}/>
+      </div>
+      </TagsContext.Provider>
+    );
+  }
+
+  /* ---------- Mount ---------- */
+
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App/>);
+  </script>
+</body>
+</html>
