@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Designer & Seating Planner</title>
+<style>
+  :root{
+    --ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--panel:#f8fafc;--accent:#2563eb;
+    --desk:#ffffff;--desk-b:#cbd5e1;--yellow:#fde68a;--yellow-b:#d4a017;
+    --ok:#16a34a;--bad:#dc2626;--warn:#d97706;--eal:#7c3aed;
+    --furn:#e5e7eb;--furn-b:#9ca3af;--wall:#475569;--door:#c08a4a;--window:#bae6fd;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;color:var(--ink);background:#eef1f5}
+  header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:800}
+  .grow{flex:1}
+  button{font-family:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer}
+  button:hover{border-color:#94a3b8}
+  button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.primary:hover{filter:brightness(1.05)}
+  button.danger{color:#b91c1c;border-color:#f0c1c1}
+  button.sm{padding:5px 9px;font-size:12px;border-radius:8px}
+  button.ghost{border:none;background:transparent;padding:2px 6px}
+  select,input[type=text],input[type=number]{font-family:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  .layout{display:flex;height:calc(100vh - 53px)}
+  .side{width:300px;flex:none;background:#fff;border-right:1px solid var(--line);padding:14px 14px 50px;overflow:auto}
+  .side h2{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:18px 0 8px;display:flex;align-items:center;gap:6px}
+  .side h2:first-child{margin-top:0}
+  section.work{flex:1;display:flex;flex-direction:column;min-width:0}
+  .toolbar{padding:9px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--panel)}
+  .titlebar{padding:6px 16px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+  #planTitle{width:100%;border:1px dashed transparent;border-radius:8px;padding:6px 12px;background:transparent;text-align:center;color:#0f172a;font:800 28px/1.15 "Segoe UI",system-ui,Arial,sans-serif;letter-spacing:-.01em}
+  #planTitle::placeholder{color:#9aa3af;font-weight:600;font-size:16px;letter-spacing:0}
+  #planTitle:hover{border-color:var(--line)} #planTitle:focus{outline:none;border-color:var(--accent);background:#fff}
+  .main{flex:1;overflow:auto;position:relative;background:radial-gradient(circle at 1px 1px,#dfe3e8 1px,transparent 0);background-size:22px 22px}
+  #canvasWrap{padding:24px;min-width:1290px}
+  #canvas{position:relative;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);transform-origin:0 0}
+  .item{position:absolute;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;user-select:none;overflow:visible;font-size:12px;cursor:move}
+  .item .inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;border-radius:7px}
+  .item.desk{background:var(--desk);border:1.5px solid var(--desk-b)}
+  .item.desk.occupied{background:#eef4ff;border-color:#9bb8ef}
+  .item.desktop{background:var(--yellow);border:1px solid var(--yellow-b);color:#5b5320}
+  .item.desktop.occupied{background:#fff7cf}
+  .item.furniture{background:var(--furn);border:1px solid var(--furn-b);color:#475569;font-weight:600}
+  .item.wall{background:var(--wall);border:1px solid #334155;border-radius:3px}
+  .item.door{background:var(--door);border:1px solid #9a6b32;color:#fff;font-size:10px;font-weight:600}
+  .item.window{background:var(--window);border:1px solid #7dd3fc;color:#0c4a6e;font-size:10px;font-weight:600}
+  .item.label{background:transparent;border:1px dashed transparent;color:#0f172a;font-weight:700}
+  .item .nm{font-size:11px;font-weight:700;line-height:1.15;word-break:break-word}
+  .item.desktop .nm{font-size:10px}
+  .item .sub{font-size:9px;color:var(--muted);margin-top:2px}
+  .item.desktop .sub{color:#7a6f2e;font-size:8.5px}
+  .item .ealtag{position:absolute;top:2px;left:2px;font-size:8px;background:var(--eal);color:#fff;border-radius:4px;padding:0 3px;font-weight:700;z-index:5}
+  .item .dot{position:absolute;top:3px;right:3px;width:11px;height:11px;border-radius:50%;z-index:5}
+  .badbg{box-shadow:0 0 0 2px var(--bad) inset} .warnbg{box-shadow:0 0 0 2px var(--warn) inset}
+  .ealbg{box-shadow:0 0 0 2px var(--eal) inset}
+  .item .ealtag.alone{background:var(--eal);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--eal)}
+  .item.selected{outline:2px solid var(--accent);outline-offset:1px;z-index:30}
+  .rhandle{position:absolute;right:-6px;bottom:-6px;width:14px;height:14px;background:#fff;border:2px solid var(--accent);border-radius:3px;cursor:nwse-resize;z-index:31}
+  .delbtn{position:absolute;top:-10px;right:-10px;width:20px;height:20px;border-radius:50%;background:var(--bad);color:#fff;border:none;font-size:12px;line-height:1;cursor:pointer;z-index:31;display:flex;align-items:center;justify-content:center}
+  .item.dragover{box-shadow:0 0 0 3px rgba(37,99,235,.5)}
+  .palette{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .palette button{display:flex;align-items:center;gap:7px;justify-content:flex-start;font-size:12px;padding:9px}
+  .sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.18)}
+  .listrow{display:flex;align-items:center;gap:6px;padding:8px;border:1px solid var(--line);border-radius:9px;margin-bottom:6px;background:#fff;font-size:13px}
+  .listrow.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .listrow .nm{font-weight:700;flex:1;cursor:pointer}
+  .listrow .meta{font-size:11px;color:var(--muted)}
+  .roster-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;cursor:grab;background:#fff}
+  .roster-item.seated{opacity:.5}
+  .roster-item .meta{font-size:11px;color:var(--muted)}
+  .pill{font-size:10px;padding:1px 6px;border-radius:20px;background:#eef2f7;color:#475569;font-weight:700}
+  .pill.eal{background:#efe7fb;color:var(--eal)}
+  .empty{color:var(--muted);font-size:12px;padding:8px;text-align:center}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);align-items:center}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .scorebar{font-size:12px;display:flex;gap:14px;align-items:center}
+  .scorebar .b{font-weight:700}.scorebar .good{color:var(--ok)}.scorebar .warn{color:var(--warn)}.scorebar .bad{color:var(--bad)}
+  .stat{font-size:12px;color:var(--muted)}.stat b{color:var(--ink)}
+  #tooltip{position:fixed;z-index:200;max-width:280px;background:#111827;color:#fff;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.4;pointer-events:none;display:none;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  #tooltip .tl{display:block;margin-top:4px}
+  #tooltip .tl.bad{color:#fca5a5}#tooltip .tl.warn{color:#fcd34d}#tooltip .tl.good{color:#86efac}#tooltip .tl.eal{color:#c4b5fd}
+  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:14px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal h3{margin:0 0 4px}.modal .hint{color:var(--muted);margin:0 0 16px;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:11px;text-transform:uppercase;color:var(--muted)}
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .chip{font-size:11px;padding:3px 8px;border-radius:16px;border:1px solid var(--line);cursor:pointer;background:#fff;user-select:none}
+  .chip.on-good{background:#e7f6ec;border-color:#9fd9b3;color:#15803d}
+  .chip.on-bad{background:#fdeaea;border-color:#f0b4b4;color:#b91c1c}
+  .chip.on-cannot{background:#fde8e8;border-color:#e89393;color:#991b1b;text-decoration:line-through}
+  .rel-block label{font-weight:700;font-size:12px;display:block;margin:10px 0 4px}
+  .filebox{border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--muted)}
+  textarea{width:100%;min-height:90px}
+  .exp-choices{display:flex;gap:14px;margin-top:6px}
+  .exp-card{flex:1;border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fff}
+  .exp-card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(37,99,235,.15)}
+  .exp-card .ic{font-size:30px}.exp-card .t{font-weight:700;margin-top:6px}.exp-card .d{font-size:12px;color:var(--muted);margin-top:3px}
+  .hide{display:none!important}
+  details.section{margin-bottom:4px}
+  details.section>summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:16px 0 8px;list-style:none}
+  details.section>summary::-webkit-details-marker{display:none}
+  details.section>summary::before{content:'▸ ';color:#94a3b8}
+  details.section[open]>summary::before{content:'▾ '}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏫 Classroom Designer & Seating Planner</h1>
+  <span class="grow"></span>
+  <span class="stat" id="dataStat"></span>
+  <button class="sm" id="exportDataBtn">Backup</button>
+  <button class="sm" id="importDataBtn">Restore</button>
+  <input type="file" id="importDataInput" accept="application/json" class="hide">
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <h2>Room</h2>
+    <select id="layoutSel" style="width:100%;margin-bottom:8px"></select>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+      <input type="text" id="layoutName" placeholder="Rename room…" style="flex:1;min-width:90px">
+      <button class="sm" id="renameLayoutBtn">Rename</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+      <button class="sm primary" id="newLayoutBtn">+ New room</button>
+      <button class="sm" id="dupLayoutBtn">Duplicate</button>
+      <button class="sm danger" id="delLayoutBtn">Delete</button>
+    </div>
+
+    <details class="section" open><summary>Add to room</summary>
+      <div class="palette" id="palette">
+        <button data-add="desk"><i class="sw" style="background:#fff"></i>Student desk</button>
+        <button data-add="desktop"><i class="sw" style="background:var(--yellow);border-color:var(--yellow-b)"></i>Computer</button>
+        <button data-add="teacher"><i class="sw" style="background:var(--furn)"></i>Teacher desk</button>
+        <button data-add="projector"><i class="sw" style="background:var(--furn)"></i>Projector</button>
+        <button data-add="board"><i class="sw" style="background:var(--furn)"></i>Whiteboard</button>
+        <button data-add="wall"><i class="sw" style="background:var(--wall)"></i>Wall</button>
+        <button data-add="door"><i class="sw" style="background:var(--door)"></i>Door</button>
+        <button data-add="window"><i class="sw" style="background:var(--window)"></i>Window</button>
+        <button data-add="label"><i class="sw" style="background:#cbd5e1"></i>Text label</button>
+      </div>
+      <p class="stat" style="margin:8px 0 0">Drag items to move · click to select then resize (blue corner) or delete (✕) · double-click furniture/labels to rename.</p>
+      <button class="sm danger" id="clearRoomBtn" style="margin-top:8px">Clear room</button>
+    </details>
+
+    <h2>Class</h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+      <select id="classSel" style="flex:1;min-width:110px"></select>
+      <button class="sm" id="newClassBtn">+ Class</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+      <button class="sm" id="renameClassBtn">Rename</button>
+      <button class="sm danger" id="delClassBtn">Delete class</button>
+    </div>
+
+    <h2>Students <span id="stuCount" class="pill"></span></h2>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+      <button class="sm primary" id="addStuBtn">+ Add</button>
+      <button class="sm" id="bulkBtn">Upload sheet</button>
+      <button class="sm" id="manageBtn">Manage</button>
+      <button class="sm danger" id="delAllStuBtn">Delete all</button>
+    </div>
+    <p class="stat" style="margin:0 0 8px">Drag a name onto any chair to seat them.</p>
+    <div id="roster"></div>
+
+    <h2>Saved seating plans</h2>
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <input type="text" id="planName" placeholder="Plan name…" style="flex:1;min-width:110px">
+      <button class="sm primary" id="savePlanBtn">Save plan</button>
+    </div>
+    <div id="planList"></div>
+  </aside>
+
+  <section class="work">
+    <div class="toolbar">
+      <button class="primary" id="autoBtn">⚡ Auto-assign seats</button>
+      <button id="clearSeatsBtn">Clear seats</button>
+      <span style="border-left:1px solid var(--line);height:22px;margin:0 4px"></span>
+      <button class="sm" id="zoomOutBtn">−</button>
+      <button class="sm" id="zoomLabelBtn" style="min-width:54px">100%</button>
+      <button class="sm" id="zoomInBtn">+</button>
+      <button class="sm" id="zoomFitBtn">Fit</button>
+      <span style="border-left:1px solid var(--line);height:22px;margin:0 4px"></span>
+      <button class="primary" id="exportLayoutBtn" title="Export an A4 landscape JPEG or PDF for students">⬇ Export</button>
+      <span class="grow"></span>
+      <div class="scorebar" id="scoreBar"></div>
+    </div>
+    <div class="toolbar" style="border-top:none;padding-top:0">
+      <span class="legend">
+        <span><i class="sw" style="background:#fff"></i>Student desk</span>
+        <span><i class="sw" style="background:var(--yellow);border-color:var(--yellow-b)"></i>Computer</span>
+        <span><i class="sw" style="background:var(--furn)"></i>Furniture</span>
+        <span><i class="sw" style="background:var(--bad)"></i>Conflict</span>
+        <span><i class="sw" style="background:var(--warn)"></i>Caution</span>
+        <span><i class="sw" style="background:var(--eal)"></i>EAL</span>
+      </span>
+    </div>
+    <div class="titlebar">
+      <input type="text" id="planTitle" maxlength="120" placeholder="Click to add a title (shown above the layout when exported)…">
+    </div>
+    <div class="main">
+      <div id="canvasWrap"><div id="canvas"></div></div>
+    </div>
+  </section>
+</div>
+
+<div id="tooltip"></div>
+
+<!-- Export modal -->
+<div class="modal-bg" id="exportModal"><div class="modal" style="max-width:520px">
+  <h3>Export seating plan</h3>
+  <p class="hint">A4 landscape, title centred above the room. Pupil names only — CAT, grade, gender, EAL and conflict marks are hidden.</p>
+  <div class="exp-choices">
+    <div class="exp-card" id="expPdfBtn"><div class="ic">📄</div><div class="t">PDF</div><div class="d">A4 landscape · for printing</div></div>
+    <div class="exp-card" id="expJpgBtn"><div class="ic">🖼️</div><div class="t">JPEG</div><div class="d">A4 landscape image</div></div>
+  </div>
+  <div class="row-actions"><button class="sm" id="exportCancelBtn">Cancel</button></div>
+</div></div>
+
+<!-- Student modal -->
+<div class="modal-bg" id="stuModal"><div class="modal">
+  <h3 id="stuModalTitle">Add student</h3>
+  <p class="hint">Relationships are not permanent — edit any time. Ticking a relationship updates both pupils.</p>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:end">
+    <div><label style="font-size:12px;font-weight:700">Name</label><br><input type="text" id="f_name" style="width:100%"></div>
+    <div><label style="font-size:12px;font-weight:700">Gender</label><br>
+      <select id="f_gender" style="width:100%"><option value="">—</option><option value="F">Girl</option><option value="M">Boy</option></select></div>
+    <div><label style="font-size:12px;font-weight:700">CAT (1-9)</label><br><input type="number" id="f_cat" min="1" max="9" step="0.5" style="width:100%"></div>
+    <div><label style="font-size:12px;font-weight:700">Grade (1-9)</label><br><input type="number" id="f_grade" min="1" max="9" step="0.5" style="width:100%"></div>
+    <div><label style="font-size:12px;font-weight:700">EAL</label><br><input type="checkbox" id="f_eal" style="transform:scale(1.3);margin-top:8px"></div>
+  </div>
+  <div class="rel-block">
+    <label>✓ Works well with (good influence)</label><div class="chips" id="chips_good"></div>
+    <label>⚠ Distracted by / distracts (bad influence)</label><div class="chips" id="chips_bad"></div>
+    <label>✕ Cannot work with (social issue)</label><div class="chips" id="chips_cannot"></div>
+  </div>
+  <div class="row-actions">
+    <button class="danger" id="stuDeleteBtn">Delete</button>
+    <button id="stuCancelBtn">Cancel</button>
+    <button class="primary" id="stuSaveBtn">Save</button>
+  </div>
+</div></div>
+
+<!-- Manage modal -->
+<div class="modal-bg" id="manageModal"><div class="modal">
+  <h3>Manage students</h3>
+  <p class="hint">Click a row to edit.</p>
+  <div id="manageBody"></div>
+  <div class="row-actions"><button id="manageCloseBtn">Close</button></div>
+</div></div>
+
+<!-- Bulk modal -->
+<div class="modal-bg" id="bulkModal"><div class="modal">
+  <h3>Upload students from a spreadsheet</h3>
+  <p class="hint">Columns: <b>Name, Gender (M/F), CAT (1-9), Grade (1-9), EAL (Yes/No)</b>. Relationships are set in the app afterwards.</p>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button class="sm" id="tmplBtn">⬇ Template (.xlsx)</button>
+    <button class="sm" id="tmplCsvBtn">⬇ Template (.csv)</button>
+  </div>
+  <div class="filebox" id="dropbox">Drop a .xlsx / .csv here, or <button class="sm" id="pickFileBtn">choose a file</button>
+    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="hide"></div>
+  <div id="bulkPreview" style="margin-top:12px"></div>
+  <div class="row-actions">
+    <button id="bulkCancelBtn">Cancel</button>
+    <button class="primary" id="bulkImportBtn" disabled>Import</button>
+  </div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ============================ STATE ============================ */
+const LS_KEY='classroomDesigner_v1';
+const GRID=10, NEIGHBOR_DIST=150;
+const SEATABLE=['desk','desktop'];
+let state={};
+let selectedId=null;
+let zoom=1;
+
+function uid(p){return (p||'id')+'_'+Math.random().toString(36).slice(2,9);}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); updateDataStat(); }
+function load(){
+  try{const r=localStorage.getItem(LS_KEY); if(r) state=JSON.parse(r);}catch(e){console.warn(e);}
+  state.layouts=state.layouts||{}; state.classes=state.classes||{}; state.students=state.students||{};
+  state.plans=state.plans||{}; state.assign=state.assign||{}; state.titles=state.titles||{};
+  if(!Object.keys(state.layouts).length){ const l=blankLayout('My classroom'); state.layouts[l.id]=l; state.currentLayoutId=l.id; }
+  if(!Object.keys(state.classes).length){ seedDemo(); }
+  if(!state.currentLayoutId||!state.layouts[state.currentLayoutId]) state.currentLayoutId=Object.keys(state.layouts)[0];
+  if(!state.currentClassId||!state.classes[state.currentClassId]) state.currentClassId=Object.keys(state.classes)[0];
+}
+function blankLayout(name){ return {id:uid('lay'),name:name||'Untitled room',width:1240,height:900,items:[]}; }
+function seedDemo(){
+  const c={id:uid('class'),name:'Year 6 (sample)',students:[]}; state.classes[c.id]=c; state.currentClassId=c.id;
+  const defs=[
+    ['Ava Smith','F',7,6,false],['Ben Jones','M',5,5,true],['Chloe Brown','F',8,8,false],
+    ['Dev Patel','M',4,4,true],['Ella Wood','F',6,6,false],['Finn Murphy','M',3,4,false],
+    ['Grace Lee','F',9,8,false],['Harry Khan','M',5,6,true],['Isla Reid','F',4,3,false],
+    ['Jack Owens','M',6,5,false],['Kayla Ng','F',7,7,true],['Leo Adams','M',2,3,false],
+  ];
+  const ids=defs.map(()=>uid('stu'));
+  defs.forEach((d,i)=>{ state.students[ids[i]]={id:ids[i],classId:c.id,name:d[0],gender:d[1],cat:String(d[2]),grade:String(d[3]),eal:d[4],good:[],bad:[],cannot:[]}; c.students.push(ids[i]); });
+  const link=(a,b,rt)=>{ state.students[ids[a]][rt].push(ids[b]); state.students[ids[b]][rt].push(ids[a]); };
+  link(0,2,'good');    // Ava & Chloe work well together
+  link(6,10,'good');   // Grace & Kayla work well together
+  link(5,9,'bad');     // Finn distracts Jack
+  link(3,11,'cannot'); // Dev & Leo cannot work together
+  // give the starter room a sample arrangement so the data is usable straight away
+  const L=curLayout();
+  if(L && !L.items.length){
+    const it=(k,x,y,w,h,label)=>L.items.push({id:uid('it'),kind:k,x,y,w,h,label:label||''});
+    it('furniture',520,40,220,26,'Whiteboard');
+    it('furniture',520,90,170,60,'Teacher desk');
+    const pod=(px,py)=>{ it('desk',px,py,74,80); it('desk',px+76,py,74,80); it('desk',px,py+82,74,80); it('desk',px+76,py+82,74,80); };
+    pod(150,260); pod(560,260); pod(970,260);
+    for(let i=0;i<3;i++) it('desktop',1130,260+i*96,92,72);
+  }
+}
+function curLayout(){ return state.layouts[state.currentLayoutId]; }
+function updateDataStat(){
+  const l=Object.keys(state.layouts).length,c=Object.keys(state.classes).length,s=Object.keys(state.students).length,p=Object.keys(state.plans).length;
+  document.getElementById('dataStat').textContent=`${l} room${l!=1?'s':''} · ${c} class${c!=1?'es':''} · ${s} students · ${p} plans`;
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ============================ ITEM DEFAULTS ============================ */
+const ITEM_DEFAULTS={
+  desk:{kind:'desk',w:74,h:80,label:''},
+  desktop:{kind:'desktop',w:92,h:72,label:''},
+  teacher:{kind:'furniture',w:170,h:60,label:'Teacher desk'},
+  projector:{kind:'furniture',w:96,h:46,label:'Projector'},
+  board:{kind:'furniture',w:220,h:26,label:'Whiteboard'},
+  wall:{kind:'wall',w:240,h:12,label:''},
+  door:{kind:'door',w:74,h:14,label:'Door'},
+  window:{kind:'window',w:140,h:12,label:'Window'},
+  label:{kind:'label',w:130,h:30,label:'Label'},
+};
+function snap(v){return Math.round(v/GRID)*GRID;}
+function addItem(type){
+  const d=ITEM_DEFAULTS[type]; if(!d)return; const L=curLayout();
+  const n=L.items.length;
+  const it={id:uid('it'),kind:d.kind,w:d.w,h:d.h,label:d.label,
+    x:snap(Math.min(L.width-d.w, L.width/2-d.w/2+(n%6)*16)),
+    y:snap(Math.min(L.height-d.h, L.height/2-d.h/2+(n%6)*16))};
+  L.items.push(it); selectedId=it.id; save(); renderCanvas();
+}
+
+/* ============================ SEAT HELPERS ============================ */
+function seatItems(){ return curLayout().items.filter(i=>SEATABLE.includes(i.kind)); }
+function itemCenter(i){return {x:i.x+i.w/2,y:i.y+i.h/2};}
+function assignKey(){ return state.currentLayoutId+'::'+state.currentClassId; }
+function getAssign(){ const k=assignKey(); if(!state.assign[k])state.assign[k]={}; return state.assign[k]; }
+function classStudents(){ const c=state.classes[state.currentClassId]; return (c?c.students:[]).map(id=>state.students[id]).filter(Boolean); }
+function seatGetStudent(seatId){ return getAssign()[seatId]||null; }
+function findSeatOf(sid){ const a=getAssign(); for(const k in a){ if(a[k]===sid)return k; } return null; }
+function seatedMap(){ const m={}; const a=getAssign(); Object.keys(a).forEach(k=>{ if(a[k])m[a[k]]=k; }); return m; }
+function assignToSeat(sid,seatId){
+  const a=getAssign(); const cur=findSeatOf(sid); const occ=a[seatId]||null;
+  if(occ&&occ!==sid){ if(cur)a[cur]=occ; else delete a[seatId]; }
+  else if(cur){ delete a[cur]; }
+  a[seatId]=sid; save(); renderCanvas(); renderRoster();
+}
+function pruneAssign(){ const ids=new Set(seatItems().map(i=>i.id)); const a=getAssign(); Object.keys(a).forEach(k=>{ if(!ids.has(k)) delete a[k]; }); }
+
+/* ============================ ABILITY / SCORING ============================ */
+function toGrade(v){
+  if(v==null||v==='')return null;
+  const m=String(v).match(/\d+(?:\.\d+)?/); if(!m)return null;
+  let n=parseFloat(m[0]); if(n>9){ n=(n-70)/(140-70)*8+1; }
+  return Math.max(1,Math.min(9,n));
+}
+function abilityOf(s){ const vals=[toGrade(s.cat),toGrade(s.grade)].filter(v=>v!=null); if(!vals.length)return 5; return vals.reduce((a,b)=>a+b,0)/vals.length; }
+function clusterSeats(list){
+  const parent={}; list.forEach(d=>parent[d.id]=d.id);
+  const find=x=>{while(parent[x]!==x)x=parent[x]=parent[parent[x]];return x;};
+  const union=(a,b)=>{parent[find(a)]=find(b);};
+  for(let i=0;i<list.length;i++)for(let j=i+1;j<list.length;j++){
+    const c1=itemCenter(list[i]),c2=itemCenter(list[j]);
+    if(Math.hypot(c1.x-c2.x,c1.y-c2.y)<=NEIGHBOR_DIST) union(list[i].id,list[j].id);
+  }
+  const groups={}; list.forEach(d=>{const r=find(d.id);(groups[r]=groups[r]||[]).push(d.id);});
+  return Object.values(groups);
+}
+function pods(){ return clusterSeats(seatItems()); }
+function scoreAssignment(assign,podList){
+  const P=podList||pods(); let score=0;
+  P.forEach(grp=>{
+    const sids=grp.map(id=>assign[id]).filter(Boolean).map(id=>state.students[id]).filter(Boolean);
+    for(let i=0;i<sids.length;i++)for(let j=i+1;j<sids.length;j++){
+      const a=sids[i],b=sids[j];
+      if((a.cannot||[]).includes(b.id)||(b.cannot||[]).includes(a.id))score-=1000;
+      else if((a.bad||[]).includes(b.id)||(b.bad||[]).includes(a.id))score-=120;
+      if((a.good||[]).includes(b.id)||(b.good||[]).includes(a.id))score+=45;
+    }
+    const abil=sids.map(abilityOf);
+    if(abil.length>1){
+      const mean=abil.reduce((x,y)=>x+y,0)/abil.length;
+      const std=Math.sqrt(abil.reduce((x,c)=>x+(c-mean)**2,0)/abil.length);
+      score+=Math.min(std,3)*14;
+      if(Math.max(...abil)<5)score-=45;
+      sids.forEach((s,i)=>{ if(abil[i]<=4 && abil.some((a,j)=>j!==i&&a>=6))score+=20; });
+    }
+    sids.filter(s=>s.eal).forEach(s=>{ if(sids.some(o=>o!==s&&!o.eal&&abilityOf(o)>=abilityOf(s)))score+=15; });
+    if(sids.length>=3){
+      const girls=sids.filter(s=>s.gender==='F').length, boys=sids.filter(s=>s.gender==='M').length;
+      if(girls===1)score-=80; if(boys===1)score-=80;
+    }
+  });
+  return score;
+}
+function optimizeAssignment(slotIds,studentIds,podList){
+  let best=null,bestScore=-Infinity; const slots=[...slotIds];
+  for(let restart=0;restart<60;restart++){
+    const order=[...studentIds].sort(()=>Math.random()-0.5);
+    const assign={}; slots.forEach((d,i)=>assign[d]=order[i]||null);
+    let cur=scoreAssignment(assign,podList), T=8;
+    for(let it=0;it<3000;it++){
+      const i=slots[Math.floor(Math.random()*slots.length)], j=slots[Math.floor(Math.random()*slots.length)];
+      if(i===j)continue;
+      [assign[i],assign[j]]=[assign[j],assign[i]];
+      const ns=scoreAssignment(assign,podList);
+      if(ns>=cur||Math.random()<Math.exp((ns-cur)/T))cur=ns;
+      else [assign[i],assign[j]]=[assign[j],assign[i]];
+      T*=0.999;
+    }
+    if(cur>bestScore){bestScore=cur;best={...assign};}
+  }
+  return best||{};
+}
+function autoArrange(){
+  const studs=classStudents(); if(!studs.length){alert('Add students to this class first.');return;}
+  const seats=seatItems().map(s=>s.id);
+  if(!seats.length){alert('This room has no desks or computers yet. Add some from "Add to room".');return;}
+  if(studs.length>seats.length){ if(!confirm(`You have ${studs.length} students but only ${seats.length} seats. Extra pupils will stay unseated. Continue?`))return; }
+  const best=optimizeAssignment(seats,studs.map(s=>s.id),pods());
+  const a={}; seats.forEach(id=>{ if(best[id])a[id]=best[id]; });
+  state.assign[assignKey()]=a; save(); renderCanvas(); renderRoster();
+}
+
+/* ============================ WARNINGS ============================ */
+function neighborsOf(seatId){
+  const seats=seatItems(); const me=seats.find(s=>s.id===seatId); if(!me)return [];
+  const a=getAssign(); const c=itemCenter(me);
+  return seats.filter(s=>s.id!==seatId && a[s.id]).filter(s=>{ const c2=itemCenter(s); return Math.hypot(c.x-c2.x,c.y-c2.y)<=NEIGHBOR_DIST; });
+}
+function computeWarnings(){
+  const out={}; const a=getAssign();
+  seatItems().filter(s=>a[s.id]).forEach(seat=>{
+    const s=state.students[a[seat.id]]; if(!s)return;
+    const lines=[]; let level='good'; let ealAlone=false;
+    const nbrs=neighborsOf(seat.id).map(n=>({seat:n,stu:state.students[a[n.id]]})).filter(x=>x.stu);
+    nbrs.forEach(({stu:o})=>{
+      const cannot=(s.cannot||[]).includes(o.id)||(o.cannot||[]).includes(s.id);
+      const bad=(s.bad||[]).includes(o.id)||(o.bad||[]).includes(s.id);
+      const good=(s.good||[]).includes(o.id)||(o.good||[]).includes(s.id);
+      if(cannot){lines.push({cls:'bad',text:`✕ Near ${o.name} — cannot work together`});level='bad';}
+      else if(bad){lines.push({cls:'warn',text:`⚠ Near ${o.name} — distraction risk`});if(level!=='bad')level='warn';}
+      else if(good){lines.push({cls:'good',text:`✓ Near ${o.name} — works well`});}
+    });
+    if(s.eal){ const sup=nbrs.some(({stu:o})=>!o.eal&&abilityOf(o)>=abilityOf(s)); if(!sup)ealAlone=true; lines.push({cls:'eal',text:sup?'EAL — supportive peer nearby ✓':'EAL — alone, no stronger non-EAL peer adjacent'}); }
+    if(s.gender==='F'||s.gender==='M'){
+      const pod=[s,...nbrs.map(n=>n.stu)];
+      if(pod.length>=3 && pod.filter(o=>o.gender===s.gender).length===1){ lines.push({cls:'warn',text:`Only ${s.gender==='F'?'girl':'boy'} in this group of ${pod.length}`}); if(level==='good')level='warn'; }
+    }
+    if(abilityOf(s)<=4){
+      const anchor=nbrs.some(({stu:o})=>abilityOf(o)>=6);
+      lines.push(anchor?{cls:'good',text:'Lower attainer — stronger peer nearby ✓'}:{cls:'warn',text:'Lower attainer — no higher-grade peer adjacent'});
+      if(!anchor&&level==='good')level='warn';
+    }
+    if(lines.length)out[seat.id]={level,lines,name:s.name,ealAlone};
+  });
+  return out;
+}
+function updateScoreBar(warn){
+  let bad=0,caution=0,good=0;
+  Object.values(warn||{}).forEach(w=>{ if(w.level==='bad')bad++; else if(w.level==='warn')caution++; w.lines.forEach(l=>{if(l.cls==='good')good++;}); });
+  const a=getAssign(); const seated=Object.values(a).filter(Boolean).length; const total=classStudents().length;
+  document.getElementById('scoreBar').innerHTML=
+    `<span class="stat"><b>${seated}</b>/${total} seated</span>`+
+    `<span class="bad">● <span class="b">${bad}</span> conflicts</span>`+
+    `<span class="warn">● <span class="b">${caution}</span> cautions</span>`+
+    `<span class="good">● <span class="b">${good}</span> good pairings</span>`;
+}
+
+/* ============================ TOOLTIP ============================ */
+const tooltip=document.getElementById('tooltip');
+function showTip(ev,seatId){
+  const w=computeWarnings()[seatId]; const sid=seatGetStudent(seatId); const s=state.students[sid]; if(!s)return;
+  let html=`<b>${esc(s.name)}</b> · CAT ${s.cat||'–'} · ${esc(s.grade||'–')}`;
+  if(!w||!w.lines.length)html+='<span class="tl good">No issues — neutral neighbours</span>';
+  else w.lines.forEach(l=>html+=`<span class="tl ${l.cls}">${esc(l.text)}</span>`);
+  tooltip.innerHTML=html; tooltip.style.display='block';
+  let x=ev.clientX+14,y=ev.clientY+14; const r=tooltip.getBoundingClientRect();
+  if(x+r.width>innerWidth)x=ev.clientX-r.width-14; if(y+r.height>innerHeight)y=ev.clientY-r.height-14;
+  tooltip.style.left=x+'px'; tooltip.style.top=y+'px';
+}
+function hideTip(){tooltip.style.display='none';}
+
+/* ============================ ZOOM ============================ */
+function applyCanvasSize(){ const L=curLayout(); const cv=document.getElementById('canvas'); cv.style.width=L.width+'px'; cv.style.height=L.height+'px'; }
+function applyZoom(){
+  const cv=document.getElementById('canvas'); cv.style.transform='scale('+zoom+')';
+  const L=curLayout(); const wrap=document.getElementById('canvasWrap');
+  wrap.style.minWidth='0'; wrap.style.width=(L.width*zoom+48)+'px'; wrap.style.height=(L.height*zoom+48)+'px';
+  document.getElementById('zoomLabelBtn').textContent=Math.round(zoom*100)+'%';
+}
+function setZoom(z){ zoom=Math.max(0.3,Math.min(2.5,Math.round(z*100)/100)); applyZoom(); }
+function fitZoom(){ const main=document.querySelector('.main'); const L=curLayout(); const z=Math.min((main.clientWidth-48)/L.width,(main.clientHeight-48)/L.height); setZoom(z>0?z:1); }
+
+/* ============================ CANVAS (unified edit + seat) ============================ */
+function itemInnerHTML(it){
+  if(it.kind==='label') return `<div class="inner"><div class="nm">${esc(it.label||'Label')}</div></div>`;
+  if(it.kind==='furniture'||it.kind==='door'||it.kind==='window') return `<div class="inner"><div class="nm">${esc(it.label||'')}</div></div>`;
+  return '';
+}
+function renderCanvas(){
+  applyCanvasSize(); pruneAssign();
+  const cv=document.getElementById('canvas'); cv.innerHTML='';
+  const warn=computeWarnings(); const a=getAssign();
+  curLayout().items.forEach(it=>{
+    const el=document.createElement('div'); el.className='item '+it.kind+(it.id===selectedId?' selected':'');
+    el.style.left=it.x+'px'; el.style.top=it.y+'px'; el.style.width=it.w+'px'; el.style.height=it.h+'px';
+    el.dataset.id=it.id;
+    const seatable=SEATABLE.includes(it.kind);
+    if(seatable){
+      el.dataset.seatId=it.id;
+      const s=a[it.id]?state.students[a[it.id]]:null;
+      if(s){
+        el.classList.add('occupied');
+        const gp=s.gender==='F'?'♀ ':s.gender==='M'?'♂ ':'';
+        el.innerHTML=`<div class="inner"><div class="nm">${esc(s.name)}</div><div class="sub">${gp}CAT ${s.cat||'–'} · ${esc(s.grade||'–')}</div></div>`;
+        if(s.eal){const e=document.createElement('div');e.className='ealtag';e.textContent='EAL';el.appendChild(e);}
+        const w=warn[it.id];
+        if(w){ if(w.level==='bad')el.classList.add('badbg'); else if(w.level==='warn')el.classList.add('warnbg');
+          if(w.ealAlone && w.level!=='bad')el.classList.add('ealbg');
+          if(w.ealAlone){const tag=el.querySelector('.ealtag'); if(tag)tag.classList.add('alone');}
+          const dot=document.createElement('div'); dot.className='dot'; dot.style.background=w.level==='bad'?'var(--bad)':w.level==='warn'?'var(--warn)':w.ealAlone?'var(--eal)':'var(--ok)'; el.appendChild(dot); }
+        el.addEventListener('mousemove',ev=>showTip(ev,it.id));
+        el.addEventListener('mouseleave',hideTip);
+      } else {
+        el.innerHTML=`<div class="inner"><div class="sub" style="opacity:.5">${it.kind==='desktop'?'computer':'empty'}</div></div>`;
+      }
+      // accept a student dropped from the roster (or moved between seats)
+      el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover');e.dataTransfer.dropEffect='move';});
+      el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
+      el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('dragover');const sid=e.dataTransfer.getData('text/sid');if(sid)assignToSeat(sid,it.id);});
+    } else {
+      el.innerHTML=itemInnerHTML(it);
+    }
+    // selection handles
+    if(it.id===selectedId){
+      const del=document.createElement('button'); del.className='delbtn'; del.textContent='✕';
+      del.onmousedown=e=>e.stopPropagation();
+      del.onclick=e=>{ e.stopPropagation(); curLayout().items=curLayout().items.filter(x=>x.id!==it.id); pruneAssign(); selectedId=null; save(); renderCanvas(); renderRoster(); };
+      el.appendChild(del);
+      const rh=document.createElement('div'); rh.className='rhandle'; rh.onmousedown=e=>startResize(e,it); el.appendChild(rh);
+    }
+    // drag to MOVE the item (layout edit)
+    el.addEventListener('mousedown',e=>startMove(e,it,el));
+    el.ondblclick=()=>{ if(['furniture','label','door','window'].includes(it.kind)){ const t=prompt('Label:',it.label||''); if(t!=null){it.label=t;save();renderCanvas();} } };
+    cv.appendChild(el);
+  });
+  updateScoreBar(warn);
+  document.getElementById('planTitle').value=getTitle();
+}
+function startMove(e,it,el){
+  if(e.target.classList.contains('rhandle')||e.target.classList.contains('delbtn'))return;
+  e.preventDefault(); hideTip();
+  if(selectedId!==it.id){ selectedId=it.id; renderCanvas(); el=document.querySelector('.item[data-id="'+it.id+'"]'); }
+  const sx=e.clientX, sy=e.clientY, ox=it.x, oy=it.y; let moved=false;
+  function mm(ev){ const dx=(ev.clientX-sx)/zoom, dy=(ev.clientY-sy)/zoom; if(Math.abs(dx)+Math.abs(dy)>2)moved=true;
+    it.x=snap(Math.max(0,Math.min(curLayout().width-it.w,ox+dx))); it.y=snap(Math.max(0,Math.min(curLayout().height-it.h,oy+dy)));
+    el.style.left=it.x+'px'; el.style.top=it.y+'px'; }
+  function mu(){ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); if(moved)save(); }
+  document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu);
+}
+function startResize(e,it){
+  e.preventDefault(); e.stopPropagation();
+  const sx=e.clientX, sy=e.clientY, ow=it.w, oh=it.h; const el=document.querySelector('.item[data-id="'+it.id+'"]');
+  function mm(ev){ const dx=(ev.clientX-sx)/zoom, dy=(ev.clientY-sy)/zoom;
+    it.w=snap(Math.max(20,Math.min(curLayout().width-it.x,ow+dx))); it.h=snap(Math.max(10,Math.min(curLayout().height-it.y,oh+dy)));
+    el.style.width=it.w+'px'; el.style.height=it.h+'px'; }
+  function mu(){ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); save(); renderCanvas(); }
+  document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu);
+}
+
+/* ============================ ROSTER / LISTS ============================ */
+function renderClassSel(){ const sel=document.getElementById('classSel'); sel.innerHTML=''; Object.values(state.classes).forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=`${c.name} (${c.students.length})`; if(c.id===state.currentClassId)o.selected=true; sel.appendChild(o); }); }
+function renderLayoutSel(){ const sel=document.getElementById('layoutSel'); sel.innerHTML=''; Object.values(state.layouts).forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=`${l.name} (${l.items.filter(i=>SEATABLE.includes(i.kind)).length} seats)`; if(l.id===state.currentLayoutId)o.selected=true; sel.appendChild(o); }); }
+function renderRoster(){
+  const r=document.getElementById('roster'); r.innerHTML='';
+  const sm=seatedMap(); const studs=classStudents();
+  document.getElementById('stuCount').textContent=studs.length;
+  if(!studs.length){ r.innerHTML='<div class="empty">No students yet. Add or upload some.</div>'; return; }
+  studs.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(s=>{
+    const d=document.createElement('div'); d.className='roster-item'+(sm[s.id]?' seated':''); d.draggable=true; d.dataset.sid=s.id;
+    const gp=s.gender==='F'?'♀ ':s.gender==='M'?'♂ ':'';
+    d.innerHTML=`<span style="flex:1"><b>${esc(s.name)}</b><br><span class="meta">${gp}CAT ${s.cat||'–'} · ${esc(s.grade||'–')}${sm[s.id]?' · seated':''}</span></span>${s.eal?'<span class="pill eal">EAL</span>':''}<button class="sm ghost" title="Edit">✎</button>`;
+    d.querySelector('button').onclick=e=>{e.stopPropagation();openStudent(s.id);};
+    d.addEventListener('dragstart',ev=>{ev.dataTransfer.setData('text/sid',s.id);ev.dataTransfer.effectAllowed='move';});
+    d.ondblclick=()=>openStudent(s.id);
+    r.appendChild(d);
+  });
+}
+function renderPlans(){
+  const box=document.getElementById('planList'); box.innerHTML='';
+  const plans=Object.values(state.plans).filter(p=>p.classId===state.currentClassId).sort((a,b)=>b.createdAt-a.createdAt);
+  if(!plans.length){ box.innerHTML='<div class="empty">No saved plans for this class yet.</div>'; return; }
+  plans.forEach(p=>{
+    const lname=state.layouts[p.layoutId]?state.layouts[p.layoutId].name:'(room deleted)';
+    const row=document.createElement('div'); row.className='listrow'+(p.id===state.currentPlanId?' active':'');
+    row.innerHTML=`<span class="nm">${esc(p.name)}<br><span class="meta">${esc(lname)}</span></span>`;
+    const open=document.createElement('button'); open.className='sm'; open.textContent='Load'; open.onclick=()=>loadPlan(p.id);
+    const del=document.createElement('button'); del.className='sm ghost'; del.textContent='🗑'; del.onclick=()=>{ if(!confirm('Delete this plan?'))return; delete state.plans[p.id]; save(); renderPlans(); };
+    row.appendChild(open); row.appendChild(del); box.appendChild(row);
+  });
+}
+
+/* ============================ STUDENT MODAL ============================ */
+let editingId=null; const relTypes=['good','bad','cannot'];
+function openStudent(id){
+  editingId=id; const isNew=!id;
+  document.getElementById('stuModalTitle').textContent=isNew?'Add student':'Edit student';
+  document.getElementById('stuDeleteBtn').style.display=isNew?'none':'';
+  const s=isNew?{name:'',gender:'',cat:'',grade:'',eal:false,good:[],bad:[],cannot:[]}:state.students[id];
+  f_name.value=s.name||''; f_gender.value=s.gender||''; f_cat.value=s.cat||''; f_grade.value=s.grade||''; f_eal.checked=!!s.eal;
+  const others=classStudents().filter(o=>o.id!==id);
+  relTypes.forEach(rt=>{
+    const box=document.getElementById('chips_'+rt); box.innerHTML='';
+    if(!others.length){box.innerHTML='<span class="empty">No other students</span>';return;}
+    others.forEach(o=>{ const c=document.createElement('span'); c.className='chip'; c.textContent=o.name; c.dataset.id=o.id; if((s[rt]||[]).includes(o.id))c.classList.add('on-'+rt); c.onclick=()=>c.classList.toggle('on-'+rt); box.appendChild(c); });
+  });
+  document.getElementById('stuModal').classList.add('show');
+}
+function saveStudent(){
+  const name=f_name.value.trim(); if(!name){alert('Name required');return;}
+  const data={name,gender:f_gender.value,cat:f_cat.value.trim(),grade:f_grade.value.trim(),eal:f_eal.checked};
+  relTypes.forEach(rt=>{ data[rt]=[...document.querySelectorAll('#chips_'+rt+' .chip.on-'+rt)].map(c=>c.dataset.id); });
+  let id=editingId;
+  if(id){ Object.assign(state.students[id],data); }
+  else { id=uid('stu'); state.students[id]={id,classId:state.currentClassId,...data,good:data.good||[],bad:data.bad||[],cannot:data.cannot||[]}; state.classes[state.currentClassId].students.push(id); }
+  syncRelationships(id); closeModals(); save(); renderRoster(); renderCanvas();
+}
+function syncRelationships(aId){
+  const A=state.students[aId];
+  classStudents().forEach(O=>{ if(O.id===aId)return; relTypes.forEach(rt=>{ O[rt]=(O[rt]||[]).filter(x=>x!==aId); if((A[rt]||[]).includes(O.id))O[rt].push(aId); }); });
+}
+function deleteStudent(){
+  if(!editingId)return; if(!confirm('Delete this student?'))return;
+  const id=editingId; const c=state.classes[state.currentClassId]; c.students=c.students.filter(x=>x!==id); delete state.students[id];
+  Object.values(state.students).forEach(o=>relTypes.forEach(rt=>{o[rt]=(o[rt]||[]).filter(x=>x!==id);}));
+  Object.values(state.assign).forEach(a=>{Object.keys(a).forEach(k=>{if(a[k]===id)delete a[k];});});
+  closeModals(); save(); renderRoster(); renderCanvas();
+}
+function openManage(){
+  const studs=classStudents().slice().sort((a,b)=>a.name.localeCompare(b.name));
+  let html='<table><tr><th>Name</th><th>Gender</th><th>CAT</th><th>Grade</th><th>EAL</th></tr>';
+  studs.forEach(s=>{ html+=`<tr data-id="${s.id}" style="cursor:pointer"><td><b>${esc(s.name)}</b></td><td>${s.gender||'–'}</td><td>${s.cat||'–'}</td><td>${esc(s.grade||'–')}</td><td>${s.eal?'Yes':'–'}</td></tr>`; });
+  html+='</table>'; if(!studs.length)html='<div class="empty">No students.</div>';
+  document.getElementById('manageBody').innerHTML=html;
+  document.querySelectorAll('#manageBody tr[data-id]').forEach(tr=>tr.onclick=()=>{closeModals();openStudent(tr.dataset.id);});
+  document.getElementById('manageModal').classList.add('show');
+}
+
+/* ============================ BULK UPLOAD ============================ */
+let pendingRows=null;
+function downloadTemplate(){ const ws=XLSX.utils.aoa_to_sheet([['Name','Gender','CAT','Grade','EAL'],['Ava Smith','F','7','6','No'],['Ben Jones','M','5','5','Yes']]); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Students'); XLSX.writeFile(wb,'students_template.xlsx'); }
+function downloadTemplateCsv(){ const csv='Name,Gender,CAT,Grade,EAL\nAva Smith,F,7,6,No\nBen Jones,M,5,5,Yes\n'; downloadDataUrl('data:text/csv;charset=utf-8,'+encodeURIComponent(csv),'students_template.csv'); }
+function handleFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    let rows=[];
+    try{ if(/\.csv$/i.test(file.name)){ rows=parseCsv(e.target.result); } else { const wb=XLSX.read(e.target.result,{type:'binary'}); rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1}); } }
+    catch(err){ alert('Could not read file: '+err.message); return; }
+    showBulkPreview(rows);
+  };
+  if(/\.csv$/i.test(file.name)) reader.readAsText(file); else reader.readAsBinaryString(file);
+}
+function parseCsv(text){ return text.split(/\r?\n/).filter(l=>l.trim()).map(l=>{ const out=[];let cur='',q=false; for(let i=0;i<l.length;i++){const ch=l[i]; if(ch==='"'){q=!q;} else if(ch===','&&!q){out.push(cur);cur='';} else cur+=ch;} out.push(cur); return out.map(c=>c.trim()); }); }
+function showBulkPreview(rows){
+  if(!rows.length){document.getElementById('bulkPreview').innerHTML='<div class="empty">Empty file.</div>';return;}
+  const header=rows[0].map(h=>String(h).toLowerCase()); const idx=n=>header.findIndex(h=>h.includes(n));
+  const iName=idx('name'),iGen=idx('gender'),iCat=idx('cat'),iGr=idx('grade'),iEal=idx('eal');
+  const data=rows.slice(1).filter(r=>r[iName]).map(r=>({
+    name:String(r[iName]).trim(),
+    gender:(()=>{const g=String(r[iGen]||'').trim().toUpperCase();return g.startsWith('F')?'F':g.startsWith('M')?'M':'';})(),
+    cat:r[iCat]!=null?String(r[iCat]).trim():'', grade:r[iGr]!=null?String(r[iGr]).trim():'',
+    eal:/^(y|yes|true|1)$/i.test(String(r[iEal]||'').trim())
+  }));
+  pendingRows=data;
+  let html=`<div class="stat">${data.length} students found:</div><table><tr><th>Name</th><th>Gender</th><th>CAT</th><th>Grade</th><th>EAL</th></tr>`;
+  data.slice(0,12).forEach(d=>html+=`<tr><td>${esc(d.name)}</td><td>${d.gender||'–'}</td><td>${esc(d.cat)}</td><td>${esc(d.grade)}</td><td>${d.eal?'Yes':'–'}</td></tr>`);
+  html+='</table>'+(data.length>12?`<div class="stat">…and ${data.length-12} more</div>`:'');
+  document.getElementById('bulkPreview').innerHTML=html;
+  document.getElementById('bulkImportBtn').disabled=!data.length;
+}
+function importBulk(){
+  if(!pendingRows||!pendingRows.length)return;
+  pendingRows.forEach(d=>{ const id=uid('stu'); state.students[id]={id,classId:state.currentClassId,name:d.name,gender:d.gender,cat:d.cat,grade:d.grade,eal:d.eal,good:[],bad:[],cannot:[]}; state.classes[state.currentClassId].students.push(id); });
+  pendingRows=null; document.getElementById('bulkPreview').innerHTML=''; document.getElementById('bulkImportBtn').disabled=true; closeModals(); save(); renderRoster();
+}
+
+/* ============================ PLANS / TITLE ============================ */
+function getTitle(){ return state.titles[assignKey()]||''; }
+function setTitle(t){ state.titles[assignKey()]=t; const el=document.getElementById('planTitle'); if(el)el.value=t; }
+function savePlan(){
+  const name=document.getElementById('planName').value.trim()||('Plan '+new Date().toLocaleString());
+  const pid=uid('plan');
+  state.plans[pid]={id:pid,name,classId:state.currentClassId,layoutId:state.currentLayoutId,seats:JSON.parse(JSON.stringify(getAssign())),title:getTitle(),createdAt:Date.now()};
+  state.currentPlanId=pid; document.getElementById('planName').value=''; save(); renderPlans();
+}
+function loadPlan(pid){
+  const p=state.plans[pid]; if(!p)return;
+  if(p.layoutId&&state.layouts[p.layoutId]) state.currentLayoutId=p.layoutId;
+  state.currentClassId=p.classId;
+  state.assign[assignKey()]=JSON.parse(JSON.stringify(p.seats||{}));
+  if(p.title!=null)state.titles[assignKey()]=p.title;
+  state.currentPlanId=pid; selectedId=null; save(); renderAll(); fitZoom();
+}
+
+/* ============================ EXPORT ============================ */
+function currentClassName(){ const c=state.classes[state.currentClassId]; return c?c.name:'class'; }
+function exportFileBase(){ const t=(getTitle().trim()||currentClassName()||'seating-plan'); return t.replace(/[^\w\d\- ]+/g,'').replace(/\s+/g,'_').slice(0,60)||'seating-plan'; }
+async function renderExportCanvas(){
+  const title=getTitle().trim(); const L=curLayout();
+  const holder=document.createElement('div');
+  holder.style.cssText='position:fixed;left:-10000px;top:0;background:#fff;padding:34px 40px;box-sizing:border-box;width:'+(L.width+80)+'px';
+  if(title){ const h=document.createElement('div'); h.textContent=title; h.style.cssText='text-align:center;color:#0f172a;font:800 42px/1.15 "Segoe UI",system-ui,Arial,sans-serif;letter-spacing:-.01em;margin:2px 0 26px'; holder.appendChild(h); }
+  const clone=document.getElementById('canvas').cloneNode(true);
+  clone.style.transform='none'; clone.style.boxShadow='none'; clone.style.margin='0 auto';
+  clone.querySelectorAll('.item.selected').forEach(n=>n.classList.remove('selected'));
+  clone.querySelectorAll('.rhandle,.delbtn').forEach(n=>n.remove());
+  clone.querySelectorAll('.occupied .sub').forEach(n=>n.remove());
+  clone.querySelectorAll('.ealtag,.dot').forEach(n=>n.remove());
+  clone.querySelectorAll('.badbg,.warnbg,.ealbg').forEach(n=>n.classList.remove('badbg','warnbg','ealbg'));
+  holder.appendChild(clone); document.body.appendChild(holder);
+  let shot; try{ shot=await html2canvas(holder,{scale:2,backgroundColor:'#ffffff'}); } finally{ document.body.removeChild(holder); }
+  return shot;
+}
+function fitToA4(src){ const PW=3508,PH=2480,M=70; const out=document.createElement('canvas'); out.width=PW; out.height=PH; const ctx=out.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,PW,PH); const r=Math.min((PW-M*2)/src.width,(PH-M*2)/src.height); const w=src.width*r,h=src.height*r; ctx.drawImage(src,(PW-w)/2,(PH-h)/2,w,h); return out; }
+function downloadDataUrl(url,filename){ const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); }
+async function exportLayout(fmt){
+  if(typeof html2canvas==='undefined'||(fmt==='pdf'&&!(window.jspdf&&window.jspdf.jsPDF))){ alert('The export tools could not load. Connect to the internet once so they download, then try again.'); return; }
+  const btn=document.getElementById('exportLayoutBtn'); const old=btn.textContent; btn.textContent='Exporting…'; btn.disabled=true; closeModals();
+  const prevSel=selectedId; selectedId=null; renderCanvas();
+  try{
+    const shot=await renderExportCanvas(); const a4=fitToA4(shot);
+    if(fmt==='jpeg') downloadDataUrl(a4.toDataURL('image/jpeg',0.95),exportFileBase()+'.jpg');
+    else { const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); pdf.addImage(a4.toDataURL('image/jpeg',0.95),'JPEG',0,0,297,210); pdf.save(exportFileBase()+'.pdf'); }
+  }catch(e){ console.error(e); alert('Export failed: '+e.message); }
+  finally{ selectedId=prevSel; renderCanvas(); btn.textContent=old; btn.disabled=false; }
+}
+
+/* ============================ RENDER ALL ============================ */
+function renderAll(){ renderLayoutSel(); renderClassSel(); renderRoster(); renderPlans(); applyCanvasSize(); applyZoom(); renderCanvas(); updateDataStat(); }
+function closeModals(){ document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('show')); }
+
+/* ============================ WIRING ============================ */
+document.querySelectorAll('#palette button').forEach(b=>b.onclick=()=>addItem(b.dataset.add));
+document.getElementById('layoutSel').onchange=e=>{ state.currentLayoutId=e.target.value; selectedId=null; save(); renderAll(); fitZoom(); };
+document.getElementById('renameLayoutBtn').onclick=()=>{ const n=document.getElementById('layoutName').value.trim(); if(!n)return; curLayout().name=n; document.getElementById('layoutName').value=''; save(); renderAll(); };
+document.getElementById('newLayoutBtn').onclick=()=>{ const l=blankLayout('Room '+(Object.keys(state.layouts).length+1)); state.layouts[l.id]=l; state.currentLayoutId=l.id; selectedId=null; save(); renderAll(); fitZoom(); };
+document.getElementById('dupLayoutBtn').onclick=()=>{ const src=curLayout(); const l=JSON.parse(JSON.stringify(src)); l.id=uid('lay'); l.name=src.name+' (copy)'; l.items.forEach(it=>it.id=uid('it')); state.layouts[l.id]=l; state.currentLayoutId=l.id; selectedId=null; save(); renderAll(); };
+document.getElementById('delLayoutBtn').onclick=()=>{ if(Object.keys(state.layouts).length<=1){alert('Keep at least one room.');return;} if(!confirm(`Delete room "${curLayout().name}"?`))return; delete state.layouts[state.currentLayoutId]; state.currentLayoutId=Object.keys(state.layouts)[0]; selectedId=null; save(); renderAll(); fitZoom(); };
+document.getElementById('clearRoomBtn').onclick=()=>{ if(!confirm('Remove all items from this room?'))return; curLayout().items=[]; selectedId=null; save(); renderAll(); };
+
+document.getElementById('classSel').onchange=e=>{ state.currentClassId=e.target.value; state.currentPlanId=null; selectedId=null; save(); renderAll(); };
+document.getElementById('newClassBtn').onclick=()=>{ const n=prompt('New class name:'); if(!n)return; const id=uid('class'); state.classes[id]={id,name:n.trim(),students:[]}; state.currentClassId=id; save(); renderAll(); };
+document.getElementById('renameClassBtn').onclick=()=>{ const c=state.classes[state.currentClassId]; const n=prompt('Rename class:',c.name); if(n){c.name=n.trim();save();renderAll();} };
+document.getElementById('delClassBtn').onclick=()=>{ if(Object.keys(state.classes).length<=1){alert('Keep at least one class.');return;} const c=state.classes[state.currentClassId]; if(!confirm(`Delete class "${c.name}" and its students?`))return; c.students.forEach(id=>delete state.students[id]); delete state.classes[state.currentClassId]; state.currentClassId=Object.keys(state.classes)[0]; save(); renderAll(); };
+
+document.getElementById('addStuBtn').onclick=()=>openStudent(null);
+document.getElementById('manageBtn').onclick=openManage;
+document.getElementById('bulkBtn').onclick=()=>document.getElementById('bulkModal').classList.add('show');
+document.getElementById('delAllStuBtn').onclick=()=>{
+  const c=state.classes[state.currentClassId]; if(!c.students.length){alert('No students to delete.');return;}
+  if(!confirm(`Delete ALL ${c.students.length} students in "${c.name}"?`))return;
+  if(!confirm('Are you absolutely sure? This cannot be undone.'))return;
+  c.students.forEach(id=>delete state.students[id]); c.students=[];
+  Object.values(state.assign).forEach(a=>Object.keys(a).forEach(k=>{ if(!state.students[a[k]])delete a[k]; }));
+  save(); renderAll();
+};
+document.getElementById('stuSaveBtn').onclick=saveStudent;
+document.getElementById('stuCancelBtn').onclick=closeModals;
+document.getElementById('stuDeleteBtn').onclick=deleteStudent;
+document.getElementById('manageCloseBtn').onclick=closeModals;
+
+document.getElementById('autoBtn').onclick=autoArrange;
+document.getElementById('clearSeatsBtn').onclick=()=>{ state.assign[assignKey()]={}; save(); renderCanvas(); renderRoster(); };
+
+document.getElementById('zoomInBtn').onclick=()=>setZoom(zoom+0.1);
+document.getElementById('zoomOutBtn').onclick=()=>setZoom(zoom-0.1);
+document.getElementById('zoomLabelBtn').onclick=()=>setZoom(1);
+document.getElementById('zoomFitBtn').onclick=fitZoom;
+document.querySelector('.main').addEventListener('wheel',e=>{ if(e.ctrlKey||e.metaKey){e.preventDefault();setZoom(zoom+(e.deltaY<0?0.08:-0.08));} },{passive:false});
+window.addEventListener('keydown',e=>{ const tag=(e.target.tagName||'').toLowerCase(); if((e.key==='Delete'||e.key==='Backspace')&&selectedId&&tag!=='input'&&tag!=='textarea'&&tag!=='select'){ e.preventDefault(); curLayout().items=curLayout().items.filter(x=>x.id!==selectedId); pruneAssign(); selectedId=null; save(); renderCanvas(); renderRoster(); } if(e.key==='Escape')closeModals(); });
+document.getElementById('canvas').addEventListener('mousedown',e=>{ if(e.target.id==='canvas'){ selectedId=null; renderCanvas(); } });
+
+document.getElementById('planTitle').addEventListener('input',e=>{ setTitle(e.target.value); save(); });
+document.getElementById('exportLayoutBtn').onclick=()=>document.getElementById('exportModal').classList.add('show');
+document.getElementById('expPdfBtn').onclick=()=>exportLayout('pdf');
+document.getElementById('expJpgBtn').onclick=()=>exportLayout('jpeg');
+document.getElementById('exportCancelBtn').onclick=closeModals;
+
+document.getElementById('savePlanBtn').onclick=savePlan;
+document.getElementById('tmplBtn').onclick=downloadTemplate;
+document.getElementById('tmplCsvBtn').onclick=downloadTemplateCsv;
+document.getElementById('pickFileBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=e=>{ if(e.target.files[0])handleFile(e.target.files[0]); };
+document.getElementById('bulkCancelBtn').onclick=closeModals;
+document.getElementById('bulkImportBtn').onclick=importBulk;
+const dropbox=document.getElementById('dropbox');
+['dragover','dragenter'].forEach(ev=>dropbox.addEventListener(ev,e=>{e.preventDefault();dropbox.style.borderColor='var(--accent)';}));
+['dragleave','drop'].forEach(ev=>dropbox.addEventListener(ev,e=>{e.preventDefault();dropbox.style.borderColor='';}));
+dropbox.addEventListener('drop',e=>{ if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]); });
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('mousedown',e=>{if(e.target===m)closeModals();}));
+
+document.getElementById('exportDataBtn').onclick=()=>downloadDataUrl('data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state,null,2)),'classroom_designer_backup.json');
+document.getElementById('importDataBtn').onclick=()=>document.getElementById('importDataInput').click();
+document.getElementById('importDataInput').onchange=e=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>{ try{ state=JSON.parse(ev.target.result); save(); load(); selectedId=null; renderAll(); fitZoom(); alert('Data restored.'); }catch(err){ alert('Invalid backup file.'); } }; r.readAsText(f); };
+
+/* ============================ INIT ============================ */
+load(); renderAll(); fitZoom();
+</script>
+</body>
+</html>
