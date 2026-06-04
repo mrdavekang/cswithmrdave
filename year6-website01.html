@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Year 6 Website Explorer: Minecraft Biomes and Climate</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #526174;
+      --border: #d8e1ec;
+      --primary: #0f8b5f;
+      --primary-dark: #086b49;
+      --accent: #2b6cb0;
+      --soft-green: #dff8ec;
+      --soft-blue: #e7f0ff;
+      --warning: #fff4d6;
+      --danger: #fff0f0;
+      --shadow: 0 12px 30px rgba(25, 42, 70, 0.12);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand h1 {
+      font-size: 19px;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .student-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .student-chip {
+      background: var(--soft-blue);
+      border: 1px solid #cbdcf8;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: #27496d;
+    }
+
+
+    .objective-ribbon {
+      position: sticky;
+      top: 70px;
+      z-index: 19;
+      margin: 0;
+      padding: 10px 22px;
+      background: rgba(247, 251, 255, 0.96);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .objective-main {
+      font-size: 14px;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .objective-main strong {
+      color: var(--primary-dark);
+    }
+
+    .objective-ksu {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .objective-ksu span {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+
+    .objective-ksu strong {
+      color: var(--accent);
+    }
+
+
+    main {
+      padding: 18px 22px 22px;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 220ms ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro-layout {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 18px;
+      min-height: calc(100vh - 172px);
+    }
+
+    .slide-card, .side-card, .big-card, .password-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .slide-card {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 620px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide-card::before {
+      content: "";
+      position: absolute;
+      inset: -140px -80px auto auto;
+      width: 360px;
+      height: 360px;
+      background: linear-gradient(135deg, rgba(15,139,95,0.16), rgba(43,108,176,0.12));
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 1;
+      max-width: 880px;
+    }
+
+    .slide-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--soft-green);
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .slide-content h2 {
+      font-size: clamp(34px, 4.7vw, 70px);
+      line-height: 1.05;
+      margin: 0 0 22px;
+      letter-spacing: -1px;
+    }
+
+    .slide-content p,
+    .slide-content li {
+      font-size: clamp(20px, 2vw, 30px);
+      line-height: 1.38;
+      color: var(--muted);
+    }
+
+    .slide-content ul, .slide-content ol {
+      padding-left: 34px;
+      margin-top: 12px;
+    }
+
+    .ksu-grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .ksu-item {
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      font-size: clamp(19px, 1.75vw, 27px);
+      line-height: 1.35;
+    }
+
+    .ksu-item strong {
+      color: var(--primary-dark);
+    }
+
+    .slide-controls {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 28px;
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #c7d4e4;
+    }
+
+    .dot.active {
+      background: var(--primary);
+      width: 28px;
+    }
+
+    .side-card {
+      padding: 20px;
+      height: fit-content;
+      max-height: calc(100vh - 172px);
+      overflow-y: auto;
+    }
+
+    .side-card h3 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      font-weight: 800;
+      margin: 16px 0 8px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font: inherit;
+      background: #fbfdff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
+    .small-help {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      margin: 8px 0 0;
+    }
+
+    .error {
+      color: #9d1c1c;
+      background: var(--danger);
+      border: 1px solid #f1b4b4;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 12px;
+      font-weight: 700;
+      display: none;
+    }
+
+    button, .button-link {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 18px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+      box-shadow: 0 8px 18px rgba(15,139,95,0.22);
+    }
+
+    button:hover, .button-link:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: #e8eef6;
+      color: #233044;
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+
+    button.secondary:hover {
+      background: #dce7f4;
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--accent);
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+
+    button.full {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    button.large, .button-link.large {
+      font-size: clamp(24px, 3.2vw, 44px);
+      padding: 24px 34px;
+      border-radius: 24px;
+      min-height: 95px;
+      width: min(840px, 100%);
+    }
+
+    .big-card {
+      width: min(1100px, 96%);
+      margin: 32px auto;
+      min-height: calc(100vh - 230px);
+      padding: clamp(28px, 5vw, 72px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .big-card .icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: var(--soft-green);
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      font-size: 54px;
+      font-weight: 900;
+      margin-bottom: 24px;
+    }
+
+    .big-card h2 {
+      font-size: clamp(38px, 5.2vw, 76px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -1px;
+    }
+
+    .big-card p {
+      font-size: clamp(20px, 2vw, 30px);
+      color: var(--muted);
+      max-width: 900px;
+      line-height: 1.42;
+    }
+
+    .blooket-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      margin-top: 34px;
+    }
+
+    .ready-card {
+      margin-top: 36px;
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #fafcff;
+      width: min(820px, 100%);
+    }
+
+    .password-card {
+      width: min(760px, 96%);
+      margin: 56px auto;
+      padding: clamp(28px, 5vw, 58px);
+      text-align: center;
+    }
+
+    .password-card h2 {
+      font-size: clamp(44px, 5vw, 72px);
+      margin: 0 0 12px;
+    }
+
+    .password-card p {
+      font-size: 24px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .password-card input {
+      text-align: center;
+      font-size: 26px;
+      letter-spacing: 2px;
+      margin: 14px 0;
+      max-width: 430px;
+    }
+
+    .password-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .explorer-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .site-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .site-tab {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+    }
+
+    .site-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 8px 18px rgba(15,139,95,0.18);
+    }
+
+    .explorer-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 16px;
+      height: calc(100vh - 212px);
+      min-height: 640px;
+    }
+
+    .website-viewer {
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewer-topbar {
+      padding: 10px 12px;
+      background: #f6f9fc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .viewer-url {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70%;
+    }
+
+    .viewer-frame-wrap {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+
+    .website-viewer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    .iframe-note {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      right: 18px;
+      background: rgba(255, 244, 214, 0.96);
+      border: 1px solid #ead08c;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 13px;
+      color: #684b00;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .question-panel {
+      height: 100%;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .question-panel h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .question-panel .site-title {
+      background: var(--soft-blue);
+      color: #27496d;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      margin: 10px 0 16px;
+      line-height: 1.35;
+    }
+
+    .question-panel textarea {
+      min-height: 76px;
+      margin-bottom: 10px;
+    }
+
+    .question-block {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    @media (max-width: 1000px) {
+      .intro-layout {
+        grid-template-columns: 1fr;
+      }
+      .main-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .website-viewer {
+        height: 60vh;
+      }
+      .question-panel {
+        height: auto;
+      }
+      .viewer-url {
+        max-width: 100%;
+      }
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .student-bar {
+        justify-content: flex-start;
+      }
+    }
+
+
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      width: min(950px, 100%);
+      margin-top: 30px;
+    }
+
+    .choice-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.08);
+      text-align: left;
+    }
+
+    .choice-card h3 {
+      margin: 0 0 10px;
+      font-size: 26px;
+    }
+
+    .choice-card p {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0 0 18px;
+    }
+
+    .saved-summary {
+      width: min(950px, 100%);
+      margin-top: 18px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #f8fbff;
+      color: var(--muted);
+      text-align: left;
+      line-height: 1.45;
+    }
+
+    .warning-card {
+      background: var(--warning);
+      border: 1px solid #ead08c;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 18px 0;
+      color: #684b00;
+      text-align: left;
+      line-height: 1.45;
+    }
+
+
+    .biome-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+      width: 100%;
+    }
+
+    .biome-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.08);
+    }
+
+    .biome-visual {
+      height: 115px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .biome-visual::before,
+    .biome-visual::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+    }
+
+    .plains {
+      background: linear-gradient(#8fd4ff 0 45%, #72c95a 45% 100%);
+    }
+    .plains::before {
+      height: 34px;
+      background: repeating-linear-gradient(90deg, #4da83f 0 14px, #70c95a 14px 26px);
+    }
+
+    .forest {
+      background: linear-gradient(#9bd9ff 0 42%, #6bbd55 42% 100%);
+    }
+    .forest::before {
+      height: 82px;
+      background:
+        radial-gradient(circle at 20% 35%, #1f7a3a 0 24px, transparent 25px),
+        radial-gradient(circle at 45% 32%, #2e9148 0 28px, transparent 29px),
+        radial-gradient(circle at 72% 38%, #1f7a3a 0 26px, transparent 27px);
+    }
+    .forest::after {
+      height: 38px;
+      background:
+        linear-gradient(90deg, transparent 0 18%, #7a4a25 18% 24%, transparent 24% 43%, #7a4a25 43% 49%, transparent 49% 70%, #7a4a25 70% 76%, transparent 76%);
+    }
+
+    .savanna {
+      background: linear-gradient(#f7cf78 0 48%, #d9b45a 48% 100%);
+    }
+    .savanna::before {
+      height: 70px;
+      background:
+        radial-gradient(circle at 22% 36%, #6e8f2f 0 18px, transparent 19px),
+        radial-gradient(circle at 72% 40%, #7a9b33 0 20px, transparent 21px);
+    }
+    .savanna::after {
+      height: 43px;
+      background:
+        linear-gradient(90deg, transparent 0 20%, #8a5b2e 20% 25%, transparent 25% 70%, #8a5b2e 70% 75%, transparent 75%);
+    }
+
+    .warm-ocean {
+      background: linear-gradient(#8fd4ff 0 34%, #22a7d8 34% 100%);
+    }
+    .warm-ocean::before {
+      height: 58px;
+      background:
+        radial-gradient(circle at 20% 70%, #f5d66c 0 10px, transparent 11px),
+        radial-gradient(circle at 50% 62%, #f27c9b 0 9px, transparent 10px),
+        radial-gradient(circle at 76% 70%, #ffb347 0 11px, transparent 12px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.22) 0 3px, transparent 3px 14px);
+    }
+
+    .cherry-grove {
+      background: linear-gradient(#bfe7ff 0 44%, #86cf73 44% 100%);
+    }
+    .cherry-grove::before {
+      height: 78px;
+      background:
+        radial-gradient(circle at 22% 35%, #ff9fc4 0 24px, transparent 25px),
+        radial-gradient(circle at 48% 32%, #ffb1d0 0 27px, transparent 28px),
+        radial-gradient(circle at 74% 38%, #ff92bc 0 23px, transparent 24px);
+    }
+    .cherry-grove::after {
+      height: 38px;
+      background:
+        linear-gradient(90deg, transparent 0 20%, #8b5a35 20% 25%, transparent 25% 45%, #8b5a35 45% 50%, transparent 50% 72%, #8b5a35 72% 77%, transparent 77%);
+    }
+
+    .desert {
+      background: linear-gradient(#8fd4ff 0 40%, #e8c56a 40% 100%);
+    }
+    .desert::before {
+      height: 52px;
+      background:
+        radial-gradient(circle at 70% 20%, #fff2a6 0 16px, transparent 17px),
+        linear-gradient(15deg, transparent 0 35%, rgba(184,139,47,0.35) 36% 40%, transparent 41%);
+    }
+    .desert::after {
+      height: 55px;
+      background:
+        linear-gradient(90deg, transparent 0 18%, #40964c 18% 23%, transparent 23% 100%),
+        linear-gradient(0deg, transparent 0 45%, #40964c 45% 55%, transparent 55% 100%),
+        linear-gradient(90deg, transparent 0 68%, #40964c 68% 73%, transparent 73% 100%);
+    }
+
+    .ice-plains {
+      background: linear-gradient(#d6f4ff 0 45%, #effbff 45% 100%);
+    }
+    .ice-plains::before {
+      height: 58px;
+      background:
+        linear-gradient(135deg, transparent 0 35%, #b8e8ff 36% 52%, transparent 53%),
+        linear-gradient(30deg, transparent 0 55%, #d1f3ff 56% 70%, transparent 71%);
+    }
+    .ice-plains::after {
+      height: 34px;
+      background: repeating-linear-gradient(90deg, #ffffff 0 18px, #dff7ff 18px 31px);
+    }
+
+    .biome-card-content {
+      padding: 13px;
+    }
+
+    .biome-card h4 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .biome-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .planning-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .planning-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .planning-card h2 {
+      font-size: clamp(30px, 3vw, 48px);
+      margin: 0 0 12px;
+    }
+
+    .planning-card p,
+    .planning-card li {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .planning-form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font: inherit;
+      background: #fbfdff;
+      color: var(--text);
+    }
+
+    .launch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .launch-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.10);
+      text-align: left;
+    }
+
+    .launch-card .button-link {
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .launch-card-content {
+      padding: 14px;
+    }
+
+    .launch-card-content h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+    }
+
+    .launch-card-content p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    @media (max-width: 1000px) {
+      .planning-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+
+    @media (max-width: 1000px) {
+      .objective-ribbon {
+        position: static;
+        padding: 10px 14px;
+      }
+
+      .objective-ksu {
+        grid-template-columns: 1fr;
+      }
+
+      .objective-ksu span {
+        border-radius: 14px;
+      }
+    }
+
+
+    @media print {
+      header, .objective-ribbon, .explorer-toolbar, .website-viewer, .question-panel, .screen:not(.print-only) {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+      }
+      .print-only {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>Website Explorer: Minecraft Biomes and Climate</h1>
+      <p>Year 6 KS2 Computing • Website analysis and user experience</p>
+    </div>
+    <div class="student-bar" aria-live="polite">
+      <span class="student-chip" id="nameHeader">Name: not entered</span>
+      <span class="student-chip" id="classHeader">Class: not entered</span>
+      <span class="student-chip" id="dateHeader">Date: loading...</span>
+    </div>
+  </header>
+
+  <section class="objective-ribbon" aria-label="Lesson objective summary">
+    <div class="objective-main">
+      <strong>WAGBA:</strong>
+      We are getting better at identifying useful features of webpages before planning our own Minecraft showcase website.
+    </div>
+    <div class="objective-ksu">
+      <span><strong>K:</strong> Websites use titles, images, text, layout, and navigation to share information.</span>
+      <span><strong>S:</strong> I can analyse a webpage and explain what makes it clear or useful.</span>
+      <span><strong>U:</strong> Good website design helps visitors find and understand information easily.</span>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- PAGE 0: Shared Device Landing -->
+    <section id="landingScreen" class="screen active">
+      <div class="big-card">
+        <div class="icon">👋</div>
+        <h2>Welcome to Today’s Activity</h2>
+        <p>This computer may have been used by another Year 6 student. Choose carefully before you continue.</p>
+
+        <div class="saved-summary" id="savedSessionSummary">
+          Checking saved work on this device...
+        </div>
+
+        <div class="choice-grid">
+          <div class="choice-card">
+            <h3>Continue session</h3>
+            <p>Use this if this is your work and you want to continue from where you stopped.</p>
+            <button type="button" class="full" onclick="continueSavedSession()">Continue Saved Session</button>
+          </div>
+
+          <div class="choice-card">
+            <h3>New student</h3>
+            <p>Use this if this device was used by another student. You must back up existing work before resetting.</p>
+            <button type="button" class="full secondary" onclick="showBackupPrompt()">Start as New Student</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 0B: Backup Before Reset -->
+    <section id="backupScreen" class="screen">
+      <div class="big-card">
+        <div class="icon">!</div>
+        <h2>Backup Before Reset</h2>
+        <p>Resetting will remove the saved answers on this device. If another student’s work is here, download a backup first.</p>
+
+        <div class="warning-card">
+          <strong>Important:</strong> Only reset after the previous student’s work has been downloaded or checked by Mr Dave.
+        </div>
+
+        <div class="choice-grid">
+          <div class="choice-card">
+            <h3>Step 1: Back up existing work</h3>
+            <p>Download the current saved answers from this device before clearing them.</p>
+            <button type="button" class="full" onclick="downloadAnswersAsHTML()">Download Backup as HTML</button>
+          </div>
+
+          <div class="choice-card">
+            <h3>Step 2: Reset for new student</h3>
+            <p>After backing up, clear the saved work and start the activity from the beginning.</p>
+            <button type="button" class="full secondary" onclick="confirmResetForNewStudent()">I have backed up. Reset and start new student.</button>
+          </div>
+        </div>
+
+        <button type="button" class="ghost" style="margin-top:22px;" onclick="showScreen('landingScreen')">Back</button>
+      </div>
+    </section>
+
+
+    <!-- PAGE 1: Objective Slide Deck -->
+    <section id="objectiveScreen" class="screen">
+      <div class="intro-layout">
+        <article class="slide-card">
+          <div class="slide-content" id="slideContent"></div>
+          <div class="slide-controls">
+            <button type="button" class="secondary" id="backSlideBtn" onclick="changeSlide(-1)">Back</button>
+            <div class="slide-dots" id="slideDots" aria-label="Slide progress"></div>
+            <button type="button" id="nextSlideBtn" onclick="changeSlide(1)">Next Slide</button>
+          </div>
+        </article>
+
+        <aside class="side-card">
+          <h3>Before you start</h3>
+          <p class="small-help">Read the slide deck. Then answer this short question before moving to the Blooket activity.</p>
+
+          <label for="studentName">Enter your name</label>
+          <input id="studentName" type="text" placeholder="Example: David Kang" autocomplete="name" oninput="saveStudentDetails()" />
+
+          <label for="studentClass">Enter your class</label>
+          <input id="studentClass" type="text" placeholder="Example: 6T / Year 6" autocomplete="off" oninput="saveStudentDetails()" />
+
+          <label for="objectiveAnswer">Based on the objective, what are you getting better at today?</label>
+          <textarea id="objectiveAnswer" placeholder="I am getting better at..." oninput="saveStudentDetails()"></textarea>
+
+          <button type="button" class="full" onclick="completeIntro()">Next: Go to Do Now</button>
+          <div class="error" id="introError">Please enter your name, class, and objective answer before moving on.</div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PAGE 2: Blooket Do Now -->
+    <section id="blooketScreen" class="screen">
+      <div class="big-card">
+        <div class="icon">▶</div>
+        <h2>Do Now: Climate and Minecraft Biomes Blooket</h2>
+        <p>Click the button below to complete the Blooket activity first. When you have finished, come back to this page.</p>
+        <div class="blooket-actions">
+          <a class="button-link large" href="https://play.blooket.com/play?hwId=6a20f1bbb6a72b89089adde0" target="_blank" rel="noopener noreferrer">Go to Blooket</a>
+          <div class="ready-card">
+            <h3>Ready to move on?</h3>
+            <p>Have you completed the Blooket activity yet?</p>
+            <button type="button" class="large" onclick="completeBlooket()">I have finished the Blooket</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: Password -->
+    <section id="passwordScreen" class="screen">
+      <div class="password-card">
+        <div class="big-card-icon" aria-hidden="true"></div>
+        <h2>Stop Here</h2>
+        <p>Please come to Mr Dave to get the password before continuing to the website activity.</p>
+
+        <label for="teacherPasswordInput">Enter password</label>
+        <input id="teacherPasswordInput" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockStage();" />
+
+        <div class="password-actions">
+          <button type="button" onclick="unlockStage()">Unlock Website Activity</button>
+        </div>
+        <div class="error" id="passwordError">Please check with Mr Dave before continuing.</div>
+      </div>
+    </section>
+
+
+    <!-- PAGE 4: Website Activity Instructions -->
+    <section id="instructionScreen" class="screen">
+      <div class="big-card">
+        <div class="icon">✓</div>
+        <h2>Website Activity Instructions</h2>
+        <p>You will explore three websites. For each website, look carefully at the page on the left and answer the questions on the right.</p>
+        <div class="ready-card" style="text-align:left;">
+          <h3>What you need to do</h3>
+          <ol style="font-size:22px; line-height:1.6; color:var(--muted);">
+            <li>Click each website tab: Minecraft Biomes, BBC Bitesize Climate, and National Geographic Climate.</li>
+            <li>Look for the title, images, text, layout, and how easy the page is to use.</li>
+            <li>Write answers in your own words. Do not copy long sentences from the website.</li>
+            <li>If a website does not load in the box, click <strong>Open in New Tab</strong> and come back to answer the questions.</li>
+            <li>When you finish all three websites, click <strong>Download My Answers</strong> and save/print your work as PDF.</li>
+          </ol>
+        </div>
+        <button type="button" class="large" onclick="understandInstructions()">I understand what to do</button>
+      </div>
+    </section>
+
+    <!-- PAGE 5: Website Explorer -->
+    <section id="explorerScreen" class="screen">
+      <div class="explorer-toolbar">
+        <div class="site-tabs" id="siteTabs"></div>
+        <div class="explorer-actions">
+          <button type="button" onclick="downloadAnswers()">Download My Answers</button>
+          <button type="button" class="secondary" onclick="downloadAnswersAsHTML()">Download as HTML</button>
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <section class="website-viewer" aria-label="Website viewer">
+          <div class="viewer-topbar">
+            <strong id="viewerLabel">Website</strong>
+            <span class="viewer-url" id="viewerUrl"></span>
+            <a id="openWebsiteLink" class="button-link" target="_blank" rel="noopener noreferrer">Open in New Tab</a>
+          </div>
+          <div class="viewer-frame-wrap">
+            <iframe id="websiteFrame" title="Website preview"></iframe>
+            <div class="iframe-note">
+              If this website does not load inside the box, click <strong>Open in New Tab</strong>. Keep this app open and answer the questions on the right.
+            </div>
+          </div>
+        </section>
+
+        <aside class="question-panel">
+          <h3>Website Questions</h3>
+          <div class="site-title" id="questionSiteTitle"></div>
+          <div id="questionsContainer"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PAGE 6: Second Password After Website Evaluation -->
+    <section id="secondPasswordScreen" class="screen">
+      <div class="password-card">
+        <h2>Stop Here</h2>
+        <p>Please come to Mr Dave to get the next password before planning your Minecraft biome build.</p>
+
+        <label for="secondPasswordInput">Enter password</label>
+        <input id="secondPasswordInput" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockPlanningStage();" />
+
+        <div class="password-actions">
+          <button type="button" onclick="unlockPlanningStage()">Unlock Minecraft Planning</button>
+        </div>
+        <div class="error" id="secondPasswordError">Please check with Mr Dave before continuing.</div>
+      </div>
+    </section>
+
+    <!-- PAGE 7: Minecraft Biome Planning -->
+    <section id="planningScreen" class="screen">
+      <div class="planning-container">
+        <section class="planning-card">
+          <h2>Plan Your Minecraft Biome Build</h2>
+          <p>You will plan with your assigned partner. Choose one biome and design a structure that fits the climate and environment.</p>
+
+          <div class="biome-grid" aria-label="Biome visual choices">
+            <div class="biome-card"><div class="biome-visual plains"></div><div class="biome-card-content"><h4>Plains</h4><p>Open grassland, wide space, simple farms or villages.</p></div></div>
+            <div class="biome-card"><div class="biome-visual forest"></div><div class="biome-card-content"><h4>Forest</h4><p>Lots of trees, wood materials, cabins or hidden bases.</p></div></div>
+            <div class="biome-card"><div class="biome-visual savanna"></div><div class="biome-card-content"><h4>Savanna</h4><p>Warm grassland, dry feeling, acacia-style builds.</p></div></div>
+            <div class="biome-card"><div class="biome-visual warm-ocean"></div><div class="biome-card-content"><h4>Warm Ocean</h4><p>Water, coral colours, islands or ocean research bases.</p></div></div>
+            <div class="biome-card"><div class="biome-visual cherry-grove"></div><div class="biome-card-content"><h4>Cherry Grove</h4><p>Pink trees, gentle landscape, peaceful garden builds.</p></div></div>
+            <div class="biome-card"><div class="biome-visual desert"></div><div class="biome-card-content"><h4>Desert</h4><p>Hot and dry, sand, cactus, sandstone towers or shelters.</p></div></div>
+            <div class="biome-card"><div class="biome-visual ice-plains"></div><div class="biome-card-content"><h4>Ice Plains</h4><p>Cold, snowy, icy, research stations or snow shelters.</p></div></div>
+          </div>
+
+          <div class="ready-card" style="text-align:left;">
+            <h3>Planning rules</h3>
+            <ol style="font-size:18px; line-height:1.55; color:var(--muted);">
+              <li>Plan with your assigned partner only.</li>
+              <li>Your structure must match the biome and climate.</li>
+              <li>Use your plan when you start Minecraft later.</li>
+              <li>Write enough detail so your website can explain your build clearly.</li>
+            </ol>
+          </div>
+        </section>
+
+        <aside class="planning-card">
+          <h2>Your Build Plan</h2>
+          <div class="planning-form-grid">
+            <label for="partnerName">Partner name</label>
+            <input id="partnerName" type="text" placeholder="Write your partner's name" oninput="savePlanningAnswers()" />
+
+            <label for="chosenBiome">Chosen biome</label>
+            <select id="chosenBiome" onchange="savePlanningAnswers()">
+              <option value="">Choose one biome</option>
+              <option>Plains</option>
+              <option>Forest</option>
+              <option>Savanna</option>
+              <option>Warm Ocean</option>
+              <option>Cherry Grove</option>
+              <option>Desert</option>
+              <option>Ice Plains</option>
+            </select>
+
+            <label for="biomeClimate">What is the climate or environment like in this biome?</label>
+            <textarea id="biomeClimate" placeholder="Example: The desert is hot and dry..." oninput="savePlanningAnswers()"></textarea>
+
+            <label for="buildIdea">What will you build?</label>
+            <textarea id="buildIdea" placeholder="Example: We will build a desert watchtower..." oninput="savePlanningAnswers()"></textarea>
+
+            <label for="materialsPlan">What materials or blocks might fit this biome?</label>
+            <textarea id="materialsPlan" placeholder="Example: sandstone, cactus, glass..." oninput="savePlanningAnswers()"></textarea>
+
+            <label for="specialFeature">What special feature will make your build interesting?</label>
+            <textarea id="specialFeature" placeholder="Example: hidden room, bridge, garden, lookout point..." oninput="savePlanningAnswers()"></textarea>
+
+            <label for="screenshotPlan">What screenshots will you need for your website later?</label>
+            <textarea id="screenshotPlan" placeholder="Example: front view, inside view, best feature..." oninput="savePlanningAnswers()"></textarea>
+
+            <label for="teamworkPlan">How will you and your partner work together?</label>
+            <textarea id="teamworkPlan" placeholder="Example: One person builds the outside, one person plans the inside..." oninput="savePlanningAnswers()"></textarea>
+
+            <div class="error" id="planningError">Please complete all planning fields before downloading your PDF.</div>
+            <button type="button" class="full" onclick="downloadCompletePDFAndMoveOn()">Download Website Evaluation and Minecraft Plan</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PAGE 8: Final Password Before Minecraft -->
+    <section id="finalPasswordScreen" class="screen">
+      <div class="password-card">
+        <h2>Stop Here</h2>
+        <p>Please come to Mr Dave for the final password before opening your Minecraft biome world.</p>
+
+        <label for="finalPasswordInput">Enter password</label>
+        <input id="finalPasswordInput" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockMinecraftStart();" />
+
+        <div class="password-actions">
+          <button type="button" onclick="unlockMinecraftStart()">Unlock Minecraft Links</button>
+        </div>
+        <div class="error" id="finalPasswordError">Please check with Mr Dave before continuing.</div>
+      </div>
+    </section>
+
+    <!-- PAGE 9: Minecraft World Launch -->
+    <section id="minecraftStartScreen" class="screen">
+      <div class="big-card" style="width:min(1350px, 96%);">
+        <div class="icon">⛏</div>
+        <h2>Start Minecraft: Explore Your Biome World</h2>
+        <p>Open only the biome world you planned with your assigned partner. Explore first, then experiment with your build based on your plan.</p>
+
+        <div class="ready-card" style="text-align:left; width:100%;">
+          <h3>Instructions before you click</h3>
+          <ol style="font-size:20px; line-height:1.55; color:var(--muted);">
+            <li>Work only with your assigned partner.</li>
+            <li>Choose the same biome that you wrote in your plan.</li>
+            <li>Click the matching world button below to open it in Minecraft Education.</li>
+            <li>Explore the biome first. Look at land, plants, water, snow, sand, trees, or animals.</li>
+            <li>Experiment with your build, but follow your plan as much as possible.</li>
+            <li>Do not change another pair’s work or move away from your assigned task.</li>
+          </ol>
+        </div>
+
+        <div class="launch-grid">
+          <div class="launch-card"><div class="biome-visual plains"></div><div class="launch-card-content"><h3>Plains</h3><p>Open grassland build space.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/c6e027d7-0127-4a47-8150-e368233c630c">Open Plains World</a></div>
+          <div class="launch-card"><div class="biome-visual forest"></div><div class="launch-card-content"><h3>Forest</h3><p>Tree-filled biome for cabins and woodland builds.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/d9684730-40ef-483c-904f-0b2a788a8bc6">Open Forest World</a></div>
+          <div class="launch-card"><div class="biome-visual savanna"></div><div class="launch-card-content"><h3>Savanna</h3><p>Warm grassland and acacia-style builds.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/1208e0e0-e26e-4cec-ae05-9be4f157a98f">Open Savanna World</a></div>
+          <div class="launch-card"><div class="biome-visual warm-ocean"></div><div class="launch-card-content"><h3>Warm Ocean</h3><p>Water, coral, islands, and sea builds.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/51a25308-cad9-4042-908a-a918e4b8472e">Open Warm Ocean World</a></div>
+          <div class="launch-card"><div class="biome-visual cherry-grove"></div><div class="launch-card-content"><h3>Cherry Grove</h3><p>Pink trees and peaceful garden builds.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/001064d2-fbd6-41ac-a640-1c2460416f6a">Open Cherry Grove World</a></div>
+          <div class="launch-card"><div class="biome-visual desert"></div><div class="launch-card-content"><h3>Desert</h3><p>Hot, dry, sandy build environment.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/dee9e1d9-cfd0-455e-8854-a86c184c2035">Open Desert World</a></div>
+          <div class="launch-card"><div class="biome-visual ice-plains"></div><div class="launch-card-content"><h3>Ice Plains</h3><p>Cold, snowy, icy build environment.</p></div><a class="button-link" target="_blank" rel="noopener noreferrer" href="https://education.minecraft.net/world/ae88331b-6a2a-4cb2-8cdd-2869fcb09d25">Open Ice Plains World</a></div>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <script>
+    // Teacher flow-control password. Not shown anywhere on the student screen.
+    const teacherPassword = atob("bXJkYXZl");
+    const planningPassword = atob("eWVhcjZpc2F3ZXNvbWU=");
+    const minecraftStartPassword = atob("c3RhcnRtaW5lY3JhZnQ=");
+
+    const slides = [
+      {
+        kicker: "Slide 1 of 4",
+        title: "Website Explorer: Minecraft Biomes and Climate",
+        body: `
+          <p>Today, you will explore websites about climate and Minecraft biomes.</p>
+          <p>You will look carefully at titles, images, text, layout, and user experience.</p>
+        `
+      },
+      {
+        kicker: "Slide 2 of 4",
+        title: "WAGBA",
+        body: `
+          <p><strong>We are getting better at</strong> identifying useful features of webpages before planning our own Minecraft showcase website.</p>
+        `
+      },
+      {
+        kicker: "Slide 3 of 4",
+        title: "K, S, U",
+        body: `
+          <div class="ksu-grid">
+            <div class="ksu-item"><strong>K – Knowledge:</strong> I know that websites use titles, images, text, layout, and navigation to share information.</div>
+            <div class="ksu-item"><strong>S – Skill:</strong> I can analyse a webpage and explain what makes it clear or useful.</div>
+            <div class="ksu-item"><strong>U – Understanding:</strong> I understand that good website design helps visitors find and understand information easily.</div>
+          </div>
+        `
+      },
+      {
+        kicker: "Slide 4 of 4",
+        title: "Today’s Mission",
+        body: `
+          <ol>
+            <li>Read the lesson objective.</li>
+            <li>Write what you are getting better at today.</li>
+            <li>Complete the Blooket Do Now.</li>
+            <li>Ask Mr Dave for the password.</li>
+            <li>Continue to the website explorer activity.</li>
+          </ol>
+        `
+      }
+    ];
+
+    const questions = [
+      "What is the title?",
+      "What images are used?",
+      "Is the text easy to read?",
+      "What makes the website look clear?",
+      "What could be improved?"
+    ];
+
+    const websites = [
+      {
+        label: "Website 1: Minecraft Biomes",
+        shortLabel: "Minecraft Biomes",
+        url: "https://minecraft.fandom.com/wiki/Biome?utm_source=chatgpt.com"
+      },
+      {
+        label: "Website 2: BBC Bitesize Climate",
+        shortLabel: "BBC Bitesize Climate",
+        url: "https://www.bbc.co.uk/bitesize/topics/z849q6f/articles/z2kj2v4#zwqhsk7"
+      },
+      {
+        label: "Website 3: National Geographic Climate",
+        shortLabel: "National Geographic Climate",
+        url: "https://education.nationalgeographic.org/resource/all-about-climate/3rd-grade/?utm_source=chatgpt.com"
+      }
+    ];
+
+
+    const biomeWorlds = [
+      { name: "Plains", url: "https://education.minecraft.net/world/c6e027d7-0127-4a47-8150-e368233c630c" },
+      { name: "Forest", url: "https://education.minecraft.net/world/d9684730-40ef-483c-904f-0b2a788a8bc6" },
+      { name: "Savanna", url: "https://education.minecraft.net/world/1208e0e0-e26e-4cec-ae05-9be4f157a98f" },
+      { name: "Warm Ocean", url: "https://education.minecraft.net/world/51a25308-cad9-4042-908a-a918e4b8472e" },
+      { name: "Cherry Grove", url: "https://education.minecraft.net/world/001064d2-fbd6-41ac-a640-1c2460416f6a" },
+      { name: "Desert", url: "https://education.minecraft.net/world/dee9e1d9-cfd0-455e-8854-a86c184c2035" },
+      { name: "Ice Plains", url: "https://education.minecraft.net/world/ae88331b-6a2a-4cb2-8cdd-2869fcb09d25" }
+    ];
+
+    const planningFieldIds = [
+      "partnerName",
+      "chosenBiome",
+      "biomeClimate",
+      "buildIdea",
+      "materialsPlan",
+      "specialFeature",
+      "screenshotPlan",
+      "teamworkPlan"
+    ];
+
+    let currentSlide = 0;
+    let currentSite = 0;
+
+    function formatToday() {
+      const today = new Date();
+      return today.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function setLessonDate() {
+      const lessonDate = formatToday();
+      localStorage.setItem("lessonDate", lessonDate);
+      document.getElementById("dateHeader").textContent = "Date: " + lessonDate;
+    }
+
+    function updateNameHeader() {
+      const name = localStorage.getItem("studentName") || "";
+      const studentClass = localStorage.getItem("studentClass") || "";
+      document.getElementById("nameHeader").textContent = name ? "Name: " + name : "Name: not entered";
+      document.getElementById("classHeader").textContent = studentClass ? "Class: " + studentClass : "Class: not entered";
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+      document.getElementById(screenId).classList.add("active");
+      updateNameHeader();
+      setLessonDate();
+      if (screenId === "landingScreen") updateSavedSessionSummary();
+    }
+
+    function renderSlide() {
+      const slide = slides[currentSlide];
+      document.getElementById("slideContent").innerHTML = `
+        <span class="slide-kicker">${slide.kicker}</span>
+        <h2>${slide.title}</h2>
+        ${slide.body}
+      `;
+
+      const dots = slides.map((_, index) => `<span class="dot ${index === currentSlide ? "active" : ""}"></span>`).join("");
+      document.getElementById("slideDots").innerHTML = dots;
+
+      document.getElementById("backSlideBtn").disabled = currentSlide === 0;
+      document.getElementById("nextSlideBtn").textContent = currentSlide === slides.length - 1 ? "Review" : "Next Slide";
+    }
+
+    function changeSlide(direction) {
+      currentSlide = Math.min(Math.max(currentSlide + direction, 0), slides.length - 1);
+      renderSlide();
+    }
+
+    function saveStudentDetails() {
+      const name = document.getElementById("studentName").value.trim();
+      const studentClass = document.getElementById("studentClass").value.trim();
+      const objective = document.getElementById("objectiveAnswer").value.trim();
+      if (name) localStorage.setItem("studentName", name);
+      if (studentClass) localStorage.setItem("studentClass", studentClass);
+      localStorage.setItem("objectiveAnswer", objective);
+      updateNameHeader();
+      document.getElementById("introError").style.display = "none";
+    }
+
+    function loadStudentDetails() {
+      const name = localStorage.getItem("studentName") || "";
+      const studentClass = localStorage.getItem("studentClass") || "";
+      const objective = localStorage.getItem("objectiveAnswer") || "";
+      document.getElementById("studentName").value = name;
+      document.getElementById("studentClass").value = studentClass;
+      document.getElementById("objectiveAnswer").value = objective;
+      updateNameHeader();
+    }
+
+    function completeIntro() {
+      saveStudentDetails();
+      const name = (localStorage.getItem("studentName") || "").trim();
+      const studentClass = (localStorage.getItem("studentClass") || "").trim();
+      const objective = (localStorage.getItem("objectiveAnswer") || "").trim();
+
+      if (!name || !studentClass || !objective) {
+        document.getElementById("introError").textContent = "Please enter your name, class, and objective answer before moving on.";
+        document.getElementById("introError").style.display = "block";
+        return;
+      }
+
+      localStorage.setItem("introCompleted", "true");
+      showScreen("blooketScreen");
+    }
+
+    function completeBlooket() {
+      localStorage.setItem("blooketCompleted", "true");
+      showScreen("passwordScreen");
+      setTimeout(() => document.getElementById("teacherPasswordInput").focus(), 50);
+    }
+
+    function unlockStage() {
+      const input = document.getElementById("teacherPasswordInput").value;
+      if (input === teacherPassword) {
+        localStorage.setItem("stageUnlocked", "true");
+        document.getElementById("passwordError").style.display = "none";
+        showScreen("instructionScreen");
+      } else {
+        document.getElementById("passwordError").style.display = "block";
+        document.getElementById("teacherPasswordInput").value = "";
+      }
+    }
+
+    function understandInstructions() {
+      localStorage.setItem("instructionsUnderstood", "true");
+      renderExplorer();
+      showScreen("explorerScreen");
+    }
+
+    function renderSiteTabs() {
+      document.getElementById("siteTabs").innerHTML = websites.map((site, index) => {
+        return `<button type="button" class="site-tab ${index === currentSite ? "active" : ""}" onclick="selectSite(${index})">${site.shortLabel}</button>`;
+      }).join("");
+    }
+
+    function answerKey(siteIndex, questionIndex) {
+      return `website${siteIndex + 1}_question${questionIndex + 1}`;
+    }
+
+    function saveAnswer(siteIndex, questionIndex, value) {
+      localStorage.setItem(answerKey(siteIndex, questionIndex), value);
+    }
+
+    function selectSite(index) {
+      currentSite = index;
+      localStorage.setItem("currentSite", String(index));
+      renderExplorer();
+    }
+
+    function renderExplorer() {
+      currentSite = Number(localStorage.getItem("currentSite") || currentSite || 0);
+      if (Number.isNaN(currentSite) || currentSite < 0 || currentSite >= websites.length) currentSite = 0;
+
+      const site = websites[currentSite];
+      renderSiteTabs();
+
+      document.getElementById("viewerLabel").textContent = site.label;
+      document.getElementById("viewerUrl").textContent = site.url;
+      document.getElementById("openWebsiteLink").href = site.url;
+      document.getElementById("websiteFrame").src = site.url;
+      document.getElementById("questionSiteTitle").textContent = site.label;
+
+      const fields = questions.map((question, questionIndex) => {
+        const saved = localStorage.getItem(answerKey(currentSite, questionIndex)) || "";
+        return `
+          <div class="question-block">
+            <label for="q${currentSite}_${questionIndex}">${questionIndex + 1}. ${escapeHTML(question)}</label>
+            <textarea id="q${currentSite}_${questionIndex}" oninput="saveAnswer(${currentSite}, ${questionIndex}, this.value)" placeholder="Write your answer here...">${escapeHTML(saved)}</textarea>
+          </div>
+        `;
+      }).join("");
+
+      const finishButton = currentSite === 2 ? `
+        <button type="button" class="full" onclick="completeWebsiteEvaluation()">I've evaluated all 3 websites</button>
+        <p class="small-help">Click this only after you have answered the questions for all three websites.</p>
+      ` : "";
+
+      document.getElementById("questionsContainer").innerHTML = fields + finishButton;
+    }
+
+
+    function areWebsiteAnswersComplete() {
+      for (let siteIndex = 0; siteIndex < websites.length; siteIndex++) {
+        for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
+          if (!(localStorage.getItem(answerKey(siteIndex, questionIndex)) || "").trim()) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function completeWebsiteEvaluation() {
+      if (!areWebsiteAnswersComplete()) {
+        alert("Please answer all questions for Website 1, Website 2, and Website 3 before moving on.");
+        return;
+      }
+      localStorage.setItem("websitesEvaluated", "true");
+      showScreen("secondPasswordScreen");
+      setTimeout(() => document.getElementById("secondPasswordInput").focus(), 50);
+    }
+
+    function unlockPlanningStage() {
+      const input = document.getElementById("secondPasswordInput").value;
+      if (input === planningPassword) {
+        localStorage.setItem("planningUnlocked", "true");
+        document.getElementById("secondPasswordError").style.display = "none";
+        loadPlanningAnswers();
+        showScreen("planningScreen");
+      } else {
+        document.getElementById("secondPasswordError").style.display = "block";
+        document.getElementById("secondPasswordInput").value = "";
+      }
+    }
+
+    function savePlanningAnswers() {
+      planningFieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) localStorage.setItem(id, el.value.trim());
+      });
+      const planningError = document.getElementById("planningError");
+      if (planningError) planningError.style.display = "none";
+    }
+
+    function loadPlanningAnswers() {
+      planningFieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = localStorage.getItem(id) || "";
+      });
+    }
+
+    function arePlanningAnswersComplete() {
+      return planningFieldIds.every(id => (localStorage.getItem(id) || "").trim());
+    }
+
+    function downloadCompletePDFAndMoveOn() {
+      savePlanningAnswers();
+      if (!arePlanningAnswersComplete()) {
+        document.getElementById("planningError").style.display = "block";
+        return;
+      }
+      downloadAnswers();
+      localStorage.setItem("planDownloaded", "true");
+      setTimeout(() => {
+        showScreen("finalPasswordScreen");
+        const finalInput = document.getElementById("finalPasswordInput");
+        if (finalInput) finalInput.focus();
+      }, 500);
+    }
+
+    function unlockMinecraftStart() {
+      const input = document.getElementById("finalPasswordInput").value;
+      if (input === minecraftStartPassword) {
+        localStorage.setItem("minecraftStarted", "true");
+        document.getElementById("finalPasswordError").style.display = "none";
+        showScreen("minecraftStartScreen");
+      } else {
+        document.getElementById("finalPasswordError").style.display = "block";
+        document.getElementById("finalPasswordInput").value = "";
+      }
+    }
+
+    function escapeHTML(text) {
+      return String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function buildPrintableAnswerHTML() {
+      const studentName = localStorage.getItem("studentName") || "";
+      const lessonDate = localStorage.getItem("lessonDate") || formatToday();
+      const studentClass = localStorage.getItem("studentClass") || "";
+      const objectiveAnswer = localStorage.getItem("objectiveAnswer") || "";
+      const planningAnswers = {
+        partnerName: localStorage.getItem("partnerName") || "",
+        chosenBiome: localStorage.getItem("chosenBiome") || "",
+        biomeClimate: localStorage.getItem("biomeClimate") || "",
+        buildIdea: localStorage.getItem("buildIdea") || "",
+        materialsPlan: localStorage.getItem("materialsPlan") || "",
+        specialFeature: localStorage.getItem("specialFeature") || "",
+        screenshotPlan: localStorage.getItem("screenshotPlan") || "",
+        teamworkPlan: localStorage.getItem("teamworkPlan") || ""
+      };
+
+      let answerHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Website Explorer Answers</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 38px;
+              color: #000;
+              background: #fff;
+              line-height: 1.5;
+            }
+            h1 {
+              font-size: 24px;
+              margin-bottom: 8px;
+            }
+            h2 {
+              font-size: 20px;
+              margin-top: 30px;
+              border-bottom: 1px solid #000;
+              padding-bottom: 6px;
+            }
+            .student-info, .objective-box {
+              margin: 18px 0;
+              padding: 12px;
+              border: 1px solid #000;
+            }
+            .question {
+              font-weight: bold;
+              margin-top: 16px;
+            }
+            .answer {
+              margin-top: 4px;
+              padding: 10px;
+              border: 1px solid #ccc;
+              min-height: 38px;
+              white-space: pre-wrap;
+            }
+            .url {
+              font-size: 12px;
+              word-break: break-all;
+            }
+            .page-break {
+              page-break-before: always;
+            }
+        
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      width: min(950px, 100%);
+      margin-top: 30px;
+    }
+
+    .choice-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.08);
+      text-align: left;
+    }
+
+    .choice-card h3 {
+      margin: 0 0 10px;
+      font-size: 26px;
+    }
+
+    .choice-card p {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0 0 18px;
+    }
+
+    .saved-summary {
+      width: min(950px, 100%);
+      margin-top: 18px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #f8fbff;
+      color: var(--muted);
+      text-align: left;
+      line-height: 1.45;
+    }
+
+    .warning-card {
+      background: var(--warning);
+      border: 1px solid #ead08c;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 18px 0;
+      color: #684b00;
+      text-align: left;
+      line-height: 1.45;
+    }
+
+
+    .biome-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+      width: 100%;
+    }
+
+    .biome-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.08);
+    }
+
+    .biome-visual {
+      height: 115px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .biome-visual::before,
+    .biome-visual::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+    }
+
+    .plains {
+      background: linear-gradient(#8fd4ff 0 45%, #72c95a 45% 100%);
+    }
+    .plains::before {
+      height: 34px;
+      background: repeating-linear-gradient(90deg, #4da83f 0 14px, #70c95a 14px 26px);
+    }
+
+    .forest {
+      background: linear-gradient(#9bd9ff 0 42%, #6bbd55 42% 100%);
+    }
+    .forest::before {
+      height: 82px;
+      background:
+        radial-gradient(circle at 20% 35%, #1f7a3a 0 24px, transparent 25px),
+        radial-gradient(circle at 45% 32%, #2e9148 0 28px, transparent 29px),
+        radial-gradient(circle at 72% 38%, #1f7a3a 0 26px, transparent 27px);
+    }
+    .forest::after {
+      height: 38px;
+      background:
+        linear-gradient(90deg, transparent 0 18%, #7a4a25 18% 24%, transparent 24% 43%, #7a4a25 43% 49%, transparent 49% 70%, #7a4a25 70% 76%, transparent 76%);
+    }
+
+    .savanna {
+      background: linear-gradient(#f7cf78 0 48%, #d9b45a 48% 100%);
+    }
+    .savanna::before {
+      height: 70px;
+      background:
+        radial-gradient(circle at 22% 36%, #6e8f2f 0 18px, transparent 19px),
+        radial-gradient(circle at 72% 40%, #7a9b33 0 20px, transparent 21px);
+    }
+    .savanna::after {
+      height: 43px;
+      background:
+        linear-gradient(90deg, transparent 0 20%, #8a5b2e 20% 25%, transparent 25% 70%, #8a5b2e 70% 75%, transparent 75%);
+    }
+
+    .warm-ocean {
+      background: linear-gradient(#8fd4ff 0 34%, #22a7d8 34% 100%);
+    }
+    .warm-ocean::before {
+      height: 58px;
+      background:
+        radial-gradient(circle at 20% 70%, #f5d66c 0 10px, transparent 11px),
+        radial-gradient(circle at 50% 62%, #f27c9b 0 9px, transparent 10px),
+        radial-gradient(circle at 76% 70%, #ffb347 0 11px, transparent 12px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.22) 0 3px, transparent 3px 14px);
+    }
+
+    .cherry-grove {
+      background: linear-gradient(#bfe7ff 0 44%, #86cf73 44% 100%);
+    }
+    .cherry-grove::before {
+      height: 78px;
+      background:
+        radial-gradient(circle at 22% 35%, #ff9fc4 0 24px, transparent 25px),
+        radial-gradient(circle at 48% 32%, #ffb1d0 0 27px, transparent 28px),
+        radial-gradient(circle at 74% 38%, #ff92bc 0 23px, transparent 24px);
+    }
+    .cherry-grove::after {
+      height: 38px;
+      background:
+        linear-gradient(90deg, transparent 0 20%, #8b5a35 20% 25%, transparent 25% 45%, #8b5a35 45% 50%, transparent 50% 72%, #8b5a35 72% 77%, transparent 77%);
+    }
+
+    .desert {
+      background: linear-gradient(#8fd4ff 0 40%, #e8c56a 40% 100%);
+    }
+    .desert::before {
+      height: 52px;
+      background:
+        radial-gradient(circle at 70% 20%, #fff2a6 0 16px, transparent 17px),
+        linear-gradient(15deg, transparent 0 35%, rgba(184,139,47,0.35) 36% 40%, transparent 41%);
+    }
+    .desert::after {
+      height: 55px;
+      background:
+        linear-gradient(90deg, transparent 0 18%, #40964c 18% 23%, transparent 23% 100%),
+        linear-gradient(0deg, transparent 0 45%, #40964c 45% 55%, transparent 55% 100%),
+        linear-gradient(90deg, transparent 0 68%, #40964c 68% 73%, transparent 73% 100%);
+    }
+
+    .ice-plains {
+      background: linear-gradient(#d6f4ff 0 45%, #effbff 45% 100%);
+    }
+    .ice-plains::before {
+      height: 58px;
+      background:
+        linear-gradient(135deg, transparent 0 35%, #b8e8ff 36% 52%, transparent 53%),
+        linear-gradient(30deg, transparent 0 55%, #d1f3ff 56% 70%, transparent 71%);
+    }
+    .ice-plains::after {
+      height: 34px;
+      background: repeating-linear-gradient(90deg, #ffffff 0 18px, #dff7ff 18px 31px);
+    }
+
+    .biome-card-content {
+      padding: 13px;
+    }
+
+    .biome-card h4 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .biome-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .planning-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .planning-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .planning-card h2 {
+      font-size: clamp(30px, 3vw, 48px);
+      margin: 0 0 12px;
+    }
+
+    .planning-card p,
+    .planning-card li {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .planning-form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font: inherit;
+      background: #fbfdff;
+      color: var(--text);
+    }
+
+    .launch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .launch-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.10);
+      text-align: left;
+    }
+
+    .launch-card .button-link {
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .launch-card-content {
+      padding: 14px;
+    }
+
+    .launch-card-content h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+    }
+
+    .launch-card-content p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    @media (max-width: 1000px) {
+      .planning-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+
+    @media (max-width: 1000px) {
+      .objective-ribbon {
+        position: static;
+        padding: 10px 14px;
+      }
+
+      .objective-ksu {
+        grid-template-columns: 1fr;
+      }
+
+      .objective-ksu span {
+        border-radius: 14px;
+      }
+    }
+
+
+    @media print {
+              button {
+                display: none;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Website Explorer: Minecraft Biomes and Climate</h1>
+
+          <div class="student-info">
+            <p><strong>Name:</strong> ${escapeHTML(studentName)}</p>
+            <p><strong>Class:</strong> ${escapeHTML(studentClass)}</p>
+            <p><strong>Date:</strong> ${escapeHTML(lessonDate)}</p>
+          </div>
+
+          <div class="objective-box">
+            <p class="question">Based on the objective, what are you getting better at today?</p>
+            <div class="answer">${escapeHTML(objectiveAnswer)}</div>
+          </div>
+      `;
+
+      websites.forEach((site, siteIndex) => {
+        answerHTML += `
+          <section class="${siteIndex > 0 ? "page-break" : ""}">
+            <h2>${escapeHTML(site.label)}</h2>
+            <p class="url"><strong>Website:</strong> ${escapeHTML(site.url)}</p>
+        `;
+
+        questions.forEach((question, questionIndex) => {
+          const answer = localStorage.getItem(answerKey(siteIndex, questionIndex)) || "";
+          answerHTML += `
+            <p class="question">${questionIndex + 1}. ${escapeHTML(question)}</p>
+            <div class="answer">${escapeHTML(answer)}</div>
+          `;
+        });
+
+        answerHTML += `</section>`;
+      });
+
+      answerHTML += `
+        <section class="page-break">
+          <h2>Minecraft Biome Build Plan</h2>
+
+          <p class="question">Partner name</p>
+          <div class="answer">${escapeHTML(planningAnswers.partnerName)}</div>
+
+          <p class="question">Chosen biome</p>
+          <div class="answer">${escapeHTML(planningAnswers.chosenBiome)}</div>
+
+          <p class="question">What is the climate or environment like in this biome?</p>
+          <div class="answer">${escapeHTML(planningAnswers.biomeClimate)}</div>
+
+          <p class="question">What will you build?</p>
+          <div class="answer">${escapeHTML(planningAnswers.buildIdea)}</div>
+
+          <p class="question">What materials or blocks might fit this biome?</p>
+          <div class="answer">${escapeHTML(planningAnswers.materialsPlan)}</div>
+
+          <p class="question">What special feature will make your build interesting?</p>
+          <div class="answer">${escapeHTML(planningAnswers.specialFeature)}</div>
+
+          <p class="question">What screenshots will you need for your website later?</p>
+          <div class="answer">${escapeHTML(planningAnswers.screenshotPlan)}</div>
+
+          <p class="question">How will you and your partner work together?</p>
+          <div class="answer">${escapeHTML(planningAnswers.teamworkPlan)}</div>
+        </section>
+      `;
+
+      answerHTML += `
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      return answerHTML;
+    }
+
+    function downloadAnswers() {
+      const answerHTML = buildPrintableAnswerHTML();
+      const printWindow = window.open("", "_blank");
+
+      if (!printWindow) {
+        alert("Please allow pop-ups for this page, then click Download My Answers again.");
+        return;
+      }
+
+      printWindow.document.open();
+      printWindow.document.write(answerHTML);
+      printWindow.document.close();
+    }
+
+    function downloadAnswersAsHTML() {
+      const answerHTML = buildPrintableAnswerHTML().replace(/<script>[\s\S]*?<\/script>/, "");
+      const blob = new Blob([answerHTML], { type: "text/html" });
+      const link = document.createElement("a");
+      const studentName = (localStorage.getItem("studentName") || "student").replace(/[^a-z0-9-_]+/gi, "-");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${studentName}-website-explorer-answers.html`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+    }
+
+
+    function hasSavedProgress() {
+      const keysToCheck = [
+        "studentName",
+        "studentClass",
+        "objectiveAnswer",
+        "introCompleted",
+        "blooketCompleted",
+        "stageUnlocked",
+        "instructionsUnderstood",
+        "websitesEvaluated",
+        "planningUnlocked",
+        "planDownloaded",
+        "minecraftStarted",
+        "partnerName",
+        "chosenBiome"
+      ];
+
+      const hasMainProgress = keysToCheck.some(key => {
+        const value = localStorage.getItem(key);
+        return value !== null && String(value).trim() !== "";
+      });
+
+      const hasWebsiteAnswers = websites.some((_, siteIndex) =>
+        questions.some((_, questionIndex) =>
+          (localStorage.getItem(answerKey(siteIndex, questionIndex)) || "").trim()
+        )
+      );
+
+      return hasMainProgress || hasWebsiteAnswers;
+    }
+
+    function updateSavedSessionSummary() {
+      const summary = document.getElementById("savedSessionSummary");
+      if (!summary) return;
+
+      const name = localStorage.getItem("studentName") || "No name saved";
+      const studentClass = localStorage.getItem("studentClass") || "No class saved";
+      const chosenBiome = localStorage.getItem("chosenBiome") || "No biome chosen yet";
+
+      let stage = "Beginning of activity";
+      if (localStorage.getItem("minecraftStarted") === "true") {
+        stage = "Minecraft world links unlocked";
+      } else if (localStorage.getItem("planDownloaded") === "true") {
+        stage = "Planning downloaded; final password needed";
+      } else if (localStorage.getItem("planningUnlocked") === "true") {
+        stage = "Minecraft biome planning";
+      } else if (localStorage.getItem("websitesEvaluated") === "true") {
+        stage = "Website evaluation completed; next password needed";
+      } else if (localStorage.getItem("stageUnlocked") === "true") {
+        stage = "Website explorer activity";
+      } else if (localStorage.getItem("blooketCompleted") === "true") {
+        stage = "Blooket completed; password needed";
+      } else if (localStorage.getItem("introCompleted") === "true") {
+        stage = "Blooket Do Now";
+      }
+
+      if (hasSavedProgress()) {
+        summary.innerHTML = `
+          <strong>Saved work found on this device.</strong><br>
+          Name: ${escapeHTML(name)}<br>
+          Class: ${escapeHTML(studentClass)}<br>
+          Current stage: ${escapeHTML(stage)}<br>
+          Chosen biome: ${escapeHTML(chosenBiome)}
+        `;
+      } else {
+        summary.innerHTML = `
+          <strong>No saved student work found on this device.</strong><br>
+          New students can safely start from the beginning.
+        `;
+      }
+    }
+
+    function continueSavedSession() {
+      routeAppFromSavedProgress();
+    }
+
+    function showBackupPrompt() {
+      if (!hasSavedProgress()) {
+        resetForNewStudent();
+        return;
+      }
+      showScreen("backupScreen");
+    }
+
+    function confirmResetForNewStudent() {
+      const confirmed = confirm("Have you downloaded or checked the existing work? Press OK to reset this device for a new student.");
+      if (!confirmed) return;
+      resetForNewStudent();
+    }
+
+    function resetForNewStudent() {
+      localStorage.clear();
+      setLessonDate();
+      loadStudentDetails();
+      currentSlide = 0;
+      renderSlide();
+      renderExplorer();
+      showScreen("objectiveScreen");
+    }
+
+    function routeAppFromSavedProgress() {
+      setLessonDate();
+      loadStudentDetails();
+      renderSlide();
+      renderExplorer();
+      loadPlanningAnswers();
+
+      const introCompleted = localStorage.getItem("introCompleted");
+      const blooketCompleted = localStorage.getItem("blooketCompleted");
+      const stageUnlocked = localStorage.getItem("stageUnlocked");
+      const instructionsUnderstood = localStorage.getItem("instructionsUnderstood");
+      const websitesEvaluated = localStorage.getItem("websitesEvaluated");
+      const planningUnlocked = localStorage.getItem("planningUnlocked");
+      const planDownloaded = localStorage.getItem("planDownloaded");
+      const minecraftStarted = localStorage.getItem("minecraftStarted");
+
+      if (minecraftStarted === "true") {
+        showScreen("minecraftStartScreen");
+      } else if (planDownloaded === "true") {
+        showScreen("finalPasswordScreen");
+      } else if (planningUnlocked === "true") {
+        showScreen("planningScreen");
+      } else if (websitesEvaluated === "true") {
+        showScreen("secondPasswordScreen");
+      } else if (stageUnlocked === "true" && instructionsUnderstood === "true") {
+        showScreen("explorerScreen");
+      } else if (stageUnlocked === "true") {
+        showScreen("instructionScreen");
+      } else if (blooketCompleted === "true") {
+        showScreen("passwordScreen");
+      } else if (introCompleted === "true") {
+        showScreen("blooketScreen");
+      } else {
+        showScreen("objectiveScreen");
+      }
+    }
+
+
+    function initApp() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("reset") === "true") {
+        localStorage.clear();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      setLessonDate();
+      loadStudentDetails();
+      renderSlide();
+      renderExplorer();
+      loadPlanningAnswers();
+      updateSavedSessionSummary();
+      showScreen("landingScreen");
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
