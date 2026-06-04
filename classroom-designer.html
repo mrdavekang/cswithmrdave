@@ -108,6 +108,22 @@
   details.section>summary::-webkit-details-marker{display:none}
   details.section>summary::before{content:'▸ ';color:#94a3b8}
   details.section[open]>summary::before{content:'▾ '}
+  /* small screens: stack the sidebar above the room so the canvas stays usable */
+  @media (max-width:860px){
+    .layout{flex-direction:column;height:auto}
+    .side{width:100%;max-height:42vh;border-right:none;border-bottom:1px solid var(--line)}
+    section.work{height:62vh;min-height:360px}
+    header{gap:6px}
+    header h1{font-size:14px}
+    .scorebar{width:100%;order:5;flex-wrap:wrap;gap:8px}
+    #planTitle{font-size:20px}
+  }
+  @media (max-width:520px){
+    .side{max-height:46vh}
+    .legend{display:none}
+    .palette{grid-template-columns:1fr}
+    button{padding:6px 9px}
+  }
 </style>
 </head>
 <body>
