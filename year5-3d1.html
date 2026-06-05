@@ -991,6 +991,67 @@
       .objective-ksu span { border-radius:14px; }
     }
 
+
+    .login-reminder-box {
+      margin-top: 18px;
+      background: #fff8e8;
+      border: 2px solid #f2c879;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .login-reminder-box h3 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: #6f4b00;
+    }
+
+    .login-check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .login-check-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .login-check-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #edf2f7;
+      color: #516174;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .login-check-card.done .login-check-icon {
+      background: var(--soft-green);
+      color: var(--primary-dark);
+    }
+
+    .login-check-card.done {
+      border-color: #a8dfbd;
+      background: #f1fbf5;
+    }
+
+    @media (max-width: 1000px) {
+      .login-check-grid { grid-template-columns: 1fr; }
+    }
+
     @media print {
       header, .objective-ribbon, main { display:none !important; }
       body { background:#fff; }
@@ -1008,6 +1069,7 @@
       <span class="student-chip" id="classHeader">Class: not selected</span>
       <span class="student-chip" id="dateHeader">Date: loading...</span>
       <button type="button" class="ghost" onclick="goBackOneStep()">Back Step</button>
+      <button type="button" class="ghost" onclick="goToLoginPage()">Tinkercad Login</button>
       <button type="button" class="ghost" onclick="resetCourse()">Reset</button>
     </div>
   </header>
@@ -1176,7 +1238,7 @@
           <div class="login-step">
             <h3>1. Find your login code</h3>
             <p>Click the button below. Find your name and copy your login code exactly.</p>
-            <a id="loginCodesLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer">Open My Class Login Codes</a>
+            <a id="loginCodesLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer" onclick="markLoginStep('loginCodesOpened')">Open My Class Login Codes</a>
           </div>
 
           <div class="login-step">
@@ -1186,7 +1248,7 @@
               <li>Use your login code from the PDF.</li>
               <li>Open or create a new 3D Design when you are ready.</li>
             </ol>
-            <a id="tinkercadClassLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer">Open Tinkercad Class</a>
+            <a id="tinkercadClassLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer" onclick="markLoginStep('tinkercadClassOpened')">Open Tinkercad Class</a>
           </div>
         </div>
 
@@ -1194,7 +1256,16 @@
           <strong>Important:</strong> Do not use another student's code. Do not close this guided course. Come back here after you are logged in.
         </div>
 
+        <div class="login-reminder-box" aria-label="Login checklist">
+          <h3>Before you continue, check these two steps</h3>
+          <div class="login-check-grid">
+            <div class="login-check-card" id="loginCodesCheckCard"><span class="login-check-icon" id="loginCodesCheckIcon">1</span><span>Login codes opened</span></div>
+            <div class="login-check-card" id="tinkercadClassCheckCard"><span class="login-check-icon" id="tinkercadClassCheckIcon">2</span><span>Tinkercad class opened</span></div>
+          </div>
+        </div>
+
         <button type="button" class="large" onclick="completeLogin()">I have logged in to Tinkercad</button>
+        <div class="error" id="loginError">Open your login codes and the Tinkercad class link first. Then come back and continue.</div>
       </div>
     </section>
 
@@ -1997,6 +2068,42 @@
       }
     }
 
+
+    function goToLoginPage() {
+      const studentClass = localStorage.getItem("studentClass") || "";
+      if (!studentClass || !classData[studentClass]) {
+        showScreen("welcomeScreen");
+        return;
+      }
+      if (!stepDone("briefingUnlocked")) {
+        showScreen("briefingScreen");
+        return;
+      }
+      showScreen("loginScreen");
+    }
+
+    function markLoginStep(key) {
+      localStorage.setItem(key, "true");
+      updateLoginChecklist();
+    }
+
+    function updateLoginChecklist() {
+      const checks = [
+        { key: "loginCodesOpened", card: "loginCodesCheckCard", icon: "loginCodesCheckIcon" },
+        { key: "tinkercadClassOpened", card: "tinkercadClassCheckCard", icon: "tinkercadClassCheckIcon" }
+      ];
+      checks.forEach(item => {
+        const card = document.getElementById(item.card);
+        const icon = document.getElementById(item.icon);
+        if (!card || !icon) return;
+        const done = stepDone(item.key);
+        card.classList.toggle("done", done);
+        icon.textContent = done ? "✓" : (item.key === "loginCodesOpened" ? "1" : "2");
+      });
+      const error = document.getElementById("loginError");
+      if (error) error.style.display = "none";
+    }
+
     function renderClassLogin() {
       const studentClass = localStorage.getItem("studentClass") || "";
       const data = classData[studentClass];
@@ -2009,9 +2116,18 @@
       document.getElementById("loginCodesLink").textContent = "Open " + data.label + " Login Codes";
       document.getElementById("tinkercadClassLink").href = data.join;
       document.getElementById("tinkercadClassLink").textContent = "Open " + data.label + " Tinkercad Class";
+      updateLoginChecklist();
     }
 
     function completeLogin() {
+      const openedCodes = stepDone("loginCodesOpened");
+      const openedClass = stepDone("tinkercadClassOpened");
+      if (!openedCodes || !openedClass) {
+        updateLoginChecklist();
+        const error = document.getElementById("loginError");
+        if (error) error.style.display = "block";
+        return;
+      }
       localStorage.setItem("loginCompleted", "true");
       showScreen("checkpoint1Screen");
       setTimeout(() => document.getElementById("checkpoint1Password").focus(), 80);
@@ -2336,7 +2452,7 @@
     function courseStorageKeys() {
       const fixedKeys = [
         "studentName", "studentClass", "objectiveAnswer", "lessonDate",
-        "introCompleted", "briefingUnlocked", "loginCompleted", "mouseControlCompleted", "mouseControlReflection",
+        "introCompleted", "briefingUnlocked", "loginCodesOpened", "tinkercadClassOpened", "loginCompleted", "mouseControlCompleted", "mouseControlReflection",
         "activity1MouseReflection", "checkpoint1Unlocked", "checkpoint2Unlocked", "checkpoint3Unlocked", "checkpoint4Unlocked",
         "activity1Completed", "activity2Completed", "activity3Completed", "evaluationCompleted",
         "activity1Reflection", "activity2Shapes", "activity2Problem", "modelChoice",
