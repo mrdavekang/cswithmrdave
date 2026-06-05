@@ -1007,6 +1007,7 @@
       <span class="student-chip" id="nameHeader">Name: not entered</span>
       <span class="student-chip" id="classHeader">Class: not selected</span>
       <span class="student-chip" id="dateHeader">Date: loading...</span>
+      <button type="button" class="ghost" onclick="goBackOneStep()">Back Step</button>
       <button type="button" class="ghost" onclick="resetCourse()">Reset</button>
     </div>
   </header>
@@ -1122,9 +1123,46 @@
           <label for="objectiveAnswer">Based on the WAGBA, what are you getting better at today?</label>
           <textarea id="objectiveAnswer" placeholder="I am getting better at..." oninput="saveStudentDetails()"></textarea>
 
-          <button type="button" class="full" onclick="completeIntro()">Next: Tinkercad Login</button>
-          <div class="error" id="introError">Please enter your name, class, and objective answer before moving on.</div>
+          <button type="button" class="full" onclick="completeIntro()">I have submitted my WAGBA</button>
+          <div class="error" id="introError">Please enter your name, class, and WAGBA answer before moving on.</div>
         </aside>
+      </div>
+    </section>
+
+
+    <section id="briefingScreen" class="screen">
+      <div class="password-card">
+        <div class="icon">✋</div>
+        <h2>Stop Here</h2>
+        <p>You have submitted your WAGBA. Please come to Mr Dave for a short briefing before opening Tinkercad.</p>
+
+        <div class="briefing-grid" aria-label="Briefing steps">
+          <div class="briefing-step-card">
+            <div class="big-number">1</div>
+            <h3>Listen</h3>
+            <p>Mouse controls and class login instructions.</p>
+          </div>
+          <div class="briefing-step-card">
+            <div class="big-number">2</div>
+            <h3>Check</h3>
+            <p>Your name, class, and device are correct.</p>
+          </div>
+          <div class="briefing-step-card">
+            <div class="big-number">3</div>
+            <h3>Password</h3>
+            <p>Only continue after Mr Dave gives the password.</p>
+          </div>
+        </div>
+
+        <div class="teacher-lock-note">
+          <strong>Class rule:</strong> Do not skip ahead. This password unlocks the next page only after the teacher briefing.
+        </div>
+
+        <label for="briefingPassword">Enter teacher password</label>
+        <input id="briefingPassword" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockBriefing();" />
+        <div class="password-actions"><button type="button" onclick="unlockBriefing()">Unlock Tinkercad Login</button></div>
+        <div class="back-row"><button type="button" class="secondary" onclick="showScreen('welcomeScreen')">Back to WAGBA</button></div>
+        <div class="error" id="briefingError">Please check with Mr Dave before continuing.</div>
       </div>
     </section>
 
@@ -1672,6 +1710,8 @@
       }
     };
 
+    const briefingPassword = atob("cmVhZHkzZA==");
+
     const checkpointPasswords = {
       1: atob("c3RhcnQzZA=="),
       2: atob("bW92ZTNk"),
@@ -1685,6 +1725,12 @@
         k: "3D objects have width, height, and depth.",
         s: "I can move, resize, and rotate basic 3D shapes.",
         u: "3D models are made by combining simple shapes."
+      },
+      briefingScreen: {
+        wagba: "We are getting better at pausing, listening, and following the correct learning steps.",
+        k: "A guided course uses checkpoints to keep learning in the correct order.",
+        s: "I can stop, listen to the teacher briefing, and continue only after the password.",
+        u: "Following each checkpoint helps me avoid missing important skills."
       },
       loginScreen: {
         wagba: "We are getting better at logging in safely and preparing our Tinkercad workspace.",
@@ -1773,12 +1819,13 @@
       {
         kicker: "Slide 4 of 4",
         title: "Today’s Mission",
-        body: `<ol><li>Log in to the correct Tinkercad class.</li><li>Start Activity 1 by practising mouse controls inside Tinkercad.</li><li>Use simple shapes in the 3D workspace.</li><li>Build a simple table.</li><li>Create a mini Minecraft-inspired object.</li><li>Improve and evaluate your model.</li></ol>`
+        body: `<ol><li>Submit your WAGBA answer.</li><li>Stop and come to Mr Dave for the briefing password.</li><li>Log in to the correct Tinkercad class.</li><li>Start Activity 1 by practising mouse controls inside Tinkercad.</li><li>Build your 3D model step by step.</li></ol>`
       }
     ];
 
     const progressSteps = [
-      { id: "introCompleted", label: "Details entered" },
+      { id: "introCompleted", label: "WAGBA submitted" },
+      { id: "briefingUnlocked", label: "Teacher briefing unlocked" },
       { id: "loginCompleted", label: "Tinkercad login" },
       { id: "checkpoint1Unlocked", label: "Teacher checkpoint 1" },
       { id: "activity1Completed", label: "Activity 1: Mouse Control + 3D Playground" },
@@ -1791,6 +1838,59 @@
     ];
 
     let currentSlide = 0;
+
+    const screenOrder = [
+      "welcomeScreen",
+      "briefingScreen",
+      "loginScreen",
+      "checkpoint1Screen",
+      "activity1Screen",
+      "checkpoint2Screen",
+      "activity2Screen",
+      "checkpoint3Screen",
+      "activity3Screen",
+      "checkpoint4Screen",
+      "evaluationScreen",
+      "finishScreen"
+    ];
+
+    function stepDone(key) {
+      return localStorage.getItem(key) === "true";
+    }
+
+    function getSafeScreen(requestedScreen) {
+      if (requestedScreen === "landingScreen") return "landingScreen";
+      if (!document.getElementById(requestedScreen)) return "welcomeScreen";
+      const index = screenOrder.indexOf(requestedScreen);
+      if (index === -1) return requestedScreen;
+
+      if (index >= screenOrder.indexOf("briefingScreen") && !stepDone("introCompleted")) return "welcomeScreen";
+      if (index >= screenOrder.indexOf("loginScreen") && !stepDone("briefingUnlocked")) return "briefingScreen";
+      if (index >= screenOrder.indexOf("checkpoint1Screen") && !stepDone("loginCompleted")) return "loginScreen";
+      if (index >= screenOrder.indexOf("activity1Screen") && !stepDone("checkpoint1Unlocked")) return "checkpoint1Screen";
+      if (index >= screenOrder.indexOf("checkpoint2Screen") && !stepDone("activity1Completed")) return "activity1Screen";
+      if (index >= screenOrder.indexOf("activity2Screen") && !stepDone("checkpoint2Unlocked")) return "checkpoint2Screen";
+      if (index >= screenOrder.indexOf("checkpoint3Screen") && !stepDone("activity2Completed")) return "activity2Screen";
+      if (index >= screenOrder.indexOf("activity3Screen") && !stepDone("checkpoint3Unlocked")) return "checkpoint3Screen";
+      if (index >= screenOrder.indexOf("checkpoint4Screen") && !stepDone("activity3Completed")) return "activity3Screen";
+      if (index >= screenOrder.indexOf("evaluationScreen") && !stepDone("checkpoint4Unlocked")) return "checkpoint4Screen";
+      if (index >= screenOrder.indexOf("finishScreen") && !stepDone("evaluationCompleted")) return "evaluationScreen";
+      return requestedScreen;
+    }
+
+    function goBackOneStep() {
+      let current = localStorage.getItem("currentScreen") || "welcomeScreen";
+      if (current === "landingScreen") {
+        showScreen("welcomeScreen");
+        return;
+      }
+      const index = screenOrder.indexOf(current);
+      if (index <= 0) {
+        showScreen("landingScreen");
+        return;
+      }
+      showScreen(screenOrder[index - 1]);
+    }
 
     function formatToday() {
       const today = new Date();
@@ -1819,6 +1919,7 @@
     }
 
     function showScreen(screenId) {
+      screenId = getSafeScreen(screenId);
       document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
       document.getElementById(screenId).classList.add("active");
       if (screenId !== "landingScreen") localStorage.setItem("currentScreen", screenId);
@@ -1878,7 +1979,22 @@
         return;
       }
       localStorage.setItem("introCompleted", "true");
-      showScreen("loginScreen");
+      showScreen("briefingScreen");
+      setTimeout(() => document.getElementById("briefingPassword").focus(), 80);
+    }
+
+    function unlockBriefing() {
+      const input = document.getElementById("briefingPassword");
+      const error = document.getElementById("briefingError");
+      if (input.value === briefingPassword) {
+        localStorage.setItem("briefingUnlocked", "true");
+        error.style.display = "none";
+        input.value = "";
+        showScreen("loginScreen");
+      } else {
+        error.style.display = "block";
+        input.value = "";
+      }
     }
 
     function renderClassLogin() {
@@ -2151,6 +2267,8 @@
       const panels = ["progressPanel0", "progressPanel1", "progressPanel2", "progressPanel3", "progressPanel4"];
       const currentLabels = {
         mouseControlScreen: "Mouse control warm-up",
+        briefingScreen: "Teacher briefing unlocked",
+        loginScreen: "Tinkercad login",
         activity1Screen: "Activity 1: Mouse Control + 3D Playground",
         activity2Screen: "Activity 2: Table",
         activity3Screen: "Activity 3: Mini model",
@@ -2218,7 +2336,7 @@
     function courseStorageKeys() {
       const fixedKeys = [
         "studentName", "studentClass", "objectiveAnswer", "lessonDate",
-        "introCompleted", "loginCompleted", "mouseControlCompleted", "mouseControlReflection",
+        "introCompleted", "briefingUnlocked", "loginCompleted", "mouseControlCompleted", "mouseControlReflection",
         "activity1MouseReflection", "checkpoint1Unlocked", "checkpoint2Unlocked", "checkpoint3Unlocked", "checkpoint4Unlocked",
         "activity1Completed", "activity2Completed", "activity3Completed", "evaluationCompleted",
         "activity1Reflection", "activity2Shapes", "activity2Problem", "modelChoice",
@@ -2246,7 +2364,7 @@
       const screen = localStorage.getItem("currentScreen") || "welcomeScreen";
       if (hasSavedProgress()) {
         box.classList.remove("no-work");
-        box.innerHTML = `Saved work found:<br>${escapeHTML(name)} • ${escapeHTML(cls)}<br><span style="font-weight:600;">Last page: ${escapeHTML(screen.replace("Screen", ""))}</span>`;
+        box.innerHTML = `Saved work found:<br>${escapeHTML(name)} • ${escapeHTML(cls)}<br><span style="font-weight:600;">Last page: ${escapeHTML(screen.replace("Screen", "").replace(/([A-Z])/g, " $1").trim())}</span>`;
         continueBtn.disabled = false;
         continueBtn.textContent = "Continue My Work";
       } else {
