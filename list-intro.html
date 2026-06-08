@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Year 8 Python Lists Intro · IDLE Style</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #d8e0ea;
+      --blue: #2563eb;
+      --blue-soft: #e8f1ff;
+      --green: #16a34a;
+      --green-soft: #e9f8ef;
+      --amber: #f59e0b;
+      --amber-soft: #fff7df;
+      --purple: #7c3aed;
+      --purple-soft: #f1eafd;
+      --black: #1a1a1a;
+      --paper: #f9f7f2;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #f6f8fb 0%, #edf4ff 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 28px 20px 18px;
+      text-align: center;
+    }
+
+    .title-pill {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      max-width: 900px;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar, .panel {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(216, 224, 234, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+      height: fit-content;
+    }
+
+    .progress-wrap { margin-bottom: 16px; }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav button {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .nav button:hover, .nav button.active {
+      border-color: #93c5fd;
+      background: var(--blue-soft);
+      transform: translateY(-1px);
+    }
+
+    .nav button.done::after {
+      content: " ✓";
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .panel {
+      padding: clamp(18px, 3vw, 34px);
+      min-height: 680px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .focus-box {
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .focus-box strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1d4ed8;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -0.03em;
+    }
+
+    h3 { margin-bottom: 8px; }
+
+    .tag {
+      display: inline-block;
+      background: var(--purple-soft);
+      color: #5b21b6;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+      margin: 0 6px 6px 0;
+    }
+
+    pre, .code-sample {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 16px;
+      overflow-x: auto;
+      font-size: 15px;
+      line-height: 1.45;
+      font-family: "Courier New", Courier, monospace;
+      white-space: pre-wrap;
+    }
+
+    code { font-family: "Courier New", Courier, monospace; }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      resize: vertical;
+      background: #fbfdff;
+    }
+
+    .code-editor {
+      min-height: 180px;
+      resize: vertical;
+      background: var(--paper);
+      color: var(--black);
+      border: none;
+      border-radius: 0;
+      padding: 16px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 15px;
+      line-height: 1.45;
+      tab-size: 4;
+      outline: none;
+    }
+
+    input[type="text"] { min-height: auto; }
+
+    .answer-box {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button.primary, button.secondary, button.success, button.dark {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    button.primary { background: var(--blue); color: white; }
+    button.secondary { background: #e5e7eb; color: var(--ink); }
+    button.success { background: var(--green); color: white; }
+    button.dark { background: var(--black); color: white; }
+    button:disabled { opacity: 0.55; cursor: wait; }
+
+    button.primary:hover, button.secondary:hover, button.success:hover, button.dark:hover {
+      transform: translateY(-1px);
+    }
+
+    .feedback {
+      display: none;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+      font-weight: 700;
+    }
+
+    .feedback.good {
+      display: block;
+      background: var(--green-soft);
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .feedback.try {
+      display: block;
+      background: var(--amber-soft);
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .reading {
+      background: linear-gradient(135deg, var(--blue-soft), #ffffff);
+      border-left: 6px solid var(--blue);
+    }
+
+    .challenge {
+      background: linear-gradient(135deg, #ffffff, #f8fafc);
+    }
+
+    .hint {
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+      border-radius: 14px;
+      padding: 12px;
+      color: #334155;
+      margin-top: 12px;
+    }
+
+    .small { font-size: 14px; color: var(--muted); }
+
+    .exit-question {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      margin-bottom: 12px;
+    }
+
+    .idle-shell {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid var(--black);
+      background: var(--black);
+      margin-top: 16px;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: 8px 8px 0px rgba(26,26,26,0.18);
+    }
+
+    .idle-titlebar {
+      background: var(--black);
+      color: white;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 2px solid var(--black);
+    }
+
+    .idle-titlebar span {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .idle-run {
+      background: #00ff41;
+      color: var(--black);
+      border: none;
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .idle-run:hover { transform: none; background: #1df25a; }
+
+    .results-box {
+      display: none;
+      border: 2px solid var(--black);
+      background: white;
+      padding: 18px;
+      margin-top: 18px;
+      box-shadow: 8px 8px 0px rgba(26,26,26,0.18);
+    }
+
+    .results-box.show { display: block; }
+
+    .results-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--black);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+    }
+
+    .result-good { color: #047857; }
+    .result-try { color: #b45309; }
+    .result-error { color: #b91c1c; }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .output-panel label {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .output-panel pre {
+      background: #f2efe9;
+      color: var(--black);
+      border: 1px solid #d9d1c1;
+      border-radius: 0;
+      min-height: 72px;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .checklist {
+      margin-top: 14px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      font-size: 14px;
+    }
+
+    .checklist strong { display: block; margin-bottom: 8px; }
+    .checklist .ok { color: #047857; font-weight: 800; }
+    .checklist .missing { color: #b45309; font-weight: 800; }
+
+    .status-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .focus-grid, .output-grid { grid-template-columns: 1fr; }
+      .idle-titlebar { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-pill">Year 8 Python · Strand 1</div>
+    <h1>One Variable, Many Values</h1>
+    <p class="subtitle">A 30-minute introduction to Python lists. Read first, code in the Python IDLE-style box, run your code, then complete the exit ticket.</p>
+  </header>
+
+  <main class="app">
+    <aside class="sidebar">
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0 / 12</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="btn-row">
+        <button class="secondary" onclick="resetProgress()">Reset</button>
+        <button class="secondary" onclick="downloadAnswers()">Export Answers</button>
+      </div>
+      <p class="status-note" id="pythonStatus">Python engine: not loaded yet.</p>
+    </aside>
+
+    <section class="panel" id="content"></section>
+  </main>
+
+  <script>
+    const sections = [
+      {
+        id: 'intro',
+        title: 'Start Here',
+        type: 'intro',
+        html: `
+          <h2>Today's Learning</h2>
+          <div class="focus-grid">
+            <div class="focus-box"><strong>WAGBA</strong>Using Python lists to store and process more than one value.</div>
+            <div class="focus-box"><strong>K</strong>A list stores many values in one variable.</div>
+            <div class="focus-box"><strong>S</strong>Use a for loop to display each item in a list.</div>
+            <div class="focus-box"><strong>U</strong>Lists help programs work with groups of data.</div>
+          </div>
+          <div class="card reading">
+            <h3>Why are we learning this?</h3>
+            <p>Before the exam, many programs used one value at a time. Real programs often need to store a group of values, such as names, scores, questions, items, or choices.</p>
+            <p>In Python, a <strong>list</strong> is a data structure that stores several items in one variable.</p>
+            <pre><code>scores = [8, 6, 10]</code></pre>
+            <p>Instead of creating many separate variables, we can keep related data together.</p>
+          </div>
+          <div class="card challenge">
+            <h3>How to use the Python IDLE-style box</h3>
+            <p>Each challenge has a coding box. Type your code, press <strong>Run Code</strong>, then read the output. If there is an error, fix your code and run it again.</p>
+            <p>The checker looks for the key Python structures, but your answers can still be personal, such as your own subjects, games, or scores.</p>
+          </div>
+          <div class="btn-row"><button class="success" onclick="completeSection('intro')">I understand. Begin Challenge 1</button></div>
+        `
+      },
+      {
+        id: 'c1', title: 'Challenge 1', shortTitle: 'Create a list',
+        reading: 'A list uses square brackets. Each item is separated by a comma. Text items must be inside quotation marks.',
+        example: 'games = ["Minecraft", "Roblox", "Overwatch"]',
+        task: 'Create a list called subjects with three school subjects.',
+        hint: 'Example structure: subjects = ["Computing", "Maths", "Science"]',
+        starter: '# Challenge 1\n# Create a list called subjects with three school subjects.\n\n',
+        solution: 'subjects = ["Computing", "Maths", "Science"]',
+        expectedLabel: 'Example Output',
+        outputNote: 'No output is expected yet because this challenge only creates a list.',
+        requireOutput: false,
+        exactOutput: false,
+        check: ['subjects', '[', ']', ',']
+      },
+      {
+        id: 'c2', title: 'Challenge 2', shortTitle: 'Print a list',
+        reading: 'Python can print the whole list. This is useful when you want to quickly check what is stored inside the list.',
+        example: 'games = ["Minecraft", "Roblox", "Overwatch"]\nprint(games)',
+        task: 'Write code to print your whole subjects list.',
+        hint: 'Use print(subjects).',
+        starter: 'subjects = ["Computing", "Maths", "Science"]\n\n# Print the whole list below\n',
+        solution: 'subjects = ["Computing", "Maths", "Science"]\nprint(subjects)',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['print', 'subjects']
+      },
+      {
+        id: 'c3', title: 'Challenge 3', shortTitle: 'Use an index',
+        reading: 'Each item in a list has a position called an index. Python starts counting from 0, not 1.',
+        example: 'games = ["Minecraft", "Roblox", "Overwatch"]\nprint(games[0])',
+        task: 'Print the first subject from your subjects list using index 0.',
+        hint: 'Use square brackets after the list name: subjects[0].',
+        starter: 'subjects = ["Computing", "Maths", "Science"]\n\n# Print the first item using index 0\n',
+        solution: 'subjects = ["Computing", "Maths", "Science"]\nprint(subjects[0])',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['subjects[0]', 'print']
+      },
+      {
+        id: 'c4', title: 'Challenge 4', shortTitle: 'Loop through a list',
+        reading: 'A for loop can repeat code for each item in a list. This helps us process the list without writing print again and again.',
+        example: 'games = ["Minecraft", "Roblox", "Overwatch"]\n\nfor game in games:\n    print(game)',
+        task: 'Use a for loop to print each subject in your subjects list.',
+        hint: 'Remember the colon and indentation.',
+        starter: 'subjects = ["Computing", "Maths", "Science"]\n\n# Use a for loop below\n',
+        solution: 'subjects = ["Computing", "Maths", "Science"]\n\nfor subject in subjects:\n    print(subject)',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['for', 'in', 'subjects', ':', 'print']
+      },
+      {
+        id: 'c5', title: 'Challenge 5', shortTitle: 'Print a message',
+        reading: 'A loop variable is a temporary name for each item. In for subject in subjects, subject means the current item.',
+        example: 'for game in games:\n    print("One game I know is", game)',
+        task: 'Print each subject with a clear message, for example: One subject I study is Computing.',
+        hint: 'Use a comma in print to join text and the loop variable.',
+        starter: 'subjects = ["Computing", "Maths", "Science"]\n\n# Print each subject with a clear message\n',
+        solution: 'subjects = ["Computing", "Maths", "Science"]\n\nfor subject in subjects:\n    print("One subject I study is", subject)',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['for', 'print', 'One', 'subject']
+      },
+      {
+        id: 'c6', title: 'Challenge 6', shortTitle: 'Store numbers',
+        reading: 'Lists can store numbers too. A list of numbers does not need quotation marks.',
+        example: 'scores = [8, 6, 10]',
+        task: 'Create a list called scores with three numbers. Then print the whole list.',
+        hint: 'Numbers do not need quotation marks. Text needs quotation marks.',
+        starter: '# Create a scores list with three numbers. Then print it.\n\n',
+        solution: 'scores = [8, 6, 10]\nprint(scores)',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['scores', '[', ']', 'print']
+      },
+      {
+        id: 'c7', title: 'Challenge 7', shortTitle: 'Loop through numbers',
+        reading: 'You can use a for loop to process numbers in a list. Processing means doing something useful with the data.',
+        example: 'scores = [8, 6, 10]\n\nfor score in scores:\n    print(score)',
+        task: 'Use a for loop to print each score from your scores list.',
+        hint: 'Use for score in scores:',
+        starter: 'scores = [8, 6, 10]\n\n# Use a for loop below\n',
+        solution: 'scores = [8, 6, 10]\n\nfor score in scores:\n    print(score)',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['for', 'score', 'in', 'scores', 'print']
+      },
+      {
+        id: 'c8', title: 'Challenge 8', shortTitle: 'Use a condition',
+        reading: 'Programs can add a condition inside a loop. This means each item can be checked one by one.',
+        example: 'scores = [8, 6, 10]\n\nfor score in scores:\n    if score >= 7:\n        print("Strong score")',
+        task: 'Write a loop that prints Strong score when a score is 7 or above.',
+        hint: 'You need for, if, >=, colon, and indentation.',
+        starter: 'scores = [8, 6, 10]\n\n# Print Strong score when the score is 7 or above\n',
+        solution: 'scores = [8, 6, 10]\n\nfor score in scores:\n    if score >= 7:\n        print("Strong score")',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['for', 'if', '>=', '7', 'print']
+      },
+      {
+        id: 'c9', title: 'Challenge 9', shortTitle: 'Debug a list program',
+        reading: 'Debugging means finding and fixing mistakes. Lists commonly have missing brackets, missing commas, missing quotation marks, or missing colons.',
+        example: 'games = "Minecraft", "Roblox", "Overwatch"]\n\nfor game in games\n    print(game)',
+        task: 'Fix the code above. Rewrite and run the corrected version.',
+        hint: 'Check the opening bracket and the colon after the for loop.',
+        starter: 'games = "Minecraft", "Roblox", "Overwatch"]\n\nfor game in games\n    print(game)',
+        solution: 'games = ["Minecraft", "Roblox", "Overwatch"]\n\nfor game in games:\n    print(game)',
+        expectedLabel: 'Expected Output',
+        requireOutput: true,
+        exactOutput: true,
+        check: ['[', ']', 'for', ':', 'print']
+      },
+      {
+        id: 'c10', title: 'Challenge 10', shortTitle: 'Final mini program',
+        reading: 'A useful program combines several skills: list, loop, message, and condition. This is how simple code becomes more meaningful.',
+        example: 'scores = [8, 6, 10]\n\nfor score in scores:\n    if score >= 7:\n        print(score, "is a strong score")\n    else:\n        print(score, "needs more practice")',
+        task: 'Create your own final program using a list, a for loop, and an if/else decision.',
+        hint: 'You may use subjects, scores, game levels, house points, or quiz marks.',
+        starter: '# Create your own final program using a list, a for loop, and if/else.\n\n',
+        solution: 'scores = [8, 6, 10]\n\nfor score in scores:\n    if score >= 7:\n        print(score, "is a strong score")\n    else:\n        print(score, "needs more practice")',
+        expectedLabel: 'Example Output',
+        requireOutput: true,
+        exactOutput: false,
+        check: ['[', ']', 'for', 'if', 'else', 'print']
+      },
+      {
+        id: 'exit', title: 'Exit Ticket', type: 'exit',
+        html: `
+          <h2>Exit Ticket</h2>
+          <p>Answer these before you leave. Use full sentences where possible.</p>
+          <div class="exit-question"><strong>1. What is a Python list?</strong><textarea id="exit1" placeholder="A Python list is..."></textarea></div>
+          <div class="exit-question"><strong>2. Why is a list better than creating many separate variables?</strong><textarea id="exit2"></textarea></div>
+          <div class="exit-question"><strong>3. What does a for loop do when used with a list?</strong><textarea id="exit3"></textarea></div>
+          <div class="exit-question"><strong>4. Write one thing you still find challenging.</strong><textarea id="exit4"></textarea></div>
+          <div class="exit-question"><strong>5. What support or strategy will help you next lesson?</strong><textarea id="exit5"></textarea></div>
+          <div class="btn-row"><button class="success" onclick="saveExitTicket()">Submit Exit Ticket</button><button class="secondary" onclick="downloadAnswers()">Export Answers</button></div>
+          <div class="feedback" id="exitFeedback"></div>
+        `
+      }
+    ];
+
+    let state = JSON.parse(localStorage.getItem('y8ListAppIdleState') || '{}');
+    let current = state.current || 'intro';
+    let pyodideReady = false;
+    let pyodideLoading = false;
+    let pyodideRef = null;
+
+    function saveState() {
+      localStorage.setItem('y8ListAppIdleState', JSON.stringify(state));
+    }
+
+    function completeSection(id) {
+      state[id] = state[id] || {};
+      state[id].done = true;
+      state.current = nextId(id);
+      saveState();
+      current = state.current;
+      render();
+    }
+
+    function nextId(id) {
+      const index = sections.findIndex(s => s.id === id);
+      return sections[Math.min(index + 1, sections.length - 1)].id;
+    }
+
+    function openSection(id) {
+      current = id;
+      state.current = id;
+      saveState();
+      render();
+    }
+
+    function renderNav() {
+      const nav = document.getElementById('nav');
+      nav.innerHTML = '';
+      sections.forEach(sec => {
+        const btn = document.createElement('button');
+        btn.textContent = sec.title;
+        btn.className = `${current === sec.id ? 'active' : ''} ${state[sec.id]?.done ? 'done' : ''}`;
+        btn.onclick = () => openSection(sec.id);
+        nav.appendChild(btn);
+      });
+    }
+
+    function renderProgress() {
+      const total = sections.length;
+      const done = sections.filter(s => state[s.id]?.done).length;
+      document.getElementById('progressText').textContent = `${done} / ${total}`;
+      document.getElementById('progressFill').style.width = `${Math.round((done / total) * 100)}%`;
+    }
+
+    function renderContent() {
+      const sec = sections.find(s => s.id === current) || sections[0];
+      const content = document.getElementById('content');
+      if (sec.html) {
+        content.innerHTML = sec.html;
+        restoreExitTicket();
+        return;
+      }
+
+      const answer = state[sec.id]?.answer ?? sec.starter ?? '';
+      content.innerHTML = `
+        <h2>${sec.title}: ${sec.shortTitle}</h2>
+        <div>
+          <span class="tag">list</span><span class="tag">for loop</span><span class="tag">debugging</span><span class="tag">Strand 1</span>
+        </div>
+        <div class="card reading">
+          <h3>Prerequisite Reading</h3>
+          <p>${sec.reading}</p>
+          <pre><code>${escapeHtml(sec.example)}</code></pre>
+        </div>
+        <div class="card challenge">
+          <h3>Your Challenge</h3>
+          <p>${sec.task}</p>
+          <div class="hint"><strong>Hint:</strong> ${sec.hint}</div>
+          <div class="idle-shell">
+            <div class="idle-titlebar">
+              <span>Python IDLE-style Environment · Draft Saved</span>
+              <button class="idle-run" id="runBtn" onclick="runChallenge('${sec.id}')">Run Code</button>
+            </div>
+            <textarea class="code-editor" id="answer" spellcheck="false" oninput="saveAnswer('${sec.id}')" onkeydown="handleTab(event)" placeholder="Type your Python code here...">${escapeHtml(answer)}</textarea>
+          </div>
+          <div class="btn-row">
+            <button class="success" onclick="completeSection('${sec.id}')">Mark as Complete</button>
+            <button class="secondary" onclick="showModel('${sec.id}')">Show Support</button>
+            <button class="secondary" onclick="resetCode('${sec.id}')">Reset This Code</button>
+          </div>
+          <div class="results-box" id="resultsBox"></div>
+          <div class="feedback try" id="model" style="display:none;"></div>
+        </div>
+      `;
+      restoreResult(sec.id);
+    }
+
+    function saveAnswer(id) {
+      const answerEl = document.getElementById('answer');
+      if (!answerEl) return;
+      state[id] = state[id] || {};
+      state[id].answer = answerEl.value;
+      saveState();
+    }
+
+    function handleTab(event) {
+      if (event.key !== 'Tab') return;
+      event.preventDefault();
+      const textarea = event.target;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      textarea.value = textarea.value.substring(0, start) + '    ' + textarea.value.substring(end);
+      textarea.selectionStart = textarea.selectionEnd = start + 4;
+      const sec = sections.find(s => s.id === current);
+      if (sec) saveAnswer(sec.id);
+    }
+
+    function updatePythonStatus(text) {
+      const el = document.getElementById('pythonStatus');
+      if (el) el.textContent = text;
+    }
+
+    async function loadPythonEngine() {
+      if (pyodideReady && pyodideRef) return pyodideRef;
+      if (pyodideLoading) {
+        while (pyodideLoading) await new Promise(resolve => setTimeout(resolve, 150));
+        return pyodideRef;
+      }
+      pyodideLoading = true;
+      updatePythonStatus('Python engine: loading...');
+      try {
+        if (!window.loadPyodide) {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+          script.async = true;
+          document.body.appendChild(script);
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = reject;
+          });
+        }
+        pyodideRef = await window.loadPyodide();
+        pyodideReady = true;
+        updatePythonStatus('Python engine: ready.');
+        return pyodideRef;
+      } catch (err) {
+        updatePythonStatus('Python engine: could not load. Check internet connection.');
+        throw err;
+      } finally {
+        pyodideLoading = false;
+      }
+    }
+
+    function cleanPythonError(raw) {
+      const text = String(raw || 'Unknown Python error');
+      const lines = text.split('\n').map(line => line.trimEnd()).filter(Boolean);
+      const useful = lines.filter(line => !line.includes('/lib/python') && !line.includes('pyodide') && !line.includes('eval_code_async'));
+      return (useful.length ? useful : lines).slice(-7).join('\n');
+    }
+
+    async function executePython(code) {
+      const pyodide = await loadPythonEngine();
+      const wrapper = `
+import sys, io, traceback
+_old_stdout = sys.stdout
+sys.stdout = io.StringIO()
+_run_error = None
+try:
+    exec(${JSON.stringify(code)}, {})
+except Exception:
+    _run_error = traceback.format_exc()
+_run_output = sys.stdout.getvalue()
+sys.stdout = _old_stdout
+`;
+      await pyodide.runPythonAsync(wrapper);
+      return {
+        output: String(pyodide.globals.get('_run_output') || ''),
+        error: pyodide.globals.get('_run_error') ? cleanPythonError(pyodide.globals.get('_run_error')) : ''
+      };
+    }
+
+    async function runChallenge(id) {
+      saveAnswer(id);
+      const sec = sections.find(s => s.id === id);
+      const code = state[id]?.answer || '';
+      const runBtn = document.getElementById('runBtn');
+      if (runBtn) {
+        runBtn.disabled = true;
+        runBtn.textContent = 'Running...';
+      }
+      renderLoadingResult();
+
+      try {
+        const [userRun, exampleRun] = await Promise.all([
+          executePython(code),
+          executePython(sec.solution || '')
+        ]);
+        const result = analyseResult(sec, code, userRun, exampleRun);
+        state[id] = state[id] || {};
+        state[id].lastResult = result;
+        saveState();
+        renderResult(result);
+      } catch (err) {
+        const result = {
+          status: 'error',
+          title: 'Python Engine Error',
+          message: 'The Python engine could not load or run. Check the internet connection, then try again.',
+          userOutput: '',
+          expectedOutput: '',
+          expectedLabel: sec.expectedLabel || 'Example Output',
+          checklist: [],
+          error: cleanPythonError(err?.message || err)
+        };
+        state[id] = state[id] || {};
+        state[id].lastResult = result;
+        saveState();
+        renderResult(result);
+      } finally {
+        if (runBtn) {
+          runBtn.disabled = false;
+          runBtn.textContent = 'Run Code';
+        }
+      }
+    }
+
+    function analyseResult(sec, code, userRun, exampleRun) {
+      const compact = code.toLowerCase().replace(/\s/g, '');
+      const missing = sec.check.filter(token => !compact.includes(token.toLowerCase().replace(/\s/g, '')));
+      const userTrim = String(userRun.output || '').trim();
+      const exampleTrim = String(exampleRun.output || '').trim();
+      const hasRequiredOutput = !sec.requireOutput || userTrim.length > 0;
+      const exactMatch = !sec.exactOutput || userTrim === exampleTrim;
+      let status = 'good';
+      let title = 'Good Run';
+      let message = 'Your program ran and included the key structures for this challenge.';
+
+      if (userRun.error) {
+        status = 'error';
+        title = 'Python Error';
+        message = 'Your code has an error. Read the message, fix one thing, and run it again.';
+      } else if (missing.length > 0) {
+        status = 'try';
+        title = 'Code Runs, But Check the Structure';
+        message = 'Your code ran, but it may be missing one or more key parts for this challenge.';
+      } else if (!hasRequiredOutput) {
+        status = 'try';
+        title = 'No Output Yet';
+        message = 'Your code ran, but this challenge needs something to be printed.';
+      } else if (!exactMatch) {
+        status = 'try';
+        title = 'Different Output';
+        message = 'Your code ran, but the output does not match the expected output for this debugging challenge.';
+      }
+
+      if (sec.outputNote && !userTrim && !userRun.error && missing.length === 0) {
+        title = 'Good Run';
+        message = sec.outputNote;
+      }
+
+      return {
+        status,
+        title,
+        message,
+        userOutput: userRun.error ? userRun.error : userRun.output,
+        expectedOutput: exampleRun.error ? exampleRun.error : exampleRun.output,
+        expectedLabel: sec.expectedLabel || 'Example Output',
+        checklist: sec.check.map(token => ({ token, ok: !missing.includes(token) })),
+        missing,
+        error: userRun.error
+      };
+    }
+
+    function renderLoadingResult() {
+      const box = document.getElementById('resultsBox');
+      if (!box) return;
+      box.className = 'results-box show';
+      box.innerHTML = `
+        <div class="results-title result-try">Running Python...</div>
+        <p>Please wait. The first run may take longer because the Python engine needs to load.</p>
+      `;
+    }
+
+    function renderResult(result) {
+      const box = document.getElementById('resultsBox');
+      if (!box) return;
+      const statusClass = result.status === 'good' ? 'result-good' : result.status === 'error' ? 'result-error' : 'result-try';
+      const icon = result.status === 'good' ? '✓' : result.status === 'error' ? '✕' : '!';
+      const checklistHtml = result.checklist && result.checklist.length ? `
+        <div class="checklist">
+          <strong>Structure Check</strong>
+          ${result.checklist.map(item => `<span class="${item.ok ? 'ok' : 'missing'}">${item.ok ? '✓' : '•'} ${escapeHtml(item.token)}</span>`).join(' &nbsp; ')}
+        </div>
+      ` : '';
+      box.className = 'results-box show';
+      box.innerHTML = `
+        <div class="results-title ${statusClass}">${icon} ${escapeHtml(result.title)}</div>
+        <p>${escapeHtml(result.message)}</p>
+        <div class="output-grid">
+          <div class="output-panel">
+            <label>Your Output</label>
+            <pre>${escapeHtml(result.userOutput || 'No output')}</pre>
+          </div>
+          <div class="output-panel">
+            <label>${escapeHtml(result.expectedLabel || 'Example Output')}</label>
+            <pre>${escapeHtml(result.expectedOutput || 'No output')}</pre>
+          </div>
+        </div>
+        ${checklistHtml}
+      `;
+    }
+
+    function restoreResult(id) {
+      const last = state[id]?.lastResult;
+      if (last) setTimeout(() => renderResult(last), 0);
+    }
+
+    function showModel(id) {
+      const sec = sections.find(s => s.id === id);
+      const model = document.getElementById('model');
+      model.style.display = 'block';
+      model.innerHTML = '<strong>Support example:</strong><pre><code>' + escapeHtml(sec.solution || '') + '</code></pre>';
+    }
+
+    function resetCode(id) {
+      const sec = sections.find(s => s.id === id);
+      if (!sec) return;
+      state[id] = state[id] || {};
+      state[id].answer = sec.starter || '';
+      state[id].lastResult = null;
+      saveState();
+      renderContent();
+    }
+
+    function saveExitTicket() {
+      state.exit = state.exit || {};
+      for (let i = 1; i <= 5; i++) {
+        state.exit['q' + i] = document.getElementById('exit' + i).value;
+      }
+      state.exit.done = true;
+      saveState();
+      const feedback = document.getElementById('exitFeedback');
+      feedback.className = 'feedback good';
+      feedback.textContent = 'Exit ticket saved. You may now export your answers or show your teacher.';
+      renderNav();
+      renderProgress();
+    }
+
+    function restoreExitTicket() {
+      if (current !== 'exit') return;
+      setTimeout(() => {
+        for (let i = 1; i <= 5; i++) {
+          const el = document.getElementById('exit' + i);
+          if (el) el.value = state.exit?.['q' + i] || '';
+        }
+      }, 0);
+    }
+
+    function downloadAnswers() {
+      let output = 'Year 8 Python Lists Intro - Student Answers\n\n';
+      sections.forEach(sec => {
+        output += sec.title + '\n';
+        output += '-'.repeat(sec.title.length) + '\n';
+        if (sec.id === 'exit') {
+          for (let i = 1; i <= 5; i++) output += `Q${i}: ${state.exit?.['q' + i] || ''}\n`;
+        } else if (sec.id !== 'intro') {
+          output += (state[sec.id]?.answer || 'No answer yet') + '\n';
+          if (state[sec.id]?.lastResult) {
+            output += '\nLast run: ' + state[sec.id].lastResult.title + '\n';
+            output += 'Your output:\n' + (state[sec.id].lastResult.userOutput || 'No output') + '\n';
+          }
+        } else {
+          output += state.intro?.done ? 'Intro completed\n' : 'Intro not completed\n';
+        }
+        output += '\n';
+      });
+      const blob = new Blob([output], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'year8_python_lists_answers.txt';
+      link.click();
+    }
+
+    function resetProgress() {
+      if (confirm('This will reset all progress on this device. Export your answers first if you need a backup. Continue?')) {
+        localStorage.removeItem('y8ListAppIdleState');
+        state = {};
+        current = 'intro';
+        render();
+      }
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>\"]/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[char]));
+    }
+
+    function render() {
+      renderNav();
+      renderProgress();
+      renderContent();
+      updatePythonStatus(pyodideReady ? 'Python engine: ready.' : pyodideLoading ? 'Python engine: loading...' : 'Python engine: not loaded yet.');
+    }
+
+    render();
+  </script>
+</body>
+</html>
