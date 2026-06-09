@@ -5,2573 +5,408 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Year 5 Tinkercad Guided Course</title>
   <style>
-    :root {
-      --bg: #eef3f8;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #526174;
-      --border: #d8e1ec;
-      --primary: #0f8b5f;
-      --primary-dark: #086b49;
-      --accent: #2b6cb0;
-      --soft-green: #dff8ec;
-      --soft-blue: #e7f0ff;
-      --soft-yellow: #fff4d6;
-      --danger: #fff0f0;
-      --shadow: 0 12px 30px rgba(25, 42, 70, 0.12);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 22px;
-      background: rgba(255, 255, 255, 0.9);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-    }
-
-    .brand { display: flex; flex-direction: column; gap: 2px; }
-    .brand h1 { font-size: 19px; line-height: 1.2; margin: 0; letter-spacing: 0.2px; }
-    .brand p { margin: 0; color: var(--muted); font-size: 13px; }
-
-    .student-bar {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .student-chip {
-      background: var(--soft-blue);
-      border: 1px solid #cbdcf8;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      color: #27496d;
-    }
-
-    .objective-ribbon {
-      position: sticky;
-      top: 70px;
-      z-index: 19;
-      margin: 0;
-      padding: 10px 22px;
-      background: rgba(247, 251, 255, 0.96);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 8px 18px rgba(25, 42, 70, 0.06);
-      backdrop-filter: blur(10px);
-    }
-
-    .objective-main {
-      font-size: 14px;
-      line-height: 1.35;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    .objective-main strong { color: var(--primary-dark); }
-
-    .objective-ksu {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      font-size: 12px;
-      line-height: 1.35;
-      color: var(--muted);
-    }
-
-    .objective-ksu span {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 10px;
-    }
-
-    .objective-ksu strong { color: var(--accent); }
-
-    main { padding: 18px 22px 30px; }
-
-    .screen { display: none; animation: fadeIn 220ms ease; }
-    .screen.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .intro-layout {
-      display: grid;
-      grid-template-columns: 3fr 1fr;
-      gap: 18px;
-      min-height: calc(100vh - 172px);
-    }
-
-    .slide-card, .side-card, .big-card, .password-card, .course-card, .task-card, .login-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .slide-card {
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 620px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .slide-card::before {
-      content: "";
-      position: absolute;
-      inset: -150px -80px auto auto;
-      width: 380px;
-      height: 380px;
-      background: linear-gradient(135deg, rgba(15,139,95,0.16), rgba(43,108,176,0.12));
-      border-radius: 50%;
-      z-index: 0;
-    }
-
-    .slide-content { position: relative; z-index: 1; max-width: 920px; }
-
-    .slide-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: var(--soft-green);
-      color: var(--primary-dark);
-      font-weight: 800;
-      font-size: 14px;
-      margin-bottom: 22px;
-    }
-
-    .slide-content h2 {
-      font-size: clamp(34px, 4.7vw, 70px);
-      line-height: 1.05;
-      margin: 0 0 22px;
-      letter-spacing: -1px;
-    }
-
-    .slide-content p, .slide-content li {
-      font-size: clamp(20px, 2vw, 30px);
-      line-height: 1.38;
-      color: var(--muted);
-    }
-
-    .slide-content ul, .slide-content ol { padding-left: 34px; margin-top: 12px; }
-
-    .ksu-grid { display: grid; gap: 18px; margin-top: 22px; }
-
-    .ksu-item {
-      background: #f8fbff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      font-size: clamp(19px, 1.75vw, 27px);
-      line-height: 1.35;
-    }
-
-    .ksu-item strong { color: var(--primary-dark); }
-
-    .slide-controls {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      margin-top: 28px;
-    }
-
-    .slide-dots { display: flex; gap: 8px; align-items: center; }
-    .dot { width: 12px; height: 12px; border-radius: 999px; background: #c7d4e4; }
-    .dot.active { background: var(--primary); width: 28px; }
-
-    .side-card {
-      padding: 20px;
-      height: fit-content;
-      max-height: calc(100vh - 172px);
-      overflow-y: auto;
-    }
-
-    .side-card h3 { margin-top: 0; font-size: 24px; }
-
-    label { display: block; font-weight: 800; margin: 16px 0 8px; }
-
-    input[type="text"], input[type="password"], textarea, select {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      font: inherit;
-      background: #fbfdff;
-      color: var(--text);
-    }
-
-    textarea { min-height: 92px; resize: vertical; line-height: 1.4; }
-
-    .small-help { color: var(--muted); font-size: 13px; line-height: 1.4; margin: 8px 0 0; }
-
-    .error {
-      color: #9d1c1c;
-      background: var(--danger);
-      border: 1px solid #f1b4b4;
-      border-radius: 12px;
-      padding: 10px 12px;
-      margin-top: 12px;
-      font-weight: 700;
-      display: none;
-    }
-
-    button, .button-link {
-      border: 0;
-      border-radius: 16px;
-      padding: 13px 18px;
-      font: inherit;
-      font-weight: 800;
-      cursor: pointer;
-      background: var(--primary);
-      color: #fff;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
-      box-shadow: 0 8px 18px rgba(15,139,95,0.22);
-    }
-
-    button:hover, .button-link:hover { background: var(--primary-dark); transform: translateY(-1px); }
-    button:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
-    button.secondary { background: #e8eef6; color: #233044; box-shadow: none; border: 1px solid var(--border); }
-    button.secondary:hover { background: #dce7f4; }
-    button.ghost { background: transparent; color: var(--accent); box-shadow: none; border: 1px solid var(--border); }
-    button.full, .button-link.full { width: 100%; margin-top: 18px; }
-
-    button.large, .button-link.large {
-      font-size: clamp(22px, 2.6vw, 38px);
-      padding: 22px 30px;
-      border-radius: 24px;
-      min-height: 90px;
-      width: min(820px, 100%);
-    }
-
-    .big-card {
-      width: min(1160px, 96%);
-      margin: 32px auto;
-      min-height: calc(100vh - 230px);
-      padding: clamp(28px, 5vw, 72px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .big-card .icon, .password-card .icon {
-      width: 120px;
-      height: 120px;
-      border-radius: 999px;
-      background: var(--soft-green);
-      display: grid;
-      place-items: center;
-      color: var(--primary);
-      font-size: 54px;
-      font-weight: 900;
-      margin-bottom: 24px;
-    }
-
-    .big-card h2, .password-card h2 {
-      font-size: clamp(38px, 5.2vw, 76px);
-      line-height: 1.05;
-      margin: 0 0 18px;
-      letter-spacing: -1px;
-    }
-
-    .big-card p, .password-card p {
-      font-size: clamp(20px, 2vw, 30px);
-      color: var(--muted);
-      max-width: 920px;
-      line-height: 1.42;
-    }
-
-    .password-card {
-      width: min(780px, 96%);
-      margin: 56px auto;
-      padding: clamp(28px, 5vw, 58px);
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .password-card input { text-align: center; font-size: 26px; letter-spacing: 2px; margin: 14px 0; max-width: 430px; }
-    .password-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-
-    .login-card { width: min(1150px, 96%); margin: 26px auto; padding: clamp(24px, 4vw, 56px); }
-    .login-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; margin-top: 24px; }
-    .login-step { background: #f9fbff; border: 1px solid var(--border); border-radius: 20px; padding: 18px; }
-    .login-step h3 { margin: 0 0 10px; font-size: 25px; }
-    .login-step p, .login-step li { color: var(--muted); font-size: 18px; line-height: 1.45; }
-    .class-pill { display:inline-flex; padding: 8px 13px; border-radius:999px; background:var(--soft-blue); color:#27496d; font-weight:900; border:1px solid #cbdcf8; }
-
-    .course-layout { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 330px; gap: 18px; align-items: start; }
-    .course-card { padding: clamp(24px, 4vw, 50px); overflow:hidden; position:relative; }
-    .course-card::before { content:""; position:absolute; width:320px; height:320px; border-radius:50%; right:-120px; top:-160px; background:linear-gradient(135deg,rgba(15,139,95,.13),rgba(43,108,176,.13)); }
-    .course-inner { position:relative; z-index:1; }
-    .course-card h2 { font-size: clamp(32px, 4vw, 58px); margin: 0 0 12px; line-height: 1.08; letter-spacing:-.5px; }
-    .course-card p, .course-card li { font-size: 19px; line-height: 1.5; color: var(--muted); }
-
-    .task-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin:20px 0; }
-    .task-card { padding: 18px; box-shadow: 0 8px 18px rgba(25,42,70,.08); }
-    .task-card h3 { margin:0 0 8px; font-size:22px; }
-    .task-card p, .task-card li { font-size:16px; color: var(--muted); line-height:1.4; }
-
-    .side-progress { position: sticky; top: 174px; padding:18px; background:#fff; border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .side-progress h3 { margin-top:0; font-size:23px; }
-    .progress-list { display:grid; gap:10px; }
-    .progress-item { display:flex; gap:9px; align-items:flex-start; padding:10px; border:1px solid var(--border); border-radius:14px; color:var(--muted); font-size:14px; background:#fbfdff; }
-    .progress-mark { min-width:24px; height:24px; border-radius:999px; display:grid; place-items:center; font-weight:900; background:#e8eef6; color:#526174; }
-    .progress-item.done .progress-mark { background:var(--soft-green); color:var(--primary-dark); }
-    .progress-item.active-step { border-color:#a7d3c1; background:#f1fff8; color:var(--text); }
-
-    .checklist { display:grid; gap:10px; margin:18px 0; }
-    .check-row { display:flex; gap:12px; align-items:flex-start; padding:13px; background:#fbfdff; border:1px solid var(--border); border-radius:14px; }
-    .check-row input { margin-top:4px; width:20px; height:20px; flex:0 0 auto; }
-    .check-row strong { display:block; margin-bottom:4px; }
-    .check-row span { color:var(--muted); font-size:15px; line-height:1.35; }
-
-    .visual-panel { border:1px solid var(--border); border-radius:20px; background:linear-gradient(180deg,#f8fbff,#ffffff); padding:18px; margin:20px 0; }
-    .workplane { min-height:190px; border-radius:18px; position:relative; overflow:hidden; background: linear-gradient(135deg, rgba(43,108,176,.08) 25%, transparent 25%) 0 0/36px 36px, linear-gradient(225deg, rgba(43,108,176,.08) 25%, transparent 25%) 0 0/36px 36px, #ffffff; border:1px solid var(--border); display:flex; justify-content:center; align-items:center; gap:32px; flex-wrap:wrap; padding:24px; }
-
-    .mouse-lesson-header { display:grid; grid-template-columns: 150px 1fr; gap:20px; align-items:center; background:#f9fbff; border:1px solid var(--border); border-radius:24px; padding:20px; margin:18px 0; }
-    .mouse-icon-big { width:120px; height:170px; margin:auto; border:5px solid #243044; border-radius:60px 60px 54px 54px; background:#ffffff; position:relative; box-shadow:0 16px 25px rgba(25,42,70,.12); }
-    .mouse-icon-big::before { content:""; position:absolute; left:50%; top:10px; width:5px; height:62px; background:#243044; transform:translateX(-50%); border-radius:4px; }
-    .mouse-wheel { position:absolute; left:50%; top:38px; width:18px; height:34px; background:var(--primary); border-radius:10px; transform:translateX(-50%); animation: wheelPulse 1.4s infinite; }
-    .mouse-button-left, .mouse-button-right { position:absolute; top:10px; width:45px; height:56px; border-radius:36px 36px 8px 8px; background:#e7f0ff; }
-    .mouse-button-left { left:12px; }
-    .mouse-button-right { right:12px; }
-    @keyframes wheelPulse { 0%,100%{ transform:translateX(-50%) translateY(0); opacity:1;} 50%{ transform:translateX(-50%) translateY(8px); opacity:.65;} }
-
-    .visual-step-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin:20px 0; }
-    .visual-step { border:1px solid var(--border); border-radius:20px; background:#fff; padding:16px; box-shadow:0 8px 18px rgba(25,42,70,.08); display:grid; gap:10px; }
-    .visual-step h3 { font-size:22px; margin:0; }
-    .visual-step p { font-size:16px; margin:0; color:var(--muted); line-height:1.35; }
-    .step-picture { min-height:138px; border-radius:16px; border:1px solid var(--border); background:#f8fbff; display:grid; place-items:center; position:relative; overflow:hidden; }
-    .mini-pointer { position:absolute; width:24px; height:34px; background:#243044; clip-path: polygon(0 0, 0 100%, 28% 72%, 48% 100%, 65% 92%, 45% 64%, 100% 64%); filter:drop-shadow(0 6px 8px rgba(0,0,0,.18)); }
-    .click-ring { width:54px; height:54px; border-radius:50%; border:5px solid var(--primary); animation:ringClick 1.5s infinite; }
-    @keyframes ringClick { 0%{ transform:scale(.55); opacity:.25;} 45%{ transform:scale(1); opacity:.9;} 100%{ transform:scale(1.4); opacity:0;} }
-    .drag-path { width:112px; height:8px; border-radius:999px; background:repeating-linear-gradient(90deg, var(--accent) 0 12px, transparent 12px 22px); position:absolute; top:65px; left:55px; }
-    .drag-cube-a, .drag-cube-b { width:42px; height:42px; border-radius:8px; background:#2b6cb0; position:absolute; top:45px; box-shadow:10px 8px 0 #174a82; }
-    .drag-cube-a { left:30px; opacity:.45; }
-    .drag-cube-b { right:32px; animation:floatShape 1.4s infinite alternate; }
-    @keyframes floatShape { from{ transform:translateY(0);} to{ transform:translateY(-6px);} }
-    .zoom-demo-shape { width:54px; height:54px; border-radius:10px; background:#cc7a38; box-shadow:12px 9px 0 #9b4f1e; animation:zoomPulse 1.6s infinite alternate; }
-    @keyframes zoomPulse { from{ transform:scale(.72);} to{ transform:scale(1.25);} }
-    .view-cube-picture { width:92px; height:92px; border-radius:18px; background:#dff8ec; display:grid; place-items:center; font-weight:900; color:var(--primary-dark); box-shadow:16px 13px 0 #b9e7ce; transform:rotate(-8deg); }
-    .home-picture { display:grid; gap:8px; place-items:center; }
-    .home-icon { width:82px; height:66px; background:var(--primary); clip-path:polygon(50% 0, 100% 42%, 84% 42%, 84% 100%, 16% 100%, 16% 42%, 0 42%); }
-    .tiny-caption { font-size:13px; color:var(--muted); font-weight:800; text-align:center; }
-
-    .practice-zone { display:grid; grid-template-columns: minmax(300px, 1fr) 280px; gap:16px; align-items:stretch; margin:22px 0; }
-    .practice-workspace { min-height:390px; border-radius:22px; border:2px solid #cbdcf8; background: linear-gradient(135deg, rgba(43,108,176,.10) 25%, transparent 25%) 0 0/34px 34px, linear-gradient(225deg, rgba(43,108,176,.10) 25%, transparent 25%) 0 0/34px 34px, #ffffff; position:relative; overflow:hidden; touch-action:none; }
-    .practice-title { position:absolute; left:14px; top:14px; background:#fff; border:1px solid var(--border); border-radius:999px; padding:8px 12px; font-weight:900; z-index:5; }
-    .practice-shape { position:absolute; width:92px; height:92px; left:42%; top:44%; transform:translate(-50%,-50%) scale(var(--practice-scale, 1)) rotate(var(--practice-rotate, 0deg)); transform-origin:center; border-radius:10px; background:#2b6cb0; box-shadow:22px 16px 0 #174a82, 10px -10px 0 #5f99d8; cursor:grab; transition:box-shadow 120ms ease, outline 120ms ease, transform 200ms ease; }
-    .practice-shape.selected { outline:6px solid #f7cf78; box-shadow:22px 16px 0 #174a82, 10px -10px 0 #5f99d8, 0 0 0 12px rgba(247,207,120,.30); }
-    .target-spot { position:absolute; right:52px; bottom:52px; width:130px; height:130px; border:5px dashed #b9e7ce; border-radius:24px; background:rgba(223,248,236,.4); display:grid; place-items:center; font-weight:900; color:var(--primary-dark); text-align:center; padding:10px; }
-    .view-badge { position:absolute; right:16px; top:16px; width:86px; height:86px; border-radius:18px; background:#e7f0ff; border:1px solid #cbdcf8; display:grid; place-items:center; font-weight:900; color:#27496d; box-shadow:8px 8px 0 rgba(43,108,176,.14); z-index:4; }
-    .practice-controls { border:1px solid var(--border); border-radius:22px; background:#fbfdff; padding:16px; display:grid; gap:12px; }
-    .practice-controls h3 { margin:0; font-size:24px; }
-    .control-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .practice-controls button { width:100%; min-height:54px; box-shadow:none; }
-    .practice-controls button.secondary { background:#fff; }
-    .instruction-chip { background:#ffffff; border:1px solid var(--border); border-radius:16px; padding:12px; font-weight:800; color:var(--text); line-height:1.35; }
-    .done-chip { display:none; background:var(--soft-green); border:1px solid #b9e7ce; color:var(--primary-dark); border-radius:14px; padding:10px; font-weight:900; }
-    .done-chip.visible { display:block; }
-    .mouse-mini-checks { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin:14px 0; }
-    .mini-check { display:flex; gap:8px; align-items:center; background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; font-weight:900; color:var(--muted); }
-    .mini-check.done { background:var(--soft-green); color:var(--primary-dark); border-color:#b9e7ce; }
-    .mini-check span:first-child { width:24px; height:24px; border-radius:50%; background:#e8eef6; display:grid; place-items:center; color:#526174; }
-    .mini-check.done span:first-child { background:var(--primary); color:#fff; }
-    .sentence-starter-box { background:#f8fbff; border:1px solid var(--border); border-radius:18px; padding:14px; margin-top:16px; }
-    .sentence-starter-box strong { color:var(--accent); }
-
-    @media (max-width: 900px) {
-      .mouse-lesson-header, .practice-zone { grid-template-columns:1fr; }
-      .practice-workspace { min-height:330px; }
-    }
-
-    .cube, .cuboid, .roof, .cylinder, .tower, .tree-trunk, .tree-leaf {
-      display:inline-block;
-      position:relative;
-      filter: drop-shadow(0 12px 15px rgba(25,42,70,.18));
-      transform: skewY(-7deg) rotate(-2deg);
-    }
-
-    .cube { width:80px; height:80px; background:#2b6cb0; border-radius:7px; }
-    .cube::before { content:""; position:absolute; top:-20px; left:12px; width:80px; height:20px; background:#5f99d8; transform:skewX(-48deg); border-radius:7px 7px 0 0; }
-    .cube::after { content:""; position:absolute; right:-24px; top:-10px; width:24px; height:80px; background:#174a82; transform:skewY(-40deg); border-radius:0 7px 7px 0; }
-
-    .cuboid { width:150px; height:54px; background:#cc7a38; border-radius:7px; }
-    .cuboid::before { content:""; position:absolute; top:-18px; left:11px; width:150px; height:18px; background:#eea567; transform:skewX(-48deg); border-radius:7px 7px 0 0; }
-    .cuboid::after { content:""; position:absolute; right:-22px; top:-9px; width:22px; height:54px; background:#9b4f1e; transform:skewY(-40deg); border-radius:0 7px 7px 0; }
-
-    .roof { width:0; height:0; border-left:60px solid transparent; border-right:60px solid transparent; border-bottom:84px solid #b23636; filter: drop-shadow(0 12px 15px rgba(25,42,70,.16)); }
-    .cylinder { width:74px; height:100px; background:#6f5bd8; border-radius: 37px / 12px; }
-    .cylinder::before { content:""; position:absolute; top:-1px; left:0; width:74px; height:22px; background:#9b8ef0; border-radius:50%; }
-    .cylinder::after { content:""; position:absolute; bottom:-1px; left:0; width:74px; height:22px; background:#5644b0; border-radius:50%; }
-
-    .mini-table { position:relative; width:230px; height:170px; margin:20px auto 0; }
-    .mini-table .top { position:absolute; left:20px; top:15px; width:190px; height:34px; background:#cc7a38; border-radius:8px; transform:skewY(-6deg); box-shadow: 14px 10px 0 #9b4f1e; }
-    .mini-table .leg { position:absolute; width:24px; height:92px; background:#8b4f26; border-radius:5px; top:58px; }
-    .mini-table .leg.one { left:42px; }
-    .mini-table .leg.two { left:171px; }
-    .mini-table .leg.three { left:78px; top:76px; opacity:.82; }
-    .mini-table .leg.four { left:204px; top:76px; opacity:.82; }
-
-    .activity3-visual-intro {
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:16px;
-      align-items:stretch;
-      margin:18px 0;
-    }
-
-    .visual-instruction-card {
-      background:linear-gradient(135deg,#f8fbff,#ffffff);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:0 8px 18px rgba(25,42,70,.08);
-    }
-
-    .visual-instruction-card h3,
-    .challenge-board h3 {
-      margin:0 0 12px;
-      font-size:25px;
-    }
-
-    .big-step-list {
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .big-step {
-      background:#ffffff;
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:13px;
-      text-align:center;
-      font-weight:900;
-      color:var(--text);
-    }
-
-    .big-step .num {
-      display:grid;
-      place-items:center;
-      width:40px;
-      height:40px;
-      border-radius:999px;
-      background:var(--primary);
-      color:#fff;
-      margin:0 auto 8px;
-      font-size:22px;
-    }
-
-    .challenge-board {
-      background:var(--soft-yellow);
-      border:1px solid #ead08c;
-      border-radius:22px;
-      padding:18px;
-      color:#684b00;
-      box-shadow:0 8px 18px rgba(25,42,70,.08);
-    }
-
-    .challenge-levels {
-      display:grid;
-      gap:10px;
-    }
-
-    .challenge-level {
-      display:grid;
-      grid-template-columns:82px 1fr;
-      gap:10px;
-      align-items:center;
-      background:#fffaf0;
-      border:1px solid #ead08c;
-      border-radius:18px;
-      padding:11px;
-    }
-
-    .challenge-level strong {
-      display:block;
-      font-size:18px;
-      color:#684b00;
-    }
-
-    .challenge-icon {
-      height:56px;
-      border-radius:14px;
-      background:#fff;
-      border:1px dashed #d7b65e;
-      display:grid;
-      place-items:center;
-      font-size:30px;
-    }
-
-    .model-option {
-      position:relative;
-      padding:0;
-      overflow:hidden;
-      min-height:360px;
-      display:flex;
-      flex-direction:column;
-    }
-
-    .model-option input {
-      position:absolute;
-      top:12px;
-      left:12px;
-      width:24px;
-      height:24px;
-      z-index:2;
-      accent-color:#0f8b5f;
-    }
-
-    .model-option:has(input:checked) {
-      border:4px solid var(--primary);
-      box-shadow:0 12px 24px rgba(15,139,95,.22);
-      background:#f2fff8;
-    }
-
-    .model-visual {
-      position:relative;
-      height:170px;
-      background:linear-gradient(#edf6ff 0 62%, #e8f7ed 62% 100%);
-      border-bottom:1px solid var(--border);
-      overflow:hidden;
-    }
-
-    .model-visual::after {
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      height:34px;
-      background:repeating-linear-gradient(90deg,rgba(15,139,95,.08) 0 18px, rgba(15,139,95,.16) 18px 36px);
-    }
-
-    .model-info {
-      padding:15px;
-      display:flex;
-      flex-direction:column;
-      gap:9px;
-      flex:1;
-    }
-
-    .model-info strong {
-      font-size:23px;
-      color:var(--text);
-      margin-left:28px;
-    }
-
-    .model-info span {
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.35;
-    }
-
-    .shape-recipe {
-      display:flex;
-      flex-wrap:wrap;
-      gap:7px;
-      margin-top:auto;
-    }
-
-    .shape-pill {
-      display:inline-flex;
-      align-items:center;
-      gap:5px;
-      background:#ffffff;
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:7px 9px;
-      font-size:13px;
-      font-weight:900;
-      color:#334155;
-    }
-
-    .shape-icon-box,
-    .shape-icon-cylinder,
-    .shape-icon-roof {
-      width:18px;
-      height:18px;
-      display:inline-block;
-      background:#2b6cb0;
-      border-radius:3px;
-    }
-
-    .shape-icon-cylinder {
-      background:#6f5bd8;
-      border-radius:999px / 40%;
-    }
-
-    .shape-icon-roof {
-      width:0;
-      height:0;
-      background:transparent;
-      border-left:10px solid transparent;
-      border-right:10px solid transparent;
-      border-bottom:18px solid #b23636;
-      border-radius:0;
-    }
-
-    .viz-chest .chest-base {
-      position:absolute; left:58px; bottom:38px; width:145px; height:70px; background:#9b5a2f; border-radius:9px; box-shadow:20px 13px 0 #6f3b1d; z-index:2;
-    }
-    .viz-chest .chest-lid {
-      position:absolute; left:63px; bottom:105px; width:138px; height:36px; background:#d39552; border-radius:28px 28px 7px 7px; box-shadow:18px 10px 0 #8b4f26; z-index:3;
-    }
-    .viz-chest .chest-lock {
-      position:absolute; left:124px; bottom:70px; width:28px; height:34px; background:#f5d66c; border-radius:5px; z-index:4;
-    }
-
-    .viz-tree .tree-trunk-v {
-      position:absolute; left:112px; bottom:38px; width:40px; height:78px; background:#8b4f26; border-radius:6px; z-index:2;
-    }
-    .viz-tree .leaf-a,
-    .viz-tree .leaf-b,
-    .viz-tree .leaf-c {
-      position:absolute; background:#26964c; border-radius:12px; z-index:3; box-shadow:10px 8px 0 #176d37;
-    }
-    .viz-tree .leaf-a { left:75px; bottom:104px; width:88px; height:58px; }
-    .viz-tree .leaf-b { left:120px; bottom:110px; width:88px; height:58px; background:#38a85a; }
-    .viz-tree .leaf-c { left:100px; bottom:138px; width:75px; height:48px; background:#2e9148; }
-
-    .viz-bed .bed-base {
-      position:absolute; left:46px; bottom:46px; width:180px; height:54px; background:#cc7a38; border-radius:9px; box-shadow:22px 14px 0 #9b4f1e; z-index:2;
-    }
-    .viz-bed .blanket {
-      position:absolute; left:92px; bottom:83px; width:120px; height:48px; background:#d94e4e; border-radius:10px; z-index:3; box-shadow:14px 8px 0 #a83131;
-    }
-    .viz-bed .pillow {
-      position:absolute; left:50px; bottom:89px; width:54px; height:42px; background:#fff4d6; border-radius:10px; z-index:4; box-shadow:10px 6px 0 #dccaa1;
-    }
-
-    .viz-tower .tower-stack {
-      position:absolute; left:102px; bottom:38px; width:64px; height:115px; background:repeating-linear-gradient(0deg,#8a93a6 0 26px,#b4bdcc 26px 52px); border-radius:8px; box-shadow:18px 11px 0 #606b7f; z-index:2;
-    }
-    .viz-tower .tower-roof {
-      position:absolute; left:84px; bottom:146px; width:0; height:0; border-left:50px solid transparent; border-right:50px solid transparent; border-bottom:54px solid #b23636; z-index:3; filter:drop-shadow(12px 7px 0 #7d2424);
-    }
-    .viz-tower .tower-window {
-      position:absolute; left:122px; bottom:83px; width:24px; height:32px; background:#e7f0ff; border-radius:5px; z-index:4;
-    }
-
-    .viz-house .house-body {
-      position:absolute; left:71px; bottom:38px; width:128px; height:88px; background:#d7a15a; border-radius:8px; box-shadow:18px 12px 0 #a66a31; z-index:2;
-    }
-    .viz-house .house-roof {
-      position:absolute; left:53px; bottom:122px; width:0; height:0; border-left:82px solid transparent; border-right:82px solid transparent; border-bottom:64px solid #b23636; z-index:3; filter:drop-shadow(12px 8px 0 #7d2424);
-    }
-    .viz-house .house-door {
-      position:absolute; left:120px; bottom:38px; width:30px; height:52px; background:#7a4a25; border-radius:6px 6px 0 0; z-index:4;
-    }
-    .viz-house .house-window {
-      position:absolute; left:82px; bottom:78px; width:26px; height:24px; background:#e7f0ff; border-radius:5px; z-index:4;
-    }
-
-    .activity3-build-strip {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-      margin:16px 0;
-    }
-
-    .build-strip-card {
-      background:#ffffff;
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-      text-align:center;
-    }
-
-    .build-strip-card .big-symbol {
-      width:74px;
-      height:74px;
-      margin:0 auto 8px;
-      display:grid;
-      place-items:center;
-      border-radius:22px;
-      background:var(--soft-blue);
-      color:#27496d;
-      font-size:36px;
-      font-weight:900;
-    }
-
-    .choice-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin:14px 0; }
-    .choice-card { padding:14px; border:1px solid var(--border); border-radius:16px; background:#fbfdff; cursor:pointer; }
-    .choice-card:hover { border-color:#a7d3c1; }
-    .choice-card input { margin-right:8px; }
-    .choice-card strong { display:block; margin-bottom:4px; }
-    .choice-card span { color:var(--muted); font-size:14px; }
-
-    .reflection-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
-    .reflection-grid label { margin-top:0; }
-
-    .warning-box { background:var(--soft-yellow); border:1px solid #ead08c; border-radius:18px; padding:16px; color:#684b00; margin:16px 0; }
-    .success-box { background:var(--soft-green); border:1px solid #b9e7ce; border-radius:18px; padding:16px; color:#07553a; margin:16px 0; }
-    .teacher-talk { text-align:left; background:#f8fbff; border:1px solid var(--border); border-radius:20px; padding:20px; width:min(800px,100%); margin-top:18px; }
-    .teacher-talk h3 { margin:0 0 10px; font-size:25px; }
-    .teacher-talk li { font-size:19px; line-height:1.45; color:var(--muted); margin-bottom:6px; }
-
-
-    /* Shared-device landing page: KS2-friendly structure */
-    .landing-page {
-      max-width: 1180px;
-      margin: 0 auto;
-      display: grid;
-      gap: 18px;
-    }
-
-    .landing-title-card {
-      background: linear-gradient(135deg, #ffffff 0%, #e7f0ff 100%);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .landing-title-card h2 {
-      font-size: clamp(36px, 4vw, 58px);
-      line-height: 1.02;
-      margin: 8px 0 8px;
-      letter-spacing: -1px;
-      color: var(--text);
-    }
-
-    .landing-title-card p {
-      margin: 0;
-      font-size: clamp(20px, 2vw, 28px);
-      color: var(--muted);
-      line-height: 1.3;
-    }
-
-    .landing-badge {
-      display: inline-flex;
-      width: fit-content;
-      align-items: center;
-      gap: 8px;
-      border-radius: 999px;
-      background: var(--soft-yellow);
-      border: 1px solid #ead08c;
-      color: #684b00;
-      font-weight: 900;
-      padding: 9px 14px;
-      font-size: 15px;
-    }
-
-    .landing-big-icon {
-      width: 138px;
-      height: 138px;
-      border-radius: 36px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      display: grid;
-      place-items: center;
-      font-size: 70px;
-      box-shadow: 0 12px 25px rgba(25,42,70,.10);
-    }
-
-    .landing-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .student-option {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      min-height: 330px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .student-option h3 {
-      font-size: clamp(28px, 3vw, 42px);
-      line-height: 1.08;
-      margin: 0;
-      color: var(--text);
-    }
-
-    .student-option p {
-      font-size: 19px;
-      line-height: 1.35;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .option-top {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .option-number {
-      width: 72px;
-      height: 72px;
-      border-radius: 22px;
-      display: grid;
-      place-items: center;
-      font-size: 34px;
-      font-weight: 900;
-      color: #ffffff;
-    }
-
-    .continue-option .option-number { background: var(--primary); }
-    .new-option .option-number { background: #d98a19; }
-
-    .saved-student-box {
-      background: #f8fbff;
-      border: 1px dashed #b7c7da;
-      border-radius: 20px;
-      padding: 16px;
-      font-size: 18px;
-      color: var(--text);
-      font-weight: 800;
-      line-height: 1.45;
-    }
-
-    .saved-student-box.no-work {
-      background: #f2fff8;
-      border-color: #b9e7ce;
-      color: #07553a;
-    }
-
-    .landing-button-area {
-      margin-top: auto;
-      display: grid;
-      gap: 10px;
-    }
-
-    .backup-panel {
-      display: none;
-      background: #ffffff;
-      border: 3px solid #ead08c;
-      border-radius: 28px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      animation: fadeIn 180ms ease;
-    }
-
-    .backup-panel.active {
-      display: block;
-    }
-
-    .backup-title-row {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .backup-title-row .option-number {
-      background: #d98a19;
-    }
-
-    .backup-panel h3 {
-      font-size: clamp(30px, 3vw, 44px);
-      line-height: 1.08;
-      margin: 0 0 6px;
-    }
-
-    .backup-panel p,
-    .backup-panel li {
-      font-size: 19px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .backup-steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 16px 0;
-    }
-
-    .backup-step {
-      background: #fffaf0;
-      border: 1px solid #ead08c;
-      border-radius: 18px;
-      padding: 14px;
-      text-align: center;
-      font-weight: 900;
-      color: #684b00;
-    }
-
-    .safe-reset-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      background: #f8fbff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      margin: 12px 0;
-      font-weight: 900;
-      font-size: 18px;
-    }
-
-    .safe-reset-row input {
-      width: 24px;
-      height: 24px;
-      accent-color: var(--primary);
-    }
-
-    .landing-mini-note {
-      font-size: 14px !important;
-      color: var(--muted);
-      background: #f8fbff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 12px;
-    }
-
-    @media (max-width: 1050px) {
-      header { align-items:flex-start; flex-direction:column; }
-      .student-bar { justify-content:flex-start; }
-      .landing-wrap { grid-template-columns:1fr; }
-      .landing-hero { min-height:auto; }
-      .intro-layout, .login-grid, .course-layout, .reflection-grid { grid-template-columns:1fr; }
-      .side-card { max-height:none; }
-      .side-progress { position:static; }
-      .objective-ribbon { position:static; padding:10px 14px; }
-      .objective-ksu { grid-template-columns:1fr; }
-      .objective-ksu span { border-radius:14px; }
-    }
-
-
-    .login-reminder-box {
-      margin-top: 18px;
-      background: #fff8e8;
-      border: 2px solid #f2c879;
-      border-radius: 18px;
-      padding: 18px;
-    }
-
-    .login-reminder-box h3 {
-      margin: 0 0 10px;
-      font-size: 24px;
-      color: #6f4b00;
-    }
-
-    .login-check-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .login-check-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .login-check-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: #edf2f7;
-      color: #516174;
-      font-weight: 900;
-      flex: 0 0 auto;
-    }
-
-    .login-check-card.done .login-check-icon {
-      background: var(--soft-green);
-      color: var(--primary-dark);
-    }
-
-    .login-check-card.done {
-      border-color: #a8dfbd;
-      background: #f1fbf5;
-    }
-
-    @media (max-width: 1000px) {
-      .login-check-grid { grid-template-columns: 1fr; }
-    }
-
-    @media print {
-      header, .objective-ribbon, main { display:none !important; }
-      body { background:#fff; }
-    }
+    :root{
+      --bg:#eef5fb; --card:#ffffff; --text:#1f2937; --muted:#526174; --border:#d6e2ef;
+      --blue:#2f80ed; --blue-soft:#e9f3ff; --green:#159b6f; --green-soft:#e6f8ef;
+      --orange:#f59e0b; --orange-soft:#fff3d8; --pink:#db5d87; --pink-soft:#ffeaf1;
+      --purple:#7c6ee6; --purple-soft:#efedff; --danger:#b42318; --danger-soft:#fff0ed;
+      --shadow:0 12px 28px rgba(30,54,88,.12); --radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 22px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+    .brand h1{font-size:22px;margin:0;line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.chip{background:var(--blue-soft);border:1px solid #bfd8fb;border-radius:999px;padding:8px 12px;font-weight:800;color:#24476e;font-size:14px}
+    .ksu{position:sticky;top:72px;z-index:20;background:rgba(249,252,255,.96);border-bottom:1px solid var(--border);padding:10px 22px;box-shadow:0 6px 16px rgba(30,54,88,.06)}
+    .wagba{font-size:15px;line-height:1.35;margin-bottom:8px}.wagba strong{color:var(--green)}.ksu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ksu-pill{background:white;border:1px solid var(--border);border-radius:999px;padding:7px 12px;font-size:13px;color:var(--muted)}.ksu-pill strong{color:var(--blue)}
+    main{padding:22px;max-width:1320px;margin:0 auto}.screen{display:none;animation:fade .18s ease}.screen.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}.hero{min-height:calc(100vh - 190px);display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:stretch}.hero .card{display:flex;flex-direction:column;justify-content:center}.hero h2,.page-title{font-size:clamp(34px,5vw,64px);line-height:1.05;margin:0 0 14px;letter-spacing:-1px}.lead{font-size:clamp(20px,2vw,28px);line-height:1.38;color:var(--muted);margin:8px 0 18px}.small{font-size:14px;color:var(--muted);line-height:1.45}.big-link{font-size:clamp(36px,6vw,78px);font-weight:900;color:#0b65c2;background:white;border:3px solid #9ccbff;border-radius:28px;padding:22px;text-align:center;letter-spacing:.5px;box-shadow:var(--shadow)}
+    button,.button-link{border:0;border-radius:18px;padding:15px 20px;font:inherit;font-weight:900;cursor:pointer;background:var(--green);color:white;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 18px rgba(21,155,111,.22);transition:.12s ease}button:hover,.button-link:hover{transform:translateY(-1px);filter:brightness(.96)}button.secondary{background:#edf3fb;color:#22314a;box-shadow:none;border:1px solid var(--border)}button.warning{background:var(--orange);box-shadow:0 10px 18px rgba(245,158,11,.2)}button.danger{background:var(--danger);box-shadow:0 10px 18px rgba(180,35,24,.18)}button.full,.button-link.full{width:100%;margin-top:12px}.button-link.blue,button.blue{background:var(--blue);box-shadow:0 10px 18px rgba(47,128,237,.2)}button:disabled{background:#b7c5d6;cursor:not-allowed;transform:none;box-shadow:none}
+    label{display:block;font-weight:900;margin:14px 0 7px}input,select,textarea{width:100%;border:1px solid var(--border);border-radius:16px;padding:13px;font:inherit;background:#fbfdff;color:var(--text)}textarea{min-height:90px;resize:vertical;line-height:1.4}.error{display:none;background:var(--danger-soft);border:1px solid #fecaca;border-radius:14px;color:var(--danger);font-weight:900;padding:10px 12px;margin-top:10px}
+    .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.choice{background:white;border:2px solid var(--border);border-radius:24px;padding:18px;text-align:left}.choice h3{font-size:25px;margin:0 0 8px}.choice p{font-size:16px;margin:0;color:var(--muted);line-height:1.4}.choice.green{background:var(--green-soft);border-color:#a9dec4}.choice.blue{background:var(--blue-soft);border-color:#b8d7ff}.choice.orange{background:var(--orange-soft);border-color:#f8d28a}.choice.pink{background:var(--pink-soft);border-color:#f5b3c9}.choice.purple{background:var(--purple-soft);border-color:#c9c1ff}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.step{background:white;border:1px solid var(--border);border-radius:18px;padding:14px;display:flex;align-items:center;gap:10px;font-weight:900}.num{width:34px;height:34px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;flex:0 0 34px}
+    .stop{min-height:calc(100vh - 190px);display:grid;place-items:center}.stop-card{width:min(900px,96%);text-align:center}.stop-icon{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;font-size:62px;background:var(--orange-soft);border:3px solid #ffd48d;margin:0 auto 20px}.briefing-actions{display:grid;grid-template-columns:1fr;gap:12px;max-width:520px;margin:22px auto 0}.briefing-reminder{background:var(--blue-soft);border:1px solid #bdd7ff;border-radius:18px;padding:16px;text-align:left;color:#25496d;font-weight:800;line-height:1.45}
+    .login-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}.login-card h3{font-size:28px;margin:0 0 12px}.class-badge{display:inline-flex;border-radius:999px;background:var(--green-soft);color:#096b4b;padding:9px 14px;font-weight:900;margin-bottom:12px}.login-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.checklist{display:grid;gap:10px;margin-top:14px}.check{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid var(--border);border-radius:16px;padding:12px;font-weight:800;color:#27364b}.check input{width:22px;height:22px;flex:0 0 22px;margin:0}
+    .mission-header{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:18px}.sticky-helper{position:sticky;top:150px;align-self:start}.helper-actions{display:grid;gap:10px}.mission-title h2{font-size:clamp(32px,4vw,58px);margin:0 0 8px}.mission-note{background:var(--orange-soft);border:1px solid #f6cf86;border-radius:20px;padding:14px;font-weight:900;color:#704400}.activity{margin-bottom:18px}.activity-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.activity-head h3{font-size:34px;margin:0}.activity-tag{padding:8px 12px;border-radius:999px;background:var(--blue-soft);color:#174a88;font-weight:900}.activity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.task{background:white;border:1px solid var(--border);border-radius:20px;padding:16px;min-height:150px}.task .emoji{font-size:42px;margin-bottom:8px}.task h4{font-size:22px;margin:0 0 6px}.task p{margin:0;color:var(--muted);font-size:15px;line-height:1.4}.done-box{background:#f8fbff;border:1px dashed #a7bacf;border-radius:18px;padding:14px;margin-top:14px}.done-box label{margin:0;display:flex;gap:10px;align-items:center;font-size:17px}.done-box input{width:24px;height:24px;flex:0 0 24px}.unlock-msg{display:none;background:var(--green-soft);border:1px solid #a9dec4;color:#096b4b;border-radius:16px;padding:12px;margin-top:12px;font-weight:900}.locked{opacity:.58}.locked .activity-grid,.locked .done-box,.locked .challenge-grid{pointer-events:none}.locked-note{background:#f2f5f8;border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--muted);font-weight:900;margin-top:12px}
+    .challenge-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.model-card{border:1px solid var(--border);border-radius:18px;background:white;overflow:hidden}.model-visual{height:100px;display:grid;place-items:center;font-size:50px;background:linear-gradient(135deg,#f8fbff,#eaf3ff)}.model-card h4{margin:12px 12px 4px;font-size:21px}.model-card p{margin:0 12px 14px;color:var(--muted);font-size:13px;line-height:1.35}.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.level{padding:14px;border-radius:18px;border:1px solid var(--border);background:white}.level strong{font-size:22px}.level p{margin:5px 0 0;color:var(--muted)}
+    .record-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.progress-bar{height:14px;background:#e1e9f3;border-radius:999px;overflow:hidden;margin-top:10px}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--blue));transition:.2s ease}
+    .mini-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.mini-nav button{font-size:13px;padding:9px 12px;box-shadow:none;background:#edf3fb;color:#22314a;border:1px solid var(--border)}
+    @media(max-width:980px){.hero,.login-layout,.mission-header,.record-grid{grid-template-columns:1fr}.ksu-grid,.steps,.activity-grid,.challenge-grid,.levels,.choice-grid{grid-template-columns:1fr}.sticky-helper{position:static}.ksu{position:static}.big-link{font-size:42px}.login-actions{grid-template-columns:1fr}}
+    @media print{header,.ksu,button,.button-link,.sticky-helper,.mini-nav{display:none!important}body{background:white}.card{box-shadow:none}.screen{display:block!important}.screen:not(#recordPrint){display:none!important}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <h1>Year 5 Tinkercad Guided Course</h1>
-      <p>KS2 Computing • Mouse control, 3D design, shapes, movement, resizing, and evaluation</p>
-    </div>
-    <div class="student-bar" aria-live="polite">
-      <span class="student-chip" id="nameHeader">Name: not entered</span>
-      <span class="student-chip" id="classHeader">Class: not selected</span>
-      <span class="student-chip" id="dateHeader">Date: loading...</span>
-      <button type="button" class="ghost" onclick="goBackOneStep()">Back Step</button>
-      <button type="button" class="ghost" onclick="goToLoginPage()">Tinkercad Login</button>
-      <button type="button" class="ghost" onclick="resetCourse()">Reset</button>
-    </div>
-  </header>
+<header>
+  <div class="brand">
+    <h1>Year 5 Tinkercad Guided Course</h1>
+    <p>Mouse control • 3D design • shapes • movement • resizing • evaluation</p>
+  </div>
+  <div class="chips">
+    <span class="chip" id="nameChip">Name: not entered</span>
+    <span class="chip" id="classChip">Class: not selected</span>
+    <span class="chip" id="dateChip">Date: loading...</span>
+    <button class="secondary" onclick="showLanding()">Home</button>
+  </div>
+</header>
+<section class="ksu">
+  <div class="wagba"><strong>WAGBA:</strong> We are getting better at using basic 3D shapes to create a simple digital model.</div>
+  <div class="ksu-grid">
+    <div class="ksu-pill"><strong>K:</strong> 3D objects have width, height, and depth.</div>
+    <div class="ksu-pill"><strong>S:</strong> I can move, resize, and rotate basic 3D shapes.</div>
+    <div class="ksu-pill"><strong>U:</strong> 3D models are made by combining simple shapes.</div>
+  </div>
+</section>
 
-  <section class="objective-ribbon" aria-label="Lesson objective summary">
-    <div class="objective-main"><strong>WAGBA:</strong> <span id="wagbaText">We are getting better at using basic 3D shapes to create a simple digital model.</span></div>
-    <div class="objective-ksu">
-      <span><strong>K:</strong> <span id="kText">3D objects have width, height, and depth.</span></span>
-      <span><strong>S:</strong> <span id="sText">I can move, resize, and rotate basic 3D shapes.</span></span>
-      <span><strong>U:</strong> <span id="uText">3D models are made by combining simple shapes.</span></span>
+<main>
+  <section id="landing" class="screen active">
+    <div class="hero">
+      <div class="card">
+        <h2>Welcome to Tinkercad</h2>
+        <p class="lead">This computer may have been used by another Year 5 student.</p>
+        <div class="choice-grid">
+          <div class="choice green">
+            <h3>✅ Is this your work?</h3>
+            <p>Continue from your saved progress.</p>
+            <button class="full" id="continueBtn" onclick="continueSession()">Continue My Session</button>
+          </div>
+          <div class="choice orange">
+            <h3>🆕 New student?</h3>
+            <p>Back up the old work first. Then reset and start fresh.</p>
+            <button class="warning full" onclick="openBackupPanel()">New Student / Reset</button>
+          </div>
+        </div>
+        <div id="savedSummary" class="small" style="margin-top:18px"></div>
+        <div class="card" id="backupPanel" style="display:none;margin-top:18px;background:#fbfdff;box-shadow:none">
+          <h3 style="margin:0 0 8px;font-size:24px">Backup before reset</h3>
+          <p class="small">Do this so the previous student does not lose their work.</p>
+          <button class="blue" onclick="downloadBackup()">1. Download Backup</button>
+          <button class="danger" id="resetAfterBackupBtn" onclick="resetAll()" disabled>2. Reset and Start Fresh</button>
+          <p class="small" id="backupHelp">Reset will unlock after backup is downloaded.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:42px">Today</h2>
+        <div class="steps">
+          <div class="step"><span class="num">1</span> Write WAGBA</div>
+          <div class="step"><span class="num">2</span> Starter quiz</div>
+          <div class="step"><span class="num">3</span> Log in once</div>
+          <div class="step"><span class="num">4</span> Mission board</div>
+        </div>
+        <p class="lead" style="font-size:22px;margin-top:24px">You will use the Mission Board and follow one step at a time.</p>
+      </div>
     </div>
   </section>
 
-  <main>
-    <section id="landingScreen" class="screen active">
-      <div class="landing-page">
-        <article class="landing-title-card">
-          <div>
-            <div class="landing-badge">Shared computer check</div>
-            <h2>Who is using this computer?</h2>
-            <p>Year 5 students share devices. Choose the correct option before you start.</p>
-          </div>
-          <div class="landing-big-icon" aria-hidden="true">🧊</div>
-        </article>
-
-        <div class="landing-options">
-          <article class="student-option continue-option">
-            <div class="option-top">
-              <div class="option-number">1</div>
-              <div>
-                <h3>Is this your work?</h3>
-                <p>Use this if you can see your name or saved progress.</p>
-              </div>
-            </div>
-
-            <div class="saved-student-box" id="savedStudentBox">Checking saved progress...</div>
-
-            <div class="landing-button-area">
-              <button type="button" class="full" id="continueSessionBtn" onclick="continueSavedSession()">Continue My Work</button>
-              <p class="landing-mini-note">Not your name? Use option 2.</p>
-            </div>
-          </article>
-
-          <article class="student-option new-option">
-            <div class="option-top">
-              <div class="option-number">2</div>
-              <div>
-                <h3>New student?</h3>
-                <p>Use this if you are starting on this device.</p>
-              </div>
-            </div>
-
-            <div class="saved-student-box no-work">
-              Before resetting, save the old work first.
-            </div>
-
-            <div class="landing-button-area">
-              <button type="button" class="secondary full" onclick="openBackupPrompt()">I am a New Student</button>
-              <p class="landing-mini-note">This keeps the previous student’s work safe.</p>
-            </div>
-          </article>
-        </div>
-
-        <section class="backup-panel" id="backupPanel" aria-label="Backup before reset">
-          <div class="backup-title-row">
-            <div class="option-number">!</div>
-            <div>
-              <h3>Backup before reset</h3>
-              <p>Do these steps first so no one loses their work.</p>
-            </div>
-          </div>
-
-          <div class="backup-steps">
-            <div class="backup-step">1. Download Backup</div>
-            <div class="backup-step">2. Check Download</div>
-            <div class="backup-step">3. Tick the Box</div>
-          </div>
-
-          <button type="button" class="full" onclick="downloadProgressReport()">Download Backup</button>
-          <label class="safe-reset-row"><input id="backupConfirm" type="checkbox"> I have downloaded the backup.</label>
-          <button type="button" class="full" onclick="resetAfterBackup()">Reset and Start New</button>
-          <button type="button" class="ghost full" onclick="closeBackupPrompt()">Cancel</button>
-          <div class="error" id="backupError">Please download the backup and tick the box before resetting.</div>
-        </section>
+  <section id="welcome" class="screen">
+    <div class="hero">
+      <div class="card">
+        <h2>Start Here</h2>
+        <p class="lead">Enter your details and write the WAGBA sentence.</p>
+        <label for="studentName">Name</label>
+        <input id="studentName" placeholder="Example: David Kang" oninput="saveBasic()" />
+        <label for="studentClass">Class</label>
+        <select id="studentClass" onchange="saveBasic()">
+          <option value="">Choose your class</option>
+          <option value="Y5E">Y5E</option>
+          <option value="Y5N">Y5N</option>
+          <option value="Y5T">Y5T</option>
+        </select>
+        <label for="wagbaAnswer">Complete this sentence</label>
+        <textarea id="wagbaAnswer" placeholder="I am getting better at..."></textarea>
+        <button class="full" onclick="submitWagba()">Submit WAGBA</button>
+        <div class="error" id="welcomeError">Please enter your name, class, and WAGBA sentence.</div>
       </div>
-    </section>
-
-    <section id="welcomeScreen" class="screen">
-      <div class="intro-layout">
-        <article class="slide-card">
-          <div class="slide-content" id="slideContent"></div>
-          <div class="slide-controls">
-            <button type="button" class="secondary" id="backSlideBtn" onclick="changeSlide(-1)">Back</button>
-            <div class="slide-dots" id="slideDots" aria-label="Slide progress"></div>
-            <button type="button" id="nextSlideBtn" onclick="changeSlide(1)">Next Slide</button>
-          </div>
-        </article>
-
-        <aside class="side-card">
-          <h3>Before you start</h3>
-          <p class="small-help">Enter your details carefully. Your class choice will show only your class login page.</p>
-
-          <label for="studentName">Enter your name</label>
-          <input id="studentName" type="text" placeholder="Example: David Kang" autocomplete="name" oninput="saveStudentDetails()" />
-
-          <label for="studentClass">Choose your class</label>
-          <select id="studentClass" onchange="saveStudentDetails()">
-            <option value="">Choose your class</option>
-            <option value="Y5E">Y5E</option>
-            <option value="Y5N">Y5N</option>
-          </select>
-
-          <label for="objectiveAnswer">Based on the WAGBA, what are you getting better at today?</label>
-          <textarea id="objectiveAnswer" placeholder="I am getting better at..." oninput="saveStudentDetails()"></textarea>
-
-          <button type="button" class="full" onclick="completeIntro()">I have submitted my WAGBA</button>
-          <div class="error" id="introError">Please enter your name, class, and WAGBA answer before moving on.</div>
-        </aside>
+      <div class="card" style="background:var(--green-soft)">
+        <h2 style="font-size:38px">WAGBA</h2>
+        <p class="lead">We are getting better at using basic 3D shapes to create a simple digital model.</p>
+        <div class="choice blue"><h3>🧠 K</h3><p>3D objects have width, height, and depth.</p></div>
+        <div class="choice orange" style="margin-top:12px"><h3>🛠️ S</h3><p>I can move, resize, and rotate basic 3D shapes.</p></div>
+        <div class="choice pink" style="margin-top:12px"><h3>💡 U</h3><p>3D models are made by combining simple shapes.</p></div>
       </div>
-    </section>
+    </div>
+  </section>
 
+  <section id="starter" class="screen">
+    <div class="stop">
+      <div class="card stop-card" style="width:min(1040px,96%);">
+        <div class="stop-icon" style="background:var(--blue-soft);border-color:#bdd7ff;">⚡</div>
+        <h2 class="page-title">Starter Session</h2>
+        <p class="lead">Complete the Wayground starter before you open Tinkercad.</p>
 
-    <section id="briefingScreen" class="screen">
-      <div class="password-card">
-        <div class="icon">✋</div>
-        <h2>Stop Here</h2>
-        <p>You have submitted your WAGBA. Please come to Mr Dave for a short briefing before opening Tinkercad.</p>
-
-        <div class="briefing-grid" aria-label="Briefing steps">
-          <div class="briefing-step-card">
-            <div class="big-number">1</div>
-            <h3>Listen</h3>
-            <p>Mouse controls and class login instructions.</p>
-          </div>
-          <div class="briefing-step-card">
-            <div class="big-number">2</div>
-            <h3>Check</h3>
-            <p>Your name, class, and device are correct.</p>
-          </div>
-          <div class="briefing-step-card">
-            <div class="big-number">3</div>
-            <h3>Password</h3>
-            <p>Only continue after Mr Dave gives the password.</p>
+        <div class="card" style="box-shadow:none;background:var(--blue-soft);text-align:left;margin:18px auto;max-width:820px;">
+          <h3 style="margin:0 0 10px;font-size:28px;">Do this first</h3>
+          <div class="steps" style="grid-template-columns:repeat(3,1fr);">
+            <div class="step"><span class="num">1</span> Open Wayground</div>
+            <div class="step"><span class="num">2</span> Answer the quiz</div>
+            <div class="step"><span class="num">3</span> Come back here</div>
           </div>
         </div>
 
-        <div class="teacher-lock-note">
-          <strong>Class rule:</strong> Do not skip ahead. This password unlocks the next page only after the teacher briefing.
+        <a class="button-link blue full" style="font-size:clamp(22px,3vw,38px);padding:24px;border-radius:26px;max-width:820px;margin:12px auto;"
+           href="https://wayground.com/join?gc=35722633&source=liveDashboard"
+           target="_blank" rel="noopener noreferrer" onclick="markStarterOpened()">
+          Open Wayground Starter
+        </a>
+
+        <div class="checklist" style="max-width:820px;margin:18px auto;text-align:left;">
+          <label class="check"><input type="checkbox" id="openedStarter" onchange="saveStarterChecks()" /> I opened the Wayground starter.</label>
+          <label class="check"><input type="checkbox" id="starterDone" onchange="saveStarterChecks()" /> I finished the starter quiz.</label>
         </div>
 
-        <label for="briefingPassword">Enter teacher password</label>
-        <input id="briefingPassword" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockBriefing();" />
-        <div class="password-actions"><button type="button" onclick="unlockBriefing()">Unlock Tinkercad Login</button></div>
-        <div class="back-row"><button type="button" class="secondary" onclick="showScreen('welcomeScreen')">Back to WAGBA</button></div>
-        <div class="error" id="briefingError">Please check with Mr Dave before continuing.</div>
+        <button class="full" id="starterNextBtn" onclick="goAfterStarter()" disabled style="max-width:820px;margin-left:auto;margin-right:auto;">Next: Starter 2</button>
+        <div class="error" id="starterError" style="max-width:820px;margin-left:auto;margin-right:auto;">Please complete the starter checklist first.</div>
+        <button class="secondary" onclick="showScreen('welcome')" style="margin-top:12px;">Back to WAGBA</button>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="loginScreen" class="screen">
-      <div class="login-card">
-        <span class="class-pill" id="selectedClassPill">Class</span>
-        <h2 style="font-size:clamp(34px,4vw,60px); margin:18px 0 8px;">Tinkercad Login Page</h2>
-        <p style="font-size:22px; color:var(--muted); line-height:1.45; max-width:940px;">Open your class login codes first, then open the Tinkercad class link. Keep this guided course open in another tab so you can come back after each task.</p>
 
-        <div class="login-grid">
-          <div class="login-step">
-            <h3>1. Find your login code</h3>
-            <p>Click the button below. Find your name and copy your login code exactly.</p>
-            <a id="loginCodesLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer" onclick="markLoginStep('loginCodesOpened')">Open My Class Login Codes</a>
-          </div>
+  <section id="starter2" class="screen">
+    <div class="stop">
+      <div class="card stop-card" style="width:min(1040px,96%);">
+        <div class="stop-icon" style="background:var(--green-soft);border-color:#b7e5c8;">2</div>
+        <h2 class="page-title">Starter 2</h2>
+        <p class="lead">Complete the second Wayground starter before you open Tinkercad.</p>
 
-          <div class="login-step">
-            <h3>2. Join Tinkercad class</h3>
-            <ol>
-              <li>Click the Tinkercad class link.</li>
-              <li>Use your login code from the PDF.</li>
-              <li>Open or create a new 3D Design when you are ready.</li>
-            </ol>
-            <a id="tinkercadClassLink" class="button-link full" href="#" target="_blank" rel="noopener noreferrer" onclick="markLoginStep('tinkercadClassOpened')">Open Tinkercad Class</a>
-          </div>
-        </div>
-
-        <div class="warning-box">
-          <strong>Important:</strong> Do not use another student's code. Do not close this guided course. Come back here after you are logged in.
-        </div>
-
-        <div class="login-reminder-box" aria-label="Login checklist">
-          <h3>Before you continue, check these two steps</h3>
-          <div class="login-check-grid">
-            <div class="login-check-card" id="loginCodesCheckCard"><span class="login-check-icon" id="loginCodesCheckIcon">1</span><span>Login codes opened</span></div>
-            <div class="login-check-card" id="tinkercadClassCheckCard"><span class="login-check-icon" id="tinkercadClassCheckIcon">2</span><span>Tinkercad class opened</span></div>
+        <div class="card" style="box-shadow:none;background:var(--green-soft);text-align:left;margin:18px auto;max-width:820px;">
+          <h3 style="margin:0 0 10px;font-size:28px;">Do this next</h3>
+          <div class="steps" style="grid-template-columns:repeat(3,1fr);">
+            <div class="step"><span class="num">1</span> Open Starter 2</div>
+            <div class="step"><span class="num">2</span> Answer the quiz</div>
+            <div class="step"><span class="num">3</span> Come back here</div>
           </div>
         </div>
 
-        <button type="button" class="large" onclick="completeLogin()">I have logged in to Tinkercad</button>
-        <div class="error" id="loginError">Open your login codes and the Tinkercad class link first. Then come back and continue.</div>
-      </div>
-    </section>
+        <a class="button-link green full" style="font-size:clamp(22px,3vw,38px);padding:24px;border-radius:26px;max-width:820px;margin:12px auto;"
+           href="https://wayground.com/join?gc=53810569&source=liveDashboard"
+           target="_blank" rel="noopener noreferrer" onclick="markStarter2Opened()">
+          Open Starter 2
+        </a>
 
-
-    <section id="mouseControlScreen" class="screen">
-      <div class="course-layout">
-        <article class="course-card">
-          <div class="course-inner">
-            <span class="slide-kicker">Mouse Control Warm-up</span>
-            <h2>Try Mouse Controls Inside Tinkercad</h2>
-
-            <div class="mouse-lesson-header">
-              <div class="mouse-icon-big" aria-hidden="true">
-                <div class="mouse-button-left"></div>
-                <div class="mouse-button-right"></div>
-                <div class="mouse-wheel"></div>
-              </div>
-              <div>
-                <p><strong>Do not practise here. Practise in Tinkercad.</strong></p>
-                <p>Keep this page open. Switch to Tinkercad, try one mouse control, then come back and tick it.</p>
-              </div>
-            </div>
-
-            <div class="warning-box">
-              <strong>Important:</strong> Use a simple shape first, such as a box. Do not build your final model yet.
-            </div>
-
-            <div class="visual-step-grid" aria-label="Mouse control picture guide">
-              <div class="visual-step">
-                <div class="step-picture"><div class="click-ring"></div><div class="mini-pointer" style="left:88px; top:70px;"></div></div>
-                <h3>1. Left click = Select</h3>
-                <p>Click one shape in Tinkercad. Look for the white handles.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="drag-cube-a"></div><div class="drag-path"></div><div class="drag-cube-b"></div><div class="mini-pointer" style="right:56px; top:85px;"></div></div>
-                <h3>2. Click and drag = Move</h3>
-                <p>Hold the left mouse button. Move the shape slowly. Let go.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="zoom-demo-shape"></div><div class="mini-pointer" style="left:68px; top:88px;"></div></div>
-                <h3>3. Scroll wheel = Zoom</h3>
-                <p>Roll the wheel slowly to zoom in and out.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="view-cube-picture">TOP<br>FRONT<br>SIDE</div></div>
-                <h3>4. Right click drag / View Cube = Turn view</h3>
-                <p>Turn the camera view to see the top, front, and side.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="home-picture"><div class="home-icon"></div><div class="tiny-caption">Middle Mouse</div></div></div>
-                <h3>5. Middle mouse click = Pan view</h3>
-                <p>Press the scroll wheel and drag to move the view around.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="home-picture"><div class="home-icon"></div><div class="tiny-caption">Home View</div></div></div>
-                <h3>Lost? Reset View</h3>
-                <p>Click Home View or use the View Cube. Do not delete your work.</p>
-              </div>
-            </div>
-
-            <div class="ready-card" style="text-align:left;">
-              <h3>Your Tinkercad practice mission</h3>
-              <ol style="font-size:20px; line-height:1.55; color:var(--muted);">
-                <li>Open Tinkercad and place one <strong>box</strong> shape on the workplane.</li>
-                <li>Try each mouse control below inside Tinkercad.</li>
-                <li>Come back to this page and tick only the controls you have tried.</li>
-                <li>If your mouse does not have a middle button, try the View Cube and Home View instead, then tell Mr Dave.</li>
-              </ol>
-            </div>
-
-            <div class="mouse-mini-checks" aria-label="Mouse skill checks">
-              <div class="mini-check" id="miniCheckMc1"><span>1</span><span>Select</span></div>
-              <div class="mini-check" id="miniCheckMc2"><span>2</span><span>Move</span></div>
-              <div class="mini-check" id="miniCheckMc3"><span>3</span><span>Zoom</span></div>
-              <div class="mini-check" id="miniCheckMc4"><span>4</span><span>Turn view</span></div>
-              <div class="mini-check" id="miniCheckMc5"><span>5</span><span>Middle mouse</span></div>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="mc_1" onchange="saveChecklist(this)"><div><strong>I left-clicked to select a shape in Tinkercad</strong><span>I saw the shape handles appear.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="mc_2" onchange="saveChecklist(this)"><div><strong>I clicked and dragged a shape slowly</strong><span>I moved a box on the workplane.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="mc_3" onchange="saveChecklist(this)"><div><strong>I used the scroll wheel to zoom in and out</strong><span>I zoomed slowly so I did not get lost.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="mc_4" onchange="saveChecklist(this)"><div><strong>I changed the view</strong><span>I used right-click drag or the View Cube to see top, front, or side view.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="mc_5" onchange="saveChecklist(this)"><div><strong>I tried the middle mouse button</strong><span>I pressed the scroll wheel and dragged to move the view around.</span></div></label>
-            </div>
-
-            <div class="sentence-starter-box">
-              <strong>Sentence starter:</strong> The mouse control I need to practise more is _____ because _____.
-            </div>
-            <label for="mouseControlReflection">Which mouse control do you need to practise more, and why?</label>
-            <textarea id="mouseControlReflection" data-save="mouseControlReflection" placeholder="The mouse control I need to practise more is... because..." oninput="saveField(this)"></textarea>
-
-            <div class="error" id="mouseControlError">Please try the mouse controls in Tinkercad, tick the checks, and write one sentence.</div>
-            <button type="button" class="large" onclick="completeMouseControl()">I practised the mouse controls in Tinkercad</button>
-          </div>
-        </article>
-        <aside class="side-progress" id="progressPanel0"></aside>
-      </div>
-    </section>
-
-    <section id="checkpoint1Screen" class="screen">
-      <div class="password-card">
-        <div class="icon">✋</div>
-        <h2>Stop Here</h2>
-        <p>Please come to Mr Dave before starting Activity 1: Mouse Control + 3D Playground.</p>
-        <div class="teacher-talk">
-          <h3>Teacher talk focus</h3>
-          <ul>
-            <li>Quick demo: left click, drag, scroll zoom, right-click drag, and middle mouse click.</li>
-            <li>How to open a new 3D design.</li>
-            <li>How to use the workplane and view cube when students feel lost.</li>
-            <li>How Activity 1 is split into Part A mouse control and Part B shape playground.</li>
-          </ul>
+        <div class="checklist" style="max-width:820px;margin:18px auto;text-align:left;">
+          <label class="check"><input type="checkbox" id="openedStarter2" onchange="saveStarter2Checks()" /> I opened Starter 2.</label>
+          <label class="check"><input type="checkbox" id="starter2Done" onchange="saveStarter2Checks()" /> I finished Starter 2.</label>
         </div>
-        <label for="checkpoint1Password">Enter teacher password</label>
-        <input id="checkpoint1Password" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockCheckpoint(1);" />
-        <div class="password-actions"><button type="button" onclick="unlockCheckpoint(1)">Unlock Activity 1</button></div>
-        <div class="error" id="checkpoint1Error">Please check with Mr Dave before continuing.</div>
+
+        <button class="full" id="starter2NextBtn" onclick="goAfterStarter2()" disabled style="max-width:820px;margin-left:auto;margin-right:auto;">Next: Tinkercad Login</button>
+        <div class="error" id="starter2Error" style="max-width:820px;margin-left:auto;margin-right:auto;">Please complete Starter 2 checklist first.</div>
+        <button class="secondary" onclick="showScreen('starter')" style="margin-top:12px;">Back to Starter 1</button>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="activity1Screen" class="screen">
-      <div class="course-layout">
-        <article class="course-card">
-          <div class="course-inner">
-            <span class="slide-kicker">Activity 1</span>
-            <h2>Mouse Control + 3D Playground</h2>
-            <p>Your first mission is to practise the mouse controls directly inside Tinkercad, then explore the 3D workspace with simple shapes. You are not building a full model yet.</p>
 
-            <div class="mouse-lesson-header">
-              <div class="mouse-icon-big" aria-hidden="true">
-                <div class="mouse-button-left"></div>
-                <div class="mouse-button-right"></div>
-                <div class="mouse-wheel"></div>
-              </div>
-              <div>
-                <p><strong>Practise this in Tinkercad, not on this page.</strong></p>
-                <p>Use one simple <strong>box</strong> shape first. Try one mouse control at a time, then come back and tick it.</p>
-              </div>
-            </div>
-
-            <div class="visual-step-grid" aria-label="Mouse control picture guide">
-              <div class="visual-step">
-                <div class="step-picture"><div class="click-ring"></div><div class="mini-pointer" style="left:88px; top:70px;"></div></div>
-                <h3>1. Left click = Select</h3>
-                <p>Click one shape. Look for the white handles.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="drag-cube-a"></div><div class="drag-path"></div><div class="drag-cube-b"></div><div class="mini-pointer" style="right:56px; top:85px;"></div></div>
-                <h3>2. Click and drag = Move</h3>
-                <p>Hold the left mouse button. Move the shape slowly. Let go.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="zoom-demo-shape"></div><div class="mini-pointer" style="left:68px; top:88px;"></div></div>
-                <h3>3. Scroll wheel = Zoom</h3>
-                <p>Roll the wheel slowly to zoom in and out.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="view-cube-picture">TOP<br>FRONT<br>SIDE</div></div>
-                <h3>4. Right click drag / View Cube = Turn view</h3>
-                <p>Turn the view to see the top, front, and side.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="home-picture"><div class="home-icon"></div><div class="tiny-caption">Middle Mouse</div></div></div>
-                <h3>5. Middle mouse click = Pan view</h3>
-                <p>Press the scroll wheel and drag to move the view around.</p>
-              </div>
-              <div class="visual-step">
-                <div class="step-picture"><div class="home-picture"><div class="home-icon"></div><div class="tiny-caption">Home View</div></div></div>
-                <h3>Lost? Reset View</h3>
-                <p>Click Home View or use the View Cube. Do not delete your work.</p>
-              </div>
-            </div>
-
-            <div class="ready-card" style="text-align:left;">
-              <h3>Part A: Mouse control mission</h3>
-              <ol style="font-size:20px; line-height:1.55; color:var(--muted);">
-                <li>Open a new 3D Design in Tinkercad.</li>
-                <li>Place one <strong>box</strong> shape on the workplane.</li>
-                <li>Try the mouse controls below in Tinkercad.</li>
-                <li>If your mouse does not have a middle button, try the View Cube and Home View instead, then tell Mr Dave.</li>
-              </ol>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="a1_mouse_1" onchange="saveChecklist(this)"><div><strong>I left-clicked to select a shape</strong><span>I saw the shape handles appear in Tinkercad.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_mouse_2" onchange="saveChecklist(this)"><div><strong>I clicked and dragged a shape slowly</strong><span>I moved a box on the workplane.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_mouse_3" onchange="saveChecklist(this)"><div><strong>I used the scroll wheel to zoom in and out</strong><span>I zoomed slowly so I did not get lost.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_mouse_4" onchange="saveChecklist(this)"><div><strong>I changed the view</strong><span>I used right-click drag or the View Cube to see top, front, or side view.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_mouse_5" onchange="saveChecklist(this)"><div><strong>I tried the middle mouse button</strong><span>I pressed the scroll wheel and dragged to pan/move the view around.</span></div></label>
-            </div>
-
-            <div class="sentence-starter-box">
-              <strong>Sentence starter:</strong> The mouse control I need to practise more is _____ because _____.
-            </div>
-            <label for="activity1MouseReflection">Which mouse control do you need to practise more, and why?</label>
-            <textarea id="activity1MouseReflection" data-save="activity1MouseReflection" placeholder="The mouse control I need to practise more is... because..." oninput="saveField(this)"></textarea>
-
-            <hr style="border:0; border-top:1px solid var(--border); margin:32px 0;">
-            <h3 style="font-size:30px; margin:0 0 10px;">Part B: 3D playground</h3>
-            <p>Now add and move a few shapes so you can practise working in the 3D space.</p>
-
-            <div class="visual-panel">
-              <div class="workplane" aria-label="Basic 3D shape examples">
-                <span class="cube" title="Box"></span>
-                <span class="cylinder" title="Cylinder"></span>
-                <span class="roof" title="Roof"></span>
-              </div>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="a1_1" onchange="saveChecklist(this)"><div><strong>Open a new 3D design</strong><span>Use the Tinkercad 3D design workspace.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_2" onchange="saveChecklist(this)"><div><strong>Add three shapes</strong><span>Drag in one box, one cylinder, and one roof or pyramid.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_3" onchange="saveChecklist(this)"><div><strong>Change your view</strong><span>Use the view cube or mouse to look from the top, front, and side.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a1_4" onchange="saveChecklist(this)"><div><strong>Move the shapes apart</strong><span>Each shape should be visible and not stuck inside another shape.</span></div></label>
-            </div>
-
-            <label for="activity1Reflection">What did you learn about using a 3D workspace?</label>
-            <textarea id="activity1Reflection" data-save="activity1Reflection" placeholder="I learned that..." oninput="saveField(this)"></textarea>
-
-            <div class="error" id="activity1Error">Please complete Part A and Part B, then write both reflection sentences.</div>
-            <button type="button" class="large" onclick="completeActivity(1)">I completed Activity 1</button>
-          </div>
-        </article>
-        <aside class="side-progress" id="progressPanel1"></aside>
-      </div>
-    </section>
-
-    <section id="checkpoint2Screen" class="screen">
-      <div class="password-card">
-        <div class="icon">👀</div>
-        <h2>Show Mr Dave</h2>
-        <p>Show your 3D Playground screen before moving on.</p>
-        <div class="teacher-talk">
-          <h3>Teacher talk focus</h3>
-          <ul>
-            <li>How to resize objects using the white handles.</li>
-            <li>How to lift and lower objects above the workplane.</li>
-            <li>How to rotate the view to check if objects are in the correct place.</li>
-          </ul>
+  <section id="briefing" class="screen">
+    <div class="stop">
+      <div class="card stop-card">
+        <div class="stop-icon">✋</div>
+        <h2 class="page-title">Stop Here</h2>
+        <p class="lead">Come to Mr Dave for a short briefing before opening Tinkercad.</p>
+        <div class="briefing-reminder">
+          <strong>Listen for:</strong><br />
+          1. How to log in to Tinkercad<br />
+          2. What to do in Activity 1<br />
+          3. How to use the Mission Board without skipping
         </div>
-        <label for="checkpoint2Password">Enter teacher password</label>
-        <input id="checkpoint2Password" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockCheckpoint(2);" />
-        <div class="password-actions"><button type="button" onclick="unlockCheckpoint(2)">Unlock Activity 2</button></div>
-        <div class="error" id="checkpoint2Error">Please check with Mr Dave before continuing.</div>
-      </div>
-    </section>
-
-    <section id="activity2Screen" class="screen">
-      <div class="course-layout">
-        <article class="course-card">
-          <div class="course-inner">
-            <span class="slide-kicker">Activity 2</span>
-            <h2>Build a Simple 3D Table</h2>
-            <p>Use basic shapes to build a small table. This teaches you how to resize shapes, move objects carefully, and check your model from different angles.</p>
-
-            <div class="mini-table" aria-label="Simple table model example">
-              <div class="top"></div>
-              <div class="leg one"></div>
-              <div class="leg two"></div>
-              <div class="leg three"></div>
-              <div class="leg four"></div>
-            </div>
-
-            <div class="task-grid">
-              <div class="task-card"><h3>Must include</h3><ul><li>1 large cuboid for the tabletop</li><li>4 thin cuboids or cylinders for legs</li><li>At least 2 colours</li></ul></div>
-              <div class="task-card"><h3>Remember</h3><ul><li>Resize the shapes carefully</li><li>Lift the tabletop above the legs</li><li>Rotate your view to check the side</li></ul></div>
-              <div class="task-card"><h3>Good challenge</h3><ul><li>Add a small object on top</li><li>Keep the model neat</li><li>Do not use too many shapes yet</li></ul></div>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="a2_1" onchange="saveChecklist(this)"><div><strong>I made a tabletop</strong><span>The tabletop is flat and wide.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a2_2" onchange="saveChecklist(this)"><div><strong>I made four legs</strong><span>The legs are moved into the correct position.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a2_3" onchange="saveChecklist(this)"><div><strong>I checked from different angles</strong><span>I used top, front, and side views to check the model.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a2_4" onchange="saveChecklist(this)"><div><strong>I changed size and colour</strong><span>I used resize and colour tools to improve the table.</span></div></label>
-            </div>
-
-            <div class="reflection-grid">
-              <div>
-                <label for="activity2Shapes">What shapes did you use?</label>
-                <textarea id="activity2Shapes" data-save="activity2Shapes" placeholder="I used..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="activity2Problem">What was difficult or tricky?</label>
-                <textarea id="activity2Problem" data-save="activity2Problem" placeholder="The tricky part was..." oninput="saveField(this)"></textarea>
-              </div>
-            </div>
-
-            <div class="error" id="activity2Error">Please complete all checklist items and answer both questions.</div>
-            <button type="button" class="large" onclick="completeActivity(2)">I completed Activity 2</button>
-          </div>
-        </article>
-        <aside class="side-progress" id="progressPanel2"></aside>
-      </div>
-    </section>
-
-    <section id="checkpoint3Screen" class="screen">
-      <div class="password-card">
-        <div class="icon">🧱</div>
-        <h2>Show Your Table</h2>
-        <p>Please show Mr Dave your table before moving to the mini Minecraft-inspired model.</p>
-        <div class="teacher-talk">
-          <h3>Teacher talk focus</h3>
-          <ul>
-            <li>How to combine simple shapes to make a recognisable model.</li>
-            <li>How to plan before building.</li>
-            <li>When grouping objects may help keep a model together.</li>
-          </ul>
+        <div class="briefing-actions">
+          <button onclick="finishBriefing()">I have listened to the briefing</button>
+          <button class="secondary" onclick="showScreen('welcome')">Back to WAGBA</button>
         </div>
-        <label for="checkpoint3Password">Enter teacher password</label>
-        <input id="checkpoint3Password" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockCheckpoint(3);" />
-        <div class="password-actions"><button type="button" onclick="unlockCheckpoint(3)">Unlock Activity 3</button></div>
-        <div class="error" id="checkpoint3Error">Please check with Mr Dave before continuing.</div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="activity3Screen" class="screen">
-      <div class="course-layout">
-        <article class="course-card">
-          <div class="course-inner">
-            <span class="slide-kicker">Activity 3</span>
-            <h2>Choose and Build a Mini Model</h2>
-            <p>Look at the picture cards. Choose <strong>one</strong> model idea. Then make your own simple version in Tinkercad using basic 3D shapes.</p>
-
-            <div class="activity3-visual-intro">
-              <div class="visual-instruction-card">
-                <h3>How to use the picture cards</h3>
-                <div class="big-step-list">
-                  <div class="big-step"><span class="num">1</span>Choose one picture</div>
-                  <div class="big-step"><span class="num">2</span>Build with simple shapes</div>
-                  <div class="big-step"><span class="num">3</span>Add one small detail</div>
-                </div>
-              </div>
-              <div class="challenge-board">
-                <h3>Pick your challenge</h3>
-                <div class="challenge-levels">
-                  <div class="challenge-level"><div class="challenge-icon">🥉</div><div><strong>Bronze</strong>Make the basic shape clearly.</div></div>
-                  <div class="challenge-level"><div class="challenge-icon">🥈</div><div><strong>Silver</strong>Add colour and one useful detail.</div></div>
-                  <div class="challenge-level"><div class="challenge-icon">🥇</div><div><strong>Gold</strong>Duplicate parts or add a Minecraft-style feature.</div></div>
-                </div>
-              </div>
-            </div>
-
-            <h3>Choose one model idea</h3>
-            <div class="choice-grid" role="radiogroup" aria-label="Choose model idea">
-              <label class="choice-card model-option">
-                <input type="radio" name="modelChoice" value="Chest" onchange="saveRadioChoice(this)">
-                <div class="model-visual viz-chest"><div class="chest-lid"></div><div class="chest-base"></div><div class="chest-lock"></div></div>
-                <div class="model-info"><strong>Chest</strong><span>Good for practising boxes, size, colour, and one small detail.</span><div class="shape-recipe"><span class="shape-pill"><i class="shape-icon-box"></i> Box</span><span class="shape-pill"><i class="shape-icon-box"></i> Lid</span><span class="shape-pill"><i class="shape-icon-box"></i> Lock</span></div></div>
-              </label>
-              <label class="choice-card model-option">
-                <input type="radio" name="modelChoice" value="Tree" onchange="saveRadioChoice(this)">
-                <div class="model-visual viz-tree"><div class="tree-trunk-v"></div><div class="leaf-a"></div><div class="leaf-b"></div><div class="leaf-c"></div></div>
-                <div class="model-info"><strong>Tree</strong><span>Good for stacking and moving shapes to make a clear object.</span><div class="shape-recipe"><span class="shape-pill"><i class="shape-icon-box"></i> Trunk</span><span class="shape-pill"><i class="shape-icon-box"></i> Leaves</span><span class="shape-pill"><i class="shape-icon-box"></i> Duplicate</span></div></div>
-              </label>
-              <label class="choice-card model-option">
-                <input type="radio" name="modelChoice" value="Bed" onchange="saveRadioChoice(this)">
-                <div class="model-visual viz-bed"><div class="bed-base"></div><div class="blanket"></div><div class="pillow"></div></div>
-                <div class="model-info"><strong>Bed</strong><span>Good for making flat shapes and placing parts neatly.</span><div class="shape-recipe"><span class="shape-pill"><i class="shape-icon-box"></i> Base</span><span class="shape-pill"><i class="shape-icon-box"></i> Blanket</span><span class="shape-pill"><i class="shape-icon-box"></i> Pillow</span></div></div>
-              </label>
-              <label class="choice-card model-option">
-                <input type="radio" name="modelChoice" value="Tower" onchange="saveRadioChoice(this)">
-                <div class="model-visual viz-tower"><div class="tower-stack"></div><div class="tower-roof"></div><div class="tower-window"></div></div>
-                <div class="model-info"><strong>Tower</strong><span>Good for building upwards and checking height from different views.</span><div class="shape-recipe"><span class="shape-pill"><i class="shape-icon-cylinder"></i> Stack</span><span class="shape-pill"><i class="shape-icon-roof"></i> Roof</span><span class="shape-pill"><i class="shape-icon-box"></i> Window</span></div></div>
-              </label>
-              <label class="choice-card model-option">
-                <input type="radio" name="modelChoice" value="Small house" onchange="saveRadioChoice(this)">
-                <div class="model-visual viz-house"><div class="house-roof"></div><div class="house-body"></div><div class="house-door"></div><div class="house-window"></div></div>
-                <div class="model-info"><strong>Small house</strong><span>Good for combining walls, roof, door, and window shapes.</span><div class="shape-recipe"><span class="shape-pill"><i class="shape-icon-box"></i> Walls</span><span class="shape-pill"><i class="shape-icon-roof"></i> Roof</span><span class="shape-pill"><i class="shape-icon-box"></i> Door</span></div></div>
-              </label>
-            </div>
-
-            <div class="activity3-build-strip">
-              <div class="build-strip-card"><div class="big-symbol">👀</div><strong>Look</strong><p>Use the picture as a guide, not an exact copy.</p></div>
-              <div class="build-strip-card"><div class="big-symbol">▣</div><strong>Shape</strong><p>Start with boxes, cylinders, roof, or round roof.</p></div>
-              <div class="build-strip-card"><div class="big-symbol">🎨</div><strong>Colour</strong><p>Use colours to help people recognise the model.</p></div>
-              <div class="build-strip-card"><div class="big-symbol">🔍</div><strong>Check</strong><p>Check from top, front, and side view.</p></div>
-            </div>
-
-            <div class="task-grid">
-              <div class="task-card"><h3>Must have</h3><ul><li>Use 3 or more shapes</li><li>Resize at least 2 shapes</li><li>Use at least 2 colours</li><li>Model is clear and recognisable</li></ul></div>
-              <div class="task-card"><h3>Try next</h3><ul><li>Add a door, window, lock, pillow, leaves, or roof</li><li>Duplicate similar parts</li><li>Group only after checking with Mr Dave</li></ul></div>
-            </div>
-
-            <div class="reflection-grid">
-              <div>
-                <label for="activity3Plan">My model idea</label>
-                <textarea id="activity3Plan" data-save="activity3Plan" placeholder="I will build a..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="activity3Parts">Shapes I will use</label>
-                <textarea id="activity3Parts" data-save="activity3Parts" placeholder="I will use boxes / cylinders / roof shapes..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="activity3Colours">Colours I will use</label>
-                <textarea id="activity3Colours" data-save="activity3Colours" placeholder="I will use..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="activity3Check">How I will check my model</label>
-                <textarea id="activity3Check" data-save="activity3Check" placeholder="I will check from top, front, and side view." oninput="saveField(this)"></textarea>
-              </div>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="a3_1" onchange="saveChecklist(this)"><div><strong>I chose one picture card</strong><span>I know which model I am building.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a3_2" onchange="saveChecklist(this)"><div><strong>I used 3 or more basic shapes</strong><span>I combined simple 3D shapes to make the object.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a3_3" onchange="saveChecklist(this)"><div><strong>I added colour and one detail</strong><span>My model is easier to recognise.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="a3_4" onchange="saveChecklist(this)"><div><strong>I checked from different views</strong><span>I used top, front, or side view before finishing.</span></div></label>
-            </div>
-
-            <div class="error" id="activity3Error">Please choose a model, complete the short planning boxes, and tick the checklist.</div>
-            <button type="button" class="large" onclick="completeActivity(3)">I completed Activity 3</button>
-          </div>
-        </article>
-        <aside class="side-progress" id="progressPanel3"></aside>
-      </div>
-    </section>
-
-    <section id="checkpoint4Screen" class="screen">
-      <div class="password-card">
-        <div class="icon">⭐</div>
-        <h2>Final Checkpoint</h2>
-        <p>Please show your mini model to Mr Dave before evaluation.</p>
-        <div class="teacher-talk">
-          <h3>Teacher talk focus</h3>
-          <ul>
-            <li>What makes a 3D model clear and purposeful.</li>
-            <li>How to make one meaningful improvement.</li>
-            <li>How to explain your work using simple design vocabulary.</li>
-          </ul>
+  <section id="login" class="screen">
+    <div class="login-layout">
+      <div class="card login-card">
+        <span class="class-badge" id="loginClassBadge">Your class</span>
+        <h2 class="page-title" style="font-size:50px">Log in once</h2>
+        <p class="lead">Now open Tinkercad. Keep Tinkercad open and come back to this app only when you need the next mission.</p>
+        <div class="login-actions">
+          <a class="button-link blue" id="codesLink" target="_blank" rel="noopener noreferrer" onclick="markOpened('codes')">Open Login Codes</a>
+          <a class="button-link" id="classLink" target="_blank" rel="noopener noreferrer" onclick="markOpened('classlink')">Open Tinkercad Class</a>
         </div>
-        <label for="checkpoint4Password">Enter teacher password</label>
-        <input id="checkpoint4Password" type="password" autocomplete="off" onkeydown="if(event.key === 'Enter') unlockCheckpoint(4);" />
-        <div class="password-actions"><button type="button" onclick="unlockCheckpoint(4)">Unlock Evaluation</button></div>
-        <div class="error" id="checkpoint4Error">Please check with Mr Dave before continuing.</div>
-      </div>
-    </section>
-
-    <section id="evaluationScreen" class="screen">
-      <div class="course-layout">
-        <article class="course-card">
-          <div class="course-inner">
-            <span class="slide-kicker">Final Activity</span>
-            <h2>Improve and Evaluate Your 3D Model</h2>
-            <p>Make one improvement to your model, then explain what you created and what you would improve next time.</p>
-
-            <div class="success-box">
-              <strong>Before writing:</strong> Rotate your model and check it from the front, side, top, and corner view.
-            </div>
-
-            <div class="reflection-grid">
-              <div>
-                <label for="evalModel">What did you create?</label>
-                <textarea id="evalModel" data-save="evalModel" placeholder="I created..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="evalTools">Which Tinkercad tools did you use?</label>
-                <textarea id="evalTools" data-save="evalTools" placeholder="I used move, resize, rotate..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="evalImprove">What improvement did you make?</label>
-                <textarea id="evalImprove" data-save="evalImprove" placeholder="I improved my model by..." oninput="saveField(this)"></textarea>
-              </div>
-              <div>
-                <label for="evalNext">What would you improve next time?</label>
-                <textarea id="evalNext" data-save="evalNext" placeholder="Next time, I would..." oninput="saveField(this)"></textarea>
-              </div>
-            </div>
-
-            <div class="checklist">
-              <label class="check-row"><input type="checkbox" data-check="eval_1" onchange="saveChecklist(this)"><div><strong>I made one improvement</strong><span>I changed something to make the model clearer or better.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="eval_2" onchange="saveChecklist(this)"><div><strong>I checked different views</strong><span>I looked at the model from more than one angle.</span></div></label>
-              <label class="check-row"><input type="checkbox" data-check="eval_3" onchange="saveChecklist(this)"><div><strong>I completed my reflection</strong><span>I explained my tools, model, improvement, and next step.</span></div></label>
-            </div>
-
-            <div class="error" id="evaluationError">Please complete all evaluation questions and checklist items.</div>
-            <button type="button" class="large" onclick="completeEvaluation()">Finish and Download My Progress</button>
-          </div>
-        </article>
-        <aside class="side-progress" id="progressPanel4"></aside>
-      </div>
-    </section>
-
-    <section id="finishScreen" class="screen">
-      <div class="big-card">
-        <div class="icon">✓</div>
-        <h2>You have completed the guided course</h2>
-        <p>Well done. You have learned how to start using Tinkercad, control the mouse in a 3D space, modify shapes, combine shapes, and evaluate your model.</p>
-        <div class="teacher-talk">
-          <h3>Show Mr Dave</h3>
-          <ul>
-            <li>Your Tinkercad model.</li>
-            <li>Your downloaded progress file.</li>
-            <li>One improvement you are proud of.</li>
-          </ul>
+        <div class="checklist">
+          <label class="check"><input type="checkbox" id="openedCodes" onchange="saveLoginChecks()" /> I opened my login codes.</label>
+          <label class="check"><input type="checkbox" id="openedClasslink" onchange="saveLoginChecks()" /> I opened the Tinkercad class link.</label>
+          <label class="check"><input type="checkbox" id="loggedIn" onchange="saveLoginChecks()" /> I can see my Tinkercad workplane.</label>
         </div>
-        <button type="button" class="large" onclick="downloadProgressReport()">Download Again</button>
+        <button class="full" id="missionBtn" onclick="goMission()" disabled>Start Mission Board</button>
+        <div class="error" id="loginError">Please complete the login checklist first.</div>
       </div>
+      <div class="card" style="background:var(--blue-soft)">
+        <h2 style="font-size:40px">Less switching today</h2>
+        <div class="choice green"><h3>✅ Keep Tinkercad open</h3><p>Do your building there.</p></div>
+        <div class="choice orange" style="margin-top:12px"><h3>👀 Use this app as a checklist</h3><p>Come back only when you finish a mission.</p></div>
+        <div class="choice pink" style="margin-top:12px"><h3>🙋 Ask only when stuck</h3><p>Use the checklist first. Then ask for help if you are still stuck.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mission" class="screen">
+    <div class="mission-header">
+      <div class="card mission-title">
+        <h2>Mission Board</h2>
+        <p class="lead">Do the building in Tinkercad. Use this page to check what to do next.</p>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="small" id="progressText">Progress: 0%</p>
+        <div class="mini-nav">
+          <button onclick="scrollToId('act1')">Activity 1</button><button onclick="scrollToId('act2')">Activity 2</button><button onclick="scrollToId('act3')">Activity 3</button><button onclick="scrollToId('eval')">Evaluation</button>
+        </div>
+      </div>
+      <div class="card sticky-helper">
+        <h3 style="margin:0 0 8px;font-size:24px">Need login again?</h3>
+        <p class="small">Use these buttons anytime. You do not need to go back through the whole app.</p>
+        <div class="helper-actions">
+          <a class="button-link blue" id="helperCodes" target="_blank" rel="noopener noreferrer">Login Codes</a>
+          <a class="button-link" id="helperClass" target="_blank" rel="noopener noreferrer">Tinkercad Class</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="activity card" id="act1">
+      <div class="activity-head"><h3>Activity 1: Mouse Control + 3D Playground</h3><span class="activity-tag">Start in Tinkercad</span></div>
+      <div class="mission-note">Try these controls inside Tinkercad. Do not practise in this website.</div>
+      <div class="activity-grid">
+        <div class="task"><div class="emoji">🖱️</div><h4>Click</h4><p>Left click a shape to select it.</p></div>
+        <div class="task"><div class="emoji">✋</div><h4>Drag</h4><p>Click and drag to move a shape.</p></div>
+        <div class="task"><div class="emoji">🔍</div><h4>Scroll</h4><p>Scroll wheel to zoom in and out.</p></div>
+        <div class="task"><div class="emoji">🧭</div><h4>Middle mouse</h4><p>Press the scroll wheel to pan/move your view.</p></div>
+        <div class="task"><div class="emoji">🔄</div><h4>Turn view</h4><p>Right-click drag or use the View Cube.</p></div>
+        <div class="task"><div class="emoji">🧊</div><h4>Playground</h4><p>Add two shapes, resize one, rotate one, and change colour.</p></div>
+      </div>
+      <div class="done-box"><label><input type="checkbox" id="doneAct1" onchange="saveProgress()" /> I completed Activity 1 in Tinkercad.</label></div>
+      <div class="unlock-msg" id="act1Msg">Great. Activity 2 is unlocked.</div>
     </section>
-  </main>
 
-  <script>
-    const classData = {
-      Y5E: {
-        label: "Y5E",
-        codes: "https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQB96eGsOnuvTZ2uZPyPlNGxARKB9sJCLbRJKoYa_IdmbHY?e=DjlYj0",
-        join: "https://www.tinkercad.com/joinclass/KDGFLBR3K"
-      },
-      Y5N: {
-        label: "Y5N",
-        codes: "https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQDU6M45ChCCT5VgZuvH29bnAXYogoG71HH_QmFAoEmGMWU?e=yKxttI",
-        join: "https://www.tinkercad.com/joinclass/KDGFLBR3K"
-      }
-    };
-
-    const briefingPassword = atob("cmVhZHkzZA==");
-
-    const checkpointPasswords = {
-      1: atob("c3RhcnQzZA=="),
-      2: atob("bW92ZTNk"),
-      3: atob("dGFibGVkb25l"),
-      4: atob("c2hvd2J1aWxk")
-    };
-
-    const objectiveMap = {
-      welcomeScreen: {
-        wagba: "We are getting better at using basic 3D shapes to create a simple digital model.",
-        k: "3D objects have width, height, and depth.",
-        s: "I can move, resize, and rotate basic 3D shapes.",
-        u: "3D models are made by combining simple shapes."
-      },
-      briefingScreen: {
-        wagba: "We are getting better at pausing, listening, and following the correct learning steps.",
-        k: "A guided course uses checkpoints to keep learning in the correct order.",
-        s: "I can stop, listen to the teacher briefing, and continue only after the password.",
-        u: "Following each checkpoint helps me avoid missing important skills."
-      },
-      loginScreen: {
-        wagba: "We are getting better at logging in safely and preparing our Tinkercad workspace.",
-        k: "Tinkercad is an online tool for creating 3D designs.",
-        s: "I can use the correct class link and login code.",
-        u: "Using the correct login helps my teacher see and support my work."
-      },
-      mouseControlScreen: {
-        wagba: "We are getting better at controlling the mouse carefully in a 3D design workspace.",
-        k: "3D apps use left click, drag, scroll, right click, and middle mouse controls.",
-        s: "I can select, move, zoom, turn my view, pan the view, and recover my workspace when I feel lost.",
-        u: "Good mouse control helps me place shapes accurately and avoid getting confused in 3D space."
-      },
-      checkpoint1Screen: {
-        wagba: "We are getting better at preparing to use a 3D workspace correctly.",
-        k: "A 3D workspace lets us view objects from different angles.",
-        s: "I can listen to instructions before starting the practical task.",
-        u: "Checking instructions first helps me avoid mistakes later."
-      },
-      activity1Screen: {
-        wagba: "We are getting better at using mouse controls and simple shapes in a 3D workspace.",
-        k: "3D apps use mouse controls such as left click, drag, scroll, right-click drag, and middle mouse click.",
-        s: "I can select, move, zoom, pan, change view, and add simple 3D shapes.",
-        u: "Good mouse control helps me place shapes accurately and avoid getting confused in 3D space."
-      },
-      checkpoint2Screen: {
-        wagba: "We are getting better at checking our first 3D workspace skills before moving on.",
-        k: "3D objects can be moved, resized, and lifted.",
-        s: "I can show evidence of my work to my teacher.",
-        u: "Feedback helps me improve before the next challenge."
-      },
-      activity2Screen: {
-        wagba: "We are getting better at resizing and positioning shapes to create a simple 3D model.",
-        k: "A model can be made by combining several simple shapes.",
-        s: "I can resize, lift, colour, and place shapes accurately.",
-        u: "A clear model needs careful size, position, and view checking."
-      },
-      checkpoint3Screen: {
-        wagba: "We are getting better at using feedback before creating a more independent model.",
-        k: "A recognisable model often starts with a simple plan.",
-        s: "I can explain the shapes I used in my table model.",
-        u: "Planning helps me choose suitable shapes before I build."
-      },
-      activity3Screen: {
-        wagba: "We are getting better at combining 3D shapes to create a Minecraft-inspired object.",
-        k: "Different objects can be built from boxes, cylinders, roofs, and other shapes.",
-        s: "I can plan and build a simple 3D object using 3 to 8 shapes.",
-        u: "Simple models are easier to understand when the shapes are chosen carefully."
-      },
-      checkpoint4Screen: {
-        wagba: "We are getting better at explaining our 3D model before evaluation.",
-        k: "Evaluation means judging what works well and what can improve.",
-        s: "I can show my model and listen to feedback.",
-        u: "A useful improvement should make the model clearer or better."
-      },
-      evaluationScreen: {
-        wagba: "We are getting better at improving and evaluating our 3D design work.",
-        k: "A 3D model can be improved by changing size, colour, position, or detail.",
-        s: "I can explain the tools I used and one improvement I made.",
-        u: "Evaluation helps designers make better models next time."
-      },
-      finishScreen: {
-        wagba: "We are getting better at reflecting on our 3D design learning.",
-        k: "3D design uses shape, size, position, colour, and viewing angles.",
-        s: "I can describe what I created and how I improved it.",
-        u: "Reflecting on my work helps me become a more confident designer."
-      }
-    };
-
-    const slides = [
-      {
-        kicker: "Slide 1 of 4",
-        title: "Welcome to Tinkercad 3D Design",
-        body: `<p>Today, you will learn how to use basic 3D shapes to create simple digital models.</p><p>You will follow the course step by step and check in with Mr Dave before moving forward.</p>`
-      },
-      {
-        kicker: "Slide 2 of 4",
-        title: "WAGBA",
-        body: `<p><strong>We are getting better at</strong> using basic 3D shapes to create a simple digital model.</p>`
-      },
-      {
-        kicker: "Slide 3 of 4",
-        title: "K, S, U",
-        body: `<div class="ksu-grid"><div class="ksu-item"><strong>K – Knowledge:</strong> I know that 3D objects have width, height, and depth.</div><div class="ksu-item"><strong>S – Skill:</strong> I can move, resize, and rotate basic 3D shapes.</div><div class="ksu-item"><strong>U – Understanding:</strong> I understand that 3D models are made by combining simple shapes.</div></div>`
-      },
-      {
-        kicker: "Slide 4 of 4",
-        title: "Today’s Mission",
-        body: `<ol><li>Submit your WAGBA answer.</li><li>Stop and come to Mr Dave for the briefing password.</li><li>Log in to the correct Tinkercad class.</li><li>Start Activity 1 by practising mouse controls inside Tinkercad.</li><li>Build your 3D model step by step.</li></ol>`
-      }
-    ];
-
-    const progressSteps = [
-      { id: "introCompleted", label: "WAGBA submitted" },
-      { id: "briefingUnlocked", label: "Teacher briefing unlocked" },
-      { id: "loginCompleted", label: "Tinkercad login" },
-      { id: "checkpoint1Unlocked", label: "Teacher checkpoint 1" },
-      { id: "activity1Completed", label: "Activity 1: Mouse Control + 3D Playground" },
-      { id: "checkpoint2Unlocked", label: "Teacher checkpoint 2" },
-      { id: "activity2Completed", label: "Activity 2: Table" },
-      { id: "checkpoint3Unlocked", label: "Teacher checkpoint 3" },
-      { id: "activity3Completed", label: "Activity 3: Mini model" },
-      { id: "checkpoint4Unlocked", label: "Teacher checkpoint 4" },
-      { id: "evaluationCompleted", label: "Evaluation complete" }
-    ];
-
-    let currentSlide = 0;
-
-    const screenOrder = [
-      "welcomeScreen",
-      "briefingScreen",
-      "loginScreen",
-      "checkpoint1Screen",
-      "activity1Screen",
-      "checkpoint2Screen",
-      "activity2Screen",
-      "checkpoint3Screen",
-      "activity3Screen",
-      "checkpoint4Screen",
-      "evaluationScreen",
-      "finishScreen"
-    ];
-
-    function stepDone(key) {
-      return localStorage.getItem(key) === "true";
-    }
-
-    function getSafeScreen(requestedScreen) {
-      if (requestedScreen === "landingScreen") return "landingScreen";
-      if (!document.getElementById(requestedScreen)) return "welcomeScreen";
-      const index = screenOrder.indexOf(requestedScreen);
-      if (index === -1) return requestedScreen;
-
-      if (index >= screenOrder.indexOf("briefingScreen") && !stepDone("introCompleted")) return "welcomeScreen";
-      if (index >= screenOrder.indexOf("loginScreen") && !stepDone("briefingUnlocked")) return "briefingScreen";
-      if (index >= screenOrder.indexOf("checkpoint1Screen") && !stepDone("loginCompleted")) return "loginScreen";
-      if (index >= screenOrder.indexOf("activity1Screen") && !stepDone("checkpoint1Unlocked")) return "checkpoint1Screen";
-      if (index >= screenOrder.indexOf("checkpoint2Screen") && !stepDone("activity1Completed")) return "activity1Screen";
-      if (index >= screenOrder.indexOf("activity2Screen") && !stepDone("checkpoint2Unlocked")) return "checkpoint2Screen";
-      if (index >= screenOrder.indexOf("checkpoint3Screen") && !stepDone("activity2Completed")) return "activity2Screen";
-      if (index >= screenOrder.indexOf("activity3Screen") && !stepDone("checkpoint3Unlocked")) return "checkpoint3Screen";
-      if (index >= screenOrder.indexOf("checkpoint4Screen") && !stepDone("activity3Completed")) return "activity3Screen";
-      if (index >= screenOrder.indexOf("evaluationScreen") && !stepDone("checkpoint4Unlocked")) return "checkpoint4Screen";
-      if (index >= screenOrder.indexOf("finishScreen") && !stepDone("evaluationCompleted")) return "evaluationScreen";
-      return requestedScreen;
-    }
-
-    function goBackOneStep() {
-      let current = localStorage.getItem("currentScreen") || "welcomeScreen";
-      if (current === "landingScreen") {
-        showScreen("welcomeScreen");
-        return;
-      }
-      const index = screenOrder.indexOf(current);
-      if (index <= 0) {
-        showScreen("landingScreen");
-        return;
-      }
-      showScreen(screenOrder[index - 1]);
-    }
-
-    function formatToday() {
-      const today = new Date();
-      return today.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-    }
-
-    function setLessonDate() {
-      const lessonDate = localStorage.getItem("lessonDate") || formatToday();
-      localStorage.setItem("lessonDate", lessonDate);
-      document.getElementById("dateHeader").textContent = "Date: " + lessonDate;
-    }
-
-    function updateNameHeader() {
-      const name = localStorage.getItem("studentName") || "";
-      const studentClass = localStorage.getItem("studentClass") || "";
-      document.getElementById("nameHeader").textContent = name ? "Name: " + name : "Name: not entered";
-      document.getElementById("classHeader").textContent = studentClass ? "Class: " + studentClass : "Class: not selected";
-    }
-
-    function updateObjectives(screenId) {
-      const obj = objectiveMap[screenId] || objectiveMap.welcomeScreen;
-      document.getElementById("wagbaText").textContent = obj.wagba;
-      document.getElementById("kText").textContent = obj.k;
-      document.getElementById("sText").textContent = obj.s;
-      document.getElementById("uText").textContent = obj.u;
-    }
-
-    function showScreen(screenId) {
-      screenId = getSafeScreen(screenId);
-      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
-      document.getElementById(screenId).classList.add("active");
-      if (screenId !== "landingScreen") localStorage.setItem("currentScreen", screenId);
-      updateNameHeader();
-      setLessonDate();
-      updateObjectives(screenId);
-      renderProgressPanels(screenId);
-      if (screenId === "landingScreen") updateLandingState();
-      if (screenId === "loginScreen") renderClassLogin();
-      if (screenId === "mouseControlScreen") {
-        setTimeout(() => {
-          setupMousePractice();
-          refreshMouseChecks();
-        }, 60);
-      }
-      window.scrollTo(0, 0);
-    }
-
-    function renderSlide() {
-      const slide = slides[currentSlide];
-      document.getElementById("slideContent").innerHTML = `<span class="slide-kicker">${slide.kicker}</span><h2>${slide.title}</h2>${slide.body}`;
-      document.getElementById("slideDots").innerHTML = slides.map((_, index) => `<span class="dot ${index === currentSlide ? "active" : ""}"></span>`).join("");
-      document.getElementById("backSlideBtn").disabled = currentSlide === 0;
-      document.getElementById("nextSlideBtn").textContent = currentSlide === slides.length - 1 ? "Review" : "Next Slide";
-    }
-
-    function changeSlide(direction) {
-      currentSlide = Math.min(Math.max(currentSlide + direction, 0), slides.length - 1);
-      renderSlide();
-    }
-
-    function saveStudentDetails() {
-      const name = document.getElementById("studentName").value.trim();
-      const studentClass = document.getElementById("studentClass").value.trim();
-      const objective = document.getElementById("objectiveAnswer").value.trim();
-      localStorage.setItem("studentName", name);
-      localStorage.setItem("studentClass", studentClass);
-      localStorage.setItem("objectiveAnswer", objective);
-      updateNameHeader();
-      document.getElementById("introError").style.display = "none";
-    }
-
-    function loadStudentDetails() {
-      document.getElementById("studentName").value = localStorage.getItem("studentName") || "";
-      document.getElementById("studentClass").value = localStorage.getItem("studentClass") || "";
-      document.getElementById("objectiveAnswer").value = localStorage.getItem("objectiveAnswer") || "";
-      updateNameHeader();
-    }
-
-    function completeIntro() {
-      saveStudentDetails();
-      const name = (localStorage.getItem("studentName") || "").trim();
-      const studentClass = (localStorage.getItem("studentClass") || "").trim();
-      const objective = (localStorage.getItem("objectiveAnswer") || "").trim();
-      if (!name || !studentClass || !objective || !classData[studentClass]) {
-        document.getElementById("introError").style.display = "block";
-        return;
-      }
-      localStorage.setItem("introCompleted", "true");
-      showScreen("briefingScreen");
-      setTimeout(() => document.getElementById("briefingPassword").focus(), 80);
-    }
-
-    function unlockBriefing() {
-      const input = document.getElementById("briefingPassword");
-      const error = document.getElementById("briefingError");
-      if (input.value === briefingPassword) {
-        localStorage.setItem("briefingUnlocked", "true");
-        error.style.display = "none";
-        input.value = "";
-        showScreen("loginScreen");
-      } else {
-        error.style.display = "block";
-        input.value = "";
-      }
-    }
-
-
-    function goToLoginPage() {
-      const studentClass = localStorage.getItem("studentClass") || "";
-      if (!studentClass || !classData[studentClass]) {
-        showScreen("welcomeScreen");
-        return;
-      }
-      if (!stepDone("briefingUnlocked")) {
-        showScreen("briefingScreen");
-        return;
-      }
-      showScreen("loginScreen");
-    }
-
-    function markLoginStep(key) {
-      localStorage.setItem(key, "true");
-      updateLoginChecklist();
-    }
-
-    function updateLoginChecklist() {
-      const checks = [
-        { key: "loginCodesOpened", card: "loginCodesCheckCard", icon: "loginCodesCheckIcon" },
-        { key: "tinkercadClassOpened", card: "tinkercadClassCheckCard", icon: "tinkercadClassCheckIcon" }
-      ];
-      checks.forEach(item => {
-        const card = document.getElementById(item.card);
-        const icon = document.getElementById(item.icon);
-        if (!card || !icon) return;
-        const done = stepDone(item.key);
-        card.classList.toggle("done", done);
-        icon.textContent = done ? "✓" : (item.key === "loginCodesOpened" ? "1" : "2");
-      });
-      const error = document.getElementById("loginError");
-      if (error) error.style.display = "none";
-    }
-
-    function renderClassLogin() {
-      const studentClass = localStorage.getItem("studentClass") || "";
-      const data = classData[studentClass];
-      if (!data) {
-        showScreen("welcomeScreen");
-        return;
-      }
-      document.getElementById("selectedClassPill").textContent = data.label + " only";
-      document.getElementById("loginCodesLink").href = data.codes;
-      document.getElementById("loginCodesLink").textContent = "Open " + data.label + " Login Codes";
-      document.getElementById("tinkercadClassLink").href = data.join;
-      document.getElementById("tinkercadClassLink").textContent = "Open " + data.label + " Tinkercad Class";
-      updateLoginChecklist();
-    }
-
-    function completeLogin() {
-      const openedCodes = stepDone("loginCodesOpened");
-      const openedClass = stepDone("tinkercadClassOpened");
-      if (!openedCodes || !openedClass) {
-        updateLoginChecklist();
-        const error = document.getElementById("loginError");
-        if (error) error.style.display = "block";
-        return;
-      }
-      localStorage.setItem("loginCompleted", "true");
-      showScreen("checkpoint1Screen");
-      setTimeout(() => document.getElementById("checkpoint1Password").focus(), 80);
-    }
-
-    function markMouseCheck(key) {
-      localStorage.setItem(key, "true");
-      const box = document.querySelector(`input[data-check='${key}']`);
-      if (box) box.checked = true;
-      refreshMouseChecks();
-      const error = document.getElementById("mouseControlError");
-      if (error) error.style.display = "none";
-    }
-
-    function refreshMouseChecks() {
-      ["mc_1", "mc_2", "mc_3", "mc_4", "mc_5"].forEach((key, index) => {
-        const mini = document.getElementById(`miniCheckMc${index + 1}`);
-        if (mini) mini.classList.toggle("done", localStorage.getItem(key) === "true");
-      });
-      const doneChip = document.getElementById("practiceDoneChip");
-      if (doneChip) doneChip.classList.toggle("visible", ["mc_1", "mc_2", "mc_3", "mc_4", "mc_5"].every(key => localStorage.getItem(key) === "true"));
-    }
-
-    let practiceSetupDone = false;
-    let practiceScale = 1;
-    let practiceRotate = 0;
-
-    function setupMousePractice() {
-      const shape = document.getElementById("practiceShape");
-      const workspace = document.getElementById("practiceWorkspace");
-      if (!shape || !workspace || practiceSetupDone) return;
-      practiceSetupDone = true;
-
-      let dragging = false;
-      let offsetX = 0;
-      let offsetY = 0;
-      let moved = false;
-
-      function startDrag(clientX, clientY) {
-        dragging = true;
-        moved = false;
-        shape.classList.add("selected");
-        markMouseCheck("mc_1");
-        const rect = shape.getBoundingClientRect();
-        offsetX = clientX - rect.left;
-        offsetY = clientY - rect.top;
-        const instruction = document.getElementById("practiceInstruction");
-        if (instruction) instruction.textContent = "2. Drag the blue block to the green box.";
-      }
-
-      function moveShape(clientX, clientY) {
-        if (!dragging) return;
-        const wRect = workspace.getBoundingClientRect();
-        let x = clientX - wRect.left - offsetX;
-        let y = clientY - wRect.top - offsetY;
-        x = Math.max(12, Math.min(x, wRect.width - shape.offsetWidth - 12));
-        y = Math.max(58, Math.min(y, wRect.height - shape.offsetHeight - 12));
-        shape.style.left = `${x}px`;
-        shape.style.top = `${y}px`;
-        shape.style.transform = `scale(${practiceScale}) rotate(${practiceRotate}deg)`;
-        moved = true;
-      }
-
-      function endDrag() {
-        if (!dragging) return;
-        dragging = false;
-        if (moved) {
-          markMouseCheck("mc_2");
-          const instruction = document.getElementById("practiceInstruction");
-          if (instruction) instruction.textContent = "3. Try zoom, then top/front/side view.";
-        }
-      }
-
-      shape.addEventListener("pointerdown", event => {
-        event.preventDefault();
-        shape.setPointerCapture(event.pointerId);
-        startDrag(event.clientX, event.clientY);
-      });
-      shape.addEventListener("pointermove", event => moveShape(event.clientX, event.clientY));
-      shape.addEventListener("pointerup", endDrag);
-      shape.addEventListener("pointercancel", endDrag);
-      shape.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          shape.classList.add("selected");
-          markMouseCheck("mc_1");
-        }
-      });
-      workspace.addEventListener("wheel", event => {
-        event.preventDefault();
-        practiceZoom(event.deltaY < 0 ? "in" : "out");
-      }, { passive:false });
-    }
-
-    function updatePracticeTransform() {
-      const shape = document.getElementById("practiceShape");
-      if (shape) shape.style.transform = `scale(${practiceScale}) rotate(${practiceRotate}deg)`;
-    }
-
-    function practiceZoom(direction) {
-      practiceScale = direction === "in" ? Math.min(1.45, practiceScale + 0.12) : Math.max(0.75, practiceScale - 0.12);
-      updatePracticeTransform();
-      markMouseCheck("mc_3");
-      const instruction = document.getElementById("practiceInstruction");
-      if (instruction) instruction.textContent = "Good zooming. Now try top, front, side, or home view.";
-    }
-
-    function practiceView(view) {
-      const badge = document.getElementById("viewBadge");
-      if (badge) badge.textContent = view;
-      if (view === "TOP") practiceRotate = 0;
-      if (view === "FRONT") practiceRotate = 8;
-      if (view === "SIDE") practiceRotate = 18;
-      updatePracticeTransform();
-      markMouseCheck("mc_4");
-    }
-
-    function practiceResetView() {
-      practiceScale = 1;
-      practiceRotate = 0;
-      const shape = document.getElementById("practiceShape");
-      const badge = document.getElementById("viewBadge");
-      if (shape) {
-        shape.style.left = "42%";
-        shape.style.top = "44%";
-        shape.style.transform = "translate(-50%,-50%) scale(1) rotate(0deg)";
-      }
-      if (badge) badge.textContent = "HOME";
-      markMouseCheck("mc_4");
-      const instruction = document.getElementById("practiceInstruction");
-      if (instruction) instruction.textContent = "Home view helps when you feel lost.";
-    }
-
-    function completeMouseControl() {
-      if (!hasAllChecks("mc_") || !fieldValue("mouseControlReflection")) {
-        document.getElementById("mouseControlError").style.display = "block";
-        return;
-      }
-      localStorage.setItem("mouseControlCompleted", "true");
-      showScreen("checkpoint1Screen");
-      setTimeout(() => document.getElementById("checkpoint1Password").focus(), 80);
-    }
-
-    function unlockCheckpoint(num) {
-      const input = document.getElementById(`checkpoint${num}Password`);
-      const error = document.getElementById(`checkpoint${num}Error`);
-      if (input.value === checkpointPasswords[num]) {
-        localStorage.setItem(`checkpoint${num}Unlocked`, "true");
-        error.style.display = "none";
-        input.value = "";
-        if (num === 1) showScreen("activity1Screen");
-        if (num === 2) showScreen("activity2Screen");
-        if (num === 3) showScreen("activity3Screen");
-        if (num === 4) showScreen("evaluationScreen");
-      } else {
-        error.style.display = "block";
-        input.value = "";
-      }
-    }
-
-    function saveChecklist(box) {
-      localStorage.setItem(box.dataset.check, box.checked ? "true" : "false");
-      const parentScreen = box.closest(".screen");
-      if (parentScreen) {
-        const error = parentScreen.querySelector(".error");
-        if (error) error.style.display = "none";
-      }
-      refreshMouseChecks();
-      renderProgressPanels(localStorage.getItem("currentScreen") || "welcomeScreen");
-    }
-
-    function loadChecklists() {
-      document.querySelectorAll("input[type='checkbox'][data-check]").forEach(box => {
-        box.checked = localStorage.getItem(box.dataset.check) === "true";
-      });
-    }
-
-    function saveField(el) {
-      localStorage.setItem(el.dataset.save, el.value.trim());
-      const parentScreen = el.closest(".screen");
-      if (parentScreen) {
-        const error = parentScreen.querySelector(".error");
-        if (error) error.style.display = "none";
-      }
-    }
-
-    function loadFields() {
-      document.querySelectorAll("[data-save]").forEach(el => {
-        el.value = localStorage.getItem(el.dataset.save) || "";
-      });
-      const savedChoice = localStorage.getItem("modelChoice") || "";
-      document.querySelectorAll("input[name='modelChoice']").forEach(radio => {
-        radio.checked = radio.value === savedChoice;
-      });
-    }
-
-    function saveRadioChoice(radio) {
-      localStorage.setItem("modelChoice", radio.value);
-      document.getElementById("activity3Error").style.display = "none";
-    }
-
-    function hasAllChecks(prefix) {
-      const checks = Array.from(document.querySelectorAll(`input[data-check^='${prefix}']`));
-      return checks.length > 0 && checks.every(box => localStorage.getItem(box.dataset.check) === "true");
-    }
-
-    function fieldValue(id) { return (localStorage.getItem(id) || "").trim(); }
-
-    function completeActivity(num) {
-      if (num === 1) {
-        if (!hasAllChecks("a1_") || !fieldValue("activity1MouseReflection") || !fieldValue("activity1Reflection")) {
-          document.getElementById("activity1Error").style.display = "block";
-          return;
-        }
-        localStorage.setItem("activity1Completed", "true");
-        localStorage.setItem("mouseControlCompleted", "true");
-        showScreen("checkpoint2Screen");
-        setTimeout(() => document.getElementById("checkpoint2Password").focus(), 80);
-      }
-      if (num === 2) {
-        if (!hasAllChecks("a2_") || !fieldValue("activity2Shapes") || !fieldValue("activity2Problem")) {
-          document.getElementById("activity2Error").style.display = "block";
-          return;
-        }
-        localStorage.setItem("activity2Completed", "true");
-        showScreen("checkpoint3Screen");
-        setTimeout(() => document.getElementById("checkpoint3Password").focus(), 80);
-      }
-      if (num === 3) {
-        const hasChoice = !!localStorage.getItem("modelChoice");
-        const fieldsComplete = ["activity3Plan", "activity3Parts", "activity3Colours", "activity3Check"].every(fieldValue);
-        if (!hasChoice || !fieldsComplete || !hasAllChecks("a3_")) {
-          document.getElementById("activity3Error").style.display = "block";
-          return;
-        }
-        localStorage.setItem("activity3Completed", "true");
-        showScreen("checkpoint4Screen");
-        setTimeout(() => document.getElementById("checkpoint4Password").focus(), 80);
-      }
-    }
-
-    function completeEvaluation() {
-      const fieldsComplete = ["evalModel", "evalTools", "evalImprove", "evalNext"].every(fieldValue);
-      if (!fieldsComplete || !hasAllChecks("eval_")) {
-        document.getElementById("evaluationError").style.display = "block";
-        return;
-      }
-      localStorage.setItem("evaluationCompleted", "true");
-      downloadProgressReport();
-      showScreen("finishScreen");
-    }
-
-    function renderProgressPanels(screenId) {
-      const panels = ["progressPanel0", "progressPanel1", "progressPanel2", "progressPanel3", "progressPanel4"];
-      const currentLabels = {
-        mouseControlScreen: "Mouse control warm-up",
-        briefingScreen: "Teacher briefing unlocked",
-        loginScreen: "Tinkercad login",
-        activity1Screen: "Activity 1: Mouse Control + 3D Playground",
-        activity2Screen: "Activity 2: Table",
-        activity3Screen: "Activity 3: Mini model",
-        evaluationScreen: "Evaluation complete"
-      };
-      const currentLabel = currentLabels[screenId] || "";
-      const html = `<h3>Your progress</h3><div class="progress-list">${progressSteps.map(step => {
-        const done = localStorage.getItem(step.id) === "true";
-        const active = step.label === currentLabel;
-        return `<div class="progress-item ${done ? "done" : ""} ${active ? "active-step" : ""}"><span class="progress-mark">${done ? "✓" : "•"}</span><span>${step.label}</span></div>`;
-      }).join("")}</div><button type="button" class="secondary full" onclick="downloadProgressReport()">Download Progress</button>`;
-      panels.forEach(id => {
-        const panel = document.getElementById(id);
-        if (panel) panel.innerHTML = html;
-      });
-    }
-
-    function buildReportHTML() {
-      const studentName = escapeHTML(localStorage.getItem("studentName") || "");
-      const studentClass = escapeHTML(localStorage.getItem("studentClass") || "");
-      const lessonDate = escapeHTML(localStorage.getItem("lessonDate") || formatToday());
-      const objectiveAnswer = escapeHTML(localStorage.getItem("objectiveAnswer") || "");
-      const modelChoice = escapeHTML(localStorage.getItem("modelChoice") || "");
-
-      function answer(label, key) {
-        return `<div class="answer-block"><h3>${escapeHTML(label)}</h3><p>${escapeHTML(localStorage.getItem(key) || "") || "&nbsp;"}</p></div>`;
-      }
-
-      const checksHtml = progressSteps.map(step => {
-        const done = localStorage.getItem(step.id) === "true";
-        return `<tr><td>${escapeHTML(step.label)}</td><td>${done ? "Completed" : "Not completed"}</td></tr>`;
-      }).join("");
-
-      return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Year 5 Tinkercad Progress Report</title><style>
-        body{font-family:Arial,Helvetica,sans-serif;margin:36px;color:#111;line-height:1.45} h1{font-size:28px;margin:0 0 8px} h2{font-size:22px;margin-top:28px;border-bottom:1px solid #111;padding-bottom:6px}.info{border:1px solid #111;padding:12px;margin:18px 0}.answer-block{border:1px solid #ccc;padding:12px;margin:10px 0;break-inside:avoid}.answer-block h3{font-size:17px;margin:0 0 6px}.answer-block p{white-space:pre-wrap;margin:0;min-height:24px} table{border-collapse:collapse;width:100%;margin:12px 0}td,th{border:1px solid #111;padding:8px;text-align:left}.small{font-size:12px;color:#555}@media print{button{display:none}}
-      </style></head><body>
-        <h1>Year 5 Tinkercad Guided Course Progress Report</h1>
-        <p class="small">Generated from the guided course app.</p>
-        <div class="info"><strong>Name:</strong> ${studentName}<br><strong>Class:</strong> ${studentClass}<br><strong>Date:</strong> ${lessonDate}</div>
-        <h2>Lesson Objective</h2>${answer("What I am getting better at today", "objectiveAnswer")}
-        <h2>Progress Checklist</h2><table><tr><th>Step</th><th>Status</th></tr>${checksHtml}</table>
-        <h2>Activity 1: Mouse Control + 3D Playground</h2>${answer("Which mouse control do I need to practise more, and why?", "activity1MouseReflection")}${answer("What did I learn about using a 3D workspace?", "activity1Reflection")}
-        <h2>Activity 2: Simple 3D Table</h2>${answer("Shapes I used", "activity2Shapes")}${answer("What was difficult or tricky?", "activity2Problem")}
-        <h2>Activity 3: Mini Minecraft-Inspired Model</h2><div class="answer-block"><h3>Chosen model</h3><p>${modelChoice || "&nbsp;"}</p></div>${answer("What will I build and why?", "activity3Plan")}${answer("What shapes will I use?", "activity3Parts")}${answer("What colours will I use?", "activity3Colours")}${answer("How will I check if it is clear?", "activity3Check")}
-        <h2>Final Evaluation</h2>${answer("What did I create?", "evalModel")}${answer("Which Tinkercad tools did I use?", "evalTools")}${answer("What improvement did I make?", "evalImprove")}${answer("What would I improve next time?", "evalNext")}
-      </body></html>`;
-    }
-
-    function downloadProgressReport() {
-      const html = buildReportHTML();
-      const blob = new Blob([html], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const name = (localStorage.getItem("studentName") || "student").replace(/[^a-z0-9]/gi, "_").toLowerCase();
-      const cls = (localStorage.getItem("studentClass") || "y5").toLowerCase();
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${cls}_${name}_tinkercad_progress.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-
-    function courseStorageKeys() {
-      const fixedKeys = [
-        "studentName", "studentClass", "objectiveAnswer", "lessonDate",
-        "introCompleted", "briefingUnlocked", "loginCodesOpened", "tinkercadClassOpened", "loginCompleted", "mouseControlCompleted", "mouseControlReflection",
-        "activity1MouseReflection", "checkpoint1Unlocked", "checkpoint2Unlocked", "checkpoint3Unlocked", "checkpoint4Unlocked",
-        "activity1Completed", "activity2Completed", "activity3Completed", "evaluationCompleted",
-        "activity1Reflection", "activity2Shapes", "activity2Problem", "modelChoice",
-        "activity3Plan", "activity3Parts", "activity3Colours", "activity3Check",
-        "evalModel", "evalTools", "evalImprove", "evalNext", "currentScreen"
-      ];
-      return Object.keys(localStorage).filter(key =>
-        key.startsWith("mc_") || key.startsWith("a1_") || key.startsWith("a2_") || key.startsWith("a3_") || key.startsWith("eval_") || fixedKeys.includes(key)
-      );
-    }
-
-    function hasSavedProgress() {
-      return courseStorageKeys().some(key => {
-        const value = localStorage.getItem(key);
-        return value && value !== "false" && key !== "lessonDate";
-      });
-    }
-
-    function updateLandingState() {
-      const box = document.getElementById("savedStudentBox");
-      const continueBtn = document.getElementById("continueSessionBtn");
-      if (!box || !continueBtn) return;
-      const name = localStorage.getItem("studentName") || "No name saved";
-      const cls = localStorage.getItem("studentClass") || "No class saved";
-      const screen = localStorage.getItem("currentScreen") || "welcomeScreen";
-      if (hasSavedProgress()) {
-        box.classList.remove("no-work");
-        box.innerHTML = `Saved work found:<br>${escapeHTML(name)} • ${escapeHTML(cls)}<br><span style="font-weight:600;">Last page: ${escapeHTML(screen.replace("Screen", "").replace(/([A-Z])/g, " $1").trim())}</span>`;
-        continueBtn.disabled = false;
-        continueBtn.textContent = "Continue My Work";
-      } else {
-        box.classList.add("no-work");
-        box.innerHTML = "No saved work found.<br>You can start as a new student.";
-        continueBtn.disabled = false;
-        continueBtn.textContent = "Start New Lesson";
-      }
-    }
-
-    function continueSavedSession() {
-      let screen = localStorage.getItem("currentScreen") || "welcomeScreen";
-      if (screen === "landingScreen") screen = "welcomeScreen";
-      if (!document.getElementById(screen)) screen = "welcomeScreen";
-      showScreen(screen);
-    }
-
-    function openBackupPrompt() {
-      const panel = document.getElementById("backupPanel");
-      const check = document.getElementById("backupConfirm");
-      const error = document.getElementById("backupError");
-      if (check) check.checked = false;
-      if (error) error.style.display = "none";
-      if (panel) panel.classList.add("active");
-      if (!hasSavedProgress()) {
-        // If there is no old work, pupils can start straight away.
-        clearCourseProgress();
-        showScreen("welcomeScreen");
-      }
-    }
-
-    function closeBackupPrompt() {
-      const panel = document.getElementById("backupPanel");
-      const error = document.getElementById("backupError");
-      if (panel) panel.classList.remove("active");
-      if (error) error.style.display = "none";
-    }
-
-    function clearCourseProgress() {
-      courseStorageKeys().forEach(key => localStorage.removeItem(key));
-      practiceSetupDone = false;
-      practiceScale = 1;
-      practiceRotate = 0;
-      loadStudentDetails();
-      loadChecklists();
-      loadFields();
-      renderSlide();
-      setLessonDate();
-    }
-
-    function resetAfterBackup() {
-      const check = document.getElementById("backupConfirm");
-      const error = document.getElementById("backupError");
-      if (hasSavedProgress() && (!check || !check.checked)) {
-        if (error) error.style.display = "block";
-        return;
-      }
-      clearCourseProgress();
-      closeBackupPrompt();
-      showScreen("welcomeScreen");
-    }
-
-    function resetCourse() {
-      if (!hasSavedProgress()) {
-        clearCourseProgress();
-        showScreen("welcomeScreen");
-        return;
-      }
-      showScreen("landingScreen");
-      openBackupPrompt();
-    }
-
-    function escapeHTML(text) {
-      return String(text || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function boot() {
-      renderSlide();
-      setLessonDate();
-      loadStudentDetails();
-      loadChecklists();
-      loadFields();
-      showScreen("landingScreen");
-    }
-
-    boot();
-  </script>
+    <section class="activity card locked" id="act2">
+      <div class="activity-head"><h3>Activity 2: Build a Simple Table</h3><span class="activity-tag">Use 5 shapes</span></div>
+      <div class="activity-grid">
+        <div class="task"><div class="emoji">⬛</div><h4>Table top</h4><p>Use 1 large cuboid for the top.</p></div>
+        <div class="task"><div class="emoji">🟫</div><h4>Four legs</h4><p>Use 4 small cuboids or cylinders.</p></div>
+        <div class="task"><div class="emoji">🎨</div><h4>Colour</h4><p>Change the colours so your table is clear.</p></div>
+      </div>
+      <div class="locked-note" id="act2Lock">Finish Activity 1 first.</div>
+      <div class="done-box"><label><input type="checkbox" id="doneAct2" onchange="saveProgress()" /> I completed my 3D table.</label></div>
+      <div class="unlock-msg" id="act2Msg">Great. Activity 3 is unlocked.</div>
+    </section>
+
+    <section class="activity card locked" id="act3">
+      <div class="activity-head"><h3>Activity 3: Mini Model Challenge</h3><span class="activity-tag">Choose one</span></div>
+      <div class="challenge-grid">
+        <div class="model-card"><div class="model-visual">📦</div><h4>Chest</h4><p>Cubes + lid + colour.</p></div>
+        <div class="model-card"><div class="model-visual">🌳</div><h4>Tree</h4><p>Cylinder trunk + green shapes.</p></div>
+        <div class="model-card"><div class="model-visual">🛏️</div><h4>Bed</h4><p>Base + pillow + blanket.</p></div>
+        <div class="model-card"><div class="model-visual">🗼</div><h4>Tower</h4><p>Stacked shapes + roof.</p></div>
+        <div class="model-card"><div class="model-visual">🏠</div><h4>House</h4><p>Walls + roof + door.</p></div>
+      </div>
+      <div class="levels">
+        <div class="level"><strong>Bronze ⭐</strong><p>Make the basic model.</p></div>
+        <div class="level"><strong>Silver ⭐⭐</strong><p>Add colour and more shapes.</p></div>
+        <div class="level"><strong>Gold ⭐⭐⭐</strong><p>Add extra details and improve it.</p></div>
+      </div>
+      <label for="chosenModel">Which model did you choose?</label>
+      <select id="chosenModel" onchange="saveProgress()"><option value="">Choose one</option><option>Chest</option><option>Tree</option><option>Bed</option><option>Tower</option><option>House</option><option>Other</option></select>
+      <div class="locked-note" id="act3Lock">Finish Activity 2 first.</div>
+      <div class="done-box"><label><input type="checkbox" id="doneAct3" onchange="saveProgress()" /> I completed my mini model.</label></div>
+      <div class="unlock-msg" id="act3Msg">Great. Evaluation is unlocked.</div>
+    </section>
+
+    <section class="activity card locked" id="eval">
+      <div class="activity-head"><h3>Final Evaluation</h3><span class="activity-tag">Think and improve</span></div>
+      <div class="record-grid">
+        <div>
+          <label for="bestPart">What is the best part of your model?</label>
+          <textarea id="bestPart" oninput="saveProgress()" placeholder="The best part is..."></textarea>
+        </div>
+        <div>
+          <label for="improvePart">What could you improve?</label>
+          <textarea id="improvePart" oninput="saveProgress()" placeholder="I could improve..."></textarea>
+        </div>
+        <div>
+          <label for="skillLearned">What Tinkercad skill did you use today?</label>
+          <textarea id="skillLearned" oninput="saveProgress()" placeholder="I used..."></textarea>
+        </div>
+        <div>
+          <label for="nextChallenge">What would you like to build next?</label>
+          <textarea id="nextChallenge" oninput="saveProgress()" placeholder="Next, I want to build..."></textarea>
+        </div>
+      </div>
+      <div class="locked-note" id="evalLock">Finish Activity 3 first.</div>
+      <button class="full blue" onclick="downloadRecord()">Download My Learning Record</button>
+      <button class="full" onclick="finishCourse()">I have finished</button>
+    </section>
+  </section>
+
+  <section id="finished" class="screen">
+    <div class="stop">
+      <div class="card stop-card">
+        <div class="stop-icon">🎉</div>
+        <h2 class="page-title">Great work!</h2>
+        <p class="lead">You completed the Year 5 Tinkercad guided course.</p>
+        <button class="blue" onclick="downloadRecord()">Download My Learning Record</button>
+        <button class="secondary" onclick="showScreen('mission')">Back to Mission Board</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const links = {
+    Y5E:{codes:'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQB96eGsOnuvTZ2uZPyPlNGxARKB9sJCLbRJKoYa_IdmbHY?e=DjlYj0', classlink:'https://www.tinkercad.com/joinclass/KDGFLBR3K'},
+    Y5N:{codes:'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQDU6M45ChCCT5VgZuvH29bnAXYogoG71HH_QmFAoEmGMWU?e=yKxttI', classlink:'https://www.tinkercad.com/joinclass/KDGFLBR3K'},
+    Y5T:{codes:'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQA0nEFkJeixQrd3JbHL-auQAXIQuK4RC-JZtkkCR_fiapw?e=WzPZ2v', classlink:'https://www.tinkercad.com/joinclass/IG9ILMAD3'}
+  };
+  const fields = ['studentName','studentClass','wagbaAnswer','openedStarter','starterDone','openedCodes','openedClasslink','loggedIn','doneAct1','doneAct2','doneAct3','chosenModel','bestPart','improvePart','skillLearned','nextChallenge','currentScreen'];
+  const checkIds = ['openedCodes','openedClasslink','loggedIn','doneAct1','doneAct2','doneAct3'];
+  let backupClicked = false;
+
+  function today(){return new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
+  function get(id){return localStorage.getItem('y5t_'+id) || '';}
+  function set(id,val){localStorage.setItem('y5t_'+id,val);}
+  function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');set('currentScreen',id);updateHeader(); if(id==='starter') loadStarterChecks(); if(id==='starter2') loadStarter2Checks(); if(id==='login') setupLogin(); if(id==='mission') setupLogin(), loadProgress(), updateLocks(); window.scrollTo({top:0,behavior:'smooth'});}
+  function showLanding(){showScreen('landing'); renderSavedSummary();}
+  function updateHeader(){document.getElementById('nameChip').textContent='Name: '+(get('studentName')||'not entered');document.getElementById('classChip').textContent='Class: '+(get('studentClass')||'not selected');document.getElementById('dateChip').textContent='Date: '+today();}
+  function saveBasic(){set('studentName',document.getElementById('studentName').value.trim());set('studentClass',document.getElementById('studentClass').value);updateHeader();}
+  function loadBasic(){document.getElementById('studentName').value=get('studentName');document.getElementById('studentClass').value=get('studentClass');document.getElementById('wagbaAnswer').value=get('wagbaAnswer');}
+  function submitWagba(){saveBasic(); const wagba=document.getElementById('wagbaAnswer').value.trim(); set('wagbaAnswer',wagba); if(!get('studentName')||!get('studentClass')||!wagba){document.getElementById('welcomeError').style.display='block';return;} document.getElementById('welcomeError').style.display='none';showScreen('starter'); loadStarterChecks();}
+  function markStarterOpened(){set('openedStarter','true'); setTimeout(loadStarterChecks,100);}
+  function loadStarterChecks(){['openedStarter','starterDone'].forEach(id=>{const el=document.getElementById(id); if(el) el.checked=get(id)==='true';}); updateStarterButton();}
+  function saveStarterChecks(){['openedStarter','starterDone'].forEach(id=>{const el=document.getElementById(id); if(el) set(id,el.checked?'true':'');}); updateStarterButton();}
+  function updateStarterButton(){const ok=get('openedStarter')==='true'&&get('starterDone')==='true'; const btn=document.getElementById('starterNextBtn'); if(btn) btn.disabled=!ok;}
+  function goAfterStarter(){saveStarterChecks(); if(document.getElementById('starterNextBtn').disabled){document.getElementById('starterError').style.display='block';return;} document.getElementById('starterError').style.display='none'; showScreen('starter2');}
+
+  function markStarter2Opened(){set('openedStarter2','true'); setTimeout(loadStarter2Checks,100);}
+  function loadStarter2Checks(){['openedStarter2','starter2Done'].forEach(id=>{const el=document.getElementById(id); if(el) el.checked=get(id)==='true';}); updateStarter2Button();}
+  function saveStarter2Checks(){['openedStarter2','starter2Done'].forEach(id=>{const el=document.getElementById(id); if(el) set(id,el.checked?'true':'');}); updateStarter2Button();}
+  function updateStarter2Button(){const ok=get('openedStarter2')==='true'&&get('starter2Done')==='true'; const btn=document.getElementById('starter2NextBtn'); if(btn) btn.disabled=!ok;}
+  function goAfterStarter2(){saveStarter2Checks(); if(document.getElementById('starter2NextBtn').disabled){document.getElementById('starter2Error').style.display='block';return;} document.getElementById('starter2Error').style.display='none'; showScreen('login');}
+
+  function finishBriefing(){set('briefingDone','true');showScreen('login');}
+  function setupLogin(){const cls=get('studentClass')||'Y5E'; const info=links[cls]||links.Y5E; ['codesLink','helperCodes'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=info.codes;}); ['classLink','helperClass'].forEach(id=>{const el=document.getElementById(id); if(el) el.href=info.classlink;}); const badge=document.getElementById('loginClassBadge'); if(badge) badge.textContent=cls+' login'; loadLoginChecks();}
+  function markOpened(which){ if(which==='codes') set('openedCodes','true'); if(which==='classlink') set('openedClasslink','true'); setTimeout(loadLoginChecks,100);}
+  function loadLoginChecks(){checkIds.slice(0,3).forEach(id=>{const el=document.getElementById(id); if(el) el.checked=get(id)==='true';}); updateMissionButton();}
+  function saveLoginChecks(){checkIds.slice(0,3).forEach(id=>{const el=document.getElementById(id); if(el) set(id,el.checked?'true':'');}); updateMissionButton();}
+  function updateMissionButton(){const ok=get('openedCodes')==='true'&&get('openedClasslink')==='true'&&get('loggedIn')==='true'; const btn=document.getElementById('missionBtn'); if(btn) btn.disabled=!ok;}
+  function goMission(){saveLoginChecks(); if(document.getElementById('missionBtn').disabled){document.getElementById('loginError').style.display='block';return;} set('loginDone','true'); showScreen('mission');}
+  function loadProgress(){checkIds.slice(3).forEach(id=>{const el=document.getElementById(id); if(el) el.checked=get(id)==='true';}); ['chosenModel','bestPart','improvePart','skillLearned','nextChallenge'].forEach(id=>{const el=document.getElementById(id); if(el) el.value=get(id);});}
+  function saveProgress(){checkIds.slice(3).forEach(id=>{const el=document.getElementById(id); if(el) set(id,el.checked?'true':'');}); ['chosenModel','bestPart','improvePart','skillLearned','nextChallenge'].forEach(id=>{const el=document.getElementById(id); if(el) set(id,el.value.trim());}); updateLocks();}
+  function updateLocks(){const a1=get('doneAct1')==='true'; const a2=get('doneAct2')==='true'; const a3=get('doneAct3')==='true'; toggleLock('act2',!a1); toggleLock('act3',!a2); toggleLock('eval',!a3); setDisplay('act1Msg',a1); setDisplay('act2Msg',a2); setDisplay('act3Msg',a3); setDisplay('act2Lock',!a1,true); setDisplay('act3Lock',!a2,true); setDisplay('evalLock',!a3,true); const total=[a1,a2,a3,get('bestPart').trim(),get('improvePart').trim(),get('skillLearned').trim()].filter(Boolean).length; const pct=Math.round((total/6)*100); document.getElementById('progressFill').style.width=pct+'%'; document.getElementById('progressText').textContent='Progress: '+pct+'%';}
+  function toggleLock(id,locked){const el=document.getElementById(id); if(!el)return; el.classList.toggle('locked',locked);}
+  function setDisplay(id,show,block=false){const el=document.getElementById(id); if(el) el.style.display=show?(block?'block':'block'):'none';}
+  function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+  function continueSession(){const screen=get('currentScreen')||'welcome'; if(!get('studentName')){showScreen('welcome');loadBasic();return;} const safe=['welcome','starter','briefing','login','mission','finished']; showScreen(safe.includes(screen)?screen:'welcome'); loadBasic();}
+  function openBackupPanel(){document.getElementById('backupPanel').style.display='block';}
+  function resetAll(){ if(!backupClicked && hasAnySaved()){alert('Please download a backup first.');return;} Object.keys(localStorage).filter(k=>k.startsWith('y5t_')).forEach(k=>localStorage.removeItem(k)); backupClicked=false; showScreen('welcome'); loadBasic(); updateHeader();}
+  function hasAnySaved(){return Object.keys(localStorage).some(k=>k.startsWith('y5t_'));}
+  function renderSavedSummary(){const s=document.getElementById('savedSummary'); if(!hasAnySaved()){s.textContent='No saved work found on this device.'; document.getElementById('continueBtn').disabled=true;} else {s.innerHTML='<strong>Saved work found:</strong> '+(get('studentName')||'Unknown student')+' • '+(get('studentClass')||'No class selected')+'.'; document.getElementById('continueBtn').disabled=false;}}
+  function collectData(){const data={date:today()}; fields.forEach(f=>data[f]=get(f)); data.briefingDone=get('briefingDone'); data.loginDone=get('loginDone'); return data;}
+  function downloadText(filename,text,type='text/plain'){const blob=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);}
+  function downloadBackup(){const data=JSON.stringify(collectData(),null,2); const name=(get('studentName')||'year5_student').replace(/[^a-z0-9]+/gi,'_'); downloadText(name+'_tinkercad_backup.json',data,'application/json'); backupClicked=true; document.getElementById('resetAfterBackupBtn').disabled=false; document.getElementById('backupHelp').textContent='Backup downloaded. You may reset now.';}
+  function downloadRecord(){saveProgress(); const d=collectData(); const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Year 5 Tinkercad Learning Record</title><style>body{font-family:Arial,sans-serif;margin:36px;line-height:1.45}h1{font-size:26px}h2{margin-top:26px;border-bottom:1px solid #999;padding-bottom:5px}.box{border:1px solid #bbb;padding:12px;margin:10px 0;min-height:30px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.meta div{border:1px solid #999;padding:8px}</style></head><body><h1>Year 5 Tinkercad Learning Record</h1><div class="meta"><div><strong>Name:</strong> ${escapeHTML(d.studentName)}</div><div><strong>Class:</strong> ${escapeHTML(d.studentClass)}</div><div><strong>Date:</strong> ${escapeHTML(d.date)}</div></div><h2>WAGBA</h2><div class="box">${escapeHTML(d.wagbaAnswer)}</div><h2>Progress</h2><ul><li>Activity 1: ${d.doneAct1==='true'?'Complete':'Not complete'}</li><li>Activity 2: ${d.doneAct2==='true'?'Complete':'Not complete'}</li><li>Activity 3: ${d.doneAct3==='true'?'Complete':'Not complete'}</li><li>Chosen model: ${escapeHTML(d.chosenModel)}</li></ul><h2>Evaluation</h2><p><strong>Best part:</strong></p><div class="box">${escapeHTML(d.bestPart)}</div><p><strong>Could improve:</strong></p><div class="box">${escapeHTML(d.improvePart)}</div><p><strong>Skill used:</strong></p><div class="box">${escapeHTML(d.skillLearned)}</div><p><strong>Next build:</strong></p><div class="box">${escapeHTML(d.nextChallenge)}</div></body></html>`; const name=(get('studentName')||'year5_student').replace(/[^a-z0-9]+/gi,'_'); downloadText(name+'_tinkercad_learning_record.html',html,'text/html');}
+  function finishCourse(){saveProgress();showScreen('finished');}
+  function escapeHTML(str){return String(str||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+  function init(){updateHeader();renderSavedSummary();loadBasic();}
+  init();
+</script>
 </body>
 </html>
