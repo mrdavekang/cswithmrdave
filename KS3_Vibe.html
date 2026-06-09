@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KS3 Copilot Vibe Coding Review App</title>
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --panel: #ffffff;
+      --ink: #243042;
+      --muted: #667085;
+      --line: #d9dee8;
+      --accent: #355c7d;
+      --accent2: #6c8ebf;
+      --soft: #e9f0fa;
+      --warm: #fff4dc;
+      --mint: #e7f4ed;
+      --lav: #f0ebff;
+      --shadow: 0 12px 30px rgba(36, 48, 66, 0.10);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --focus: 0 0 0 4px rgba(53, 92, 125, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Aptos, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(108, 142, 191, 0.18), transparent 32rem),
+        linear-gradient(180deg, #fbfaf7 0%, var(--bg) 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 24px auto 56px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, #26364d 0%, #355c7d 58%, #6c8ebf 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header.hero::after {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      right: -130px;
+      top: -140px;
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .hero-inner { position: relative; z-index: 1; }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      opacity: 0.85;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.1rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 900px;
+    }
+
+    .hero p {
+      margin: 18px 0 0;
+      max-width: 820px;
+      line-height: 1.6;
+      font-size: 1.05rem;
+      opacity: 0.94;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .info-card, .panel {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid rgba(217, 222, 232, 0.9);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .info-card h2, .panel h2, .step h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .ksu-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .pill-box {
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 92px;
+      background: var(--soft);
+      border: 1px solid rgba(53, 92, 125, 0.12);
+    }
+
+    .pill-box:nth-child(2) { background: var(--warm); }
+    .pill-box:nth-child(3) { background: var(--mint); }
+    .pill-box:nth-child(4) { background: var(--lav); }
+
+    .pill-box strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .pill-box span { font-weight: 700; line-height: 1.35; display: block; }
+
+    .keyword-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .keyword {
+      background: #eef3fb;
+      border: 1px solid #d7e2f4;
+      color: #26364d;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .challenge {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #fff9ea;
+      border: 1px solid #f0d68d;
+      border-radius: 16px;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .student-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 750;
+      margin: 0 0 6px;
+      font-size: 0.92rem;
+    }
+
+    input[type="text"], input[type="date"], select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 13px;
+      font: inherit;
+      color: var(--ink);
+      background: white;
+      outline: none;
+      transition: box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    textarea { min-height: 98px; resize: vertical; line-height: 1.5; }
+
+    input:focus, select:focus, textarea:focus { border-color: var(--accent2); box-shadow: var(--focus); }
+
+    .step {
+      background: var(--panel);
+      border: 1px solid rgba(217, 222, 232, 0.95);
+      border-radius: 28px;
+      padding: 24px;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .step-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .step p.hint {
+      margin: 4px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .form-grid.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .wide { grid-column: 1 / -1; }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .check-tile {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fcfcfd;
+      line-height: 1.35;
+    }
+
+    .check-tile input { margin-top: 2px; accent-color: var(--accent); }
+
+    .prompt-box {
+      background: #172235;
+      color: #f8fafc;
+      border-radius: 20px;
+      padding: 16px;
+      margin: 16px 0 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .prompt-box h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: #dce8ff;
+    }
+
+    .prompt-output {
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      line-height: 1.55;
+      font-size: 0.92rem;
+      min-height: 120px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 850;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+      box-shadow: 0 6px 15px rgba(53, 92, 125, 0.22);
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); opacity: 0.9; }
+    button.secondary { background: #e9eef7; color: #26364d; box-shadow: none; border: 1px solid #d6deec; }
+    button.ghost { background: transparent; color: #26364d; box-shadow: none; border: 1px solid #bfc9d9; }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin: 8px 0 0;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .review-card {
+      background: #fbfcff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .review-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .review-card ul { margin: 0; padding-left: 20px; color: var(--muted); line-height: 1.45; }
+
+    .phase-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .phase-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .phase-card input { position: absolute; opacity: 0; pointer-events: none; }
+    .phase-card span { display: block; font-weight: 850; margin-bottom: 4px; }
+    .phase-card small { color: var(--muted); line-height: 1.35; display: block; }
+    .phase-card:has(input:checked) { border-color: var(--accent); box-shadow: var(--focus); background: #f4f8ff; }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #f4f6fa;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .progress-track {
+      height: 10px;
+      width: 220px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 999px;
+      transition: width 200ms ease;
+    }
+
+    #report {
+      display: none;
+    }
+
+    .footer-actions {
+      position: sticky;
+      bottom: 0;
+      background: rgba(247, 244, 238, 0.86);
+      backdrop-filter: blur(10px);
+      padding: 12px 0 0;
+      z-index: 10;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #172235;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 180ms ease;
+      z-index: 20;
+      max-width: 320px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 880px) {
+      .top-grid, .student-strip, .form-grid, .form-grid.three, .review-grid, .phase-row, .ksu-grid, .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+      header.hero { padding: 26px; border-radius: 22px; }
+      .step { padding: 18px; border-radius: 22px; }
+      .progress-track { width: 140px; }
+    }
+
+    @media print {
+      body { background: white; color: #111827; }
+      .app-shell, .toast { display: none !important; }
+      #report {
+        display: block !important;
+        width: 100%;
+        padding: 18mm 16mm;
+        font-family: Aptos, Arial, sans-serif;
+      }
+      #report h1 {
+        color: #111827;
+        font-size: 24pt;
+        letter-spacing: -0.02em;
+        margin: 0 0 6mm;
+      }
+      #report h2 {
+        font-size: 14pt;
+        margin: 7mm 0 2mm;
+        border-bottom: 1px solid #d1d5db;
+        padding-bottom: 2mm;
+      }
+      #report p, #report li, #report td, #report th {
+        font-size: 10.5pt;
+        line-height: 1.35;
+      }
+      #report table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 3mm 0;
+      }
+      #report th, #report td {
+        border: 1px solid #d1d5db;
+        padding: 2.4mm;
+        vertical-align: top;
+      }
+      #report th { background: #f3f4f6; text-align: left; }
+      #report .print-box {
+        border: 1px solid #d1d5db;
+        padding: 3mm;
+        white-space: pre-wrap;
+        min-height: 12mm;
+      }
+      #report .print-small { color: #4b5563; font-size: 9pt; }
+      @page { size: A4 portrait; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell" id="app">
+    <header class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">KS3 Computing · Microsoft 365 Copilot Chat</p>
+        <h1>Vibe Coding: First Prototype Review</h1>
+        <p>This app helps you plan a simple HTML/CSS webpage, ask Copilot clearly, and review the result like a Computing student — not just copy and paste.</p>
+      </div>
+    </header>
+
+    <section class="top-grid">
+      <div class="info-card">
+        <h2>Today’s Learning</h2>
+        <div class="ksu-grid">
+          <div class="pill-box"><strong>Topic</strong><span>AI-assisted HTML/CSS webpage prototyping</span></div>
+          <div class="pill-box"><strong>WAGBA</strong><span>Use Copilot to create, review, and improve a simple webpage prototype.</span></div>
+          <div class="pill-box"><strong>S</strong><span>I can write a clear prompt and recognise HTML/CSS in the result.</span></div>
+          <div class="pill-box"><strong>U</strong><span>Copilot helps, but I must check, test, and explain the code.</span></div>
+        </div>
+        <div class="challenge">Challenge: Can you explain one useful part of Copilot’s code and one part you still need to improve?</div>
+      </div>
+      <div class="info-card">
+        <h2>Keywords</h2>
+        <div class="keyword-row">
+          <span class="keyword">Copilot Chat</span>
+          <span class="keyword">prompt</span>
+          <span class="keyword">prototype</span>
+          <span class="keyword">HTML tag</span>
+          <span class="keyword">CSS property</span>
+          <span class="keyword">code block</span>
+          <span class="keyword">Copilot Page</span>
+          <span class="keyword">test</span>
+          <span class="keyword">improve</span>
+        </div>
+        <p class="mini-note">Safety reminder: do not type your full name, password, home address, phone number, or private information into Copilot.</p>
+      </div>
+    </section>
+
+    <section class="panel student-strip">
+      <div>
+        <label for="studentName">Student name</label>
+        <input id="studentName" data-save type="text" placeholder="e.g. Alex" />
+      </div>
+      <div>
+        <label for="className">Class</label>
+        <input id="className" data-save type="text" placeholder="e.g. Year 8" />
+      </div>
+      <div>
+        <label for="lessonDate">Date</label>
+        <input id="lessonDate" data-save type="date" />
+      </div>
+      <div>
+        <label for="teacherName">Teacher</label>
+        <input id="teacherName" data-save type="text" placeholder="optional" />
+      </div>
+    </section>
+
+    <section class="step" id="step1">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div>
+          <h2>Plan your webpage idea</h2>
+          <p class="hint">Topic · WAGBA · Keywords · Challenge: Give Copilot enough detail before asking it to code.</p>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="topic">My webpage topic</label>
+          <select id="topic" data-save>
+            <option value="">Choose a topic</option>
+            <option>Online safety</option>
+            <option>School coding club</option>
+            <option>Computing revision page</option>
+            <option>Minecraft project showcase</option>
+            <option>Sports team webpage</option>
+            <option>Charity event webpage</option>
+            <option>Personal hobby webpage</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="customTopic">If other, write your topic</label>
+          <input id="customTopic" data-save type="text" placeholder="My own topic" />
+        </div>
+        <div>
+          <label for="audience">Audience</label>
+          <input id="audience" data-save type="text" placeholder="e.g. Year 7 students" />
+        </div>
+        <div>
+          <label for="purpose">Purpose</label>
+          <input id="purpose" data-save type="text" placeholder="e.g. help students revise / learn / join" />
+        </div>
+        <div class="wide">
+          <label for="sections">Three sections/cards my webpage should include</label>
+          <textarea id="sections" data-save placeholder="1.&#10;2.&#10;3."></textarea>
+        </div>
+        <div>
+          <label for="styleWords">Design style words</label>
+          <input id="styleWords" data-save type="text" placeholder="e.g. clean, bright, simple, modern" />
+        </div>
+        <div>
+          <label for="mustHave">Must-have feature</label>
+          <input id="mustHave" data-save type="text" placeholder="e.g. a button, cards, images, links" />
+        </div>
+      </div>
+      <div class="button-row">
+        <button type="button" onclick="generatePrompt()">Build my Copilot prompt</button>
+        <button type="button" class="secondary" onclick="copyPrompt()">Copy prompt</button>
+      </div>
+      <div class="prompt-box">
+        <h3>My Copilot prompt</h3>
+        <div id="promptOutput" class="prompt-output">Fill in your idea, then click “Build my Copilot prompt”.</div>
+      </div>
+    </section>
+
+    <section class="step" id="step2">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div>
+          <h2>Use Copilot Chat carefully</h2>
+          <p class="hint">Topic · WAGBA · Keywords · Challenge: Know what you are clicking before you use the response.</p>
+        </div>
+      </div>
+      <div class="checkbox-grid">
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotSchool" /> I used my school Microsoft account.</label>
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotSafety" /> I did not type private information into Copilot.</label>
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotMessage" /> I found the message box and pasted/typed my prompt.</label>
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotCodeBlock" /> I looked for the HTML/CSS code block in Copilot’s response.</label>
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotPage" /> I understand that a Copilot Page saves the response, but it is not the same as a tested webpage.</label>
+        <label class="check-tile"><input type="checkbox" data-save-check id="copilotNotDone" /> I did not stop after Copilot generated something; I reviewed it.</label>
+      </div>
+      <div class="form-grid wide" style="margin-top:14px;">
+        <div>
+          <label for="interfaceNotice">What did you notice on the Copilot interface?</label>
+          <textarea id="interfaceNotice" data-save placeholder="e.g. message box, response area, code block, create page option"></textarea>
+        </div>
+        <div>
+          <label for="firstOutput">What did Copilot create?</label>
+          <textarea id="firstOutput" data-save placeholder="e.g. It gave me one HTML file with CSS inside style tags..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="step3">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div>
+          <h2>Review the prototype</h2>
+          <p class="hint">Topic · WAGBA · Keywords · Challenge: Use HTML/CSS knowledge to check what Copilot produced.</p>
+        </div>
+      </div>
+
+      <div class="review-grid">
+        <div class="review-card">
+          <h3>HTML Review</h3>
+          <ul>
+            <li>What content is on the page?</li>
+            <li>Can you recognise tags?</li>
+            <li>Is the structure clear?</li>
+          </ul>
+        </div>
+        <div class="review-card">
+          <h3>CSS Review</h3>
+          <ul>
+            <li>What colours, spacing, borders, or layout are used?</li>
+            <li>Does the design match your prompt?</li>
+            <li>Is it readable?</li>
+          </ul>
+        </div>
+        <div class="review-card">
+          <h3>Testing Review</h3>
+          <ul>
+            <li>Did you open or preview it?</li>
+            <li>Does the button/link/layout work as expected?</li>
+            <li>What needs improving?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-grid three" style="margin-top:14px;">
+        <div>
+          <label for="htmlTags">HTML tags I recognise</label>
+          <textarea id="htmlTags" data-save placeholder="e.g. <h1>, <p>, <div>, <button>"></textarea>
+        </div>
+        <div>
+          <label for="cssProperties">CSS properties I recognise</label>
+          <textarea id="cssProperties" data-save placeholder="e.g. color, background-color, padding, border-radius"></textarea>
+        </div>
+        <div>
+          <label for="unknownCode">One thing I do not understand yet</label>
+          <textarea id="unknownCode" data-save placeholder="Write one tag, property, or code section you are unsure about."></textarea>
+        </div>
+        <div>
+          <label for="matchPrompt">Did it match your prompt?</label>
+          <select id="matchPrompt" data-save>
+            <option value="">Choose one</option>
+            <option>Yes, mostly</option>
+            <option>Partly</option>
+            <option>Not yet</option>
+          </select>
+        </div>
+        <div>
+          <label for="testedWhere">Where did you test/check it?</label>
+          <input id="testedWhere" data-save type="text" placeholder="e.g. browser preview, Copilot Page, editor" />
+        </div>
+        <div>
+          <label for="pageOrWebsite">What is it right now?</label>
+          <select id="pageOrWebsite" data-save>
+            <option value="">Choose one</option>
+            <option>Copilot response only</option>
+            <option>Saved as a Copilot Page</option>
+            <option>SharePoint/Page style content</option>
+            <option>Tested as an HTML webpage</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="wide">
+          <label for="improvementNeeded">One improvement I need to make</label>
+          <textarea id="improvementNeeded" data-save placeholder="e.g. improve spacing, make the text clearer, change colours, add a card, simplify the code"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="step4">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div>
+          <h2>Improve your prompt</h2>
+          <p class="hint">Topic · WAGBA · Keywords · Challenge: Ask for a better version using specific feedback.</p>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="improveOne">I want Copilot to improve...</label>
+          <textarea id="improveOne" data-save placeholder="e.g. the layout, the colours, the cards, the button, the comments"></textarea>
+        </div>
+        <div>
+          <label for="keepOne">I want Copilot to keep...</label>
+          <textarea id="keepOne" data-save placeholder="e.g. the heading, the simple code, the three cards"></textarea>
+        </div>
+        <div class="wide">
+          <label for="improvementPrompt">My improvement prompt</label>
+          <textarea id="improvementPrompt" data-save placeholder="Example: Improve the CSS layout by making the cards clearer and easier to read. Keep the code beginner-friendly and explain the changes."></textarea>
+        </div>
+      </div>
+      <div class="button-row">
+        <button type="button" onclick="buildImprovementPrompt()">Build improvement prompt</button>
+        <button type="button" class="secondary" onclick="copyImprovementPrompt()">Copy improvement prompt</button>
+      </div>
+    </section>
+
+    <section class="step" id="step5">
+      <div class="step-head">
+        <div class="step-num">5</div>
+        <div>
+          <h2>Learning pitstop and exit ticket</h2>
+          <p class="hint">Topic · WAGBA · Keywords · Challenge: Explain what you learned and what you need next.</p>
+        </div>
+      </div>
+
+      <label>My current phase of learning</label>
+      <div class="phase-row">
+        <label class="phase-card"><input type="radio" name="phase" data-save-radio value="Starting" /> <span>Starting</span><small>I can use Copilot, but I still need help reviewing the code.</small></label>
+        <label class="phase-card"><input type="radio" name="phase" data-save-radio value="Getting better" /> <span>Getting better</span><small>I can recognise some HTML/CSS and explain parts of the output.</small></label>
+        <label class="phase-card"><input type="radio" name="phase" data-save-radio value="More confident" /> <span>More confident</span><small>I can improve my prompt and test the result carefully.</small></label>
+        <label class="phase-card"><input type="radio" name="phase" data-save-radio value="Ready for challenge" /> <span>Ready for challenge</span><small>I can explain and manually improve part of the HTML/CSS.</small></label>
+      </div>
+
+      <div class="form-grid" style="margin-top:14px;">
+        <div>
+          <label for="learnedToday">Today I learned that...</label>
+          <textarea id="learnedToday" data-save></textarea>
+        </div>
+        <div>
+          <label for="skillUsed">The skill I used today was...</label>
+          <textarea id="skillUsed" data-save></textarea>
+        </div>
+        <div>
+          <label for="nextStep">To get to the next level, I need to...</label>
+          <textarea id="nextStep" data-save></textarea>
+        </div>
+        <div>
+          <label for="teacherQuestion">A question I still have is...</label>
+          <textarea id="teacherQuestion" data-save></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer-actions">
+      <div class="panel">
+        <div class="status-bar">
+          <div>
+            <strong>Progress:</strong> <span id="progressText">0%</span>
+            <div class="mini-note">Your answers are saved automatically on this device.</div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="button-row" style="margin:0;">
+            <button type="button" onclick="exportPDF()">Export to PDF</button>
+            <button type="button" class="secondary" onclick="previewReport()">Preview report</button>
+            <button type="button" class="ghost" onclick="resetApp()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section id="report" aria-hidden="true"></section>
+  <div class="toast" id="toast">Saved.</div>
+
+  <script>
+    const saveKey = 'ks3-copilot-vibe-coding-review-v1';
+    const fields = Array.from(document.querySelectorAll('[data-save]'));
+    const checks = Array.from(document.querySelectorAll('[data-save-check]'));
+    const radios = Array.from(document.querySelectorAll('[data-save-radio]'));
+
+    function getTopic() {
+      const topic = document.getElementById('topic').value;
+      const customTopic = document.getElementById('customTopic').value.trim();
+      return customTopic || topic || 'my chosen topic';
+    }
+
+    function value(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function safe(text) {
+      return String(text || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function toast(message) {
+      const box = document.getElementById('toast');
+      box.textContent = message;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 1700);
+    }
+
+    function generatePrompt() {
+      const prompt = `Create a simple HTML and CSS webpage about ${getTopic()}.
+The webpage is for ${value('audience') || 'KS3 students'}.
+The purpose is to ${value('purpose') || 'help users learn about the topic'}.
+It should include a main heading, a short introduction, and these three sections/cards:
+${value('sections') || '1. Section one\n2. Section two\n3. Section three'}
+It should include this feature: ${value('mustHave') || 'a simple button'}.
+The design should look ${value('styleWords') || 'clean, simple, and beginner-friendly'}.
+Use beginner-friendly HTML tags such as <h1>, <p>, <div>, and <button>.
+Use CSS for background colour, font, spacing, border, rounded corners, and layout.
+Add comments to explain the HTML and CSS.
+Keep the code simple because I am learning HTML and CSS.`;
+      document.getElementById('promptOutput').textContent = prompt;
+      saveData();
+      toast('Prompt built. Copy it into Copilot Chat.');
+    }
+
+    async function copyText(text, successMessage) {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast(successMessage);
+      } catch (err) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        toast(successMessage);
+      }
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('promptOutput').textContent;
+      if (!text || text.startsWith('Fill in')) {
+        generatePrompt();
+      }
+      copyText(document.getElementById('promptOutput').textContent, 'Prompt copied. Paste it into Copilot Chat.');
+    }
+
+    function buildImprovementPrompt() {
+      const prompt = `Improve my HTML and CSS webpage about ${getTopic()}.
+Please improve: ${value('improveOne') || 'the layout and readability'}.
+Please keep: ${value('keepOne') || 'the beginner-friendly HTML and CSS'}.
+My review found this needs improvement: ${value('improvementNeeded') || 'make the webpage clearer and easier to understand'}.
+Keep the code simple, add comments, and briefly explain what you changed.`;
+      document.getElementById('improvementPrompt').value = prompt;
+      saveData();
+      toast('Improvement prompt built.');
+    }
+
+    function copyImprovementPrompt() {
+      if (!value('improvementPrompt')) buildImprovementPrompt();
+      copyText(value('improvementPrompt'), 'Improvement prompt copied.');
+    }
+
+    function collectData() {
+      const data = {};
+      fields.forEach(el => data[el.id] = el.value);
+      checks.forEach(el => data[el.id] = el.checked);
+      const selectedPhase = document.querySelector('[name="phase"]:checked');
+      data.phase = selectedPhase ? selectedPhase.value : '';
+      data.promptOutput = document.getElementById('promptOutput').textContent;
+      return data;
+    }
+
+    function saveData() {
+      const data = collectData();
+      localStorage.setItem(saveKey, JSON.stringify(data));
+      updateProgress();
+    }
+
+    function loadData() {
+      const raw = localStorage.getItem(saveKey);
+      if (!raw) {
+        const today = new Date().toISOString().slice(0,10);
+        document.getElementById('lessonDate').value = today;
+        updateProgress();
+        return;
+      }
+      try {
+        const data = JSON.parse(raw);
+        fields.forEach(el => { if (data[el.id] !== undefined) el.value = data[el.id]; });
+        checks.forEach(el => { if (data[el.id] !== undefined) el.checked = data[el.id]; });
+        if (data.phase) {
+          const radio = document.querySelector(`[name="phase"][value="${CSS.escape(data.phase)}"]`);
+          if (radio) radio.checked = true;
+        }
+        if (data.promptOutput) document.getElementById('promptOutput').textContent = data.promptOutput;
+      } catch (err) {
+        console.warn('Could not load saved data', err);
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const requiredIds = [
+        'studentName', 'className', 'topic', 'audience', 'purpose', 'sections', 'styleWords',
+        'htmlTags', 'cssProperties', 'improvementNeeded', 'learnedToday', 'nextStep'
+      ];
+      let completed = 0;
+      let total = requiredIds.length + 6 + 1;
+      requiredIds.forEach(id => { if (value(id) || (id === 'topic' && getTopic() !== 'my chosen topic')) completed++; });
+      checks.forEach(c => { if (c.checked) completed++; });
+      if (document.querySelector('[name="phase"]:checked')) completed++;
+      const percent = Math.min(100, Math.round((completed / total) * 100));
+      document.getElementById('progressText').textContent = `${percent}%`;
+      document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    function checkedText(id) {
+      return document.getElementById(id).checked ? 'Yes' : 'Not yet';
+    }
+
+    function reportHTML() {
+      const d = collectData();
+      const phase = d.phase || 'Not selected';
+      const prompt = d.promptOutput && !d.promptOutput.startsWith('Fill in') ? d.promptOutput : 'Prompt not generated yet.';
+      return `
+        <h1>KS3 Copilot Vibe Coding Review</h1>
+        <p class="print-small">Generated from the student review app. This records planning, Copilot use, code review, and reflection.</p>
+        <table>
+          <tr><th>Student</th><td>${safe(d.studentName)}</td><th>Class</th><td>${safe(d.className)}</td></tr>
+          <tr><th>Date</th><td>${safe(d.lessonDate)}</td><th>Teacher</th><td>${safe(d.teacherName)}</td></tr>
+        </table>
+
+        <h2>Learning Focus</h2>
+        <table>
+          <tr><th>Topic</th><td>AI-assisted HTML/CSS webpage prototyping</td></tr>
+          <tr><th>WAGBA</th><td>Use Copilot to create, review, and improve a simple webpage prototype.</td></tr>
+          <tr><th>Keywords</th><td>Copilot Chat, prompt, prototype, HTML tag, CSS property, code block, Copilot Page, test, improve</td></tr>
+          <tr><th>Challenge</th><td>Explain one useful part of Copilot’s code and one part that still needs improvement.</td></tr>
+        </table>
+
+        <h2>1. Webpage Plan</h2>
+        <table>
+          <tr><th>Webpage topic</th><td>${safe(getTopic())}</td></tr>
+          <tr><th>Audience</th><td>${safe(d.audience)}</td></tr>
+          <tr><th>Purpose</th><td>${safe(d.purpose)}</td></tr>
+          <tr><th>Sections/cards</th><td><div class="print-box">${safe(d.sections)}</div></td></tr>
+          <tr><th>Design style</th><td>${safe(d.styleWords)}</td></tr>
+          <tr><th>Must-have feature</th><td>${safe(d.mustHave)}</td></tr>
+        </table>
+        <h2>2. Copilot Prompt</h2>
+        <div class="print-box">${safe(prompt)}</div>
+
+        <h2>3. Copilot Chat Check</h2>
+        <table>
+          <tr><th>Used school account</th><td>${checkedText('copilotSchool')}</td><th>No private info</th><td>${checkedText('copilotSafety')}</td></tr>
+          <tr><th>Used message box</th><td>${checkedText('copilotMessage')}</td><th>Found code block</th><td>${checkedText('copilotCodeBlock')}</td></tr>
+          <tr><th>Understands Copilot Page</th><td>${checkedText('copilotPage')}</td><th>Reviewed, not just copied</th><td>${checkedText('copilotNotDone')}</td></tr>
+        </table>
+        <table>
+          <tr><th>Interface noticed</th><td><div class="print-box">${safe(d.interfaceNotice)}</div></td></tr>
+          <tr><th>What Copilot created</th><td><div class="print-box">${safe(d.firstOutput)}</div></td></tr>
+        </table>
+
+        <h2>4. Prototype Review</h2>
+        <table>
+          <tr><th>HTML tags recognised</th><td><div class="print-box">${safe(d.htmlTags)}</div></td></tr>
+          <tr><th>CSS properties recognised</th><td><div class="print-box">${safe(d.cssProperties)}</div></td></tr>
+          <tr><th>Code I do not understand yet</th><td><div class="print-box">${safe(d.unknownCode)}</div></td></tr>
+          <tr><th>Did it match the prompt?</th><td>${safe(d.matchPrompt)}</td></tr>
+          <tr><th>Where I tested/checked it</th><td>${safe(d.testedWhere)}</td></tr>
+          <tr><th>What it is right now</th><td>${safe(d.pageOrWebsite)}</td></tr>
+          <tr><th>Improvement needed</th><td><div class="print-box">${safe(d.improvementNeeded)}</div></td></tr>
+        </table>
+
+        <h2>5. Improvement Prompt</h2>
+        <table>
+          <tr><th>Improve</th><td><div class="print-box">${safe(d.improveOne)}</div></td></tr>
+          <tr><th>Keep</th><td><div class="print-box">${safe(d.keepOne)}</div></td></tr>
+          <tr><th>My improvement prompt</th><td><div class="print-box">${safe(d.improvementPrompt)}</div></td></tr>
+        </table>
+
+        <h2>6. Learning Pitstop</h2>
+        <table>
+          <tr><th>Current phase</th><td>${safe(phase)}</td></tr>
+          <tr><th>Today I learned that</th><td><div class="print-box">${safe(d.learnedToday)}</div></td></tr>
+          <tr><th>The skill I used</th><td><div class="print-box">${safe(d.skillUsed)}</div></td></tr>
+          <tr><th>To get to the next level, I need to</th><td><div class="print-box">${safe(d.nextStep)}</div></td></tr>
+          <tr><th>Question I still have</th><td><div class="print-box">${safe(d.teacherQuestion)}</div></td></tr>
+        </table>
+      `;
+    }
+
+    function prepareReport() {
+      const report = document.getElementById('report');
+      report.innerHTML = reportHTML();
+    }
+
+    function exportPDF() {
+      prepareReport();
+      toast('Choose “Save as PDF” in the print window.');
+      setTimeout(() => window.print(), 300);
+    }
+
+    function previewReport() {
+      prepareReport();
+      const previewWindow = window.open('', '_blank');
+      if (!previewWindow) {
+        toast('Popup blocked. Use Export to PDF instead.');
+        return;
+      }
+      previewWindow.document.write(`<!DOCTYPE html><html><head><title>Preview Report</title><style>
+        body{font-family:Aptos,Arial,sans-serif;line-height:1.45;color:#111827;padding:24px;max-width:920px;margin:auto;background:#fff;}
+        h1{font-size:32px;margin-bottom:6px;}h2{margin-top:28px;border-bottom:1px solid #ddd;padding-bottom:6px;}
+        table{border-collapse:collapse;width:100%;margin:10px 0;}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top;}th{background:#f5f5f5;width:25%;}.print-box{white-space:pre-wrap;min-height:28px;}.print-small{color:#555;}
+      </style></head><body>${report.innerHTML}</body></html>`);
+      previewWindow.document.close();
+    }
+
+    function resetApp() {
+      const sure = confirm('Reset this app on this device? This will clear saved answers.');
+      if (!sure) return;
+      localStorage.removeItem(saveKey);
+      fields.forEach(el => el.value = '');
+      checks.forEach(el => el.checked = false);
+      radios.forEach(el => el.checked = false);
+      document.getElementById('promptOutput').textContent = 'Fill in your idea, then click “Build my Copilot prompt”.';
+      document.getElementById('lessonDate').value = new Date().toISOString().slice(0,10);
+      updateProgress();
+      toast('Reset complete.');
+    }
+
+    [...fields, ...checks, ...radios].forEach(el => {
+      el.addEventListener('input', saveData);
+      el.addEventListener('change', saveData);
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
