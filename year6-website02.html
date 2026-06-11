@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building for a Biome — Day 2</title>
+<style>
+:root{
+  --bg:#eef7ff; --card:#fff; --soft:#f4f9ff; --text:#1f2937; --muted:#526174;
+  --green:#158a58; --green2:#0c6942; --blue:#2b6cb0; --gold:#f6b73c;
+  --line:#d7e5f2; --red:#b42318; --redbg:#fff1f1; --shadow:0 10px 26px rgba(43,84,124,.12);
+  --r:22px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(150deg,#eef7ff,#fbfdff 55%,#e9f9f1);color:var(--text);font-size:18px}
+.app{max-width:1280px;margin:0 auto;padding:14px 18px 100px}
+header{text-align:center;padding:8px}
+header h1{margin:4px 0;font-size:clamp(2rem,4.5vw,3.5rem);color:#17324f}
+header p{margin:0;color:var(--green);font-weight:800;font-size:1.15rem}
+.obj{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border:2px solid var(--line);border-radius:var(--r);padding:12px 14px;margin:10px 0 12px;box-shadow:var(--shadow)}
+.obj b{color:var(--green2)}
+.ksu{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.ksu div{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:8px 10px;font-size:.9rem}
+.banner{background:#fff6d8;border:2px solid #f2cf72;color:#654700;border-radius:var(--r);padding:12px;text-align:center;font-weight:900;margin-bottom:12px}
+.banner span{display:inline-block;background:#fff;border:1px solid #efcf7a;border-radius:999px;padding:7px 13px;margin:6px 4px 0}
+.progress{position:sticky;top:118px;z-index:19;background:rgba(238,247,255,.96);padding:10px 0;border-bottom:1px solid rgba(215,229,242,.75)}
+.steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.step{width:42px;height:42px;border:2px solid var(--line);border-radius:14px;background:#fff;color:var(--muted);font-weight:900;cursor:pointer}
+.step.active{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.08)}
+.step.done{border-color:var(--green);color:var(--green)}
+.step.locked{opacity:.45;cursor:not-allowed}
+.track{height:9px;background:#dceaf5;border-radius:99px;margin:10px auto 0;max-width:640px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));width:0%;transition:.3s}
+.screen{display:none;animation:up .25s ease}.screen.show{display:block}@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
+.card h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 8px;color:#17324f}
+.card h3{font-size:1.3rem;margin:18px 0 8px;color:#17324f}
+.hint{color:var(--muted);line-height:1.45;margin:0 0 12px}
+label{display:block;font-weight:900;margin:15px 0 7px;color:#26364a}
+input[type=text],input[type=file],textarea,select{width:100%;padding:14px;border:2px solid var(--line);border-radius:15px;background:#fbfdff;color:var(--text);font:inherit}
+textarea{min-height:90px;resize:vertical;line-height:1.42}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(43,108,176,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:16px;padding:14px 22px;font:inherit;font-weight:900;cursor:pointer;background:var(--green);color:#fff;text-decoration:none;box-shadow:0 8px 18px rgba(21,138,88,.18)}
+.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.btn.secondary{background:#fff;color:var(--text);border:2px solid var(--line);box-shadow:none}
+.btn.blue{background:var(--blue)}.btn.gold{background:var(--gold);color:#3b2a00}.btn.danger{background:#fff;color:var(--red);border:2px solid #fecaca;box-shadow:none}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.error{display:none;background:var(--redbg);border:2px solid #fecaca;color:var(--red);border-radius:15px;padding:12px 14px;font-weight:900;margin:12px 0}
+.success{background:#e4f8ee;border:2px solid #b7ebcd;color:#0a6b44;border-radius:15px;padding:12px 14px;font-weight:900;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+.mini{background:var(--soft);border:1px solid var(--line);border-radius:18px;padding:14px}
+.mini h4{margin:0 0 6px;font-size:1.1rem;color:#17324f}.mini p{margin:0;color:var(--muted);font-size:.95rem;line-height:1.35}
+.researchLayout{display:grid;grid-template-columns:3fr 1fr;gap:16px;height:calc(100vh - 235px);min-height:620px}
+.viewer,.side{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.viewerTop{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f6f9fc;border-bottom:1px solid var(--line);padding:10px 12px;flex-wrap:wrap}
+.viewer iframe{width:100%;height:calc(100% - 58px);border:0;background:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{background:#fff;color:var(--text);border:2px solid var(--line);box-shadow:none;border-radius:999px;padding:10px 13px}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.side{padding:15px;overflow:auto}.side h3{margin:0 0 6px}.side textarea{min-height:120px}
+.svgpic{width:100%;height:132px;border-radius:14px;border:1px solid var(--line);overflow:hidden;margin-bottom:9px;background:#fff}
+.photoGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.photoCard{background:var(--soft);border:1px solid var(--line);border-radius:18px;padding:14px}
+.preview{width:100%;max-height:180px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:10px}
+.saved{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;border-radius:999px;padding:10px 22px;font-weight:900;opacity:0;transition:.25s;z-index:50}.saved.show{opacity:1}
+#printSheet{display:none}
+@media(max-width:900px){.ksu{grid-template-columns:1fr}.progress{top:0}.researchLayout{grid-template-columns:1fr;height:auto}.viewer{height:58vh}.viewer iframe{height:calc(100% - 58px)}}
+@media print{body{background:#fff;color:#000;font-size:12pt}.app,.saved{display:none}#printSheet{display:block!important;padding:20px;font-family:Georgia,serif}#printSheet h1{font-size:18pt}#printSheet h2{font-size:13pt;border-bottom:1px solid #000;margin-top:14pt}#printSheet img{max-width:240px;max-height:180px;margin:6px 0;border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div style="font-size:2.3rem">⛏️ 🌍 🧱 📸</div><h1>Building for a Biome</h1><p>Day 2 Mission: Minecraft Climate Design</p></header>
+<section class="obj">
+  <div><b>WAGBA:</b> We are getting better at creating a Minecraft structure that matches a chosen biome and climate.</div>
+  <div class="ksu">
+    <div><b>K:</b> I know different biomes have climate features.</div>
+    <div><b>S:</b> I can build a structure that matches a biome.</div>
+    <div><b>U:</b> My build needs evidence for a website showcase.</div>
+  </div>
+</section>
+<div class="banner">This is purposeful building <br><span>Biome first</span><span>Build second</span><span>Evidence third</span></div>
+<div class="progress"><div class="steps" id="steps"></div><div class="track"><div class="fill" id="fill"></div></div></div>
+
+<section class="screen" data-step="0">
+  <div class="card">
+    <h2>👋 Start Here</h2>
+    <p class="hint">Complete the form first. Then you can continue.</p>
+    <div id="continueBox" style="display:none" class="success">Welcome back, <span id="returnName"></span>! <button class="btn" onclick="go(1)">Continue</button></div>
+    <label>Name</label><input type="text" data-key="name" placeholder="Your name">
+    <label>Class</label><input type="text" data-key="class" placeholder="e.g. 6B">
+    <label>Partner</label><input type="text" data-key="partner" placeholder="Partner name">
+    <label>What are you getting better at today?</label><textarea data-key="wagbaAnswer" placeholder="Today I am getting better at..."></textarea>
+    <div class="error" id="error0"></div>
+    <div class="nav"><button class="btn danger" onclick="resetAll()">New student? Reset</button><button class="btn" onclick="next()">Start Mission ➜</button></div>
+  </div>
+</section>
+
+<section class="screen" data-step="1">
+  <div class="card">
+    <h2>📋 Confirm Your Plan</h2>
+    <p class="hint">Choose your biome and explain your building idea.</p>
+    <label>Chosen biome</label><select data-key="biome"><option value="">Choose one</option><option>Plains</option><option>Forest</option><option>Savanna</option><option>Warm Ocean</option><option>Cherry Grove</option><option>Desert</option><option>Ice Plains</option></select>
+    <label>What will you build?</label><textarea data-key="buildIdea" placeholder="Example: a desert tower, treehouse, island hut..."></textarea>
+    <label>How should it match the biome?</label><textarea data-key="matchWhy" placeholder="Think about hot, cold, wet, dry, trees, snow, sand, water..."></textarea>
+    <label>How will you work with your partner?</label><textarea data-key="teamwork" placeholder="Who will build? Who will check the plan?"></textarea>
+    <div class="error" id="error1"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="2">
+  <div class="card">
+    <h2>💡 Build Idea Investigation</h2>
+    <p class="hint">Read at least 3 build websites. The website is on the left. Write your build idea on the right.</p>
+    <div class="tabs" id="webTabs"></div>
+    <div class="researchLayout">
+      <div class="viewer">
+        <div class="viewerTop"><b id="webLabel">Website</b><a class="btn blue" id="openSite" target="_blank" rel="noopener noreferrer">Open in New Tab</a></div>
+        <iframe id="webFrame" title="Build idea website"></iframe>
+      </div>
+      <aside class="side">
+        <h3>My idea from this website</h3>
+        <p class="hint" id="webPrompt">What did you learn?</p>
+        <label>Idea I learnt</label><textarea id="ideaBox" placeholder="I learnt that..."></textarea>
+        <label>How I can use it</label><textarea id="useBox" placeholder="I can use this in my biome by..."></textarea>
+      </aside>
+    </div>
+    <div class="error" id="error2"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next: Open Biome World ➜</button></div>
+</section>
+
+<section class="screen" data-step="3">
+  <div class="card">
+    <h2>🗺️ Open Your Biome World</h2>
+    <p class="hint">Now that you have reviewed build ideas, open only the biome world you planned with your partner.</p>
+    <div class="grid" id="biomeGrid"></div>
+    <div class="error" id="error3"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="4">
+  <div class="card">
+    <h2>🖼️ Biome Build Samples</h2>
+    <p class="hint">Look at sample pictures. These are idea starters only. Your build should still be your own.</p>
+    <div class="grid" id="sampleCards"></div>
+    <h3>Refine your build idea</h3>
+    <label>Which sample gave you an idea?</label><textarea data-key="sampleIdea" placeholder="The sample that helped me was..."></textarea>
+    <label>What will you add or improve in your own build?</label><textarea data-key="improveIdea" placeholder="I will add or improve..."></textarea>
+    <div class="error" id="error4"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="5">
+  <div class="card">
+    <h2>📸 Evidence: Minecraft Camera + Upload</h2>
+    <p class="hint">In Minecraft Education, use the Camera tool to take photos. Your photos save into the Minecraft Portfolio. You may also upload local screenshots here so they appear in your PDF reflection.</p>
+    <div class="success">Camera tip: Hold the Camera, right click to take a first-person photo. Open the Portfolio to review/export your photos.</div>
+    <div class="photoGrid">
+      <div class="photoCard"><h3>Photo 1</h3><label>Caption</label><textarea data-key="photoCap0" placeholder="What does this photo show?"></textarea><input type="file" accept="image/*" onchange="loadPhoto(event,0)"><img class="preview" id="photoPrev0" style="display:none"></div>
+      <div class="photoCard"><h3>Photo 2</h3><label>Caption</label><textarea data-key="photoCap1" placeholder="What does this photo show?"></textarea><input type="file" accept="image/*" onchange="loadPhoto(event,1)"><img class="preview" id="photoPrev1" style="display:none"></div>
+      <div class="photoCard"><h3>Photo 3</h3><label>Caption</label><textarea data-key="photoCap2" placeholder="What does this photo show?"></textarea><input type="file" accept="image/*" onchange="loadPhoto(event,2)"><img class="preview" id="photoPrev2" style="display:none"></div>
+    </div>
+    <div class="error" id="error5"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="6">
+  <div class="card">
+    <h2>🛑 Teacher Checkpoint</h2>
+    <div class="banner">Pause. Be ready to explain your design to Mr Dave.</div>
+    <label>Complete the sentence</label><textarea data-key="checkpoint" placeholder="Our biome is ____. It is ____. Our build matches because ____."></textarea>
+    <div class="error" id="error6"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="7">
+  <div class="card">
+    <h2>💭 Exit Reflection</h2>
+    <label>What did you build or test today?</label><textarea data-key="r1"></textarea>
+    <label>How does it match the biome?</label><textarea data-key="r2"></textarea>
+    <label>What evidence did you capture?</label><textarea data-key="r3"></textarea>
+    <label>What do you need to improve next lesson?</label><textarea data-key="r4"></textarea>
+    <div class="error" id="error7"></div>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button><button class="btn" onclick="next()">Next ➜</button></div>
+</section>
+
+<section class="screen" data-step="8">
+  <div class="card" style="text-align:center">
+    <h2>🏆 Save Your Work</h2>
+    <p class="hint">Download your progress. In the print window, choose Save as PDF.</p>
+    <button class="btn gold" onclick="downloadPDF()">Download Day 2 PDF</button>
+    <button class="btn secondary" onclick="downloadBackup()">Download Backup HTML</button>
+  </div>
+  <div class="nav"><button class="btn secondary" onclick="back()">Back</button></div>
+</section>
+</div>
+<div class="saved" id="saved">Saved</div><div id="printSheet"></div>
+<script>
+const KEY='biomeDay2V4'; let data=JSON.parse(localStorage.getItem(KEY)||'{}'); let cur=+data._step||0, max=+data._max||0; const TOTAL=9;
+const BIOMES={
+ 'Plains':['🌾','https://education.minecraft.net/world/c6e027d7-0127-4a47-8150-e368233c630c'],
+ 'Forest':['🌲','https://education.minecraft.net/world/d9684730-40ef-483c-904f-0b2a788a8bc6'],
+ 'Savanna':['🦒','https://education.minecraft.net/world/1208e0e0-e26e-4cec-ae05-9be4f157a98f'],
+ 'Warm Ocean':['🐠','https://education.minecraft.net/world/51a25308-cad9-4042-908a-a918e4b8472e'],
+ 'Cherry Grove':['🌸','https://education.minecraft.net/world/001064d2-fbd6-41ac-a640-1c2460416f6a'],
+ 'Desert':['🏜️','https://education.minecraft.net/world/dee9e1d9-cfd0-455e-8854-a86c184c2035'],
+ 'Ice Plains':['🧊','https://education.minecraft.net/world/ae88331b-6a2a-4cb2-8cdd-2869fcb09d25']
+};
+const WEBS=[
+ ['GrabCraft House Ideas','https://www.grabcraft.com/search/house','Look for house shapes, roofs, details, and structure ideas.'],
+ ['Bloxelizer House Schematics','https://bloxelizer.com/schematics?q=house','Look for build shapes, block patterns, and layout ideas.'],
+ ['Shelter ideas','https://minecraft.wiki/w/Tutorials/Shelters','Look for shelter shapes and survival design ideas.']
+];
+const REQ={0:['name','class','partner','wagbaAnswer'],1:['biome','buildIdea','matchWhy','teamwork'],2:['idea0','use0','idea1','use1','idea2','use2'],3:['biome'],4:['sampleIdea','improveIdea'],5:[],6:['checkpoint'],7:['r1','r2','r3','r4'],8:[]};
+let webIndex=0;
+function save(){data._step=cur;data._max=max;localStorage.setItem(KEY,JSON.stringify(data));let s=document.getElementById('saved');s.classList.add('show');clearTimeout(s.t);s.t=setTimeout(()=>s.classList.remove('show'),700)}
+function esc(s){return String(s||'—').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+document.querySelectorAll('[data-key]').forEach(el=>{let k=el.dataset.key;if(data[k])el.value=data[k];el.oninput=el.onchange=()=>{data[k]=el.value;clearErr(cur);save();if(k==='biome'){renderSamples();renderBiomes()}}})
+const steps=document.getElementById('steps');['👋','📋','💡','🗺️','🖼️','📸','🛑','💭','🏆'].forEach((x,i)=>{let b=document.createElement('button');b.className='step';b.textContent=x;b.onclick=()=>i<=max?go(i):alert('Complete the current page first.');steps.appendChild(b)})
+function clearErr(i){let e=document.getElementById('error'+i);if(e)e.style.display='none'}
+function validate(i){clearErr(i);let m=(REQ[i]||[]).filter(k=>!String(data[k]||'').trim()); if(m.length){let e=document.getElementById('error'+i);e.textContent='Please complete this page before moving on.';e.style.display='block';return false} return true}
+function next(){if(!validate(cur))return;max=Math.max(max,cur+1);go(Math.min(cur+1,TOTAL-1))}
+function back(){go(Math.max(cur-1,0))}
+function go(i){cur=i;max=Math.max(max,cur);document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('show',+s.dataset.step===i));document.querySelectorAll('.step').forEach((d,j)=>{d.classList.toggle('active',j===i);d.classList.toggle('done',j<max);d.classList.toggle('locked',j>max)});document.getElementById('fill').style.width=(i/(TOTAL-1)*100)+'%';if(i===2)renderWeb();if(i===3)renderBiomes();if(i===4)renderSamples();scrollTo({top:0,behavior:'smooth'});save()}
+function resetAll(){if(confirm('Reset saved work on this device? Download a backup first if needed.')){localStorage.removeItem(KEY);location.reload()}}
+if(data.name){document.getElementById('continueBox').style.display='block';document.getElementById('returnName').textContent=data.name}
+function renderWeb(){let tabs=document.getElementById('webTabs');tabs.innerHTML=WEBS.map((w,i)=>`<button class="tab ${i===webIndex?'active':''}" onclick="webIndex=${i};renderWeb()">${i+1}. ${w[0]}</button>`).join('');let w=WEBS[webIndex];document.getElementById('webLabel').textContent=w[0];document.getElementById('openSite').href=w[1];document.getElementById('webFrame').src=w[1];document.getElementById('webPrompt').textContent=w[2];document.getElementById('ideaBox').value=data['idea'+webIndex]||'';document.getElementById('useBox').value=data['use'+webIndex]||'';document.getElementById('ideaBox').oninput=e=>{data['idea'+webIndex]=e.target.value;save();clearErr(2)};document.getElementById('useBox').oninput=e=>{data['use'+webIndex]=e.target.value;save();clearErr(2)}}
+function svg(bg,ground,house,roof,extra=''){return `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="160" fill="${bg}"/><rect y="105" width="320" height="55" fill="${ground}"/>${extra}<rect x="120" y="72" width="88" height="56" fill="${house}"/><polygon points="110,75 164,34 218,75" fill="${roof}"/><rect x="155" y="98" width="20" height="30" fill="#513822"/><rect x="132" y="88" width="18" height="16" fill="#c6f2ff"/><rect x="185" y="88" width="18" height="16" fill="#c6f2ff"/></svg>`}
+function renderSamples(){let ideas={
+Plains:['Farmhouse',svg('#9bdcff','#72c85a','#e5c07b','#8b5a2b','<rect x="35" y="118" width="70" height="16" fill="#f2d16b"/><rect x="48" y="92" width="6" height="32" fill="#9b6b2f"/>'),'Open land suits farms, paths, fences and village-style builds.'],
+Forest:['Treehouse',svg('#9bdcff','#2f8f46','#8b5a2b','#315f2b','<circle cx="55" cy="70" r="34" fill="#247a3c"/><rect x="50" y="78" width="12" height="50" fill="#7a4a25"/><circle cx="262" cy="70" r="36" fill="#247a3c"/><rect x="256" y="78" width="12" height="50" fill="#7a4a25"/>'),'Use logs, leaves, bridges and lanterns to blend into the forest.'],
+Savanna:['Lookout Lodge',svg('#ffd98a','#d9b45a','#d28b3c','#7a4a25','<circle cx="55" cy="74" r="22" fill="#799b34"/><rect x="51" y="82" width="8" height="48" fill="#8a5b2e"/><circle cx="265" cy="78" r="24" fill="#799b34"/><rect x="261" y="86" width="8" height="42" fill="#8a5b2e"/>'),'Acacia wood, shade and height work well in a warm open biome.'],
+'Warm Ocean':['Island Base',svg('#8fd4ff','#f6db91','#dba95a','#4f8bc9','<rect y="95" width="320" height="65" fill="#22a7d8"/><ellipse cx="160" cy="122" rx="105" ry="24" fill="#f6db91"/><rect x="40" y="122" width="50" height="8" fill="#8b5a2b"/><circle cx="55" cy="75" r="19" fill="#45b46a"/><rect x="52" y="82" width="7" height="45" fill="#8b5a2b"/>'),'Try docks, glass windows, islands, boats and coral colours.'],
+'Cherry Grove':['Garden Cottage',svg('#bfe7ff','#86cf73','#ffe1ec','#8b5a35','<circle cx="55" cy="72" r="32" fill="#ff9fc4"/><rect x="50" y="80" width="11" height="50" fill="#8b5a35"/><circle cx="265" cy="72" r="34" fill="#ff9fc4"/><rect x="260" y="80" width="11" height="50" fill="#8b5a35"/>'),'Use cherry wood, flowers, paths and calm garden features.'],
+Desert:['Desert Tower',svg('#9bdcff','#e8c56a','#d9a441','#8a5b2e','<circle cx="260" cy="35" r="18" fill="#fff2a6"/><rect x="60" y="92" width="8" height="38" fill="#40964c"/><rect x="45" y="108" width="38" height="7" fill="#40964c"/>'),'Sandstone, shade, cactus, towers and oasis designs match dry climates.'],
+'Ice Plains':['Research Station',svg('#d6f4ff','#effbff','#d9edf7','#6aa3bf','<polygon points="0,105 80,55 160,105" fill="#c9efff"/><polygon points="140,105 230,45 320,105" fill="#bde8fb"/>'),'Use snow, ice, glass and warm lighting for a cold-weather build.']
+};let box=document.getElementById('sampleCards');let arr=Object.entries(ideas);box.innerHTML=arr.map(([b,v])=>`<div class="mini"><div class="svgpic">${v[1]}</div><h4>${BIOMES[b]?.[0]||''} ${b}: ${v[0]}</h4><p>${v[2]}</p></div>`).join('')}
+function renderBiomes(){let g=document.getElementById('biomeGrid');g.innerHTML=Object.entries(BIOMES).map(([n,b])=>`<a class="mini btn ${data.biome===n?'gold':'blue'}" target="_blank" rel="noopener noreferrer" href="${b[1]}">${b[0]} Open ${n} World ${data.biome===n?'⭐ YOUR BIOME':''}</a>`).join('')}
+function loadPhoto(ev,i){let file=ev.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=e=>{let img=new Image();img.onload=()=>{let max=900,scale=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');c.width=img.width*scale;c.height=img.height*scale;let ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);data['photo'+i]=c.toDataURL('image/jpeg',.72);showPhoto(i);save()};img.src=e.target.result};reader.readAsDataURL(file)}
+function showPhoto(i){let p=document.getElementById('photoPrev'+i);if(data['photo'+i]){p.src=data['photo'+i];p.style.display='block'}}
+for(let i=0;i<3;i++)showPhoto(i)
+function report(){let d=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});let photos='';for(let i=0;i<3;i++){photos+=`<p><b>Photo ${i+1}:</b> ${esc(data['photoCap'+i])}</p>${data['photo'+i]?`<img src="${data['photo'+i]}">`:''}`}return `<h1>Building for a Biome — Day 2</h1><p><b>Name:</b> ${esc(data.name)} &nbsp; <b>Class:</b> ${esc(data.class)} &nbsp; <b>Partner:</b> ${esc(data.partner)}<br><b>Date:</b> ${d} &nbsp; <b>Biome:</b> ${esc(data.biome)}</p><h2>WAGBA</h2><p>${esc(data.wagbaAnswer)}</p><h2>Plan</h2><p><b>Build:</b> ${esc(data.buildIdea)}</p><p><b>Match biome:</b> ${esc(data.matchWhy)}</p><p><b>Teamwork:</b> ${esc(data.teamwork)}</p><h2>Website Investigation</h2>${WEBS.map((w,i)=>`<p><b>${w[0]} idea:</b> ${esc(data['idea'+i])}<br><b>How I can use it:</b> ${esc(data['use'+i])}</p>`).join('')}<h2>Sample Ideas</h2><p>${esc(data.sampleIdea)}</p><p>${esc(data.improveIdea)}</p><h2>Camera / Uploaded Evidence</h2>${photos}<h2>Teacher Checkpoint</h2><p>${esc(data.checkpoint)}</p><h2>Exit Reflection</h2><p>${esc(data.r1)}</p><p>${esc(data.r2)}</p><p>${esc(data.r3)}</p><p>${esc(data.r4)}</p>`}
+function downloadPDF(){document.getElementById('printSheet').innerHTML=report();window.print()}
+function downloadBackup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([`<!DOCTYPE html><html><body>${report()}</body></html>`],{type:'text/html'}));a.download=`day2-biome-${(data.name||'student').replace(/\s+/g,'-')}.html`;a.click()}
+go(cur);
+</script>
+</body>
+</html>
