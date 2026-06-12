@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Year 5 Tinkercad Day 2 Guided Course</title>
+  <style>
+    :root {
+      --bg: #eef5fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #526174;
+      --border: #d5e1ee;
+      --green: #0f8b5f;
+      --green-dark: #08704a;
+      --green-soft: #dff8ec;
+      --blue: #2b6cb0;
+      --blue-soft: #e5f0ff;
+      --orange: #d97706;
+      --orange-soft: #fff1d6;
+      --purple: #6d5bd0;
+      --purple-soft: #ece9ff;
+      --pink: #b83280;
+      --pink-soft: #ffe7f2;
+      --yellow-soft: #fff8d6;
+      --shadow: 0 12px 28px rgba(31, 41, 55, 0.10);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,0.94);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      padding: 14px 22px 10px;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand h1 { margin: 0; font-size: 22px; line-height: 1.1; }
+    .brand p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+
+    .chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .chip {
+      background: var(--blue-soft);
+      border: 1px solid #c6daf6;
+      color: #23486c;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .top-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .small-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .objective {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .objective span {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .objective strong { color: var(--green-dark); }
+
+    main { padding: 20px 22px 40px; }
+    .screen { display: none; animation: fade 180ms ease; }
+    .screen.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .big-card {
+      width: min(1150px, 100%);
+      margin: 18px auto;
+      min-height: calc(100vh - 220px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .page-title {
+      font-size: clamp(38px, 5vw, 76px);
+      line-height: 1.03;
+      letter-spacing: -1px;
+      margin: 0 0 14px;
+    }
+    .lead { font-size: clamp(20px, 2.1vw, 30px); color: var(--muted); line-height: 1.35; margin: 8px 0 18px; }
+
+    .split { display:grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .three { display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .two { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+    label { display:block; font-weight: 900; margin: 14px 0 8px; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fbfdff;
+      border-radius: 16px;
+      padding: 14px;
+      font: inherit;
+      color: var(--text);
+    }
+    textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+
+    button, .button-link {
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 18px;
+      background: var(--green);
+      color: #fff;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 9px 18px rgba(15, 139, 95, 0.18);
+    }
+    button:hover, .button-link:hover { background: var(--green-dark); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+    button.secondary { background: #e9eef5; color: #223044; border: 1px solid var(--border); box-shadow: none; }
+    button.blue, .button-link.blue { background: var(--blue); box-shadow: 0 9px 18px rgba(43,108,176,0.18); }
+    button.orange, .button-link.orange { background: var(--orange); box-shadow: 0 9px 18px rgba(217,119,6,0.18); }
+    button.purple, .button-link.purple { background: var(--purple); box-shadow: 0 9px 18px rgba(109,91,208,0.18); }
+    .full { width: 100%; margin-top: 14px; }
+    .large { font-size: clamp(24px, 3vw, 42px); padding: 24px 28px; border-radius: 26px; }
+
+    .error { display:none; margin-top: 12px; background: #fff0f0; color: #9d1c1c; border: 1px solid #efb0b0; border-radius: 14px; padding: 12px; font-weight: 800; }
+    .note { background: var(--yellow-soft); border: 1px solid #ecd783; border-radius: 18px; padding: 14px; color: #5b4a10; line-height: 1.45; }
+    .small-help { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+    .choice {
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      background: #fff;
+      padding: 18px;
+      min-height: 140px;
+      cursor: pointer;
+      position: relative;
+    }
+    .choice h3 { margin: 0 0 8px; font-size: 24px; }
+    .choice p { margin: 0; color: var(--muted); line-height: 1.4; }
+    .choice.green { background: var(--green-soft); border-color: #b9e7cc; }
+    .choice.blue { background: var(--blue-soft); border-color: #bdd7ff; }
+    .choice.orange { background: var(--orange-soft); border-color: #f2c980; }
+    .choice.purple { background: var(--purple-soft); border-color: #cbc4ff; }
+    .choice.pink { background: var(--pink-soft); border-color: #f0b7d1; }
+    .choice.selected { outline: 5px solid rgba(15,139,95,0.25); border-color: var(--green); }
+
+    .step-list { display:grid; gap: 12px; margin: 16px 0; }
+    .step {
+      display:flex; align-items:center; gap:12px;
+      padding: 14px;
+      border-radius: 18px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight: 800;
+    }
+    .num {
+      width:38px;height:38px;border-radius:50%;
+      background:var(--green);color:#fff;
+      display:inline-grid;place-items:center;
+      font-weight:900;
+      flex: 0 0 38px;
+    }
+
+    .checklist { display:grid; gap: 10px; }
+    .check {
+      display:flex; align-items:flex-start; gap: 12px;
+      background:#fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px;
+      font-weight: 800;
+      margin: 0;
+    }
+    .check input { width:22px; height:22px; flex:0 0 22px; }
+
+    .mission-layout { display:grid; grid-template-columns: 300px 1fr; gap: 18px; align-items:start; }
+    .side-nav { position: sticky; top: 158px; display:grid; gap:10px; }
+    .side-nav button { justify-content:flex-start; box-shadow:none; padding: 12px 14px; background:#fff; color:var(--text); border:1px solid var(--border); }
+    .side-nav button.done { background: var(--green-soft); border-color:#afe2c3; color:var(--green-dark); }
+
+    .mission-card { margin-bottom: 18px; scroll-margin-top: 170px; }
+    .mission-head { display:flex; gap:14px; align-items:center; margin-bottom: 12px; }
+    .mission-icon { width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:32px;background:var(--blue-soft); }
+    .mission-head h2 { margin:0; font-size: clamp(28px, 3vw, 48px); }
+    .mission-head p { margin:4px 0 0; color:var(--muted); font-size:17px; }
+
+    .model-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .model-card { min-height: 190px; padding: 12px; }
+    .model-visual { height: 92px; background:#f8fbff; border:1px solid var(--border); border-radius:16px; position:relative; overflow:hidden; margin-bottom:10px; }
+    .cube { position:absolute; border-radius:8px; background:#3478bd; box-shadow: 10px 10px 0 #1d4f84; }
+    .brown { background:#9b5b2e; box-shadow: 10px 10px 0 #6f3e1f; }
+    .green-shape { background:#2f9a55; box-shadow: 10px 10px 0 #176835; }
+    .red { background:#d65a5a; box-shadow: 10px 10px 0 #993c3c; }
+    .grey { background:#9aa8b6; box-shadow: 10px 10px 0 #617080; }
+    .pinkshape { background:#ff9ec7; box-shadow: 10px 10px 0 #d56b9b; }
+
+    .table-visual { height: 170px; background:linear-gradient(180deg,#f9fcff,#eef5fb); border:1px solid var(--border); border-radius:20px; position:relative; overflow:hidden; }
+    .table-top { position:absolute; left:24%; top:40px; width:52%; height:28px; background:#c98642; border-radius:10px; box-shadow:12px 12px 0 #8f5729; }
+    .table-leg { position:absolute; width:22px; height:70px; background:#8f5729; border-radius:8px; top:75px; }
+    .leg1{left:29%;}.leg2{left:40%;}.leg3{right:38%;}.leg4{right:27%;}
+    .detail-cup { position:absolute; left:37%; top:10px; width:34px; height:32px; background:#76b7e8; border-radius:8px; box-shadow:8px 8px 0 #4378aa; }
+    .detail-book { position:absolute; right:34%; top:22px; width:54px; height:14px; background:#e66a8c; border-radius:5px; box-shadow:7px 7px 0 #9b3a58; }
+
+    .rubric { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .rubric .choice { min-height: 150px; }
+    .selected-pill { display:inline-flex; align-items:center; gap:8px; background:var(--green-soft); color:var(--green-dark); border:1px solid #afe2c3; padding:8px 12px; border-radius:999px; font-weight:900; }
+
+    .progress-bar { height: 16px; background:#dde8f2; border-radius:999px; overflow:hidden; margin: 14px 0; }
+    .progress-fill { height:100%; width:0%; background:var(--green); transition: width 200ms ease; }
+
+    .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(11,18,32,0.45); z-index:40; align-items:center; justify-content:center; padding:20px; }
+    .modal { width:min(860px,100%); max-height:90vh; overflow:auto; background:#fff; border-radius:28px; padding:24px; box-shadow:0 24px 60px rgba(0,0,0,0.25); }
+    .modal-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+
+    @media (max-width: 1050px) {
+      .objective { grid-template-columns: 1fr; }
+      .split, .two, .three, .mission-layout, .model-grid, .rubric { grid-template-columns: 1fr; }
+      .side-nav { position: static; }
+      header { position: static; }
+    }
+
+    @media print {
+      header, .side-nav, button, .button-link, .modal-backdrop { display:none !important; }
+      body { background:#fff; }
+      .screen { display:block !important; }
+      .card { box-shadow:none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top-row">
+      <div class="brand">
+        <h1>Year 5 Tinkercad Guided Course — Day 2</h1>
+        <p>Combining shapes, improving a model, and building one mini model</p>
+      </div>
+      <div class="chips">
+        <span class="chip" id="nameChip">Name: not entered</span>
+        <span class="chip" id="classChip">Class: not selected</span>
+        <span class="chip" id="dateChip">Date: loading...</span>
+      </div>
+      <div class="top-actions">
+        <button class="small-btn" onclick="showScreen('login')">Tinkercad Login</button>
+        <button class="small-btn" onclick="showLanding()">Continue / Reset</button>
+      </div>
+    </div>
+    <div class="objective" aria-label="Lesson objective">
+      <span><strong>WAGBA:</strong> We are getting better at combining simple 3D shapes to create a clear digital model.</span>
+      <span><strong>K:</strong> 3D models can be made from simple shapes.</span>
+      <span><strong>S:</strong> I can resize, move, rotate, duplicate, and combine shapes carefully.</span>
+      <span><strong>U:</strong> Good 3D models are planned, neat, checked, and improved.</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="landing" class="screen active">
+      <div class="card big-card">
+        <div class="split">
+          <div>
+            <h2 class="page-title">Welcome to Day 2</h2>
+            <p class="lead">This computer may have been used by another Year 5 student.</p>
+            <div class="note"><strong>Choose carefully:</strong> continue if this is your work, or reset if you are a new student.</div>
+            <div id="savedSummary" class="card" style="box-shadow:none;margin-top:18px;background:var(--blue-soft);"></div>
+            <button class="large full" id="continueBtn" onclick="continueSession()">Continue My Session</button>
+          </div>
+          <div class="card" style="box-shadow:none;background:var(--green-soft);">
+            <h2 style="font-size:38px;margin:0 0 10px;">New student?</h2>
+            <p class="lead" style="font-size:22px;">Back up old work first, then reset this device.</p>
+            <div class="step-list">
+              <div class="step"><span class="num">1</span> Download backup for the old student</div>
+              <div class="step"><span class="num">2</span> Reset the website progress</div>
+              <div class="step"><span class="num">3</span> Start with your own name and class</div>
+            </div>
+            <button class="blue full" onclick="downloadBackup()">Download Backup First</button>
+            <button class="secondary full" onclick="openResetModal()">I am a New Student / Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="welcome" class="screen">
+      <div class="card big-card">
+        <div class="split">
+          <div>
+            <h2 class="page-title">Day 2 Mission</h2>
+            <p class="lead">Improve your Day 1 table. Then build one clear mini model using simple shapes.</p>
+            <div class="step-list">
+              <div class="step"><span class="num">1</span> Complete the Wayground starter</div>
+              <div class="step"><span class="num">2</span> Open Tinkercad once</div>
+              <div class="step"><span class="num">3</span> Improve your table</div>
+              <div class="step"><span class="num">4</span> Build one mini model</div>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none;background:#fff;">
+            <label for="studentName">Your name</label>
+            <input id="studentName" type="text" placeholder="Example: David Kang" oninput="saveBasic()" />
+
+            <label for="studentClass">Your class</label>
+            <select id="studentClass" onchange="saveBasic(); setupLogin();">
+              <option value="">Choose your class</option>
+              <option value="Y5E">Y5E</option>
+              <option value="Y5N">Y5N</option>
+              <option value="Y5T">Y5T</option>
+            </select>
+
+            <label for="wagbaAnswer">What are you getting better at today?</label>
+            <textarea id="wagbaAnswer" placeholder="I am getting better at combining simple 3D shapes to..."></textarea>
+            <button class="full" onclick="submitWagba()">Start Day 2</button>
+            <div class="error" id="welcomeError">Please enter your name, class, and WAGBA answer first.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="starter" class="screen">
+      <div class="card big-card">
+        <h2 class="page-title">Starter: 3D Recap</h2>
+        <p class="lead">Complete the Wayground starter before opening Tinkercad.</p>
+        <div class="split">
+          <div class="card" style="box-shadow:none;background:var(--blue-soft);">
+            <h3 style="font-size:32px;margin:0 0 12px;">Do this first</h3>
+            <div class="step-list">
+              <div class="step"><span class="num">1</span> Open Wayground</div>
+              <div class="step"><span class="num">2</span> Answer 10 questions</div>
+              <div class="step"><span class="num">3</span> Come back here</div>
+            </div>
+            <a class="button-link blue large full" href="https://wayground.com/join?gc=63141961&source=liveDashboard" target="_blank" rel="noopener noreferrer" onclick="markOpened('starter')">Open Wayground Starter</a>
+          </div>
+          <div class="card" style="box-shadow:none;">
+            <h3 style="font-size:32px;margin:0 0 12px;">Tick when done</h3>
+            <div class="checklist">
+              <label class="check"><input type="checkbox" id="openedStarter" onchange="saveChecks()" /> I opened Wayground.</label>
+              <label class="check"><input type="checkbox" id="finishedStarter" onchange="saveChecks()" /> I finished the starter quiz.</label>
+            </div>
+            <button class="full" id="starterNext" onclick="goLogin()" disabled>Next: Tinkercad Login</button>
+            <div class="error" id="starterError">Please complete the starter checklist first.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="login" class="screen">
+      <div class="card big-card">
+        <div class="split">
+          <div>
+            <span class="selected-pill" id="loginBadge">Choose your class first</span>
+            <h2 class="page-title" style="margin-top:14px;">Log in once</h2>
+            <p class="lead">Open Tinkercad now. Keep it open. Come back to this app only when you need the next mission.</p>
+            <div class="login-actions two">
+              <a class="button-link blue large" id="codesLink" target="_blank" rel="noopener noreferrer" onclick="markOpened('codes')">Open Login Codes</a>
+              <a class="button-link large" id="classLink" target="_blank" rel="noopener noreferrer" onclick="markOpened('classlink')">Open Tinkercad Class</a>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none;background:var(--green-soft);">
+            <h2 style="font-size:34px;margin:0 0 12px;">Before the Mission Board</h2>
+            <div class="checklist">
+              <label class="check"><input type="checkbox" id="openedCodes" onchange="saveChecks()" /> I opened my login codes.</label>
+              <label class="check"><input type="checkbox" id="openedClasslink" onchange="saveChecks()" /> I opened the Tinkercad class link.</label>
+              <label class="check"><input type="checkbox" id="loggedIn" onchange="saveChecks()" /> I can see my Tinkercad workplane.</label>
+            </div>
+            <button class="full" id="missionNext" onclick="goMission()" disabled>Start Mission Board</button>
+            <div class="error" id="loginError">Please complete the login checklist first.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission" class="screen">
+      <div class="mission-layout">
+        <aside class="card side-nav">
+          <h2 style="margin:0;">Mission Board</h2>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <button id="nav-controls" onclick="scrollToId('controls')">1. Controls Recap</button>
+          <button id="nav-table" onclick="scrollToId('table')">2. Improve Table</button>
+          <button id="nav-model" onclick="scrollToId('model')">3. Mini Model</button>
+          <button id="nav-challenge" onclick="scrollToId('challenge')">4. Challenge</button>
+          <button id="nav-reflection" onclick="scrollToId('reflection')">5. Reflection</button>
+          <div class="note"><strong>Less switching:</strong> keep Tinkercad open. Use this app as your checklist.</div>
+          <button class="secondary" onclick="showScreen('login')">Back to Login Links</button>
+        </aside>
+
+        <div>
+          <section id="controls" class="card mission-card">
+            <div class="mission-head"><div class="mission-icon">🖱️</div><div><h2>Controls Recap</h2><p>Try these in Tinkercad before building.</p></div></div>
+            <div class="three">
+              <div class="choice blue"><h3>Scroll</h3><p>Zoom in and out.</p></div>
+              <div class="choice green"><h3>Middle mouse</h3><p>Press the scroll wheel to pan/move the view.</p></div>
+              <div class="choice orange"><h3>Right click / View Cube</h3><p>Turn your view around.</p></div>
+            </div>
+            <div class="checklist" style="margin-top:14px;">
+              <label class="check"><input type="checkbox" id="doneControls" onchange="saveChecks()" /> I practised zoom, pan, and view control in Tinkercad.</label>
+            </div>
+          </section>
+
+          <section id="table" class="card mission-card">
+            <div class="mission-head"><div class="mission-icon">🪑</div><div><h2>Improve Your Table</h2><p>Make your Day 1 table clearer and neater.</p></div></div>
+            <div class="split">
+              <div class="table-visual">
+                <div class="detail-cup"></div><div class="detail-book"></div>
+                <div class="table-top"></div><div class="table-leg leg1"></div><div class="table-leg leg2"></div><div class="table-leg leg3"></div><div class="table-leg leg4"></div>
+              </div>
+              <div>
+                <h3 style="font-size:30px;margin-top:0;">Success Check</h3>
+                <div class="checklist">
+                  <label class="check"><input type="checkbox" id="tableTop" onchange="saveChecks()" /> My table has a tabletop.</label>
+                  <label class="check"><input type="checkbox" id="tableLegs" onchange="saveChecks()" /> My table has four legs.</label>
+                  <label class="check"><input type="checkbox" id="tableDetail" onchange="saveChecks()" /> I added one detail, colour, or object on top.</label>
+                  <label class="check"><input type="checkbox" id="tableViews" onchange="saveChecks()" /> I checked my table from more than one view.</label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="model" class="card mission-card">
+            <div class="mission-head"><div class="mission-icon">🧱</div><div><h2>Choose One Mini Model</h2><p>Pick one. Do not build all of them.</p></div></div>
+            <div class="model-grid">
+              <div class="choice model-card" onclick="selectModel('Chest', this)"><div class="model-visual"><div class="cube brown" style="left:45px;top:30px;width:70px;height:42px;"></div></div><h3>Chest</h3><p>Boxes + colours</p></div>
+              <div class="choice model-card" onclick="selectModel('Tree', this)"><div class="model-visual"><div class="cube brown" style="left:67px;top:42px;width:24px;height:45px;"></div><div class="cube green-shape" style="left:43px;top:12px;width:70px;height:48px;"></div></div><h3>Tree</h3><p>Trunk + leaves</p></div>
+              <div class="choice model-card" onclick="selectModel('Bed', this)"><div class="model-visual"><div class="cube red" style="left:35px;top:40px;width:90px;height:36px;"></div><div class="cube grey" style="left:35px;top:24px;width:32px;height:18px;"></div></div><h3>Bed</h3><p>Base + pillow</p></div>
+              <div class="choice model-card" onclick="selectModel('Tower', this)"><div class="model-visual"><div class="cube grey" style="left:58px;top:20px;width:44px;height:70px;"></div><div class="cube grey" style="left:46px;top:10px;width:68px;height:18px;"></div></div><h3>Tower</h3><p>Tall shapes</p></div>
+              <div class="choice model-card" onclick="selectModel('Small House', this)"><div class="model-visual"><div class="cube pinkshape" style="left:48px;top:42px;width:70px;height:45px;"></div><div class="cube brown" style="left:55px;top:20px;width:58px;height:22px;"></div></div><h3>House</h3><p>Walls + roof</p></div>
+            </div>
+
+            <label for="modelPlan">I will build...</label>
+            <textarea id="modelPlan" placeholder="Example: I will build a small house using boxes for the walls and roof." oninput="saveTextFields()"></textarea>
+            <div class="checklist">
+              <label class="check"><input type="checkbox" id="modelBuilt" onchange="saveChecks()" /> I built one mini model in Tinkercad.</label>
+              <label class="check"><input type="checkbox" id="modelClear" onchange="saveChecks()" /> Someone can recognise what my model is.</label>
+            </div>
+          </section>
+
+          <section id="challenge" class="card mission-card">
+            <div class="mission-head"><div class="mission-icon">⭐</div><div><h2>Choose Your Challenge</h2><p>Pick the level that helps you improve.</p></div></div>
+            <div class="rubric">
+              <div class="choice orange" onclick="selectChallenge('Bronze', this)"><h3>Bronze</h3><p>My model uses at least 3 simple shapes.</p></div>
+              <div class="choice blue" onclick="selectChallenge('Silver', this)"><h3>Silver</h3><p>My model uses colours and looks neat from different views.</p></div>
+              <div class="choice green" onclick="selectChallenge('Gold', this)"><h3>Gold</h3><p>My model has extra details and careful improvements.</p></div>
+            </div>
+            <label for="improvementNote">One improvement I made:</label>
+            <textarea id="improvementNote" placeholder="Example: I resized the legs so the table looked balanced." oninput="saveTextFields()"></textarea>
+            <div class="checklist">
+              <label class="check"><input type="checkbox" id="challengeDone" onchange="saveChecks()" /> I completed my chosen challenge level.</label>
+            </div>
+          </section>
+
+          <section id="reflection" class="card mission-card">
+            <div class="mission-head"><div class="mission-icon">💬</div><div><h2>Reflection</h2><p>Record what you learned today.</p></div></div>
+            <div class="two">
+              <div>
+                <label for="shapeUsed">The shapes I used were...</label>
+                <textarea id="shapeUsed" placeholder="Example: boxes, cylinders, roof shape..." oninput="saveTextFields()"></textarea>
+              </div>
+              <div>
+                <label for="nextTime">Next time I want to...</label>
+                <textarea id="nextTime" placeholder="Example: add more detail, make a bigger house, use holes..." oninput="saveTextFields()"></textarea>
+              </div>
+            </div>
+            <div class="checklist" style="margin-top:14px;">
+              <label class="check"><input type="checkbox" id="reflectionDone" onchange="saveChecks()" /> I completed my reflection.</label>
+            </div>
+            <button class="blue full" onclick="downloadRecord()">Download My Day 2 Record</button>
+            <button class="full" onclick="finishCourse()">I Finished Day 2</button>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="finished" class="screen">
+      <div class="card big-card" style="text-align:center;">
+        <h2 class="page-title">Great work today! 🎉</h2>
+        <p class="lead">You improved a 3D model and built one mini model using simple shapes.</p>
+        <button class="blue large" onclick="downloadRecord()">Download My Day 2 Record</button>
+        <button class="secondary large" onclick="showScreen('mission')">Back to Mission Board</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="resetModal" class="modal-backdrop">
+    <div class="modal">
+      <h2 style="font-size:42px;margin:0 0 10px;">Before you reset</h2>
+      <p class="lead" style="font-size:22px;">Download a backup first so the previous student does not lose their work.</p>
+      <div class="modal-actions">
+        <button class="blue" onclick="downloadBackup()">Download Backup</button>
+        <button class="orange" onclick="resetAll()">Reset and Start Fresh</button>
+        <button class="secondary" onclick="closeResetModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'y5_tinkercad_day2_';
+    const starterUrl = 'https://wayground.com/join?gc=63141961&source=liveDashboard';
+    const links = {
+      Y5E: {
+        codes: 'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQB96eGsOnuvTZ2uZPyPlNGxARKB9sJCLbRJKoYa_IdmbHY?e=DjlYj0',
+        classlink: 'https://www.tinkercad.com/joinclass/KDGFLBR3K'
+      },
+      Y5N: {
+        codes: 'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQDU6M45ChCCT5VgZuvH29bnAXYogoG71HH_QmFAoEmGMWU?e=yKxttI',
+        classlink: 'https://www.tinkercad.com/joinclass/EPUU4NGVF'
+      },
+      Y5T: {
+        codes: 'https://tenbyworld-my.sharepoint.com/:b:/g/personal/david_kang_tenby_edu_my/IQA0nEFkJeixQrd3JbHL-auQAXIQuK4RC-JZtkkCR_fiapw?e=WzPZ2v',
+        classlink: 'https://www.tinkercad.com/joinclass/IG9ILMAD3'
+      }
+    };
+    const checkIds = ['openedStarter','finishedStarter','openedCodes','openedClasslink','loggedIn','doneControls','tableTop','tableLegs','tableDetail','tableViews','modelBuilt','modelClear','challengeDone','reflectionDone'];
+    const textIds = ['studentName','studentClass','wagbaAnswer','modelPlan','improvementNote','shapeUsed','nextTime'];
+
+    function today(){return new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}    
+    function get(id){return localStorage.getItem(KEY+id)||'';}
+    function set(id,val){localStorage.setItem(KEY+id,val);}
+
+    function showScreen(id){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      const screen = document.getElementById(id);
+      if (screen) screen.classList.add('active');
+      set('currentScreen', id);
+      updateHeader();
+      if (id === 'welcome') loadBasic();
+      if (id === 'starter') loadChecks();
+      if (id === 'login') setupLogin();
+      if (id === 'mission') { setupLogin(); loadChecks(); loadTextFields(); updateProgress(); }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function showLanding(){showScreen('landing'); renderSavedSummary();}
+    function updateHeader(){
+      document.getElementById('nameChip').textContent = 'Name: ' + (get('studentName') || 'not entered');
+      document.getElementById('classChip').textContent = 'Class: ' + (get('studentClass') || 'not selected');
+      document.getElementById('dateChip').textContent = 'Date: ' + today();
+    }
+
+    function saveBasic(){
+      const name = document.getElementById('studentName');
+      const cls = document.getElementById('studentClass');
+      if (name) set('studentName', name.value.trim());
+      if (cls) set('studentClass', cls.value);
+      updateHeader();
+    }
+    function loadBasic(){
+      const name = document.getElementById('studentName');
+      const cls = document.getElementById('studentClass');
+      const wagba = document.getElementById('wagbaAnswer');
+      if (name) name.value = get('studentName');
+      if (cls) cls.value = get('studentClass');
+      if (wagba) wagba.value = get('wagbaAnswer');
+    }
+    function submitWagba(){
+      saveBasic();
+      const wagba = document.getElementById('wagbaAnswer').value.trim();
+      set('wagbaAnswer', wagba);
+      if (!get('studentName') || !get('studentClass') || !wagba) { document.getElementById('welcomeError').style.display = 'block'; return; }
+      document.getElementById('welcomeError').style.display = 'none';
+      showScreen('starter');
+    }
+
+    function markOpened(which){
+      if (which === 'starter') set('openedStarter','true');
+      if (which === 'codes') set('openedCodes','true');
+      if (which === 'classlink') set('openedClasslink','true');
+      setTimeout(loadChecks, 100);
+    }
+    function loadChecks(){
+      checkIds.forEach(id=>{const el=document.getElementById(id); if(el) el.checked=get(id)==='true';});
+      updateButtons(); updateProgress();
+    }
+    function saveChecks(){
+      checkIds.forEach(id=>{const el=document.getElementById(id); if(el) set(id, el.checked ? 'true' : '');});
+      updateButtons(); updateProgress();
+    }
+    function updateButtons(){
+      const starterOK = get('openedStarter')==='true' && get('finishedStarter')==='true';
+      const starterBtn = document.getElementById('starterNext'); if(starterBtn) starterBtn.disabled = !starterOK;
+      const loginOK = get('openedCodes')==='true' && get('openedClasslink')==='true' && get('loggedIn')==='true';
+      const missionBtn = document.getElementById('missionNext'); if(missionBtn) missionBtn.disabled = !loginOK;
+    }
+    function goLogin(){
+      saveChecks();
+      if (document.getElementById('starterNext').disabled) { document.getElementById('starterError').style.display='block'; return; }
+      document.getElementById('starterError').style.display='none'; showScreen('login');
+    }
+    function goMission(){
+      saveChecks();
+      if (document.getElementById('missionNext').disabled) { document.getElementById('loginError').style.display='block'; return; }
+      document.getElementById('loginError').style.display='none'; showScreen('mission');
+    }
+
+    function setupLogin(){
+      const cls = get('studentClass') || 'Y5E';
+      const info = links[cls] || links.Y5E;
+      const codes = document.getElementById('codesLink'); if(codes) codes.href = info.codes;
+      const classLink = document.getElementById('classLink'); if(classLink) classLink.href = info.classlink;
+      const badge = document.getElementById('loginBadge'); if(badge) badge.textContent = cls + ' login';
+      loadChecks();
+    }
+
+    function saveTextFields(){
+      textIds.forEach(id=>{const el=document.getElementById(id); if(el) set(id, el.value.trim());});
+      updateHeader();
+    }
+    function loadTextFields(){
+      textIds.forEach(id=>{const el=document.getElementById(id); if(el) el.value = get(id);});
+      document.querySelectorAll('.model-card').forEach(card=>card.classList.remove('selected'));
+      const selectedModel = get('selectedModel');
+      if(selectedModel){ document.querySelectorAll('.model-card').forEach(card=>{ if(card.innerText.includes(selectedModel)) card.classList.add('selected'); }); }
+      document.querySelectorAll('#challenge .choice').forEach(card=>card.classList.remove('selected'));
+      const level = get('challengeLevel');
+      if(level){ document.querySelectorAll('#challenge .choice').forEach(card=>{ if(card.innerText.includes(level)) card.classList.add('selected'); }); }
+    }
+    function selectModel(model, el){
+      set('selectedModel', model);
+      document.querySelectorAll('.model-card').forEach(card=>card.classList.remove('selected'));
+      el.classList.add('selected');
+      const plan = document.getElementById('modelPlan');
+      if(plan && !plan.value.trim()) { plan.value = 'I will build a ' + model.toLowerCase() + ' using simple shapes.'; set('modelPlan', plan.value); }
+      updateProgress();
+    }
+    function selectChallenge(level, el){
+      set('challengeLevel', level);
+      document.querySelectorAll('#challenge .choice').forEach(card=>card.classList.remove('selected'));
+      el.classList.add('selected');
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const groups = {
+        controls: get('doneControls')==='true',
+        table: ['tableTop','tableLegs','tableDetail','tableViews'].every(id=>get(id)==='true'),
+        model: get('selectedModel') && get('modelBuilt')==='true' && get('modelClear')==='true',
+        challenge: get('challengeLevel') && get('challengeDone')==='true',
+        reflection: get('reflectionDone')==='true' && get('shapeUsed') && get('nextTime')
+      };
+      const done = Object.values(groups).filter(Boolean).length;
+      const fill = document.getElementById('progressFill'); if(fill) fill.style.width = (done/5*100) + '%';
+      Object.keys(groups).forEach(key=>{const btn=document.getElementById('nav-'+key); if(btn) btn.classList.toggle('done', !!groups[key]);});
+    }
+    function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});}
+
+    function hasAnySaved(){
+      return ['studentName','studentClass','wagbaAnswer','modelPlan','selectedModel','challengeLevel'].some(id=>get(id));
+    }
+    function renderSavedSummary(){
+      const box = document.getElementById('savedSummary');
+      const continueBtn = document.getElementById('continueBtn');
+      if(!box) return;
+      if(!hasAnySaved()){
+        box.innerHTML = '<h2 style="margin:0 0 8px;">Start Here</h2><p>No saved Day 2 work found on this device.</p>';
+        if(continueBtn){continueBtn.textContent='Start New Day 2 Session'; continueBtn.disabled=false;}
+      } else {
+        box.innerHTML = '<h2 style="margin:0 0 8px;">Saved work found</h2>' +
+          '<p><strong>Name:</strong> ' + escapeHTML(get('studentName') || 'not entered') + '</p>' +
+          '<p><strong>Class:</strong> ' + escapeHTML(get('studentClass') || 'not selected') + '</p>' +
+          '<p><strong>Selected model:</strong> ' + escapeHTML(get('selectedModel') || 'not selected yet') + '</p>';
+        if(continueBtn){continueBtn.textContent='Continue Saved Session'; continueBtn.disabled=false;}
+      }
+    }
+    function continueSession(){
+      const screen = get('currentScreen') || 'welcome';
+      if(screen === 'landing') showScreen('welcome'); else showScreen(screen);
+    }
+
+    function collectData(){
+      const data = {};
+      textIds.forEach(id=>data[id]=get(id));
+      checkIds.forEach(id=>data[id]=get(id));
+      data.selectedModel = get('selectedModel');
+      data.challengeLevel = get('challengeLevel');
+      data.date = today();
+      return data;
+    }
+    function downloadText(filename, text){
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+    function downloadBackup(){
+      const data = collectData();
+      downloadText('Year5_Tinkercad_Day2_Backup_' + (data.studentName || 'student').replace(/\s+/g,'_') + '.txt', JSON.stringify(data,null,2));
+    }
+    function downloadRecord(){
+      saveChecks(); saveTextFields();
+      const data = collectData();
+      const lines = [
+        'Year 5 Tinkercad Day 2 Record',
+        'Date: ' + data.date,
+        'Name: ' + (data.studentName || ''),
+        'Class: ' + (data.studentClass || ''),
+        '',
+        'WAGBA answer:', data.wagbaAnswer || '',
+        '',
+        'Mini model selected: ' + (data.selectedModel || ''),
+        'Challenge level: ' + (data.challengeLevel || ''),
+        '',
+        'My model plan:', data.modelPlan || '',
+        '',
+        'One improvement I made:', data.improvementNote || '',
+        '',
+        'Shapes I used:', data.shapeUsed || '',
+        '',
+        'Next time I want to:', data.nextTime || '',
+        '',
+        'Checklist:',
+        'Starter finished: ' + (data.finishedStarter === 'true' ? 'Yes' : 'Not yet'),
+        'Logged in: ' + (data.loggedIn === 'true' ? 'Yes' : 'Not yet'),
+        'Controls practised: ' + (data.doneControls === 'true' ? 'Yes' : 'Not yet'),
+        'Table improved: ' + (['tableTop','tableLegs','tableDetail','tableViews'].every(id=>data[id]==='true') ? 'Yes' : 'Not yet'),
+        'Mini model built: ' + (data.modelBuilt === 'true' ? 'Yes' : 'Not yet'),
+        'Reflection done: ' + (data.reflectionDone === 'true' ? 'Yes' : 'Not yet')
+      ];
+      downloadText('Year5_Tinkercad_Day2_Record_' + (data.studentName || 'student').replace(/\s+/g,'_') + '.txt', lines.join('\n'));
+    }
+    function finishCourse(){
+      saveChecks(); saveTextFields(); set('currentScreen','finished'); showScreen('finished');
+    }
+
+    function openResetModal(){document.getElementById('resetModal').style.display='flex';}
+    function closeResetModal(){document.getElementById('resetModal').style.display='none';}
+    function resetAll(){
+      Object.keys(localStorage).forEach(k=>{ if(k.startsWith(KEY)) localStorage.removeItem(k); });
+      closeResetModal(); updateHeader(); showScreen('welcome');
+    }
+    function escapeHTML(text){return String(text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+
+    function init(){
+      updateHeader();
+      renderSavedSummary();
+      setupLogin();
+      loadBasic();
+      loadChecks();
+      loadTextFields();
+    }
+    init();
+  </script>
+</body>
+</html>
