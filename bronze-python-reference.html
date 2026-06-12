@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bronze Coding Competition — Python Reference</title>
+<style>
+  :root{
+    --green:#04AA6D; --green-dark:#059862; --green-light:#e7f6ef;
+    --grey:#f1f1f1; --grey-dark:#282A35; --code-bg:#272822; --code-text:#f8f8f2;
+    --border:#ddd; --yellow:#fff4d1; --yellow-border:#ffd966;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Segoe UI",Verdana,Arial,sans-serif;color:#000;line-height:1.6;}
+  header{background:var(--grey-dark);color:#fff;padding:18px 24px;}
+  header h1{margin:0;font-size:22px;font-weight:600;}
+  header p{margin:4px 0 0;font-size:13px;color:#bbb;}
+  .topbar{background:var(--green);color:#fff;padding:10px 24px;font-size:14px;}
+  .topbar b{font-weight:700;}
+  .layout{display:flex;align-items:flex-start;}
+  nav{width:250px;background:var(--grey);position:sticky;top:0;height:100vh;overflow-y:auto;padding:16px 0;flex-shrink:0;}
+  nav h3{margin:14px 18px 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#666;}
+  nav a{display:block;padding:7px 18px;color:#000;text-decoration:none;font-size:14px;border-left:3px solid transparent;}
+  nav a:hover{background:#ddd;}
+  nav a.active{border-left-color:var(--green);background:#e2e2e2;font-weight:600;}
+  main{flex:1;padding:24px 40px;max-width:900px;min-width:0;}
+  h2{color:var(--grey-dark);border-bottom:2px solid var(--green);padding-bottom:6px;margin-top:40px;}
+  h2:first-child{margin-top:0;}
+  h3.topic{color:var(--green-dark);margin-top:28px;}
+  pre{background:var(--code-bg);color:var(--code-text);padding:14px 16px;border-radius:5px;overflow-x:auto;font-family:Consolas,"Courier New",monospace;font-size:14px;}
+  pre .cmt{color:#75715e;}
+  pre .out{color:#a6e22e;}
+  code.inline{background:var(--grey);padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:13px;color:#c0392b;}
+  .note{background:var(--green-light);border-left:5px solid var(--green);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .warn{background:var(--yellow);border-left:5px solid var(--yellow-border);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .intro{background:#fff;border:1px solid var(--border);border-radius:6px;padding:20px 24px;}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--green);color:#fff;}
+  tr:nth-child(even){background:#f6f6f6;}
+  .q-card{border:1px solid var(--border);border-radius:6px;margin:14px 0;overflow:hidden;}
+  .q-head{background:var(--grey);padding:12px 16px;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+  .q-head:hover{background:#e6e6e6;}
+  .q-head .tag{background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .q-body{padding:14px 18px;display:none;}
+  .q-body.open{display:block;}
+  .q-task{font-style:italic;color:#444;margin-bottom:10px;}
+  .pill{display:inline-block;background:var(--green-light);color:var(--green-dark);border:1px solid var(--green);border-radius:14px;padding:3px 11px;margin:3px 4px 3px 0;font-size:13px;text-decoration:none;}
+  .pill:hover{background:var(--green);color:#fff;}
+  footer{background:var(--grey-dark);color:#bbb;text-align:center;padding:20px;font-size:13px;}
+  .search{margin:0 18px 10px;}
+  .search input{width:100%;padding:7px 10px;border:1px solid #ccc;border-radius:4px;font-size:13px;}
+  @media(max-width:760px){nav{display:none;}main{padding:18px;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Bronze Coding Competition — Python Reference</h1>
+  <p>A study aid for KS3 &amp; KS4 students · Bronze Stages 1–3</p>
+</header>
+<div class="topbar">
+  <b>How to use this:</b> This page does <b>not</b> contain answers. It points you to the Python ideas a question is built on — like a tutorial you can flick through when you feel stuck.
+</div>
+
+<div class="layout">
+<nav id="nav">
+  <div class="search"><input id="navsearch" type="text" placeholder="Filter topics…"></div>
+  <h3>Get started</h3>
+  <a href="#start">How to use this guide</a>
+  <h3>Python topic library</h3>
+  <a href="#vars">Variables &amp; numbers</a>
+  <a href="#operators">Operators (incl. % and //)</a>
+  <a href="#strings">Strings</a>
+  <a href="#lists">Lists</a>
+  <a href="#loops">Loops</a>
+  <a href="#conditions">If statements &amp; booleans</a>
+  <a href="#functions">Built-in functions</a>
+  <a href="#sorting">Sorting</a>
+  <a href="#sets">Sets (unique items)</a>
+  <a href="#dicts">Dictionaries (counting)</a>
+  <a href="#math">Maths &amp; formulas</a>
+  <a href="#io">Input &amp; output</a>
+  <h3>Hint map (by question)</h3>
+  <a href="#b1">Bronze 1</a>
+  <a href="#b2">Bronze 2</a>
+  <a href="#b3">Bronze 3</a>
+</nav>
+
+<main>
+
+<h2 id="start">How to use this guide</h2>
+<div class="intro">
+  <p>Each Bronze question is testing whether you can combine a few basic Python building blocks. This guide has two halves:</p>
+  <ol>
+    <li><b>Python topic library</b> — short tutorial-style explanations with example syntax, the same way you'd read a textbook. The examples are generic; they are <i>not</i> solutions to the competition questions.</li>
+    <li><b>Hint map</b> — for each question, a list of the topics that are most likely to be useful. Click a topic pill to jump to its explanation.</li>
+  </ol>
+  <div class="warn"><b>Remember the rules:</b> you may use this reference, but you must write your own code. No AI tools are allowed. This page only reminds you <i>what Python can do</i> — working out <i>how</i> to combine it is the challenge.</div>
+</div>
+
+<!-- ===================== TOPIC LIBRARY ===================== -->
+
+<h2>Python topic library</h2>
+
+<h3 class="topic" id="vars">Variables &amp; numbers</h3>
+<p>A variable stores a value so you can use it later. Python has whole numbers (<code class="inline">int</code>), decimals (<code class="inline">float</code>), and text (<code class="inline">str</code>).</p>
+<pre>count = 0          <span class="cmt"># an integer</span>
+average = 2.5      <span class="cmt"># a float (decimal)</span>
+name = "Scout"     <span class="cmt"># a string</span>
+count = count + 1  <span class="cmt"># update a variable</span></pre>
+<div class="note">A very common pattern is a <b>counter</b> (start at 0, add 1 when something is true) or an <b>accumulator</b> (build up a running total).</div>
+
+<h3 class="topic" id="operators">Operators (including % and //)</h3>
+<table>
+<tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+<tr><td><code class="inline">+ - * /</code></td><td>add, subtract, multiply, divide</td><td><code class="inline">7 / 2</code></td><td><code class="inline">3.5</code></td></tr>
+<tr><td><code class="inline">//</code></td><td>floor division (rounds down)</td><td><code class="inline">7 // 2</code></td><td><code class="inline">3</code></td></tr>
+<tr><td><code class="inline">%</code></td><td>modulo (remainder)</td><td><code class="inline">7 % 2</code></td><td><code class="inline">1</code></td></tr>
+<tr><td><code class="inline">**</code></td><td>power / exponent</td><td><code class="inline">2 ** 3</code></td><td><code class="inline">8</code></td></tr>
+<tr><td><code class="inline">== != &lt; &gt; &lt;= &gt;=</code></td><td>comparisons (give True/False)</td><td><code class="inline">5 &gt; 3</code></td><td><code class="inline">True</code></td></tr>
+</table>
+<div class="note"><b>The remainder trick:</b> <code class="inline">n % 2 == 0</code> is True when <code class="inline">n</code> is even. More generally, <code class="inline">n % k == 0</code> is True when <code class="inline">n</code> divides exactly by <code class="inline">k</code>.</div>
+
+<h3 class="topic" id="strings">Strings</h3>
+<p>A string is text. You can measure it, change its case, search it, slice it and split it.</p>
+<pre>s = "Hello World"
+len(s)            <span class="cmt"># 11  (number of characters)</span>
+s.lower()         <span class="cmt"># 'hello world'</span>
+s.upper()         <span class="cmt"># 'HELLO WORLD'</span>
+s.replace(" ", "")<span class="cmt"># 'HelloWorld' (remove spaces)</span>
+s[0]              <span class="cmt"># 'H'  (first character, index 0)</span>
+s[::-1]           <span class="cmt"># 'dlroW olleH' (reversed)</span>
+s.split(" ")      <span class="cmt"># ['Hello', 'World'] -> a list of words</span>
+" ".join(words)   <span class="cmt"># join a list of words back into one string</span>
+"ll" in s         <span class="cmt"># True  (is it a substring?)</span>
+s.find("World")   <span class="cmt"># 6   (index where it starts, or -1 if absent)</span></pre>
+<div class="note"><b>Slicing:</b> <code class="inline">s[start:stop]</code> takes part of a string. <code class="inline">s[::-1]</code> is a famous way to reverse one. Indexes start at <b>0</b>.</div>
+
+<h3 class="topic" id="lists">Lists</h3>
+<p>A list holds many values in order. Most Bronze questions hand you a list.</p>
+<pre>nums = [3, 6, 8, 2, 5]
+len(nums)        <span class="cmt"># 5</span>
+nums[0]          <span class="cmt"># 3  (first item)</span>
+nums[-1]         <span class="cmt"># 5  (last item)</span>
+nums[1:3]        <span class="cmt"># [6, 8]  (a slice)</span>
+for x in nums:   <span class="cmt"># visit every item</span>
+    print(x)
+nums.count(6)    <span class="cmt"># how many times 6 appears</span></pre>
+<p>A list can also hold lists — handy for coordinates like <code class="inline">[[0,1],[1,3]]</code>:</p>
+<pre>points = [[0, 1], [1, 3]]
+for p in points:
+    x = p[0]
+    y = p[1]</pre>
+
+<h3 class="topic" id="loops">Loops</h3>
+<p>Loops repeat an action for every item, or a fixed number of times.</p>
+<pre><span class="cmt"># Loop over each value</span>
+for x in nums:
+    ...
+
+<span class="cmt"># Loop over positions (indexes) 0,1,2,...</span>
+for i in range(len(nums)):
+    current = nums[i]
+
+<span class="cmt"># Look at an item AND its neighbours</span>
+for i in range(1, len(nums) - 1):
+    left  = nums[i - 1]
+    right = nums[i + 1]</pre>
+<div class="note">When a question talks about an item's <b>neighbours</b>, or the value <b>before/after</b> it, you usually need the index version with <code class="inline">range</code>.</div>
+
+<h3 class="topic" id="conditions">If statements &amp; booleans</h3>
+<pre>if x &gt; 5:
+    count = count + 1
+elif x == 5:
+    ...
+else:
+    ...
+
+<span class="cmt"># combine conditions</span>
+if x &gt; left and x &gt; right:
+    ...
+if x &gt; 0 or x == target:
+    ...</pre>
+<div class="note"><b>and</b> needs both sides true; <b>or</b> needs at least one. Use these when a question says "greater than <i>both</i>…" or "positive <i>or</i> zero".</div>
+
+<h3 class="topic" id="functions">Built-in functions</h3>
+<table>
+<tr><th>Function</th><th>What it does</th><th>Example → result</th></tr>
+<tr><td><code class="inline">len(x)</code></td><td>length / count of items</td><td><code class="inline">len([4,5,6])</code> → 3</td></tr>
+<tr><td><code class="inline">sum(x)</code></td><td>adds all numbers</td><td><code class="inline">sum([1,2,3])</code> → 6</td></tr>
+<tr><td><code class="inline">min(x)</code> / <code class="inline">max(x)</code></td><td>smallest / largest</td><td><code class="inline">max([3,9,1])</code> → 9</td></tr>
+<tr><td><code class="inline">abs(x)</code></td><td>distance from zero</td><td><code class="inline">abs(-7)</code> → 7</td></tr>
+<tr><td><code class="inline">round(x)</code></td><td>round to nearest whole</td><td><code class="inline">round(2.7)</code> → 3</td></tr>
+<tr><td><code class="inline">sorted(x)</code></td><td>a new sorted list</td><td><code class="inline">sorted([3,1,2])</code> → [1,2,3]</td></tr>
+<tr><td><code class="inline">int()</code> / <code class="inline">str()</code></td><td>convert between number and text</td><td><code class="inline">int("4")</code> → 4</td></tr>
+<tr><td><code class="inline">set(x)</code></td><td>keep only unique items</td><td><code class="inline">set([1,1,2])</code> → {1,2}</td></tr>
+</table>
+
+<h3 class="topic" id="sorting">Sorting</h3>
+<pre>sorted(nums)              <span class="cmt"># new list, smallest first</span>
+sorted(nums, reverse=True)<span class="cmt"># largest first</span>
+nums.sort()               <span class="cmt"># sorts the list in place</span></pre>
+<div class="note">Sorting helps when you care about <b>middle</b> values, the <b>largest few</b>, or putting things in order before comparing.</div>
+
+<h3 class="topic" id="sets">Sets (unique items)</h3>
+<p>A set automatically throws away duplicates.</p>
+<pre>ids = [1, 3, 2, 2, 3, 4]
+unique = set(ids)   <span class="cmt"># {1, 2, 3, 4}</span>
+len(unique)         <span class="cmt"># how many different values</span></pre>
+
+<h3 class="topic" id="dicts">Dictionaries (counting how often things appear)</h3>
+<p>A dictionary stores <i>key → value</i> pairs. A classic use is tallying how many times each value shows up.</p>
+<pre>tally = {}
+for x in items:
+    if x in tally:
+        tally[x] = tally[x] + 1
+    else:
+        tally[x] = 1
+<span class="cmt"># now tally[x] is how often x appeared</span></pre>
+<div class="note">Also useful: <code class="inline">list.count(value)</code> tells you how many times a single value appears in a list.</div>
+
+<h3 class="topic" id="math">Maths &amp; formulas</h3>
+<p>Python is a calculator. You can rearrange a formula on paper, then translate it into code.</p>
+<pre>y = 2 * x + 1        <span class="cmt"># substitute a value into an equation</span>
+dist_sq = x**2 + y**2<span class="cmt"># squared distance from the origin</span>
+value = a * (1 - r) ** n   <span class="cmt"># powers with **</span></pre>
+<div class="warn"><b>Tip for "given the answer, find the input" questions:</b> these are algebra. Rearrange the formula by hand first (get the unknown on its own), then code that rearranged version. Watch whether the result should be an <code class="inline">int</code> or <code class="inline">round()</code>ed.</div>
+
+<h3 class="topic" id="io">Input &amp; output</h3>
+<pre>print(result)            <span class="cmt"># show an answer</span>
+data = [1, 2, 3]         <span class="cmt"># you can paste the given list straight into your code</span>
+print([count_a, count_b])<span class="cmt"># you can print a list as the answer</span></pre>
+
+<!-- ===================== HINT MAP ===================== -->
+
+<h2 id="b1">Hint map — Bronze 1</h2>
+<p>Click a question to expand it. Each shows the task and the Python topics most likely to help. The pills link back to the library above.</p>
+
+<div id="b1cards"></div>
+
+<h2 id="b2">Hint map — Bronze 2</h2>
+<div id="b2cards"></div>
+
+<h2 id="b3">Hint map — Bronze 3</h2>
+<div id="b3cards"></div>
+
+</main>
+</div>
+
+<footer>
+  Bronze Coding Competition Python Reference · Built as a study aid · No answers included · Students must write their own code.
+</footer>
+
+<script>
+/* ---- Hint map data: task wording + relevant topics only (NO solutions) ---- */
+const topicNames = {
+  vars:"Variables & numbers", operators:"Operators (% and //)", strings:"Strings",
+  lists:"Lists", loops:"Loops", conditions:"If statements & booleans",
+  functions:"Built-in functions", sorting:"Sorting", sets:"Sets", dicts:"Dictionaries",
+  math:"Maths & formulas", io:"Input & output"
+};
+
+const data = {
+  b1:[
+    ["Part 1 — Count numbers greater than 5","Count how many numbers in a list are greater than 5.",["lists","loops","conditions","operators","functions"]],
+    ["Part 2 — Median","Find the median (middle value) of a list of numbers.",["lists","sorting","functions","operators","math"]],
+    ["Part 3 — Multiples of 11","Count the numbers in a list that are multiples of 11.",["lists","loops","operators","conditions"]],
+    ["Part 4 — Coordinates on a line","Count how many (x, y) points satisfy a given line equation.",["lists","loops","math","conditions","operators"]],
+    ["Part 5 — Number of even integers","Count how many numbers in a list are even.",["lists","loops","operators","conditions"]],
+    ["Part 6 — Sum of all digits","Add up every digit of every number in a list.",["lists","loops","strings","operators","functions"]]
+  ],
+  b2:[
+    ["Part 1 — Product of odd numbers","Multiply all the odd numbers together (return 1 if there are none).",["lists","loops","operators","conditions","vars"]],
+    ["Part 2 — Bigger than both neighbours","Count items larger than the value immediately before AND after them (ends don't count).",["lists","loops","conditions","operators"]],
+    ["Part 3 — Equal to the floor of the average","Find the average rounded down, then count items equal to it.",["lists","functions","operators","loops","conditions"]],
+    ["Part 4 — Points inside a circle","Count points where x² + y² ≤ r² for a circle centred at the origin.",["lists","loops","math","operators","conditions"]]
+  ],
+  b3:[
+    ["Part 1 — Total salvageable supplies","Add up only the positive values in the list.",["lists","loops","conditions","operators","functions"]],
+    ["Part 2 — Un-reverse each word","Every word is reversed but word order is kept; restore the message.",["strings","lists","loops"]],
+    ["Part 3 — Count strongholds","Count how many different (unique) IDs appear.",["lists","sets","functions"]],
+    ["Part 4 — Find d (arithmetic model)","Given Aₙ and a in Aₙ = a + (n−1)d, find the integer d.",["math","operators","vars"]],
+    ["Part 5 — Find a (geometric model)","Given Gₙ and r in Gₙ = a(1−r)ⁿ⁻¹, find a to the nearest integer.",["math","operators","functions","vars"]],
+    ["Part 6 — Lowest + highest in a day","Add the smallest and largest values in the list.",["lists","functions","operators"]],
+    ["Part 7 — Find the contamination marker","Output the starting index of the first occurrence of a substring, or −1.",["strings","operators"]],
+    ["Part 8 — Survivors vs infected","Output [count of positives, count of negatives]; ignore zeros.",["lists","loops","conditions","operators","io"]],
+    ["Part 9 — Total salvage with bonuses","Base value plus each later value that is strictly greater than the one before it.",["lists","loops","conditions","operators","vars"]],
+    ["Part 10 — Palindrome half","Clean the text (lowercase, no spaces); if it's a palindrome output its first half S.",["strings","conditions","operators"]],
+    ["Part 11 — Highest pair product","Find the largest possible product of two values (mind the negatives).",["lists","sorting","operators","math"]],
+    ["Part 12 — Most-needed resource (mode)","Output the value that appears most often (earliest one wins ties).",["lists","dicts","loops","conditions"]]
+  ]
+};
+
+function buildCards(key){
+  const box = document.getElementById(key+"cards");
+  data[key].forEach((q,i)=>{
+    const card = document.createElement("div");
+    card.className="q-card";
+    const pills = q[2].map(t=>`<a class="pill" href="#${t}">${topicNames[t]}</a>`).join("");
+    card.innerHTML = `
+      <div class="q-head"><span>${q[0]}</span><span class="tag">topics ▾</span></div>
+      <div class="q-body">
+        <div class="q-task">Task: ${q[1]}</div>
+        <div><b>Topics that may help:</b><br>${pills}</div>
+      </div>`;
+    const head = card.querySelector(".q-head");
+    const body = card.querySelector(".q-body");
+    head.addEventListener("click",()=>{ body.classList.toggle("open"); });
+    box.appendChild(card);
+  });
+}
+buildCards("b1"); buildCards("b2"); buildCards("b3");
+
+/* nav: highlight current section + simple filter */
+const links = document.querySelectorAll("#nav a");
+const sections = [...links].map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+window.addEventListener("scroll",()=>{
+  let cur="";
+  sections.forEach(s=>{ if(s.getBoundingClientRect().top<120) cur="#"+s.id; });
+  links.forEach(a=>a.classList.toggle("active", a.getAttribute("href")===cur));
+});
+document.getElementById("navsearch").addEventListener("input",e=>{
+  const v=e.target.value.toLowerCase();
+  links.forEach(a=>{ a.style.display = a.textContent.toLowerCase().includes(v) ? "" : "none"; });
+});
+</script>
+</body>
+</html>

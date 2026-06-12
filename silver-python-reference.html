@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silver Coding Competition — Python Reference</title>
+<style>
+  :root{
+    --blue:#2a6fdb; --blue-dark:#1f57b0; --blue-light:#e8f0fc;
+    --grey:#f1f1f1; --grey-dark:#282A35; --code-bg:#272822; --code-text:#f8f8f2;
+    --border:#ddd; --yellow:#fff4d1; --yellow-border:#ffd966;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Segoe UI",Verdana,Arial,sans-serif;color:#000;line-height:1.6;}
+  header{background:var(--grey-dark);color:#fff;padding:18px 24px;}
+  header h1{margin:0;font-size:22px;font-weight:600;}
+  header p{margin:4px 0 0;font-size:13px;color:#bbb;}
+  .topbar{background:var(--blue);color:#fff;padding:10px 24px;font-size:14px;}
+  .topbar b{font-weight:700;}
+  .layout{display:flex;align-items:flex-start;}
+  nav{width:260px;background:var(--grey);position:sticky;top:0;height:100vh;overflow-y:auto;padding:16px 0;flex-shrink:0;}
+  nav h3{margin:14px 18px 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#666;}
+  nav a{display:block;padding:7px 18px;color:#000;text-decoration:none;font-size:14px;border-left:3px solid transparent;}
+  nav a:hover{background:#ddd;}
+  nav a.active{border-left-color:var(--blue);background:#e2e2e2;font-weight:600;}
+  main{flex:1;padding:24px 40px;max-width:920px;min-width:0;}
+  h2{color:var(--grey-dark);border-bottom:2px solid var(--blue);padding-bottom:6px;margin-top:40px;}
+  h2:first-child{margin-top:0;}
+  h3.topic{color:var(--blue-dark);margin-top:28px;}
+  pre{background:var(--code-bg);color:var(--code-text);padding:14px 16px;border-radius:5px;overflow-x:auto;font-family:Consolas,"Courier New",monospace;font-size:14px;}
+  pre .cmt{color:#75715e;}
+  code.inline{background:var(--grey);padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:13px;color:#c0392b;}
+  .note{background:var(--blue-light);border-left:5px solid var(--blue);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .warn{background:var(--yellow);border-left:5px solid var(--yellow-border);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .intro{background:#fff;border:1px solid var(--border);border-radius:6px;padding:20px 24px;}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--blue);color:#fff;}
+  tr:nth-child(even){background:#f6f6f6;}
+  .q-card{border:1px solid var(--border);border-radius:6px;margin:14px 0;overflow:hidden;}
+  .q-head{background:var(--grey);padding:12px 16px;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+  .q-head:hover{background:#e6e6e6;}
+  .q-head .tag{background:var(--blue);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .q-body{padding:14px 18px;display:none;}
+  .q-body.open{display:block;}
+  .q-task{font-style:italic;color:#444;margin-bottom:10px;}
+  .pill{display:inline-block;background:var(--blue-light);color:var(--blue-dark);border:1px solid var(--blue);border-radius:14px;padding:3px 11px;margin:3px 4px 3px 0;font-size:13px;text-decoration:none;}
+  .pill:hover{background:var(--blue);color:#fff;}
+  footer{background:var(--grey-dark);color:#bbb;text-align:center;padding:20px;font-size:13px;}
+  .search{margin:0 18px 10px;}
+  .search input{width:100%;padding:7px 10px;border:1px solid #ccc;border-radius:4px;font-size:13px;}
+  @media(max-width:760px){nav{display:none;}main{padding:18px;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Silver Coding Competition — Python Reference</h1>
+  <p>A study aid for KS3 &amp; KS4 students · Silver Stages 1–3</p>
+</header>
+<div class="topbar">
+  <b>How to use this:</b> Silver problems combine the basics with bigger ideas — grids, searching, and graphs. This page explains those tools. It contains <b>no answers</b>; working out how to combine the tools is the challenge.
+</div>
+
+<div class="layout">
+<nav id="nav">
+  <div class="search"><input id="navsearch" type="text" placeholder="Filter topics…"></div>
+  <h3>Get started</h3>
+  <a href="#start">How to use this guide</a>
+  <a href="#basics">Quick recap of the basics</a>
+  <h3>Python topic library</h3>
+  <a href="#strings">String cleaning &amp; analysis</a>
+  <a href="#charcodes">Letters as numbers (ord/chr)</a>
+  <a href="#modwrap">Wrap-around with modulo</a>
+  <a href="#counting">Counting items (dict / Counter)</a>
+  <a href="#grids">2D grids (nested lists)</a>
+  <a href="#recursion">Recursion</a>
+  <a href="#floodfill">Flood fill (connected regions)</a>
+  <a href="#bfs">BFS — shortest path on a grid</a>
+  <a href="#queues">Queues &amp; stacks</a>
+  <a href="#graphs">Graphs &amp; adjacency lists</a>
+  <a href="#window">Sliding window</a>
+  <a href="#subarray">Running sums &amp; resets</a>
+  <a href="#perms">Permutations (itertools)</a>
+  <a href="#io">Reading multi-line input</a>
+  <h3>Hint map (by question)</h3>
+  <a href="#s1">Silver 1</a>
+  <a href="#s2">Silver 2</a>
+  <a href="#s3">Silver 3</a>
+</nav>
+
+<main>
+
+<h2 id="start">How to use this guide</h2>
+<div class="intro">
+  <p>Silver questions are wrapped in dramatic stories, but each is really a well-known type of problem. This guide has two halves:</p>
+  <ol>
+    <li><b>Topic library</b> — tutorial-style explanations of the tools Silver needs, with generic example syntax. The examples are <i>not</i> solutions to the questions.</li>
+    <li><b>Hint map</b> — each question is stripped back to its plain task, with a list of the topics most likely to help. Click a pill to jump to the explanation.</li>
+  </ol>
+  <div class="warn"><b>Rules reminder:</b> you may read this reference, but all code must be your own. No AI tools allowed. This page tells you <i>what techniques exist</i>; choosing and combining them is up to you.</div>
+  <p style="margin-bottom:0"><b>Tip:</b> when a problem mentions a <i>grid / maze</i>, think searching (flood fill or BFS). When it mentions <i>nodes and one-way connections</i>, think graphs. When it mentions a <i>window / consecutive run</i>, think sliding window.</p>
+</div>
+
+<h2 id="basics">Quick recap of the basics</h2>
+<p>Silver assumes you're comfortable with everything from Bronze: variables, <code class="inline">for</code> loops, <code class="inline">if</code> statements, lists, indexing, <code class="inline">len</code>, <code class="inline">sum</code>, <code class="inline">min</code>, <code class="inline">max</code>, <code class="inline">sorted</code>, the modulo operator <code class="inline">%</code> and slicing <code class="inline">s[::-1]</code>. The topics below build on those.</p>
+
+<!-- ===================== TOPIC LIBRARY ===================== -->
+<h2>Python topic library</h2>
+
+<h3 class="topic" id="strings">String cleaning &amp; analysis</h3>
+<p>Often you must strip a string down to just letters before analysing it.</p>
+<pre>s = "T-minus 5 minutes!"
+clean = ""
+for ch in s:
+    if ch.isalpha():        <span class="cmt"># keep letters only</span>
+        clean += ch.lower()  <span class="cmt"># and make lowercase</span>
+<span class="cmt"># useful checks:</span>
+ch.isalpha()  <span class="cmt"># True if a letter</span>
+ch.isdigit()  <span class="cmt"># True if 0-9</span>
+ch.isspace()  <span class="cmt"># True if a space/tab</span></pre>
+
+<h3 class="topic" id="charcodes">Letters as numbers — ord() and chr()</h3>
+<p>Every character has a number code. <code class="inline">ord()</code> turns a letter into its code, <code class="inline">chr()</code> turns a code back into a letter. This is the key to cipher problems.</p>
+<pre>ord("A")          <span class="cmt"># 65</span>
+ord("a")          <span class="cmt"># 97</span>
+chr(66)           <span class="cmt"># 'B'</span>
+
+<span class="cmt"># turn a capital letter into 0-25 ("position in the alphabet")</span>
+pos = ord("C") - ord("A")   <span class="cmt"># 2</span>
+<span class="cmt"># turn 0-25 back into a capital letter</span>
+letter = chr(pos + ord("A"))</pre>
+<div class="note">If a question numbers letters A=1…Z=26, you can build that with <code class="inline">ord(ch) - ord("A") + 1</code>.</div>
+
+<h3 class="topic" id="modwrap">Wrap-around with modulo</h3>
+<p>When something cycles (A after Z, or repeating a short key), <code class="inline">%</code> keeps numbers in range.</p>
+<pre>26 % 26   <span class="cmt"># 0   (Z wraps back to A)</span>
+-1 % 26   <span class="cmt"># 25  (Python wraps negatives upward — handy for shifting backwards)</span>
+
+<span class="cmt"># cycle through a short list of keys forever</span>
+keys = [5, 1, 9]
+for i in range(20):
+    k = keys[i % len(keys)]   <span class="cmt"># 5,1,9,5,1,9,...</span></pre>
+<div class="note"><code class="inline">i % len(keys)</code> is the standard way to repeat a short key across a long message.</div>
+
+<h3 class="topic" id="counting">Counting items — dictionary / Counter</h3>
+<pre>tally = {}
+for ch in text:
+    tally[ch] = tally.get(ch, 0) + 1
+<span class="cmt"># most common value and how often it appears:</span>
+best = max(tally, key=tally.get)
+how_many = tally[best]
+
+<span class="cmt"># the easy way, with the standard library:</span>
+from collections import Counter
+c = Counter(text)
+c.most_common(1)   <span class="cmt"># [(letter, count)] of the top item</span></pre>
+
+<h3 class="topic" id="grids">2D grids (nested lists)</h3>
+<p>A grid is a list of rows; each row is a list. You reach a cell with two indexes: <code class="inline">grid[row][col]</code>.</p>
+<pre>grid = [
+  [30, 70, 40],
+  [10, 20, 90],
+]
+rows = len(grid)        <span class="cmt"># 2</span>
+cols = len(grid[0])     <span class="cmt"># 3</span>
+grid[1][2]              <span class="cmt"># 90</span>
+
+for r in range(rows):
+    for c in range(cols):
+        value = grid[r][c]
+
+<span class="cmt"># the 4 neighbours (up/down/left/right):</span>
+for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
+    nr, nc = r + dr, c + dc
+    if 0 &lt;= nr &lt; rows and 0 &lt;= nc &lt; cols:   <span class="cmt"># stay inside the grid</span>
+        neighbour = grid[nr][nc]</pre>
+<div class="note">For 8 directions (diagonals too) add <code class="inline">(-1,-1),(-1,1),(1,-1),(1,1)</code> to the list of moves.</div>
+
+<h3 class="topic" id="recursion">Recursion</h3>
+<p>A function that calls itself. Needs a <b>base case</b> to stop. Useful for exploring branching paths.</p>
+<pre>def countdown(n):
+    if n == 0:        <span class="cmt"># base case — stop</span>
+        return
+    print(n)
+    countdown(n - 1)  <span class="cmt"># recursive step</span></pre>
+<div class="warn">Deep recursion can hit Python's limit. For very large grids, the loop-based BFS below is often safer than deep recursion.</div>
+
+<h3 class="topic" id="floodfill">Flood fill — measuring connected regions</h3>
+<p>"Largest connected area" problems are <b>flood fill</b>: pick a starting cell, then spread out to every connected neighbour that also qualifies, marking cells as visited so you don't count them twice.</p>
+<pre><span class="cmt"># generic shape of a flood fill (using a stack)</span>
+visited = set()
+def region_size(start_r, start_c):
+    stack = [(start_r, start_c)]
+    size = 0
+    while stack:
+        r, c = stack.pop()
+        if (r, c) in visited:
+            continue
+        visited.add((r, c))
+        size += 1
+        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
+            nr, nc = r + dr, c + dc
+            <span class="cmt"># if (nr,nc) is inside the grid AND still qualifies AND not visited:</span>
+            #     stack.append((nr, nc))
+    return size</pre>
+<div class="note">To find the <i>largest</i> region: loop over every cell, and whenever you find a qualifying cell that hasn't been visited, run a flood fill from it and remember the biggest size you've seen.</div>
+
+<h3 class="topic" id="bfs">BFS — fewest moves / shortest path</h3>
+<p>"Minimum number of moves to get from A to B" on a grid is <b>Breadth-First Search</b>. It explores everything 1 move away, then 2 moves away, and so on — so the first time it reaches the target, that's the fewest moves.</p>
+<pre>from collections import deque
+def shortest(start, is_goal, neighbours):
+    queue = deque([(start, 0)])    <span class="cmt"># (cell, moves so far)</span>
+    seen = {start}
+    while queue:
+        cell, dist = queue.popleft()
+        if is_goal(cell):
+            return dist
+        for nxt in neighbours(cell):   <span class="cmt"># valid moves from this cell</span>
+            if nxt not in seen:
+                seen.add(nxt)
+                queue.append((nxt, dist + 1))
+    return -1   <span class="cmt"># never reached the goal</span></pre>
+<div class="note">BFS works for 4-direction grids, 8-direction (king) moves, and mazes with special rules (e.g. a portal is just an extra "neighbour" you can move to). If a move shouldn't cost anything, don't add 1 to <code class="inline">dist</code> for it.</div>
+
+<h3 class="topic" id="queues">Queues &amp; stacks</h3>
+<table>
+<tr><th>Structure</th><th>Idea</th><th>Python</th></tr>
+<tr><td>Stack</td><td>last in, first out</td><td><code class="inline">lst.append(x)</code> / <code class="inline">lst.pop()</code></td></tr>
+<tr><td>Queue</td><td>first in, first out</td><td><code class="inline">from collections import deque</code>; <code class="inline">q.append(x)</code> / <code class="inline">q.popleft()</code></td></tr>
+</table>
+<div class="note">BFS uses a <b>queue</b>; flood fill / DFS can use a <b>stack</b> (or recursion).</div>
+
+<h3 class="topic" id="graphs">Graphs &amp; adjacency lists</h3>
+<p>A graph is nodes joined by edges. A <b>directed</b> edge <code class="inline">a b</code> means you can go a→b but not back. Store connections in a dictionary:</p>
+<pre>edges = [("hi","asdf"), ("asdf","qwer"), ("qwer","bye")]
+graph = {}
+for a, b in edges:
+    graph.setdefault(a, []).append(b)   <span class="cmt"># a -> [list of places you can reach]</span>
+
+<span class="cmt"># visit everything reachable from a start node (DFS):</span>
+def reachable(start):
+    seen = set()
+    stack = [start]
+    while stack:
+        node = stack.pop()
+        if node in seen:
+            continue
+        seen.add(node)
+        for nxt in graph.get(node, []):
+            stack.append(nxt)
+    return seen   <span class="cmt"># every node you can get to</span></pre>
+<div class="note">"Which start node reaches every node?" → for a candidate start, run the traversal and check whether <code class="inline">len(reachable(start)) == total number of nodes</code>.</div>
+
+<h3 class="topic" id="window">Sliding window</h3>
+<p>For "longest run that satisfies a rule" problems, slide a window with two pointers (left/right) and grow or shrink it.</p>
+<pre>left = 0
+best = 0
+<span class="cmt"># right end sweeps across the data</span>
+for right in range(len(data)):
+    # ... update some count for data[right] ...
+    while window_is_invalid():     <span class="cmt"># e.g. too many flips used</span>
+        # ... undo data[left] ...
+        left += 1
+    best = max(best, right - left + 1)</pre>
+<div class="note">Classic use: "longest run of 1s if you may flip at most n zeros." The window is valid while the number of zeros inside it is ≤ n.</div>
+
+<h3 class="topic" id="subarray">Running sums &amp; resets</h3>
+<p>For "largest consecutive sum, but a special value resets it":</p>
+<pre>current = 0
+best = 0
+for x in values:
+    if x == -1:        <span class="cmt"># the reset marker</span>
+        current = 0
+    else:
+        current += x
+        best = max(best, current)</pre>
+<div class="note">You can also track <i>where</i> the best run started/ended by remembering the index when <code class="inline">current</code> becomes a new best.</div>
+
+<h3 class="topic" id="perms">Permutations (itertools)</h3>
+<p>To list every ordering of some items, use the standard library. Sorting the results gives lexicographic (dictionary) order.</p>
+<pre>from itertools import permutations
+for p in sorted(permutations([5, 6, 7])):
+    print(p)
+<span class="cmt"># (5,6,7) (5,7,6) (6,5,7) (6,7,5) (7,5,6) (7,6,5)</span>
+<span class="cmt"># permutations of a sorted input already come out in lexicographic order</span></pre>
+
+<h3 class="topic" id="io">Reading multi-line input</h3>
+<p>Several Silver problems give numbers on one line and a grid/string on the next. You can read lines and split them.</p>
+<pre>line = "4 3"
+n, m = line.split()        <span class="cmt"># ['4', '3']</span>
+n, m = int(n), int(m)
+
+keys = "5 1 9".split()              <span class="cmt"># ['5','1','9']</span>
+keys = [int(k) for k in keys]       <span class="cmt"># [5, 1, 9]</span>
+
+<span class="cmt"># a grid given as rows of characters</span>
+grid = [list(row) for row in ["..*", "..*"]]</pre>
+
+<!-- ===================== HINT MAP ===================== -->
+<h2 id="s1">Hint map — Silver 1</h2>
+<p>Click a question to expand its plain-language task and the topics most likely to help.</p>
+<div id="s1cards"></div>
+
+<h2 id="s2">Hint map — Silver 2</h2>
+<div id="s2cards"></div>
+
+<h2 id="s3">Hint map — Silver 3</h2>
+<div id="s3cards"></div>
+
+</main>
+</div>
+
+<footer>
+  Silver Coding Competition Python Reference · Built as a study aid · No answers included · Students must write their own code.
+</footer>
+
+<script>
+const topicNames = {
+  strings:"String cleaning", charcodes:"ord/chr", modwrap:"Modulo wrap-around",
+  counting:"Counting (dict/Counter)", grids:"2D grids", recursion:"Recursion",
+  floodfill:"Flood fill", bfs:"BFS shortest path", queues:"Queues & stacks",
+  graphs:"Graphs", window:"Sliding window", subarray:"Running sums & resets",
+  perms:"Permutations", io:"Reading input", basics:"Basics recap"
+};
+
+const data = {
+  s1:[
+    ["Part 1 — Dominance of the most common letter","Clean text to letters only, find the most frequent letter's count divided by total letters, rounded to 4 decimals.",["strings","counting","basics","io"]],
+    ["Part 2 — Fewest left-shift operations to sort a string","Find the minimum number of single-letter left moves needed to put a string in alphabetical order (handle duplicates).",["strings","basics","subarray"]],
+    ["Part 3 — Largest safe zone in a radiation grid","Find the size of the largest connected group of cells (up/down/left/right) whose value is below a threshold.",["grids","floodfill","recursion","queues","io"]],
+    ["Part 4 — Decrypt the rotating cipher","Shift each letter backwards by a repeating sequence of keys, wrapping A→Z; keep spaces unchanged.",["charcodes","modwrap","strings","io"]]
+  ],
+  s2:[
+    ["Part 1 — Best consecutive sum, then its permutations","Find the positions of the largest consecutive run (a −1 resets the sum), then output all permutations of those positions in lexicographic order.",["subarray","perms","basics","io"]],
+    ["Part 2 — Longest run of 1s after n flips","Given a binary string and n allowed 0→1 flips, find the longest possible run of consecutive 1s.",["window","strings","io"]],
+    ["Part 3 — Fewest moves through a maze with portals","Move only right/down from top-left to bottom-right, avoiding obstacles; a portal jumps to the other portal for free. Find the minimum moves.",["grids","bfs","queues","io"]]
+  ],
+  s3:[
+    ["Part 1 — King's escape (min moves or TRAPPED)","On an N×N grid the King moves in 8 directions; find the fewest moves to reach any Teleport cell, or print TRAPPED.",["grids","bfs","queues","io"]],
+    ["Part 2 — Rebuild the code from overlapping shards","Join equal-length shards that overlap by all-but-one character into the shortest code using each once; smallest alphabetically if several; else IMPOSSIBLE.",["graphs","strings","recursion","io"]],
+    ["Part 3 — Find a start node that reaches every node","Given a directed graph of one-way connections, find a node from which every other node can be reached.",["graphs","queues","io"]]
+  ]
+};
+
+function buildCards(key){
+  const box = document.getElementById(key+"cards");
+  data[key].forEach(q=>{
+    const card = document.createElement("div");
+    card.className="q-card";
+    const pills = q[2].map(t=>`<a class="pill" href="#${t}">${topicNames[t]}</a>`).join("");
+    card.innerHTML = `
+      <div class="q-head"><span>${q[0]}</span><span class="tag">topics ▾</span></div>
+      <div class="q-body">
+        <div class="q-task">Task: ${q[1]}</div>
+        <div><b>Topics that may help:</b><br>${pills}</div>
+      </div>`;
+    const head = card.querySelector(".q-head");
+    const body = card.querySelector(".q-body");
+    head.addEventListener("click",()=>body.classList.toggle("open"));
+    box.appendChild(card);
+  });
+}
+buildCards("s1"); buildCards("s2"); buildCards("s3");
+
+const links = document.querySelectorAll("#nav a");
+const sections = [...links].map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+window.addEventListener("scroll",()=>{
+  let cur="";
+  sections.forEach(s=>{ if(s.getBoundingClientRect().top<120) cur="#"+s.id; });
+  links.forEach(a=>a.classList.toggle("active", a.getAttribute("href")===cur));
+});
+document.getElementById("navsearch").addEventListener("input",e=>{
+  const v=e.target.value.toLowerCase();
+  links.forEach(a=>{ a.style.display = a.textContent.toLowerCase().includes(v) ? "" : "none"; });
+});
+</script>
+</body>
+</html>

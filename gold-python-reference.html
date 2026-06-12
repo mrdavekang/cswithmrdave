@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold Coding Competition — Python Reference</title>
+<style>
+  :root{
+    --gold:#c8881a; --gold-dark:#a06d10; --gold-light:#fbf2dd;
+    --grey:#f1f1f1; --grey-dark:#282A35; --code-bg:#272822; --code-text:#f8f8f2;
+    --border:#ddd; --yellow:#fff4d1; --yellow-border:#ffd966;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Segoe UI",Verdana,Arial,sans-serif;color:#000;line-height:1.6;}
+  header{background:var(--grey-dark);color:#fff;padding:18px 24px;}
+  header h1{margin:0;font-size:22px;font-weight:600;}
+  header p{margin:4px 0 0;font-size:13px;color:#bbb;}
+  .topbar{background:var(--gold);color:#fff;padding:10px 24px;font-size:14px;}
+  .topbar b{font-weight:700;}
+  .layout{display:flex;align-items:flex-start;}
+  nav{width:270px;background:var(--grey);position:sticky;top:0;height:100vh;overflow-y:auto;padding:16px 0;flex-shrink:0;}
+  nav h3{margin:14px 18px 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#666;}
+  nav a{display:block;padding:7px 18px;color:#000;text-decoration:none;font-size:14px;border-left:3px solid transparent;}
+  nav a:hover{background:#ddd;}
+  nav a.active{border-left-color:var(--gold);background:#e2e2e2;font-weight:600;}
+  main{flex:1;padding:24px 40px;max-width:920px;min-width:0;}
+  h2{color:var(--grey-dark);border-bottom:2px solid var(--gold);padding-bottom:6px;margin-top:40px;}
+  h2:first-child{margin-top:0;}
+  h3.topic{color:var(--gold-dark);margin-top:28px;}
+  pre{background:var(--code-bg);color:var(--code-text);padding:14px 16px;border-radius:5px;overflow-x:auto;font-family:Consolas,"Courier New",monospace;font-size:14px;}
+  pre .cmt{color:#75715e;}
+  code.inline{background:var(--grey);padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:13px;color:#c0392b;}
+  .note{background:var(--gold-light);border-left:5px solid var(--gold);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .warn{background:var(--yellow);border-left:5px solid var(--yellow-border);padding:12px 16px;border-radius:0 4px 4px 0;margin:16px 0;font-size:14px;}
+  .intro{background:#fff;border:1px solid var(--border);border-radius:6px;padding:20px 24px;}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--gold);color:#fff;}
+  tr:nth-child(even){background:#f6f6f6;}
+  .q-card{border:1px solid var(--border);border-radius:6px;margin:14px 0;overflow:hidden;}
+  .q-head{background:var(--grey);padding:12px 16px;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+  .q-head:hover{background:#e6e6e6;}
+  .q-head .tag{background:var(--gold);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .q-body{padding:14px 18px;display:none;}
+  .q-body.open{display:block;}
+  .q-task{font-style:italic;color:#444;margin-bottom:10px;}
+  .pill{display:inline-block;background:var(--gold-light);color:var(--gold-dark);border:1px solid var(--gold);border-radius:14px;padding:3px 11px;margin:3px 4px 3px 0;font-size:13px;text-decoration:none;}
+  .pill:hover{background:var(--gold);color:#fff;}
+  footer{background:var(--grey-dark);color:#bbb;text-align:center;padding:20px;font-size:13px;}
+  .search{margin:0 18px 10px;}
+  .search input{width:100%;padding:7px 10px;border:1px solid #ccc;border-radius:4px;font-size:13px;}
+  @media(max-width:760px){nav{display:none;}main{padding:18px;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gold Coding Competition — Python Reference</h1>
+  <p>A study aid for KS3 &amp; KS4 students · Gold Stages 1–2</p>
+</header>
+<div class="topbar">
+  <b>How to use this:</b> Gold problems are too large to brute-force — they reward a clever <i>idea</i> plus the right tool. This page explains those tools. It contains <b>no answers</b>; finding the idea is the challenge.
+</div>
+
+<div class="layout">
+<nav id="nav">
+  <div class="search"><input id="navsearch" type="text" placeholder="Filter topics…"></div>
+  <h3>Get started</h3>
+  <a href="#start">How to use this guide</a>
+  <a href="#scale">Why brute force won't fit</a>
+  <h3>Python topic library</h3>
+  <a href="#bigint">Big integers in Python</a>
+  <a href="#dictcount">Dictionaries for fast lookups</a>
+  <a href="#prefix">Prefix sums (1D)</a>
+  <a href="#subk">Subarray sums equal to k</a>
+  <a href="#prefix2d">2D prefix sums</a>
+  <a href="#dp">Dynamic programming &amp; memoisation</a>
+  <a href="#recurrence">Recurrences &amp; counting</a>
+  <a href="#modular">Modular arithmetic</a>
+  <a href="#digits">Digit manipulation</a>
+  <a href="#digitdp">Digit DP (counting up to a huge N)</a>
+  <a href="#numtheory">Number theory: gcd &amp; friends</a>
+  <a href="#congruence">Linear congruences &amp; CRT</a>
+  <a href="#io">Reading input from files</a>
+  <h3>Hint map (by question)</h3>
+  <a href="#g1">Gold 1</a>
+  <a href="#g2">Gold 2</a>
+</nav>
+
+<main>
+
+<h2 id="start">How to use this guide</h2>
+<div class="intro">
+  <p>Every Gold question has inputs so large that simply trying every possibility will never finish in time. The skill is spotting the mathematical structure and choosing a technique that turns a slow loop into a fast one. This guide has two halves:</p>
+  <ol>
+    <li><b>Topic library</b> — tutorial-style explanations of the advanced tools Gold relies on, with generic example code. The examples are <i>not</i> solutions to the questions.</li>
+    <li><b>Hint map</b> — each question reduced to its plain task, plus the topics most likely to unlock it. Click a pill to jump to the explanation.</li>
+  </ol>
+  <div class="warn"><b>Rules reminder:</b> you may read this reference, but every line of code must be your own, and no AI tools are allowed. This page names <i>techniques and patterns</i>; the insight to apply them is what's being tested.</div>
+</div>
+
+<h2 id="scale">Why brute force won't fit</h2>
+<p>Always check the size of the input first — it tells you which techniques are even allowed.</p>
+<table>
+<tr><th>Input size</th><th>Roughly what fits in time</th></tr>
+<tr><td>up to ~10⁶</td><td>a single pass, or sorting</td></tr>
+<tr><td>up to ~10⁵</td><td>an n·log n or even n·√n method</td></tr>
+<tr><td>up to a few thousand</td><td>an n² double loop</td></tr>
+<tr><td>10¹², 10²⁰, "last 9 digits"</td><td><b>no</b> per-item loop — you need maths: dynamic programming over <i>structure</i> (digits, length) or a closed formula</td></tr>
+</table>
+<div class="note">When you see a bound like 5×10²⁰ or "submit the last 9 digits", that is a strong signal the intended method counts cleverly (digit DP, a recurrence, modular arithmetic) rather than iterating over every value.</div>
+
+<!-- ===================== TOPIC LIBRARY ===================== -->
+<h2>Python topic library</h2>
+
+<h3 class="topic" id="bigint">Big integers in Python</h3>
+<p>Python integers never overflow — they grow as large as needed. So 10²⁰ is fine to store; the problem is never the number itself, it's doing too many <i>operations</i>.</p>
+<pre>n = 5 * 10**20      <span class="cmt"># perfectly valid</span>
+print(n + 1)        <span class="cmt"># exact, no overflow</span></pre>
+
+<h3 class="topic" id="dictcount">Dictionaries for fast lookups</h3>
+<p>A dictionary checks "have I seen this value, and how often?" in roughly constant time — far faster than scanning a list each time.</p>
+<pre>seen = {}
+seen[key] = seen.get(key, 0) + 1   <span class="cmt"># count occurrences</span>
+if key in seen: ...                <span class="cmt"># instant membership test</span></pre>
+<div class="note">Turning a "for every pair, check…" double loop into a "remember what I've seen in a dict" single loop is one of the most common ways to go from too-slow to fast.</div>
+
+<h3 class="topic" id="prefix">Prefix sums (1D)</h3>
+<p>A prefix-sum array lets you get the sum of any slice instantly, after one setup pass.</p>
+<pre>nums = [1, 1, 3, -1]
+prefix = [0]
+for x in nums:
+    prefix.append(prefix[-1] + x)
+<span class="cmt"># sum of nums[i..j] (inclusive) = prefix[j+1] - prefix[i]</span></pre>
+
+<h3 class="topic" id="subk">Counting subarrays that sum to k</h3>
+<p>The classic pairing of prefix sums with a dictionary: a slice sums to k exactly when two prefix sums differ by k. Count how many earlier prefix sums equal <code class="inline">running - k</code>.</p>
+<pre>from collections import defaultdict
+count = 0
+running = 0
+seen = defaultdict(int)
+seen[0] = 1
+for x in nums:
+    running += x
+    count += seen[running - k]   <span class="cmt"># slices ending here that sum to k</span>
+    seen[running] += 1</pre>
+
+<h3 class="topic" id="prefix2d">2D prefix sums (rectangle sums)</h3>
+<p>The same idea in two dimensions: after one setup pass you can get the sum of any rectangle in constant time.</p>
+<pre><span class="cmt"># P[r][c] = sum of the rectangle from (0,0) to (r-1,c-1)</span>
+<span class="cmt"># sum of rectangle (r1,c1)..(r2,c2) inclusive =</span>
+#   P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]</pre>
+<div class="note"><b>Common trick:</b> to count rectangles with a given sum, fix a pair of rows, collapse the columns between them into one row of partial sums, then reuse the 1D "subarray sums equal to k" method on that row.</div>
+
+<h3 class="topic" id="dp">Dynamic programming &amp; memoisation</h3>
+<p>DP solves a big problem by combining answers to smaller sub-problems, storing each sub-answer so it's computed only once.</p>
+<pre>from functools import lru_cache
+@lru_cache(maxsize=None)     <span class="cmt"># remembers results automatically</span>
+def solve(state):
+    if base_case(state):
+        return base_value
+    total = 0
+    for choice in options(state):
+        total += solve(smaller_state(state, choice))
+    return total</pre>
+<div class="note">Ask yourself: "what's the smallest piece of state that fully describes a sub-problem?" Good state design is the whole game in DP.</div>
+
+<h3 class="topic" id="recurrence">Recurrences &amp; counting structures</h3>
+<p>"How many valid things of size n are there?" usually has a recurrence: build size n from smaller valid pieces. Grammar-style rules (an expression is a digit, or a±b, or (a)) translate directly into a counting recurrence over length.</p>
+<pre><span class="cmt"># count[L] = number of valid items of length L</span>
+<span class="cmt"># built by summing over the ways to split L into valid parts</span>
+count = [0] * (N + 1)
+count[1] = base_count
+for L in range(2, N + 1):
+    <span class="cmt"># add up each rule that can form length L from shorter pieces</span>
+    pass</pre>
+<div class="note">When the rule is "a OP b" you typically loop over where the split happens and multiply the counts of the two parts; brackets add a "wrap a length-(L-2) item" term.</div>
+
+<h3 class="topic" id="modular">Modular arithmetic (keeping only the last digits)</h3>
+<p>"Submit the last 9 digits" means work modulo 10⁹: take <code class="inline">% 1_000_000_000</code> after every addition and multiplication so numbers stay small and the last 9 digits stay correct.</p>
+<pre>MOD = 10**9
+total = (total + part) % MOD
+prod  = (a * b) % MOD</pre>
+<div class="warn">Apply the mod <i>throughout</i> the computation, not just at the end — otherwise intermediate values explode. (Python could store them, but it would be slow, and subtraction needs care: <code class="inline">(x - y) % MOD</code> keeps the result non-negative.)</div>
+
+<h3 class="topic" id="digits">Digit manipulation</h3>
+<pre>n = 1071
+digits = [int(ch) for ch in str(n)]   <span class="cmt"># [1, 0, 7, 1]</span>
+digit_sum = sum(digits)               <span class="cmt"># 9</span>
+
+<span class="cmt"># or without strings:</span>
+s = 0
+while n &gt; 0:
+    s += n % 10     <span class="cmt"># last digit</span>
+    n //= 10        <span class="cmt"># drop it</span></pre>
+
+<h3 class="topic" id="digitdp">Digit DP — counting up to an enormous N</h3>
+<p>When N has 12 or 20 digits you cannot loop from 1 to N. <b>Digit DP</b> builds numbers digit by digit and counts how many satisfy a property, carrying a little state (position, a "still tight against N's prefix?" flag, and whatever the property needs, e.g. the digit sum so far).</p>
+<pre>from functools import lru_cache
+digitsN = [int(c) for c in str(N)]
+@lru_cache(maxsize=None)
+def count(pos, tight, running_state):
+    if pos == len(digitsN):
+        return 1 if property_satisfied(running_state) else 0
+    limit = digitsN[pos] if tight else 9
+    total = 0
+    for d in range(0, limit + 1):
+        total += count(pos + 1,
+                        tight and d == limit,
+                        update(running_state, d))
+    return total</pre>
+<div class="note">This counts in time proportional to (digits × states × 10), not to N itself — so 10²⁰ becomes easy. Decide carefully whether you're counting in [1, N) or [1, N].</div>
+
+<h3 class="topic" id="numtheory">Number theory: gcd and friends</h3>
+<pre>from math import gcd
+gcd(12, 18)              <span class="cmt"># 6</span>
+pow(a, -1, m)            <span class="cmt"># modular inverse of a mod m (Python 3.8+)</span>
+pow(base, exp, m)        <span class="cmt"># fast (base ** exp) % m</span></pre>
+<div class="note">A value <code class="inline">x</code> is reachable by repeatedly adding <code class="inline">t</code> modulo <code class="inline">a</code> exactly when <code class="inline">x</code> is a multiple of <code class="inline">gcd(t, a)</code>. gcd is the backbone of "which states can I reach by stepping?" questions.</div>
+
+<h3 class="topic" id="congruence">Linear congruences &amp; the Chinese Remainder Theorem</h3>
+<p>"Can pressing buttons (each any number of times) hit a target colour on every light at once?" is a <b>system of linear congruences</b>: find integers k₁…kₘ with, for each light j, Σ kᵢ·tᵢ,ⱼ ≡ xⱼ (mod aⱼ). The buttons are shared across lights, so the equations are linked.</p>
+<pre><span class="cmt"># a single congruence k * t ≡ x (mod a) is solvable iff</span>
+<span class="cmt"># x is divisible by gcd(t, a). CRT combines independent</span>
+<span class="cmt"># congruences with different moduli into one.</span>
+from math import gcd</pre>
+<div class="note">Useful sub-questions to think through on paper: for one light, which targets are reachable? When several equations share the same unknowns, what consistency condition links them? gcd, modular inverses and CRT are the tools, plus careful case analysis.</div>
+
+<h3 class="topic" id="io">Reading input from files / multiple lines</h3>
+<p>Gold inputs come as files with sizes on one line and data on the next.</p>
+<pre>import sys
+data = sys.stdin.read().split()   <span class="cmt"># all tokens at once (fast)</span>
+<span class="cmt"># or from a named file:</span>
+with open("input1.txt") as f:
+    first = f.readline().split()
+    nums  = [int(x) for x in f.readline().split()]
+    grid  = [[int(x) for x in f.readline().split()] for _ in range(rows)]</pre>
+<div class="note">For large inputs, reading everything once with <code class="inline">sys.stdin.read()</code> (or one <code class="inline">f.read()</code>) and then splitting is much faster than reading line by line.</div>
+
+<!-- ===================== HINT MAP ===================== -->
+<h2 id="g1">Hint map — Gold 1</h2>
+<p>Click a question to expand its plain task and the topics most likely to help.</p>
+<div id="g1cards"></div>
+
+<h2 id="g2">Hint map — Gold 2</h2>
+<div id="g2cards"></div>
+
+</main>
+</div>
+
+<footer>
+  Gold Coding Competition Python Reference · Built as a study aid · No answers included · Students must write their own code.
+</footer>
+
+<script>
+const topicNames = {
+  bigint:"Big integers", dictcount:"Dictionaries", prefix:"Prefix sums (1D)",
+  subk:"Subarray sums = k", prefix2d:"2D prefix sums", dp:"DP & memoisation",
+  recurrence:"Recurrences", modular:"Modular arithmetic", digits:"Digit manipulation",
+  digitdp:"Digit DP", numtheory:"gcd & number theory", congruence:"Linear congruences / CRT",
+  io:"Reading input", scale:"Input size check"
+};
+
+const data = {
+  g1:[
+    ["Part 1 — Rectangles summing to k","Count the rectangular sub-regions of an n×m integer grid whose elements add up exactly to k.",["prefix2d","subk","prefix","dictcount","io"]],
+    ["Part 2 — Numbers with a single-digit digit-sum","For x in [1, n), count how many have a digit sum that is itself a single digit (≤ 9). n can be as large as 5×10²⁰.",["digitdp","digits","bigint","dp","scale"]]
+  ],
+  g2:[
+    ["Part 1 — Counting valid expressions of length n","Count distinct valid expressions (digits 1..d with +, −, brackets) of length n; if longer than 9 digits, give the last 9. n up to ~1000.",["recurrence","dp","modular","scale","io"]],
+    ["Part 2 — Reachable light states","Lights have differing colour counts; each button advances several lights by fixed amounts mod aⱼ. For each query target, decide if it's reachable from all-zero (output Y/N).",["congruence","numtheory","modular","io"]]
+  ]
+};
+
+function buildCards(key){
+  const box = document.getElementById(key+"cards");
+  data[key].forEach(q=>{
+    const card = document.createElement("div");
+    card.className="q-card";
+    const pills = q[2].map(t=>`<a class="pill" href="#${t}">${topicNames[t]}</a>`).join("");
+    card.innerHTML = `
+      <div class="q-head"><span>${q[0]}</span><span class="tag">topics ▾</span></div>
+      <div class="q-body">
+        <div class="q-task">Task: ${q[1]}</div>
+        <div><b>Topics that may help:</b><br>${pills}</div>
+      </div>`;
+    const head = card.querySelector(".q-head");
+    const body = card.querySelector(".q-body");
+    head.addEventListener("click",()=>body.classList.toggle("open"));
+    box.appendChild(card);
+  });
+}
+buildCards("g1"); buildCards("g2");
+
+const links = document.querySelectorAll("#nav a");
+const sections = [...links].map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+window.addEventListener("scroll",()=>{
+  let cur="";
+  sections.forEach(s=>{ if(s.getBoundingClientRect().top<120) cur="#"+s.id; });
+  links.forEach(a=>a.classList.toggle("active", a.getAttribute("href")===cur));
+});
+document.getElementById("navsearch").addEventListener("input",e=>{
+  const v=e.target.value.toLowerCase();
+  links.forEach(a=>{ a.style.display = a.textContent.toLowerCase().includes(v) ? "" : "none"; });
+});
+</script>
+</body>
+</html>
