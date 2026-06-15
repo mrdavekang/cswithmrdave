@@ -329,7 +329,8 @@
         <div class="summary" id="submitSummary"></div>
         <button class="btn big-export" onclick="exportSubmission()">⬇️ Download my submission</button>
         <button class="btn btn-ghost" onclick="copySubmission()">⧉ Copy as text</button>
-        <p style="font-size:.85rem;color:#6b7a5e;margin-bottom:0">Then send the downloaded file to your teacher however they ask (upload, email, or shared folder).</p>
+        <p style="font-size:.85rem;color:#6b7a5e;margin-bottom:6px">💾 Your work is saved in this browser automatically — you can switch lessons, switch tabs, or close and reopen the page without losing it. Then send the downloaded file to your teacher however they ask.</p>
+        <button class="skip" onclick="clearAllWork()">🧹 Finished / sharing this computer? Clear all my work and start fresh</button>
       </div>
     </div>
   </section>
@@ -347,25 +348,32 @@ function addXP(n){ xp += n; document.getElementById('xpBadge').textContent = 'XP
 const codeEl = document.getElementById('code');
 const preview = document.getElementById('preview');
 let lastLoaded = '';
+const codeStore = {};   // per-lesson code typed by the student (persisted)
 
 function runCode(){
   preview.srcdoc = codeEl.value;
 }
 function resetCode(){
-  codeEl.value = lastLoaded;
+  codeEl.value = lastLoaded;            // restore the original starter
+  delete codeStore[currentLessonIndex]; // forget the saved version for this lesson
+  saveState();
   runCode();
 }
 function copyCode(){
   navigator.clipboard.writeText(codeEl.value).then(()=>{ /* silent */ });
 }
-function loadIntoEditor(code){
-  lastLoaded = code;
+function loadIntoEditor(code, starter){
+  lastLoaded = (starter!==undefined) ? starter : code; // Reset always goes back to the starter
   codeEl.value = code;
   runCode();
 }
-// live-ish: update preview shortly after typing stops
+// live-ish: update preview shortly after typing stops + remember what they typed
 let t;
-codeEl.addEventListener('input', ()=>{ clearTimeout(t); t=setTimeout(runCode, 600); });
+codeEl.addEventListener('input', ()=>{
+  clearTimeout(t); t=setTimeout(runCode, 600);
+  codeStore[currentLessonIndex] = codeEl.value;
+  saveState();
+});
 
 /* ---------- Family-friendly theme suggestions ---------- */
 const SUGGESTIONS = ['Minecraft','Your favourite animal','A sport or team','A video game (PEGI-appropriate)',
@@ -373,11 +381,76 @@ const SUGGESTIONS = ['Minecraft','Your favourite animal','A sport or team','A vi
 
 /* ---------- Progress tracking (for teacher export) ---------- */
 const progress = {
-  warmup:{correct:0, total:0, answered:new Set()},
-  lessonQuiz:{correct:0, total:0, answered:new Set()},
+  warmup:{correct:0, total:0, answered:new Set(), choice:{}},     // choice: qi -> picked option
+  lessonQuiz:{correct:0, total:0, answered:new Set(), result:{}}, // result: key -> picked option
   challenges:new Set(),
   confidence:0
 };
+
+/* ---------- Browser memory (localStorage) ---------- */
+const STORE_KEY = 'htmlLabDay1';
+let memOK = true;
+function v(id){ const e=document.getElementById(id); return e? e.value : ''; }
+function saveState(){
+  if(!memOK) return;
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      codes: codeStore,
+      name: v('stuName'), cls: v('stuClass'),
+      r1:v('r1'), r2:v('r2'), r3:v('r3'), r4:v('r4'),
+      confidence: progress.confidence,
+      xp: xp,
+      warmupChoice: progress.warmup.choice,
+      lessonResult: progress.lessonQuiz.result,
+      challenges: [...progress.challenges],
+      viewed: [...viewedCards]
+    }));
+  }catch(e){ memOK=false; }
+}
+function loadState(){
+  let st;
+  try{ st = JSON.parse(localStorage.getItem(STORE_KEY)||'null'); }
+  catch(e){ memOK=false; return; }
+  if(!st) return;
+  // editor code per lesson
+  if(st.codes) Object.assign(codeStore, st.codes);
+  // identity + reflection text fields
+  const setVal=(id,val)=>{ const e=document.getElementById(id); if(e&&val!=null) e.value=val; };
+  setVal('stuName',st.name); setVal('stuClass',st.cls);
+  setVal('r1',st.r1); setVal('r2',st.r2); setVal('r3',st.r3); setVal('r4',st.r4);
+  // confidence stars
+  if(st.confidence){ progress.confidence=st.confidence; }
+  // xp
+  if(typeof st.xp==='number'){ xp=st.xp; document.getElementById('xpBadge').textContent='XP: '+xp; }
+  // warm-up answers
+  if(st.warmupChoice){
+    progress.warmup.choice = st.warmupChoice;
+    progress.warmup.total = WQUIZ.length;
+    Object.keys(st.warmupChoice).forEach(qi=>{
+      progress.warmup.answered.add(+qi);
+      if(+st.warmupChoice[qi]===WQUIZ[+qi].a) progress.warmup.correct++;
+    });
+  }
+  // lesson quiz answers
+  if(st.lessonResult){
+    progress.lessonQuiz.result = st.lessonResult;
+    Object.keys(st.lessonResult).forEach(key=>{
+      progress.lessonQuiz.answered.add(key);
+      progress.lessonQuiz.total++;
+      const rec = st.lessonResult[key];
+      if(rec && rec.c===rec.a) progress.lessonQuiz.correct++;
+    });
+  }
+  // challenges + viewed flashcards
+  if(st.challenges) st.challenges.forEach(c=>progress.challenges.add(c));
+  if(st.viewed) st.viewed.forEach(i=>viewedCards.add(i));
+}
+function clearAllWork(){
+  if(confirm('Clear ALL saved work on this computer and start fresh? This cannot be undone.')){
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+    location.reload();
+  }
+}
 
 /* ---------- Tabs ---------- */
 function showTab(name){
@@ -445,20 +518,31 @@ function renderWarmupQuiz(){
   box.querySelectorAll('.qcard').forEach(card=>{
     const qi = +card.dataset.qi;
     const opts = card.querySelectorAll('.opt');
+    // restore a previously answered question
+    if(progress.warmup.choice[qi] != null){
+      const chosen = +progress.warmup.choice[qi];
+      if(chosen===WQUIZ[qi].a){ opts[chosen].classList.add('correct'); }
+      else { opts[chosen].classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
+      opts.forEach(x=>x.disabled=true);
+    }
     opts.forEach(o=>{
       o.onclick = ()=>{
         if(progress.warmup.answered.has(qi)) return; // lock after first answer
         progress.warmup.answered.add(qi);
         const oi = +o.dataset.oi;
+        progress.warmup.choice[qi] = oi;
         if(oi===WQUIZ[qi].a){ o.classList.add('correct'); progress.warmup.correct++; addXP(5); }
         else { o.classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
         opts.forEach(x=>x.disabled=true);
         document.getElementById('warmupScore').textContent =
           `Score: ${progress.warmup.correct} / ${progress.warmup.total}`;
+        saveState();
         updateGates();
       };
     });
   });
+  document.getElementById('warmupScore').textContent =
+    `Score: ${progress.warmup.correct} / ${progress.warmup.total}`;
 }
 
 /* ---------- Section completion gates ---------- */
@@ -491,13 +575,27 @@ function updateGates(){
 }
 
 /* ---------- Reflection stars ---------- */
+function paintStars(v){
+  const wrap = document.getElementById('stars');
+  wrap.dataset.val = v;
+  wrap.querySelectorAll('span').forEach(x=>x.textContent = (+x.dataset.v<=v)?'★':'☆');
+}
 function initStars(){
   const wrap = document.getElementById('stars');
   wrap.querySelectorAll('span').forEach(s=>{
     s.onclick = ()=>{
-      const v = +s.dataset.v; progress.confidence = v; wrap.dataset.val = v;
-      wrap.querySelectorAll('span').forEach(x=>x.textContent = (+x.dataset.v<=v)?'★':'☆');
+      const v = +s.dataset.v; progress.confidence = v;
+      paintStars(v); saveState();
     };
+  });
+  if(progress.confidence) paintStars(progress.confidence); // restore
+}
+
+/* ---------- Save identity + reflection text as they type ---------- */
+function wireTextSaving(){
+  ['stuName','stuClass','r1','r2','r3','r4'].forEach(id=>{
+    const e = document.getElementById(id);
+    if(e) e.addEventListener('input', saveState);
   });
 }
 
@@ -859,16 +957,38 @@ function selectLesson(i, btn){
   const les = LESSONS[i];
   document.getElementById('lessonTitle').textContent = (les.type==='challenge'?'🎯 ':'📘 ') + les.title;
 
+  const saved = codeStore[i];
+  const startCode = (saved!==undefined) ? saved : les.starter;
+
   if(les.type==='challenge'){
     document.getElementById('lessonBody').innerHTML = buildChallengeHTML(les);
-    loadIntoEditor(les.starter);
+    loadIntoEditor(startCode, les.starter);
     wireChallenge(les);
+    restoreChallengeState(les);
   } else {
     document.getElementById('lessonBody').innerHTML = les.html;
-    loadIntoEditor(les.starter);
+    loadIntoEditor(startCode, les.starter);
     wireQuizzes();
     const box = document.getElementById('suggestBox');
     if(box){ box.innerHTML = SUGGESTIONS.map(s=>`<span>${s}</span>`).join(''); }
+  }
+}
+
+// If a challenge was already passed in a previous session, show it as done
+function restoreChallengeState(les){
+  const titleKey = les.title.replace(/^[^A-Za-z]+/,'');
+  if(progress.challenges.has(titleKey)){
+    les._done = true;
+    const doc = new DOMParser().parseFromString(codeEl.value, 'text/html');
+    const items = document.querySelectorAll('.reqs li');
+    les.reqs.forEach((r,idx)=>{
+      let ok=false; try{ ok=!!r.test(doc); }catch(e){}
+      const li=items[idx]; if(!li) return;
+      li.classList.add(ok?'pass':'fail');
+      li.querySelector('.mark').textContent = ok?'✓':'✗';
+    });
+    const res=document.getElementById('checkResult');
+    if(res){ res.textContent='✅ Already completed — nice one!'; res.style.color='#2f5e1e'; }
   }
 }
 
@@ -912,6 +1032,7 @@ function checkChallenge(){
     res.style.color = '#2f5e1e';
     if(!currentChallenge._done){ addXP(20); currentChallenge._done = true; }
     progress.challenges.add(currentChallenge.title.replace(/^[^A-Za-z]+/,''));
+    saveState();
     updateGates();
   } else {
     res.textContent = `Passed ${passed} of ${currentChallenge.reqs.length}. Fix the red ones and check again.`;
@@ -926,15 +1047,30 @@ function wireQuizzes(){
     const opts = q.querySelectorAll('.opt');
     const fb = q.querySelector('.feedback');
     const key = currentLessonIndex + '-' + qpos;
+
+    // restore a previously answered quiz
+    if(progress.lessonQuiz.result[key] != null){
+      const chosen = progress.lessonQuiz.result[key].c;
+      opts.forEach(x=>x.disabled=true);
+      if(chosen===ans){
+        opts[chosen].classList.add('correct');
+        fb.textContent='✅ Correct! (answered earlier)'; fb.style.color='#2f5e1e';
+      } else {
+        opts[chosen].classList.add('wrong');
+        opts[ans].classList.add('correct');
+        fb.textContent='❌ You answered this earlier — the green one is right.'; fb.style.color='#b02a20';
+      }
+    }
+
     opts.forEach((o,idx)=>{
       o.onclick = ()=>{
+        if(progress.lessonQuiz.answered.has(key)) return; // already answered this session/before
         opts.forEach(x=>{x.classList.remove('correct','wrong'); x.disabled=false;});
         // record once per quiz for the teacher report
-        if(!progress.lessonQuiz.answered.has(key)){
-          progress.lessonQuiz.answered.add(key);
-          progress.lessonQuiz.total++;
-          if(idx===ans) progress.lessonQuiz.correct++;
-        }
+        progress.lessonQuiz.answered.add(key);
+        progress.lessonQuiz.total++;
+        progress.lessonQuiz.result[key] = {c:idx, a:ans};
+        if(idx===ans) progress.lessonQuiz.correct++;
         if(idx===ans){
           o.classList.add('correct'); fb.textContent='✅ Correct! +10 XP'; fb.style.color='#2f5e1e';
           addXP(10);
@@ -944,13 +1080,17 @@ function wireQuizzes(){
           opts[ans].classList.add('correct');
           fb.textContent='❌ Not quite — the green one is right. Try the next quiz!';
           fb.style.color='#b02a20';
+          opts.forEach(x=>x.disabled=true);
         }
+        saveState();
       };
     });
   });
 }
 
 /* ---------- Start ---------- */
+loadState();              // restore everything from browser memory first
+wireTextSaving();
 selectLesson(0, list.querySelector('button'));
 renderCard();
 renderWarmupQuiz();
