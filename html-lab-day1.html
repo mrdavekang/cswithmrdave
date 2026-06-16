@@ -1,1101 +1,651 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>HTML Lab — Day 1 (KS3)</title>
 <style>
   :root{
-    --grass:#5a9e3f; --grass-dark:#3d7a28; --dirt:#7a5230; --stone:#7f7f7f;
-    --sky:#8fd3ff; --ink:#1d2b15; --panel:#ffffff; --bg:#eef6e9;
-    --gold:#f1b81a; --redstone:#d63a2f; --diamond:#3fc7d4;
-    --shadow:0 4px 0 rgba(0,0,0,.18);
+    --bg:#f7f8fc; --paper:#ffffff; --ink:#111827; --muted:#64748b; --line:#dbe3ef;
+    --blue:#2563eb; --blue2:#dbeafe; --green:#15803d; --green2:#dcfce7;
+    --red:#b91c1c; --red2:#fee2e2; --yellow:#facc15; --code:#101827; --codeText:#f8fafc;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-  /* pixel/blocky font feel for headings */
-  h1,h2,h3,.block-font{font-family:'Trebuchet MS','Segoe UI',sans-serif;letter-spacing:.3px}
+  html,body{margin:0;min-height:100%}
+  body{font-family:"Aptos","Segoe UI",system-ui,-apple-system,sans-serif;
+    background:radial-gradient(circle at top left,#fff 0,#f8fafc 45%,#eef4ff 100%);color:var(--ink);}
+  button,textarea,input{font:inherit}
 
-  header{
-    background:linear-gradient(var(--grass),var(--grass-dark));
-    color:#fff;padding:18px 22px;border-bottom:6px solid var(--dirt);
-    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  }
-  header .logo{
-    width:46px;height:46px;border-radius:8px;flex:0 0 auto;
-    background:
-      linear-gradient(135deg,#6bbf4a 0 50%,#8a5a32 50% 100%);
-    box-shadow:inset 0 0 0 4px rgba(0,0,0,.15), var(--shadow);
-    image-rendering:pixelated;
-  }
-  header h1{margin:0;font-size:1.45rem;text-shadow:2px 2px 0 rgba(0,0,0,.25)}
-  header p{margin:2px 0 0;font-size:.9rem;opacity:.95}
+  /* ---- top bar ---- */
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 22px;backdrop-filter:blur(12px);}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;display:grid;place-items:center;border:2px solid var(--ink);border-radius:14px;background:#fff;font-size:24px}
+  .brand h1{margin:0;font-size:19px;font-weight:900;letter-spacing:-.02em}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted);font-weight:700}
+  .progress-area{display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end;flex-wrap:wrap}
+  .pill{border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--paper);color:var(--muted);font-weight:800;font-size:13px;white-space:nowrap}
+  .bar{width:min(260px,24vw);height:13px;background:#e8eef8;border-radius:999px;overflow:hidden;border:1px solid #d5e0ef}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .25s ease}
 
-  .wrap{max-width:1280px;margin:0 auto;padding:18px}
-  .grid{display:grid;grid-template-columns:225px 1fr;gap:18px}
-  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  /* ---- WAGBA banner (top) ---- */
+  .wagba{position:sticky;top:69px;z-index:15;background:#111827;color:#fff;padding:12px 22px;display:flex;gap:14px;align-items:flex-start}
+  .wagba .tagb{flex:0 0 auto;background:var(--yellow);color:#111827;border-radius:999px;padding:5px 12px;font-weight:1000;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+  .wagba .txt{font-size:14.5px;line-height:1.45;font-weight:600}
+  .wagba .txt b{font-weight:900}
 
-  .panel{background:var(--panel);border:2px solid #d8e6cf;border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-  .panel h2{margin:0;padding:12px 16px;background:#f3f9ef;border-bottom:2px solid #e2eedb;font-size:1.05rem}
-  .panel .body{padding:14px 16px}
+  /* ---- main ---- */
+  .main{max-width:1180px;margin:0 auto;padding:26px 22px 10px}
+  .hero{background:var(--paper);border:2px solid var(--ink);border-radius:24px;box-shadow:0 9px 0 var(--ink);
+    padding:22px 24px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+  .kicker{display:inline-block;background:var(--blue2);color:#1e3a8a;border:2px solid #1e3a8a;border-radius:999px;
+    padding:5px 12px;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.06em}
+  .hero h2{margin:12px 0 8px;font-size:clamp(26px,4vw,44px);line-height:1;letter-spacing:-.03em;font-weight:1000}
+  .hero .skill{font-size:18px;line-height:1.4;font-weight:800;color:#263244;max-width:760px}
+  .hero-icon{width:104px;height:104px;border:2px solid var(--ink);border-radius:26px;display:grid;place-items:center;font-size:54px;background:#f8fafc}
 
-  /* lesson list */
-  .lessons{list-style:none;margin:0;padding:6px}
-  .lessons li{margin:4px 0}
-  .lessons button{
-    width:100%;text-align:left;border:0;background:#f6fbf3;border:2px solid #e2eedb;
-    padding:9px 10px;border-radius:10px;cursor:pointer;font-size:.84rem;line-height:1.2;display:flex;gap:8px;align-items:center;
-    transition:.12s;
-  }
-  .lessons button.challenge{background:#fff3df;border-color:#f1d39a}
-  .lessons button.challenge .num{background:var(--redstone)}
-  .lessons button.challenge.active{background:var(--gold);color:#3a2a05;border-color:#c9930a}
-  .lessons button.challenge.active .num{background:#a9740b}
-  .lessons button:hover{background:#eaf6e2;transform:translateX(2px)}
-  .lessons button.active{background:var(--grass);color:#fff;border-color:var(--grass-dark)}
-  .lessons .num{background:var(--dirt);color:#fff;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:.8rem;flex:0 0 auto}
-  .lessons button.active .num{background:#2f5e1e}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px 24px;margin-bottom:18px}
+  .card h3{margin:0 0 8px;font-size:15px;font-weight:1000;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .teach{font-size:18px;line-height:1.55;color:#1f2937;margin:0 0 14px}
+  .teach b{color:#111827}
+  .task-text{font-size:19px;line-height:1.5;color:#1f2937;margin:0}
+  .task-text b{color:#111827}
+  code{background:#f1f5f9;border:1px solid #dbe3ef;border-radius:7px;padding:1px 6px;font-family:"Cascadia Code",Consolas,monospace;font-size:.9em;color:#9a3412}
+  pre.example{background:var(--code);color:var(--codeText);border-radius:14px;padding:14px 16px;margin:12px 0 0;overflow:auto;
+    font-family:"Cascadia Code",Consolas,monospace;font-size:15px;line-height:1.55}
+  .ex-label{font-size:12px;font-weight:1000;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 0}
 
-  /* editor */
-  .editor-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-  textarea#code{
-    width:100%;height:300px;border:0;border-top:2px solid #e2eedb;padding:14px;
-    font-family:'Consolas','Courier New',monospace;font-size:14px;line-height:1.5;
-    background:#1e2718;color:#d7ffba;resize:vertical;tab-size:2;
-  }
-  iframe#preview{width:100%;height:320px;border:0;border-top:2px solid #e2eedb;background:#fff}
+  /* requirements checklist */
+  .reqs{list-style:none;padding:0;margin:14px 0 0}
+  .reqs li{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;margin:6px 0;border:2px solid #e6edf6;border-radius:12px;background:#fbfdff;font-size:16px}
+  .reqs li .mark{flex:0 0 auto;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-weight:1000;background:#eef2f7;color:#94a3b8}
+  .reqs li.pass{background:var(--green2);border-color:var(--green)} .reqs li.pass .mark{background:var(--green);color:#fff}
+  .reqs li.fail{background:var(--red2);border-color:var(--red)} .reqs li.fail .mark{background:var(--red);color:#fff}
 
-  .btn{
-    border:0;border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer;font-size:.9rem;
-    box-shadow:0 3px 0 rgba(0,0,0,.18);transition:.1s;
-  }
-  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
-  .btn-run{background:var(--grass);color:#fff}
-  .btn-reset{background:#e7e1d6;color:#4a3a22}
-  .btn-ghost{background:#eaf3ff;color:#1c4f7a}
+  /* editor + preview */
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.92fr);gap:16px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .panel-head{height:46px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 14px;color:var(--muted);font-weight:900;font-size:14px}
+  .dot{width:13px;height:13px;border-radius:50%}.r{background:#ef4444}.y{background:#f59e0b}.g{background:#22c55e}
+  .filename{margin-left:6px}
+  textarea.editor{width:100%;min-height:300px;border:0;outline:none;resize:vertical;background:var(--code);color:var(--codeText);
+    padding:16px;font-family:"Cascadia Code",Consolas,monospace;font-size:16px;line-height:1.6;tab-size:2}
+  iframe.preview{width:100%;min-height:300px;border:0;background:#fff;display:block}
 
-  .tag{display:inline-block;background:#eef7e7;border:1px solid #cfe6c0;color:#2f5e1e;border-radius:6px;padding:1px 7px;font-family:monospace;font-size:.85em}
+  /* buttons */
+  .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+  .btn{border:2px solid var(--ink);border-radius:13px;padding:11px 17px;font-weight:1000;cursor:pointer;background:#fff;box-shadow:0 4px 0 var(--ink);transition:.12s ease}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 0 var(--ink)}
+  .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .primary{background:var(--blue);color:#fff}
+  .good{background:var(--green);color:#fff}
+  .soft{background:#f8fafc;color:#334155}
+  .next-cta{background:var(--green);color:#fff}
+  .ghostlink{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px}
 
-  /* lesson content */
-  .lesson p{line-height:1.55}
-  pre.code{background:#1e2718;color:#d7ffba;padding:12px 14px;border-radius:10px;overflow:auto;font-size:13px;margin:10px 0}
-  .tryit{background:#fff8e6;border:2px dashed var(--gold);border-radius:10px;padding:12px;margin:12px 0}
-  .tryit strong{color:#a9740b}
+  .feedback{display:none;border-radius:16px;padding:15px 18px;margin-top:16px;font-size:17px;line-height:1.45;font-weight:800;white-space:pre-wrap}
+  .feedback.show{display:block}
+  .feedback.success{background:var(--green2);border:2px solid var(--green);color:#14532d}
+  .feedback.error{background:var(--red2);border:2px solid var(--red);color:#7f1d1d}
+  .feedback.hint{background:var(--blue2);border:2px solid var(--blue);color:#1e3a8a}
 
-  /* quiz */
-  .quiz{background:#f3f9ef;border:2px solid #e2eedb;border-radius:10px;padding:12px;margin:12px 0}
-  .quiz .opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:2px solid #d8e6cf;background:#fff;border-radius:8px;cursor:pointer;transition:.1s}
-  .quiz .opt:hover{background:#eef7e7}
-  .quiz .opt.correct{background:#d8f5c8;border-color:var(--grass)}
-  .quiz .opt.wrong{background:#ffe0dc;border-color:var(--redstone)}
-  .feedback{margin-top:8px;font-weight:600;min-height:1.2em}
-
-  /* challenge checker */
-  .challenge-box{background:#fff8e6;border:2px solid var(--gold);border-radius:12px;padding:14px;margin:12px 0}
-  .challenge-box h4{margin:0 0 6px;color:#a9740b}
-  .reqs{list-style:none;padding:0;margin:10px 0}
-  .reqs li{padding:7px 10px;margin:5px 0;border-radius:8px;background:#fff;border:2px solid #ecd9a8;display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
-  .reqs li .mark{flex:0 0 auto;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-weight:700;background:#e7e1d6;color:#7a6a4a}
-  .reqs li.pass{background:#e7f8da;border-color:var(--grass)}
-  .reqs li.pass .mark{background:var(--grass);color:#fff}
-  .reqs li.fail{background:#ffe9e6;border-color:var(--redstone)}
-  .reqs li.fail .mark{background:var(--redstone);color:#fff}
-  .check-result{font-weight:700;margin-top:8px;min-height:1.2em}
-  .hintbtn{background:none;border:0;color:#a9740b;text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0;margin-top:4px}
-  .hint{display:none;font-size:.88rem;color:#6b5a2e;margin-top:4px;background:#fff5db;padding:8px 10px;border-radius:8px}
-  .checklist{list-style:none;padding:0;margin:0}
-  .checklist li{padding:7px 4px;border-bottom:1px dashed #d8e6cf;display:flex;gap:10px;align-items:flex-start}
-  .checklist input{margin-top:3px;transform:scale(1.2)}
-
-  .pill{display:inline-block;background:var(--diamond);color:#06343a;font-weight:700;border-radius:999px;padding:3px 10px;font-size:.78rem}
-  .suggest{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-  .suggest span{background:#eef7e7;border:1px solid #cfe6c0;border-radius:999px;padding:5px 11px;font-size:.85rem}
-  footer{text-align:center;color:#6b7a5e;font-size:.85rem;padding:22px}
-  .xp{float:right;background:#2f5e1e;color:#fff;border-radius:8px;padding:3px 10px;font-size:.8rem}
-
-  /* top tabs */
-  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;background:var(--dirt);padding:10px;border-bottom:4px solid #5a3c22}
-  .tabs button{border:0;background:#9a6a3e;color:#fff;font-weight:700;padding:9px 16px;border-radius:10px 10px 0 0;cursor:pointer;font-size:.92rem;box-shadow:0 3px 0 rgba(0,0,0,.18)}
-  .tabs button.active{background:#f3f9ef;color:#2f5e1e}
-  .tabsec{display:none}
-  .tabsec.active{display:block}
-
-  /* identity bar */
-  .idbar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
-  .idbar label{font-size:.82rem;font-weight:600;display:block;margin-bottom:3px;color:#3d5230}
-  .idbar input{padding:8px 10px;border:2px solid #d8e6cf;border-radius:8px;font-size:.95rem}
+  /* inputs */
+  .field{margin:12px 0}
+  .field label{display:block;font-weight:900;margin-bottom:6px;font-size:15px}
+  .field input,.field textarea{width:100%;max-width:520px;border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:16px}
+  .field textarea{max-width:100%;min-height:74px;resize:vertical}
+  .stars{font-size:30px;cursor:pointer;user-select:none;letter-spacing:6px}
 
   /* flashcards */
-  .fc-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-  .flashcard{width:100%;max-width:440px;height:200px;perspective:1000px;cursor:pointer}
+  .fc-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
+  .flashcard{width:100%;max-width:460px;height:210px;perspective:1100px;cursor:pointer}
   .fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
   .flashcard.flipped .fc-inner{transform:rotateY(180deg)}
-  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:grid;place-items:center;text-align:center;padding:20px;box-shadow:var(--shadow)}
-  .fc-front{background:linear-gradient(var(--grass),var(--grass-dark));color:#fff}
-  .fc-back{background:#fff;border:3px solid var(--grass);color:var(--ink);transform:rotateY(180deg)}
-  .fc-front .q{font-size:1.15rem;font-weight:700}
-  .fc-back .tagbig{font-family:monospace;font-size:1.5rem;color:var(--grass-dark);font-weight:700;background:#eef7e7;padding:6px 14px;border-radius:10px;margin-bottom:8px}
-  .fc-hint{opacity:.85;font-size:.85rem;margin-top:10px}
-  .fc-nav{display:flex;gap:10px;align-items:center}
-  .fc-count{font-size:.85rem;color:#6b7a5e;min-width:70px;text-align:center}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:grid;place-items:center;text-align:center;padding:22px;border:2px solid var(--ink);box-shadow:0 7px 0 var(--ink)}
+  .fc-front{background:var(--blue);color:#fff}
+  .fc-back{background:#fff;transform:rotateY(180deg)}
+  .fc-front .q{font-size:21px;font-weight:900;line-height:1.3}
+  .fc-front .hint{margin-top:12px;font-size:13px;opacity:.9;font-weight:700}
+  .fc-back .tagbig{font-family:"Cascadia Code",Consolas,monospace;font-size:30px;color:var(--blue);font-weight:1000;background:#eff6ff;padding:6px 16px;border-radius:12px;border:2px solid #bfdbfe;margin-bottom:10px}
+  .fc-back .desc{font-size:16px;color:#334155;max-width:360px}
+  .fc-nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .fc-count{font-size:14px;color:var(--muted);font-weight:800;min-width:64px;text-align:center}
 
-  /* warm-up match quiz */
-  .qcard{background:#f3f9ef;border:2px solid #e2eedb;border-radius:12px;padding:14px;margin:10px 0}
-  .qcard .qtext{font-weight:700;margin-bottom:8px}
-  .qcard .opt{display:block;width:100%;text-align:left;margin:5px 0;padding:9px 12px;border:2px solid #d8e6cf;background:#fff;border-radius:8px;cursor:pointer}
-  .qcard .opt:hover{background:#eef7e7}
-  .qcard .opt.correct{background:#d8f5c8;border-color:var(--grass)}
-  .qcard .opt.wrong{background:#ffe0dc;border-color:var(--redstone)}
-  .scorebar{font-weight:700;text-align:center;padding:10px;background:#eef7e7;border-radius:10px;margin-top:10px}
+  /* quiz */
+  .qcard{border:2px solid #e6edf6;border-radius:16px;padding:16px;margin:12px 0;background:#fbfdff}
+  .qcard .qtext{font-weight:900;font-size:17px;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;margin:7px 0;padding:11px 14px;border:2px solid var(--line);background:#fff;border-radius:11px;cursor:pointer;font-size:16px;font-weight:700}
+  .opt:hover:not(:disabled){background:#f1f5f9}
+  .opt.correct{background:var(--green2);border-color:var(--green)}
+  .opt.wrong{background:var(--red2);border-color:var(--red)}
+  .opt:disabled{cursor:default}
 
-  /* reflection + export */
-  .reflect label{display:block;font-weight:600;margin:14px 0 5px;color:#2f5e1e}
-  .reflect textarea{width:100%;min-height:70px;padding:10px;border:2px solid #d8e6cf;border-radius:10px;font-family:inherit;font-size:.95rem;resize:vertical}
-  .stars{font-size:1.7rem;cursor:pointer;user-select:none;letter-spacing:4px}
-  .stars span:hover{opacity:.7}
-  .summary{background:#f3f9ef;border:2px solid #e2eedb;border-radius:10px;padding:12px;margin:14px 0;font-size:.9rem;line-height:1.7}
-  .big-export{background:var(--gold);color:#3a2a05;font-size:1.05rem;padding:13px 22px}
+  /* completion */
+  .completion{display:grid;place-items:center;text-align:center;padding:18px 0 30px}
+  .completion-card{max-width:760px;background:#fff;border:2px solid var(--ink);box-shadow:0 12px 0 var(--ink);border-radius:30px;padding:40px}
+  .completion-card h2{font-size:44px;margin:6px 0 8px;line-height:1}
+  .bigscore{font-size:64px;font-weight:1000;color:var(--blue);margin:14px 0}
 
-  /* section completion bar */
-  .section-foot{margin-top:18px;background:#fff;border:2px solid #e2eedb;border-radius:14px;box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-  .foot-status{font-size:.95rem;color:#3d5230;font-weight:600}
-  .foot-status.done{color:#2f5e1e}
-  .next-btn{background:var(--grass);color:#fff;font-size:1.08rem;padding:14px 28px}
-  .next-btn:disabled{background:#cdd8c4;color:#7d8a72;cursor:not-allowed;box-shadow:0 3px 0 rgba(0,0,0,.08)}
-  .next-btn.ready{animation:bob 1.3s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-  .skip{background:none;border:0;color:#9aa790;text-decoration:underline;cursor:pointer;font-size:.82rem}
-  .skip:hover{color:#6b7a5e}
+  /* ---- bottom course menu ---- */
+  .coursemenu{max-width:1180px;margin:8px auto 36px;padding:18px 22px;background:var(--paper);border:1px solid var(--line);border-radius:22px}
+  .coursemenu .cm-title{font-weight:1000;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px}
+  .cm-section{font-size:11px;font-weight:1000;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin:12px 4px 6px}
+  .cm-row{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:#fff;border-radius:13px;padding:8px 12px;cursor:pointer;font-size:13px;font-weight:800;color:#334155;transition:.12s}
+  .chip:hover{background:#f1f5f9}
+  .chip.active{border-color:var(--blue);background:#eff6ff;color:#111827}
+  .chip.done{border-color:var(--green);background:var(--green2);color:#14532d}
+  .chip .cnum{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:#eef2f7;font-weight:1000;font-size:12px}
+  .chip.done .cnum{background:var(--green);color:#fff}
+  .chip.active .cnum{background:var(--blue);color:#fff}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}.hero-icon{display:none}
+    .grid{grid-template-columns:1fr}
+    .wagba{top:0;position:static}.topbar{position:static}
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="logo" aria-hidden="true"></div>
-  <div>
-    <h1>⛏️ HTML Lab — Day 1</h1>
-    <p>Year 8 · Build your first web page, one block at a time</p>
-  </div>
-  <span class="xp" id="xpBadge">XP: 0</span>
-</header>
-
-<nav class="tabs">
-  <button id="tb-warmup" class="active" onclick="showTab('warmup')">🔥 Warm-Up</button>
-  <button id="tb-lessons" onclick="showTab('lessons')">🧱 Lessons & Lab</button>
-  <button id="tb-submit" onclick="showTab('submit')">📤 Reflect & Submit</button>
-</nav>
-
-<div class="wrap">
-
-  <!-- ============ WARM-UP ============ -->
-  <section id="tab-warmup" class="tabsec active">
-    <div class="panel" style="margin-bottom:16px">
-      <h2>👋 Before we build — who are you?</h2>
-      <div class="body">
-        <div class="idbar">
-          <div><label for="stuName">Your name</label><input id="stuName" placeholder="e.g. Alex Smith"></div>
-          <div><label for="stuClass">Class / form</label><input id="stuClass" placeholder="e.g. 8B"></div>
-        </div>
-        <p style="margin:0;font-size:.9rem;color:#6b7a5e">Fill these in so your work has your name on it when you submit at the end. ⛏️</p>
-      </div>
+  <header class="topbar">
+    <div class="brand"><div class="logo">🌐</div><div><h1>HTML Lab — Day 1</h1><p>Year 8 · Build your first web page</p></div></div>
+    <div class="progress-area">
+      <span class="pill" id="scorePill">Done: 0 / 0</span>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+      <span class="pill" id="stepPill">Step 1</span>
     </div>
+  </header>
 
-    <div class="panel" style="margin-bottom:16px">
-      <h2>🃏 Tag Flashcards — flip to learn</h2>
-      <div class="body">
-        <p style="margin-top:0;font-size:.92rem">Read the job on the green card, guess the tag, then <b>click the card to flip</b> and check. Do the whole deck before you start the lessons!</p>
-        <div class="fc-wrap">
-          <div class="flashcard" id="flashcard" onclick="flipCard()">
-            <div class="fc-inner">
-              <div class="fc-face fc-front"><div><div class="q" id="fcQ"></div><div class="fc-hint">🤔 Which tag does this? (click to flip)</div></div></div>
-              <div class="fc-face fc-back"><div><div class="tagbig" id="fcTag"></div><div id="fcDesc" style="font-size:.92rem"></div></div></div>
-            </div>
-          </div>
-          <div class="fc-nav">
-            <button class="btn btn-reset" onclick="prevCard()">◀ Prev</button>
-            <span class="fc-count" id="fcCount"></span>
-            <button class="btn btn-run" onclick="nextCard()">Next ▶</button>
-            <button class="btn btn-ghost" onclick="shuffleCards()">🔀 Shuffle</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>🎮 Tag Quiz — match the tag to its job</h2>
-      <div class="body">
-        <p style="margin-top:0;font-size:.92rem">Score as many as you can. Your score gets saved and submitted to your teacher.</p>
-        <div id="warmupQuiz"></div>
-        <div class="scorebar" id="warmupScore">Score: 0 / 0</div>
-      </div>
-    </div>
-
-    <div class="section-foot">
-      <div class="foot-status" id="warmupStatus"></div>
-      <button class="btn next-btn" id="warmupNext" onclick="showTab('lessons')" disabled>Continue to Lessons &amp; Lab →</button>
-      <button class="skip" onclick="showTab('lessons')">skip for now →</button>
-    </div>
-  </section>
-
-  <!-- ============ LESSONS ============ -->
-  <section id="tab-lessons" class="tabsec">
-  <div class="grid">
-
-    <!-- LEFT: lessons -->
-    <div>
-      <div class="panel" style="margin-bottom:16px">
-        <h2>🧱 Lessons & Quests</h2>
-        <ul class="lessons" id="lessonList"></ul>
-      </div>
-
-      <div class="panel">
-        <h2>🏆 Build Checklist</h2>
-        <div class="body">
-          <p style="margin-top:0;font-size:.9rem">Tick these off as your page grows:</p>
-          <ul class="checklist">
-            <li><input type="checkbox"> A heading <span class="tag">&lt;h1&gt;</span></li>
-            <li><input type="checkbox"> Two paragraphs <span class="tag">&lt;p&gt;</span></li>
-            <li><input type="checkbox"> An image with alt text <span class="tag">&lt;img&gt;</span></li>
-            <li><input type="checkbox"> A working link <span class="tag">&lt;a&gt;</span></li>
-            <li><input type="checkbox"> A list <span class="tag">&lt;ul&gt;</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: editor + preview + lesson -->
-    <div>
-      <div class="panel" style="margin-bottom:16px">
-        <h2 class="editor-head">
-          <span>💻 Code Editor</span>
-          <span>
-            <button class="btn btn-run" onclick="runCode()">▶ Run</button>
-            <button class="btn btn-ghost" onclick="copyCode()">⧉ Copy</button>
-            <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
-          </span>
-        </h2>
-        <textarea id="code" spellcheck="false"></textarea>
-      </div>
-
-      <div class="panel" style="margin-bottom:16px">
-        <h2>👀 Live Preview</h2>
-        <iframe id="preview" title="Live preview"></iframe>
-      </div>
-
-      <div class="panel">
-        <h2 id="lessonTitle">📘 Lesson</h2>
-        <div class="body lesson" id="lessonBody"></div>
-      </div>
-    </div>
-
+  <div class="wagba">
+    <span class="tagb">WAGBA</span>
+    <div class="txt">By the end of today you will be able to: <b>use HTML tags to build a web page</b> — headings, paragraphs, images, links and lists — and <b>check and fix your own code</b>.</div>
   </div>
 
-  <div class="section-foot">
-    <div class="foot-status" id="lessonsStatus"></div>
-    <button class="btn next-btn" id="lessonsNext" onclick="showTab('submit')" disabled>Continue to Reflect &amp; Submit →</button>
-    <button class="skip" onclick="showTab('submit')">skip for now →</button>
-  </div>
-  </section>
+  <main class="main" id="main"></main>
 
-  <!-- ============ REFLECT & SUBMIT ============ -->
-  <section id="tab-submit" class="tabsec">
-    <div class="panel" style="margin-bottom:16px">
-      <h2>💭 Reflection</h2>
-      <div class="body reflect">
-        <p style="margin-top:0;font-size:.92rem">Think back over today. There are no wrong answers — this helps your teacher see how you got on.</p>
-
-        <label>1. What is one thing you learned today?</label>
-        <textarea id="r1" placeholder="e.g. I learned that every tag needs a closing buddy..."></textarea>
-
-        <label>2. What did you find tricky, and how did you get past it?</label>
-        <textarea id="r2" placeholder="e.g. I kept forgetting the / in closing tags, but the Check button helped me spot it."></textarea>
-
-        <label>3. What part of your page are you most proud of?</label>
-        <textarea id="r3" placeholder="e.g. My Top 5 list and the colours I chose."></textarea>
-
-        <label>4. What would you add if you had more time?</label>
-        <textarea id="r4" placeholder="e.g. More pictures and a second page."></textarea>
-
-        <label>5. How confident do you feel writing HTML now?</label>
-        <div class="stars" id="stars" data-val="0">
-          <span data-v="1">☆</span><span data-v="2">☆</span><span data-v="3">☆</span><span data-v="4">☆</span><span data-v="5">☆</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>📤 Submit to your teacher</h2>
-      <div class="body">
-        <p style="margin-top:0;font-size:.92rem">This bundles up everything — your score, challenges, reflection, and the final page you built — into one file to hand in.</p>
-        <div class="summary" id="submitSummary"></div>
-        <button class="btn big-export" onclick="exportSubmission()">⬇️ Download my submission</button>
-        <button class="btn btn-ghost" onclick="copySubmission()">⧉ Copy as text</button>
-        <p style="font-size:.85rem;color:#6b7a5e;margin-bottom:6px">💾 Your work is saved in this browser automatically — you can switch lessons, switch tabs, or close and reopen the page without losing it. Then send the downloaded file to your teacher however they ask.</p>
-        <button class="skip" onclick="clearAllWork()">🧹 Finished / sharing this computer? Clear all my work and start fresh</button>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-<footer>Made for KS3 Computing · Works offline — just open in any browser ⛏️</footer>
+  <nav class="coursemenu">
+    <p class="cm-title">📚 Course menu — jump to any step</p>
+    <div id="menu"></div>
+  </nav>
 
 <script>
-/* ---------- XP ---------- */
-let xp = 0;
-function addXP(n){ xp += n; document.getElementById('xpBadge').textContent = 'XP: ' + xp; }
-
-/* ---------- Editor ---------- */
-const codeEl = document.getElementById('code');
-const preview = document.getElementById('preview');
-let lastLoaded = '';
-const codeStore = {};   // per-lesson code typed by the student (persisted)
-
-function runCode(){
-  preview.srcdoc = codeEl.value;
-}
-function resetCode(){
-  codeEl.value = lastLoaded;            // restore the original starter
-  delete codeStore[currentLessonIndex]; // forget the saved version for this lesson
-  saveState();
-  runCode();
-}
-function copyCode(){
-  navigator.clipboard.writeText(codeEl.value).then(()=>{ /* silent */ });
-}
-function loadIntoEditor(code, starter){
-  lastLoaded = (starter!==undefined) ? starter : code; // Reset always goes back to the starter
-  codeEl.value = code;
-  runCode();
-}
-// live-ish: update preview shortly after typing stops + remember what they typed
-let t;
-codeEl.addEventListener('input', ()=>{
-  clearTimeout(t); t=setTimeout(runCode, 600);
-  codeStore[currentLessonIndex] = codeEl.value;
-  saveState();
-});
-
-/* ---------- Family-friendly theme suggestions ---------- */
-const SUGGESTIONS = ['Minecraft','Your favourite animal','A sport or team','A video game (PEGI-appropriate)',
-  'A musician or band','A book or comic','Space & planets','A country you\'d visit','Your pet','A hobby (skating, art, dance)'];
-
-/* ---------- Progress tracking (for teacher export) ---------- */
-const progress = {
-  warmup:{correct:0, total:0, answered:new Set(), choice:{}},     // choice: qi -> picked option
-  lessonQuiz:{correct:0, total:0, answered:new Set(), result:{}}, // result: key -> picked option
-  challenges:new Set(),
-  confidence:0
-};
-
-/* ---------- Browser memory (localStorage) ---------- */
-const STORE_KEY = 'htmlLabDay1';
-let memOK = true;
-function v(id){ const e=document.getElementById(id); return e? e.value : ''; }
-function saveState(){
-  if(!memOK) return;
-  try{
-    localStorage.setItem(STORE_KEY, JSON.stringify({
-      codes: codeStore,
-      name: v('stuName'), cls: v('stuClass'),
-      r1:v('r1'), r2:v('r2'), r3:v('r3'), r4:v('r4'),
-      confidence: progress.confidence,
-      xp: xp,
-      warmupChoice: progress.warmup.choice,
-      lessonResult: progress.lessonQuiz.result,
-      challenges: [...progress.challenges],
-      viewed: [...viewedCards]
-    }));
-  }catch(e){ memOK=false; }
-}
-function loadState(){
-  let st;
-  try{ st = JSON.parse(localStorage.getItem(STORE_KEY)||'null'); }
-  catch(e){ memOK=false; return; }
-  if(!st) return;
-  // editor code per lesson
-  if(st.codes) Object.assign(codeStore, st.codes);
-  // identity + reflection text fields
-  const setVal=(id,val)=>{ const e=document.getElementById(id); if(e&&val!=null) e.value=val; };
-  setVal('stuName',st.name); setVal('stuClass',st.cls);
-  setVal('r1',st.r1); setVal('r2',st.r2); setVal('r3',st.r3); setVal('r4',st.r4);
-  // confidence stars
-  if(st.confidence){ progress.confidence=st.confidence; }
-  // xp
-  if(typeof st.xp==='number'){ xp=st.xp; document.getElementById('xpBadge').textContent='XP: '+xp; }
-  // warm-up answers
-  if(st.warmupChoice){
-    progress.warmup.choice = st.warmupChoice;
-    progress.warmup.total = WQUIZ.length;
-    Object.keys(st.warmupChoice).forEach(qi=>{
-      progress.warmup.answered.add(+qi);
-      if(+st.warmupChoice[qi]===WQUIZ[+qi].a) progress.warmup.correct++;
-    });
-  }
-  // lesson quiz answers
-  if(st.lessonResult){
-    progress.lessonQuiz.result = st.lessonResult;
-    Object.keys(st.lessonResult).forEach(key=>{
-      progress.lessonQuiz.answered.add(key);
-      progress.lessonQuiz.total++;
-      const rec = st.lessonResult[key];
-      if(rec && rec.c===rec.a) progress.lessonQuiz.correct++;
-    });
-  }
-  // challenges + viewed flashcards
-  if(st.challenges) st.challenges.forEach(c=>progress.challenges.add(c));
-  if(st.viewed) st.viewed.forEach(i=>viewedCards.add(i));
-}
-function clearAllWork(){
-  if(confirm('Clear ALL saved work on this computer and start fresh? This cannot be undone.')){
-    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
-    location.reload();
-  }
-}
-
-/* ---------- Tabs ---------- */
-function showTab(name){
-  ['warmup','lessons','submit'].forEach(n=>{
-    document.getElementById('tab-'+n).classList.toggle('active', n===name);
-    document.getElementById('tb-'+n).classList.toggle('active', n===name);
-  });
-  if(name==='submit') updateSummary();
-  updateGates();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* ---------- Flashcards ---------- */
+/* ===================== DATA ===================== */
 const CARDS = [
   {q:'Holds the BIGGEST main title of the page', tag:'<h1>', desc:'The top heading — used once per page.'},
-  {q:'A smaller section heading', tag:'<h2>', desc:'Used for sub-sections under the main title.'},
+  {q:'A smaller section heading', tag:'<h2>', desc:'A sub-section title under the main heading.'},
   {q:'A paragraph of normal text', tag:'<p>', desc:'Wraps a block of sentences.'},
   {q:'Puts a picture on the page', tag:'<img>', desc:'Uses src (where) and alt (description). No closing tag.'},
   {q:'Makes a clickable link', tag:'<a>', desc:'Uses href for the web address.'},
   {q:'Starts a bullet-point list', tag:'<ul>', desc:'Unordered list — bullets.'},
-  {q:'Starts a numbered list', tag:'<ol>', desc:'Ordered list — 1, 2, 3...'},
-  {q:'One item inside a list', tag:'<li>', desc:'List item — goes inside <ul> or <ol>.'},
-  {q:'A line break (no closing tag)', tag:'<br>', desc:'Drops text onto the next line.'},
-  {q:'Makes text bold', tag:'<b>', desc:'Bold / strong emphasis.'},
-  {q:'Wraps EVERYTHING you can see on the page', tag:'<body>', desc:'All visible content lives in here.'},
-  {q:'Sets the page tab title (not shown on the page)', tag:'<title>', desc:'Lives inside <head> — shows in the browser tab.'}
+  {q:'One item inside a list', tag:'<li>', desc:'A single list item, inside <ul> or <ol>.'},
+  {q:'Wraps everything you can SEE on the page', tag:'<body>', desc:'All visible content lives in here.'}
 ];
-let cardOrder = CARDS.map((_,i)=>i);
-let cardPos = 0;
-const viewedCards = new Set();
-function renderCard(){
-  const c = CARDS[cardOrder[cardPos]];
-  viewedCards.add(cardOrder[cardPos]);
-  document.getElementById('flashcard').classList.remove('flipped');
-  document.getElementById('fcQ').textContent = c.q;
-  document.getElementById('fcTag').textContent = c.tag;
-  document.getElementById('fcDesc').textContent = c.desc;
-  document.getElementById('fcCount').textContent = (cardPos+1)+' / '+CARDS.length;
-  updateGates();
-}
-function flipCard(){ document.getElementById('flashcard').classList.toggle('flipped'); }
-function nextCard(){ cardPos=(cardPos+1)%CARDS.length; renderCard(); }
-function prevCard(){ cardPos=(cardPos-1+CARDS.length)%CARDS.length; renderCard(); }
-function shuffleCards(){ for(let i=cardOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cardOrder[i],cardOrder[j]]=[cardOrder[j],cardOrder[i]];} cardPos=0; renderCard(); }
-
-/* ---------- Warm-up match quiz ---------- */
 const WQUIZ = [
   {q:'Which tag makes the main heading?', opts:['<p>','<h1>','<li>'], a:1},
-  {q:'Which tag is for a paragraph?', opts:['<p>','<img>','<ul>'], a:0},
+  {q:'Which tag is for a paragraph of text?', opts:['<p>','<img>','<ul>'], a:0},
   {q:'Which tag puts an image on the page?', opts:['<a>','<img>','<h2>'], a:1},
   {q:'Which tag makes a clickable link?', opts:['<a>','<p>','<li>'], a:0},
-  {q:'Which tag starts a bullet list?', opts:['<li>','<ul>','<br>'], a:1},
-  {q:'Which tag is ONE item in a list?', opts:['<list>','<li>','<ol>'], a:1},
-  {q:'Which attribute gives an image its description?', opts:['src','href','alt'], a:2},
-  {q:'Which attribute holds a link’s web address?', opts:['href','alt','src'], a:0}
+  {q:'Which tag starts a bullet list?', opts:['<li>','<ul>','<h1>'], a:1},
+  {q:'Which attribute describes an image (accessibility)?', opts:['src','alt','href'], a:1}
 ];
-function renderWarmupQuiz(){
-  const box = document.getElementById('warmupQuiz');
-  box.innerHTML = WQUIZ.map((q,qi)=>`
+
+// requirement test helpers (run on parsed HTML document)
+const hasAlt  = d => [...d.querySelectorAll('img')].some(i => (i.getAttribute('alt')||'').trim().length>0);
+const hasHref = d => [...d.querySelectorAll('a')].some(a => (a.getAttribute('href')||'').trim().length>0);
+const liCount = d => d.querySelectorAll('ul li, ol li').length;
+const h1Text  = d => { const h=d.querySelector('h1'); return h && h.textContent.trim().length>0; };
+const hasStyleBg = d => [...d.querySelectorAll('[style]')].some(e=>/background/i.test(e.getAttribute('style')||''));
+
+const STEPS = [
+  /* 0 */ {type:'start', section:'Start', icon:'🚀', title:'Welcome to HTML Lab', skill:'Get set up, then build a real web page step by step.'},
+
+  /* 1 */ {type:'flash', section:'Warm-Up', icon:'🃏', title:'Tag Flashcards', skill:'Meet the tags you will use today. Flip each card and check your guess.'},
+  /* 2 */ {type:'quiz', section:'Warm-Up', icon:'🎮', title:'Tag Quiz', skill:'Quick check: can you match each tag to its job?'},
+
+  /* 3 */ {type:'task', section:'Build your page', icon:'🔤', title:'Add a heading',
+    teach:'Headings label your page. <code>&lt;h1&gt;</code> is the biggest title — use it once. <code>&lt;h2&gt;</code> is a smaller section title.',
+    example:'<h1>My Minecraft Page</h1>\n<h2>About</h2>',
+    task:'In the editor, change the <code>&lt;h1&gt;</code> to <b>your own page title</b>, and add an <code>&lt;h2&gt;</code> underneath that says <code>About</code>.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>CHANGE ME: your page title</h1>\n\n\n</body>\n</html>',
+    hint:'Type a new line under the h1:  <h2>About</h2>  — remember the closing </h2>.',
+    reqs:[
+      {label:'A main heading <code>&lt;h1&gt;</code> with your own words in it', test:h1Text},
+      {label:'A section heading <code>&lt;h2&gt;</code>', test:d=>d.querySelectorAll('h2').length>=1}
+    ]},
+
+  /* 4 */ {type:'task', section:'Build your page', icon:'📝', title:'Add two paragraphs',
+    teach:'Normal sentences go inside a <code>&lt;p&gt;</code> (paragraph) tag. Each paragraph needs its own opening and closing tag.',
+    example:'<p>I love building huge castles.</p>\n<p>My favourite biome is the cherry grove.</p>',
+    task:'Under the <code>About</code> heading, add <b>two</b> <code>&lt;p&gt;</code> paragraphs about your topic.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>My Page</h1>\n  <h2>About</h2>\n\n  <!-- add two <p> paragraphs below -->\n\n\n</body>\n</html>',
+    hint:'Example: <p>Write a sentence here.</p>  then a second <p>...</p> on the next line.',
+    reqs:[ {label:'At least two paragraphs <code>&lt;p&gt;</code>', test:d=>d.querySelectorAll('p').length>=2} ]},
+
+  /* 5 */ {type:'task', section:'Build your page', icon:'🖼️', title:'Add an image',
+    teach:'An image uses <code>&lt;img&gt;</code> — a "lonely" tag with no closing buddy. It needs <code>src</code> (where the picture is) and <code>alt</code> (a short description for accessibility).',
+    example:'<img src="https://placehold.co/300x180" alt="A picture of my pet cat" width="300">',
+    task:'Add an <code>&lt;img&gt;</code> tag. Keep the <code>src</code>, and write your own <code>alt</code> text that describes the picture.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>My Page</h1>\n\n  <!-- add an <img> with src and alt below -->\n\n\n</body>\n</html>',
+    hint:'Copy the example line. The alt="" part must describe the image, e.g. alt="My dog playing".',
+    reqs:[ {label:'An image <code>&lt;img&gt;</code> that has <code>alt</code> text', test:hasAlt} ]},
+
+  /* 6 */ {type:'task', section:'Build your page', icon:'🔗', title:'Add a link',
+    teach:'A link uses <code>&lt;a&gt;</code> (the "anchor"). The <code>href</code> attribute is the web address it goes to. The words between the tags are what people click.',
+    example:'<a href="https://www.minecraft.net">Visit the website</a>',
+    task:'Add an <code>&lt;a&gt;</code> link with an <code>href</code> address. Make the clickable text your own words.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>My Page</h1>\n\n  <!-- add an <a href="..."> link below -->\n\n\n</body>\n</html>',
+    hint:'Remember the https:// at the start of the address, e.g. <a href="https://www.bbc.co.uk">BBC</a>.',
+    reqs:[ {label:'A link <code>&lt;a&gt;</code> with an <code>href</code> address', test:hasHref} ]},
+
+  /* 7 */ {type:'task', section:'Build your page', icon:'📋', title:'Add a list',
+    teach:'A bullet list is a <code>&lt;ul&gt;</code> (unordered list). Each bullet is an <code>&lt;li&gt;</code> (list item) inside it.',
+    example:'<ul>\n  <li>Diamond pickaxe</li>\n  <li>Elytra</li>\n  <li>Enchanting table</li>\n</ul>',
+    task:'Make a <b>Top 3</b> list: a <code>&lt;ul&gt;</code> with <b>three</b> <code>&lt;li&gt;</code> items inside it.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>My Top 3</h1>\n\n  <ul>\n\n  </ul>\n\n</body>\n</html>',
+    hint:'Put three <li>...</li> lines BETWEEN the <ul> and </ul>.',
+    reqs:[ {label:'A list with at least three items <code>&lt;li&gt;</code>', test:d=>liCount(d)>=3} ]},
+
+  /* 8 */ {type:'task', section:'Build your page', icon:'🎨', title:'Add colour (stretch)', stretch:true,
+    teach:'You can give a tag a "skin" using the <code>style</code> attribute. We do much more of this next unit (it is called CSS).',
+    example:'<body style="background-color:#1e293b; color:white;">',
+    task:'Add a <code>style</code> to the <code>&lt;body&gt;</code> tag to change the <b>background colour</b> and text colour. Try colours like <code>gold</code>, <code>tomato</code> or <code>skyblue</code>.',
+    starter:'<!DOCTYPE html>\n<html>\n<body style="background-color:CHANGE; color:white;">\n\n  <h1>My colourful page</h1>\n  <p>I picked my own colours.</p>\n\n</body>\n</html>',
+    hint:'Replace CHANGE with a colour name or a #hex code, e.g. background-color:skyblue;',
+    reqs:[ {label:'The <code>&lt;body&gt;</code> (or a tag) has a <code>style</code> with a background colour', test:hasStyleBg} ]},
+
+  /* 9 */ {type:'task', challenge:true, section:'Challenges', icon:'🎯', title:'Challenge A — type it yourself',
+    teach:'No template this time! You type every tag from scratch. This proves you really know it.',
+    example:null,
+    task:'On the blank page, build: a main heading <code>&lt;h1&gt;</code> and <b>two</b> paragraphs <code>&lt;p&gt;</code> about anything you like.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <!-- Type your own h1 and two p tags here -->\n\n\n</body>\n</html>',
+    hint:'Start with <h1>Title</h1>, then <p>First sentence.</p> and <p>Second sentence.</p>.',
+    reqs:[
+      {label:'A main heading <code>&lt;h1&gt;</code> with words in it', test:h1Text},
+      {label:'Two paragraphs <code>&lt;p&gt;</code>', test:d=>d.querySelectorAll('p').length>=2}
+    ]},
+
+  /* 10 */ {type:'task', challenge:true, section:'Challenges', icon:'🎯', title:'Challenge B — type it yourself',
+    teach:'Combine three different tags on one page, all typed by you.',
+    example:null,
+    task:'Add all three: an <b>image with alt text</b>, a <b>working link</b>, and a <b>list of 2+ items</b>.',
+    starter:'<!DOCTYPE html>\n<html>\n<body>\n\n  <h1>My favourites</h1>\n\n  <!-- Add an img (with alt), an a-link, and a ul list -->\n\n\n</body>\n</html>',
+    hint:'img: <img src="..." alt="describe it">  ·  link: <a href="https://...">text</a>  ·  list: <ul><li>..</li></ul>',
+    reqs:[
+      {label:'An image with <code>alt</code> text', test:hasAlt},
+      {label:'A link with an <code>href</code>', test:hasHref},
+      {label:'A list with 2+ items <code>&lt;li&gt;</code>', test:d=>liCount(d)>=2}
+    ]},
+
+  /* 11 */ {type:'task', challenge:true, section:'Challenges', icon:'👑', title:'Boss Challenge — your full page',
+    teach:'The big one. Build a complete mini fan-page from a blank screen using EVERYTHING you have learned. This is the page you will submit.',
+    example:null,
+    task:'From the blank page, build a fan-page with: a heading <code>&lt;h1&gt;</code>, a subheading <code>&lt;h2&gt;</code>, two paragraphs, an image (with alt), a link, and a list.',
+    starter:'<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n\n  <!-- Build your whole fan-page here -->\n\n\n</body>\n</html>',
+    hint:'Work top to bottom: h1, h2, two p, img with alt, ul with li items, and an a-link.',
+    reqs:[
+      {label:'Main heading <code>&lt;h1&gt;</code>', test:h1Text},
+      {label:'Subheading <code>&lt;h2&gt;</code>', test:d=>d.querySelectorAll('h2').length>=1},
+      {label:'Two paragraphs <code>&lt;p&gt;</code>', test:d=>d.querySelectorAll('p').length>=2},
+      {label:'Image with <code>alt</code> text', test:hasAlt},
+      {label:'A link with <code>href</code>', test:hasHref},
+      {label:'A list with 2+ items <code>&lt;li&gt;</code>', test:d=>liCount(d)>=2}
+    ]},
+
+  /* 12 */ {type:'reflect', section:'Finish', icon:'💭', title:'Reflection', skill:'Think back over today — this helps your teacher see how you got on.'},
+  /* 13 */ {type:'finish', section:'Finish', icon:'🏆', title:'Submit your work', skill:'Hand your work in to your teacher.'}
+];
+
+const GRADABLE = new Set();
+STEPS.forEach((s,i)=>{ if(s.type==='task'||s.type==='quiz') GRADABLE.add(i); });
+
+/* ===================== STATE / MEMORY ===================== */
+const STORE_KEY = 'htmlLabDay1_v2';
+let memOK = true;
+let state = {
+  idx:0, name:'', cls:'',
+  codes:{}, done:{}, xp:0,
+  quizChoice:{},                       // qi -> chosen
+  flashSeen:[],
+  reflection:{r1:'',r2:'',r3:'',r4:''}, confidence:0
+};
+function saveState(){
+  if(!memOK) return;
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){ memOK=false; }
+}
+function loadState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+    if(s && typeof s==='object'){
+      state = Object.assign(state, s);
+      state.codes = s.codes||{}; state.done = s.done||{};
+      state.quizChoice = s.quizChoice||{}; state.flashSeen = s.flashSeen||[];
+      state.reflection = s.reflection||{r1:'',r2:'',r3:'',r4:''};
+    }
+  }catch(e){ memOK=false; }
+}
+
+/* ===================== HELPERS ===================== */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let previewTimer;
+function codeFor(i){ return (state.codes[i]!==undefined) ? state.codes[i] : (STEPS[i].starter||''); }
+function gradableDone(){ let n=0; GRADABLE.forEach(i=>{ if(state.done[i]) n++; }); return n; }
+
+function setProgress(){
+  const total = GRADABLE.size, done = gradableDone();
+  document.getElementById('progressFill').style.width = Math.round(done/total*100)+'%';
+  document.getElementById('scorePill').textContent = `Done: ${done} / ${total}`;
+  document.getElementById('stepPill').textContent = `Step ${state.idx+1} of ${STEPS.length}`;
+}
+
+/* ===================== RENDER ===================== */
+function go(i){ if(i<0||i>=STEPS.length) return; state.idx=i; saveState(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function nextStep(){ go(Math.min(state.idx+1, STEPS.length-1)); }
+function prevStep(){ go(Math.max(state.idx-1, 0)); }
+
+function render(){
+  const i = state.idx, step = STEPS[i];
+  const main = document.getElementById('main');
+  const heroIcon = `<div class="hero-icon">${step.icon||'🌐'}</div>`;
+  const kicker = `Step ${i+1} of ${STEPS.length} • ${esc(step.section)}`;
+  let hero = `<section class="hero"><div>
+      <span class="kicker">${kicker}</span>
+      <h2>${esc(step.title)}</h2>
+      ${step.skill?`<div class="skill">${step.skill}</div>`:''}
+    </div>${heroIcon}</section>`;
+
+  if(step.type==='start')      main.innerHTML = hero + viewStart();
+  else if(step.type==='flash') main.innerHTML = hero + viewFlash();
+  else if(step.type==='quiz')  main.innerHTML = hero + viewQuiz();
+  else if(step.type==='task')  main.innerHTML = hero + viewTask(step,i);
+  else if(step.type==='reflect') main.innerHTML = hero + viewReflect();
+  else if(step.type==='finish')  main.innerHTML = viewFinish();
+
+  // wire up per-type behaviour
+  if(step.type==='flash') initFlash();
+  if(step.type==='quiz')  initQuiz();
+  if(step.type==='task')  initTask(step,i);
+  if(step.type==='reflect') initReflect();
+  if(step.type==='finish')  initFinish();
+
+  renderMenu();
+  setProgress();
+}
+
+/* ---------- START ---------- */
+function viewStart(){
+  return `<section class="card">
+    <h3>Before we begin</h3>
+    <p class="teach">Today you'll build your own web page <b>one small step at a time</b>. Each step tells you exactly what to type, shows an example, and lets you press <b>Check</b> to make sure it's right. Use the <b>course menu at the bottom</b> to jump around any time.</p>
+    <div class="field"><label for="stuName">Your name</label><input id="stuName" placeholder="e.g. Alex Smith" value="${esc(state.name)}"></div>
+    <div class="field"><label for="stuClass">Class / form</label><input id="stuClass" placeholder="e.g. 8B" value="${esc(state.cls)}"></div>
+  </section>
+  <div class="btnrow"><button class="btn next-cta" onclick="nextStep()">Start building →</button></div>`;
+}
+function initStart(){}
+
+/* ---------- FLASHCARDS ---------- */
+let fcOrder=[], fcPos=0;
+function viewFlash(){
+  return `<section class="card">
+    <p class="teach">Read the job on the blue card, guess which tag does it, then <b>click the card to flip</b> and check. Try to get through them all before you move on.</p>
+    <div class="fc-wrap">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="fc-inner">
+          <div class="fc-face fc-front"><div><div class="q" id="fcQ"></div><div class="hint">🤔 Which tag? (click to flip)</div></div></div>
+          <div class="fc-face fc-back"><div><div class="tagbig" id="fcTag"></div><div class="desc" id="fcDesc"></div></div></div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button class="btn soft" onclick="fcPrev()">◀ Prev</button>
+        <span class="fc-count" id="fcCount"></span>
+        <button class="btn primary" onclick="fcNext()">Next ▶</button>
+        <button class="btn soft" onclick="fcShuffle()">🔀 Shuffle</button>
+      </div>
+    </div>
+  </section>
+  <div class="btnrow"><button class="btn soft" onclick="prevStep()">← Back</button><button class="btn next-cta" onclick="nextStep()">I've seen the cards → Next</button></div>`;
+}
+function initFlash(){ if(fcOrder.length!==CARDS.length){ fcOrder=CARDS.map((_,i)=>i); fcPos=0; } drawCard(); }
+function drawCard(){
+  const c=CARDS[fcOrder[fcPos]];
+  if(!state.flashSeen.includes(fcOrder[fcPos])){ state.flashSeen.push(fcOrder[fcPos]); saveState(); }
+  const card=document.getElementById('flashcard'); if(!card) return;
+  card.classList.remove('flipped');
+  document.getElementById('fcQ').textContent=c.q;
+  document.getElementById('fcTag').textContent=c.tag;
+  document.getElementById('fcDesc').textContent=c.desc;
+  document.getElementById('fcCount').textContent=(fcPos+1)+' / '+CARDS.length;
+}
+function flipCard(){ document.getElementById('flashcard').classList.toggle('flipped'); }
+function fcNext(){ fcPos=(fcPos+1)%CARDS.length; drawCard(); }
+function fcPrev(){ fcPos=(fcPos-1+CARDS.length)%CARDS.length; drawCard(); }
+function fcShuffle(){ for(let i=fcOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];} fcPos=0; drawCard(); }
+
+/* ---------- QUIZ ---------- */
+function viewQuiz(){
+  const qs = WQUIZ.map((q,qi)=>`
     <div class="qcard" data-qi="${qi}">
-      <div class="qtext">${qi+1}. ${q.q.replace(/</g,'&lt;')}</div>
-      ${q.opts.map((o,oi)=>`<button class="opt" data-oi="${oi}">${o.replace(/</g,'&lt;')}</button>`).join('')}
+      <div class="qtext">${qi+1}. ${esc(q.q)}</div>
+      ${q.opts.map((o,oi)=>`<button class="opt" data-oi="${oi}">${esc(o)}</button>`).join('')}
     </div>`).join('');
-  progress.warmup.total = WQUIZ.length;
-  box.querySelectorAll('.qcard').forEach(card=>{
-    const qi = +card.dataset.qi;
-    const opts = card.querySelectorAll('.opt');
-    // restore a previously answered question
-    if(progress.warmup.choice[qi] != null){
-      const chosen = +progress.warmup.choice[qi];
-      if(chosen===WQUIZ[qi].a){ opts[chosen].classList.add('correct'); }
-      else { opts[chosen].classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
+  return `<section class="card">
+    <p class="teach">Pick the right answer for each one. You get one go per question, so think first!</p>
+    ${qs}
+    <div class="feedback hint show" id="quizScore">Answered: 0 / ${WQUIZ.length}</div>
+  </section>
+  <div class="btnrow"><button class="btn soft" onclick="prevStep()">← Back</button><button class="btn next-cta" id="quizNext" onclick="nextStep()">Next →</button></div>`;
+}
+function initQuiz(){
+  const i = state.idx;
+  document.querySelectorAll('.qcard').forEach(card=>{
+    const qi=+card.dataset.qi, opts=card.querySelectorAll('.opt');
+    const prev = state.quizChoice[qi];
+    if(prev!=null){
       opts.forEach(x=>x.disabled=true);
+      if(+prev===WQUIZ[qi].a) opts[+prev].classList.add('correct');
+      else { opts[+prev].classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
     }
     opts.forEach(o=>{
-      o.onclick = ()=>{
-        if(progress.warmup.answered.has(qi)) return; // lock after first answer
-        progress.warmup.answered.add(qi);
-        const oi = +o.dataset.oi;
-        progress.warmup.choice[qi] = oi;
-        if(oi===WQUIZ[qi].a){ o.classList.add('correct'); progress.warmup.correct++; addXP(5); }
-        else { o.classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
+      o.onclick=()=>{
+        if(state.quizChoice[qi]!=null) return;
+        const oi=+o.dataset.oi; state.quizChoice[qi]=oi;
         opts.forEach(x=>x.disabled=true);
-        document.getElementById('warmupScore').textContent =
-          `Score: ${progress.warmup.correct} / ${progress.warmup.total}`;
-        saveState();
-        updateGates();
+        if(oi===WQUIZ[qi].a){ o.classList.add('correct'); state.xp+=5; }
+        else { o.classList.add('wrong'); opts[WQUIZ[qi].a].classList.add('correct'); }
+        const ans=Object.keys(state.quizChoice).length;
+        const sc=document.getElementById('quizScore'); sc.textContent=`Answered: ${ans} / ${WQUIZ.length}`;
+        if(ans>=WQUIZ.length){ state.done[i]=true; sc.className='feedback success show'; sc.textContent=`All done! You scored ${quizCorrect()} / ${WQUIZ.length}.`; }
+        saveState(); renderMenu(); setProgress();
       };
     });
   });
-  document.getElementById('warmupScore').textContent =
-    `Score: ${progress.warmup.correct} / ${progress.warmup.total}`;
+  const ans=Object.keys(state.quizChoice).length;
+  const sc=document.getElementById('quizScore');
+  if(ans>=WQUIZ.length){ state.done[i]=true; sc.className='feedback success show'; sc.textContent=`All done! You scored ${quizCorrect()} / ${WQUIZ.length}.`; }
+  else sc.textContent=`Answered: ${ans} / ${WQUIZ.length}`;
 }
+function quizCorrect(){ let n=0; Object.keys(state.quizChoice).forEach(qi=>{ if(+state.quizChoice[qi]===WQUIZ[+qi].a) n++; }); return n; }
 
-/* ---------- Section completion gates ---------- */
-function updateGates(){
-  // Warm-up: all quiz questions answered (flashcards encouraged)
-  const wq = progress.warmup;
-  const wDone = wq.total>0 && wq.answered.size>=wq.total;
-  const wStat = document.getElementById('warmupStatus');
-  const wBtn = document.getElementById('warmupNext');
-  if(wStat && wBtn){
-    wStat.innerHTML = wDone
-      ? `✅ Nice work! Flashcards seen ${viewedCards.size}/${CARDS.length} · Quiz ${wq.correct}/${wq.total}. You're ready!`
-      : `Flashcards seen ${viewedCards.size}/${CARDS.length} · Quiz answered ${wq.answered.size}/${wq.total} — answer all the quiz questions to unlock the next section.`;
-    wStat.classList.toggle('done', wDone);
-    wBtn.disabled = !wDone;
-    wBtn.classList.toggle('ready', wDone);
-  }
-  // Lessons: all 3 type-it-yourself challenges passed
-  const lDone = progress.challenges.size>=3;
-  const lStat = document.getElementById('lessonsStatus');
-  const lBtn = document.getElementById('lessonsNext');
-  if(lStat && lBtn){
-    lStat.innerHTML = lDone
-      ? `✅ All 3 challenges passed — brilliant! Time to reflect and submit.`
-      : `Challenges passed: ${progress.challenges.size}/3 — pass all three “🎯 Check my work” challenges to unlock the next section.`;
-    lStat.classList.toggle('done', lDone);
-    lBtn.disabled = !lDone;
-    lBtn.classList.toggle('ready', lDone);
-  }
+/* ---------- TASK / CHALLENGE ---------- */
+function viewTask(step,i){
+  const reqs = step.reqs.map((r,idx)=>`<li data-i="${idx}"><span class="mark">?</span><span>${r.label}</span></li>`).join('');
+  const example = step.example ? `<p class="ex-label">Example</p><pre class="example">${esc(step.example)}</pre>` : '';
+  const teach = step.teach ? `<p class="teach">${step.teach}</p>` : '';
+  return `<section class="card">
+    ${teach}
+    <h3>✅ Your task${step.stretch?' (stretch — optional)':''}</h3>
+    <p class="task-text">${step.task}</p>
+    ${example}
+    <ul class="reqs" id="reqs">${reqs}</ul>
+  </section>
+  <section class="grid">
+    <div class="panel">
+      <div class="panel-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="filename">mypage.html</span></div>
+      <textarea class="editor" id="code" spellcheck="false"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="dot g"></span><span class="filename">Live preview — what a browser shows</span></div>
+      <iframe class="preview" id="preview" title="Live preview"></iframe>
+    </div>
+  </section>
+  <div class="btnrow">
+    <button class="btn soft" onclick="prevStep()">← Back</button>
+    <button class="btn primary" onclick="checkTask()">✅ Check my work</button>
+    <button class="btn good" onclick="nextStep()">Next →</button>
+    <button class="btn soft" onclick="showHint()">💡 Hint</button>
+    <button class="btn soft" onclick="resetTask()">↺ Reset</button>
+  </div>
+  <div class="feedback" id="feedback"></div>`;
 }
-
-/* ---------- Reflection stars ---------- */
-function paintStars(v){
-  const wrap = document.getElementById('stars');
-  wrap.dataset.val = v;
-  wrap.querySelectorAll('span').forEach(x=>x.textContent = (+x.dataset.v<=v)?'★':'☆');
-}
-function initStars(){
-  const wrap = document.getElementById('stars');
-  wrap.querySelectorAll('span').forEach(s=>{
-    s.onclick = ()=>{
-      const v = +s.dataset.v; progress.confidence = v;
-      paintStars(v); saveState();
-    };
+function initTask(step,i){
+  const ta=document.getElementById('code');
+  ta.value = codeFor(i);
+  runPreview();
+  ta.addEventListener('input', ()=>{
+    state.codes[i]=ta.value; saveState();
+    clearTimeout(previewTimer); previewTimer=setTimeout(runPreview, 500);
   });
-  if(progress.confidence) paintStars(progress.confidence); // restore
+  ta.addEventListener('keydown', e=>{ if(e.key==='Tab'){ e.preventDefault(); const s=ta.selectionStart,en=ta.selectionEnd; ta.setRangeText('  ',s,en,'end'); state.codes[i]=ta.value; saveState(); }});
+  if(state.done[i]) markTaskPass(true);
 }
-
-/* ---------- Save identity + reflection text as they type ---------- */
-function wireTextSaving(){
-  ['stuName','stuClass','r1','r2','r3','r4'].forEach(id=>{
-    const e = document.getElementById(id);
-    if(e) e.addEventListener('input', saveState);
+function runPreview(){ const p=document.getElementById('preview'); if(p) p.srcdoc=document.getElementById('code').value; }
+function checkTask(){
+  const i=state.idx, step=STEPS[i];
+  const doc=new DOMParser().parseFromString(document.getElementById('code').value,'text/html');
+  const items=document.querySelectorAll('#reqs li'); let pass=0;
+  step.reqs.forEach((r,idx)=>{
+    let ok=false; try{ ok=!!r.test(doc); }catch(e){}
+    const li=items[idx]; li.classList.remove('pass','fail'); li.classList.add(ok?'pass':'fail');
+    li.querySelector('.mark').textContent=ok?'✓':'✗'; if(ok) pass++;
   });
+  const fb=document.getElementById('feedback');
+  if(pass===step.reqs.length){
+    if(!state.done[i]){ state.xp+=20; } state.done[i]=true;
+    fb.className='feedback success show';
+    fb.textContent = step.challenge ? '🎉 Challenge passed — every box is green. Brilliant!' : '🎉 Correct! All the boxes are green. Press Next to carry on.';
+  } else {
+    state.done[i]=false;
+    fb.className='feedback error show';
+    fb.textContent=`Almost! ${pass} of ${step.reqs.length} done. Fix the red ✗ items above, then Check again.`;
+  }
+  saveState(); renderMenu(); setProgress();
+}
+function markTaskPass(){
+  const i=state.idx, step=STEPS[i];
+  const doc=new DOMParser().parseFromString(document.getElementById('code').value,'text/html');
+  const items=document.querySelectorAll('#reqs li');
+  step.reqs.forEach((r,idx)=>{ let ok=false; try{ok=!!r.test(doc);}catch(e){} items[idx].classList.add(ok?'pass':'fail'); items[idx].querySelector('.mark').textContent=ok?'✓':'✗'; });
+  const fb=document.getElementById('feedback'); fb.className='feedback success show'; fb.textContent='✅ Already completed — nice one! You can keep editing or press Next.';
+}
+function showHint(){ const fb=document.getElementById('feedback'); fb.className='feedback hint show'; fb.textContent='💡 '+(STEPS[state.idx].hint||'Read the example again and copy the pattern.'); }
+function resetTask(){ const i=state.idx; delete state.codes[i]; state.done[i]=false; document.getElementById('code').value=STEPS[i].starter||''; runPreview(); saveState(); render(); }
+
+/* ---------- REFLECT ---------- */
+function viewReflect(){
+  const r=state.reflection;
+  return `<section class="card">
+    <div class="field"><label>1. What is one thing you learned today?</label><textarea id="r1" placeholder="e.g. Every tag needs a closing buddy...">${esc(r.r1)}</textarea></div>
+    <div class="field"><label>2. What did you find tricky, and how did you get past it?</label><textarea id="r2">${esc(r.r2)}</textarea></div>
+    <div class="field"><label>3. What are you most proud of?</label><textarea id="r3">${esc(r.r3)}</textarea></div>
+    <div class="field"><label>4. What would you add if you had more time?</label><textarea id="r4">${esc(r.r4)}</textarea></div>
+    <div class="field"><label>5. How confident do you feel writing HTML now?</label>
+      <div class="stars" id="stars">${[1,2,3,4,5].map(v=>`<span data-v="${v}">${v<=state.confidence?'★':'☆'}</span>`).join('')}</div></div>
+  </section>
+  <div class="btnrow"><button class="btn soft" onclick="prevStep()">← Back</button><button class="btn next-cta" onclick="nextStep()">Next → Submit</button></div>`;
+}
+function initReflect(){
+  ['r1','r2','r3','r4'].forEach(id=>{ const e=document.getElementById(id); e.addEventListener('input',()=>{ state.reflection[id]=e.value; saveState(); }); });
+  document.querySelectorAll('#stars span').forEach(s=>{ s.onclick=()=>{ state.confidence=+s.dataset.v; saveState(); document.querySelectorAll('#stars span').forEach(x=>x.textContent=(+x.dataset.v<=state.confidence)?'★':'☆'); }; });
 }
 
-/* ---------- Export submission ---------- */
-function buildSubmissionText(){
-  const name = (document.getElementById('stuName').value||'(no name)').trim();
-  const cls  = (document.getElementById('stuClass').value||'(no class)').trim();
-  const conf = progress.confidence? progress.confidence+' / 5' : 'not rated';
-  const r = id => (document.getElementById(id).value||'').trim() || '(left blank)';
+/* ---------- FINISH ---------- */
+function viewFinish(){
+  return `<div class="completion"><div class="completion-card">
+    <div style="font-size:72px">🏆</div>
+    <h2>Great work${state.name?', '+esc(state.name):''}!</h2>
+    <p class="task-text" style="margin:6px 0 0">You've finished Day 1 of HTML Lab.</p>
+    <div class="bigscore">${gradableDone()} / ${GRADABLE.size}</div>
+    <p class="teach" style="margin:0 0 18px">steps completed</p>
+    <div class="btnrow" style="justify-content:center">
+      <button class="btn primary" onclick="downloadSubmission()">⬇️ Download my submission</button>
+      <button class="btn soft" onclick="copySubmission()">⧉ Copy as text</button>
+      <button class="btn good" onclick="go(0)">↺ Review course</button>
+    </div>
+    <div class="feedback hint" id="subMsg" style="margin-top:18px"></div>
+    <p style="font-size:13px;color:var(--muted);margin:16px 0 0">Send the downloaded file to your teacher however they ask. 💾 Your work is saved in this browser automatically.</p>
+    <button class="ghostlink" style="margin-top:10px" onclick="clearAll()">Sharing this computer? Clear all my work</button>
+  </div></div>`;
+}
+function initFinish(){ state.done[state.idx]=true; }
+function buildSubmission(){
+  const boss = state.codes[11] || '(Boss Challenge not attempted yet)';
+  const r=state.reflection;
+  const ref = id => (r[id]||'').trim()||'(left blank)';
   return `HTML LAB — DAY 1 · STUDENT SUBMISSION
 =========================================
-Name:  ${name}
-Class: ${cls}
+Name:  ${state.name||'(no name)'}
+Class: ${state.cls||'(no class)'}
 Date:  ${new Date().toLocaleString()}
 
---- SCORES ---
-Total XP earned:        ${xp}
-Warm-up quiz:           ${progress.warmup.correct} / ${progress.warmup.total}
-Lesson quizzes correct: ${progress.lessonQuiz.correct} / ${progress.lessonQuiz.total}
-Challenges completed:   ${progress.challenges.size} / 3  ${progress.challenges.size?('('+[...progress.challenges].join('; ')+')'):''}
+--- PROGRESS ---
+Steps completed:   ${gradableDone()} / ${GRADABLE.size}
+Total XP:          ${state.xp}
+Tag quiz score:    ${quizCorrect()} / ${WQUIZ.length}
+Build tasks done:  ${[3,4,5,6,7,8].filter(i=>state.done[i]).length} / 6
+Challenges passed: ${[9,10,11].filter(i=>state.done[i]).length} / 3
 
 --- REFLECTION ---
-1. Something I learned:
-   ${r('r1')}
+1. Learned:        ${ref('r1')}
+2. Tricky/fixed:   ${ref('r2')}
+3. Proud of:       ${ref('r3')}
+4. Would add:      ${ref('r4')}
+5. Confidence:     ${state.confidence? state.confidence+' / 5':'not rated'}
 
-2. What was tricky / how I got past it:
-   ${r('r2')}
-
-3. Most proud of:
-   ${r('r3')}
-
-4. Would add with more time:
-   ${r('r4')}
-
-5. Confidence writing HTML: ${conf}
-
---- THE PAGE I BUILT (final code in the editor) ---
-${codeEl.value}
-=========================================
-End of submission.`;
+--- MY FINAL PAGE (Boss Challenge code) ---
+${boss}
+=========================================`;
 }
-function updateSummary(){
-  const name = (document.getElementById('stuName').value||'(add your name in Warm-Up)').trim();
-  document.getElementById('submitSummary').innerHTML =
-    `<b>Name:</b> ${name||'(none)'} &nbsp;·&nbsp; <b>XP:</b> ${xp}<br>`+
-    `<b>Warm-up quiz:</b> ${progress.warmup.correct}/${progress.warmup.total} &nbsp;·&nbsp; `+
-    `<b>Lesson quizzes:</b> ${progress.lessonQuiz.correct}/${progress.lessonQuiz.total} &nbsp;·&nbsp; `+
-    `<b>Challenges:</b> ${progress.challenges.size}/3<br>`+
-    `<b>Confidence:</b> ${progress.confidence? progress.confidence+'/5':'not yet rated'}`;
-}
-function exportSubmission(){
-  const name = (document.getElementById('stuName').value||'student').trim().replace(/[^a-z0-9]+/gi,'_');
-  const blob = new Blob([buildSubmissionText()], {type:'text/plain'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `HTML_Lab_${name||'student'}.txt`;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(a.href);
+function downloadSubmission(){
+  const safe=(state.name||'student').replace(/[^a-z0-9]+/gi,'_');
+  const blob=new Blob([buildSubmission()],{type:'text/plain'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`HTML_Lab_${safe}.txt`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+  const m=document.getElementById('subMsg'); m.className='feedback success show'; m.textContent='✅ Downloaded! Check your Downloads folder, then send it to your teacher.';
 }
 function copySubmission(){
-  navigator.clipboard.writeText(buildSubmissionText()).then(
-    ()=>{ const s=document.getElementById('submitSummary'); const old=s.innerHTML; s.innerHTML='✅ Copied! Paste it where your teacher asked.'; setTimeout(()=>{updateSummary();},1800); },
-    ()=>{ alert('Copy not available here — use the Download button instead.'); }
+  navigator.clipboard.writeText(buildSubmission()).then(
+    ()=>{ const m=document.getElementById('subMsg'); m.className='feedback success show'; m.textContent='✅ Copied! Paste it where your teacher asked.'; },
+    ()=>{ const m=document.getElementById('subMsg'); m.className='feedback error show'; m.textContent='Copy not available here — use the Download button instead.'; }
   );
 }
+function clearAll(){ if(confirm('Clear ALL saved work on this computer and start fresh?')){ try{localStorage.removeItem(STORE_KEY);}catch(e){} location.reload(); } }
 
-/* ---------- Lessons ---------- */
-const LESSONS = [
-  {
-    title:'0 · Welcome to the Lab',
-    starter:`<!DOCTYPE html>
-<html>
-<head>
-  <title>My First Page</title>
-</head>
-<body>
+/* ---------- BOTTOM COURSE MENU ---------- */
+function renderMenu(){
+  const menu=document.getElementById('menu');
+  let html='', sec='';
+  STEPS.forEach((s,i)=>{
+    if(s.section!==sec){ sec=s.section; html+=`<div class="cm-section">${esc(sec)}</div><div class="cm-row">`; }
+    const cls=['chip', i===state.idx?'active':'', state.done[i]?'done':''].join(' ');
+    const mark = state.done[i]?'✓':(i+1);
+    html+=`<div class="${cls}" onclick="go(${i})"><span class="cnum">${mark}</span><span>${esc(s.title)}</span></div>`;
+    // close row at section boundaries
+    const next=STEPS[i+1];
+    if(!next || next.section!==sec) html+='</div>';
+  });
+  menu.innerHTML=html;
+}
 
-  <h1>Welcome to my Minecraft page!</h1>
-  <p>This is my very first web page. I made it with code.</p>
-
-</body>
-</html>`,
-    html:`
-      <p>Everything you see on a website is built from <b>HTML</b> — <i>HyperText Markup Language</i>.
-      It's just text with special labels called <b>tags</b>.</p>
-      <p>Look at the code in the editor above and press <span class="tag">▶ Run</span>.
-      The <b>preview</b> shows what a browser makes from your code. Magic? Nope — just blocks. ⛏️</p>
-      <div class="tryit"><strong>🎯 Try it:</strong> Change the words inside <span class="tag">&lt;h1&gt;</span> to your own title, then press Run.</div>
-      <p><b>Every tag needs a buddy:</b> an opening tag <span class="tag">&lt;h1&gt;</span> and a closing tag <span class="tag">&lt;/h1&gt;</span>.
-      The closing one has a <b>/</b>. Think of it like a door: open it, put your stuff in, close it.</p>
-      <div class="quiz" data-answer="1">
-        <p><b>Quick check:</b> What does HTML stand for?</p>
-        <button class="opt">Highly Typed Modern Language</button>
-        <button class="opt">HyperText Markup Language</button>
-        <button class="opt">How To Make Lunch</button>
-        <div class="feedback"></div>
-      </div>`
-  },
-  {
-    title:'1 · Headings & Paragraphs',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <h1>Minecraft</h1>
-  <h2>Why I love it</h2>
-  <p>You can build anything you can imagine.</p>
-  <p>My favourite biome is the cherry grove.</p>
-
-</body>
-</html>`,
-    html:`
-      <p>Headings come in sizes: <span class="tag">&lt;h1&gt;</span> is biggest, down to <span class="tag">&lt;h6&gt;</span> smallest.
-      Use <span class="tag">&lt;h1&gt;</span> once for the main title, then <span class="tag">&lt;h2&gt;</span> for sections.</p>
-      <p>Paragraphs of normal text go inside <span class="tag">&lt;p&gt;</span> tags.</p>
-      <pre class="code">&lt;h1&gt;Big title&lt;/h1&gt;
-&lt;h2&gt;Smaller section&lt;/h2&gt;
-&lt;p&gt;Some text about it.&lt;/p&gt;</pre>
-      <div class="tryit"><strong>🎯 Try it:</strong> Add a second <span class="tag">&lt;h2&gt;</span> section called "Top tip" with a <span class="tag">&lt;p&gt;</span> underneath. Run it.</div>
-      <div class="quiz" data-answer="2">
-        <p><b>Quick check:</b> Which tag makes the <i>biggest</i> heading?</p>
-        <button class="opt">&lt;h6&gt;</button>
-        <button class="opt">&lt;p&gt;</button>
-        <button class="opt">&lt;h1&gt;</button>
-        <div class="feedback"></div>
-      </div>`
-  },
-  {
-    type:'challenge',
-    title:'🎯 Challenge A · Type the tags (easy)',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <!-- No template this time! YOU type the tags. -->
-  <!-- Goal: a main title + two sentences about your topic. -->
-
-
-</body>
-</html>`,
-    goal:'Make a page with <b>one main heading</b> and <b>two paragraphs</b> — but this time the tags are NOT given to you. Type them yourself, then press <b>Check my work</b>.',
-    hint:'A main heading uses &lt;h1&gt; ... &lt;/h1&gt;. Each sentence goes inside its own &lt;p&gt; ... &lt;/p&gt;. Remember the closing tag with the /.',
-    reqs:[
-      {label:'Has one main heading <span class="tag">&lt;h1&gt;</span>', test:d=>d.querySelectorAll('h1').length>=1},
-      {label:'Has at least two paragraphs <span class="tag">&lt;p&gt;</span>', test:d=>d.querySelectorAll('p').length>=2},
-      {label:'The heading is not empty', test:d=>{const h=d.querySelector('h1');return h && h.textContent.trim().length>0;}}
-    ]
-  },
-  {
-    title:'2 · Images',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <h1>Creatures</h1>
-  <img src="https://placehold.co/300x180/5a9e3f/ffffff?text=My+Image"
-       alt="A green placeholder image" width="300">
-  <p>Swap the picture for one of your own later.</p>
-
-</body>
-</html>`,
-    html:`
-      <p>Add a picture with <span class="tag">&lt;img&gt;</span>. It's a "lonely" tag — no closing buddy needed.
-      It uses <b>attributes</b> (extra info) inside it:</p>
-      <pre class="code">&lt;img src="picture.png" alt="A description" width="300"&gt;</pre>
-      <p><span class="tag">src</span> = where the picture is. <span class="tag">alt</span> = words describing it
-      (for screen readers and if the image fails to load). <span class="tag">alt</span> is about <b>accessibility</b> — always include it!</p>
-      <div class="tryit"><strong>🎯 Try it:</strong> Change the <span class="tag">width</span> to 150, then to 500. Press Run each time and watch it resize.</div>
-      <p><span class="pill">Safety</span> Only use images you're allowed to use, and keep it school-appropriate.</p>
-      <div class="quiz" data-answer="1">
-        <p><b>Quick check:</b> Which attribute describes the image for accessibility?</p>
-        <button class="opt">src</button>
-        <button class="opt">alt</button>
-        <button class="opt">width</button>
-        <div class="feedback"></div>
-      </div>`
-  },
-  {
-    title:'3 · Links',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <h1>Useful links</h1>
-  <p>Visit the
-    <a href="https://www.minecraft.net">official Minecraft site</a>
-    to learn more.
-  </p>
-
-</body>
-</html>`,
-    html:`
-      <p>Links use the <span class="tag">&lt;a&gt;</span> tag (the "anchor"). The <span class="tag">href</span> attribute is the address it goes to:</p>
-      <pre class="code">&lt;a href="https://www.example.com"&gt;Click me&lt;/a&gt;</pre>
-      <p>The words <i>between</i> the tags are what people click on. Remember the <b>https://</b> at the start, or it won't work!</p>
-      <div class="tryit"><strong>🎯 Try it:</strong> Change the link text to "Read the wiki" — but keep the <span class="tag">href</span> the same.</div>
-      <div class="quiz" data-answer="0">
-        <p><b>Quick check:</b> Which attribute holds the web address?</p>
-        <button class="opt">href</button>
-        <button class="opt">src</button>
-        <button class="opt">alt</button>
-        <div class="feedback"></div>
-      </div>`
-  },
-  {
-    title:'4 · Lists',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <h1>My Top 5</h1>
-  <ul>
-    <li>Diamond pickaxe</li>
-    <li>Elytra</li>
-    <li>Enchanting table</li>
-  </ul>
-
-</body>
-</html>`,
-    html:`
-      <p>A bullet list is a <span class="tag">&lt;ul&gt;</span> (unordered list). Each item sits inside an <span class="tag">&lt;li&gt;</span> (list item):</p>
-      <pre class="code">&lt;ul&gt;
-  &lt;li&gt;First thing&lt;/li&gt;
-  &lt;li&gt;Second thing&lt;/li&gt;
-&lt;/ul&gt;</pre>
-      <p>Want numbers instead of bullets? Swap <span class="tag">&lt;ul&gt;</span> for <span class="tag">&lt;ol&gt;</span> (ordered list).</p>
-      <div class="tryit"><strong>🎯 Try it:</strong> Add two more <span class="tag">&lt;li&gt;</span> items to make a full Top 5. Then change <span class="tag">ul</span> to <span class="tag">ol</span> and Run.</div>
-      <div class="quiz" data-answer="2">
-        <p><b>Quick check:</b> What goes inside a <span class="tag">&lt;ul&gt;</span> for each bullet?</p>
-        <button class="opt">&lt;p&gt;</button>
-        <button class="opt">&lt;list&gt;</button>
-        <button class="opt">&lt;li&gt;</button>
-        <div class="feedback"></div>
-      </div>`
-  },
-  {
-    type:'challenge',
-    title:'🎯 Challenge B · Image, link & list (medium)',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <h1>My favourites</h1>
-  <!-- Now add the three things in the goal. Type the tags yourself! -->
-
-
-</body>
-</html>`,
-    goal:'Add three things to this page by typing the tags yourself: an <b>image with alt text</b>, a <b>working link</b>, and a <b>list of at least two items</b>. Then press <b>Check my work</b>.',
-    hint:'Image: &lt;img src="..." alt="describe it"&gt;. Link: &lt;a href="https://..."&gt;text&lt;/a&gt;. List: &lt;ul&gt; with &lt;li&gt;item&lt;/li&gt; inside.',
-    reqs:[
-      {label:'An image <span class="tag">&lt;img&gt;</span> that has <span class="tag">alt</span> text', test:d=>[...d.querySelectorAll('img')].some(i=>(i.getAttribute('alt')||'').trim().length>0)},
-      {label:'A link <span class="tag">&lt;a&gt;</span> with an <span class="tag">href</span> address', test:d=>[...d.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').trim().length>0)},
-      {label:'A list with at least two items <span class="tag">&lt;li&gt;</span>', test:d=>d.querySelectorAll('ul li, ol li').length>=2}
-    ]
-  },
-  {
-    title:'5 · Add some colour (bonus)',
-    starter:`<!DOCTYPE html>
-<html>
-<body style="background-color:#5a9e3f; color:white;">
-
-  <h1>My styled page</h1>
-  <p>I changed the background and text colour!</p>
-
-</body>
-</html>`,
-    html:`
-      <p>You can give a tag a "skin" with the <span class="tag">style</span> attribute. We'll do loads more of this next unit (it's called CSS):</p>
-      <pre class="code">&lt;body style="background-color:#5a9e3f; color:white;"&gt;</pre>
-      <p>Try colour names like <span class="tag">gold</span>, <span class="tag">tomato</span>, <span class="tag">skyblue</span>,
-      or hex codes like <span class="tag">#d63a2f</span>.</p>
-      <div class="tryit"><strong>🎯 Try it:</strong> Change the background colour, then add <span class="tag">style="color:gold;"</span> to your <span class="tag">&lt;h1&gt;</span>.</div>
-      <p><b>Pick your own page topic!</b> You don't have to use Minecraft. Some family-friendly ideas:</p>
-      <div class="suggest" id="suggestBox"></div>`
-  },
-  {
-    title:'⭐ Final Quest · Your page',
-    starter:`<!DOCTYPE html>
-<html>
-<head>
-  <title>My Stan Page</title>
-</head>
-<body>
-
-  <h1>CHANGE ME: your topic</h1>
-
-  <h2>About</h2>
-  <p>Write two sentences here.</p>
-  <p>Write two more sentences here.</p>
-
-  <h2>A picture</h2>
-  <img src="https://placehold.co/320x190/3d7a28/ffffff?text=Add+image"
-       alt="describe your image here" width="320">
-
-  <h2>My Top 5</h2>
-  <ul>
-    <li>One</li>
-    <li>Two</li>
-    <li>Three</li>
-  </ul>
-
-  <h2>Find out more</h2>
-  <p><a href="https://www.example.com">A useful link</a></p>
-
-</body>
-</html>`,
-    html:`
-      <p>🎉 You've learned every tag you need! Use this starter to build your own page.
-      Work through the <b>Build Checklist</b> on the left — tick each box as you add it.</p>
-      <p>Mix and match everything from Lessons 1–5. Make it <i>yours</i>.</p>
-      <div class="tryit"><strong>🏁 Goal:</strong> A finished page with a heading, two paragraphs, an image (with alt!),
-      a link, and a list. Bonus XP for colour. Save your file when you're done!</div>
-      <p><span class="pill">Tip</span> To save: in a real editor, save the file as <span class="tag">mypage.html</span> and double-click to open it in a browser.</p>`
-  },
-  {
-    type:'challenge',
-    title:'👑 Boss Challenge · Build from blank (hard)',
-    starter:`<!DOCTYPE html>
-<html>
-<body>
-
-  <!-- The ultimate test: a totally blank page. -->
-  <!-- Build a full mini fan-page using EVERY tag you've learned. -->
-  <!-- No template — type it all yourself, then Check my work. -->
-
-
-</body>
-</html>`,
-    goal:'Prove you’ve got it. From this blank page, build a mini fan-page that uses <b>every tag</b>: a main heading, a section subheading, two paragraphs, an image with alt text, a link, and a list. Type it all yourself, then press <b>Check my work</b>.',
-    hint:'Order suggestion: &lt;h1&gt; title, &lt;h2&gt; section, two &lt;p&gt; sentences, &lt;img&gt; with alt, &lt;ul&gt; with &lt;li&gt; items, and an &lt;a&gt; link. Closing tags on everything except &lt;img&gt;.',
-    reqs:[
-      {label:'Main heading <span class="tag">&lt;h1&gt;</span>', test:d=>d.querySelectorAll('h1').length>=1},
-      {label:'A subheading <span class="tag">&lt;h2&gt;</span>', test:d=>d.querySelectorAll('h2').length>=1},
-      {label:'Two paragraphs <span class="tag">&lt;p&gt;</span>', test:d=>d.querySelectorAll('p').length>=2},
-      {label:'Image with <span class="tag">alt</span> text', test:d=>[...d.querySelectorAll('img')].some(i=>(i.getAttribute('alt')||'').trim().length>0)},
-      {label:'A link with <span class="tag">href</span>', test:d=>[...d.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').trim().length>0)},
-      {label:'A list with two+ items <span class="tag">&lt;li&gt;</span>', test:d=>d.querySelectorAll('ul li, ol li').length>=2}
-    ]
-  }
-];
-
-/* ---------- Build lesson menu ---------- */
-const list = document.getElementById('lessonList');
-LESSONS.forEach((les, i)=>{
-  const li = document.createElement('li');
-  const b = document.createElement('button');
-  if(les.type==='challenge') b.classList.add('challenge');
-  b.innerHTML = `<span class="num">${i}</span> ${les.title.replace(/^\d+ · |⭐ |🎯 |👑 /,'')}`;
-  b.onclick = ()=>selectLesson(i, b);
-  li.appendChild(b); list.appendChild(li);
+/* ---------- save name/class (delegated) ---------- */
+document.addEventListener('input', e=>{
+  if(e.target && e.target.id==='stuName'){ state.name=e.target.value; saveState(); }
+  if(e.target && e.target.id==='stuClass'){ state.cls=e.target.value; saveState(); }
 });
 
-let currentLessonIndex = 0;
-function selectLesson(i, btn){
-  currentLessonIndex = i;
-  document.querySelectorAll('.lessons button').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');
-  const les = LESSONS[i];
-  document.getElementById('lessonTitle').textContent = (les.type==='challenge'?'🎯 ':'📘 ') + les.title;
-
-  const saved = codeStore[i];
-  const startCode = (saved!==undefined) ? saved : les.starter;
-
-  if(les.type==='challenge'){
-    document.getElementById('lessonBody').innerHTML = buildChallengeHTML(les);
-    loadIntoEditor(startCode, les.starter);
-    wireChallenge(les);
-    restoreChallengeState(les);
-  } else {
-    document.getElementById('lessonBody').innerHTML = les.html;
-    loadIntoEditor(startCode, les.starter);
-    wireQuizzes();
-    const box = document.getElementById('suggestBox');
-    if(box){ box.innerHTML = SUGGESTIONS.map(s=>`<span>${s}</span>`).join(''); }
-  }
-}
-
-// If a challenge was already passed in a previous session, show it as done
-function restoreChallengeState(les){
-  const titleKey = les.title.replace(/^[^A-Za-z]+/,'');
-  if(progress.challenges.has(titleKey)){
-    les._done = true;
-    const doc = new DOMParser().parseFromString(codeEl.value, 'text/html');
-    const items = document.querySelectorAll('.reqs li');
-    les.reqs.forEach((r,idx)=>{
-      let ok=false; try{ ok=!!r.test(doc); }catch(e){}
-      const li=items[idx]; if(!li) return;
-      li.classList.add(ok?'pass':'fail');
-      li.querySelector('.mark').textContent = ok?'✓':'✗';
-    });
-    const res=document.getElementById('checkResult');
-    if(res){ res.textContent='✅ Already completed — nice one!'; res.style.color='#2f5e1e'; }
-  }
-}
-
-function buildChallengeHTML(les){
-  const reqs = les.reqs.map((r,idx)=>
-    `<li data-i="${idx}"><span class="mark">?</span><span>${r.label}</span></li>`).join('');
-  return `
-    <div class="challenge-box">
-      <h4>🎯 Your mission</h4>
-      <p style="margin:.3em 0">${les.goal}</p>
-      <p style="margin:.3em 0;font-size:.9rem"><b>No template is given</b> — type the tags into the editor above yourself.</p>
-      <ul class="reqs">${reqs}</ul>
-      <button class="btn btn-run" onclick="checkChallenge()">✅ Check my work</button>
-      <button class="btn btn-reset" onclick="resetCode()">↺ Clear</button>
-      <div class="check-result" id="checkResult"></div>
-      <button class="hintbtn" onclick="(function(h){h.style.display=h.style.display==='block'?'none':'block';})(document.getElementById('hintBox'))">💡 Need a hint?</button>
-      <div class="hint" id="hintBox">${les.hint}</div>
-    </div>`;
-}
-
-let currentChallenge = null;
-function wireChallenge(les){ currentChallenge = les; }
-
-function checkChallenge(){
-  if(!currentChallenge) return;
-  const doc = new DOMParser().parseFromString(codeEl.value, 'text/html');
-  const items = document.querySelectorAll('.reqs li');
-  let passed = 0;
-  currentChallenge.reqs.forEach((r,idx)=>{
-    let ok=false;
-    try{ ok = !!r.test(doc); }catch(e){ ok=false; }
-    const li = items[idx];
-    li.classList.remove('pass','fail');
-    li.classList.add(ok?'pass':'fail');
-    li.querySelector('.mark').textContent = ok?'✓':'✗';
-    if(ok) passed++;
-  });
-  const res = document.getElementById('checkResult');
-  if(passed===currentChallenge.reqs.length){
-    res.textContent = `🎉 All checks passed! +20 XP`;
-    res.style.color = '#2f5e1e';
-    if(!currentChallenge._done){ addXP(20); currentChallenge._done = true; }
-    progress.challenges.add(currentChallenge.title.replace(/^[^A-Za-z]+/,''));
-    saveState();
-    updateGates();
-  } else {
-    res.textContent = `Passed ${passed} of ${currentChallenge.reqs.length}. Fix the red ones and check again.`;
-    res.style.color = '#b02a20';
-  }
-}
-
-/* ---------- Quiz logic ---------- */
-function wireQuizzes(){
-  document.querySelectorAll('.quiz').forEach((q,qpos)=>{
-    const ans = parseInt(q.dataset.answer,10);
-    const opts = q.querySelectorAll('.opt');
-    const fb = q.querySelector('.feedback');
-    const key = currentLessonIndex + '-' + qpos;
-
-    // restore a previously answered quiz
-    if(progress.lessonQuiz.result[key] != null){
-      const chosen = progress.lessonQuiz.result[key].c;
-      opts.forEach(x=>x.disabled=true);
-      if(chosen===ans){
-        opts[chosen].classList.add('correct');
-        fb.textContent='✅ Correct! (answered earlier)'; fb.style.color='#2f5e1e';
-      } else {
-        opts[chosen].classList.add('wrong');
-        opts[ans].classList.add('correct');
-        fb.textContent='❌ You answered this earlier — the green one is right.'; fb.style.color='#b02a20';
-      }
-    }
-
-    opts.forEach((o,idx)=>{
-      o.onclick = ()=>{
-        if(progress.lessonQuiz.answered.has(key)) return; // already answered this session/before
-        opts.forEach(x=>{x.classList.remove('correct','wrong'); x.disabled=false;});
-        // record once per quiz for the teacher report
-        progress.lessonQuiz.answered.add(key);
-        progress.lessonQuiz.total++;
-        progress.lessonQuiz.result[key] = {c:idx, a:ans};
-        if(idx===ans) progress.lessonQuiz.correct++;
-        if(idx===ans){
-          o.classList.add('correct'); fb.textContent='✅ Correct! +10 XP'; fb.style.color='#2f5e1e';
-          addXP(10);
-          opts.forEach(x=>x.disabled=true);
-        } else {
-          o.classList.add('wrong');
-          opts[ans].classList.add('correct');
-          fb.textContent='❌ Not quite — the green one is right. Try the next quiz!';
-          fb.style.color='#b02a20';
-          opts.forEach(x=>x.disabled=true);
-        }
-        saveState();
-      };
-    });
-  });
-}
-
-/* ---------- Start ---------- */
-loadState();              // restore everything from browser memory first
-wireTextSaving();
-selectLesson(0, list.querySelector('button'));
-renderCard();
-renderWarmupQuiz();
-initStars();
-updateGates();
+/* ===================== BOOT ===================== */
+loadState();
+render();
 </script>
 </body>
 </html>
