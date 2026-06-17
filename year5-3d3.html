@@ -21,6 +21,14 @@
     .nav button{border:none;background:var(--blue-soft);color:var(--blue);padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer}
     .nav button.locked{opacity:.45;cursor:not-allowed}
     .nav button.active{background:var(--blue);color:#fff}
+
+    .objective-ribbon{background:rgba(255,255,255,.96);border-bottom:2px solid var(--line);padding:12px 20px;position:sticky;top:102px;z-index:25;box-shadow:0 5px 16px rgba(25,50,90,.05)}
+    .objective-main{font-size:16px;margin-bottom:8px}.objective-main strong{color:var(--green)}
+    .objective-ksu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .objective-ksu span{display:block;background:#fff;border:2px solid var(--line);border-radius:999px;padding:9px 13px;font-size:13px;color:#354d6d}.objective-ksu strong{color:var(--blue)}
+
+    .small-objective{background:#ffffff;border:2px dashed var(--line);border-radius:18px;padding:10px 12px;margin:8px 0 16px;color:#40546d;font-size:14px}.small-objective strong{color:var(--blue)}
+
     .layout{max-width:1200px;margin:0 auto;padding:20px}
     .banner{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
     .card{background:var(--card);border:2px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:22px}
@@ -78,7 +86,7 @@
     .hint{padding:12px 14px;border-radius:16px;background:#f5faff;border-left:6px solid var(--blue)}
     .hide{display:none}
     @media (max-width: 900px){
-      .banner,.hero,.grid2,.grid3,.activity,.challengeRow,.startChoices,.ksu,.loginLinks{grid-template-columns:1fr}
+      .banner,.hero,.grid2,.grid3,.activity,.challengeRow,.startChoices,.ksu,.objective-ksu,.loginLinks{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -94,6 +102,16 @@
     </div>
     <div class="nav" id="nav"></div>
   </div>
+
+
+  <section class="objective-ribbon" aria-label="Lesson objective summary">
+    <div class="objective-main"><strong>WAGBA:</strong> We are getting better at designing, building, and improving a 3D model for a clear purpose.</div>
+    <div class="objective-ksu">
+      <span><strong>K:</strong> 3D models are made using simple shapes.</span>
+      <span><strong>S:</strong> I can combine, resize, duplicate, rotate, and colour shapes.</span>
+      <span><strong>U:</strong> A good 3D model should be clear, neat, and improved for its purpose.</span>
+    </div>
+  </section>
 
   <div class="layout">
     <section class="screen active" id="landing">
@@ -140,6 +158,7 @@
         <div>
           <h2>Start Day 3</h2>
           <p>Fill in your details and tell us what you are getting better at today.</p>
+          <div id="welcomeKsuCard" class="hint"><strong>WAGBA:</strong> design, build, and improve a useful 3D model.<br><strong>K:</strong> simple shapes make 3D models. <strong>S:</strong> combine, resize, duplicate, rotate and colour. <strong>U:</strong> clear models are improved for their purpose.</div>
           <div class="grid2">
             <div>
               <label for="studentName">Your name</label>
@@ -180,6 +199,7 @@
     <section class="screen" id="starter">
       <div class="card">
         <h2>Starter Quiz</h2>
+        <div class="small-objective" id="obj-starter"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
         <p>Answer all 10 questions from your previous lessons.</p>
         <div id="quizWrap"></div>
         <div class="footerActions">
@@ -193,6 +213,7 @@
     <section class="screen" id="login">
       <div class="card">
         <h2>Tinkercad Login</h2>
+        <div class="small-objective" id="obj-login"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
         <p>Open your class login details, then open your class Tinkercad link.</p>
         <div class="success">
           <strong id="classLoginTitle">Choose your class first.</strong>
@@ -216,6 +237,7 @@
     <section class="screen" id="mission">
       <div class="card">
         <h2>Mission Board</h2>
+        <div class="small-objective" id="obj-mission"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
         <p>Work in Tinkercad and use this page as your guide.</p>
         <div class="grid3" style="margin-top:12px;">
           <div class="card" style="background:var(--blue-soft);padding:18px;">
@@ -244,6 +266,7 @@
       <div class="card activity">
         <div>
           <h2>Activity 1: Pencil</h2>
+        <div class="small-objective" id="obj-act1"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
           <p>Follow the IKEA-style image guide to build a pencil in Tinkercad.</p>
           <img class="guideImg" src="assets/pencil_guide.png" alt="How to make a pencil in Tinkercad" />
         </div>
@@ -267,6 +290,7 @@
       <div class="card activity">
         <div>
           <h2>Activity 2: Desk Tidy</h2>
+        <div class="small-objective" id="obj-act2"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
           <p>Use the guide to build a useful desk tidy in Tinkercad.</p>
           <img class="guideImg" src="assets/desk_tidy_guide.png" alt="How to make a desk tidy in Tinkercad" />
         </div>
@@ -289,6 +313,7 @@
     <section class="screen" id="extension">
       <div class="card">
         <h2>Extension Task: My Own New Design</h2>
+        <div class="small-objective" id="obj-extension"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
         <p>Create your own design in Tinkercad, but it must be <strong>different from Day 1 and Day 2</strong>.</p>
         <div class="warning">
           <strong>Do NOT repeat:</strong> table, chest, tree, bed, tower, small house, pencil, or desk tidy.
@@ -337,6 +362,7 @@
     <section class="screen" id="reflection">
       <div class="card">
         <h2>Reflection + Friend Feedback</h2>
+        <div class="small-objective" id="obj-reflection"><strong>WAGBA:</strong> Design, build and improve. <strong>K:</strong> simple shapes. <strong>S:</strong> combine and resize. <strong>U:</strong> clear purpose.</div>
         <div class="grid2">
           <div class="card" style="padding:18px;background:var(--green-soft);">
             <h3>My Reflection</h3>
