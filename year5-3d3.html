@@ -28,7 +28,7 @@
     .card{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:22px;box-shadow:var(--shadow)}
     .hero,.grid2,.grid3,.missionGrid,.activity{display:grid;gap:16px}
     .hero,.grid2,.activity{grid-template-columns:1fr 1fr}
-    .grid3,.missionGrid{grid-template-columns:repeat(3,1fr)}
+    .grid3{grid-template-columns:repeat(3,1fr)} .missionGrid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
     .pageTitle{margin:0 0 12px;color:var(--blue);font-size:clamp(28px,3vw,42px)}
     h3{margin:0 0 10px;font-size:clamp(20px,2vw,30px)}
     h4{margin:0 0 10px;font-size:22px;color:#254f9f}
@@ -62,7 +62,7 @@
     .loginLinks a{display:block;padding:16px;border-radius:18px;background:var(--blueSoft);border:2px solid var(--line);font-weight:700;color:var(--blue);text-decoration:none}
     .missionCard{padding:18px;border-radius:24px;border:2px solid var(--line)}
     .missionCard p{margin-top:6px}
-    .m1{background:var(--orangeSoft)} .m2{background:var(--greenSoft)} .m3{background:var(--purpleSoft)}
+    .m1{background:var(--orangeSoft)} .m2{background:var(--blueSoft)} .m3{background:var(--greenSoft)} .m4{background:var(--purpleSoft)}
     .guideImg{width:100%;display:block;border-radius:24px;border:2px solid var(--line);background:#fff}
     .tag{display:inline-block;background:var(--pinkSoft);color:#af3e72;padding:10px 14px;border-radius:999px;font-weight:700;margin:0 8px 8px 0}
     .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -158,10 +158,11 @@
           <h3>Today you will:</h3>
           <div class="tag">1. Quiz</div>
           <div class="tag">2. Tinkercad login</div>
-          <div class="tag">3. Continue desk tidy</div>
-          <div class="tag">4. Choice design</div>
-          <div class="tag">5. Challenge build</div>
-          <div class="tag">6. Reflection</div>
+          <div class="tag">3. Pencil challenge</div>
+          <div class="tag">4. Continue desk tidy</div>
+          <div class="tag">5. Choice design</div>
+          <div class="tag">6. Challenge build</div>
+          <div class="tag">7. Reflection</div>
         </div>
       </div>
     </section>
@@ -213,22 +214,55 @@
         <p>Open each part of the lesson below.</p>
         <div class="missionGrid">
           <div class="missionCard m1">
-            <h3>Continue Desk Tidy</h3>
-            <p>Finish and improve the model you started.</p>
-            <button class="btn orange full" onclick="showScreen('deskTidy')">Open Desk Tidy</button>
+            <h3>Pencil Challenge</h3>
+            <p>Rebuild or improve your pencil model.</p>
+            <button class="btn orange full" onclick="showScreen('pencil')">Open Pencil Challenge</button>
           </div>
           <div class="missionCard m2">
+            <h3>Continue Desk Tidy</h3>
+            <p>Finish and improve the model you started.</p>
+            <button class="btn primary full" onclick="showScreen('deskTidy')">Open Desk Tidy</button>
+          </div>
+          <div class="missionCard m3">
             <h3>My Choice Design</h3>
             <p>Create your own new useful design.</p>
             <button class="btn green full" onclick="showScreen('choiceDesign')">Open Choice Design</button>
           </div>
-          <div class="missionCard m3">
+          <div class="missionCard m4">
             <h3>Challenge Build</h3>
             <p>Try the desk lamp step guide.</p>
             <button class="btn purple full" onclick="showScreen('challenge')">Open Challenge Build</button>
           </div>
         </div>
         <div class="hint" style="margin-top:16px;"><strong>Remember:</strong> Use the top menu if you need to go back to the login page.</div>
+      </div>
+    </section>
+
+    
+    <section class="screen" id="pencil">
+      <div class="card activity">
+        <div>
+          <h2 class="pageTitle">Pencil Challenge</h2>
+          <div class="wagbaBox" style="margin-bottom:14px;"><strong>WAGBA:</strong> We are getting better at using simple shapes to build and improve a clear 3D object.</div>
+          <p>Use the guide to rebuild or improve your pencil in Tinkercad.</p>
+          <img class="guideImg" src="assets/pencil_guide.png" alt="Pencil guide" />
+        </div>
+        <div>
+          <div class="card" style="background:var(--orangeSoft);padding:18px;">
+            <h3>Your pencil checklist</h3>
+            <label class="check"><input type="checkbox" data-save="pc1" onchange="saveChecks()" /> I made the yellow pencil body.</label>
+            <label class="check"><input type="checkbox" data-save="pc2" onchange="saveChecks()" /> I added the brown tip and black lead.</label>
+            <label class="check"><input type="checkbox" data-save="pc3" onchange="saveChecks()" /> I added the grey band and pink eraser.</label>
+            <label class="check"><input type="checkbox" data-save="pc4" onchange="saveChecks()" /> I used Rotate, Move, Resize, and Line Up.</label>
+            <label class="check"><input type="checkbox" data-save="pc5" onchange="saveChecks()" /> I improved my pencil so it looks neat and clear.</label>
+            <div class="footerActions" style="margin-top:16px;"><button class="btn orange" onclick="markDone('pencilDone')">I Finished The Pencil Challenge</button></div>
+          </div>
+          <div class="card" style="background:var(--greenSoft);padding:18px;margin-top:16px;">
+            <h3>Extra challenge</h3>
+            <p>Can you make <strong>two pencils</strong> with different colours, or add a small <strong>name label</strong> using text?</p>
+          </div>
+          <div class="footerActions" style="margin-top:16px;"><button class="btn secondary" onclick="showScreen('mission')">Back to Mission Board</button></div>
+        </div>
       </div>
     </section>
 
@@ -318,7 +352,7 @@
         <div class="grid2">
           <div class="card" style="padding:18px;background:var(--greenSoft);">
             <h3>My Reflection</h3>
-            <label for="bestModel">Which model are you most proud of today?</label>
+            <label for="bestModel">Which model are you most proud of today? Pencil, desk tidy, choice design, or challenge build?</label>
             <input id="bestModel" type="text" oninput="setVal('bestModel',this.value)" />
             <label for="improveThing" style="margin-top:12px;">One thing I improved</label>
             <textarea id="improveThing" oninput="setVal('improveThing',this.value)"></textarea>
