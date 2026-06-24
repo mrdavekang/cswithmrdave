@@ -62,7 +62,7 @@
     .loginLinks a{display:block;padding:16px;border-radius:18px;background:var(--blueSoft);border:2px solid var(--line);font-weight:700;color:var(--blue);text-decoration:none}
     .missionCard{padding:18px;border-radius:24px;border:2px solid var(--line)}
     .missionCard p{margin-top:6px}
-    .m1{background:var(--orangeSoft)} .m2{background:var(--blueSoft)} .m3{background:var(--greenSoft)} .m4{background:var(--purpleSoft)}
+    .m1{background:var(--orangeSoft)} .m2{background:var(--blueSoft)} .m3{background:var(--greenSoft)} .m4{background:var(--purpleSoft)} .m5{background:var(--pinkSoft)}
     .guideImg{width:100%;display:block;border-radius:24px;border:2px solid var(--line);background:#fff}
     .tag{display:inline-block;background:var(--pinkSoft);color:#af3e72;padding:10px 14px;border-radius:999px;font-weight:700;margin:0 8px 8px 0}
     .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -162,7 +162,8 @@
           <div class="tag">4. Continue desk tidy</div>
           <div class="tag">5. Choice design</div>
           <div class="tag">6. Challenge build</div>
-          <div class="tag">7. Reflection</div>
+          <div class="tag">7. Character design</div>
+          <div class="tag">8. Reflection</div>
         </div>
       </div>
     </section>
@@ -233,6 +234,11 @@
             <p>Try the desk lamp step guide.</p>
             <button class="btn purple full" onclick="showScreen('challenge')">Open Challenge Build</button>
           </div>
+          <div class="missionCard m5">
+            <h3>Character Design</h3>
+            <p>Build a person model with facial features.</p>
+            <button class="btn pink full" onclick="showScreen('character')">Open Character Design</button>
+          </div>
         </div>
         <div class="hint" style="margin-top:16px;"><strong>Remember:</strong> Use the top menu if you need to go back to the login page.</div>
       </div>
@@ -261,7 +267,7 @@
             <h3>Extra challenge</h3>
             <p>Can you make <strong>two pencils</strong> with different colours, or add a small <strong>name label</strong> using text?</p>
           </div>
-          <div class="footerActions" style="margin-top:16px;"><button class="btn secondary" onclick="showScreen('mission')">Back to Mission Board</button></div>
+          <div class="footerActions" style="margin-top:16px;"><button class="btn secondary" onclick="showScreen('mission')">Back to Mission Board</button><button class="btn pink" onclick="showScreen('character')">Next: Character Design</button></div>
         </div>
       </div>
     </section>
@@ -345,6 +351,36 @@
       </div>
     </section>
 
+
+    <section class="screen" id="character">
+      <div class="card activity">
+        <div>
+          <h2 class="pageTitle">Character Design</h2>
+          <div class="wagbaBox" style="margin-bottom:14px;"><strong>WAGBA:</strong> We are getting better at building a character using simple 3D shapes and adding facial features.</div>
+          <img class="guideImg" src="assets/character_guide.png" alt="Character design step guide" />
+        </div>
+        <div>
+          <div class="card" style="background:var(--pinkSoft);padding:18px;">
+            <h3>Your character checklist</h3>
+            <label class="check"><input type="checkbox" data-save="char1" onchange="saveChecks()" /> I made the head and body.</label>
+            <label class="check"><input type="checkbox" data-save="char2" onchange="saveChecks()" /> I added arms and legs.</label>
+            <label class="check"><input type="checkbox" data-save="char3" onchange="saveChecks()" /> I added hair.</label>
+            <label class="check"><input type="checkbox" data-save="char4" onchange="saveChecks()" /> I added facial features like eyes, eyebrows, nose, and mouth.</label>
+            <label class="check"><input type="checkbox" data-save="char5" onchange="saveChecks()" /> I changed one part to make the character my own.</label>
+            <div class="footerActions" style="margin-top:16px;"><button class="btn pink" onclick="markDone('characterDone')">I Finished My Character</button></div>
+          </div>
+          <div class="card" style="background:var(--greenSoft);padding:18px;margin-top:16px;">
+            <h3>Try this</h3>
+            <p>Change the <strong>hair</strong>, the <strong>face</strong>, or the <strong>clothes colour</strong> to create your own version.</p>
+          </div>
+          <div class="footerActions" style="margin-top:16px;">
+            <button class="btn secondary" onclick="showScreen('challenge')">Back to Desk Lamp Challenge</button>
+            <button class="btn primary" onclick="showScreen('reflection')">Go to Reflection</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="screen" id="reflection">
       <div class="card">
         <h2 class="pageTitle">Reflection + Friend Feedback</h2>
@@ -352,7 +388,7 @@
         <div class="grid2">
           <div class="card" style="padding:18px;background:var(--greenSoft);">
             <h3>My Reflection</h3>
-            <label for="bestModel">Which model are you most proud of today? Pencil, desk tidy, choice design, or challenge build?</label>
+            <label for="bestModel">Which model are you most proud of today? Pencil, desk tidy, choice design, desk lamp, or character design?</label>
             <input id="bestModel" type="text" oninput="setVal('bestModel',this.value)" />
             <label for="improveThing" style="margin-top:12px;">One thing I improved</label>
             <textarea id="improveThing" oninput="setVal('improveThing',this.value)"></textarea>
