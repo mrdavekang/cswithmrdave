@@ -3,39 +3,439 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Day 4 Block Website Builder</title>
+<title>Day 4 — Block Website Builder</title>
 <style>
-:root{--bg:#eef7ff;--card:#fff;--soft:#f4f9ff;--text:#1f2937;--muted:#526174;--green:#158a58;--blue:#2b6cb0;--gold:#f6b73c;--line:#d7e5f2;--red:#b42318;--ok:#e4f8ee;--shadow:0 10px 26px rgba(43,84,124,.12);--r:22px}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(150deg,#eef7ff,#fbfdff 55%,#e9f9f1);color:var(--text);font-size:18px}.app{max-width:1440px;margin:0 auto;padding:14px 18px 90px}header{text-align:center;padding:8px}header h1{margin:4px 0;font-size:clamp(2rem,4.5vw,3.5rem);color:#17324f}header p{margin:0;color:var(--green);font-weight:800}.obj{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border:2px solid var(--line);border-radius:var(--r);padding:12px 14px;margin:10px 0 12px;box-shadow:var(--shadow)}.obj b{color:#0c6942}.ksu{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.ksu div{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:8px 10px;font-size:.9rem}.banner{background:#fff6d8;border:2px solid #f2cf72;color:#654700;border-radius:var(--r);padding:12px;text-align:center;font-weight:900;margin-bottom:12px}.banner span{display:inline-block;background:#fff;border:1px solid #efcf7a;border-radius:999px;padding:7px 13px;margin:6px 4px 0}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}.card{margin-bottom:16px}.card h2,.panel h2{font-size:clamp(1.5rem,2.5vw,2.1rem);margin:0 0 8px;color:#17324f}.hint{color:var(--muted);line-height:1.45;margin:0 0 12px}label{display:block;font-weight:900;margin:13px 0 6px;color:#26364a}input[type=text],input[type=file],textarea,select{width:100%;padding:13px;border:2px solid var(--line);border-radius:15px;background:#fbfdff;color:var(--text);font:inherit}textarea{min-height:78px;resize:vertical;line-height:1.42}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(43,108,176,.12)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:16px;padding:13px 18px;font:inherit;font-weight:900;cursor:pointer;background:var(--green);color:#fff;text-decoration:none;box-shadow:0 8px 18px rgba(21,138,88,.18)}.btn:hover{filter:brightness(.97);transform:translateY(-1px)}.btn.secondary{background:#fff;color:var(--text);border:2px solid var(--line);box-shadow:none}.btn.blue{background:var(--blue)}.btn.gold{background:var(--gold);color:#3b2a00}.btn.danger{background:#fff;color:var(--red);border:2px solid #fecaca;box-shadow:none}.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}.error{display:none;background:#fff1f1;border:2px solid #fecaca;color:var(--red);border-radius:15px;padding:12px 14px;font-weight:900;margin:12px 0}.startGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.builder{display:grid;grid-template-columns:290px minmax(420px,1fr) minmax(380px,.9fr);gap:16px;align-items:start}.palette,.previewPanel{position:sticky;top:155px;max-height:calc(100vh - 175px);overflow:auto}.paletteButtons{display:grid;gap:8px}.blockBtn{width:100%;justify-content:flex-start;background:#fff;color:#17324f;border:2px solid var(--line);box-shadow:none}.blockBtn:hover{border-color:var(--green);background:var(--ok)}.themeGrid{display:grid;gap:8px;margin:10px 0}.themeBtn{border:2px solid var(--line);border-radius:14px;background:#fff;padding:10px;cursor:pointer;font-weight:900;text-align:left}.themeBtn.active{border-color:var(--green);background:var(--ok);color:#0c6942}.canvas{min-height:580px;background:#f8fbff;border:3px dashed #c9deef;border-radius:22px;padding:14px}.empty{text-align:center;color:var(--muted);padding:52px 18px;font-weight:900}.editBlock{background:#fff;border:2px solid var(--line);border-radius:18px;margin:12px 0;padding:14px;box-shadow:0 6px 14px rgba(43,84,124,.08)}.editBlock.dragging{opacity:.55}.blockTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}.blockLabel{font-weight:900;color:#17324f}.tools{display:flex;gap:6px;flex-wrap:wrap}.toolBtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 9px;cursor:pointer;font-weight:900}.toolBtn:hover{background:var(--soft)}.imgPrev{width:100%;max-height:190px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:10px}.pasteZone{border:2px dashed #9fc3df;background:#f8fbff;border-radius:14px;padding:13px;margin:10px 0;text-align:center;color:#526174;font-weight:900;cursor:pointer}.pasteZone.active{border-color:var(--green);background:var(--ok);color:var(--green2)}.pasteZone small{display:block;font-weight:700;margin-top:4px;color:#526174}.siteShell{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.siteBody{padding:22px}.siteBlock{margin:0 0 18px}.siteHero{padding:34px 22px;color:#fff;text-align:center;border-radius:16px}.siteHero h1{margin:0;font-size:2.2rem}.siteHero p{margin:8px 0 0}.siteBlock h2{color:#17324f;margin:0 0 8px}.siteBlock p{line-height:1.55}.siteBlock img{width:100%;max-height:300px;object-fit:contain;border-radius:14px;background:#f8fbff;border:1px solid #d7e5f2}.caption{font-size:.95rem;color:#526174;margin:7px 0 0;line-height:1.35}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:14px}.factBox{background:#fff;border-left:8px solid #158a58;border-radius:14px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.06)}.divider{height:4px;border-radius:99px;background:#d7e5f2;margin:22px 0}.saved{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;border-radius:999px;padding:10px 22px;font-weight:900;opacity:0;transition:.25s;z-index:50}.saved.show{opacity:1}#printSheet{display:none}@media(max-width:1180px){.builder{grid-template-columns:1fr}.palette,.previewPanel{position:relative;top:auto;max-height:none}.paletteButtons{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}}@media(max-width:700px){.ksu,.twoCol{grid-template-columns:1fr}.app{padding:10px}.btn{width:100%}}@media print{body{background:#fff}.app,.saved{display:none}#printSheet{display:block!important}}
+:root{
+  --bg:#eef7ff;--card:#fff;--soft:#f7fbff;--text:#1f2937;--muted:#526174;
+  --green:#158a58;--green2:#0c6942;--blue:#2b6cb0;--gold:#f6b73c;
+  --line:#d7e5f2;--red:#b42318;--ok:#e4f8ee;--shadow:0 8px 20px rgba(43,84,124,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(140deg,#eef7ff,#fbfdff 60%,#e9f9f1);color:var(--text);font-size:14.5px}
+.app{max-width:1180px;margin:0 auto;padding:12px 14px 70px}
+header{text-align:center;padding:6px}
+header h1{margin:4px 0;font-size:clamp(1.5rem,3vw,2.35rem);color:#17324f}
+header p{margin:0;color:var(--green);font-weight:800}
+.obj{background:rgba(255,255,255,.96);border:2px solid var(--line);border-radius:18px;padding:10px 12px;margin:8px 0 10px;box-shadow:var(--shadow)}
+.obj b{color:var(--green2)}
+.ksu{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.ksu div{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:7px 9px;font-size:.88rem}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+.card h2,.panel h2{font-size:1.35rem;margin:0 0 7px;color:#17324f}
+.card h3,.panel h3{font-size:1rem;margin:12px 0 6px;color:#17324f}
+.hint{color:var(--muted);line-height:1.35;margin:0 0 9px}
+label{display:block;font-weight:900;margin:10px 0 5px;color:#26364a}
+input[type=text],input[type=file],textarea,select{width:100%;padding:9px 10px;border:2px solid var(--line);border-radius:12px;background:#fbfdff;color:var(--text);font:inherit}
+textarea{min-height:56px;resize:vertical;line-height:1.32}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,108,176,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:9px 14px;font:inherit;font-weight:900;cursor:pointer;background:var(--green);color:#fff;text-decoration:none;box-shadow:0 6px 14px rgba(21,138,88,.16)}
+.btn:hover{filter:brightness(.97)}
+.btn.secondary{background:#fff;color:var(--text);border:2px solid var(--line);box-shadow:none}
+.btn.blue{background:var(--blue)}.btn.gold{background:var(--gold);color:#3b2a00}.btn.danger{background:#fff;color:var(--red);border:2px solid #fecaca;box-shadow:none}
+.nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
+.error{display:none;background:#fff1f1;border:2px solid #fecaca;color:var(--red);border-radius:12px;padding:10px 12px;font-weight:900;margin:10px 0}
+.success{background:var(--ok);border:2px solid #b7ebcd;color:#0a6b44;border-radius:13px;padding:10px 12px;font-weight:900;margin:10px 0}.sessionCard{background:#fff6d8;border:2px solid #f2cf72;color:#3b2a00;border-radius:18px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}.sessionCard h2{font-size:1.45rem;margin:0 0 8px;color:#17324f}.sessionDetails{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.sessionDetails div{background:#fff;border:1px solid #efcf7a;border-radius:12px;padding:9px;font-weight:900}.sessionWarning{background:#fff;border:2px solid #efcf7a;border-radius:12px;padding:10px;margin-top:8px;font-weight:900}
+.startGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.refGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.refLink{background:#eef5ff;border:1px solid #cde0ff;border-radius:12px;padding:10px;text-decoration:none;color:#1d4f87;font-weight:900;text-align:center}
+.reviewGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.quizQ{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:11px;margin:10px 0}.quizQ h3{margin:0 0 7px;font-size:.98rem}.option{display:block;background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 10px;margin:6px 0;cursor:pointer;font-weight:800}.option input{margin-right:7px}.option.correct{border-color:var(--green);background:var(--ok)}.option.wrong{border-color:#fecaca;background:#fff1f1}.quizResult{display:none;border-radius:12px;padding:10px 12px;font-weight:900;margin:10px 0}
+.builder{display:none;grid-template-columns:210px minmax(360px,1fr) 330px;gap:12px;align-items:start}
+.builder.show{display:grid}
+.palette,.previewPanel{position:sticky;top:10px;max-height:calc(100vh - 24px);overflow:auto}.previewPanel.widePreview{grid-column:2 / 4}.previewPanel.fullPreview{grid-column:1 / 4;position:relative;top:auto;max-height:none}.previewControls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 10px}.previewBtn{border:2px solid var(--line);background:#fff;border-radius:10px;padding:7px;font-weight:900;cursor:pointer}.previewBtn.active{border-color:var(--blue);background:#eef5ff;color:var(--blue)}
+.blockBtn{width:100%;margin:5px 0;justify-content:flex-start;text-align:left;background:#fff;color:#17324f;border:2px solid var(--line);box-shadow:none}
+.blockBtn:hover{border-color:var(--green);background:var(--ok)}
+.themeGrid{display:grid;grid-template-columns:1fr;gap:7px}
+.themeBtn{border:2px solid var(--line);border-radius:12px;background:#fff;padding:8px;cursor:pointer;font-weight:900;text-align:left}
+.themeBtn.active{border-color:var(--green);background:var(--ok);color:var(--green2)}
+.canvas{min-height:420px;background:#f8fbff;border:3px dashed #c9deef;border-radius:16px;padding:10px}
+.emptyCanvas{text-align:center;color:var(--muted);padding:42px 12px;font-weight:900}
+.editBlock{background:#fff;border:2px solid var(--line);border-radius:14px;margin:8px 0;padding:9px;box-shadow:0 4px 10px rgba(43,84,124,.08)}
+.editBlock.dragging{opacity:.5}
+.blockTop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.blockLabel{font-weight:900;color:#17324f}
+.tools{display:flex;gap:5px;flex-wrap:wrap}
+.toolBtn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:5px 8px;cursor:pointer;font-weight:900}
+.toolBtn:hover{background:var(--soft)}
+.imgPrev{width:100%;max-height:145px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.pasteZone{border:2px dashed #9fc3df;background:#f8fbff;border-radius:12px;padding:8px;margin:7px 0;text-align:center;color:#526174;font-weight:900;cursor:pointer}
+.pasteZone.active{border-color:var(--green);background:var(--ok);color:var(--green2)}
+.pasteZone small{display:block;font-weight:700;margin-top:3px;color:#526174}
+.websitePreview{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.siteHero{padding:22px 16px;color:#fff;text-align:center;background:linear-gradient(135deg,#2b6cb0,#158a58)}
+.siteHero h1{margin:0;font-size:1.55rem}.siteHero p{margin:5px 0 0;font-size:.9rem}
+.siteBody{padding:13px;background:#fff}
+.siteBlock{margin:0 0 12px}
+.siteBlock h2{color:#17324f;margin:0 0 6px;font-size:1.15rem}
+.siteBlock p{line-height:1.42;margin:.35rem 0}
+.siteBlock img{width:100%;max-height:190px;object-fit:contain;border-radius:10px;background:#f8fbff;border:1px solid #d7e5f2}
+.siteCaption{font-size:.85rem;color:#526174;margin:5px 0 0;line-height:1.3}
+.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factBox{background:#fff;border-left:6px solid #158a58;border-radius:12px;padding:10px;box-shadow:0 3px 9px rgba(0,0,0,.06)}
+.divider{height:3px;border-radius:99px;background:#d7e5f2;margin:16px 0}
+.saved{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;border-radius:999px;padding:8px 18px;font-weight:900;opacity:0;transition:.25s;z-index:50}.saved.show{opacity:1}
+#printSheet{display:none}
+@media(max-width:1050px){.builder{grid-template-columns:1fr}.palette,.previewPanel{position:relative;top:auto;max-height:none}.paletteButtons{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.startGrid,.reviewGrid,.refGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.ksu,.twoCol,.startGrid,.reviewGrid,.refGrid{grid-template-columns:1fr}.app{padding:9px}.btn{width:100%}}
+@media print{body{background:#fff}.app,.saved{display:none}#printSheet{display:block!important}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><div style="font-size:2.3rem">🧱 🌐 🖼️ ✍️</div><h1>Day 4: Block Website Builder</h1><p>Build your Minecraft Biome Showcase website with blocks</p></header>
-<section class="obj"><div><b>WAGBA:</b> We are getting better at designing a clear website layout using title, text, image and caption blocks.</div><div class="ksu"><div><b>K:</b> I know webpages are made from sections and content blocks.</div><div><b>S:</b> I can arrange blocks to create a clear website.</div><div><b>U:</b> Layout choices help visitors understand my Minecraft build.</div></div></section>
-<div class="banner">Website building = block building <br><span>Add blocks</span><span>Drag to arrange</span><span>Edit text</span><span>Download website</span></div>
-<section class="card" id="startCard"><h2>👋 Student Details</h2><p class="hint">Complete this first. Your work saves automatically on this device.</p><div class="startGrid"><div><label>Name</label><input type="text" data-key="name" placeholder="Your name"></div><div><label>Class</label><input type="text" data-key="class" placeholder="e.g. 6B"></div><div><label>Partner</label><input type="text" data-key="partner" placeholder="Partner name"></div><div><label>Chosen biome</label><select data-key="biome"><option value="">Choose one</option><option>Plains</option><option>Forest</option><option>Savanna</option><option>Warm Ocean</option><option>Cherry Grove</option><option>Desert</option><option>Ice Plains</option></select></div></div><label>What are you getting better at today?</label><textarea data-key="wagbaAnswer" placeholder="Today I am getting better at..."></textarea><div class="error" id="error"></div><div class="nav"><button class="btn danger" onclick="resetAll()">New student? Reset</button><button class="btn" onclick="checkStart()">Save Details</button></div></section>
-<section class="builder">
-<aside class="panel palette"><h2>➕ Add Blocks</h2><p class="hint">Click a block to add it. Drag blocks in the canvas to rearrange.</p><div class="paletteButtons"><button class="btn blockBtn" onclick="addBlock('hero')">🏷️ Title Block</button><button class="btn blockBtn" onclick="addBlock('heading')">🔖 Section Heading</button><button class="btn blockBtn" onclick="addBlock('text')">✍️ Text Paragraph</button><button class="btn blockBtn" onclick="addBlock('image')">🖼️ Image + Caption</button><button class="btn blockBtn" onclick="addBlock('twoImages')">🖼️🖼️ Two Images</button><button class="btn blockBtn" onclick="addBlock('fact')">⭐ Biome Fact Card</button><button class="btn blockBtn" onclick="addBlock('reflection')">💭 Reflection Block</button><button class="btn blockBtn" onclick="addBlock('divider')">➖ Divider</button></div><h2 style="margin-top:18px">🎨 Theme</h2><div class="themeGrid" id="themeGrid"></div><div class="nav"><button class="btn gold" onclick="downloadWebsite()">Download Website</button><button class="btn secondary" onclick="printWebsite()">Print / PDF</button><button class="btn secondary" onclick="downloadBackup()">Backup JSON</button></div></aside>
-<main class="panel"><h2>🧱 Website Canvas</h2><p class="hint">Blocks below are your website. Use ↑ ↓ or drag to change order.</p><div id="canvas" class="canvas"></div></main>
-<aside class="panel previewPanel"><h2>👀 Live Preview</h2><p class="hint">This is how your website looks.</p><div id="livePreview"></div></aside>
+<header>
+  <div style="font-size:2rem">🧱 🌐 🖼️ ✍️</div>
+  <h1>Day 4: Block Website Builder</h1>
+  <p>Answer website-thinking questions first, then build your showcase</p>
+</header>
+
+<section class="obj">
+  <div><b>WAGBA:</b> We are getting better at designing a clear website layout using title, text, image and caption blocks.</div>
+  <div class="ksu">
+    <div><b>K:</b> I know webpages are made from sections and content blocks.</div>
+    <div><b>S:</b> I can arrange blocks to create a clear website.</div>
+    <div><b>U:</b> Layout choices help visitors understand my Minecraft build.</div>
+  </div>
 </section>
-</div><div class="saved" id="saved">Saved</div><div id="printSheet"></div>
+
+
+<section class="sessionCard" id="sessionCheck" style="display:none">
+  <h2>⚠️ Saved work found on this shared desktop</h2>
+  <p class="hint">Before you start, check if this saved session belongs to you.</p>
+  <div class="sessionDetails">
+    <div>Name: <span id="savedName">—</span></div>
+    <div>Class: <span id="savedClass">—</span></div>
+    <div>Partner: <span id="savedPartner">—</span></div>
+    <div>Biome: <span id="savedBiome">—</span></div>
+  </div>
+  <div class="sessionWarning">
+    If this is your name, click <b>Continue Session</b>.<br>
+    If this is not your work, click <b>Backup Saved Work</b> first, then <b>Backup + Reset for New Student</b>.
+  </div>
+  <div class="nav">
+    <button class="btn" onclick="continueSavedSession()">Yes, this is mine — Continue Session</button>
+    <button class="btn secondary" onclick="downloadBackup()">Backup Saved Work</button>
+    <button class="btn danger" onclick="backupAndResetForNewStudent()">Not mine — Backup + Reset</button>
+  </div>
+</section>
+
+<section class="card" id="landing">
+  <h2>👋 Landing Page: Details + Starter Quiz</h2>
+  <p class="hint">Students must complete their details and the 10-question MCQ starter before the website editor opens.</p>
+  <div class="startGrid">
+    <div><label>Name</label><input type="text" data-key="name" placeholder="Your name"></div>
+    <div><label>Class</label><input type="text" data-key="class" placeholder="e.g. 6B"></div>
+    <div><label>Partner</label><input type="text" data-key="partner" placeholder="Partner name"></div>
+    <div><label>Chosen biome</label><select data-key="biome"><option value="">Choose one</option><option>Plains</option><option>Forest</option><option>Savanna</option><option>Warm Ocean</option><option>Cherry Grove</option><option>Desert</option><option>Ice Plains</option></select></div>
+  </div>
+  <label>What are you getting better at today?</label>
+  <textarea data-key="wagbaAnswer" placeholder="Today I am getting better at..."></textarea>
+
+  <h3>🧠 Starter Quiz: Website Blocks and Evidence</h3>
+  <p class="hint">Answer all 10 questions. You need at least 7/10 to start website editing.</p>
+  <div class="success">
+    <b>Day 2 reference websites:</b>
+    <a target="_blank" rel="noopener noreferrer" href="https://www.grabcraft.com/search/house">GrabCraft</a> •
+    <a target="_blank" rel="noopener noreferrer" href="https://bloxelizer.com/schematics?q=house">Bloxelizer</a> •
+    <a target="_blank" rel="noopener noreferrer" href="https://minecraft.wiki/w/Tutorials/Shelters">Shelter Ideas</a>
+  </div>
+  <div id="quizBox"></div>
+  <div id="quizResult" class="quizResult"></div>
+
+  <div class="error" id="startError"></div>
+  <div class="nav"><button class="btn danger" onclick="resetAll()">New student? Reset</button><button class="btn blue" onclick="markQuiz()">Check Quiz</button><button class="btn" onclick="startBuilder()">Start Website Editing ➜</button></div>
+</section>
+
+<section class="builder" id="builder">
+  <aside class="panel palette">
+    <h2>➕ Add Blocks</h2>
+    <p class="hint">Add blocks, drag to arrange. For screenshots, click a paste box and press Ctrl+V / Cmd+V.</p>
+    <div class="paletteButtons">
+      <button class="btn blockBtn" onclick="addBlock('hero')">🏷️ Title Block</button>
+      <button class="btn blockBtn" onclick="addBlock('heading')">🔖 Section Heading</button>
+      <button class="btn blockBtn" onclick="addBlock('text')">✍️ Text Paragraph</button>
+      <button class="btn blockBtn" onclick="addBlock('image')">🖼️ Image + Caption</button>
+      <button class="btn blockBtn" onclick="addBlock('twoImages')">🖼️🖼️ Two Images</button>
+      <button class="btn blockBtn" onclick="addBlock('fact')">⭐ Biome Fact Card</button>
+      <button class="btn blockBtn" onclick="addBlock('reflection')">💭 Reflection Block</button>
+      <button class="btn blockBtn" onclick="addBlock('achievement')">🏆 Achievement Block</button>
+      <button class="btn blockBtn" onclick="addBlock('divider')">➖ Divider</button>
+    </div>
+    <h3>🎨 Theme</h3>
+    <div class="themeGrid" id="themeGrid"></div>
+    <div class="nav">
+      <button class="btn secondary" onclick="editLanding()">Edit Starter</button>
+      <button class="btn gold" onclick="downloadWebsite()">Download Website</button>
+      <button class="btn secondary" onclick="printWebsite()">Print / PDF</button>
+      <button class="btn secondary" onclick="downloadBackup()">Backup JSON</button>
+    </div>
+  </aside>
+
+  <main class="panel">
+    <h2>🧱 Website Canvas</h2>
+    <p class="hint">Keep it simple: title, explanation, 3 images, captions, achievement, reflection.</p>
+    <div id="canvas" class="canvas"></div>
+  </main>
+
+  <aside class="panel previewPanel" id="previewPanel">
+    <h2>👀 Live Preview</h2>
+    <p class="hint">Choose a preview size if you want more space.</p>
+    <div class="previewControls">
+      <button class="previewBtn" id="previewNormal" onclick="setPreviewMode('normal')">Normal</button>
+      <button class="previewBtn" id="previewWide" onclick="setPreviewMode('wide')">Wide</button>
+      <button class="previewBtn" id="previewFull" onclick="setPreviewMode('full')">Full</button>
+    </div>
+    <div id="livePreview"></div>
+  </aside>
+</section>
+</div>
+
+<div class="saved" id="saved">Saved</div>
+<div id="printSheet"></div>
+
 <script>
-const KEY='day4BlockBuilderV2';let data=JSON.parse(localStorage.getItem(KEY)||'{}');if(!data.blocks)data.blocks=[];if(!data.layout)data.layout='wide';
-const THEMES={Plains:['🌾 Plains','#2f855a','#f6d365','#fff8dc'],Forest:['🌲 Forest','#166534','#84cc16','#f0fdf4'],Savanna:['🦒 Savanna','#b7791f','#f6ad55','#fffaf0'],'Warm Ocean':['🐠 Warm Ocean','#0e7490','#38bdf8','#ecfeff'],'Cherry Grove':['🌸 Cherry Grove','#be185d','#f9a8d4','#fff1f2'],Desert:['🏜️ Desert','#b45309','#facc15','#fffbeb'],'Ice Plains':['🧊 Ice Plains','#0369a1','#bae6fd','#f0f9ff']};
-function esc(s){return String(s||'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}function uid(){return'b'+Date.now()+Math.random().toString(16).slice(2)}function save(){localStorage.setItem(KEY,JSON.stringify(data));let s=document.getElementById('saved');s.classList.add('show');clearTimeout(s.t);s.t=setTimeout(()=>s.classList.remove('show'),700)}
-document.querySelectorAll('[data-key]').forEach(el=>{let k=el.dataset.key;if(data[k])el.value=data[k];el.oninput=el.onchange=()=>{data[k]=el.value;if(k==='biome'&&!data.theme)data.theme=data.biome;save();renderAll()}});
-function checkStart(){let miss=['name','class','partner','biome','wagbaAnswer'].filter(k=>!String(data[k]||'').trim());let e=document.getElementById('error');if(miss.length){e.style.display='block';e.textContent='Please complete name, class, partner, biome and WAGBA before building.';return}e.style.display='none';save();alert('Details saved. You can build your website now.')}function resetAll(){if(confirm('Reset saved website work on this device?')){localStorage.removeItem(KEY);location.reload()}}
-function defaultBlock(type){let b={id:uid(),type};if(type==='hero')return{...b,title:`Our ${data.biome||'Biome'} Build`,subtitle:'Minecraft Biome Showcase'};if(type==='heading')return{...b,text:'Section Heading'};if(type==='text')return{...b,text:'Write your explanation here.'};if(type==='image')return{...b,caption:'Write a caption that explains this image.'};if(type==='twoImages')return{...b,cap1:'Caption for image 1.',cap2:'Caption for image 2.'};if(type==='fact')return{...b,title:'Biome Fact',text:'Write one useful fact about your biome.'};if(type==='reflection')return{...b,improved:'One thing we improved was...',struggle:'One good struggle was...',next:'Next time, we would improve...'};return b}
-function addBlock(type){data.blocks.push(defaultBlock(type));save();renderAll()}function deleteBlock(id){if(confirm('Delete this block?')){data.blocks=data.blocks.filter(b=>b.id!==id);save();renderAll()}}function moveBlock(id,dir){let i=data.blocks.findIndex(b=>b.id===id),j=i+dir;if(i<0||j<0||j>=data.blocks.length)return;[data.blocks[i],data.blocks[j]]=[data.blocks[j],data.blocks[i]];save();renderAll()}function updateBlock(id,k,v){let b=data.blocks.find(x=>x.id===id);if(!b)return;b[k]=v;save();renderPreviews()}let pasteTarget=null;function storeImageFile(f,id,key){if(!f)return;if(!f.type||!f.type.startsWith('image/')){alert('Please paste or upload an image.');return}let r=new FileReader();r.onload=e=>{let img=new Image();img.onload=()=>{let mx=1100,sc=Math.min(1,mx/img.width,mx/img.height),c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);updateBlock(id,key,c.toDataURL('image/jpeg',.78));pasteTarget={id,key};renderAll();showPasteMessage('Screenshot/image added to the block.')};img.src=e.target.result};r.readAsDataURL(f)}function loadBlockImage(ev,id,key){let f=ev.target.files[0];storeImageFile(f,id,key)}function setPasteTarget(id,key){pasteTarget={id,key};renderAll();showPasteMessage('Ready. Press Ctrl+V or Cmd+V to paste your screenshot.')}function showPasteMessage(msg){let s=document.getElementById('saved');if(!s)return;s.textContent=msg;s.classList.add('show');clearTimeout(s.t);s.t=setTimeout(()=>{s.classList.remove('show');s.textContent='Saved'},1500)}document.addEventListener('paste',e=>{if(!pasteTarget)return;let items=e.clipboardData&&e.clipboardData.items?Array.from(e.clipboardData.items):[];let item=items.find(x=>x.type&&x.type.startsWith('image/'));if(!item)return;e.preventDefault();storeImageFile(item.getAsFile(),pasteTarget.id,pasteTarget.key)})
-function renderThemes(){let tg=document.getElementById('themeGrid');if(!data.theme&&data.biome)data.theme=data.biome;tg.innerHTML=Object.keys(THEMES).map(k=>`<button class="themeBtn ${data.theme===k?'active':''}" onclick="setTheme('${k}')">${THEMES[k][0]}</button>`).join('')}function setTheme(t){data.theme=t;save();renderAll()}
-let dragId=null;function renderCanvas(){let c=document.getElementById('canvas');if(!data.blocks.length){c.innerHTML='<div class="empty">Add title, text, image and caption blocks from the left.</div>';return}c.innerHTML=data.blocks.map((b,i)=>editBlockHTML(b,i)).join('');c.querySelectorAll('.editBlock').forEach(el=>{el.addEventListener('dragstart',()=>{dragId=el.dataset.id;el.classList.add('dragging')});el.addEventListener('dragend',()=>el.classList.remove('dragging'));el.addEventListener('dragover',e=>e.preventDefault());el.addEventListener('drop',e=>{e.preventDefault();let target=el.dataset.id;if(dragId&&dragId!==target){let from=data.blocks.findIndex(b=>b.id===dragId),to=data.blocks.findIndex(b=>b.id===target),item=data.blocks.splice(from,1)[0];data.blocks.splice(to,0,item);save();renderAll()}})})}
-function blockName(t){return{hero:'🏷️ Title Block',heading:'🔖 Section Heading',text:'✍️ Text Paragraph',image:'🖼️ Image + Caption',twoImages:'🖼️🖼️ Two Images',fact:'⭐ Biome Fact Card',reflection:'💭 Reflection Block',divider:'➖ Divider'}[t]||t}function tools(b){return`<div class="blockTop"><span class="blockLabel">${blockName(b.type)}</span><div class="tools"><button class="toolBtn" onclick="moveBlock('${b.id}',-1)">↑</button><button class="toolBtn" onclick="moveBlock('${b.id}',1)">↓</button><button class="toolBtn" onclick="deleteBlock('${b.id}')">🗑️</button></div></div>`}
-function editBlockHTML(b){let h=`<div class="editBlock" draggable="true" data-id="${b.id}">${tools(b)}`;if(b.type==='hero')h+=`<label>Website title</label><input value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)"><label>Subtitle</label><input value="${esc(b.subtitle)}" oninput="updateBlock('${b.id}','subtitle',this.value)">`;if(b.type==='heading')h+=`<label>Heading text</label><input value="${esc(b.text)}" oninput="updateBlock('${b.id}','text',this.value)">`;if(b.type==='text')h+=`<label>Paragraph text</label><textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;if(b.type==='image')h+=`<label>Upload image</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img'?'active':''}" onclick="setPasteTarget('${b.id}','img')">📋 Click here, then paste screenshot<br><small>Ctrl+V on Windows • Cmd+V on Mac</small></div>${b.img?`<img class="imgPrev" src="${b.img}">`:''}<label>Caption</label><textarea oninput="updateBlock('${b.id}','caption',this.value)">${esc(b.caption)}</textarea>`;if(b.type==='twoImages')h+=`<label>Upload image 1</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img1')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img1'?'active':''}" onclick="setPasteTarget('${b.id}','img1')">📋 Click here, then paste screenshot for image 1<br><small>Ctrl+V on Windows • Cmd+V on Mac</small></div>${b.img1?`<img class="imgPrev" src="${b.img1}">`:''}<label>Caption 1</label><textarea oninput="updateBlock('${b.id}','cap1',this.value)">${esc(b.cap1)}</textarea><label>Upload image 2</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img2')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img2'?'active':''}" onclick="setPasteTarget('${b.id}','img2')">📋 Click here, then paste screenshot for image 2<br><small>Ctrl+V on Windows • Cmd+V on Mac</small></div>${b.img2?`<img class="imgPrev" src="${b.img2}">`:''}<label>Caption 2</label><textarea oninput="updateBlock('${b.id}','cap2',this.value)">${esc(b.cap2)}</textarea>`;if(b.type==='fact')h+=`<label>Fact title</label><input value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)"><label>Fact text</label><textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;if(b.type==='reflection')h+=`<label>One thing we improved</label><textarea oninput="updateBlock('${b.id}','improved',this.value)">${esc(b.improved)}</textarea><label>One good struggle</label><textarea oninput="updateBlock('${b.id}','struggle',this.value)">${esc(b.struggle)}</textarea><label>Next time</label><textarea oninput="updateBlock('${b.id}','next',this.value)">${esc(b.next)}</textarea>`;if(b.type==='divider')h+=`<p class="hint">This adds a visual line between website sections.</p>`;return h+'</div>'}
-function siteBlock(b){if(b.type==='hero')return`<section class="siteBlock siteHero"><h1>${esc(b.title)}</h1><p>${esc(b.subtitle)}</p></section>`;if(b.type==='heading')return`<section class="siteBlock"><h2>${esc(b.text)}</h2></section>`;if(b.type==='text')return`<section class="siteBlock"><p>${esc(b.text)}</p></section>`;if(b.type==='image')return`<section class="siteBlock">${b.img?`<img src="${b.img}">`:'<p><i>Image not uploaded yet.</i></p>'}<p class="caption">${esc(b.caption)}</p></section>`;if(b.type==='twoImages')return`<section class="siteBlock twoCol"><div>${b.img1?`<img src="${b.img1}">`:'<p><i>Image 1 not uploaded.</i></p>'}<p class="caption">${esc(b.cap1)}</p></div><div>${b.img2?`<img src="${b.img2}">`:'<p><i>Image 2 not uploaded.</i></p>'}<p class="caption">${esc(b.cap2)}</p></div></section>`;if(b.type==='fact')return`<section class="siteBlock factBox"><h2>${esc(b.title)}</h2><p>${esc(b.text)}</p></section>`;if(b.type==='reflection')return`<section class="siteBlock"><h2>Reflection</h2><p><b>One thing we improved:</b> ${esc(b.improved)}</p><p><b>One good struggle:</b> ${esc(b.struggle)}</p><p><b>Next time:</b> ${esc(b.next)}</p></section>`;if(b.type==='divider')return`<div class="divider"></div>`;return''}
-function siteHTML(full=false){let th=THEMES[data.theme||data.biome]||THEMES.Forest,primary=th[1],accent=th[2],bg=th[3];let blocks=data.blocks.map(siteBlock).join('')||'<section class="siteBlock"><p>No blocks yet.</p></section>';let body=`<div class="siteShell"><div class="siteBody" style="background:${bg}">${blocks}<footer style="padding:14px;text-align:center;color:#526174;font-size:.9rem">Created by ${esc(data.name)} ${data.partner?'and '+esc(data.partner):''} • ${esc(data.class)} • ${esc(data.biome)}</footer></div></div>`.replaceAll('class="siteBlock siteHero"','class="siteBlock siteHero" style="background:linear-gradient(135deg,'+primary+','+accent+')"');if(!full)return body;return`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${esc(data.name||'Student')} Minecraft Biome Website</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:${bg};color:#1f2937;padding:24px}.siteShell{max-width:1050px;margin:auto;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.12)}.siteBody{padding:24px}.siteBlock{margin:0 0 22px}.siteHero{padding:42px 24px;color:#fff;text-align:center;border-radius:16px}.siteHero h1{margin:0;font-size:2.8rem}.siteBlock h2{color:#17324f}.siteBlock p{line-height:1.55}.siteBlock img{width:100%;max-height:360px;object-fit:contain;border-radius:14px;background:#f8fbff;border:1px solid #d7e5f2}.caption{font-size:.95rem;color:#526174;margin-top:7px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:14px}.factBox{background:#fff;border-left:8px solid ${primary};border-radius:14px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.06)}.divider{height:4px;border-radius:99px;background:#d7e5f2;margin:22px 0}@media(max-width:700px){.twoCol{grid-template-columns:1fr}}</style></head><body>${body}</body></html>`}
-function renderPreviews(){document.getElementById('livePreview').innerHTML=siteHTML(false)}function renderAll(){renderThemes();renderCanvas();renderPreviews()}function downloadWebsite(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([siteHTML(true)],{type:'text/html'}));a.download=`block-biome-website-${(data.name||'student').replace(/\s+/g,'-')}.html`;a.click()}function printWebsite(){document.getElementById('printSheet').innerHTML=siteHTML(false);window.print()}function downloadBackup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download=`block-website-backup-${(data.name||'student').replace(/\s+/g,'-')}.json`;a.click()}
-renderAll();
+const KEY='day4BlockBuilderV3CompactReview';
+let data=JSON.parse(localStorage.getItem(KEY)||'{}');
+let sessionConfirmed=sessionStorage.getItem(KEY+'_confirmed')==='true';
+if(!data.blocks)data.blocks=[];
+if(!data.layout)data.layout='wide';
+if(!data.previewMode)data.previewMode='normal';
+let pasteTarget=null;
+
+const THEMES={
+  Plains:['🌾 Plains','#2f855a','#f6d365','#fff8dc'],
+  Forest:['🌲 Forest','#166534','#84cc16','#f0fdf4'],
+  Savanna:['🦒 Savanna','#b7791f','#f6ad55','#fffaf0'],
+  'Warm Ocean':['🐠 Warm Ocean','#0e7490','#38bdf8','#ecfeff'],
+  'Cherry Grove':['🌸 Cherry Grove','#be185d','#f9a8d4','#fff1f2'],
+  Desert:['🏜️ Desert','#b45309','#facc15','#fffbeb'],
+  'Ice Plains':['🧊 Ice Plains','#0369a1','#bae6fd','#f0f9ff']
+};
+const REQUIRED=['name','class','partner','biome','wagbaAnswer'];
+const QUIZ=[
+  {q:'What is the purpose of a title block?',o:['To hide the website topic','To clearly show what the website is about','To make the page longer','To replace all images'],a:1},
+  {q:'Which block should you use for a Minecraft screenshot?',o:['Image + Caption','Divider only','Theme button','Delete button'],a:0},
+  {q:'What should a caption explain?',o:['Only the file name','What the image shows and why it is useful','Nothing, captions are not needed','Only the date'],a:1},
+  {q:'Which layout is easiest for a visitor to understand?',o:['Random blocks everywhere','Clear order from title to evidence to reflection','Only pictures with no words','Tiny text with no headings'],a:1},
+  {q:'Why do we use Minecraft screenshots as evidence?',o:['To prove and explain our build choices','To decorate the computer','To avoid writing anything','To make the page load slowly'],a:0},
+  {q:'What should your website explain about your build?',o:['How it matches the biome','Only who won the game','Only the number of blocks','Nothing about the biome'],a:0},
+  {q:'Which is a good website section heading?',o:['Thing','My Desert Tower Design','Random words','Untitled'],a:1},
+  {q:'What does a divider block help with?',o:['Separating sections clearly','Uploading images','Deleting text','Changing the school account'],a:0},
+  {q:'What should visitors understand quickly?',o:['Your biome, structure and best design choices','Your password','Every command you typed','Only your partner name'],a:0},
+  {q:'Before downloading, what should you check?',o:['Title, images, captions, explanation and reflection','Only the colour','Only the file size','Nothing'],a:0}
+];
+
+function esc(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function uid(){return'b'+Date.now()+Math.random().toString(16).slice(2)}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));let s=document.getElementById('saved');s.textContent='Saved';s.classList.add('show');clearTimeout(s.t);s.t=setTimeout(()=>s.classList.remove('show'),700)}
+function showMsg(msg){let s=document.getElementById('saved');s.textContent=msg;s.classList.add('show');clearTimeout(s.t);s.t=setTimeout(()=>{s.classList.remove('show');s.textContent='Saved'},1500)}
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    let k=el.dataset.key;
+    if(data[k])el.value=data[k];
+    el.oninput=el.onchange=()=>{data[k]=el.value;if(k==='biome'&&!data.theme)data.theme=data.biome;sessionConfirmed=true;sessionStorage.setItem(KEY+'_confirmed','true');save();renderAll()}
+  });
+}
+function renderStarterQuiz(){
+  let box=document.getElementById('quizBox');
+  if(!box)return;
+  box.innerHTML=QUIZ.map((q,qi)=>`<div class="quizQ"><h3>${qi+1}. ${q.q}</h3>${q.o.map((op,oi)=>`<label class="option" id="q${qi}o${oi}"><input type="radio" name="q${qi}" value="${oi}" ${data['quiz'+qi]==oi?'checked':''} onchange="data.quiz${qi}=this.value;save();hideStartError()">${op}</label>`).join('')}</div>`).join('');
+  if(data.quizScore!==undefined)showQuizResult();
+}
+function hideStartError(){let e=document.getElementById('startError');if(e)e.style.display='none'}
+function markQuiz(){
+  let answered=true,score=0;
+  QUIZ.forEach((q,qi)=>{
+    if(data['quiz'+qi]===undefined||data['quiz'+qi]==='')answered=false;
+    let ans=Number(data['quiz'+qi]);
+    q.o.forEach((_,oi)=>{
+      let el=document.getElementById(`q${qi}o${oi}`);
+      if(el){el.classList.remove('correct','wrong');if(oi===q.a)el.classList.add('correct');if(ans===oi&&oi!==q.a)el.classList.add('wrong')}
+    });
+    if(ans===q.a)score++;
+  });
+  if(!answered){let e=document.getElementById('startError');e.style.display='block';e.textContent='Please answer all 10 quiz questions before checking.';return false}
+  data.quizScore=score;
+  data.quizPassed=score>=7?'true':'false';
+  save();
+  showQuizResult();
+  return score>=7;
+}
+function showQuizResult(){
+  let r=document.getElementById('quizResult');
+  if(!r)return;
+  let score=Number(data.quizScore||0);
+  r.style.display='block';
+  r.textContent=score>=7?`Great — you scored ${score}/10. You can start website editing.`:`You scored ${score}/10. Review the highlighted answers and try again.`;
+  r.style.background=score>=7?'var(--ok)':'#fff1f1';
+  r.style.border=score>=7?'2px solid #b7ebcd':'2px solid #fecaca';
+  r.style.color=score>=7?'#0a6b44':'var(--red)';
+}
+function startBuilder(){
+  let miss=REQUIRED.filter(k=>!String(data[k]||'').trim());
+  let e=document.getElementById('startError');
+  if(miss.length){e.style.display='block';e.textContent='Please complete your name, class, partner, biome and WAGBA before editing.';return}
+  if(!markQuiz()){e.style.display='block';e.textContent='Please score at least 7/10 on the starter quiz before editing.';return}
+  e.style.display='none';data.unlocked=true;sessionConfirmed=true;sessionStorage.setItem(KEY+'_confirmed','true');save();showBuilder();
+}
+function hasSavedSession(){return !!(data.name||data.class||data.partner||data.biome||data.blocks.length||data.unlocked)}
+function updateSessionCard(){
+  let card=document.getElementById('sessionCheck');
+  if(!card)return;
+  document.getElementById('savedName').textContent=data.name||'No name saved';
+  document.getElementById('savedClass').textContent=data.class||'—';
+  document.getElementById('savedPartner').textContent=data.partner||'—';
+  document.getElementById('savedBiome').textContent=data.biome||'—';
+}
+function showBuilder(){
+  let needsCheck=hasSavedSession()&&!sessionConfirmed;
+  let sessionCard=document.getElementById('sessionCheck');
+  let landing=document.getElementById('landing');
+  let builder=document.getElementById('builder');
+  updateSessionCard();
+  if(sessionCard)sessionCard.style.display=needsCheck?'block':'none';
+  if(needsCheck){landing.style.display='none';builder.classList.remove('show');return}
+  landing.style.display=data.unlocked?'none':'block';
+  builder.classList.toggle('show',!!data.unlocked);
+  renderAll();
+  if(data.unlocked)window.scrollTo({top:0,behavior:'smooth'});
+}
+function continueSavedSession(){sessionConfirmed=true;sessionStorage.setItem(KEY+'_confirmed','true');showBuilder()}
+function editLanding(){data.unlocked=false;save();showBuilder()}
+function resetAll(){
+  if(!confirm('Reset saved Day 4 website work on this device? Download a backup first if this is someone else’s work.'))return;
+  localStorage.removeItem(KEY);
+  sessionStorage.removeItem(KEY+'_confirmed');
+  location.reload();
+}
+function backupAndResetForNewStudent(){
+  if(!confirm('This will download a backup of the saved work and then reset this desktop for a new student. Continue?'))return;
+  downloadBackup();
+  setTimeout(()=>{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY+'_confirmed');location.reload()},500);
+}
+
+function defaultBlock(type){
+  const base={id:uid(),type};
+  if(type==='hero')return {...base,title:`Our ${data.biome||'Biome'} Build`,subtitle:'Minecraft Biome Showcase'};
+  if(type==='heading')return {...base,text:'Section Heading'};
+  if(type==='text')return {...base,text:'Write your explanation here.'};
+  if(type==='image')return {...base,caption:'Write a caption that explains this image.'};
+  if(type==='twoImages')return {...base,cap1:'Caption for image 1.',cap2:'Caption for image 2.'};
+  if(type==='fact')return {...base,title:'Biome Fact',text:'Write one useful fact about your biome.'};
+  if(type==='reflection')return {...base,improved:'One thing we improved was...',struggle:'One good struggle was...',next:'Next time, we would improve...'};
+  if(type==='achievement')return {...base,title:'What We Achieved',built:'We created...',skills:'We used website skills such as...',proud:'We are proud of...'};
+  return base;
+}
+function addBlock(type){data.blocks.push(defaultBlock(type));save();renderAll()}
+function deleteBlock(id){if(confirm('Delete this block?')){data.blocks=data.blocks.filter(b=>b.id!==id);save();renderAll()}}
+function moveBlock(id,dir){let i=data.blocks.findIndex(b=>b.id===id),j=i+dir;if(i<0||j<0||j>=data.blocks.length)return;[data.blocks[i],data.blocks[j]]=[data.blocks[j],data.blocks[i]];save();renderAll()}
+function updateBlock(id,k,v){let b=data.blocks.find(x=>x.id===id);if(!b)return;b[k]=v;save();renderPreviews()}
+
+function storeImageFile(f,id,key){
+  if(!f)return;
+  if(!f.type||!f.type.startsWith('image/')){alert('Please paste or upload an image.');return}
+  let r=new FileReader();
+  r.onload=e=>{
+    let img=new Image();
+    img.onload=()=>{
+      let mx=1100,sc=Math.min(1,mx/img.width,mx/img.height),c=document.createElement('canvas');
+      c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      updateBlock(id,key,c.toDataURL('image/jpeg',.78));
+      pasteTarget={id,key};renderAll();showMsg('Screenshot/image added.');
+    };
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+function loadBlockImage(ev,id,key){storeImageFile(ev.target.files[0],id,key)}
+function setPasteTarget(id,key){pasteTarget={id,key};renderAll();showMsg('Ready. Press Ctrl+V or Cmd+V.')}
+document.addEventListener('paste',e=>{
+  if(!pasteTarget)return;
+  let items=e.clipboardData&&e.clipboardData.items?Array.from(e.clipboardData.items):[];
+  let item=items.find(x=>x.type&&x.type.startsWith('image/'));
+  if(!item)return;
+  e.preventDefault();
+  storeImageFile(item.getAsFile(),pasteTarget.id,pasteTarget.key);
+});
+
+function renderThemes(){
+  let tg=document.getElementById('themeGrid');if(!tg)return;
+  if(!data.theme&&data.biome)data.theme=data.biome;
+  tg.innerHTML=Object.keys(THEMES).map(k=>`<button class="themeBtn ${data.theme===k?'active':''}" onclick="setTheme('${k}')">${THEMES[k][0]}</button>`).join('');
+}
+function setTheme(t){data.theme=t;save();renderAll()}
+
+let dragId=null;
+function renderCanvas(){
+  let c=document.getElementById('canvas');if(!c)return;
+  if(!data.blocks.length){c.innerHTML='<div class="emptyCanvas">Add blocks from the left to build your website.</div>';return}
+  c.innerHTML=data.blocks.map(editBlockHTML).join('');
+  c.querySelectorAll('.editBlock').forEach(el=>{
+    el.addEventListener('dragstart',()=>{dragId=el.dataset.id;el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+    el.addEventListener('dragover',e=>e.preventDefault());
+    el.addEventListener('drop',e=>{e.preventDefault();let targetId=el.dataset.id;if(dragId&&dragId!==targetId){let from=data.blocks.findIndex(b=>b.id===dragId),to=data.blocks.findIndex(b=>b.id===targetId);let item=data.blocks.splice(from,1)[0];data.blocks.splice(to,0,item);save();renderAll()}});
+  });
+}
+function tools(b){return `<div class="blockTop"><span class="blockLabel">${nameBlock(b.type)}</span><div class="tools"><button class="toolBtn" onclick="moveBlock('${b.id}',-1)">↑</button><button class="toolBtn" onclick="moveBlock('${b.id}',1)">↓</button><button class="toolBtn" onclick="deleteBlock('${b.id}')">🗑️</button></div></div>`}
+function nameBlock(t){return {hero:'🏷️ Title Block',heading:'🔖 Section Heading',text:'✍️ Text Paragraph',image:'🖼️ Image + Caption',twoImages:'🖼️🖼️ Two Images',fact:'⭐ Biome Fact Card',reflection:'💭 Reflection Block',achievement:'🏆 Achievement Block',divider:'➖ Divider'}[t]||t}
+function editBlockHTML(b){
+  let h=`<div class="editBlock" draggable="true" data-id="${b.id}">${tools(b)}`;
+  if(b.type==='hero')h+=`<label>Website title</label><input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)"><label>Subtitle</label><input type="text" value="${esc(b.subtitle)}" oninput="updateBlock('${b.id}','subtitle',this.value)">`;
+  if(b.type==='heading')h+=`<label>Heading</label><input type="text" value="${esc(b.text)}" oninput="updateBlock('${b.id}','text',this.value)">`;
+  if(b.type==='text')h+=`<label>Paragraph</label><textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;
+  if(b.type==='image')h+=`<label>Upload image</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img'?'active':''}" onclick="setPasteTarget('${b.id}','img')">📋 Click here, then paste screenshot<small>Ctrl+V / Cmd+V</small></div>${b.img?`<img class="imgPrev" src="${b.img}">`:''}<label>Caption</label><textarea oninput="updateBlock('${b.id}','caption',this.value)">${esc(b.caption)}</textarea>`;
+  if(b.type==='twoImages')h+=`<label>Upload image 1</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img1')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img1'?'active':''}" onclick="setPasteTarget('${b.id}','img1')">📋 Paste screenshot for image 1<small>Ctrl+V / Cmd+V</small></div>${b.img1?`<img class="imgPrev" src="${b.img1}">`:''}<label>Caption 1</label><textarea oninput="updateBlock('${b.id}','cap1',this.value)">${esc(b.cap1)}</textarea><label>Upload image 2</label><input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img2')"><div class="pasteZone ${pasteTarget&&pasteTarget.id==='${b.id}'&&pasteTarget.key==='img2'?'active':''}" onclick="setPasteTarget('${b.id}','img2')">📋 Paste screenshot for image 2<small>Ctrl+V / Cmd+V</small></div>${b.img2?`<img class="imgPrev" src="${b.img2}">`:''}<label>Caption 2</label><textarea oninput="updateBlock('${b.id}','cap2',this.value)">${esc(b.cap2)}</textarea>`;
+  if(b.type==='fact')h+=`<label>Fact title</label><input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)"><label>Fact text</label><textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;
+  if(b.type==='reflection')h+=`<label>One thing we improved</label><textarea oninput="updateBlock('${b.id}','improved',this.value)">${esc(b.improved)}</textarea><label>One good struggle</label><textarea oninput="updateBlock('${b.id}','struggle',this.value)">${esc(b.struggle)}</textarea><label>Next time</label><textarea oninput="updateBlock('${b.id}','next',this.value)">${esc(b.next)}</textarea>`;
+  if(b.type==='achievement')h+=`<label>Achievement title</label><input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)"><label>What did you create?</label><textarea oninput="updateBlock('${b.id}','built',this.value)">${esc(b.built)}</textarea><label>What website skills did you use?</label><textarea oninput="updateBlock('${b.id}','skills',this.value)">${esc(b.skills)}</textarea><label>What are you proud of?</label><textarea oninput="updateBlock('${b.id}','proud',this.value)">${esc(b.proud)}</textarea>`;
+  if(b.type==='divider')h+=`<p class="hint">This adds a visual line between sections.</p>`;
+  return h+'</div>';
+}
+function siteBlock(b){
+  if(b.type==='hero')return`<section class="siteHero"><h1>${esc(b.title)}</h1><p>${esc(b.subtitle)}</p></section>`;
+  if(b.type==='heading')return`<section class="siteBlock"><h2>${esc(b.text)}</h2></section>`;
+  if(b.type==='text')return`<section class="siteBlock"><p>${esc(b.text)}</p></section>`;
+  if(b.type==='image')return`<section class="siteBlock">${b.img?`<img src="${b.img}" alt="Minecraft evidence">`:'<p><i>Image not uploaded yet.</i></p>'}<p class="siteCaption">${esc(b.caption)}</p></section>`;
+  if(b.type==='twoImages')return`<section class="siteBlock twoCol"><div>${b.img1?`<img src="${b.img1}" alt="Minecraft evidence 1">`:'<p><i>Image 1 not uploaded.</i></p>'}<p class="siteCaption">${esc(b.cap1)}</p></div><div>${b.img2?`<img src="${b.img2}" alt="Minecraft evidence 2">`:'<p><i>Image 2 not uploaded.</i></p>'}<p class="siteCaption">${esc(b.cap2)}</p></div></section>`;
+  if(b.type==='fact')return`<section class="siteBlock factBox"><h2>${esc(b.title)}</h2><p>${esc(b.text)}</p></section>`;
+  if(b.type==='reflection')return`<section class="siteBlock"><h2>Reflection</h2><p><b>One thing we improved:</b> ${esc(b.improved)}</p><p><b>One good struggle:</b> ${esc(b.struggle)}</p><p><b>Next time:</b> ${esc(b.next)}</p></section>`;
+  if(b.type==='achievement')return`<section class="siteBlock factBox"><h2>${esc(b.title||'What We Achieved')}</h2><p><b>We created:</b> ${esc(b.built)}</p><p><b>Website skills used:</b> ${esc(b.skills)}</p><p><b>We are proud of:</b> ${esc(b.proud)}</p></section>`;
+  if(b.type==='divider')return`<div class="divider"></div>`;
+  return '';
+}
+function siteHTML(full=false){
+  let theme=THEMES[data.theme||data.biome]||THEMES.Forest,primary=theme[1],accent=theme[2],bg=theme[3];
+  let blocks=data.blocks.map(siteBlock).join('')||'<section class="siteBlock"><p>No blocks yet.</p></section>';
+  let planning='';
+  let body=`<div class="websitePreview"><div class="siteBody" style="background:${bg}">${blocks}${planning}<footer style="padding:12px;text-align:center;color:#526174;font-size:.85rem">Created by ${esc(data.name)} ${data.partner?'and '+esc(data.partner):''} • ${esc(data.class)} • ${esc(data.biome)}</footer></div></div>`;
+  body=body.replaceAll('class="siteHero"','class="siteHero" style="background:linear-gradient(135deg,'+primary+','+accent+')"');
+  if(!full)return body;
+  return`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${esc(data.name||'Student')} Minecraft Biome Website</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:${bg};color:#1f2937;padding:22px;font-size:15px}.websitePreview{max-width:980px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.12)}.siteHero{padding:34px 20px;color:#fff;text-align:center}.siteHero h1{margin:0;font-size:2.25rem}.siteHero p{font-size:1rem}.siteBody{padding:20px}.siteBlock{margin:0 0 18px}.siteBlock h2{color:#17324f;margin:0 0 8px}.siteBlock p{line-height:1.5}.siteBlock img{width:100%;max-height:340px;object-fit:contain;border-radius:12px;background:#f8fbff;border:1px solid #d7e5f2}.siteCaption{font-size:.92rem;color:#526174;margin:6px 0 0;line-height:1.35}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:12px}.factBox{background:#fff;border-left:7px solid ${primary};border-radius:12px;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}.divider{height:4px;border-radius:99px;background:#d7e5f2;margin:18px 0}@media(max-width:700px){.twoCol{grid-template-columns:1fr}}</style></head><body>${body}</body></html>`;
+}
+function setPreviewMode(mode){
+  data.previewMode=mode;
+  save();
+  renderPreviewMode();
+}
+function renderPreviewMode(){
+  let p=document.getElementById('previewPanel');
+  if(!p)return;
+  p.classList.toggle('widePreview',data.previewMode==='wide');
+  p.classList.toggle('fullPreview',data.previewMode==='full');
+  ['Normal','Wide','Full'].forEach(m=>{
+    let b=document.getElementById('preview'+m);
+    if(b)b.classList.toggle('active',data.previewMode===m.toLowerCase());
+  });
+}
+function renderPreviews(){let lp=document.getElementById('livePreview');if(lp)lp.innerHTML=siteHTML(false)}
+function renderAll(){renderThemes();renderCanvas();renderPreviewMode();renderPreviews()}
+function downloadWebsite(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([siteHTML(true)],{type:'text/html'}));a.download=`block-biome-website-${(data.name||'student').replace(/\s+/g,'-')}.html`;a.click()}
+function printWebsite(){document.getElementById('printSheet').innerHTML=siteHTML(false);window.print()}
+function downloadBackup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download=`day4-block-website-backup-${(data.name||'student').replace(/\s+/g,'-')}-${(data.class||'class').replace(/\s+/g,'-')}.json`;a.click()}
+
+bindInputs();
+renderStarterQuiz();
+showBuilder();
 </script>
 </body>
 </html>
