@@ -853,6 +853,114 @@
     }
     .hint-box code { white-space: pre-wrap; }
 
+
+    .video-gate {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      border-radius: 24px;
+      border: 1px solid rgba(191,219,254,.25);
+      box-shadow: 0 24px 70px rgba(15,23,42,.28);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+    .video-gate-header {
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid rgba(148,163,184,.25);
+      background: rgba(15,23,42,.65);
+    }
+    .video-gate-header h2 {
+      color: white;
+      margin: 0 0 4px;
+      font-size: 1.35rem;
+    }
+    .video-gate-header p {
+      margin: 0;
+      color: #cbd5e1;
+    }
+    .video-frame {
+      width: 100%;
+      display: block;
+      background: #020617;
+      max-height: 68vh;
+    }
+    .video-lock-note {
+      padding: 14px 18px;
+      color: #dbeafe;
+      border-top: 1px solid rgba(148,163,184,.2);
+      background: rgba(15,23,42,.72);
+      font-weight: 700;
+    }
+    .video-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 18px 18px;
+      background: rgba(15,23,42,.72);
+    }
+    .video-status {
+      color: #fde68a;
+      font-size: .95rem;
+      margin-top: 8px;
+    }
+    .replay-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 28px rgba(37,99,235,.08);
+    }
+    .replay-card h3 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+    }
+    .replay-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background: rgba(2,6,23,.78);
+      padding: 24px;
+    }
+    .video-modal-card {
+      width: min(1100px, 96vw);
+      max-height: 92vh;
+      background: #0f172a;
+      border: 1px solid rgba(191,219,254,.28);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+    }
+    .video-modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      color: white;
+      border-bottom: 1px solid rgba(148,163,184,.22);
+    }
+    .video-modal-top strong { font-size: 1.05rem; }
+    .video-modal-card video {
+      width: 100%;
+      display: block;
+      background: black;
+      max-height: 76vh;
+    }
+
     .hidden { display: none !important; }
 
     .print-sheet {
@@ -968,7 +1076,7 @@
   </div>
 
 <script>
-const STORAGE_KEY = 'year7_python_lists_taster_v5_samples_output';
+const STORAGE_KEY = 'year7_python_lists_taster_v7_lab_videos';
 const pages = [
   { id: 'welcome', title: 'Welcome', short: 'Welcome' },
   { id: 'starter', title: 'Starter Quiz', short: 'Starter' },
@@ -976,10 +1084,11 @@ const pages = [
   { id: 'index', title: 'Index Raider 1', short: 'Index 1' },
   { id: 'index2', title: 'Index Raider 2', short: 'Index 2' },
   { id: 'lab1', title: 'Code Lab 1', short: 'Lab 1' },
-  { id: 'builder1', title: 'Inventory Builder 1', short: 'Builder 1' },
   { id: 'lab2', title: 'Code Lab 2', short: 'Lab 2' },
-  { id: 'builder2', title: 'Inventory Builder 2', short: 'Builder 2' },
+  { id: 'builder1', title: 'Inventory Builder 1', short: 'Builder 1' },
   { id: 'lab3', title: 'Code Lab 3', short: 'Lab 3' },
+  { id: 'builder2', title: 'Inventory Builder 2', short: 'Builder 2' },
+  { id: 'lab4', title: 'Code Lab 4', short: 'Lab 4' },
   { id: 'builder3', title: 'Inventory Builder 3', short: 'Builder 3' },
   { id: 'stretch', title: 'Critical Extension', short: 'Extension' },
   { id: 'reflect', title: 'Reflection', short: 'Reflect' }
@@ -999,6 +1108,7 @@ const defaultState = {
   output: {},
   checks: {},
   runs: {},
+  labVideosWatched: {},
   reflection: {},
   teacherMode: false,
   showSolutions: false,
@@ -1006,6 +1116,7 @@ const defaultState = {
   startedAt: null
 };
 let state = loadState() || structuredClone(defaultState);
+state.labVideosWatched = state.labVideosWatched || {};
 let skulptReady = false;
 
 function structuredClone(obj){ return JSON.parse(JSON.stringify(obj)); }
@@ -1093,7 +1204,7 @@ function canAdvanceFromPage(id = pages[state.currentPage].id){
   if(id === 'idea') return { ok:(state.reflection.ideaThink || '').trim().length >= 12, message:'Type a short explanation of why a list can be useful.' };
   if(id === 'index') return { ok:(state.indexLevel || 0) >= indexLevels.length, message:'Complete all levels of Index Raider 1 first.' };
   if(id === 'index2') return { ok:(state.indexLevel2 || 0) >= indexLevels2.length, message:'Complete all levels of Index Raider 2 first.' };
-  if(['lab1','lab2','lab3','builder1','builder2','builder3','stretch'].includes(id)) return { ok:!!state.completed[id], message:'Run your code and use the check button to show you have attempted the task.' };
+  if(['lab1','lab2','lab3','lab4','builder1','builder2','builder3','stretch'].includes(id)) return { ok:!!state.completed[id], message:'Run your code and use the check button to show you have attempted the task.' };
   if(id === 'reflect') return { ok:reflectionReady(), message:'Complete all four reflection boxes before finishing.' };
   return { ok:true, message:'' };
 }
@@ -1166,14 +1277,16 @@ function renderPage(){
   if(p.id === 'index') el.innerHTML = renderIndexGame();
   if(p.id === 'index2') el.innerHTML = renderIndexGame2();
   if(p.id === 'lab1') el.innerHTML = renderCodeLab('lab1');
-  if(p.id === 'builder1') el.innerHTML = renderBuilder('builder1');
   if(p.id === 'lab2') el.innerHTML = renderCodeLab('lab2');
-  if(p.id === 'builder2') el.innerHTML = renderBuilder('builder2');
+  if(p.id === 'builder1') el.innerHTML = renderBuilder('builder1');
   if(p.id === 'lab3') el.innerHTML = renderCodeLab('lab3');
+  if(p.id === 'builder2') el.innerHTML = renderBuilder('builder2');
+  if(p.id === 'lab4') el.innerHTML = renderCodeLab('lab4');
   if(p.id === 'builder3') el.innerHTML = renderBuilder('builder3');
   if(p.id === 'stretch') el.innerHTML = renderStretch();
   if(p.id === 'reflect') el.innerHTML = renderReflect();
   renderSolutionsIfNeeded();
+  prepareLabVideoIfNeeded(p.id);
 }
 
 function renderWelcome(){
@@ -1182,7 +1295,7 @@ function renderWelcome(){
     <div class="info-grid">
       <div class="info-card"><strong>WAGBA</strong>We are getting better at using Python lists to store more than one value.</div>
       <div class="info-card"><strong>Keywords</strong><div class="tag-row"><span class="tag">list</span><span class="tag">index</span><span class="tag">element</span><span class="tag">append</span><span class="tag">update</span></div></div>
-      <div class="info-card"><strong>Today’s challenge</strong>Use a Python list to build a game inventory, then apply the idea with less help.</div>
+      <div class="info-card"><strong>Today’s challenge</strong>Use a Python list to build small models with less help each time.</div>
     </div>
     <div class="hero-callout">
       <div>
@@ -1191,12 +1304,12 @@ function renderWelcome(){
         <p><span class="code-inline">player_name = "Alex"</span> stores one value. <span class="code-inline">inventory = ["sword", "potion", "map"]</span> stores many values.</p>
       </div>
       <div>
-        <div class="fun-tip"><strong>Adventure mission</strong><br />Complete the starter, beat both Index Raider games, practise in short code labs, then build three list programs in the web editor.</div>
+        <div class="fun-tip"><strong>Adventure mission</strong><br />Complete the starter, beat both Index Raider games, practise four short code labs, then build three list programs in the web editor.</div>
       </div>
     </div>
     <div class="task-card">
       <h2>What you need to do today</h2>
-      <p>Complete the starter, play two Index Raider games, practise in short code labs, then build and test Python inventory programs in the web editor. You do not need IDLE.</p>
+      <p>Complete the starter, play two Index Raider games, practise four short code labs, then build and test Python inventory programs in the web editor. You do not need IDLE.</p>
       <p><strong>Good struggles are expected:</strong> fixing mistakes is part of learning programming.</p>
     </div>`;
   return pageShell('Start here', 'Python Lists Taster', 'A practical lesson for current Year 7 students to see what Year 8 Computing feels like.', body);
@@ -1423,13 +1536,40 @@ function nextIndexLevel2(){
 const labDefs = {
   lab1: {
     eyebrow: 'Code Lab 1',
+    title: 'Make and Print a List',
+    lead: 'Practise the smallest list program first: create a list, then print the whole list.',
+    scenario: 'You are starting an adventure inventory. Your task is to create a list called inventory and print the full list.',
+    concept: [
+      ['Create a list', 'A list uses square brackets and stores many text values.'],
+      ['Use commas', 'Separate each item with a comma.'],
+      ['Print the list', 'Printing the list shows all items together.']
+    ],
+    must: [
+      ['Create a list called inventory.', 'hasInventoryList'],
+      ['Store at least three items in the list.', 'listThreeItems'],
+      ['Print the whole inventory list.', 'printsInventoryFull'],
+      ['Run your code once.', 'ranCode']
+    ],
+    starter: `# Code Lab 1: Make and Print a List
+# Create your own inventory list, then print the whole list.
+
+# 1. Create a list called inventory with three items
+
+
+# 2. Print the whole inventory list
+
+
+`
+  },
+  lab2: {
+    eyebrow: 'Code Lab 2',
     title: 'Read From a List',
-    lead: 'Practise one small skill before Inventory Builder 1: using an index to print an item.',
+    lead: 'Practise using an index to print one item from a list.',
     scenario: 'You are checking a tiny adventure inventory. Your job is to print specific items from the list.',
     concept: [
       ['List name', 'The list is called inventory.'],
       ['Index number', 'The first item is index 0, not 1.'],
-      ['Print one item', 'Use print(inventory[0]) to print one value. Code creates output.']
+      ['Print one item', 'Use an index to print only one value from the list.']
     ],
     must: [
       ['Keep a list called inventory.', 'hasInventoryList'],
@@ -1437,7 +1577,7 @@ const labDefs = {
       ['Print inventory[2].', 'printsIndex2'],
       ['Run your code once.', 'ranCode']
     ],
-    starter: `# Code Lab 1: Read From a List
+    starter: `# Code Lab 2: Read From a List
 # Fill in the missing lines.
 
 inventory = ["sword", "potion", "map"]
@@ -1450,8 +1590,8 @@ inventory = ["sword", "potion", "map"]
 
 `
   },
-  lab2: {
-    eyebrow: 'Code Lab 2',
+  lab3: {
+    eyebrow: 'Code Lab 3',
     title: 'Add and Update Items',
     lead: 'Practise changing a list before Inventory Builder 2.',
     scenario: 'You are preparing equipment for a cyber games booth. Add one missing item, then fix one item.',
@@ -1467,7 +1607,7 @@ inventory = ["sword", "potion", "map"]
       ['Print the full equipment list.', 'printsEquipment'],
       ['Run your code once.', 'ranCode']
     ],
-    starter: `# Code Lab 2: Add and Update Items
+    starter: `# Code Lab 3: Add and Update Items
 # Complete the missing lines.
 
 equipment = ["laptop", "mous", "keyboard"]
@@ -1483,77 +1623,81 @@ equipment = ["laptop", "mous", "keyboard"]
 
 `
   },
-  lab3: {
-    eyebrow: 'Code Lab 3',
+  lab4: {
+    eyebrow: 'Code Lab 4',
     title: 'Count and Present a List',
     lead: 'Practise using len(), indexes and list changes before the model challenge.',
     scenario: 'You are creating a simple model of stations for a cyber games event. Your program should show the list, count it, and display key stations.',
     concept: [
       ['len()', 'Counts how many items are in a list.'],
       ['Index print', 'Use stations[0] or stations[2] to show one item.'],
-      ['Model output', 'A model should print clear labels and values so the user understands it.']
+      ['Model output', 'A model should print clear labels so the user understands it.']
     ],
     must: [
-      ['Create or keep a list called stations.', 'hasStationsList'],
+      ['Create a list called stations.', 'hasStationsList'],
       ['Use len(stations).', 'usesLen'],
-      ['Print at least one station using an index.', 'usesIndexPrint'],
-      ['Use .append() to add one station.', 'usesAppend'],
-      ['Print a clear final list.', 'printsStations'],
+      ['Print one station using an index.', 'usesIndexPrint'],
+      ['Use .append() to add a station.', 'usesAppend'],
+      ['Print the final stations list.', 'printsStations'],
       ['Run your code once.', 'ranCode']
     ],
-    starter: `# Code Lab 3: Count and Present a List
-# Complete the event station model.
+    starter: `# Code Lab 4: Count and Present a List
+# Complete the missing lines.
 
 stations = ["Minecraft", "Python", "Robotics"]
 
-# 1. Print a clear title
+print("Cyber Games Station Model")
+
+# 1. Print the number of stations using len()
 
 
-# 2. Print how many stations there are using len(stations)
+# 2. Print one station using an index
 
 
-# 3. Print one station using its index number
+# 3. Add one more station
 
 
-# 4. Add one more station
-
-
-# 5. Print the final station list
+# 4. Print the final list
 
 
 `
   }
 };
 
+
 const referenceBank = {
   lab1: [
     ['Make a list', 'items = ["apple", "banana", "cherry"]'],
-    ['Print by index', 'print(items[0])\nprint(items[2])']
+    ['Print the full list', 'print(items)']
   ],
   lab2: [
+    ['Use an index', 'items = ["apple", "banana", "cherry"]\nprint(items[0])'],
+    ['Third item uses index 2', 'print(items[2])']
+  ],
+  lab3: [
     ['Add to a list', 'items.append("new item")'],
     ['Change by index', 'items[1] = "fixed item"'],
     ['Print the full list', 'print(items)']
   ],
-  lab3: [
+  lab4: [
     ['Count a list', 'print(len(stations))'],
     ['Print one position', 'print(stations[0])'],
     ['Add a new value', 'stations.append("AI Quiz")']
   ],
   builder1: [
-    ['Print one item', 'print(inventory[0])'],
-    ['Add one item', 'inventory.append("shield")'],
-    ['Update one item', 'inventory[1] = "super potion"']
+    ['Create and print a list', 'inventory = ["sword", "potion", "map"]\nprint(inventory)'],
+    ['Read one item by index', 'print(inventory[0])\nprint(inventory[2])'],
+    ['Clear output label', 'print("Full inventory:")\nprint(inventory)']
   ],
   builder2: [
-    ['Use your own list name', 'equipment = ["laptop", "mouse", "keyboard", "headset"]'],
-    ['Print index 2', 'print(equipment[2])'],
-    ['Add and update', 'equipment.append("charger")\nequipment[0] = "teacher laptop"']
+    ['Start with booth equipment', 'equipment = ["laptop", "mouse", "keyboard", "headset"]'],
+    ['Add and update', 'equipment.append("charger")\nequipment[0] = "teacher laptop"'],
+    ['Show the final list', 'print("Updated equipment:")\nprint(equipment)']
   ],
   builder3: [
     ['Model a real event', 'stations = ["Minecraft", "Python", "Robotics", "Quiz", "Showcase"]'],
-    ['Show useful information', 'print("Number of stations:")\nprint(len(stations))'],
-    ['Improve the model', 'stations.append("Reflection")\nstations[1] = "Python Lists"']
+    ['Show useful information', 'print("Number of stations:")\nprint(len(stations))\nprint(stations[0])'],
+    ['Improve and present the model', 'stations.append("Reflection")\nstations[1] = "Python Lists"\nprint(stations)']
   ],
   stretch: [
     ['Start with a real model', 'booths = ["Minecraft", "Python", "Robotics", "Help Desk"]'],
@@ -1562,9 +1706,15 @@ const referenceBank = {
   ]
 };
 
-
 const workedExampleBank = {
   lab1: {
+    title: 'Worked example: create and print a different list',
+    note: 'This example uses colours. Your task uses an inventory list, so copy the structure, not the exact values.',
+    code: `colours = ["red", "blue", "green"]
+print(colours)`,
+    output: `[\'red\', \'blue\', \'green\']`
+  },
+  lab2: {
     title: 'Worked example: reading positions from a different list',
     note: 'This example uses a fruit list. Your task uses an inventory list, so copy the pattern, not the exact values.',
     code: `items = ["apple", "banana", "cherry"]
@@ -1579,7 +1729,7 @@ apple
 Third item:
 cherry`
   },
-  lab2: {
+  lab3: {
     title: 'Worked example: changing a list before printing it',
     note: 'Notice the difference between the code that changes the list and the output that shows the final list.',
     code: `bag = ["book", "pencel", "ruler"]
@@ -1590,7 +1740,7 @@ bag[1] = "pencil"
 print(bag)`,
     output: `[\'book\', \'pencil\', \'ruler\', \'calculator\']`
   },
-  lab3: {
+  lab4: {
     title: 'Worked example: a small event model',
     note: 'This example models rooms at an event. Your task models stations for the Cyber Games event.',
     code: `rooms = ["Hall", "Lab", "Studio"]
@@ -1613,14 +1763,79 @@ First room:
 Hall
 Updated rooms:
 [\'Hall\', \'Lab\', \'Studio\', \'Library\']`
+  },
+  builder1: {
+    title: 'Worked example: simple list report',
+    note: 'This example uses snacks. Your builder uses an adventure inventory.',
+    code: `snacks = ["sandwich", "juice", "cookie"]
+
+print("Snack list:")
+print(snacks)
+
+print("First snack:")
+print(snacks[0])
+
+print("Third snack:")
+print(snacks[2])`,
+    output: `Snack list:
+[\'sandwich\', \'juice\', \'cookie\']
+First snack:
+sandwich
+Third snack:
+cookie`
+  },
+  builder2: {
+    title: 'Worked example: update a simple resource list',
+    note: 'This example uses classroom resources. Your builder uses cyber games booth equipment.',
+    code: `resources = ["whiteboard", "marker", "tablet", "speaker"]
+
+print("Original resources:")
+print(resources)
+
+resources.append("charger")
+resources[1] = "new marker"
+
+print("Updated resources:")
+print(resources)`,
+    output: `Original resources:
+[\'whiteboard\', \'marker\', \'tablet\', \'speaker\']
+Updated resources:
+[\'whiteboard\', \'new marker\', \'tablet\', \'speaker\', \'charger\']`
+  },
+  builder3: {
+    title: 'Worked example: event model with count and update',
+    note: 'This example uses workshop rooms. Your builder should model Cyber Games stations.',
+    code: `workshops = ["Art", "Music", "Drama", "Design", "Coding"]
+
+print("Workshop Model")
+print("Number of workshops:")
+print(len(workshops))
+
+print("Opening workshop:")
+print(workshops[0])
+
+workshops.append("Showcase")
+workshops[2] = "Performance"
+
+print("Final workshop list:")
+print(workshops)`,
+    output: `Workshop Model
+Number of workshops:
+5
+Opening workshop:
+Art
+Final workshop list:
+[\'Art\', \'Music\', \'Performance\', \'Design\', \'Coding\', \'Showcase\']`
   }
 };
 
 const hintBank = {
   hasInventoryList: 'Create a list named inventory. Example snippet: inventory = ["sword", "potion", "map"]',
+  listThreeItems: 'Your inventory list needs at least three text values inside square brackets.',
+  printsInventoryFull: 'Print the whole inventory list. Example snippet: print(inventory)',
   printsIndex0: 'Print the first item. Example snippet: print(inventory[0])',
   printsIndex2: 'Print the third item using index 2. Example snippet: print(list_name[2])',
-  hasEquipmentList: 'Use the list name equipment. Example snippet: equipment = ["laptop", "mouse", "keyboard"]',
+  hasEquipmentList: 'Use the list name equipment. Example snippet: equipment = ["laptop", "mouse", "keyboard", "headset"]',
   hasStationsList: 'Use the list name stations. Example snippet: stations = ["Minecraft", "Python", "Robotics"]',
   usesAppend: 'Use .append() to add one value. Example snippet: items.append("new item")',
   updatesIndex: 'Use an index to replace one value. Example snippet: items[1] = "fixed item"',
@@ -1628,12 +1843,12 @@ const hintBank = {
   printsStations: 'Print the whole stations list. Example snippet: print(stations)',
   usesLen: 'Use len() to count a list. Example snippet: print(len(stations))',
   usesIndexPrint: 'Print one item by index. Example snippet: print(items[0])',
-  hasAnyList: 'Create a list with a clear name. Example snippet: booth_items = ["laptop", "mouse", "keyboard", "headset"]',
+  hasAnyList: 'Create a list with a clear name. Example snippet: equipment = ["laptop", "mouse", "keyboard", "headset"]',
   listFourItems: 'Your list needs at least four text values inside square brackets.',
   listFiveItems: 'Your list needs at least five text values inside square brackets.',
-  printsIndex2: 'Print the item at index 2. Example snippet: print(list_name[2])',
   printsTitle: 'Print a clear title. Example snippet: print("Cyber Games Station Model")',
   printsFinalList: 'Print the final list after your changes. Example snippet: print(stations)',
+  printsAnyFinalList: 'Print the final list after your changes. Example snippet: print(equipment)',
   meaningfulNames: 'Use clear names with five or more letters, such as stations, booth_items, house_points or equipment.',
   usesPrint: 'Use print() to show clear output for the user.',
   ranCode: 'Press Run code before checking. Testing your code is part of the task.'
@@ -1661,17 +1876,60 @@ function hintHtmlFor(id, checks){
   return `<div class="hint-box"><strong>Hints for the requirements you missed:</strong>${missed.map(([key]) => `<details><summary>${escapeHtml(key)}</summary><p>${escapeHtml(hintBank[key] || 'Check the requirement again and compare it with the useful snippets above.')}</p></details>`).join('')}</div>`;
 }
 
+function labVideoSrc(id){
+  return ({ lab1:'Lab1.mp4', lab2:'Lab2.mp4', lab3:'Lab3.mp4', lab4:'Lab4.mp4' })[id] || '';
+}
+function labVideoTitle(id){
+  const lab = labDefs[id];
+  return lab ? `${lab.eyebrow}: ${lab.title}` : 'Live coding video';
+}
+function renderLabVideoGate(id){
+  const l = labDefs[id];
+  const src = labVideoSrc(id);
+  return pageShell(l.eyebrow, l.title, l.lead, `
+    <div class="video-gate">
+      <div class="video-gate-header">
+        <div>
+          <h2>Watch the live coding first</h2>
+          <p>This video unlocks the lab. It is not skippable the first time.</p>
+        </div>
+        <span class="tag">Required</span>
+      </div>
+      <video id="requiredVideo_${id}" class="video-frame" src="${src}" autoplay playsinline preload="auto" controlslist="nodownload noplaybackrate" onended="completeLabVideo('${id}')" oncontextmenu="return false"></video>
+      <div class="video-lock-note">After the video finishes, the lab will appear automatically.</div>
+      <div class="video-actions">
+        <button class="primary-btn" onclick="playRequiredLabVideo('${id}')">Play video</button>
+        ${state.teacherMode ? `<button class="secondary-btn" onclick="completeLabVideo('${id}')">Teacher skip video</button>` : ''}
+        <div class="video-status" id="videoStatus_${id}">The video should start automatically. If the browser blocks autoplay, press Play video.</div>
+      </div>
+    </div>
+  `);
+}
+function renderReplayCard(id){
+  return `<div class="replay-card">
+    <div>
+      <h3>Live coding video watched</h3>
+      <p>You can replay the video if you need support. Replay is skippable.</p>
+    </div>
+    <button class="secondary-btn" onclick="openReplayVideo('${id}')">Replay video</button>
+  </div>`;
+}
 function renderCodeLab(id){
+  if(!state.labVideosWatched) state.labVideosWatched = {};
+  if(!state.labVideosWatched[id] && !state.teacherMode){
+    return renderLabVideoGate(id);
+  }
   if(!state.code[id]) state.code[id] = labDefs[id].starter;
   const l = labDefs[id];
   const stepHtml = l.concept.map(([title, text]) => `<div class="mini-step"><strong>${title}</strong>${text}</div>`).join('');
   const checkHtml = l.must.map(([txt,key])=>`<div class="check-item ${state.checks[id]?.[key]?'done':''}"><div class="checkmark">✓</div><div>${txt}</div></div>`).join('');
   const body = `
+    ${renderReplayCard(id)}
     <div class="task-card">
       <h2>Small practice before the main builder</h2>
       <p>${l.scenario}</p>
       <div class="mini-code-grid">${stepHtml}</div>
-      <div class="code-lab-note">Do this short practice first. It prepares you for the next Inventory Builder.</div>
+      <div class="code-lab-note">Do this short practice first. It prepares you for the next coding challenge.</div>
     </div>
     ${referenceSnippetBlock(id)}
     <div class="lab-layout">
@@ -1700,16 +1958,21 @@ function checkLab(id){
   const checks = {};
   if(id === 'lab1'){
     checks.hasInventoryList = /inventory\s*=\s*\[[\s\S]*?\]/.test(code);
+    checks.listThreeItems = /\[[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*\]/.test(code);
+    checks.printsInventoryFull = /print\s*\(\s*inventory\s*\)/.test(code);
+  }
+  if(id === 'lab2'){
+    checks.hasInventoryList = /inventory\s*=\s*\[[\s\S]*?\]/.test(code);
     checks.printsIndex0 = /print\s*\(\s*inventory\s*\[\s*0\s*\]\s*\)/.test(code);
     checks.printsIndex2 = /print\s*\(\s*inventory\s*\[\s*2\s*\]\s*\)/.test(code);
   }
-  if(id === 'lab2'){
+  if(id === 'lab3'){
     checks.hasEquipmentList = /equipment\s*=\s*\[[\s\S]*?\]/.test(code);
     checks.usesAppend = /equipment\s*\.\s*append\s*\(/.test(code);
     checks.updatesIndex = /equipment\s*\[\s*\d+\s*\]\s*=/.test(code);
     checks.printsEquipment = /print\s*\(\s*equipment\s*\)/.test(code);
   }
-  if(id === 'lab3'){
+  if(id === 'lab4'){
     checks.hasStationsList = /stations\s*=\s*\[[\s\S]*?\]/.test(code);
     checks.usesLen = /len\s*\(\s*stations\s*\)/.test(code);
     checks.usesIndexPrint = /print\s*\(\s*stations\s*\[\s*\d+\s*\]\s*\)/.test(code);
@@ -1730,104 +1993,97 @@ function checkLab(id){
   }
 }
 
+
 const taskDefs = {
   builder1: {
-    eyebrow: 'Guided task',
+    eyebrow: 'Builder 1 · Core practice',
     title: 'Inventory Builder 1',
-    lead: 'Build a simple game inventory with clear scaffolding.',
-    scenario: 'You are making the inventory for a simple adventure game.',
+    lead: 'Build your first complete inventory report using only list creation, full-list printing, and index printing.',
+    scenario: 'You are making a simple adventure inventory. Create the list, show the full inventory, then show two specific items using index numbers.',
     must: [
       ['Create a list called inventory with at least three items.', 'hasInventoryList'],
-      ['Print one item using an index number, such as inventory[0].', 'usesIndexPrint'],
-      ['Add a new item using .append().', 'usesAppend'],
-      ['Change one item using its index number.', 'updatesIndex'],
-      ['Print the full inventory at the end.', 'printsInventory']
+      ['Print the whole inventory list.', 'printsInventoryFull'],
+      ['Print the first item using inventory[0].', 'printsIndex0'],
+      ['Print the third item using inventory[2].', 'printsIndex2']
     ],
-    starter: `# Inventory Builder 1
-# Build the inventory step by step.
+    starter: `# Inventory Builder 1: Adventure Inventory Report
+# Use what you practised in Code Lab 1 and Code Lab 2.
 
-inventory = ["sword", "potion", "map"]
-
-# 1. Print the first item from the list
+# 1. Create a list called inventory with at least three items
 
 
-# 2. Add a new item to the inventory
+# 2. Print a clear title, then print the whole inventory list
 
 
-# 3. Change potion into super potion
+# 3. Print the first item using index 0
 
 
-# 4. Print the full inventory at the end
+# 4. Print the third item using index 2
+
 
 `,
-    sample: `inventory = ["sword", "potion", "map"]
-print(inventory[0])
-inventory.append("shield")
-inventory[1] = "super potion"
-print(inventory)`
+    sample: ``
   },
   builder2: {
-    eyebrow: 'Less help',
+    eyebrow: 'Builder 2 · Apply changes',
     title: 'Inventory Builder 2',
-    lead: 'Apply the same list skills in a new scenario with fewer prompts.',
-    scenario: 'A school event team needs a checklist of equipment for a cyber games booth.',
+    lead: 'Apply append() and index update in a new cyber games equipment scenario.',
+    scenario: 'A school event team needs a checklist of equipment for a cyber games booth. Model the equipment list, then update it when the plan changes.',
     must: [
-      ['Create a list with a clear name, such as equipment or booth_items.', 'hasAnyList'],
+      ['Create a list called equipment with at least four useful items.', 'hasEquipmentList'],
       ['Store at least four useful items in the list.', 'listFourItems'],
-      ['Print the item at index 2.', 'printsIndex2'],
+      ['Print the original equipment list.', 'printsEquipment'],
       ['Add one missing item using .append().', 'usesAppend'],
-      ['Change one item using an index number.', 'updatesIndex']
+      ['Change one item using an index number.', 'updatesIndex'],
+      ['Print the final equipment list after the changes.', 'printsAnyFinalList']
     ],
-    starter: `# Inventory Builder 2
-# Scenario: cyber games booth equipment
-# Create your own list and use the list skills from Builder 1.
+    starter: `# Inventory Builder 2: Cyber Games Equipment Update
+# Use what you practised in Code Lab 3.
 
-# 1. Create a list with at least four items
-
-
-# 2. Print the item at index 2
+# 1. Create a list called equipment with at least four items
 
 
-# 3. Add one missing item using append
+# 2. Print a clear title, then print the original list
+
+
+# 3. Add one missing item using .append()
 
 
 # 4. Change one item using an index number
 
 
-# 5. Print your final list
+# 5. Print a clear title, then print the final list
+
 
 `,
-    sample: `equipment = ["laptop", "mouse", "keyboard", "headset"]
-print(equipment[2])
-equipment.append("charger")
-equipment[0] = "gaming laptop"
-print(equipment)`
+    sample: ``
   },
   builder3: {
-    eyebrow: 'Model challenge',
+    eyebrow: 'Builder 3 · Model challenge',
     title: 'Inventory Builder 3',
-    lead: 'Now code a simple model for a real event using what you have learned about lists.',
+    lead: 'Code a simple model for a real event using all the list skills from the labs.',
     scenario: 'Scenario: Tenby is preparing a small Cyber Games event. Create a Python model that stores the event stations, shows useful information, and updates the plan when something changes.',
     must: [
-      ['Use a list to store at least five station or activity names.', 'listFiveItems'],
+      ['Create a list called stations with at least five station or activity names.', 'hasStationsList'],
+      ['Store at least five station or activity names.', 'listFiveItems'],
       ['Print a clear title for the model.', 'printsTitle'],
-      ['Use len() to output how many values are stored.', 'usesLen'],
+      ['Use len(stations) to output how many stations are stored.', 'usesLen'],
       ['Print at least one station using an index number.', 'usesIndexPrint'],
       ['Add one extra station using .append().', 'usesAppend'],
       ['Change one station using its index number.', 'updatesIndex'],
-      ['Use meaningful names for your list and variables.', 'meaningfulNames']
+      ['Print the final stations list after the changes.', 'printsFinalList']
     ],
-    starter: `# Inventory Builder 3: Event Station Model
-# Scenario: Tenby is preparing a small Cyber Games event.
-# Code a model that stores stations, counts them, and updates the plan.
+    starter: `# Inventory Builder 3: Cyber Games Station Model
+# Use all four Code Labs.
+# Build a model that stores stations, counts them, and updates the plan.
 
-# 1. Create a list with at least five stations or activities
+# 1. Create a list called stations with at least five stations or activities
 
 
 # 2. Print a clear title for your model
 
 
-# 3. Print how many stations there are using len()
+# 3. Print how many stations there are using len(stations)
 
 
 # 4. Print one station using an index number
@@ -1846,6 +2102,7 @@ print(equipment)`
     sample: ``
   }
 };
+
 function seedStarterCode(){
   Object.keys(labDefs).forEach(id => { state.code[id] = labDefs[id].starter; });
   Object.keys(taskDefs).forEach(id => { state.code[id] = taskDefs[id].starter; });
@@ -1891,7 +2148,7 @@ function renderSolutionsIfNeeded(){ }
 
 function updateCode(id, val){
   state.code[id] = val;
-  if(['lab1','lab2','lab3','builder1','builder2','builder3','stretch'].includes(id)) delete state.completed[id];
+  if(['lab1','lab2','lab3','lab4','builder1','builder2','builder3','stretch'].includes(id)) delete state.completed[id];
   saveState();
 }
 function resetCode(id){
@@ -1922,26 +2179,28 @@ function checkCode(id){
   const checks = {};
   if(id === 'builder1'){
     checks.hasInventoryList = /inventory\s*=\s*\[[\s\S]*?\]/.test(code);
-    checks.usesIndexPrint = /print\s*\(\s*inventory\s*\[\s*\d+\s*\]\s*\)/.test(code);
-    checks.usesAppend = /inventory\s*\.\s*append\s*\(/.test(code);
-    checks.updatesIndex = /inventory\s*\[\s*\d+\s*\]\s*=/.test(code);
-    checks.printsInventory = /print\s*\(\s*inventory\s*\)/.test(code);
+    checks.printsInventoryFull = /print\s*\(\s*inventory\s*\)/.test(code);
+    checks.printsIndex0 = /print\s*\(\s*inventory\s*\[\s*0\s*\]\s*\)/.test(code);
+    checks.printsIndex2 = /print\s*\(\s*inventory\s*\[\s*2\s*\]\s*\)/.test(code);
   }
   if(id === 'builder2'){
-    checks.hasAnyList = /[a-zA-Z_]\w*\s*=\s*\[[\s\S]*?\]/.test(code);
+    checks.hasEquipmentList = /equipment\s*=\s*\[[\s\S]*?\]/.test(code);
     checks.listFourItems = /\[[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*\]/.test(code);
-    checks.printsIndex2 = /print\s*\(\s*[a-zA-Z_]\w*\s*\[\s*2\s*\]\s*\)/.test(code);
-    checks.usesAppend = /\.\s*append\s*\(/.test(code);
-    checks.updatesIndex = /[a-zA-Z_]\w*\s*\[\s*\d+\s*\]\s*=/.test(code);
+    checks.printsEquipment = /print\s*\(\s*equipment\s*\)/.test(code);
+    checks.usesAppend = /equipment\s*\.\s*append\s*\(/.test(code);
+    checks.updatesIndex = /equipment\s*\[\s*\d+\s*\]\s*=/.test(code);
+    const equipmentPrints = (code.match(/print\s*\(\s*equipment\s*\)/g) || []).length;
+    checks.printsAnyFinalList = equipmentPrints >= 2 || (/equipment\s*\.\s*append\s*\([\s\S]*print\s*\(\s*equipment\s*\)/.test(code) && /equipment\s*\[\s*\d+\s*\]\s*=[\s\S]*print\s*\(\s*equipment\s*\)/.test(code));
   }
   if(id === 'builder3'){
+    checks.hasStationsList = /stations\s*=\s*\[[\s\S]*?\]/.test(code);
     checks.listFiveItems = /\[[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*,[^\]]*("[^"]+"|'[^']+')[^\]]*\]/.test(code);
     checks.printsTitle = /print\s*\(\s*("[^"]{6,}"|'[^']{6,}')\s*\)/.test(code);
-    checks.usesLen = /len\s*\(/.test(code);
-    checks.usesIndexPrint = /print\s*\(\s*[a-zA-Z_]\w*\s*\[\s*\d+\s*\]\s*\)/.test(code);
-    checks.usesAppend = /\.\s*append\s*\(/.test(code);
-    checks.updatesIndex = /[a-zA-Z_]\w*\s*\[\s*\d+\s*\]\s*=/.test(code);
-    checks.meaningfulNames = hasMeaningfulNames(code);
+    checks.usesLen = /len\s*\(\s*stations\s*\)/.test(code);
+    checks.usesIndexPrint = /print\s*\(\s*stations\s*\[\s*\d+\s*\]\s*\)/.test(code);
+    checks.usesAppend = /stations\s*\.\s*append\s*\(/.test(code);
+    checks.updatesIndex = /stations\s*\[\s*\d+\s*\]\s*=/.test(code);
+    checks.printsFinalList = /stations\s*\.\s*append\s*\([\s\S]*print\s*\(\s*stations\s*\)/.test(code) && /stations\s*\[\s*\d+\s*\]\s*=[\s\S]*print\s*\(\s*stations\s*\)/.test(code);
   }
   state.checks[id] = checks;
   const total = Object.keys(checks).length;
@@ -1960,6 +2219,7 @@ function checkCode(id){
     fb.innerHTML = `<div class="feedback ${(got===total && ran)?'success':'warn'}"><strong>${got}/${total} checklist points found.</strong> ${msg}</div>${hintHtmlFor(id, {...checks, ranCode: ran})}`;
   }
 }
+
 function hasMeaningfulNames(code){
   const bad = /\b(a|b|c|x|y|z|list|mylist)\s*=/.test(code);
   const hasLong = /\b[a-zA-Z_]\w{5,}\s*=/.test(code);
@@ -2294,6 +2554,58 @@ function runPython(id){
   }
 }
 
+
+
+function prepareLabVideoIfNeeded(id){
+  if(!['lab1','lab2','lab3','lab4'].includes(id)) return;
+  if(state.teacherMode) return;
+  if(state.labVideosWatched && state.labVideosWatched[id]) return;
+  const video = document.getElementById(`requiredVideo_${id}`);
+  if(!video) return;
+  video.controls = false;
+  video.muted = false;
+  const attempt = video.play();
+  if(attempt && typeof attempt.catch === 'function'){
+    attempt.catch(() => {
+      const status = document.getElementById(`videoStatus_${id}`);
+      if(status) status.textContent = 'Autoplay was blocked by the browser. Press Play video to begin. The lab will unlock only after the video finishes.';
+    });
+  }
+}
+function playRequiredLabVideo(id){
+  const video = document.getElementById(`requiredVideo_${id}`);
+  if(!video) return;
+  video.controls = false;
+  video.play().catch(() => {
+    const status = document.getElementById(`videoStatus_${id}`);
+    if(status) status.textContent = 'Press play again or check that the video file is in the same folder as this HTML file.';
+  });
+}
+function completeLabVideo(id){
+  state.labVideosWatched = state.labVideosWatched || {};
+  state.labVideosWatched[id] = true;
+  saveState();
+  renderPage();
+}
+function openReplayVideo(id){
+  const src = labVideoSrc(id);
+  const title = labVideoTitle(id);
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.id = 'videoReplayModal';
+  modal.innerHTML = `<div class="video-modal-card">
+    <div class="video-modal-top">
+      <strong>${escapeHtml(title)} replay</strong>
+      <button class="secondary-btn" onclick="closeReplayVideo()">Close replay</button>
+    </div>
+    <video src="${src}" controls autoplay playsinline></video>
+  </div>`;
+  document.body.appendChild(modal);
+}
+function closeReplayVideo(){
+  const modal = document.getElementById('videoReplayModal');
+  if(modal) modal.remove();
+}
 
 function downloadBackup(){
   const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
