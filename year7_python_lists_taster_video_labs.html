@@ -1264,8 +1264,18 @@ function pageActions(){
   const nextLabel = i === pages.length-1 ? 'Finish' : 'Continue';
   const gate = canAdvanceFromPage();
   const disabled = !gate.ok && !state.teacherMode;
-  const hint = disabled ? `<div class="completion-note">${escapeHtml(gate.message)}</div>` : '';
-  return `<div class="page-actions">${prev}<div class="right-actions"><div>${hint}<button class="primary-btn" onclick="attemptNextPage()" ${disabled ? 'disabled' : ''}>${nextLabel}</button></div></div></div>`;
+  const hintStyle = disabled ? '' : 'display:none';
+  return `<div class="page-actions">${prev}<div class="right-actions"><div><div id="continueGateHint" class="completion-note" style="${hintStyle}">${disabled ? escapeHtml(gate.message) : ''}</div><button id="continueBtn" class="primary-btn" onclick="attemptNextPage()" ${disabled ? 'disabled' : ''}>${nextLabel}</button></div></div></div>`;
+}
+function refreshContinueGate(){
+  const btn = document.getElementById('continueBtn');
+  const hint = document.getElementById('continueGateHint');
+  if(!btn || !hint) return;
+  const gate = canAdvanceFromPage();
+  const disabled = !gate.ok && !state.teacherMode;
+  btn.disabled = disabled;
+  hint.style.display = disabled ? '' : 'none';
+  hint.textContent = disabled ? gate.message : '';
 }
 function renderPage(){
   const p = pages[state.currentPage];
@@ -1407,7 +1417,7 @@ print(inventory[2])</code></pre>
       <h2>Think first</h2>
       <p>Why might a game use a list for an inventory instead of separate variables like <span class="code-inline">item1</span>, <span class="code-inline">item2</span>, <span class="code-inline">item3</span>?</p>
       <textarea id="ideaThink" placeholder="Type your answer here..." oninput="saveReflection('ideaThink', this.value)">${escapeHtml(state.reflection.ideaThink || '')}</textarea>
-      <div class="tiny-note">Write at least one clear reason so the Continue button unlocks.</div>
+      <div class="tiny-note">Write at least one clear reason. The Continue button will unlock automatically.</div>
     </div>`;
   return pageShell('New concept', 'From One Value to Many Values', 'A list is useful when your program needs to store a group of related values.', body);
 }
@@ -2321,7 +2331,7 @@ function renderReflect(){
     </div>`;
   return pageShell('Final page', 'Reflection and Evidence', 'Explain what you learned and save your progress.', body);
 }
-function saveReflection(key, val){ state.reflection[key] = val; saveState(); }
+function saveReflection(key, val){ state.reflection[key] = val; saveState(); refreshContinueGate(); }
 function finishCourse(){
   if(!reflectionReady() && !state.teacherMode){
     alert('Please complete all four reflection boxes before finishing.');
