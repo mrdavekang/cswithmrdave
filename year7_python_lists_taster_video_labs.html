@@ -901,6 +901,33 @@
       padding: 14px 18px 18px;
       background: rgba(15,23,42,.72);
     }
+
+    .headphone-prompt {
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(239,246,255,.12), rgba(14,165,233,.08));
+      border-bottom: 1px solid rgba(148,163,184,.22);
+    }
+    .headphone-prompt h3 {
+      color: white;
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+    .headphone-prompt p {
+      color: #dbeafe;
+      margin: 0 0 14px;
+    }
+    .video-help-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .video-helper-note {
+      color: #cbd5e1;
+      font-size: .95rem;
+      font-weight: 600;
+    }
+
     .video-status {
       color: #fde68a;
       font-size: .95rem;
@@ -1109,6 +1136,7 @@ const defaultState = {
   checks: {},
   runs: {},
   labVideosWatched: {},
+  labVideosSkipped: {},
   reflection: {},
   teacherMode: false,
   showSolutions: false,
@@ -1900,26 +1928,40 @@ function renderLabVideoGate(id){
     <div class="video-gate">
       <div class="video-gate-header">
         <div>
-          <h2>Watch the live coding first</h2>
-          <p>This video unlocks the lab. It is not skippable the first time.</p>
+          <h2>Live coding support</h2>
+          <p>Watch the video if you have headphones. If you do not have headphones, you may skip and start the lab.</p>
         </div>
-        <span class="tag">Required</span>
+        <span class="tag">Before the lab</span>
       </div>
-      <video id="requiredVideo_${id}" class="video-frame" src="${src}" autoplay playsinline preload="auto" controlslist="nodownload noplaybackrate" onended="completeLabVideo('${id}')" oncontextmenu="return false"></video>
-      <div class="video-lock-note">After the video finishes, the lab will appear automatically.</div>
-      <div class="video-actions">
-        <button class="primary-btn" onclick="playRequiredLabVideo('${id}')">Play video</button>
-        ${state.teacherMode ? `<button class="secondary-btn" onclick="completeLabVideo('${id}')">Teacher skip video</button>` : ''}
-        <div class="video-status" id="videoStatus_${id}">The video should start automatically. If the browser blocks autoplay, press Play video.</div>
+
+      <div class="headphone-prompt" id="headphonePrompt_${id}">
+        <h3>Do you have headphones?</h3>
+        <p>Choose one option before starting this lab.</p>
+        <div class="video-help-row">
+          <button class="primary-btn" onclick="startRequiredLabVideo('${id}')">Yes, I have headphones — watch video</button>
+          <button class="secondary-btn" onclick="skipLabVideoNoHeadphones('${id}')">No headphones — skip video and start lab</button>
+          ${state.teacherMode ? `<button class="ghost-btn" onclick="completeLabVideo('${id}', 'teacher')">Teacher skip video</button>` : ''}
+        </div>
+      </div>
+
+      <video id="requiredVideo_${id}" class="video-frame" src="${src}" playsinline preload="auto" controlslist="nodownload noplaybackrate" onended="completeLabVideo('${id}', 'watched')" oncontextmenu="return false" style="display:none"></video>
+      <div class="video-lock-note" id="videoLockNote_${id}" style="display:none">The video is not skippable while watching for the first time, but you can rewind if you missed something.</div>
+      <div class="video-actions" id="videoActionRow_${id}" style="display:none">
+        <button class="primary-btn" onclick="playRequiredLabVideo('${id}')">Play / Resume</button>
+        <button class="secondary-btn" onclick="rewindRequiredLabVideo('${id}', 10)">↶ Rewind 10s</button>
+        <button class="secondary-btn" onclick="rewindRequiredLabVideo('${id}', 30)">↶ Rewind 30s</button>
+        <button class="ghost-btn" onclick="restartRequiredLabVideo('${id}')">Restart video</button>
+        <div class="video-status" id="videoStatus_${id}">Watch until the end to unlock the lab.</div>
       </div>
     </div>
   `);
 }
 function renderReplayCard(id){
+  const skipped = state.labVideosSkipped && state.labVideosSkipped[id];
   return `<div class="replay-card">
     <div>
-      <h3>Live coding video watched</h3>
-      <p>You can replay the video if you need support. Replay is skippable.</p>
+      <h3>${skipped ? 'Live coding video skipped' : 'Live coding video watched'}</h3>
+      <p>${skipped ? 'You skipped because you did not have headphones. You can replay it later when you are ready.' : 'You can replay the video if you need support. Replay is skippable.'}</p>
     </div>
     <button class="secondary-btn" onclick="openReplayVideo('${id}')">Replay video</button>
   </div>`;
@@ -2570,30 +2612,65 @@ function prepareLabVideoIfNeeded(id){
   if(!['lab1','lab2','lab3','lab4'].includes(id)) return;
   if(state.teacherMode) return;
   if(state.labVideosWatched && state.labVideosWatched[id]) return;
+  const status = document.getElementById(`videoStatus_${id}`);
+  if(status) status.textContent = 'Choose whether you have headphones before starting the lab.';
+}
+function startRequiredLabVideo(id){
+  const prompt = document.getElementById(`headphonePrompt_${id}`);
   const video = document.getElementById(`requiredVideo_${id}`);
-  if(!video) return;
-  video.controls = false;
-  video.muted = false;
-  const attempt = video.play();
-  if(attempt && typeof attempt.catch === 'function'){
-    attempt.catch(() => {
-      const status = document.getElementById(`videoStatus_${id}`);
-      if(status) status.textContent = 'Autoplay was blocked by the browser. Press Play video to begin. The lab will unlock only after the video finishes.';
-    });
+  const note = document.getElementById(`videoLockNote_${id}`);
+  const actions = document.getElementById(`videoActionRow_${id}`);
+  const status = document.getElementById(`videoStatus_${id}`);
+  if(prompt) prompt.style.display = 'none';
+  if(video){
+    video.style.display = 'block';
+    video.controls = false;
+    video.muted = false;
+    video.currentTime = video.currentTime || 0;
   }
+  if(note) note.style.display = '';
+  if(actions) actions.style.display = '';
+  if(status) status.textContent = 'Watch until the end to unlock the lab. Use rewind if you missed something.';
+  playRequiredLabVideo(id);
 }
 function playRequiredLabVideo(id){
   const video = document.getElementById(`requiredVideo_${id}`);
   if(!video) return;
   video.controls = false;
+  video.style.display = 'block';
   video.play().catch(() => {
     const status = document.getElementById(`videoStatus_${id}`);
-    if(status) status.textContent = 'Press play again or check that the video file is in the same folder as this HTML file.';
+    if(status) status.textContent = 'Press Play / Resume again or check that the video file is in the same folder as this HTML file.';
   });
 }
-function completeLabVideo(id){
+function rewindRequiredLabVideo(id, seconds){
+  const video = document.getElementById(`requiredVideo_${id}`);
+  if(!video) return;
+  video.currentTime = Math.max(0, video.currentTime - seconds);
+  const status = document.getElementById(`videoStatus_${id}`);
+  if(status) status.textContent = `Rewound ${seconds} seconds. Continue watching until the end to unlock the lab.`;
+}
+function restartRequiredLabVideo(id){
+  const video = document.getElementById(`requiredVideo_${id}`);
+  if(!video) return;
+  video.currentTime = 0;
+  playRequiredLabVideo(id);
+}
+function skipLabVideoNoHeadphones(id){
+  if(!confirm('Skip the live coding video and start the lab now? You can replay the video later if you get headphones.')) return;
   state.labVideosWatched = state.labVideosWatched || {};
+  state.labVideosSkipped = state.labVideosSkipped || {};
   state.labVideosWatched[id] = true;
+  state.labVideosSkipped[id] = true;
+  saveState();
+  renderPage();
+}
+function completeLabVideo(id, method='watched'){
+  state.labVideosWatched = state.labVideosWatched || {};
+  state.labVideosSkipped = state.labVideosSkipped || {};
+  state.labVideosWatched[id] = true;
+  if(method === 'watched') delete state.labVideosSkipped[id];
+  if(method === 'teacher') state.labVideosSkipped[id] = true;
   saveState();
   renderPage();
 }
@@ -2608,9 +2685,23 @@ function openReplayVideo(id){
       <strong>${escapeHtml(title)} replay</strong>
       <button class="secondary-btn" onclick="closeReplayVideo()">Close replay</button>
     </div>
-    <video src="${src}" controls autoplay playsinline></video>
+    <video id="replayVideo_${id}" src="${src}" controls autoplay playsinline></video>
+    <div class="video-actions">
+      <button class="secondary-btn" onclick="rewindReplayVideo('${id}', 10)">↶ Rewind 10s</button>
+      <button class="secondary-btn" onclick="rewindReplayVideo('${id}', 30)">↶ Rewind 30s</button>
+      <button class="ghost-btn" onclick="restartReplayVideo('${id}')">Restart replay</button>
+      <span class="video-helper-note">Replay is skippable. Close it when you are ready to continue.</span>
+    </div>
   </div>`;
   document.body.appendChild(modal);
+}
+function rewindReplayVideo(id, seconds){
+  const video = document.getElementById(`replayVideo_${id}`);
+  if(video) video.currentTime = Math.max(0, video.currentTime - seconds);
+}
+function restartReplayVideo(id){
+  const video = document.getElementById(`replayVideo_${id}`);
+  if(video){ video.currentTime = 0; video.play(); }
 }
 function closeReplayVideo(){
   const modal = document.getElementById('videoReplayModal');
