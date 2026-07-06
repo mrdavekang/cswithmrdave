@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Day — Minecraft Biome Website Builder</title>
+<style>
+:root{
+  --bg:#eef7ff;--card:#fff;--soft:#f7fbff;--text:#1f2937;--muted:#526174;
+  --green:#158a58;--green2:#0c6942;--blue:#2b6cb0;--gold:#f6b73c;
+  --line:#d7e5f2;--red:#b42318;--ok:#e4f8ee;--warn:#fff6d8;
+  --shadow:0 8px 20px rgba(43,84,124,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);font-size:14.5px;
+  background:linear-gradient(140deg,#eef7ff,#fff 60%,#e9f9f1);
+}
+button,input,textarea,select{font:inherit}
+.app{max-width:1280px;margin:0 auto;padding:12px 14px 90px}
+header{text-align:center;padding:7px 4px}
+header h1{margin:4px 0;font-size:clamp(1.7rem,3.3vw,2.7rem);color:#17324f}
+header p{margin:0;color:var(--green);font-weight:900}
+.card,.panel{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow);padding:16px;margin-bottom:14px;
+}
+.card h2,.panel h2{font-size:1.4rem;margin:0 0 8px;color:#17324f}
+.card h3,.panel h3{font-size:1.05rem;margin:14px 0 7px;color:#17324f}
+.hint{color:var(--muted);line-height:1.4;margin:0 0 9px}
+label{display:block;font-weight:900;margin:10px 0 5px;color:#26364a}
+input[type=text],input[type=file],textarea,select{
+  width:100%;padding:9px 10px;border:2px solid var(--line);border-radius:12px;
+  background:#fbfdff;color:var(--text)
+}
+textarea{min-height:62px;resize:vertical;line-height:1.35}
+input:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,108,176,.12)
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;
+  border-radius:12px;padding:9px 14px;font-weight:900;cursor:pointer;
+  background:var(--green);color:#fff;text-decoration:none;
+  box-shadow:0 6px 14px rgba(21,138,88,.16)
+}
+.btn:hover{filter:brightness(.97)}
+.btn.secondary{background:#fff;color:var(--text);border:2px solid var(--line);box-shadow:none}
+.btn.blue{background:var(--blue)}
+.btn.gold{background:var(--gold);color:#3b2a00}
+.btn.danger{background:#fff;color:var(--red);border:2px solid #fecaca;box-shadow:none}
+.nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:11px}
+.navGroup{display:flex;gap:8px;flex-wrap:wrap}
+.error{
+  display:none;background:#fff1f1;border:2px solid #fecaca;color:var(--red);
+  border-radius:12px;padding:10px 12px;font-weight:900;margin:10px 0
+}
+.success{
+  background:var(--ok);border:2px solid #b7ebcd;color:#0a6b44;
+  border-radius:13px;padding:10px 12px;font-weight:900;margin:10px 0
+}
+.warn{
+  background:var(--warn);border:2px solid #f2cf72;color:#5c4300;
+  border-radius:13px;padding:10px 12px;font-weight:900;margin:10px 0
+}
+.screen{display:none}.screen.show{display:block}
+
+/* Shared-desktop session check */
+.sessionCard{
+  display:none;background:var(--warn);border:2px solid #f2cf72;border-radius:18px;
+  box-shadow:var(--shadow);padding:17px;margin:12px 0
+}
+.sessionCard h2{margin:0 0 8px;color:#17324f;font-size:1.45rem}
+.sessionGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.sessionGrid div{background:#fff;border:1px solid #efcf7a;border-radius:12px;padding:9px;font-weight:900}
+
+/* Student details */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* Quiz */
+.quizQ{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.quizQ h3{margin:0 0 8px;font-size:1rem}
+.option{
+  display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);
+  border-radius:12px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:800
+}
+.option input[type=radio]{
+  appearance:auto;width:20px;height:20px;min-width:20px;flex:0 0 20px;
+  margin:0;padding:0;box-shadow:none
+}
+.option.correct{border-color:var(--green);background:var(--ok)}
+.option.wrong{border-color:#fecaca;background:#fff1f1}
+.quizResult{display:none;border-radius:12px;padding:10px 12px;font-weight:900;margin:10px 0}
+
+/* Editor */
+.editorTop{
+  display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px
+}
+.focusCard{background:#eef5ff;border:1px solid #cde0ff;border-radius:14px;padding:11px}
+.referenceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.refLink{
+  background:#fff;border:1px solid #cde0ff;border-radius:11px;padding:8px;text-align:center;
+  text-decoration:none;color:#1d4f87;font-weight:900
+}
+.builder{
+  display:grid;grid-template-columns:210px minmax(400px,1fr) 330px;
+  gap:12px;align-items:start
+}
+.palette,.previewPanel{position:sticky;top:10px;max-height:calc(100vh - 24px);overflow:auto}
+.paletteButtons{display:grid;gap:5px}
+.blockBtn{
+  width:100%;justify-content:flex-start;text-align:left;background:#fff;color:#17324f;
+  border:2px solid var(--line);box-shadow:none
+}
+.blockBtn:hover{border-color:var(--green);background:var(--ok)}
+.themeGrid{display:grid;gap:6px}
+.themeBtn{
+  border:2px solid var(--line);border-radius:11px;background:#fff;padding:8px;
+  cursor:pointer;font-weight:900;text-align:left
+}
+.themeBtn.active{border-color:var(--green);background:var(--ok);color:var(--green2)}
+.canvas{min-height:430px;background:#f8fbff;border:3px dashed #c9deef;border-radius:16px;padding:10px}
+.emptyCanvas{text-align:center;color:var(--muted);padding:48px 12px;font-weight:900}
+.editBlock{
+  background:#fff;border:2px solid var(--line);border-radius:14px;
+  margin:8px 0;padding:9px;box-shadow:0 4px 10px rgba(43,84,124,.08)
+}
+.editBlock.dragging{opacity:.5}
+.blockTop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.blockLabel{font-weight:900;color:#17324f}
+.tools{display:flex;gap:5px;flex-wrap:wrap}
+.toolBtn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:5px 8px;cursor:pointer;font-weight:900}
+.toolBtn:hover{background:var(--soft)}
+.imgPrev{width:100%;max-height:160px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:7px}
+.pasteZone{
+  border:2px dashed #9fc3df;background:#f8fbff;border-radius:12px;padding:8px;
+  margin:7px 0;text-align:center;color:#526174;font-weight:900;cursor:pointer
+}
+.pasteZone.active{border-color:var(--green);background:var(--ok);color:var(--green2)}
+.pasteZone small{display:block;font-weight:700;margin-top:3px;color:#526174}
+
+/* Preview */
+.previewControls{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:7px 0 9px}
+.previewBtn{
+  border:2px solid var(--line);background:#fff;border-radius:9px;padding:6px;
+  font-weight:900;cursor:pointer
+}
+.previewBtn.active{border-color:var(--blue);background:#eef5ff;color:var(--blue)}
+.previewPanel.widePreview{
+  grid-column:2/4;grid-row:2;position:relative;top:auto;max-height:none
+}
+.previewPanel.fullPreview{
+  grid-column:1/4;grid-row:2;position:relative;top:auto;max-height:none
+}
+.websitePreview{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.siteHero{padding:24px 16px;color:#fff;text-align:center}
+.siteHero h1{margin:0;font-size:1.65rem}.siteHero p{margin:5px 0 0;font-size:.9rem}
+.siteBody{padding:13px}
+.siteBlock{margin:0 0 12px}
+.siteBlock h2{color:#17324f;margin:0 0 6px;font-size:1.15rem}
+.siteBlock p{line-height:1.42;margin:.35rem 0}
+.siteBlock img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:#f8fbff;border:1px solid var(--line)}
+.siteCaption{font-size:.85rem;color:var(--muted);margin:5px 0 0;line-height:1.3}
+.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factBox{background:#fff;border-left:6px solid var(--green);border-radius:12px;padding:10px;box-shadow:0 3px 9px rgba(0,0,0,.06)}
+.divider{height:3px;border-radius:99px;background:var(--line);margin:16px 0}
+.dynamicFooter{padding:12px;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* Plenary */
+.plenaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plenaryAlert{
+  display:none;position:fixed;top:12px;right:12px;z-index:90;
+  width:min(350px,calc(100vw - 24px));background:var(--warn);
+  border:3px solid #f2cf72;border-radius:16px;padding:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.2)
+}
+.plenaryAlert h3{margin:0 0 6px;color:#5c4300}
+.forceOverlay{
+  display:none;position:fixed;inset:0;z-index:100;background:rgba(23,50,79,.93);
+  align-items:center;justify-content:center;padding:20px
+}
+.forceCard{max-width:520px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.saved{
+  position:fixed;bottom:12px;left:50%;transform:translateX(-50%);
+  background:var(--green);color:#fff;border-radius:999px;padding:8px 18px;
+  font-weight:900;opacity:0;transition:.2s;z-index:110
+}
+.saved.show{opacity:1}
+#printSheet{display:none}
+
+@media(max-width:1080px){
+  .builder{grid-template-columns:1fr}
+  .palette,.previewPanel{position:relative;top:auto;max-height:none}
+  .paletteButtons{grid-template-columns:repeat(2,1fr)}
+  .previewPanel.widePreview,.previewPanel.fullPreview{grid-column:auto;grid-row:auto}
+}
+@media(max-width:800px){
+  .grid4,.sessionGrid,.editorTop,.plenaryGrid{grid-template-columns:1fr 1fr}
+  .referenceGrid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .grid4,.sessionGrid,.editorTop,.plenaryGrid{grid-template-columns:1fr}
+  .twoCol{grid-template-columns:1fr}
+  .paletteButtons{grid-template-columns:1fr}
+  .navGroup{width:100%}
+  .btn{max-width:100%}
+}
+@media print{
+  body{background:#fff}.app,.saved,.plenaryAlert,.forceOverlay{display:none!important}
+  #printSheet{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<div id="plenaryAlert" class="plenaryAlert">
+  <h3>⏰ Plenary is now open</h3>
+  <p>You should move to the final reflection now. You may continue briefly, but the app will move you there at 9:40 a.m.</p>
+  <div class="navGroup">
+    <button class="btn gold" onclick="goPlenary()">Go to Plenary</button>
+    <button class="btn secondary" onclick="dismissPlenaryAlert()">Continue briefly</button>
+  </div>
+</div>
+
+<div id="forceOverlay" class="forceOverlay">
+  <div class="forceCard">
+    <h2>🕘 Final 10 minutes</h2>
+    <p>Your website work is saved. From 9:40–9:50 a.m. Malaysia time, the plenary is locked.</p>
+    <button class="btn gold" onclick="goPlenary()">Open Final Reflection</button>
+  </div>
+</div>
+
+<div class="app">
+<header>
+  <div style="font-size:2rem">🎉 💻 ⛏️ 🌐</div>
+  <h1>Final Computer Science Lesson</h1>
+  <p>Starter → Continue your saved block website → Final reflection</p>
+</header>
+
+<section id="sessionCheck" class="sessionCard">
+  <h2>⚠️ Saved work found on this shared desktop</h2>
+  <p class="hint">Check the details carefully before continuing.</p>
+  <div class="sessionGrid">
+    <div>Name: <span id="savedName">—</span></div>
+    <div>Class: <span id="savedClass">—</span></div>
+    <div>Partner: <span id="savedPartner">—</span></div>
+    <div>Biome: <span id="savedBiome">—</span></div>
+  </div>
+  <div class="warn">
+    Is this your work? Continue the session. If it is not yours, back it up first and reset for a new student.
+  </div>
+  <div class="nav">
+    <button class="btn" onclick="continueSavedSession()">Yes — Continue My Session</button>
+    <div class="navGroup">
+      <button class="btn secondary" onclick="downloadFullBackup()">Backup Saved Work</button>
+      <button class="btn danger" onclick="backupAndReset()">Not Mine — Backup + Reset</button>
+    </div>
+  </div>
+</section>
+
+<section id="starterScreen" class="screen show">
+  <div class="card">
+    <h2>👋 Student Details</h2>
+    <p class="hint">Complete your details, then answer the 10-question starter.</p>
+    <div class="grid4">
+      <div><label>Name</label><input type="text" data-key="name" placeholder="Your name"></div>
+      <div><label>Class</label><input type="text" data-key="class" placeholder="e.g. 6B"></div>
+      <div><label>Previous group / partner</label><input type="text" data-key="partner" placeholder="Partner or group"></div>
+      <div>
+        <label>Biome</label>
+        <select data-key="biome">
+          <option value="">Choose one</option>
+          <option>Plains</option><option>Forest</option><option>Savanna</option>
+          <option>Warm Ocean</option><option>Cherry Grove</option><option>Desert</option><option>Ice Plains</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧠 Final-Day Starter Quiz</h2>
+    <p class="hint">10 new questions. Answer all, check your answers, then continue straight into your group’s block website.</p>
+    <div id="quizBox"></div>
+    <div id="quizResult" class="quizResult"></div>
+    <div id="starterError" class="error"></div>
+    <div class="nav">
+      <button class="btn blue" onclick="markQuiz()">Check Quiz</button>
+      <button class="btn" onclick="enterEditor()">Continue to Website Editor ➜</button>
+    </div>
+  </div>
+</section>
+
+<section id="editorScreen" class="screen">
+  <div class="editorTop">
+    <div class="focusCard">
+      <h3 style="margin-top:0">🎯 Continue your previous group work</h3>
+      <p class="hint">Use the same group and improve the work you already started.</p>
+      <label>What will your group finish or improve today?</label>
+      <textarea data-key="todayFocus" placeholder="Example: Add two missing screenshots, improve captions and download our final website."></textarea>
+    </div>
+    <div class="focusCard">
+      <h3 style="margin-top:0">🔎 Quick build references</h3>
+      <div class="referenceGrid">
+        <a class="refLink" target="_blank" rel="noopener noreferrer" href="https://www.grabcraft.com/search/house">🏠 GrabCraft</a>
+        <a class="refLink" target="_blank" rel="noopener noreferrer" href="https://bloxelizer.com/schematics?q=house">🧱 Bloxelizer</a>
+        <a class="refLink" target="_blank" rel="noopener noreferrer" href="https://minecraft.wiki/w/Tutorials/Shelters">⛺ Shelters</a>
+      </div>
+      <div class="warn" style="margin-bottom:0">
+        Missing evidence? Return to the same Minecraft world, use Camera / Portfolio, then paste the screenshot into an image block.
+      </div>
+    </div>
+  </div>
+
+  <div class="builder" id="builderGrid">
+    <aside class="panel palette">
+      <h2>➕ Add Blocks</h2>
+      <p class="hint">Add, drag and arrange. Click a paste box, then press Ctrl+V / Cmd+V for screenshots.</p>
+      <div class="paletteButtons">
+        <button class="btn blockBtn" onclick="addBlock('hero')">🏷️ Title Block</button>
+        <button class="btn blockBtn" onclick="addBlock('heading')">🔖 Section Heading</button>
+        <button class="btn blockBtn" onclick="addBlock('text')">✍️ Text Paragraph</button>
+        <button class="btn blockBtn" onclick="addBlock('image')">🖼️ Image + Caption</button>
+        <button class="btn blockBtn" onclick="addBlock('twoImages')">🖼️🖼️ Two Images</button>
+        <button class="btn blockBtn" onclick="addBlock('fact')">⭐ Biome Fact Card</button>
+        <button class="btn blockBtn" onclick="addBlock('achievement')">🏆 Achievement Block</button>
+        <button class="btn blockBtn" onclick="addBlock('reflection')">💭 Reflection Block</button>
+        <button class="btn blockBtn" onclick="addBlock('divider')">➖ Divider</button>
+      </div>
+
+      <h3>🎨 Theme</h3>
+      <div id="themeGrid" class="themeGrid"></div>
+
+      <h3>💾 Save / Export</h3>
+      <div class="paletteButtons">
+        <button class="btn gold" onclick="downloadWebsite()">Download Final Website</button>
+        <button class="btn secondary" onclick="printWebsite()">Print / Save PDF</button>
+        <button class="btn secondary" onclick="downloadFullBackup()">Backup Session</button>
+      </div>
+
+      <div class="nav">
+        <button class="btn secondary" onclick="goStarter()">← Starter</button>
+        <button id="plenaryOpenBtn" class="btn gold" style="display:none" onclick="goPlenary()">Plenary →</button>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <h2>🧱 Website Canvas</h2>
+      <p class="hint">Continue the previous website. Aim for a clear title, explanation, evidence, captions, achievements and reflection.</p>
+      <div id="canvas" class="canvas"></div>
+    </main>
+
+    <aside id="previewPanel" class="panel previewPanel">
+      <h2>👀 Live Preview</h2>
+      <p class="hint">Choose more space when you need to inspect the page.</p>
+      <div class="previewControls">
+        <button id="previewNormal" class="previewBtn" onclick="setPreviewMode('normal')">Normal</button>
+        <button id="previewWide" class="previewBtn" onclick="setPreviewMode('wide')">Wide</button>
+        <button id="previewFull" class="previewBtn" onclick="setPreviewMode('full')">Full</button>
+      </div>
+      <div id="livePreview"></div>
+    </aside>
+  </div>
+</section>
+
+<section id="plenaryScreen" class="screen">
+  <div class="card">
+    <h2>💭 Final Plenary Reflection</h2>
+    <p class="hint">Think about your Minecraft build, screenshot evidence and website.</p>
+    <div class="plenaryGrid">
+      <div><label>1. What did your group complete today?</label><textarea data-key="r1" placeholder="Today we completed..."></textarea></div>
+      <div><label>2. What are you most proud of?</label><textarea data-key="r2" placeholder="We are proud of... because..."></textarea></div>
+      <div><label>3. Which Computer Science / website skill improved most?</label><textarea data-key="r3" placeholder="I got better at..."></textarea></div>
+      <div><label>4. What was a good struggle?</label><textarea data-key="r4" placeholder="A difficult moment that helped us learn was..."></textarea></div>
+      <div><label>5. How did screenshots help explain your work?</label><textarea data-key="r5" placeholder="Our screenshots showed..."></textarea></div>
+      <div><label>6. What would you improve with one more lesson?</label><textarea data-key="r6" placeholder="With one more lesson, we would..."></textarea></div>
+    </div>
+    <label>Final message: What will you remember from this project?</label>
+    <textarea data-key="finalMessage" placeholder="I will remember..."></textarea>
+
+    <div id="plenaryError" class="error"></div>
+    <div id="plenaryLockNote" class="warn" style="display:none">
+      🔒 From 9:40–9:50 a.m. Malaysia time, the plenary is locked. Previous pages reopen after 9:50.
+    </div>
+
+    <div class="nav">
+      <div class="navGroup">
+        <button id="backEditorBtn" class="btn secondary" style="display:none" onclick="backToEditor()">← Website Editor</button>
+        <button id="backStarterBtn" class="btn secondary" style="display:none" onclick="backToStarter()">← Starter</button>
+      </div>
+      <div class="navGroup">
+        <button class="btn blue" onclick="downloadReflection()">Download Reflection</button>
+        <button class="btn gold" onclick="finishPlenary()">Finish Plenary</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div id="savedNote" class="saved">Saved</div>
+<div id="printSheet"></div>
+
+<script>
+/* 
+  EDITOR_KEY deliberately matches the previous Day 4 builder so, when hosted
+  on the same origin, students can continue their earlier saved block websites.
+*/
+const EDITOR_KEY='day4BlockBuilderV3CompactReview';
+const FINAL_KEY='finalDayIntegratedLessonV1';
+
+let editorData=JSON.parse(localStorage.getItem(EDITOR_KEY)||'{}');
+let finalData=JSON.parse(localStorage.getItem(FINAL_KEY)||'{}');
+if(!Array.isArray(editorData.blocks))editorData.blocks=[];
+if(!editorData.previewMode)editorData.previewMode='normal';
+
+let pageSessionConfirmed=false;
+let dismissedPlenaryAlert=false;
+let pasteTarget=null;
+let dragId=null;
+
+const THEMES={
+  Plains:['🌾 Plains','#2f855a','#f6d365','#fff8dc'],
+  Forest:['🌲 Forest','#166534','#84cc16','#f0fdf4'],
+  Savanna:['🦒 Savanna','#b7791f','#f6ad55','#fffaf0'],
+  'Warm Ocean':['🐠 Warm Ocean','#0e7490','#38bdf8','#ecfeff'],
+  'Cherry Grove':['🌸 Cherry Grove','#be185d','#f9a8d4','#fff1f2'],
+  Desert:['🏜️ Desert','#b45309','#facc15','#fffbeb'],
+  'Ice Plains':['🧊 Ice Plains','#0369a1','#bae6fd','#f0f9ff']
+};
+
+const QUIZ=[
+  {
+    q:'Your group is missing two useful screenshots. What is the best final-day choice?',
+    o:['Restart the whole build','Capture only the missing useful evidence','Change to a new biome','Delete the website'],
+    a:1
+  },
+  {
+    q:'Which screenshot is strongest evidence for a showcase website?',
+    o:['A clear image of the best feature','A blank sky','The pause menu','A random inventory'],
+    a:0
+  },
+  {
+    q:'Why should a caption be specific?',
+    o:['So visitors understand what the image shows and proves','To make the page longer','To hide the image','To replace the website title'],
+    a:0
+  },
+  {
+    q:'Your website looks crowded. What should your group improve first?',
+    o:['Add five more blocks','Reorder or remove unnecessary content','Make every font tiny','Use random colours'],
+    a:1
+  },
+  {
+    q:'Why should you continue with your previous group today?',
+    o:['To build on work already completed','To avoid all reflection','To copy another group','To start from zero'],
+    a:0
+  },
+  {
+    q:'Which achievement statement is strongest?',
+    o:['We did stuff','We created a clear biome showcase using images, captions and layout','Good','Finished'],
+    a:1
+  },
+  {
+    q:'A visitor cannot tell why your structure suits the biome. What is missing?',
+    o:['A clearer explanation of design choices','More random screenshots','A second footer','A longer file name'],
+    a:0
+  },
+  {
+    q:'Which action best improves website clarity?',
+    o:['Use clear headings and readable text','Use only tiny text','Remove all captions','Put everything in one huge paragraph'],
+    a:0
+  },
+  {
+    q:'Why is reflection useful at the end of the project?',
+    o:['It identifies learning, good struggle and next steps','It deletes mistakes','It changes the biome','It replaces evidence'],
+    a:0
+  },
+  {
+    q:'Before downloading the final website, what should your group check?',
+    o:['Title, images, captions, layout and explanation','Only the colour','Only the file size','Nothing'],
+    a:0
+  }
+];
+
+function esc(s){
+  return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+}
+function uid(){return'b'+Date.now()+Math.random().toString(16).slice(2)}
+function studentValue(k){return finalData[k]||editorData[k]||''}
+function syncIdentity(){
+  ['name','class','partner','biome'].forEach(k=>{
+    if(finalData[k])editorData[k]=finalData[k];
+    else if(editorData[k])finalData[k]=editorData[k];
+  });
+  if(finalData.biome&&!editorData.theme)editorData.theme=finalData.biome;
+}
+function saveAll(msg='Saved'){
+  syncIdentity();
+  localStorage.setItem(EDITOR_KEY,JSON.stringify(editorData));
+  localStorage.setItem(FINAL_KEY,JSON.stringify(finalData));
+  showSaved(msg);
+  updateSessionDetails();
+  renderPreviews();
+}
+function showSaved(msg='Saved'){
+  let n=document.getElementById('savedNote');
+  n.textContent=msg;n.classList.add('show');
+  clearTimeout(n.t);n.t=setTimeout(()=>{n.classList.remove('show');n.textContent='Saved'},1100);
+}
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    let k=el.dataset.key;
+    let v=finalData[k]!==undefined?finalData[k]:editorData[k];
+    if(v!==undefined)el.value=v;
+    el.oninput=el.onchange=()=>{
+      finalData[k]=el.value;
+      if(['name','class','partner','biome'].includes(k))editorData[k]=el.value;
+      if(k==='biome'&&!editorData.theme)editorData.theme=el.value;
+      saveAll();
+    };
+  });
+}
+
+/* Shared desktop */
+function hasSavedWork(){
+  return !!(
+    editorData.name||editorData.class||editorData.partner||editorData.biome||
+    editorData.blocks.length||finalData.name||finalData.quizScore!==undefined
+  );
+}
+function updateSessionDetails(){
+  document.getElementById('savedName').textContent=studentValue('name')||'No name saved';
+  document.getElementById('savedClass').textContent=studentValue('class')||'—';
+  document.getElementById('savedPartner').textContent=studentValue('partner')||'—';
+  document.getElementById('savedBiome').textContent=studentValue('biome')||'—';
+}
+function showInitialState(){
+  updateSessionDetails();
+  if(hasSavedWork()&&!pageSessionConfirmed){
+    document.getElementById('sessionCheck').style.display='block';
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+    return;
+  }
+  document.getElementById('sessionCheck').style.display='none';
+  let stage=finalData.stage||'starter';
+  if(stage==='editor')showScreen('editorScreen',false);
+  else if(stage==='plenary')showScreen('plenaryScreen',false);
+  else showScreen('starterScreen',false);
+}
+function continueSavedSession(){
+  pageSessionConfirmed=true;
+  document.getElementById('sessionCheck').style.display='none';
+  let stage=finalData.stage||((editorData.blocks.length)?'editor':'starter');
+  if(stage==='editor')showScreen('editorScreen');
+  else if(stage==='plenary')showScreen('plenaryScreen');
+  else showScreen('starterScreen');
+}
+function backupPayload(){
+  return {
+    exportedAt:new Date().toISOString(),
+    editorData,
+    finalDayData:finalData
+  };
+}
+function downloadFullBackup(){
+  let a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(backupPayload(),null,2)],{type:'application/json'}));
+  a.download=`final-day-backup-${(studentValue('name')||'student').replace(/\s+/g,'-')}-${(studentValue('class')||'class').replace(/\s+/g,'-')}.json`;
+  a.click();
+}
+function backupAndReset(){
+  if(!confirm('Download a backup and reset this shared desktop for a new student?'))return;
+  downloadFullBackup();
+  setTimeout(()=>{
+    localStorage.removeItem(EDITOR_KEY);
+    localStorage.removeItem(FINAL_KEY);
+    location.reload();
+  },500);
+}
+
+/* Screens / timed navigation */
+function malaysiaNow(){
+  let n=new Date(),utc=n.getTime()+n.getTimezoneOffset()*60000;
+  return new Date(utc+8*3600000);
+}
+function malaysiaMinutes(){
+  let n=malaysiaNow();
+  return n.getHours()*60+n.getMinutes();
+}
+function plenaryLocked(){
+  let t=malaysiaMinutes();
+  return t>=580&&t<590; // 09:40–09:50
+}
+function showScreen(id,saveStage=true){
+  if(finalData.stage==='plenary'&&id!=='plenaryScreen'&&plenaryLocked()){
+    alert('The plenary is locked until 9:50 a.m. Malaysia time.');
+    return;
+  }
+  document.getElementById('sessionCheck').style.display='none';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('show',s.id===id));
+  if(saveStage){
+    finalData.stage=id==='editorScreen'?'editor':id==='plenaryScreen'?'plenary':'starter';
+    saveAll();
+  }
+  if(id==='editorScreen')renderAll();
+  if(id==='plenaryScreen')updatePlenaryNavigation();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goStarter(){showScreen('starterScreen')}
+function goPlenary(){
+  document.getElementById('plenaryAlert').style.display='none';
+  document.getElementById('forceOverlay').style.display='none';
+  showScreen('plenaryScreen');
+}
+function backToEditor(){
+  if(plenaryLocked()){alert('The plenary is locked until 9:50 a.m. Malaysia time.');return}
+  showScreen('editorScreen');
+}
+function backToStarter(){
+  if(plenaryLocked()){alert('The plenary is locked until 9:50 a.m. Malaysia time.');return}
+  showScreen('starterScreen');
+}
+function dismissPlenaryAlert(){
+  dismissedPlenaryAlert=true;
+  document.getElementById('plenaryAlert').style.display='none';
+}
+function updatePlenaryNavigation(){
+  let locked=plenaryLocked();
+  let inPlenary=finalData.stage==='plenary';
+  document.getElementById('backEditorBtn').style.display=(inPlenary&&!locked)?'inline-flex':'none';
+  document.getElementById('backStarterBtn').style.display=(inPlenary&&!locked)?'inline-flex':'none';
+  document.getElementById('plenaryLockNote').style.display=(inPlenary&&locked)?'block':'none';
+}
+function tickTiming(){
+  let t=malaysiaMinutes(),open=575,force=580,end=590; // 09:35, 09:40, 09:50
+  document.getElementById('plenaryOpenBtn').style.display=t>=open?'inline-flex':'none';
+
+  if(t>=force&&t<end){
+    document.getElementById('plenaryAlert').style.display='none';
+    if(finalData.stage!=='plenary')document.getElementById('forceOverlay').style.display='flex';
+    else document.getElementById('forceOverlay').style.display='none';
+  }else{
+    document.getElementById('forceOverlay').style.display='none';
+    if(t>=open&&t<force&&finalData.stage!=='plenary'&&!dismissedPlenaryAlert){
+      document.getElementById('plenaryAlert').style.display='block';
+    }else{
+      document.getElementById('plenaryAlert').style.display='none';
+    }
+  }
+  updatePlenaryNavigation();
+}
+
+/* Starter quiz */
+function renderQuiz(){
+  let box=document.getElementById('quizBox');
+  box.innerHTML=QUIZ.map((q,qi)=>`
+    <div class="quizQ">
+      <h3>${qi+1}. ${q.q}</h3>
+      ${q.o.map((op,oi)=>`
+        <label class="option" id="q${qi}o${oi}">
+          <input type="radio" name="q${qi}" value="${oi}"
+            ${finalData['quiz'+qi]==oi?'checked':''}
+            onchange="finalData.quiz${qi}=this.value;saveAll();hideStarterError()">
+          <span>${op}</span>
+        </label>`).join('')}
+    </div>`).join('');
+  if(finalData.quizScore!==undefined)showQuizResult();
+}
+function hideStarterError(){document.getElementById('starterError').style.display='none'}
+function markQuiz(){
+  let all=true,score=0;
+  QUIZ.forEach((q,qi)=>{
+    if(finalData['quiz'+qi]===undefined||finalData['quiz'+qi]==='')all=false;
+    let ans=Number(finalData['quiz'+qi]);
+    q.o.forEach((_,oi)=>{
+      let el=document.getElementById(`q${qi}o${oi}`);
+      if(!el)return;
+      el.classList.remove('correct','wrong');
+      if(oi===q.a)el.classList.add('correct');
+      if(ans===oi&&oi!==q.a)el.classList.add('wrong');
+    });
+    if(ans===q.a)score++;
+  });
+  let e=document.getElementById('starterError');
+  if(!all){
+    e.style.display='block';e.textContent='Please answer all 10 questions before checking.';
+    return false;
+  }
+  e.style.display='none';
+  finalData.quizScore=score;
+  saveAll();
+  showQuizResult();
+  return true;
+}
+function showQuizResult(){
+  let r=document.getElementById('quizResult'),score=Number(finalData.quizScore||0);
+  r.style.display='block';
+  r.textContent=`Starter complete: ${score}/10. Review highlighted answers, then continue to your group website.`;
+  r.style.background=score>=7?'var(--ok)':'#fff1f1';
+  r.style.border=score>=7?'2px solid #b7ebcd':'2px solid #fecaca';
+  r.style.color=score>=7?'#0a6b44':'var(--red)';
+}
+function enterEditor(){
+  let missing=['name','class','partner','biome'].filter(k=>!String(finalData[k]||'').trim());
+  let e=document.getElementById('starterError');
+  if(missing.length){
+    e.style.display='block';
+    e.textContent='Please complete name, class, previous group/partner and biome.';
+    return;
+  }
+  if(!markQuiz())return;
+  syncIdentity();
+  pageSessionConfirmed=true;
+  showScreen('editorScreen');
+}
+
+/* Block editor */
+function defaultBlock(type){
+  let base={id:uid(),type};
+  if(type==='hero')return {...base,title:`Our ${studentValue('biome')||'Biome'} Build`,subtitle:'Minecraft Biome Showcase'};
+  if(type==='heading')return {...base,text:'Section Heading'};
+  if(type==='text')return {...base,text:'Write your explanation here.'};
+  if(type==='image')return {...base,caption:'Write a caption that explains this image.'};
+  if(type==='twoImages')return {...base,cap1:'Caption for image 1.',cap2:'Caption for image 2.'};
+  if(type==='fact')return {...base,title:'Biome Fact',text:'Write one useful fact about your biome.'};
+  if(type==='achievement')return {...base,title:'What We Achieved',built:'We created...',skills:'We used website skills such as...',proud:'We are proud of...'};
+  if(type==='reflection')return {...base,improved:'One thing we improved was...',struggle:'One good struggle was...',next:'Next time, we would improve...'};
+  return base;
+}
+function addBlock(type){editorData.blocks.push(defaultBlock(type));saveAll();renderAll()}
+function deleteBlock(id){
+  if(confirm('Delete this block?')){
+    editorData.blocks=editorData.blocks.filter(b=>b.id!==id);
+    saveAll();renderAll();
+  }
+}
+function moveBlock(id,dir){
+  let i=editorData.blocks.findIndex(b=>b.id===id),j=i+dir;
+  if(i<0||j<0||j>=editorData.blocks.length)return;
+  [editorData.blocks[i],editorData.blocks[j]]=[editorData.blocks[j],editorData.blocks[i]];
+  saveAll();renderAll();
+}
+function updateBlock(id,key,val){
+  let b=editorData.blocks.find(x=>x.id===id);
+  if(!b)return;
+  b[key]=val;saveAll();renderPreviews();
+}
+function storeImageFile(file,id,key){
+  if(!file)return;
+  if(!file.type||!file.type.startsWith('image/')){
+    alert('Please paste or upload an image.');return;
+  }
+  let reader=new FileReader();
+  reader.onload=e=>{
+    let img=new Image();
+    img.onload=()=>{
+      let max=1100,scale=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      updateBlock(id,key,c.toDataURL('image/jpeg',.78));
+      pasteTarget={id,key};renderAll();showSaved('Screenshot added');
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function loadBlockImage(ev,id,key){storeImageFile(ev.target.files[0],id,key)}
+function setPasteTarget(id,key){
+  pasteTarget={id,key};renderAll();showSaved('Ready — paste now');
+}
+document.addEventListener('paste',e=>{
+  if(!pasteTarget)return;
+  let items=e.clipboardData&&e.clipboardData.items?Array.from(e.clipboardData.items):[];
+  let item=items.find(x=>x.type&&x.type.startsWith('image/'));
+  if(!item)return;
+  e.preventDefault();
+  storeImageFile(item.getAsFile(),pasteTarget.id,pasteTarget.key);
+});
+
+function renderThemes(){
+  let tg=document.getElementById('themeGrid');
+  if(!editorData.theme&&studentValue('biome'))editorData.theme=studentValue('biome');
+  tg.innerHTML=Object.keys(THEMES).map(k=>`
+    <button class="themeBtn ${editorData.theme===k?'active':''}" onclick="setTheme('${k}')">
+      ${THEMES[k][0]}
+    </button>`).join('');
+}
+function setTheme(t){editorData.theme=t;saveAll();renderAll()}
+function blockName(t){
+  return {
+    hero:'🏷️ Title Block',heading:'🔖 Section Heading',text:'✍️ Text Paragraph',
+    image:'🖼️ Image + Caption',twoImages:'🖼️🖼️ Two Images',
+    fact:'⭐ Biome Fact Card',achievement:'🏆 Achievement Block',
+    reflection:'💭 Reflection Block',divider:'➖ Divider'
+  }[t]||t;
+}
+function tools(b){
+  return `<div class="blockTop">
+    <span class="blockLabel">${blockName(b.type)}</span>
+    <div class="tools">
+      <button class="toolBtn" onclick="moveBlock('${b.id}',-1)">↑</button>
+      <button class="toolBtn" onclick="moveBlock('${b.id}',1)">↓</button>
+      <button class="toolBtn" onclick="deleteBlock('${b.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+function editBlockHTML(b){
+  let active=(key)=>pasteTarget&&pasteTarget.id===b.id&&pasteTarget.key===key?'active':'';
+  let h=`<div class="editBlock" draggable="true" data-id="${b.id}">${tools(b)}`;
+
+  if(b.type==='hero')h+=`
+    <label>Website title</label>
+    <input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)">
+    <label>Subtitle</label>
+    <input type="text" value="${esc(b.subtitle)}" oninput="updateBlock('${b.id}','subtitle',this.value)">`;
+
+  if(b.type==='heading')h+=`
+    <label>Heading</label>
+    <input type="text" value="${esc(b.text)}" oninput="updateBlock('${b.id}','text',this.value)">`;
+
+  if(b.type==='text')h+=`
+    <label>Paragraph</label>
+    <textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;
+
+  if(b.type==='image')h+=`
+    <label>Upload image</label>
+    <input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img')">
+    <div class="pasteZone ${active('img')}" onclick="setPasteTarget('${b.id}','img')">
+      📋 Click here, then paste screenshot
+      <small>Ctrl+V on Windows • Cmd+V on Mac</small>
+    </div>
+    ${b.img?`<img class="imgPrev" src="${b.img}">`:''}
+    <label>Caption</label>
+    <textarea oninput="updateBlock('${b.id}','caption',this.value)">${esc(b.caption)}</textarea>`;
+
+  if(b.type==='twoImages')h+=`
+    <label>Upload image 1</label>
+    <input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img1')">
+    <div class="pasteZone ${active('img1')}" onclick="setPasteTarget('${b.id}','img1')">
+      📋 Paste screenshot for image 1<small>Ctrl+V / Cmd+V</small>
+    </div>
+    ${b.img1?`<img class="imgPrev" src="${b.img1}">`:''}
+    <label>Caption 1</label>
+    <textarea oninput="updateBlock('${b.id}','cap1',this.value)">${esc(b.cap1)}</textarea>
+
+    <label>Upload image 2</label>
+    <input type="file" accept="image/*" onchange="loadBlockImage(event,'${b.id}','img2')">
+    <div class="pasteZone ${active('img2')}" onclick="setPasteTarget('${b.id}','img2')">
+      📋 Paste screenshot for image 2<small>Ctrl+V / Cmd+V</small>
+    </div>
+    ${b.img2?`<img class="imgPrev" src="${b.img2}">`:''}
+    <label>Caption 2</label>
+    <textarea oninput="updateBlock('${b.id}','cap2',this.value)">${esc(b.cap2)}</textarea>`;
+
+  if(b.type==='fact')h+=`
+    <label>Fact title</label>
+    <input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)">
+    <label>Fact text</label>
+    <textarea oninput="updateBlock('${b.id}','text',this.value)">${esc(b.text)}</textarea>`;
+
+  if(b.type==='achievement')h+=`
+    <label>Achievement title</label>
+    <input type="text" value="${esc(b.title)}" oninput="updateBlock('${b.id}','title',this.value)">
+    <label>What did you create?</label>
+    <textarea oninput="updateBlock('${b.id}','built',this.value)">${esc(b.built)}</textarea>
+    <label>What website skills did you use?</label>
+    <textarea oninput="updateBlock('${b.id}','skills',this.value)">${esc(b.skills)}</textarea>
+    <label>What are you proud of?</label>
+    <textarea oninput="updateBlock('${b.id}','proud',this.value)">${esc(b.proud)}</textarea>`;
+
+  if(b.type==='reflection')h+=`
+    <label>One thing we improved</label>
+    <textarea oninput="updateBlock('${b.id}','improved',this.value)">${esc(b.improved)}</textarea>
+    <label>One good struggle</label>
+    <textarea oninput="updateBlock('${b.id}','struggle',this.value)">${esc(b.struggle)}</textarea>
+    <label>Next time</label>
+    <textarea oninput="updateBlock('${b.id}','next',this.value)">${esc(b.next)}</textarea>`;
+
+  if(b.type==='divider')h+=`<p class="hint">This adds a visual line between sections.</p>`;
+
+  return h+'</div>';
+}
+function renderCanvas(){
+  let c=document.getElementById('canvas');
+  if(!editorData.blocks.length){
+    c.innerHTML='<div class="emptyCanvas">Your previous blocks will appear here. Add a block from the left to begin.</div>';
+    return;
+  }
+  c.innerHTML=editorData.blocks.map(editBlockHTML).join('');
+  c.querySelectorAll('.editBlock').forEach(el=>{
+    el.addEventListener('dragstart',()=>{dragId=el.dataset.id;el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+    el.addEventListener('dragover',e=>e.preventDefault());
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      let target=el.dataset.id;
+      if(!dragId||dragId===target)return;
+      let from=editorData.blocks.findIndex(b=>b.id===dragId);
+      let to=editorData.blocks.findIndex(b=>b.id===target);
+      let item=editorData.blocks.splice(from,1)[0];
+      editorData.blocks.splice(to,0,item);
+      saveAll();renderAll();
+    });
+  });
+}
+function siteBlock(b){
+  if(b.type==='hero')return`<section class="siteHero"><h1>${esc(b.title)}</h1><p>${esc(b.subtitle)}</p></section>`;
+  if(b.type==='heading')return`<section class="siteBlock"><h2>${esc(b.text)}</h2></section>`;
+  if(b.type==='text')return`<section class="siteBlock"><p>${esc(b.text)}</p></section>`;
+  if(b.type==='image')return`<section class="siteBlock">${b.img?`<img src="${b.img}" alt="Minecraft evidence">`:'<p><i>Image not uploaded yet.</i></p>'}<p class="siteCaption">${esc(b.caption)}</p></section>`;
+  if(b.type==='twoImages')return`<section class="siteBlock twoCol"><div>${b.img1?`<img src="${b.img1}" alt="Minecraft evidence 1">`:'<p><i>Image 1 not uploaded.</i></p>'}<p class="siteCaption">${esc(b.cap1)}</p></div><div>${b.img2?`<img src="${b.img2}" alt="Minecraft evidence 2">`:'<p><i>Image 2 not uploaded.</i></p>'}<p class="siteCaption">${esc(b.cap2)}</p></div></section>`;
+  if(b.type==='fact')return`<section class="siteBlock factBox"><h2>${esc(b.title)}</h2><p>${esc(b.text)}</p></section>`;
+  if(b.type==='achievement')return`<section class="siteBlock factBox"><h2>${esc(b.title||'What We Achieved')}</h2><p><b>We created:</b> ${esc(b.built)}</p><p><b>Website skills used:</b> ${esc(b.skills)}</p><p><b>We are proud of:</b> ${esc(b.proud)}</p></section>`;
+  if(b.type==='reflection')return`<section class="siteBlock"><h2>Reflection</h2><p><b>One thing we improved:</b> ${esc(b.improved)}</p><p><b>One good struggle:</b> ${esc(b.struggle)}</p><p><b>Next time:</b> ${esc(b.next)}</p></section>`;
+  if(b.type==='divider')return`<div class="divider"></div>`;
+  return'';
+}
+function siteHTML(full=false){
+  let theme=THEMES[editorData.theme||studentValue('biome')]||THEMES.Forest;
+  let primary=theme[1],accent=theme[2],bg=theme[3];
+  let blocks=editorData.blocks.map(siteBlock).join('')||'<section class="siteBlock"><p>No blocks yet.</p></section>';
+  let footer=`<footer class="dynamicFooter">Created by ${esc(studentValue('name')||'—')} ${studentValue('partner')?'and '+esc(studentValue('partner')):''} • ${esc(studentValue('class')||'—')} • ${esc(studentValue('biome')||'—')}</footer>`;
+  let body=`<div class="websitePreview"><div class="siteBody" style="background:${bg}">${blocks}${footer}</div></div>`;
+  body=body.replaceAll('class="siteHero"','class="siteHero" style="background:linear-gradient(135deg,'+primary+','+accent+')"');
+
+  if(!full)return body;
+
+  return`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(studentValue('name')||'Student')} Minecraft Biome Website</title><style>
+  body{margin:0;font:15px Arial,Helvetica,sans-serif;background:${bg};color:#1f2937;padding:22px}
+  .websitePreview{max-width:1000px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+  .siteHero{padding:38px 22px;color:#fff;text-align:center}.siteHero h1{margin:0;font-size:2.4rem}.siteHero p{font-size:1.05rem}
+  .siteBody{padding:20px}.siteBlock{margin:0 0 18px}.siteBlock h2{color:#17324f;margin:0 0 8px}.siteBlock p{line-height:1.5}
+  .siteBlock img{width:100%;max-height:350px;object-fit:contain;border-radius:12px;background:#f8fbff;border:1px solid #d7e5f2}
+  .siteCaption{font-size:.92rem;color:#526174;margin:6px 0 0;line-height:1.35}
+  .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .factBox{background:#fff;border-left:7px solid ${primary};border-radius:12px;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .divider{height:4px;border-radius:99px;background:#d7e5f2;margin:18px 0}
+  .dynamicFooter{padding:14px;text-align:center;color:#526174;border-top:1px solid #d7e5f2;font-size:.9rem}
+  @media(max-width:700px){.twoCol{grid-template-columns:1fr}}
+  </style></head><body>${body}</body></html>`;
+}
+function renderPreviews(){
+  let p=document.getElementById('livePreview');
+  if(p)p.innerHTML=siteHTML(false);
+}
+function setPreviewMode(mode){
+  editorData.previewMode=mode;saveAll();renderPreviewMode();
+}
+function renderPreviewMode(){
+  let p=document.getElementById('previewPanel');
+  if(!p)return;
+  p.classList.toggle('widePreview',editorData.previewMode==='wide');
+  p.classList.toggle('fullPreview',editorData.previewMode==='full');
+  ['normal','wide','full'].forEach(m=>{
+    let b=document.getElementById('preview'+m.charAt(0).toUpperCase()+m.slice(1));
+    if(b)b.classList.toggle('active',editorData.previewMode===m);
+  });
+}
+function renderAll(){
+  renderThemes();renderCanvas();renderPreviewMode();renderPreviews();
+}
+function downloadWebsite(){
+  let a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([siteHTML(true)],{type:'text/html'}));
+  a.download=`minecraft-biome-website-${(studentValue('name')||'student').replace(/\s+/g,'-')}.html`;
+  a.click();
+}
+function printWebsite(){
+  document.getElementById('printSheet').innerHTML=siteHTML(false);
+  window.print();
+}
+
+/* Plenary reflection */
+function reflectionComplete(){
+  return ['r1','r2','r3','r4','r5','r6','finalMessage'].every(k=>String(finalData[k]||'').trim());
+}
+function reflectionHTML(){
+  return`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Final CS Reflection</title><style>
+  body{font:15px Arial,Helvetica,sans-serif;max-width:900px;margin:30px auto;padding:20px;color:#1f2937}
+  h1,h2{color:#17324f}.box{border:1px solid #d7e5f2;border-radius:12px;padding:12px;margin:12px 0}
+  .foot{text-align:center;color:#526174;border-top:1px solid #d7e5f2;padding:14px}
+  </style></head><body>
+  <h1>Final Computer Science Reflection</h1>
+  <p><b>Name:</b> ${esc(studentValue('name'))} • <b>Class:</b> ${esc(studentValue('class'))} • <b>Group:</b> ${esc(studentValue('partner'))} • <b>Biome:</b> ${esc(studentValue('biome'))}</p>
+  <div class="box"><h2>Final-Day Focus</h2><p>${esc(finalData.todayFocus)}</p></div>
+  <div class="box"><h2>Reflection</h2>
+    <p><b>Completed today:</b> ${esc(finalData.r1)}</p>
+    <p><b>Most proud of:</b> ${esc(finalData.r2)}</p>
+    <p><b>Skill improved:</b> ${esc(finalData.r3)}</p>
+    <p><b>Good struggle:</b> ${esc(finalData.r4)}</p>
+    <p><b>Screenshot evidence:</b> ${esc(finalData.r5)}</p>
+    <p><b>One more lesson:</b> ${esc(finalData.r6)}</p>
+    <p><b>Final message:</b> ${esc(finalData.finalMessage)}</p>
+  </div>
+  <div class="foot">Created by ${esc(studentValue('name')||'—')} ${studentValue('partner')?'and '+esc(studentValue('partner')):''} • ${esc(studentValue('class')||'—')} • ${esc(studentValue('biome')||'—')}</div>
+  </body></html>`;
+}
+function downloadReflection(){
+  let a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([reflectionHTML()],{type:'text/html'}));
+  a.download=`final-cs-reflection-${(studentValue('name')||'student').replace(/\s+/g,'-')}.html`;
+  a.click();
+}
+function finishPlenary(){
+  let e=document.getElementById('plenaryError');
+  if(!reflectionComplete()){
+    e.style.display='block';e.textContent='Please complete all reflection questions first.';return;
+  }
+  e.style.display='none';
+  finalData.plenaryComplete=true;saveAll();
+  downloadReflection();
+  if(plenaryLocked()){
+    alert('Well done — reflection complete. The plenary remains locked until 9:50 a.m.');
+  }else{
+    alert('Well done — reflection complete. You may return to previous pages if you still have time.');
+  }
+  updatePlenaryNavigation();
+}
+
+/* Init */
+syncIdentity();
+bindInputs();
+renderQuiz();
+renderAll();
+showInitialState();
+tickTiming();
+setInterval(tickTiming,1000);
+</script>
+</body>
+</html>
