@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Academy | Minecraft Coding Fundamentals</title>
+  <meta name="description" content="KS2 Minecraft Education learning companion for Basic Moves, Code Builder, sequencing and debugging." />
+  <style>
+    :root{
+      --ink:#173022; --muted:#617368; --paper:#f6fbf4; --card:#ffffff;
+      --green:#2f7d45; --green-dark:#205e32; --lime:#e1f4ce; --gold:#f4c542;
+      --blue:#2f78a5; --purple:#7650a6; --orange:#e58735; --line:#d8e6d8;
+      --shadow:0 12px 30px rgba(31,72,43,.10); --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-rounded,"Trebuchet MS",system-ui,-apple-system,sans-serif;color:var(--ink);background:linear-gradient(180deg,#eef8e9 0,#f8fbf6 34%,#eef5ef 100%);min-height:100vh}
+    button,input,textarea,select{font:inherit}
+    button,a{cursor:pointer}
+    a{color:inherit}
+    .hidden{display:none!important}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* Landing */
+    #landing{min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden}
+    #landing:before,#landing:after{content:"";position:absolute;width:270px;height:270px;border-radius:42px;background:repeating-linear-gradient(45deg,#d6edca 0 26px,#c7e5b8 26px 52px);opacity:.56;transform:rotate(12deg)}
+    #landing:before{left:-100px;top:-90px} #landing:after{right:-110px;bottom:-120px}
+    .landing-card{width:min(790px,100%);padding:clamp(24px,5vw,54px);background:rgba(255,255,255,.95);border:2px solid #d5e7d1;border-radius:30px;box-shadow:0 24px 65px rgba(36,76,49,.17);position:relative;z-index:1}
+    .eyebrow,.page-tag{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--lime);color:#285f37;padding:7px 12px;font-size:.84rem;font-weight:900;letter-spacing:.03em}
+    h1{font-size:clamp(2.2rem,6vw,4.3rem);line-height:.95;margin:18px 0 12px;letter-spacing:-.045em}
+    h2{font-size:clamp(1.65rem,4vw,2.6rem);line-height:1.05;margin:10px 0 8px;letter-spacing:-.03em}
+    h3{margin:0 0 10px;font-size:1.22rem}
+    p{line-height:1.55}
+    .landing-sub{font-size:clamp(1rem,2vw,1.22rem);color:var(--muted);max-width:62ch}
+    .name-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:26px}
+    input[type="text"],input[type="number"],textarea,select{width:100%;border:2px solid #bfd1bf;border-radius:14px;padding:13px 14px;background:#fbfefb;color:var(--ink);outline:none}
+    textarea{min-height:96px;resize:vertical}
+    input:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(47,125,69,.12)}
+    .landing-note{margin-top:15px;color:var(--muted);font-size:.92rem}
+
+    /* Buttons */
+    .primary,.secondary,.world-btn,.small-btn{border:0;border-radius:14px;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.14s transform,.14s box-shadow,.14s opacity}
+    .primary{background:var(--green);color:white;padding:14px 20px;box-shadow:0 5px 0 var(--green-dark)}
+    .primary:hover,.world-btn:hover{transform:translateY(-1px)} .primary:active,.world-btn:active{transform:translateY(3px)}
+    .primary:disabled{opacity:.42;cursor:not-allowed;box-shadow:none;transform:none}
+    .secondary{background:#eef4ed;color:#30483a;padding:13px 17px;border:1px solid var(--line)}
+    .world-btn{background:#1f6f3c;color:#fff;padding:15px 20px;box-shadow:0 5px 0 #154f2b}
+    .world-btn.big{font-size:1.08rem;padding:17px 24px}
+    .small-btn{background:#edf4ec;color:#31483a;padding:9px 12px;border:1px solid var(--line)}
+
+    /* Chrome */
+    #app{min-height:100vh}
+    .learning-strip{position:sticky;top:0;z-index:40;background:rgba(18,53,31,.98);color:white;border-bottom:4px solid var(--gold);box-shadow:0 7px 20px rgba(0,0,0,.15)}
+    .learning-inner{max-width:1220px;margin:auto;padding:9px 18px;display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:8px}
+    .learn-chip{min-width:0;border-radius:10px;background:rgba(255,255,255,.09);padding:8px 10px;line-height:1.2}
+    .learn-chip b{display:block;font-size:.7rem;letter-spacing:.08em;color:#ffe37c;margin-bottom:3px}
+    .learn-chip span{font-size:.86rem}
+    .app-shell{max-width:1220px;margin:auto;padding:18px;display:grid;grid-template-columns:255px minmax(0,1fr);gap:18px}
+    .side{position:sticky;top:100px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+    .user-badge{display:flex;align-items:center;gap:10px;padding:8px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+    .avatar{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--lime);font-size:1.35rem}
+    .user-badge strong{display:block}.user-badge small{color:var(--muted)}
+    .nav-list{display:grid;gap:6px}
+    .nav-btn{width:100%;border:0;background:transparent;text-align:left;display:grid;grid-template-columns:30px 1fr 20px;align-items:center;gap:8px;padding:9px;border-radius:12px;color:#31443a;font-weight:800}
+    .nav-btn:hover:not(:disabled){background:#eef7eb}.nav-btn.active{background:#dff3cb;color:#1f5d31}.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+    .nav-num{width:28px;height:28px;border-radius:9px;background:#edf2ed;display:grid;place-items:center;font-size:.82rem}.nav-btn.active .nav-num{background:var(--green);color:#fff}
+    .nav-state{text-align:center}.teacher-pill{display:inline-block;margin-top:10px;padding:5px 8px;border-radius:999px;background:#eee4ff;color:#5c3e89;font-size:.78rem;font-weight:900}
+    .reset-link{margin-top:12px;width:100%;border:0;background:transparent;color:var(--muted);text-decoration:underline}
+    main{min-width:0}.page{display:none}.page.active{display:block;animation:fade .2s ease}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+    /* Content */
+    .hero-card,.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-card{padding:clamp(20px,4vw,34px);margin-bottom:14px;position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;width:150px;height:150px;right:-55px;top:-65px;border-radius:26px;background:repeating-linear-gradient(45deg,#eef7e7 0 18px,#e1f0d7 18px 36px);transform:rotate(15deg)}
+    .hero-card>*{position:relative;z-index:1}.hero-card p{color:var(--muted);font-size:1.03rem;margin-bottom:0;max-width:72ch}
+    .card{padding:20px;margin:14px 0}
+    .grid-2,.grid-3{display:grid;gap:14px}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .mini-card{border:2px solid #e3ece1;border-radius:17px;padding:16px;background:#fff}.mini-card .icon{font-size:2rem;margin-bottom:6px}.mini-card p{color:var(--muted);margin-bottom:0}
+    .callout{border-left:5px solid var(--gold);background:#fff8dc;border-radius:14px;padding:14px 16px;margin:14px 0;line-height:1.5}.callout strong{display:block;margin-bottom:3px}
+    .tip{border-left-color:var(--blue);background:#eef7fd}.success{border-left-color:var(--green);background:#eef9ee}
+    .actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .status{font-weight:800;color:var(--muted)}
+    .progress-bar{height:10px;background:#e7eee5;border-radius:999px;overflow:hidden;margin:8px 0 0}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4ea45f,#8dc66f);transition:width .2s}
+
+    /* Expectations / reading */
+    .expect-list{display:grid;gap:10px}.check-row{display:flex;gap:11px;align-items:flex-start;padding:13px;border:2px solid #e0ebe0;border-radius:15px;background:#fbfefb}.check-row input{margin-top:3px;accent-color:var(--green);transform:scale(1.25)}.check-row strong{display:block}.check-row span span{color:var(--muted);font-size:.92rem}
+    .vocab-card{border-radius:16px;padding:15px;background:#f8fbf7;border:2px solid #e0eadf}.vocab-card b{display:block;color:var(--green-dark);font-size:1.04rem}.vocab-card span{color:var(--muted)}
+    .step-list{display:grid;gap:9px;counter-reset:step}.step{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;padding:11px;border-radius:14px;background:#f5f9f3}.step:before{counter-increment:step;content:counter(step);width:34px;height:34px;border-radius:11px;background:var(--green);color:white;display:grid;place-items:center;font-weight:900}
+
+    /* Quiz */
+    .quiz-q{border:2px solid #e1eae0;border-radius:16px;padding:16px;margin:12px 0;background:#fff}.quiz-q.correct{border-color:#86c48f;background:#f0faef}.quiz-q.incorrect{border-color:#efb2a8;background:#fff3f0}.quiz-q legend{font-weight:900;padding:0 5px;margin-bottom:8px;line-height:1.35}
+    .option{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;margin:5px 0;border-radius:10px;background:#f7faf6}.option:hover{background:#eef6eb}.option input{margin-top:3px;accent-color:var(--green);transform:scale(1.2)}.quiz-feedback{font-weight:800;margin-top:8px}.quiz-score{font-size:1.12rem;font-weight:900;margin-top:12px}
+
+    /* World / challenge companion */
+    .world-launch{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:center;background:linear-gradient(135deg,#214f31,#2f7d45);color:#fff;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+    .world-launch p{color:#e3f2e6;margin:6px 0 16px}.world-visual{min-height:180px;border-radius:18px;background:linear-gradient(#82c7e8 0 47%,#80b96e 47% 62%,#8b694b 62%);position:relative;overflow:hidden;border:3px solid rgba(255,255,255,.2)}
+    .world-visual:before{content:"🤖";position:absolute;font-size:3.6rem;left:22%;bottom:18%}.world-visual:after{content:"🟨";position:absolute;font-size:3.3rem;right:20%;bottom:18%}
+    .checkpoint{display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:start}.checkpoint-icon{width:64px;height:64px;border-radius:18px;background:var(--lime);display:grid;place-items:center;font-size:2rem}.checkpoint p{margin-top:4px;color:var(--muted)}
+    .think-tool{border:2px solid #dce8da;border-radius:18px;padding:17px;background:#fbfefb;margin:12px 0}.think-title{display:flex;align-items:center;gap:9px;font-weight:900;margin-bottom:10px}.think-title .bubble{width:34px;height:34px;border-radius:11px;background:#e4f0ff;display:grid;place-items:center}
+    .prompt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .prompt-box{background:#f5f9f3;border-radius:14px;padding:13px}.prompt-box label{display:block;font-weight:900;margin-bottom:7px}
+    .direction-chips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.direction-chip{background:#eef5ec;border:1px solid #d5e5d3;border-radius:999px;padding:7px 10px;font-weight:800}
+    .pseudocode{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#17261d;color:#e7f5e9;border-radius:16px;padding:16px;min-height:105px}
+    /* Static MakeCode-style thinking blocks: visual references only, not executable */
+    .block-bank{display:grid;gap:12px;margin:14px 0}.block-bank-title{font-weight:900;margin-bottom:2px}.block-bank-note{color:var(--muted);font-size:.92rem;margin:0}
+    .mc-block-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}.mc-block{position:relative;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:9px 16px 9px 18px;color:#fff;font-weight:900;border-radius:7px;box-shadow:0 4px 0 rgba(0,0,0,.18);line-height:1.2;max-width:100%}
+    .mc-block:before{content:"";position:absolute;left:18px;top:-5px;width:24px;height:7px;border-radius:4px 4px 0 0;background:inherit}.mc-block:after{content:"";position:absolute;left:18px;bottom:-5px;width:24px;height:7px;border-radius:0 0 4px 4px;background:inherit}
+    .mc-agent{background:#159e86}.mc-player{background:#4d6fc4}.mc-input{display:inline-flex;align-items:center;background:rgba(255,255,255,.94);color:#24352c;border-radius:5px;padding:3px 7px;font-weight:900;white-space:nowrap}.mc-drop{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.42);border-radius:5px;padding:3px 7px;white-space:nowrap}.mc-drop:after{content:"▾";font-size:.72em}.mc-number{min-width:27px;text-align:center}.mc-block-stack{display:grid;gap:9px;padding:13px 13px 16px;border:2px dashed #cfdfcf;border-radius:16px;background:#f8fbf7}.mc-block-stack .mc-block{width:max-content;max-width:100%}.mc-block-stack .nested{margin-left:28px}
+    .block-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.block-choice{border:2px solid #dce8da;border-radius:16px;padding:14px;background:#fbfefb}.block-choice h4{margin:0 0 8px}.block-choice p{margin:8px 0 0;color:var(--muted);font-size:.92rem}
+    .block-plan-guide{display:grid;gap:8px;margin:10px 0}.block-plan-line{display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;padding:8px 10px;border-radius:12px;background:#f4f8f2}.block-plan-line b{width:30px;height:30px;border-radius:9px;background:#dff3cb;display:grid;place-items:center;color:#275f36}
+    .evidence-checks{display:grid;gap:8px}.evidence-checks label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:#f6faf5}.evidence-checks input{margin-top:3px;accent-color:var(--green);transform:scale(1.2)}
+    .checkpoint-summary{font-size:.92rem;color:var(--muted);margin-top:10px}
+
+
+    /* KS2 block planners */
+    .mission-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}.mission-steps>div{display:flex;gap:9px;align-items:center;background:#f4f9f1;border:2px solid #e0ebdc;border-radius:15px;padding:11px}.mission-steps b{width:31px;height:31px;flex:0 0 31px;border-radius:10px;background:var(--green);color:white;display:grid;place-items:center}.mission-steps strong{display:block}.mission-steps span{font-size:.9rem}
+    .planner-card{border:3px solid #d7e8d2;border-radius:20px;padding:16px;background:linear-gradient(180deg,#fbfef9,#f3f9f0);margin:18px 0}.planner-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.planner-heading h3{margin:3px 0 0}.planner-kicker{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;font-weight:900;color:var(--green-dark)}.plan-count{background:#e2f3d6;color:#245d34;border-radius:999px;padding:6px 10px;font-size:.82rem;font-weight:900;white-space:nowrap}.planner-help{color:var(--muted);margin:6px 0 12px}
+    .planner-palette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.palette-block{border:2px dashed #b9d3b5;background:#fff;border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}.palette-block:hover{background:#f1f8ed;border-color:#79ad72}.palette-block small{font-weight:900;color:#315c38;white-space:nowrap}
+    .plan-stage{border:3px solid #cbdcc8;border-radius:18px;background:#eef5eb;padding:16px;min-height:130px}.event-head{margin-bottom:10px}.plan-sequence{display:grid;gap:10px;margin-left:28px}.plan-empty{border:2px dashed #b9ccb6;border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-weight:800;background:rgba(255,255,255,.55)}
+    .plan-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:9px;align-items:center}.plan-order{width:31px;height:31px;border-radius:10px;background:#fff;color:#31583a;display:grid;place-items:center;font-weight:900;border:2px solid #c9d9c6}.plan-item .mc-block{width:max-content;max-width:100%;flex-wrap:wrap}.plan-controls{display:flex;gap:5px}.plan-controls button{width:34px;height:34px;border:1px solid #c8d8c5;border-radius:10px;background:white;font-weight:900;color:#365340}.plan-controls button:hover{background:#e6f2e2}.plan-controls button:disabled{opacity:.3;cursor:not-allowed}
+    .mc-inline-select,.mc-inline-number{border:0!important;box-shadow:none!important;width:auto!important;min-width:0!important;padding:3px 22px 3px 7px!important;border-radius:5px!important;background:rgba(255,255,255,.95)!important;color:#21372a!important;font-weight:900!important}.mc-command-input{width:74px!important;border:0!important;box-shadow:none!important;border-radius:5px!important;padding:4px 7px!important;background:rgba(255,255,255,.95)!important;color:#21372a!important;font-weight:900!important}.mc-inline-select{appearance:auto}.mc-inline-number{width:58px!important;padding-right:4px!important;text-align:center}
+    .planner-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}.planner-nudge{color:var(--muted);font-size:.88rem;font-weight:800}.test-panel{display:grid;gap:12px;border:2px solid #d7e5f0;background:#f4f9fd;border-radius:18px;padding:16px;margin:16px 0}.test-panel .world-btn{justify-self:start}.test-check{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:13px;background:#fff;font-weight:850}.test-check input{margin-top:3px;accent-color:var(--green);transform:scale(1.22)}
+    .decision-card{display:grid;gap:12px;border:2px solid #d9e6d5;border-radius:18px;padding:16px;background:#fbfef9}.decision-icon{font-size:2rem}.decision-card p{margin:0;color:var(--muted)}.decision-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.decision-options label{display:flex;gap:10px;align-items:center;border:2px solid #d7e4d4;border-radius:16px;padding:12px;background:white}.decision-options input{accent-color:var(--green);transform:scale(1.25)}
+    .chunk-strip{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:16px}.chunk-strip>div:not(.chunk-arrow){display:flex;gap:10px;align-items:center;background:#eef7ea;border:2px solid #d9e8d5;border-radius:16px;padding:12px}.chunk-strip b{width:36px;height:36px;border-radius:11px;background:var(--green);color:white;display:grid;place-items:center}.chunk-strip strong,.chunk-strip small{display:block}.chunk-strip small{color:var(--muted);margin-top:2px}.chunk-arrow{font-size:1.5rem;font-weight:900;color:var(--green)}.chunk-card{border-color:#cfe0ee}.continuation-stage{background:#f0f5fb}.continuation-label{font-weight:900;color:#49627a;margin-bottom:10px}
+    .debug-choice{border:2px solid #ead8c7;border-radius:18px;padding:16px;background:#fffaf4}.bug-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.bug-options label{border:2px solid #eadfd4;border-radius:14px;padding:11px;background:white}.bug-options input{accent-color:var(--orange);margin-right:6px}.copy-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}.copy-row span{color:var(--muted);font-weight:800}
+    .independence-meter{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0 16px;color:var(--muted);font-size:.88rem;font-weight:800}.independence-meter>div{display:flex;gap:5px}.independence-meter i{width:30px;height:9px;border-radius:999px;background:#dbe6d8}.independence-meter i.active{background:var(--green)}
+    @media(max-width:800px){.mission-steps{grid-template-columns:1fr 1fr}.bug-options{grid-template-columns:1fr 1fr}.planner-palette,.decision-options{grid-template-columns:1fr}.palette-block{align-items:flex-start;flex-direction:column}.plan-item{grid-template-columns:30px minmax(0,1fr)}.plan-controls{grid-column:2}.plan-sequence{margin-left:12px}}
+    @media(max-width:520px){.mission-steps{grid-template-columns:1fr}.chunk-strip{grid-template-columns:1fr}.chunk-arrow{transform:rotate(90deg);text-align:center}.bug-options{grid-template-columns:1fr}.planner-heading{flex-direction:column}.plan-stage{padding:12px}.plan-sequence{margin-left:4px}.mc-inline-number{width:52px!important}}
+
+    /* Reflection */
+    .reflect-q{margin:0 0 16px}.reflect-q label{display:block;font-weight:900;margin-bottom:7px}.confidence{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.confidence label{border:2px solid #dce7db;border-radius:14px;padding:12px;text-align:center;font-weight:900;background:#fbfefb}.confidence input{display:block;margin:0 auto 7px;accent-color:var(--green)}
+    .freeplay{background:linear-gradient(135deg,#fff4c8,#fffaf0);border:2px solid #f0d46d;border-radius:22px;padding:24px;text-align:center}.freeplay .big-icon{font-size:4rem}
+
+    /* Plenary modal */
+    #plenaryBanner{position:fixed;inset:0;background:rgba(15,29,20,.72);z-index:100;display:none;place-items:center;padding:20px}.plenary-card{width:min(520px,100%);background:#fff;border-radius:24px;padding:28px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.3)}.plenary-card .clock{font-size:3.5rem}.plenary-card p{color:var(--muted)}
+
+    @media(max-width:900px){.learning-inner{grid-template-columns:1fr 1fr}.app-shell{grid-template-columns:1fr}.side{position:static}.nav-list{grid-template-columns:repeat(2,minmax(0,1fr))}.world-launch{grid-template-columns:1fr}}
+    @media(max-width:650px){.name-row{grid-template-columns:1fr}.learning-inner{grid-template-columns:1fr}.learn-chip:not(:first-child){display:none}.grid-2,.grid-3,.prompt-grid,.confidence,.block-compare{grid-template-columns:1fr}.app-shell{padding:10px}.side{padding:10px}.nav-list{grid-template-columns:1fr 1fr}.world-visual{min-height:140px}.checkpoint{grid-template-columns:1fr}.checkpoint-icon{width:54px;height:54px}.mc-block{font-size:.88rem;padding-left:14px}.mc-block-stack .nested{margin-left:12px}}
+  </style>
+</head>
+<body>
+  <section id="landing" aria-labelledby="landing-title">
+    <div class="landing-card">
+      <span class="eyebrow">⛏️ KS2 • Minecraft Education</span>
+      <h1 id="landing-title">Agent Academy</h1>
+      <p class="landing-sub">Open the Minecraft world, complete the challenges there, and use this website to <strong>think, plan, test and reflect</strong>.</p>
+      <div class="name-row">
+        <label class="sr-only" for="studentName">Your name</label>
+        <input id="studentName" type="text" maxlength="40" autocomplete="name" placeholder="Enter your name" />
+        <button id="enterBtn" class="primary" type="button">Enter lesson →</button>
+      </div>
+      <p class="landing-note">Teacher check: enter <strong>teacher</strong> to unlock every page. Student progress is saved on this device.</p>
+    </div>
+  </section>
+
+  <div id="app" class="hidden">
+    <header class="learning-strip">
+      <div class="learning-inner">
+        <div class="learn-chip"><b>WAGBA</b><span>Choose and sequence MakeCode blocks to program the Agent and debug mistakes.</span></div>
+        <div class="learn-chip"><b>K • KNOW</b><span>Code Builder, agent move, agent turn, on chat command, sequence, bug.</span></div>
+        <div class="learn-chip"><b>S • SKILL</b><span>Plan → code → test → debug.</span></div>
+        <div class="learn-chip"><b>U • UNDERSTAND</b><span>Order matters because the Agent follows instructions exactly.</span></div>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="side">
+        <div class="user-badge"><div class="avatar">🧑‍💻</div><div><strong id="userNameLabel">Learner</strong><small id="modeLabel">Student mode</small></div></div>
+        <div class="status">Lesson progress</div>
+        <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        <nav id="navList" class="nav-list" aria-label="Lesson pages"></nav>
+        <div id="teacherPill" class="teacher-pill hidden">🔓 Teacher mode</div>
+        <button id="resetBtn" class="reset-link" type="button">Reset this learner</button>
+      </aside>
+
+      <main>
+        <!-- Expectations -->
+        <section class="page" data-page="expectations">
+          <div class="hero-card"><span class="page-tag">🎯 Start here</span><h2>Learning first. Free play later.</h2><p>The Minecraft world is our classroom today. Complete the learning checkpoints and reflection before free play.</p></div>
+          <div class="card">
+            <h3>Our learning expectations</h3>
+            <div class="expect-list">
+              <label class="check-row"><input class="expect-check" type="checkbox"><span><strong>🧠 Think before I code</strong><span>I will predict or plan before pressing run.</span></span></label>
+              <label class="check-row"><input class="expect-check" type="checkbox"><span><strong>👀 Watch the Agent carefully</strong><span>I will notice where my sequence works and where it goes wrong.</span></span></label>
+              <label class="check-row"><input class="expect-check" type="checkbox"><span><strong>🐞 Debug, do not give up</strong><span>A bug is useful information. I will change one thing and test again.</span></span></label>
+              <label class="check-row"><input class="expect-check" type="checkbox"><span><strong>🎮 Free play after reflection</strong><span>I will finish my learning reflection first.</span></span></label>
+            </div>
+            <div class="actions"><span id="expectStatus" class="status">Tick all 4 to continue.</span><button id="expectNext" class="primary" disabled type="button">Reading →</button></div>
+          </div>
+        </section>
+
+        <!-- Reading -->
+        <section class="page" data-page="reading">
+          <div class="hero-card"><span class="page-tag">📖 Light reading</span><h2>Meet the tools you will use</h2><p>Read the small cards. You do not need to memorise everything yet.</p></div>
+          <div class="grid-2">
+            <div class="vocab-card"><b>🤖 Agent</b><span>Your programmable helper. It follows coded instructions in order.</span></div>
+            <div class="vocab-card"><b>🧩 Code Builder</b><span>The coding palette where you drag MakeCode blocks to create a program.</span></div>
+            <div class="vocab-card"><b>🔢 Sequencing</b><span>Putting instructions in the correct order. Order matters.</span></div>
+            <div class="vocab-card"><b>📝 Pseudocode</b><span>A simple, informal plan for a program before coding it.</span></div>
+            <div class="vocab-card"><b>🪜 Decomposition</b><span>Breaking a big problem into smaller, easier parts.</span></div>
+            <div class="vocab-card"><b>🐞 Debugging</b><span>Finding and fixing errors in your code.</span></div>
+          </div>
+          <div class="card">
+            <h3>Code Builder in 5 small steps</h3>
+            <div class="step-list">
+              <div class="step">Read the challenge.</div><div class="step">Press <strong>C</strong> to open Code Builder.</div><div class="step">Drag blocks into the coding canvas.</div><div class="step">Test your code and watch the Agent.</div><div class="step">Debug any mistake and test again.</div>
+            </div>
+            <div class="callout tip"><strong>Reading support</strong>Minecraft Education has Immersive Reader for signs and NPC dialogue. Use it when reading gets in the way of learning.</div>
+            <div class="think-tool">
+              <div class="think-title"><span class="bubble">🧱</span>Meet three MakeCode blocks you may see</div>
+              <p class="block-bank-note">Look at the shape and wording. These are thinking references for the real blocks inside Minecraft Code Builder.</p>
+              <div class="block-bank">
+                <div class="mc-block-row">
+                  <div class="mc-block mc-player">on chat command <span class="mc-input">1</span></div>
+                  <div class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></div>
+                  <div class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></div>
+                </div>
+              </div>
+              <div class="callout"><strong>Think about the job of each block</strong>The chat block starts code when a matching chat message is typed. The move block changes position. The turn block changes which way the Agent faces.</div>
+            </div>
+            <label class="check-row"><input id="readCheck" type="checkbox"><span><strong>✅ I have read the cards and block examples</strong><span>I am ready for the 10-question starter.</span></span></label>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="readingNext" class="primary" disabled type="button">Starter quiz →</button></div>
+          </div>
+        </section>
+
+        <!-- Quiz -->
+        <section class="page" data-page="quiz">
+          <div class="hero-card"><span class="page-tag">🧠 Starter quiz</span><h2>10 quick checks</h2><p>Score at least 7/10. Change answers and try again when needed.</p></div>
+          <form id="quizForm" class="card"><div id="quizQuestions"></div><div class="actions"><button class="secondary back-btn" type="button">← Back</button><button class="primary" type="submit">Check my answers</button></div><div id="quizScore" class="quiz-score" aria-live="polite"></div></form>
+          <div id="quizNextCard" class="card hidden"><div class="callout success"><strong>🌟 Starter complete</strong>You are ready to launch the Minecraft world.</div><div class="actions"><span></span><button class="primary" data-go="world" type="button">Open world page →</button></div></div>
+        </section>
+
+        <!-- World launch -->
+        <section class="page" data-page="world">
+          <div class="hero-card"><span class="page-tag">🌍 Minecraft world</span><h2>Open the Animal Research Center</h2><p>All movement and coding challenges happen inside Minecraft Education. Keep this website open as your thinking companion.</p></div>
+          <div class="world-launch">
+            <div><h3>Ready to enter?</h3><p>Open the official world, return here when each mission asks you to plan, test or reflect.</p><a class="world-btn big" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">⛏️ Open Minecraft World ↗</a></div>
+            <div class="world-visual" aria-label="Illustration of an Agent moving toward a gold block"></div>
+          </div>
+          <div class="card">
+            <div class="checkpoint"><div class="checkpoint-icon">🧭</div><div><h3>Before you continue</h3><p>When the world opens, follow the instructions in the Animal Research Center. Speak to Dr. Barwin and read the NPC guidance.</p></div></div>
+            <div class="evidence-checks">
+              <label><input id="worldOpened" type="checkbox">I opened the Minecraft Education world.</label>
+              <label><input id="worldReady" type="checkbox">I understand that the challenge happens in Minecraft, not on this website.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="worldNext" class="primary" disabled type="button">Mission 1 →</button></div>
+          </div>
+        </section>
+
+        <!-- Checkpoint 1 -->
+        <section class="page" data-page="navigation">
+          <div class="hero-card"><span class="page-tag">🤖 Mission 1</span><h2>Build your first Agent plan</h2><p>Look at the real route in Minecraft first. Then build the same block plan here before you test it.</p></div>
+          <div class="card">
+            <div class="mission-steps" aria-label="Mission steps">
+              <div><b>1</b><span><strong>LOOK</strong> at the Agent and gold block in Minecraft.</span></div>
+              <div><b>2</b><span><strong>BUILD</strong> a block plan below.</span></div>
+              <div><b>3</b><span><strong>PREDICT</strong> where the Agent will finish.</span></div>
+              <div><b>4</b><span><strong>TEST</strong> the real blocks in Minecraft.</span></div>
+            </div>
+            <div class="callout"><strong>Do this in Minecraft first</strong>Complete the ARC movement practice, enter the lab and reach the first Agent coding challenge. Stop before pressing Start.</div>
+            <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">⛏️ Look at Mission 1 in Minecraft ↗</a>
+
+            <div class="planner-card">
+              <div class="planner-heading"><div><span class="planner-kicker">🧱 My block plan</span><h3>What should the Agent do?</h3></div><span class="plan-count" data-plan-count="plan1">0 blocks</span></div>
+              <p class="planner-help">Tap a block to add it. Then change its dropdown or number. Use ▲ and ▼ to fix the order. Keep chat command <strong>1</strong> unless Minecraft shows a different trigger.</p>
+              <div class="block-planner" data-planner="plan1" data-command="1">
+                <div class="planner-palette" aria-label="Block choices">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move block</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn block</small></button>
+                </div>
+                <div class="plan-stage"><div class="mc-block mc-player event-head">on chat command <input class="mc-command-input" data-command-input type="text" maxlength="12" value="1" aria-label="Chat command name"></div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear plan</button><span class="planner-nudge" data-plan-nudge>Add your first block above.</span></div>
+              </div>
+            </div>
+
+            <div class="test-panel">
+              <div class="prompt-box"><label for="plan1Predict">🔮 Before testing, I predict the Agent will...</label><select id="plan1Predict"><option value="">Choose...</option><option>reach the gold block</option><option>stop before the gold block</option><option>go past the gold block</option><option>move in the wrong direction</option></select></div>
+              <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">▶️ Build and test these blocks in Minecraft ↗</a>
+              <div class="prompt-box"><label for="plan1Result">🧪 What happened?</label><select id="plan1Result"><option value="">Choose after testing...</option><option>It worked</option><option>It partly worked</option><option>It did not work yet</option></select></div>
+              <label class="test-check"><input id="plan1Tested" type="checkbox"> I tested my block plan in Minecraft.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="navigationNext" class="primary checkpoint-next" data-check="navigation" disabled type="button">Mission 2 →</button></div>
+            <div class="checkpoint-summary">Build at least one block, predict, test in Minecraft and record what happened.</div>
+          </div>
+        </section>
+
+        <!-- Checkpoint 2 -->
+        <section class="page" data-page="codebuilder">
+          <div class="hero-card"><span class="page-tag">↪️ Mission 2</span><h2>When the route bends</h2><p>This time, decide whether the Agent needs to <strong>move</strong> or <strong>turn</strong>. Then build the route as blocks.</p></div>
+          <div class="card">
+            <div class="decision-card">
+              <div class="decision-icon">🧠</div>
+              <div><h3>Quick block decision</h3><p>The Agent is facing forward. The path now bends to its right. Which block changes the way it is facing?</p></div>
+              <div class="decision-options">
+                <label><input type="radio" name="turnDecision" value="move"> <span class="mc-block mc-agent">agent move <span class="mc-drop">right</span> by <span class="mc-input mc-number">1</span></span></label>
+                <label><input type="radio" name="turnDecision" value="turn"> <span class="mc-block mc-agent">agent turn <span class="mc-drop">right</span></span></label>
+              </div>
+              <div id="turnDecisionFeedback" class="status">Choose one block.</div>
+            </div>
+            <div class="callout tip"><strong>Remember</strong><em>Move right</em> changes position. <em>Turn right</em> changes which way the Agent faces. Official MakeCode treats these as different Agent blocks.</div>
+            <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">⛏️ Look at the next route in Minecraft ↗</a>
+
+            <div class="planner-card">
+              <div class="planner-heading"><div><span class="planner-kicker">🧱 My block plan</span><h3>Build the bend in the route</h3></div><span class="plan-count" data-plan-count="plan2">0 blocks</span></div>
+              <p class="planner-help">A bend often needs a move block, then a turn block, then another move block. Only add what your Minecraft route needs.</p>
+              <div class="block-planner" data-planner="plan2" data-command="1">
+                <div class="planner-palette">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move block</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn block</small></button>
+                </div>
+                <div class="plan-stage"><div class="mc-block mc-player event-head">on chat command <input class="mc-command-input" data-command-input type="text" maxlength="12" value="1" aria-label="Chat command name"></div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear plan</button><span class="planner-nudge" data-plan-nudge>Try building the route in order.</span></div>
+              </div>
+            </div>
+
+            <div class="test-panel">
+              <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">▶️ Build and test Mission 2 in Minecraft ↗</a>
+              <div class="prompt-box"><label for="plan2Result">🧪 My test result</label><select id="plan2Result"><option value="">Choose after testing...</option><option>It worked</option><option>It partly worked</option><option>It did not work yet</option></select></div>
+              <label class="test-check"><input id="plan2Tested" type="checkbox"> I tested this sequence in Minecraft.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="codebuilderNext" class="primary checkpoint-next" data-check="codebuilder" disabled type="button">Mission 3 →</button></div>
+            <div class="checkpoint-summary">Choose the correct turn idea, build at least two blocks, then test.</div>
+          </div>
+        </section>
+
+        <!-- Checkpoint 3 -->
+        <section class="page" data-page="sequence">
+          <div class="hero-card"><span class="page-tag">🪜 Mission 3</span><h2>Break a longer route into chunks</h2><p>Do not hold the whole route in your head. Build the first mini-goal, then the next mini-goal.</p></div>
+          <div class="card">
+            <div class="chunk-strip"><div><b>A</b><span><strong>Chunk A</strong><small>Get the Agent to the first useful point.</small></span></div><div class="chunk-arrow">→</div><div><b>B</b><span><strong>Chunk B</strong><small>Continue from there to the goal.</small></span></div></div>
+            <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">👀 Look at a longer Agent route in Minecraft ↗</a>
+
+            <div class="planner-card chunk-card">
+              <div class="planner-heading"><div><span class="planner-kicker">A • First mini-goal</span><h3>Build Chunk A</h3></div><span class="plan-count" data-plan-count="plan3a">0 blocks</span></div>
+              <div class="block-planner" data-planner="plan3a" data-command="1">
+                <div class="planner-palette">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn</small></button>
+                </div>
+                <div class="plan-stage"><div class="mc-block mc-player event-head">on chat command <input class="mc-command-input" data-command-input type="text" maxlength="12" value="1" aria-label="Chat command name"></div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear A</button><span class="planner-nudge" data-plan-nudge>Build only the first mini-goal.</span></div>
+              </div>
+            </div>
+
+            <div class="planner-card chunk-card">
+              <div class="planner-heading"><div><span class="planner-kicker">B • Add underneath A</span><h3>Build Chunk B</h3></div><span class="plan-count" data-plan-count="plan3b">0 blocks</span></div>
+              <p class="planner-help">In Minecraft, place these blocks directly underneath Chunk A inside the same <strong>on chat command 3</strong> stack.</p>
+              <div class="block-planner" data-planner="plan3b" data-command="1" data-hide-event="true">
+                <div class="planner-palette">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn</small></button>
+                </div>
+                <div class="plan-stage continuation-stage"><div class="continuation-label">↳ continue underneath Chunk A</div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear B</button><span class="planner-nudge" data-plan-nudge>Now plan the next mini-goal.</span></div>
+              </div>
+            </div>
+
+            <div class="test-panel">
+              <div class="callout"><strong>Build in Minecraft</strong>Put Chunk A and Chunk B together in one MakeCode stack. Test after Chunk A if you need to, then add Chunk B.</div>
+              <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">▶️ Test both chunks in Minecraft ↗</a>
+              <div class="prompt-box"><label for="plan3Result">🧪 What happened?</label><select id="plan3Result"><option value="">Choose after testing...</option><option>Both chunks worked</option><option>Chunk A worked; Chunk B needs fixing</option><option>Chunk A needs fixing first</option></select></div>
+              <label class="test-check"><input id="plan3Tested" type="checkbox"> I tested my chunks in Minecraft.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="sequenceNext" class="primary checkpoint-next" data-check="sequence" disabled type="button">Mission 4 →</button></div>
+            <div class="checkpoint-summary">Build at least one block in each chunk, combine them in Minecraft and test.</div>
+          </div>
+        </section>
+
+        <!-- Checkpoint 4 -->
+        <section class="page" data-page="debugging">
+          <div class="hero-card"><span class="page-tag">🐞 Mission 4</span><h2>Fix a block plan that did not work</h2><p>Debugging is easier when you change one thing at a time. Copy your last plan, find the first wrong block and edit it.</p></div>
+          <div class="card">
+            <div class="debug-choice">
+              <h3>First: what kind of bug did you notice?</h3>
+              <div class="bug-options">
+                <label><input type="radio" name="bugType" value="type"><span>🧱 Wrong block type</span></label>
+                <label><input type="radio" name="bugType" value="direction"><span>🧭 Wrong direction</span></label>
+                <label><input type="radio" name="bugType" value="number"><span>🔢 Wrong number</span></label>
+                <label><input type="radio" name="bugType" value="order"><span>↕️ Wrong order</span></label>
+              </div>
+            </div>
+
+            <div class="planner-card">
+              <div class="planner-heading"><div><span class="planner-kicker">🔧 My fixed plan</span><h3>Edit the blocks</h3></div><span class="plan-count" data-plan-count="plan4">0 blocks</span></div>
+              <div class="copy-row"><button id="copyMission3" class="secondary" type="button">📋 Copy my Mission 3 blocks</button><span>Then change only what needs fixing.</span></div>
+              <div class="block-planner" data-planner="plan4" data-command="1">
+                <div class="planner-palette">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn</small></button>
+                </div>
+                <div class="plan-stage"><div class="mc-block mc-player event-head">on chat command <input class="mc-command-input" data-command-input type="text" maxlength="12" value="1" aria-label="Chat command name"></div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear fixed plan</button><span class="planner-nudge" data-plan-nudge>Copy or add blocks, then edit one thing.</span></div>
+              </div>
+            </div>
+
+            <div class="test-panel">
+              <div class="callout tip"><strong>Debugging rule</strong>Watch where the Agent first stops matching your plan. Fix that point first — not everything at once.</div>
+              <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">▶️ Retest my fixed blocks in Minecraft ↗</a>
+              <div class="prompt-box"><label for="plan4Result">🔁 After retesting...</label><select id="plan4Result"><option value="">Choose...</option><option>The fix worked</option><option>It improved, but another bug remains</option><option>I need another small change</option></select></div>
+              <label class="test-check"><input id="plan4Tested" type="checkbox"> I retested after changing my plan.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="debuggingNext" class="primary checkpoint-next" data-check="debugging" disabled type="button">Mission 5 →</button></div>
+            <div class="checkpoint-summary">Choose a bug type, build or copy a plan, edit it and retest.</div>
+          </div>
+        </section>
+
+        <!-- Checkpoint 5 -->
+        <section class="page" data-page="challenge">
+          <div class="hero-card"><span class="page-tag">⭐ Mission 5</span><h2>Use the planner for a new Agent challenge</h2><p>Now you choose the blocks more independently. Build a plan here, copy it into Minecraft and improve it after each test.</p></div>
+          <div class="card">
+            <div class="independence-meter"><span>More support</span><div><i></i><i></i><i></i><i class="active"></i></div><span>More independence</span></div>
+            <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">👀 Choose the next Agent challenge in Minecraft ↗</a>
+
+            <div class="planner-card">
+              <div class="planner-heading"><div><span class="planner-kicker">🏁 Final planner</span><h3>Build, order and edit your blocks</h3></div><span class="plan-count" data-plan-count="plan5">0 blocks</span></div>
+              <p class="planner-help">Use as many blocks as the route needs. Repeated moves can use a larger number instead of many identical blocks.</p>
+              <div class="block-planner" data-planner="plan5" data-command="1">
+                <div class="planner-palette">
+                  <button class="palette-block add-plan-block" type="button" data-kind="move"><span class="mc-block mc-agent">agent move <span class="mc-drop">forward</span> by <span class="mc-input mc-number">1</span></span><small>+ Add move block</small></button>
+                  <button class="palette-block add-plan-block" type="button" data-kind="turn"><span class="mc-block mc-agent">agent turn <span class="mc-drop">left</span></span><small>+ Add turn block</small></button>
+                </div>
+                <div class="plan-stage"><div class="mc-block mc-player event-head">on chat command <input class="mc-command-input" data-command-input type="text" maxlength="12" value="1" aria-label="Chat command name"></div><div class="plan-sequence" data-plan-sequence></div></div>
+                <div class="planner-footer"><button class="small-btn" type="button" data-clear-plan>🗑️ Clear plan</button><span class="planner-nudge" data-plan-nudge>Build your best first attempt.</span></div>
+              </div>
+            </div>
+
+            <div class="test-panel">
+              <a class="world-btn" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">▶️ Test Mission 5 in Minecraft ↗</a>
+              <div class="prompt-box"><label for="plan5Result">🧪 My latest test</label><select id="plan5Result"><option value="">Choose...</option><option>Reached the goal</option><option>Closer than before</option><option>Still debugging</option></select></div>
+              <label class="test-check"><input id="plan5Tested" type="checkbox"> I tested this plan in Minecraft.</label>
+              <label class="test-check"><input id="challengeComplete" type="checkbox"> I reached “Area Complete!” or made a genuine best effort with teacher support.</label>
+              <label class="test-check"><input id="challengeExplain" type="checkbox"> I can point to one block and explain what it does.</label>
+            </div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button id="challengeNext" class="primary checkpoint-next" data-check="challenge" disabled type="button">Reflection →</button></div>
+            <div class="checkpoint-summary">Plan, test and show that you can explain at least one block.</div>
+          </div>
+        </section>
+
+        <!-- Reflection -->
+        <section class="page" data-page="reflection">
+          <div class="hero-card"><span class="page-tag">💭 Plenary</span><h2>Pause Minecraft and reflect</h2><p>At <strong>2:45 pm GMT+8</strong>, student devices direct here automatically. Finish this to unlock free play.</p></div>
+          <form id="reflectionForm" class="card">
+            <div class="reflect-q"><label for="r1">1. What key opens Code Builder?</label><input id="r1" type="text" maxlength="20" required placeholder="One key..." /></div>
+            <div class="reflect-q"><label for="r2">2. Choose one MakeCode Agent block you used and explain why it matched the route.</label><textarea id="r2" required placeholder="I used the agent ... block because..."></textarea></div>
+            <div class="reflect-q"><label for="r3">3. Describe one bug or good struggle from today. How did you respond?</label><textarea id="r3" required placeholder="My bug / good struggle was... I responded by..."></textarea></div>
+            <div class="reflect-q"><label for="r4">4. What makes the <em>on chat command</em> block start running its blocks?</label><textarea id="r4" required placeholder="It starts when..."></textarea></div>
+            <div class="reflect-q"><label>5. Where are you now?</label><div class="confidence"><label><input type="radio" name="confidence" value="Need more support" required>🌱<br>Need more support</label><label><input type="radio" name="confidence" value="Growing in confidence">🌿<br>Growing in confidence</label><label><input type="radio" name="confidence" value="Ready to explain">🌳<br>Ready to explain</label></div></div>
+            <div class="actions"><button class="secondary back-btn" type="button">← Back</button><button class="primary" type="submit">Submit reflection ✓</button></div>
+            <div id="reflectionMessage" class="status" aria-live="polite">Be honest. Reflection helps your next lesson.</div>
+          </form>
+        </section>
+
+        <!-- Complete -->
+        <section class="page" data-page="complete">
+          <div class="hero-card"><span class="page-tag">🏆 Lesson complete</span><h2>Area Complete!</h2><p>You used a coding mindset: plan, sequence, test, notice and debug.</p></div>
+          <div class="freeplay"><div class="big-icon">🎮</div><h2>Free play unlocked</h2><p>You completed the reflection. You may now use the remaining lesson time for teacher-approved free play in Minecraft.</p><a class="world-btn big" href="https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676" target="_blank" rel="noopener">⛏️ Return to Minecraft ↗</a></div>
+          <div class="card"><h3>Today you practised</h3><div class="grid-3"><div class="mini-card"><div class="icon">🔢</div><h3>Sequencing</h3><p>Putting instructions in a useful order.</p></div><div class="mini-card"><div class="icon">🪜</div><h3>Decomposition</h3><p>Breaking routes into smaller parts.</p></div><div class="mini-card"><div class="icon">🐞</div><h3>Debugging</h3><p>Finding and fixing mistakes through testing.</p></div></div><div class="actions"><button class="secondary back-btn" type="button">← Review reflection</button><span></span></div></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="plenaryBanner" role="dialog" aria-modal="true" aria-labelledby="plenaryTitle">
+    <div class="plenary-card"><div class="clock">🕝</div><h2 id="plenaryTitle">Plenary time</h2><p>It is 2:45 pm in GMT+8. Pause Minecraft and complete your reflection before free play.</p><button id="goReflection" class="primary" type="button">Go to reflection →</button></div>
+  </div>
+
+<script>
+(() => {
+  'use strict';
+  const WORLD_URL='https://education.minecraft.net/world/a1135370-adac-4b58-9fce-9910eee84676';
+  const pages=[
+    ['expectations','Expectations','🎯'],['reading','Reading','📖'],['quiz','Starter quiz','🧠'],['world','Open world','🌍'],
+    ['navigation','Mission 1','🤖'],['codebuilder','Mission 2','↪️'],['sequence','Mission 3','🪜'],
+    ['debugging','Mission 4','🐞'],['challenge','Mission 5','⭐'],['reflection','Reflection','💭'],['complete','Complete','🏆']
+  ];
+  const quiz=[
+    {q:'What is computer science?',a:1,o:['Only playing games','Using computers to help solve problems','Typing as fast as possible']},
+    {q:'What is Code Builder?',a:0,o:['A coding palette used to create programs','A Minecraft animal','A type of ladder']},
+    {q:'What is sequencing?',a:2,o:['Deleting every block','Moving randomly','Putting instructions in the correct order']},
+    {q:'What is pseudocode?',a:1,o:['A Minecraft skin','An informal plan for a program or algorithm','A golden pressure plate']},
+    {q:'Which key opens Code Builder?',a:2,o:['T','W','C']},
+    {q:'What should you use to test blocks in Code Builder?',a:0,o:['The green start arrow','The bed','The inventory only']},
+    {q:'What is debugging?',a:2,o:['Making a new world','Moving randomly','Finding and fixing errors in code']},
+    {q:'Why should you watch the Agent when code runs?',a:1,o:['To make the screen brighter','To spot where a problem happens','To change the weather']},
+    {q:'What is decomposition?',a:0,o:['Breaking a problem into smaller parts','Making code longer','Skipping the challenge']},
+    {q:'Which MakeCode block would move the Agent forward by 1 block?',a:1,o:['agent turn left','agent move forward by 1','on chat command 1']}
+  ];
+
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  let state=null;
+  let storageKey='';
+  let teacher=false;
+
+  const defaultState=()=>({
+    current:'expectations', completed:{}, quizScore:0, answers:{}, reflection:{},
+    fields:{}, checks:{}, planners:{}, radios:{}, plenarySeenDate:''
+  });
+
+  function safeName(v){return v.trim().replace(/\s+/g,' ').slice(0,40)}
+  function keyFor(name){return 'agent-academy-v3::'+name.toLowerCase()}
+  function load(name){
+    storageKey=keyFor(name);
+    try{const saved=JSON.parse(localStorage.getItem(storageKey));state=Object.assign(defaultState(),saved||{});state.completed=Object.assign({},saved?.completed||{});state.fields=Object.assign({},saved?.fields||{});state.checks=Object.assign({},saved?.checks||{});state.planners=Object.assign({},saved?.planners||{});state.radios=Object.assign({},saved?.radios||{});}catch{state=defaultState();}
+  }
+  function save(){if(!teacher && state) localStorage.setItem(storageKey,JSON.stringify(state))}
+  function complete(id){state.completed[id]=true;save();renderNav();updateProgress()}
+  function isComplete(id){return !!state.completed[id]}
+  function pageIndex(id){return pages.findIndex(p=>p[0]===id)}
+  function unlocked(id){
+    if(teacher) return true;
+    const i=pageIndex(id); if(i<=0) return true;
+    if(id==='complete') return isComplete('reflection');
+    return isComplete(pages[i-1][0]);
+  }
+
+  function renderNav(){
+    const nav=$('#navList'); nav.innerHTML='';
+    pages.forEach(([id,label,icon],i)=>{
+      const b=document.createElement('button');b.type='button';b.className='nav-btn'+(state.current===id?' active':'');b.disabled=!unlocked(id);
+      b.innerHTML=`<span class="nav-num">${i+1}</span><span>${icon} ${label}</span><span class="nav-state">${isComplete(id)||teacher?'✓':unlocked(id)?'→':'🔒'}</span>`;
+      b.addEventListener('click',()=>go(id));nav.appendChild(b);
+    });
+  }
+  function updateProgress(){
+    const required=pages.slice(0,-1).map(p=>p[0]);
+    const done=required.filter(id=>isComplete(id)).length;
+    $('#progressFill').style.width=`${Math.round(done/required.length*100)}%`;
+  }
+  function go(id,{force=false}={}){
+    if(!force && !unlocked(id)) return;
+    state.current=id;save();
+    $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===id));
+    renderNav(); window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function start(){
+    const name=safeName($('#studentName').value); if(!name){$('#studentName').focus();return;}
+    teacher=name.toLowerCase()==='teacher'; load(name);
+    if(teacher){state=defaultState();state.current='expectations';pages.forEach(p=>state.completed[p[0]]=true)}
+    $('#landing').classList.add('hidden');$('#app').classList.remove('hidden');
+    $('#userNameLabel').textContent=name;$('#modeLabel').textContent=teacher?'Teacher preview':'Student mode';$('#teacherPill').classList.toggle('hidden',!teacher);
+    renderQuiz();restoreInputs();wireDynamicValidation();renderNav();updateProgress();
+    if(!teacher && !unlocked(state.current)) state.current='expectations';
+    go(state.current,{force:true});checkPlenary(true);
+  }
+
+  $('#enterBtn').addEventListener('click',start);
+  $('#studentName').addEventListener('keydown',e=>{if(e.key==='Enter')start()});
+  $('#resetBtn').addEventListener('click',()=>{
+    if(teacher){location.reload();return}
+    if(confirm('Reset all saved progress for this learner on this device?')){localStorage.removeItem(storageKey);location.reload()}
+  });
+
+  // Expectations
+  function validateExpect(){const checks=$$('.expect-check');const n=checks.filter(c=>c.checked).length;$('#expectNext').disabled=n!==checks.length;$('#expectStatus').textContent=n===checks.length?'Ready to learn.':'Tick all 4 to continue.'}
+  $$('.expect-check').forEach((c,i)=>c.addEventListener('change',()=>{state.checks['expect'+i]=c.checked;save();validateExpect()}));
+  $('#expectNext').addEventListener('click',()=>{complete('expectations');go('reading')});
+  $('#readCheck').addEventListener('change',e=>{$('#readingNext').disabled=!e.target.checked;state.checks.readCheck=e.target.checked;save()});
+  $('#readingNext').addEventListener('click',()=>{complete('reading');go('quiz')});
+
+  // quiz
+  function renderQuiz(){
+    const wrap=$('#quizQuestions'); if(wrap.childElementCount) return;
+    quiz.forEach((q,qi)=>{const fs=document.createElement('fieldset');fs.className='quiz-q';fs.dataset.q=qi;fs.innerHTML=`<legend>${qi+1}. ${q.q}</legend>${q.o.map((o,oi)=>`<label class="option"><input type="radio" name="q${qi}" value="${oi}"><span>${o}</span></label>`).join('')}<div class="quiz-feedback"></div>`;wrap.appendChild(fs)});
+  }
+  $('#quizForm').addEventListener('submit',e=>{
+    e.preventDefault();let score=0,answered=0;
+    quiz.forEach((q,qi)=>{const fs=$(`.quiz-q[data-q="${qi}"]`),chosen=$(`input[name="q${qi}"]:checked`);fs.classList.remove('correct','incorrect');const fb=$('.quiz-feedback',fs);if(!chosen){fb.textContent='Choose an answer.';return}answered++;const ok=Number(chosen.value)===q.a;if(ok)score++;fs.classList.add(ok?'correct':'incorrect');fb.textContent=ok?'✅ Correct':'🔁 Not yet — change your answer and try again.';state.answers['q'+qi]=chosen.value;});
+    if(answered<10){$('#quizScore').textContent=`Answer all 10 questions first. (${answered}/10 answered)`;save();return}
+    state.quizScore=Math.max(state.quizScore,score);save();$('#quizScore').textContent=`Score: ${score}/10 ${score>=7?'🌟':'— review and try again.'}`;
+    if(score>=7){complete('quiz');$('#quizNextCard').classList.remove('hidden')}
+  });
+
+  // world page
+  function validateWorld(){const ok=$('#worldOpened').checked&&$('#worldReady').checked;$('#worldNext').disabled=!ok}
+  ['worldOpened','worldReady'].forEach(id=>$('#'+id).addEventListener('change',e=>{state.checks[id]=e.target.checked;save();validateWorld()}));
+  $('#worldNext').addEventListener('click',()=>{complete('world');go('navigation')});
+
+  // KS2 interactive MakeCode planning boards
+  const MOVE_DIRECTIONS=['forward','back','left','right','up','down'];
+  const TURN_DIRECTIONS=['left','right'];
+  let plannersReady=false;
+
+  function plannerData(id){
+    if(!state.planners[id]) state.planners[id]=[];
+    return state.planners[id];
+  }
+  function defaultBlock(kind){return kind==='turn'?{kind:'turn',direction:'left'}:{kind:'move',direction:'forward',amount:1}}
+  function blockText(item){return item.kind==='turn'?`agent turn ${item.direction}`:`agent move ${item.direction} by ${item.amount}`}
+  function renderPlanner(id){
+    const root=$(`.block-planner[data-planner="${id}"]`); if(!root)return;
+    const seq=$('[data-plan-sequence]',root), items=plannerData(id); seq.innerHTML='';
+    if(!items.length){const empty=document.createElement('div');empty.className='plan-empty';empty.textContent='Tap “Add move block” or “Add turn block” above.';seq.appendChild(empty)}
+    items.forEach((item,index)=>{
+      const row=document.createElement('div');row.className='plan-item';
+      const directions=item.kind==='turn'?TURN_DIRECTIONS:MOVE_DIRECTIONS;
+      const amount=item.kind==='move'?` by <input class="mc-inline-number" type="number" min="1" max="20" value="${Math.max(1,Math.min(20,Number(item.amount)||1))}" aria-label="Number of blocks">`:'';
+      row.innerHTML=`<span class="plan-order">${index+1}</span><div class="mc-block mc-agent">agent ${item.kind} <select class="mc-inline-select" aria-label="Direction">${directions.map(d=>`<option value="${d}" ${d===item.direction?'selected':''}>${d}</option>`).join('')}</select>${amount}</div><div class="plan-controls"><button type="button" data-plan-action="up" title="Move block up" ${index===0?'disabled':''}>▲</button><button type="button" data-plan-action="down" title="Move block down" ${index===items.length-1?'disabled':''}>▼</button><button type="button" data-plan-action="delete" title="Delete block">✕</button></div>`;
+      const dir=$('.mc-inline-select',row);dir.addEventListener('change',()=>{items[index].direction=dir.value;save();renderPlanner(id);validateAll()});
+      const num=$('.mc-inline-number',row);if(num)num.addEventListener('change',()=>{items[index].amount=Math.max(1,Math.min(20,Number(num.value)||1));save();renderPlanner(id);validateAll()});
+      $$('[data-plan-action]',row).forEach(btn=>btn.addEventListener('click',()=>{
+        const act=btn.dataset.planAction;
+        if(act==='delete')items.splice(index,1);
+        if(act==='up'&&index>0)[items[index-1],items[index]]=[items[index],items[index-1]];
+        if(act==='down'&&index<items.length-1)[items[index+1],items[index]]=[items[index],items[index+1]];
+        save();renderPlanner(id);validateAll();
+      }));
+      seq.appendChild(row);
+    });
+    const count=$(`[data-plan-count="${id}"]`);if(count)count.textContent=`${items.length} block${items.length===1?'':'s'}`;
+    const nudge=$('[data-plan-nudge]',root);if(nudge)nudge.textContent=items.length?`Plan: ${items.map(blockText).join(' → ')}`:'Add your first block above.';
+  }
+  function renderAllPlanners(){$$('.block-planner').forEach(root=>renderPlanner(root.dataset.planner))}
+  function initPlanners(){
+    if(plannersReady){renderAllPlanners();return} plannersReady=true;
+    $$('.block-planner').forEach(root=>{
+      const id=root.dataset.planner;
+      const commandInput=$('[data-command-input]',root);
+      if(commandInput){
+        const commandKey=id+'Command';
+        commandInput.value=state.fields[commandKey]||root.dataset.command||'1';
+        commandInput.addEventListener('input',()=>{state.fields[commandKey]=commandInput.value;save()});
+      }
+      $$('.add-plan-block',root).forEach(btn=>btn.addEventListener('click',()=>{plannerData(id).push(defaultBlock(btn.dataset.kind));save();renderPlanner(id);validateAll()}));
+      const clear=$('[data-clear-plan]',root);if(clear)clear.addEventListener('click',()=>{state.planners[id]=[];save();renderPlanner(id);validateAll()});
+    });
+    renderAllPlanners();
+  }
+
+  // Simple field, checkbox and radio persistence
+  const fieldIds=['plan1Predict','plan1Result','plan2Result','plan3Result','plan4Result','plan5Result','r1','r2','r3','r4'];
+  const checkIds=['plan1Tested','plan2Tested','plan3Tested','plan4Tested','plan5Tested','challengeComplete','challengeExplain'];
+  fieldIds.forEach(id=>{const el=$('#'+id);if(el){el.addEventListener('input',()=>{state.fields[id]=el.value;save();validateAll()});el.addEventListener('change',()=>{state.fields[id]=el.value;save();validateAll()})}});
+  checkIds.forEach(id=>{const el=$('#'+id);if(el)el.addEventListener('change',e=>{state.checks[id]=e.target.checked;save();validateAll()})});
+
+  $$('input[name="turnDecision"]').forEach(r=>r.addEventListener('change',()=>{
+    state.radios.turnDecision=r.value;save();
+    $('#turnDecisionFeedback').textContent=r.value==='turn'?'✅ Yes — turning changes which way the Agent faces.':'🔁 Try again — moving right changes position, not facing direction.';
+    validateAll();
+  }));
+  $$('input[name="bugType"]').forEach(r=>r.addEventListener('change',()=>{state.radios.bugType=r.value;save();validateAll()}));
+
+  $('#copyMission3').addEventListener('click',()=>{
+    const combined=[...(plannerData('plan3a')||[]),...(plannerData('plan3b')||[])].map(x=>({...x}));
+    if(!combined.length){$('#copyMission3').textContent='Build Mission 3 first';return}
+    state.planners.plan4=combined;save();renderPlanner('plan4');validateAll();$('#copyMission3').textContent='✅ Mission 3 blocks copied';
+  });
+
+  const validators={
+    navigation:()=>plannerData('plan1').length>=1&&$('#plan1Predict').value&&$('#plan1Result').value&&$('#plan1Tested').checked,
+    codebuilder:()=>state.radios.turnDecision==='turn'&&plannerData('plan2').length>=2&&$('#plan2Result').value&&$('#plan2Tested').checked,
+    sequence:()=>plannerData('plan3a').length>=1&&plannerData('plan3b').length>=1&&$('#plan3Result').value&&$('#plan3Tested').checked,
+    debugging:()=>!!state.radios.bugType&&plannerData('plan4').length>=1&&$('#plan4Result').value&&$('#plan4Tested').checked,
+    challenge:()=>plannerData('plan5').length>=1&&$('#plan5Result').value&&$('#plan5Tested').checked&&$('#challengeComplete').checked&&$('#challengeExplain').checked
+  };
+  function validateAll(){Object.entries(validators).forEach(([id,fn])=>{const btn=$(`#${id}Next`);if(btn)btn.disabled=!fn()})}
+  function wireDynamicValidation(){initPlanners();validateAll();validateExpect();validateWorld();$('#readingNext').disabled=!$('#readCheck').checked}
+  $$('.checkpoint-next').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.check;if(!validators[id]())return;complete(id);const next=pages[pageIndex(id)+1][0];go(next)}));
+
+  // generic navigation
+  $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+  $$('.back-btn').forEach(btn=>btn.addEventListener('click',()=>{const i=pageIndex(state.current);if(i<=0)return;const prev=pages[i-1][0];if(teacher||isComplete(prev))go(prev,{force:true})}));
+
+  // reflection
+  $('#reflectionForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const key=$('#r1').value.trim().toUpperCase(); if(key!=='C'){$('#reflectionMessage').textContent='🔎 Check question 1. Which key opens Code Builder?';$('#r1').focus();return}
+    const conf=$('input[name="confidence"]:checked');if(!conf)return;
+    state.reflection={r1:$('#r1').value,r2:$('#r2').value,r3:$('#r3').value,r4:$('#r4').value,confidence:conf.value};
+    complete('reflection');state.completed.complete=true;save();$('#reflectionMessage').textContent='✅ Reflection submitted. Free play unlocked.';go('complete',{force:true})
+  });
+
+  function restoreInputs(){
+    Object.entries(state.fields||{}).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
+    Object.entries(state.checks||{}).forEach(([id,v])=>{const el=$('#'+id);if(el)el.checked=!!v});
+    Object.entries(state.answers||{}).forEach(([id,v])=>{const el=$(`input[name="${id}"][value="${CSS.escape(String(v))}"]`);if(el)el.checked=true});
+    if(state.reflection){['r1','r2','r3','r4'].forEach(id=>{if(state.reflection[id]&&$('#'+id))$('#'+id).value=state.reflection[id]});if(state.reflection.confidence){const c=$(`input[name="confidence"][value="${CSS.escape(state.reflection.confidence)}"]`);if(c)c.checked=true}}
+    Object.entries(state.radios||{}).forEach(([name,v])=>{const el=$(`input[name="${CSS.escape(name)}"][value="${CSS.escape(String(v))}"]`);if(el)el.checked=true});
+    if(state.radios?.turnDecision){$('#turnDecisionFeedback').textContent=state.radios.turnDecision==='turn'?'✅ Yes — turning changes which way the Agent faces.':'🔁 Try again — moving right changes position, not facing direction.'}
+    renderAllPlanners();
+    if(isComplete('quiz'))$('#quizNextCard').classList.remove('hidden');
+  }
+
+  // 2:45pm Asia/Kuala_Lumpur (UTC+8) automatic plenary redirect for students
+  function klNow(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kuala_Lumpur'}))}
+  function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+  function checkPlenary(initial=false){
+    if(teacher||!state||isComplete('reflection'))return;
+    const d=klNow(),mins=d.getHours()*60+d.getMinutes(),today=dateKey(d);
+    if(mins>=14*60+45 && state.plenarySeenDate!==today){
+      state.plenarySeenDate=today;save();
+      if(initial){go('reflection',{force:true})}else{$('#plenaryBanner').style.display='grid'}
+    }
+  }
+  $('#goReflection').addEventListener('click',()=>{$('#plenaryBanner').style.display='none';go('reflection',{force:true})});
+  setInterval(()=>checkPlenary(false),15000);
+
+  // Expose world URL only to keep accidental URL edits out of markup logic.
+  window.AGENT_ACADEMY_WORLD=WORLD_URL;
+})();
+</script>
+</body>
+</html>
