@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 8 Week 1 Computer Science theory lesson: algorithms, Python foundations and learning expectations.">
+  <title>Year 8 Week 1 Theory | Computer Science Foundations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to lesson content</a>
+
+  <section id="entryScreen" class="entry-screen" aria-labelledby="entryTitle">
+    <div class="entry-shell">
+      <div class="entry-visual">
+        <div class="brand-mark" aria-hidden="true">&lt;/&gt;</div>
+        <p class="eyebrow">TTA · Year 8 Computer Science</p>
+        <h1 id="entryTitle">Week 1 Theory</h1>
+        <p class="entry-subtitle">Computer Science foundations, expectations and baseline</p>
+        <div class="entry-pill-row" aria-label="Lesson themes">
+          <span>Algorithms</span><span>Python</span><span>Expectations</span>
+        </div>
+      </div>
+
+      <div class="entry-card">
+        <div id="resumePanel" class="resume-panel hidden" aria-live="polite">
+          <h2>Saved lesson found</h2>
+          <p id="resumeText"></p>
+          <div class="button-row">
+            <button id="resumeButton" class="button primary" type="button">Resume saved lesson</button>
+            <button id="newStudentButton" class="button secondary" type="button">Start as another student</button>
+          </div>
+        </div>
+
+        <form id="entryForm" novalidate>
+          <h2>Enter your details</h2>
+          <p>Your name and class will appear on your saved work and final PDF.</p>
+
+          <div class="field">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" autocomplete="name" placeholder="Example: Aisha Rahman" required>
+            <p id="nameError" class="field-error" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label for="className">Class</label>
+            <input id="className" name="className" autocomplete="off" placeholder="Example: 8T" required>
+            <p id="classError" class="field-error" role="alert"></p>
+          </div>
+
+          <button id="startButton" class="button primary wide" type="submit">Begin Week 1 Theory</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <header class="lesson-header">
+      <div>
+        <p class="eyebrow">TTA · Year 8 Computer Science · Week 1 Theory</p>
+        <h1>Computer Science Foundations</h1>
+      </div>
+      <div class="student-chip" aria-label="Student details">
+        <span id="headerStudentName"></span>
+        <span id="headerStudentClass"></span>
+      </div>
+    </header>
+
+    <div class="mobile-learning-toggle">
+      <button id="learningToggle" class="button compact secondary" type="button" aria-expanded="false" aria-controls="learningPanel">
+        Learning focus
+      </button>
+    </div>
+
+    <div class="workspace">
+      <aside id="learningPanel" class="learning-panel" aria-label="Learning information">
+        <div class="learning-panel-head">
+          <div>
+            <p class="eyebrow">Always visible</p>
+            <h2>Learning focus</h2>
+          </div>
+          <button id="learningClose" class="icon-button mobile-only" type="button" aria-label="Close learning focus">×</button>
+        </div>
+
+        <dl class="learning-list">
+          <div><dt>Key Topic</dt><dd id="learningTopic"></dd></div>
+          <div><dt>WAGBA</dt><dd id="learningWagba"></dd></div>
+          <div><dt>Knowledge</dt><dd id="learningKnowledge"></dd></div>
+          <div><dt>Skills</dt><dd id="learningSkills"></dd></div>
+          <div><dt>Understanding</dt><dd id="learningUnderstanding"></dd></div>
+          <div><dt>Keywords</dt><dd id="learningKeywords"></dd></div>
+          <div class="challenge-focus"><dt>Challenge</dt><dd id="learningChallenge"></dd></div>
+        </dl>
+      </aside>
+
+      <main id="mainContent" class="main-content" tabindex="-1">
+        <section class="journey-card" aria-label="Lesson progress">
+          <div class="journey-top">
+            <div>
+              <span id="currentSectionLabel" class="section-label"></span>
+              <h2 id="currentSectionTitle"></h2>
+            </div>
+            <div class="save-status" aria-live="polite">
+              <span class="save-dot" aria-hidden="true"></span>
+              <span id="saveStatus">Saved</span>
+            </div>
+          </div>
+          <div class="progress-track" aria-hidden="true"><div id="progressBar"></div></div>
+          <div class="progress-meta">
+            <span id="progressText"></span>
+            <button id="openJourneyButton" class="text-button" type="button" aria-expanded="false" aria-controls="journeyNav">View lesson journey</button>
+          </div>
+          <nav id="journeyNav" class="journey-nav hidden" aria-label="Lesson sections"></nav>
+        </section>
+
+        <section id="sectionContainer" class="section-container" aria-live="polite"></section>
+
+        <div class="navigation-bar" aria-label="Section navigation">
+          <button id="backButton" class="button secondary" type="button">Back</button>
+          <button id="nextButton" class="button primary" type="button">Next section</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="imageDialog" class="image-dialog">
+    <button id="closeImageDialog" class="dialog-close" type="button" aria-label="Close enlarged image">×</button>
+    <img id="dialogImage" alt="">
+    <p id="dialogCaption"></p>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
