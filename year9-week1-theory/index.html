@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a2746">
+  <title>Year 9 Week 1 Theory — Becoming a Computer Scientist</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#lesson-main">Skip to lesson content</a>
+
+  <div id="entry-overlay" class="entry-overlay" role="dialog" aria-modal="true" aria-labelledby="entry-title">
+    <form id="entry-form" class="entry-card" novalidate>
+      <div class="entry-kicker">Year 9 Computer Science · Week 1 Theory</div>
+      <h1 id="entry-title">Becoming a Year 9 Computer Scientist</h1>
+      <p>Enter your details to begin. Your work saves automatically on this device.</p>
+      <label for="student-name">Full name</label>
+      <input id="student-name" name="student-name" autocomplete="name" required maxlength="80" placeholder="e.g. Alex Tan">
+      <div class="field-error" id="name-error" aria-live="polite"></div>
+      <label for="student-class">Class</label>
+      <input id="student-class" name="student-class" required maxlength="20" placeholder="e.g. 9T">
+      <div class="field-error" id="class-error" aria-live="polite"></div>
+      <button type="submit" class="primary large">Begin lesson</button>
+      <button type="button" id="resume-button" class="secondary hidden">Resume saved lesson</button>
+      <p class="entry-note">Use a school-managed device where possible. Do not enter sensitive personal information.</p>
+    </form>
+  </div>
+
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="lesson-badge">Y9 · W1</div>
+      <div>
+        <div class="eyebrow">Computer Science Theory</div>
+        <h1>Becoming a Year 9 Computer Scientist</h1>
+      </div>
+    </div>
+    <div class="student-block">
+      <span id="header-student">Student</span>
+      <span id="header-class">Class</span>
+      <button id="reset-progress" class="icon-button" type="button" aria-label="Reset all lesson progress" title="Reset progress">↻</button>
+    </div>
+    <div class="status-block">
+      <div class="progress-wrap" aria-label="Lesson progress">
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+        <span id="progress-text">0% complete</span>
+      </div>
+      <div id="save-status" class="save-status" aria-live="polite">Ready</div>
+    </div>
+  </header>
+
+  <button id="learning-toggle" class="learning-toggle" type="button" aria-expanded="false" aria-controls="learning-panel">Learning focus</button>
+
+  <div class="app-shell">
+    <aside id="learning-panel" class="learning-panel">
+      <div class="learning-panel-head">
+        <h2>Learning focus</h2>
+        <button id="learning-close" class="icon-button mobile-only" type="button" aria-label="Close learning panel">×</button>
+      </div>
+      <dl>
+        <div><dt>Key Topic</dt><dd>Year 9 Computer Science readiness</dd></div>
+        <div><dt>WAGBA</dt><dd>Demonstrate what we already know about algorithms and Python, and establish the routines needed to work successfully in Year 9 Computer Science.</dd></div>
+        <div><dt>Knowledge</dt><dd>Know the difference between an algorithm, a program and source code; recognise IPO and AO1–AO3; know expectations for code, files and evidence.</dd></div>
+        <div><dt>Skills</dt><dd>Trace and debug short Python programs, use technical vocabulary, organise files correctly and reflect on current strengths.</dd></div>
+        <div><dt>Understanding</dt><dd>Understand that successful programming involves planning, testing, debugging, explaining and improving—not simply making code run.</dd></div>
+        <div><dt>Keywords</dt><dd>algorithm · program · source code · input · process · output · variable · selection · iteration · syntax error · logic error · AO1 · AO2 · AO3</dd></div>
+        <div><dt>Challenge</dt><dd>Explain and improve a working solution using test evidence and precise Computer Science vocabulary.</dd></div>
+      </dl>
+    </aside>
+
+    <main id="lesson-main" class="lesson-main" tabindex="-1">
+      <nav class="journey-nav" aria-label="Lesson sections">
+        <button class="journey-step active" data-section="starter" type="button"><span>1</span>Do Now</button>
+        <button class="journey-step locked" data-section="task1" type="button" disabled><span>2</span>Main Task 1</button>
+        <button class="journey-step locked" data-section="task2" type="button" disabled><span>3</span>Main Task 2</button>
+        <button class="journey-step locked optional" data-section="extension" type="button" disabled><span>★</span>Extension</button>
+        <button class="journey-step locked" data-section="plenary" type="button" disabled><span>4</span>Plenary</button>
+        <button class="journey-step locked" data-section="review" type="button" disabled><span>✓</span>Review</button>
+      </nav>
+
+      <section id="section-starter" class="lesson-section active" data-section="starter">
+        <div class="section-heading">
+          <div><span class="section-label">Do Now · 8 minutes</span><h2>Successful Computer Science habits</h2></div>
+          <span class="completion-chip" id="chip-starter">Not submitted</span>
+        </div>
+        <div class="hero-grid">
+          <button class="image-button" type="button" data-image="assets/images/starter-successful-cs-habits.png" aria-label="Enlarge starter visual">
+            <img src="assets/images/starter-successful-cs-habits.png" alt="Starter visual showing productive and unproductive Computer Science habits" onerror="this.closest('.image-button').classList.add('image-missing')">
+          </button>
+          <div class="instruction-card">
+            <h3>Your task</h3>
+            <p>Classify each behaviour. Then choose one productive habit and explain why it matters.</p>
+            <p class="evidence-note">Evidence saved: classifications, explanation and any correction.</p>
+          </div>
+        </div>
+        <div id="habit-grid" class="classification-grid"></div>
+        <div class="response-card">
+          <label for="habit-choice">Choose one productive habit</label>
+          <select id="habit-choice"><option value="">Select a habit…</option></select>
+          <label for="habit-explanation">Why is this habit important for becoming a successful Computer Scientist?</label>
+          <textarea id="habit-explanation" rows="4" placeholder="Use because, so that, or therefore to explain your reasoning."></textarea>
+        </div>
+        <div id="starter-feedback" class="feedback" aria-live="polite"></div>
+        <button id="submit-starter" class="primary" type="button">Submit Do Now</button>
+      </section>
+
+      <section id="section-task1" class="lesson-section" data-section="task1" hidden>
+        <div class="section-heading">
+          <div><span class="section-label">Main Task 1 · 15 minutes</span><h2>How we work in Year 9 Computer Science</h2></div>
+          <span class="completion-chip" id="chip-task1">Not submitted</span>
+        </div>
+        <div class="hero-grid visual-only">
+          <button class="image-button" type="button" data-image="assets/images/activity1-think-like-computer-scientist.png" aria-label="Enlarge Computer Scientist visual">
+            <img src="assets/images/activity1-think-like-computer-scientist.png" alt="Students collaborating while planning, testing, debugging, explaining and improving code" onerror="this.closest('.image-button').classList.add('image-missing')">
+          </button>
+          <div class="instruction-card">
+            <h3>Think beyond “the code works”</h3>
+            <p>Computer Science rewards knowledge, application and problem solving. Show how you will work, not only what you remember.</p>
+          </div>
+        </div>
+
+        <article class="task-card">
+          <h3>AO1, AO2 or AO3?</h3>
+          <p>Match each question to the kind of thinking it requires.</p>
+          <div id="ao-grid" class="ao-grid"></div>
+          <button id="check-ao" class="secondary" type="button">Check AO matches</button>
+          <div id="ao-feedback" class="feedback" aria-live="polite"></div>
+        </article>
+
+        <article class="task-card">
+          <h3>Year 9 working agreement</h3>
+          <p>Select at least five commitments you will follow. Then identify the one that will make the biggest difference to you.</p>
+          <div id="agreement-grid" class="agreement-grid"></div>
+          <label for="personal-commitment">My most important commitment is…</label>
+          <select id="personal-commitment"><option value="">Choose one…</option></select>
+          <label for="commitment-reason">This will help me because…</label>
+          <textarea id="commitment-reason" rows="3"></textarea>
+        </article>
+
+        <article class="task-card">
+          <h3>File routine check</h3>
+          <p>Which filename best follows the class routine for a Week 1 baseline Python file?</p>
+          <div id="filename-options" class="choice-list" role="radiogroup" aria-label="Filename choices"></div>
+          <div id="filename-feedback" class="feedback" aria-live="polite"></div>
+        </article>
+        <button id="submit-task1" class="primary" type="button">Submit Main Task 1</button>
+      </section>
+
+      <section id="section-task2" class="lesson-section" data-section="task2" hidden>
+        <div class="section-heading">
+          <div><span class="section-label">Main Task 2 · 25 minutes</span><h2>Year 9 baseline challenge</h2></div>
+          <span class="completion-chip" id="chip-task2">Not submitted</span>
+        </div>
+        <div class="hero-grid compact">
+          <button class="image-button" type="button" data-image="assets/images/activity2-baseline-challenge.png" aria-label="Enlarge baseline challenge visual">
+            <img src="assets/images/activity2-baseline-challenge.png" alt="Visual overview of a Year 9 baseline challenge with vocabulary, IPO, tracing, debugging and programming" onerror="this.closest('.image-button').classList.add('image-missing')">
+          </button>
+          <div class="instruction-card">
+            <h3>This is diagnostic, not a formal grade</h3>
+            <p>Attempt every core part independently. Feedback helps you correct misconceptions and helps your teacher plan support.</p>
+            <p class="evidence-note">Your final code, output, tests and explanations will be included in the PDF.</p>
+          </div>
+        </div>
+
+        <div class="subtask-tabs" role="tablist" aria-label="Baseline subtasks">
+          <button class="subtask-tab active" data-subtask="vocabulary" role="tab" aria-selected="true" type="button">A · Vocabulary</button>
+          <button class="subtask-tab" data-subtask="ipo" role="tab" aria-selected="false" type="button">B · IPO</button>
+          <button class="subtask-tab" data-subtask="trace" role="tab" aria-selected="false" type="button">C · Trace</button>
+          <button class="subtask-tab" data-subtask="python" role="tab" aria-selected="false" type="button">D/E · Python Lab</button>
+        </div>
+
+        <div id="subtask-vocabulary" class="subtask-panel active" role="tabpanel">
+          <article class="task-card">
+            <h3>Technical vocabulary</h3>
+            <p>Match every term to its meaning. You may revise after feedback.</p>
+            <div id="vocabulary-grid" class="matching-grid"></div>
+            <button id="check-vocabulary" class="secondary" type="button">Check vocabulary</button>
+            <div id="vocabulary-feedback" class="feedback" aria-live="polite"></div>
+          </article>
+        </div>
+
+        <div id="subtask-ipo" class="subtask-panel" role="tabpanel" hidden>
+          <article class="task-card">
+            <h3>Input–Process–Output</h3>
+            <div class="scenario-box">A program asks for the prices of three items, calculates the total and displays whether the customer qualifies for free delivery.</div>
+            <label for="ipo-input">Inputs</label><textarea id="ipo-input" rows="2" placeholder="What data enters the system?"></textarea>
+            <label for="ipo-process">Processing</label><textarea id="ipo-process" rows="2" placeholder="What calculation or decision takes place?"></textarea>
+            <label for="ipo-output">Outputs</label><textarea id="ipo-output" rows="2" placeholder="What information is displayed?"></textarea>
+            <button id="check-ipo" class="secondary" type="button">Check IPO explanation</button>
+            <div id="ipo-feedback" class="feedback" aria-live="polite"></div>
+          </article>
+        </div>
+
+        <div id="subtask-trace" class="subtask-panel" role="tabpanel" hidden>
+          <article class="task-card">
+            <h3>Trace the program</h3>
+            <pre class="code-sample"><code>score = 6
+score = score + 3
+
+if score &gt;= 8:
+    message = "Challenge unlocked"
+else:
+    message = "Keep practising"
+
+print(message)</code></pre>
+            <div class="two-column-fields">
+              <label>Final value of <code>score</code><input id="trace-score" inputmode="numeric"></label>
+              <label>Displayed message<input id="trace-output"></label>
+              <label>Line containing the selection<input id="trace-line" placeholder="e.g. line 4"></label>
+              <label class="wide">Explain why that message is displayed<textarea id="trace-explanation" rows="3"></textarea></label>
+            </div>
+            <button id="check-trace" class="secondary" type="button">Check trace</button>
+            <div id="trace-feedback" class="feedback" aria-live="polite"></div>
+          </article>
+        </div>
+
+        <div id="subtask-python" class="subtask-panel" role="tabpanel" hidden>
+          <article class="task-card python-card">
+            <div class="python-head">
+              <div><h3>Python programming workspace</h3><p>Correct the error, test the program, then complete the number-comparison challenge.</p></div>
+              <div id="python-status" class="runtime-status">Loading Python…</div>
+            </div>
+            <div class="editor-tabs" role="tablist" aria-label="Python files">
+              <button class="editor-tab active" data-file="debug" role="tab" aria-selected="true" type="button">debug_task.py</button>
+              <button class="editor-tab" data-file="challenge" role="tab" aria-selected="false" type="button">number_challenge.py</button>
+              <button class="editor-tab" data-file="extension" role="tab" aria-selected="false" type="button">extension_task.py</button>
+            </div>
+            <div class="editor-toolbar" aria-label="Python editor controls">
+              <button id="run-code" class="primary compact-button" type="button" disabled>Run <span class="shortcut">Ctrl+Enter</span></button>
+              <button id="stop-code" class="danger compact-button" type="button" disabled>Stop / Restart</button>
+              <button id="reset-code" class="secondary compact-button" type="button">Reset file</button>
+              <button id="clear-output" class="secondary compact-button" type="button">Clear output</button>
+              <button id="copy-code" class="secondary compact-button" type="button">Copy code</button>
+              <button id="compare-code" class="secondary compact-button" type="button">Compare starter</button>
+              <button id="download-code" class="secondary compact-button" type="button">Download .py</button>
+              <label class="upload-button secondary compact-button">Open .py<input id="upload-code" type="file" accept=".py,text/x-python" hidden></label>
+              <button id="fullscreen-editor" class="secondary compact-button" type="button">Full screen</button>
+            </div>
+            <div id="file-task-prompt" class="file-task-prompt"></div>
+            <div id="code-compare" class="code-compare" hidden>
+              <div><h4>Starter version</h4><pre id="starter-code-view"></pre></div>
+              <div><h4>Current version</h4><pre id="current-code-view"></pre></div>
+            </div>
+            <div class="editor-layout">
+              <div class="editor-pane">
+                <div id="python-editor" aria-label="Python code editor"></div>
+                <div id="cursor-position" class="cursor-position">Ln 1, Col 1</div>
+              </div>
+              <div class="console-pane">
+                <div class="console-head"><span>Python Shell</span><span id="run-count">Runs: 0</span></div>
+                <pre id="python-console" class="python-console" aria-live="polite"><span class="console-system">Python runtime is loading locally…</span></pre>
+                <form id="console-input-form" class="console-input-form" hidden>
+                  <label id="console-prompt" for="console-input">Input</label>
+                  <div><input id="console-input" autocomplete="off"><button class="primary compact-button" type="submit">Submit</button></div>
+                </form>
+              </div>
+            </div>
+
+            <div class="python-evidence-grid">
+              <div>
+                <h4>Debugging evidence</h4>
+                <label for="error-type">Type of error</label>
+                <select id="error-type"><option value="">Choose…</option><option>Syntax error</option><option>Runtime error</option><option>Logic error</option></select>
+                <label for="debug-purpose">Purpose of the condition</label><textarea id="debug-purpose" rows="2"></textarea>
+                <label for="debug-notes">What did you change, and why?</label><textarea id="debug-notes" rows="3"></textarea>
+                <button id="test-debug" class="secondary" type="button">Run debug checks</button>
+                <div id="debug-test-feedback" class="feedback" aria-live="polite"></div>
+              </div>
+              <div>
+                <h4>Programming challenge evidence</h4>
+                <p>Ask for a number and display whether it is greater than, equal to or less than 10.</p>
+                <button id="test-challenge" class="secondary" type="button">Run visible tests</button>
+                <div id="challenge-test-feedback" class="feedback" aria-live="polite"></div>
+                <label for="program-explanation">Explain how your selection works</label><textarea id="program-explanation" rows="3"></textarea>
+              </div>
+            </div>
+
+            <h4>Student test table</h4>
+            <div class="table-wrap">
+              <table class="evidence-table">
+                <thead><tr><th>Test input</th><th>Type</th><th>Expected result</th><th>Actual result</th></tr></thead>
+                <tbody id="test-table-body"></tbody>
+              </table>
+            </div>
+            <button id="submit-python-evidence" class="primary" type="button">Submit Python evidence</button>
+            <div id="python-submit-feedback" class="feedback" aria-live="polite"></div>
+          </article>
+        </div>
+        <button id="submit-task2" class="primary section-submit" type="button">Submit Main Task 2</button>
+        <div id="task2-feedback" class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section id="section-extension" class="lesson-section" data-section="extension" hidden>
+        <div class="section-heading">
+          <div><span class="section-label">Optional · Early completers</span><h2>Extension challenge</h2></div>
+          <span class="completion-chip optional-chip" id="chip-extension">Optional</span>
+        </div>
+        <p class="lead">Choose one task. Extension work is included in your PDF only when attempted and never blocks the plenary.</p>
+        <div class="extension-grid">
+          <label class="extension-card"><input type="radio" name="extension-choice" value="improve"><span><strong>1 · Improve the program</strong>Use <code>extension_task.py</code> to repeat until 0, distinguish positive/negative values and add meaningful comments.</span></label>
+          <label class="extension-card"><input type="radio" name="extension-choice" value="tests"><span><strong>2 · Design stronger tests</strong>Plan normal, boundary and erroneous data. Predict before running.</span></label>
+          <label class="extension-card"><input type="radio" name="extension-choice" value="explain"><span><strong>3 · Explain debugging</strong>Why is changing several lines at once a weak debugging strategy?</span></label>
+          <label class="extension-card"><input type="radio" name="extension-choice" value="gcse"><span><strong>4 · GCSE-style Boolean challenge</strong>Analyse and rewrite a compound condition.</span></label>
+        </div>
+        <div id="extension-response-area" class="task-card" hidden>
+          <div id="extension-prompt"></div>
+          <textarea id="extension-response" rows="8" placeholder="Write your answer, plan or evidence here. For coding, use extension_task.py and summarise what you achieved."></textarea>
+          <button id="submit-extension" class="primary" type="button">Save extension evidence</button>
+          <div id="extension-feedback" class="feedback" aria-live="polite"></div>
+        </div>
+        <button id="skip-extension" class="secondary" type="button">Continue to plenary without extension</button>
+      </section>
+
+      <section id="section-plenary" class="lesson-section" data-section="plenary" hidden>
+        <div class="section-heading">
+          <div><span class="section-label">Plenary · 7 minutes</span><h2>Reflect, identify a next step and explain</h2></div>
+          <span class="completion-chip" id="chip-plenary">Not submitted</span>
+        </div>
+        <div class="hero-grid visual-only">
+          <button class="image-button" type="button" data-image="assets/images/plenary-reflection.png" aria-label="Enlarge plenary reflection visual">
+            <img src="assets/images/plenary-reflection.png" alt="Plenary reflection visual with confidence and next-step prompts" onerror="this.closest('.image-button').classList.add('image-missing')">
+          </button>
+          <div class="instruction-card">
+            <h3>Be specific and honest</h3>
+            <p>Your reflection is not a score. It identifies what is secure and what should be revisited next.</p>
+          </div>
+        </div>
+        <article class="task-card">
+          <label for="confidence">Confidence after today’s lesson: <strong id="confidence-label">3 — Somewhat confident</strong></label>
+          <input id="confidence" type="range" min="1" max="5" value="3" step="1">
+          <div class="confidence-scale" aria-hidden="true"><span>1<br>Not confident</span><span>2<br>A little</span><span>3<br>Somewhat</span><span>4<br>Confident</span><span>5<br>Very confident</span></div>
+        </article>
+        <div class="reflection-grid">
+          <label class="reflection-card">One thing I remember confidently…<textarea id="reflection-remember" rows="4"></textarea></label>
+          <label class="reflection-card">One area I need to revisit…<textarea id="reflection-revisit" rows="4"></textarea></label>
+          <label class="reflection-card">One Year 9 expectation I will follow…<textarea id="reflection-expectation" rows="4"></textarea></label>
+        </div>
+        <article class="task-card exit-question">
+          <h3>Exit question</h3>
+          <label for="algorithm-program">Why is an algorithm not the same as a program?</label>
+          <textarea id="algorithm-program" rows="4" placeholder="Use both terms accurately and explain the relationship between them."></textarea>
+        </article>
+        <button id="submit-plenary" class="primary" type="button">Submit plenary</button>
+        <div id="plenary-feedback" class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section id="section-review" class="lesson-section" data-section="review" hidden>
+        <div class="section-heading">
+          <div><span class="section-label">Final review and export</span><h2>Check your evidence before submitting</h2></div>
+          <span class="completion-chip complete" id="chip-review">Ready to review</span>
+        </div>
+        <div id="review-summary" class="review-summary"></div>
+        <div id="incomplete-warnings" class="warning-box"></div>
+        <div class="export-panel">
+          <h3>Download your work</h3>
+          <p>Your PDF includes all attempted core responses, corrections, code, selected output, tests and plenary evidence.</p>
+          <div class="export-buttons">
+            <button id="download-pdf" class="primary large" type="button">Download PDF</button>
+            <button id="download-bundle" class="secondary large" type="button">Download submission ZIP</button>
+            <button id="print-fallback" class="secondary large" type="button">Print-friendly fallback</button>
+          </div>
+          <div id="export-status" class="feedback" aria-live="polite"></div>
+        </div>
+        <div class="teams-panel">
+          <h3>Microsoft Teams submission</h3>
+          <p class="teams-instruction">Upload your completed PDF to the Microsoft Teams Assignment named <strong>Week 1 Theory</strong>.</p>
+          <p>Upload the PDF and the required <code>.py</code> file unless your teacher tells you otherwise.</p>
+          <ul>
+            <li>Check that your name and class are visible.</li>
+            <li>Check that all required sections are included.</li>
+            <li>Check that the PDF downloaded successfully.</li>
+            <li>Include the correct Python file.</li>
+            <li>Upload the PDF rather than screenshots.</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="bottom-navigation">
+        <button id="back-button" class="secondary" type="button" disabled>Back</button>
+        <span id="current-section-label">Do Now</span>
+        <button id="next-button" class="primary" type="button" disabled>Next</button>
+      </div>
+    </main>
+  </div>
+
+  <div id="image-modal" class="image-modal" role="dialog" aria-modal="true" aria-label="Enlarged lesson image" hidden>
+    <button id="image-modal-close" class="image-modal-close" type="button" aria-label="Close enlarged image">×</button>
+    <img id="image-modal-img" alt="">
+  </div>
+
+  <script src="libraries/ace/ace.js"></script>
+  <script src="libraries/jspdf.umd.min.js"></script>
+  <script src="libraries/jszip.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
