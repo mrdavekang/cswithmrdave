@@ -1,4 +1,5 @@
-/* Local Pyodide worker. Student code never leaves the browser. */
+/* Local Pyodide module worker. Student code never leaves the browser. */
+import { loadPyodide } from "./runtime/pyodide.mjs";
 let pyodide = null;
 let pendingInputResolve = null;
 let queuedInputs = [];
@@ -45,8 +46,8 @@ function studentLineFromError(text) {
 
 async function initialise() {
   try {
-    importScripts("runtime/pyodide.js");
-    pyodide = await loadPyodide({ indexURL: "runtime/" });
+    const runtimeURL = new URL("./runtime/", import.meta.url).href;
+    pyodide = await loadPyodide({ indexURL: runtimeURL });
     pyodide.setStdout({
       batched: (text) => postMessage({ type: "stdout", runId: activeRunId, text: String(text) }),
     });

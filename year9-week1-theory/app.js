@@ -623,17 +623,19 @@
     setRuntimeStatus("Loading local Python…");
     setRunButtons(false);
     try {
-      pythonWorker = new Worker("python/worker.js");
+      pythonWorker = new Worker("python/worker.js?v=20260720-2", { type: "module" });
     } catch (error) {
       setRuntimeStatus("Static hosting required", "error");
       appendConsole("The Python worker could not start. Open the extracted folder through a static web server rather than file://.", "error");
       return;
     }
     pythonWorker.onmessage = handleWorkerMessage;
+    $("#stop-code").disabled = false;
     pythonWorker.onerror = (event) => {
       pythonReady = false;
       setRuntimeStatus("Python failed to load", "error");
-      appendConsole(`Worker error: ${event.message}`, "error");
+      appendConsole(`Worker error: ${event.message || "The local Python module worker could not start."}`, "error");
+      appendConsole("Check that the complete python/runtime folder was uploaded and reload the page. The app must be opened through static hosting, not file://.", "system");
       setRunButtons(false);
     };
   }
@@ -651,6 +653,8 @@
       pythonReady = false;
       setRuntimeStatus("Python failed to load", "error");
       appendConsole(data.message, "error");
+      appendConsole("Use Stop / Restart to retry after checking that all runtime files are present on the host.", "system");
+      $("#stop-code").disabled = false;
       return;
     }
     const context = runContexts.get(data.runId);

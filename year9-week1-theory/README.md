@@ -61,7 +61,9 @@ Students can refresh or close the page and resume on the same browser profile an
 
 ## Python runtime
 
-The ZIP includes a local Pyodide runtime under `python/runtime/`. Student code runs in a Web Worker and is not sent to an external server.
+> **Runtime fix in this package:** the included Pyodide build requires an ES module Web Worker. The app now starts `python/worker.js` with `{ type: "module" }`; the previous classic-worker launch caused the red **Python failed to load** status.
+
+The ZIP includes a local Pyodide runtime under `python/runtime/`. Student code runs in an ES module Web Worker and is not sent to an external server.
 
 The workspace includes:
 
@@ -135,7 +137,7 @@ No CDN is required for lesson functionality.
 
 ## Browser and hosting limitations
 
-- Direct `file://` opening may block the Python worker; use static hosting.
+- Direct `file://` opening will usually block the module worker or WebAssembly files; use static hosting.
 - Clipboard access may require HTTPS or a browser permission.
 - Upload and download behaviour depends on browser file permissions.
 - Large or highly recursive programs may use significant memory.
