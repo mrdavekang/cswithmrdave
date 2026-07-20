@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123a6d">
+  <title>Year 7 Week 1 Theory - First Computer Science Lesson</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <noscript>
+    <div class="noscript">This activity needs JavaScript enabled.</div>
+  </noscript>
+
+  <div id="profileOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <form id="profileForm" class="profile-card">
+      <div class="profile-icon" aria-hidden="true">&lt;/&gt;</div>
+      <p class="eyebrow">YEAR 7 COMPUTING</p>
+      <h1 id="profileTitle">Welcome to your first Computer Science lesson</h1>
+      <p>Enter your details before starting. Your answers are saved on this device as you work.</p>
+
+      <label for="studentName">Full name</label>
+      <input id="studentName" name="studentName" type="text" autocomplete="name" maxlength="80" required placeholder="e.g. Aisha Rahman">
+
+      <label for="studentClass">Class</label>
+      <input id="studentClass" name="studentClass" type="text" maxlength="30" required placeholder="e.g. 7T">
+
+      <label class="check-row teacher-check hidden" hidden aria-hidden="true">
+        <input id="teacherModeInput" type="checkbox">
+        <span><strong>Teacher test mode</strong><small>Uses a separate test session and unlocks all sections.</small></span>
+      </label>
+
+      <button class="primary wide" type="submit">Start lesson</button>
+      <p class="privacy-note">Use only your school name and class. Do not enter passwords or personal contact details.</p>
+    </form>
+  </div>
+
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">YEAR 7 · TERM 1 · WEEK 1 THEORY</p>
+      <h1>Thinking Like a Computer Scientist</h1>
+    </div>
+    <div class="header-actions">
+      <div class="learner-chip" aria-live="polite">
+        <span id="learnerName">Not signed in</span>
+        <small id="learnerClass">Class</small>
+      </div>
+      <button id="changeLearnerBtn" class="ghost small" type="button">Change learner</button>
+      <button id="teacherPanelBtn" class="ghost small hidden" type="button" hidden aria-hidden="true" tabindex="-1">Teacher controls</button>
+    </div>
+  </header>
+
+  <div class="progress-shell" aria-label="Lesson progress">
+    <div id="progressBar" class="progress-bar"></div>
+    <span id="progressText">0% complete</span>
+  </div>
+
+  <div class="app-layout">
+    <aside class="learning-panel" aria-label="Learning focus">
+      <div class="focus-card wagba-card">
+        <h2>WAGBA</h2>
+        <p>Explain how precise instructions form an algorithm and demonstrate the safe, organised and independent working routines expected in KS3 Computer Science.</p>
+      </div>
+      <div class="focus-card">
+        <h2>Knowledge</h2>
+        <ul>
+          <li>An algorithm is an ordered set of instructions.</li>
+          <li>Sequence affects the output.</li>
+          <li>Systems can be described as input, process and output.</li>
+        </ul>
+      </div>
+      <div class="focus-card">
+        <h2>Skills</h2>
+        <ul>
+          <li>Arrange and trace instructions.</li>
+          <li>Test and debug an algorithm.</li>
+          <li>Respond safely and responsibly.</li>
+        </ul>
+      </div>
+      <div class="focus-card">
+        <h2>Understanding</h2>
+        <ul>
+          <li>Computers follow instructions exactly.</li>
+          <li>Errors are useful evidence for improvement.</li>
+          <li>Safe, organised habits support successful learning.</li>
+        </ul>
+      </div>
+      <div class="focus-card keywords-card">
+        <h2>Keywords</h2>
+        <p>algorithm · sequence · command · program · input · process · output · evidence · debugging</p>
+      </div>
+    </aside>
+
+    <main id="mainContent" class="content">
+      <nav id="lessonNav" class="lesson-nav" aria-label="Lesson sections"></nav>
+
+      <section id="section-starter" class="lesson-section active" data-section="starter">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">DO NOW · 8 MINUTES</p>
+            <h2>Starter: What is Computer Science?</h2>
+            <p>Study each image and decide whether the activity is mainly <strong>Computer Science</strong>, <strong>digital creativity</strong>, or <strong>both</strong>.</p>
+          </div>
+          <span class="status-pill" data-status-for="starter">Not complete</span>
+        </div>
+        <div id="starterCards" class="classification-grid"></div>
+        <div class="action-row">
+          <button id="checkStarterBtn" class="primary" type="button">Check my starter</button>
+          <span id="starterFeedback" class="feedback" aria-live="polite"></span>
+        </div>
+        <div class="challenge-box">
+          <strong>Challenge:</strong> Explain how changing the order of instructions could change the output of a program.
+          <textarea id="starterChallenge" rows="3" placeholder="Write your explanation here..."></textarea>
+        </div>
+        <div class="next-row"><button class="primary next-section" data-next="main1" type="button">Continue to Main Task 1</button></div>
+      </section>
+
+      <section id="section-main1" class="lesson-section" data-section="main1">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">MAIN TASK 1 · 15 MINUTES</p>
+            <h2>Human Robot: Precise Algorithms</h2>
+            <p>Build an ordered sequence of commands to move the robot from <strong>START</strong> to the star. Test it exactly as a computer would.</p>
+          </div>
+          <span class="status-pill" data-status-for="main1">Not complete</span>
+        </div>
+        <div class="dynamic-images" data-image-group="main1"></div>
+
+        <div class="robot-workspace">
+          <div>
+            <h3>1. Build your algorithm</h3>
+            <p class="muted">The robot begins at the green START square, facing upwards.</p>
+            <div id="commandButtons" class="command-buttons"></div>
+            <div class="inline-actions">
+              <button id="undoCommandBtn" class="ghost" type="button">Undo</button>
+              <button id="clearCommandsBtn" class="ghost" type="button">Clear</button>
+              <button id="testAlgorithmBtn" class="primary" type="button">Test algorithm</button>
+            </div>
+            <ol id="algorithmList" class="algorithm-list" aria-label="Your algorithm"></ol>
+            <div id="robotFeedback" class="feedback-panel" aria-live="polite">Add commands, then test your algorithm.</div>
+          </div>
+          <div>
+            <h3>2. Trace the route</h3>
+            <div id="robotGrid" class="robot-grid" aria-label="Five by five robot grid"></div>
+            <div class="grid-legend"><span><i class="legend-start"></i> Start</span><span><i class="legend-goal"></i> Star</span><span><i class="legend-path"></i> Tested path</span></div>
+          </div>
+        </div>
+
+        <label for="main1Reflection"><strong>Debugging reflection:</strong> What did you change after testing, or what would you change next?</label>
+        <textarea id="main1Reflection" rows="4" placeholder="For example: I noticed..., so I changed..."></textarea>
+
+        <div class="challenge-box">
+          <strong>Challenge:</strong> Can you solve the route using fewer commands without changing the outcome?
+        </div>
+        <div class="next-row"><button class="primary next-section" data-next="main2" type="button">Continue to Main Task 2</button></div>
+      </section>
+
+      <section id="section-main2" class="lesson-section" data-section="main2">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">MAIN TASK 2 · 24 MINUTES</p>
+            <h2>KS2 to KS3 Computing Diagnostic</h2>
+            <p>Complete each part independently. This is a starting-point check, not a graded test.</p>
+          </div>
+          <span class="status-pill" data-status-for="main2">Not complete</span>
+        </div>
+
+        <article class="diagnostic-card">
+          <div class="diagnostic-title"><span>A</span><h3>Algorithms and Sequencing</h3></div>
+          <div class="diagnostic-layout">
+            <div class="single-task-image" data-image-key="main2_algorithms"></div>
+            <div>
+              <p>Put the sandwich-making steps in the correct order by choosing a different position for each step.</p>
+              <div id="sequenceOrderTask" class="order-task"></div>
+              <label for="sequenceSwapAnswer">What could go wrong if you cut the sandwich before adding the filling?</label>
+              <textarea id="sequenceSwapAnswer" rows="3"></textarea>
+            </div>
+          </div>
+        </article>
+
+        <article class="diagnostic-card">
+          <div class="diagnostic-title purple"><span>B</span><h3>Scratch and Programming Familiarity</h3></div>
+          <div class="diagnostic-layout">
+            <div class="single-task-image" data-image-key="main2_scratch"></div>
+            <div class="question-stack">
+              <label>1. What shape will the sprite draw?<input id="scratchShape" type="text"></label>
+              <label>2. What input starts the script?<input id="scratchInput" type="text"></label>
+              <label>3. What is one output produced by the program?<input id="scratchOutput" type="text"></label>
+              <label>4. Which block repeats the actions?<input id="scratchRepeat" type="text"></label>
+              <label>5. Suggest one improvement or change.<textarea id="scratchImprovement" rows="3"></textarea></label>
+            </div>
+          </div>
+        </article>
+
+        <article class="diagnostic-card">
+          <div class="diagnostic-title green"><span>C</span><h3>Input, Process and Output</h3></div>
+          <div class="diagnostic-layout">
+            <div class="single-task-image" data-image-key="main2_ipo"></div>
+            <div class="question-stack">
+              <p>Label each statement.</p>
+              <label>Pressing the shutter button
+                <select id="ipoPress"><option value="">Choose...</option><option>Input</option><option>Process</option><option>Output</option></select>
+              </label>
+              <label>The camera captures and saves the image
+                <select id="ipoCapture"><option value="">Choose...</option><option>Input</option><option>Process</option><option>Output</option></select>
+              </label>
+              <label>The photograph appears on the screen
+                <select id="ipoPhoto"><option value="">Choose...</option><option>Input</option><option>Process</option><option>Output</option></select>
+              </label>
+              <label>Give one other example of an input, process or output in a digital system.
+                <textarea id="ipoExample" rows="3"></textarea>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article class="diagnostic-card">
+          <div class="diagnostic-title orange"><span>D</span><h3>Digital Safety and Responsibility</h3></div>
+          <div class="diagnostic-layout">
+            <div class="single-task-image" data-image-key="main2_safety"></div>
+            <div>
+              <fieldset>
+                <legend>Scenario 1: A stranger asks for your full name, address and school.</legend>
+                <label class="radio-row"><input type="radio" name="safety1" value="Reply with the information">Reply with the information.</label>
+                <label class="radio-row"><input type="radio" name="safety1" value="Ignore it only">Ignore it only.</label>
+                <label class="radio-row"><input type="radio" name="safety1" value="Block or report the account and tell a trusted adult">Block or report the account and tell a trusted adult.</label>
+              </fieldset>
+              <fieldset>
+                <legend>Scenario 2: You find another student's work in a shared folder.</legend>
+                <label class="radio-row"><input type="radio" name="safety2" value="Open and edit it">Open and edit it.</label>
+                <label class="radio-row"><input type="radio" name="safety2" value="Delete it">Delete it.</label>
+                <label class="radio-row"><input type="radio" name="safety2" value="Leave it unchanged and tell the teacher">Leave it unchanged and tell the teacher.</label>
+              </fieldset>
+            </div>
+          </div>
+        </article>
+
+        <div class="challenge-box">
+          <strong>Challenge:</strong> Explain why reading, planning and testing before asking for help is a useful Computer Science routine.
+          <textarea id="main2Challenge" rows="3"></textarea>
+        </div>
+        <div class="next-row"><button class="primary next-section" data-next="extension" type="button">Continue to Extension</button></div>
+      </section>
+
+      <section id="section-extension" class="lesson-section" data-section="extension">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">EXTENSION · EARLY COMPLETERS</p>
+            <h2>Debug the Morning Algorithm</h2>
+            <p>This section is optional. Complete it when you have finished the core tasks.</p>
+          </div>
+          <span class="status-pill optional" data-status-for="extension">Optional</span>
+        </div>
+        <div class="extension-layout">
+          <div class="single-task-image" data-image-key="extension"></div>
+          <div>
+            <p>These instructions are in the wrong order. Give each step a position from 1 to 5.</p>
+            <div id="extensionOrderTask" class="order-task"></div>
+            <label for="extensionMissing">Add one useful missing step.</label>
+            <input id="extensionMissing" type="text" placeholder="For example: ...">
+            <label for="extensionDecision">Add a decision for rainy weather using IF and THEN.</label>
+            <textarea id="extensionDecision" rows="3" placeholder="IF ... THEN ..."></textarea>
+          </div>
+        </div>
+        <div class="next-row"><button class="primary next-section" data-next="plenary" type="button">Continue to Plenary</button></div>
+      </section>
+
+      <section id="section-plenary" class="lesson-section" data-section="plenary">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">PLENARY · 5 MINUTES</p>
+            <h2>First CS Exit Ticket</h2>
+            <p>Answer all four questions in full sentences where possible.</p>
+          </div>
+          <span class="status-pill" data-status-for="plenary">Not complete</span>
+        </div>
+        <div class="plenary-layout">
+          <div class="single-task-image" data-image-key="plenary"></div>
+          <div class="question-stack">
+            <label>1. What is an algorithm?<textarea id="plenaryAlgorithm" rows="3"></textarea></label>
+            <label>2. Why does sequence matter?<textarea id="plenarySequence" rows="3"></textarea></label>
+            <label>3. Name one Computer Science classroom expectation.<textarea id="plenaryExpectation" rows="3"></textarea></label>
+            <label>4. What will you improve next lesson?<textarea id="plenaryImprove" rows="3"></textarea></label>
+          </div>
+        </div>
+        <div class="challenge-box">
+          <strong>Challenge:</strong> Write a precise definition using the keywords <em>algorithm</em>, <em>sequence</em> and <em>output</em>.
+          <textarea id="plenaryChallenge" rows="3"></textarea>
+        </div>
+        <div class="next-row"><button class="primary next-section" data-next="export" type="button">Review and Export</button></div>
+      </section>
+
+      <section id="section-export" class="lesson-section" data-section="export">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">SUBMISSION</p>
+            <h2>Export your Week 1 Theory evidence</h2>
+            <p>Review your completion status, then download one PDF containing your attempted answers from Starter to Plenary. Extension is included only when attempted.</p>
+          </div>
+          <span id="exportReadyPill" class="status-pill">Not ready</span>
+        </div>
+
+        <div id="completionChecklist" class="completion-checklist"></div>
+
+        <div class="teams-box">
+          <div class="teams-icon" aria-hidden="true">T</div>
+          <div>
+            <h3>Submit to Microsoft Teams</h3>
+            <p>Upload your exported PDF into the Teams Assignment named <strong>Week 1 Theory</strong>.</p>
+            <p>Before uploading, check that your name and class appear correctly on the first page.</p>
+          </div>
+        </div>
+
+        <div class="export-actions">
+          <button id="exportPdfBtn" class="primary large" type="button" disabled>Export PDF</button>
+          <button id="previewReportBtn" class="ghost" type="button">Preview answers</button>
+          <span id="exportMessage" class="feedback" aria-live="polite"></span>
+        </div>
+        <div id="reportPreview" class="report-preview hidden"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="teacherDialog" class="teacher-dialog" aria-hidden="true">
+    <form method="dialog">
+      <div class="dialog-heading"><h2>Teacher test controls</h2><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
+      <p>These controls affect only the current teacher test session.</p>
+      <div class="teacher-buttons">
+        <button id="fillSampleBtn" type="button" class="primary">Fill sample responses</button>
+        <button id="unlockAllBtn" type="button" class="ghost">Unlock all sections</button>
+        <button id="resetSessionBtn" type="button" class="danger">Reset test session</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
