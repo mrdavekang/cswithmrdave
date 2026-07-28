@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Year 7 Computer Science — Week 1 Project: From Blocks to Text</title>
+<meta name="description" content="Year 7 Computer Science, Term 1 Week 1 project lesson: From Blocks to Text — Create a Wayfinding Tile.">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="python/codemirror/codemirror.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- ============================================================
+     LANDING PAGE
+     ============================================================ -->
+<div id="landing" class="landing">
+  <div class="landing-card">
+    <p class="eyebrow" id="landing-eyebrow">Year 7 Computer Science · Term 1, Week 1</p>
+    <h1 id="landing-title">From Blocks to Text: Create a Wayfinding Tile</h1>
+    <p class="landing-meta">
+      <span class="pill" id="landing-time">Estimated time: 60 minutes</span>
+      <span class="pill" id="landing-unit">Unit: Computational Thinking and Python Turtle</span>
+    </p>
+
+    <p class="landing-desc" id="landing-desc"></p>
+
+    <div class="landing-grid">
+      <section class="landing-block" aria-labelledby="landing-submit-h">
+        <h2 id="landing-submit-h">You will submit three files</h2>
+        <ul id="landing-files" class="tick-list"></ul>
+        <p class="note" id="landing-teams"></p>
+      </section>
+
+      <section class="landing-block" aria-labelledby="landing-form-h">
+        <h2 id="landing-form-h">Start your project</h2>
+        <form id="start-form" novalidate>
+          <div class="field">
+            <label for="student-name">Full name <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="student-name" name="student-name" autocomplete="name"
+                   aria-describedby="student-name-err" required>
+            <p class="field-error" id="student-name-err" role="alert" hidden>Enter your full name to begin.</p>
+          </div>
+          <div class="field" id="class-field">
+            <label for="student-class">Class <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="student-class" name="student-class" placeholder="e.g. 7T"
+                   aria-describedby="student-class-hint student-class-err" required>
+            <p class="hint" id="student-class-hint">Use the class code your teacher gave you, for example 7T.</p>
+            <p class="field-error" id="student-class-err" role="alert" hidden>Enter your class to begin.</p>
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="btn-start">Start Project</button>
+            <button type="button" class="btn" id="btn-resume" hidden>Resume Previous Work</button>
+          </div>
+          <p class="hint" id="resume-hint" hidden></p>
+        </form>
+      </section>
+    </div>
+
+    <details class="landing-details">
+      <summary>What you will do in this lesson</summary>
+      <ol class="journey-list">
+        <li><strong>Predict</strong> what two short programs will do.</li>
+        <li><strong>Build</strong> the same square in Scratch and in Python Turtle.</li>
+        <li><strong>Run</strong> and <strong>observe</strong> both programs.</li>
+        <li><strong>Modify</strong> the values and explain what changed.</li>
+        <li><strong>Create</strong> your own wayfinding tile.</li>
+        <li><strong>Test</strong> it, <strong>explain</strong> it, then <strong>export</strong> your evidence.</li>
+      </ol>
+    </details>
+  </div>
+</div>
+
+<!-- ============================================================
+     LESSON APPLICATION
+     ============================================================ -->
+<div id="app" class="app" hidden>
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-title-block">
+        <p class="eyebrow" id="app-eyebrow">Year 7 Computer Science · Term 1, Week 1 · Week 1 Project</p>
+        <h1 id="app-title">From Blocks to Text: Create a Wayfinding Tile</h1>
+      </div>
+      <div class="app-student-block">
+        <p class="student-line"><span id="hdr-name">—</span> · <span id="hdr-class">—</span></p>
+        <span id="save-status" class="save-status" role="status" aria-live="polite">Saved</span>
+        <button type="button" class="btn btn-small" id="btn-exit">Change student</button>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar" role="progressbar" aria-labelledby="progress-label"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <p class="progress-label" id="progress-label">0 of 8 sections complete</p>
+    </div>
+
+    <nav class="section-nav" id="section-nav" aria-label="Lesson sections"></nav>
+  </header>
+
+  <div class="app-body">
+    <main id="main-content" class="app-main" tabindex="-1">
+      <div id="section-container"></div>
+
+      <nav class="section-footer" aria-label="Section navigation">
+        <button type="button" class="btn" id="btn-back">← Back</button>
+        <p class="footer-status" id="footer-status" role="status" aria-live="polite"></p>
+        <button type="button" class="btn btn-primary" id="btn-next">Next →</button>
+      </nav>
+    </main>
+
+    <!-- Sticky learning panel -->
+    <aside class="learning-panel" id="learning-panel" aria-labelledby="lp-title">
+      <div class="lp-inner">
+        <button type="button" class="lp-toggle" id="lp-toggle" aria-expanded="true" aria-controls="lp-content">
+          <span id="lp-title">Learning information</span>
+          <span class="lp-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="lp-content" id="lp-content"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIALOGS
+     ============================================================ -->
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card" id="modal-card">
+    <div class="modal-head">
+      <h2 id="modal-title">Title</h2>
+      <button type="button" class="btn btn-small" id="modal-close" aria-label="Close dialog">Close</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot" id="modal-foot"></div>
+  </div>
+</div>
+
+<div id="live-region" class="visually-hidden" role="status" aria-live="polite"></div>
+
+<!-- Print-only report container (fallback for PDF export) -->
+<div id="print-report" class="print-report" aria-hidden="true"></div>
+
+<!-- ============================================================
+     LOCAL LIBRARIES — no CDN is used
+     ============================================================ -->
+<script src="python/codemirror/codemirror.js"></script>
+<script src="python/codemirror/mode-python.js"></script>
+<script src="python/codemirror/addon-closebrackets.js"></script>
+<script src="python/codemirror/addon-matchbrackets.js"></script>
+<script src="python/codemirror/addon-activeline.js"></script>
+<script src="python/skulpt/skulpt.min.js"></script>
+<script src="python/skulpt-turtle/skulpt-stdlib.js"></script>
+<script src="libraries/jspdf/jspdf.umd.min.js"></script>
+<script src="libraries/html2canvas/html2canvas.min.js"></script>
+<script src="libraries/zip/jszip.min.js"></script>
+
+<!-- Application -->
+<script src="lesson-data.js"></script>
+<script src="python/python-runner.js"></script>
+<script src="report.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

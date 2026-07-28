@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 220" role="img"
+     aria-label="Example layout of a good Scratch screenshot: the block script on the left and the stage showing the drawn square on the right.">
+  <style>
+    .t { font: 600 12px "Segoe UI", Arial, sans-serif; fill: #000; }
+    .m { font: 11px "Segoe UI", Arial, sans-serif; fill: #444; }
+    .box { fill: #fff; stroke: #000; stroke-width: 2; }
+    .blk { stroke: rgba(0,0,0,.5); stroke-width: 1; }
+  </style>
+  <rect class="box" x="2" y="2" width="516" height="216"/>
+  <text class="t" x="14" y="22">A good screenshot shows both parts</text>
+
+  <rect class="box" x="14" y="34" width="230" height="170" fill="#fafafa"/>
+  <text class="m" x="22" y="50">1. Your block script</text>
+  <rect class="blk" x="22" y="58" width="150" height="16" fill="#ffbf00"/>
+  <rect class="blk" x="22" y="76" width="150" height="16" fill="#0fbd8c"/>
+  <rect class="blk" x="22" y="94" width="150" height="16" fill="#4c97ff"/>
+  <rect class="blk" x="22" y="112" width="150" height="16" fill="#4c97ff"/>
+  <rect class="blk" x="22" y="130" width="150" height="16" fill="#4c97ff"/>
+  <rect class="blk" x="22" y="148" width="150" height="16" fill="#4c97ff"/>
+  <rect class="blk" x="22" y="166" width="150" height="16" fill="#0fbd8c"/>
+
+  <rect class="box" x="262" y="34" width="244" height="170"/>
+  <text class="m" x="270" y="50">2. The stage with your square</text>
+  <rect x="330" y="80" width="90" height="90" fill="none" stroke="#000" stroke-width="4"/>
+</svg>

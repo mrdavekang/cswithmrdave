@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img"
+     aria-label="Four example wayfinding symbols: a straight arrow, a turning arrow, a doorway symbol and a destination flag. These are ideas only, not solutions.">
+  <style>
+    .t { font: 600 13px "Segoe UI", Arial, sans-serif; fill: #000; }
+    .s { fill: none; stroke: #000; stroke-width: 6; stroke-linecap: square; }
+    .box { fill: #fff; stroke: #000; stroke-width: 2; }
+  </style>
+
+  <rect class="box" x="6" y="6" width="140" height="130"/>
+  <path class="s" d="M36 71 H108"/>
+  <path class="s" d="M92 55 L112 71 L92 87"/>
+  <text class="t" x="30" y="160">Straight arrow</text>
+
+  <rect class="box" x="166" y="6" width="140" height="130"/>
+  <path class="s" d="M196 106 V56 H262"/>
+  <path class="s" d="M246 40 L266 56 L246 72"/>
+  <text class="t" x="192" y="160">Turning arrow</text>
+
+  <rect class="box" x="326" y="6" width="140" height="130"/>
+  <path class="s" d="M366 116 V36 H436 V116"/>
+  <path class="s" d="M366 116 H436"/>
+  <circle cx="424" cy="80" r="5" fill="#000"/>
+  <text class="t" x="356" y="160">Doorway</text>
+
+  <rect class="box" x="486" y="6" width="140" height="130"/>
+  <path class="s" d="M526 120 V32"/>
+  <path class="s" d="M526 32 H592 L572 56 L592 80 H526"/>
+  <text class="t" x="500" y="160">Destination flag</text>
+</svg>
