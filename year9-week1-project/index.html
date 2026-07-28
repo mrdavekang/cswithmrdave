@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Help Button — Year 9 Computing, Term 1 Week 1</title>
+<meta name="description" content="Year 9 Computing project lesson: build, test and improve a micro:bit classroom help button in Python.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to lesson content</a>
+
+<!-- ============================== HEADER ============================== -->
+<header class="app-header" id="appHeader" hidden>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">Y9</div>
+      <div class="brand-text">
+        <div class="kicker">Year 9 Computing · Term 1, Week 1</div>
+        <div class="title">Classroom Help Button</div>
+      </div>
+    </div>
+    <div class="header-student">
+      <div class="student-chip" id="headerStudent">—</div>
+      <div class="save-state" id="saveState" role="status" aria-live="polite">Ready</div>
+      <button type="button" class="btn btn-small" id="btnResetTop">Reset progress</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar" role="progressbar" aria-labelledby="progressLabel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <span class="visually-hidden" id="progressLabel">Lesson progress</span>
+  </div>
+</header>
+
+<!-- ============================== STEP NAV ============================== -->
+<nav class="stepnav" id="stepNav" aria-label="Lesson sections" hidden>
+  <div class="stepnav-inner" id="stepNavInner"><!-- built by app.js --></div>
+</nav>
+
+<!-- ============================== ENTRY ============================== -->
+<div class="entry-wrap" id="entryScreen">
+  <div class="entry-grid">
+    <div class="entry-hero">
+      <span class="eyebrow">Year 9 Computing · Term 1, Week 1</span>
+      <h1>Classroom Help Button</h1>
+      <p class="lede">Today you will build a small micro:bit device that lets you ask for help without calling across the room. You will write the code, test it, let a partner try it, then make it better.</p>
+
+      <div class="note tip">
+        <span class="note-title">What you will make</span>
+        Press <strong>button A</strong> for <strong>I'M STUCK</strong>. Press <strong>button B</strong> for <strong>CHECK THIS</strong>. If you finish early, add <strong>A + B</strong> for <strong>CAN I TALK?</strong>
+      </div>
+
+      <h3>How the lesson runs</h3>
+      <div class="runsheet">
+        <div class="runsheet-row"><strong>Starter</strong> — How would you ask for help? <span class="mins">8 min</span></div>
+        <div class="runsheet-row"><strong>Main 1</strong> — Build your help button <span class="mins">22 min</span></div>
+        <div class="runsheet-row"><strong>Main 2</strong> — Try it on a real micro:bit <span class="mins">23 min</span></div>
+        <div class="runsheet-row optional"><strong>Extension</strong> — Add "Can I talk?" <span class="mins">optional</span></div>
+        <div class="runsheet-row"><strong>Plenary</strong> — What worked and what changed? <span class="mins">7 min</span></div>
+        <div class="runsheet-row"><strong>Finish</strong> — Check your work and export your PDF <span class="mins">—</span></div>
+      </div>
+
+      <p style="margin-top:14px;font-size:0.88rem;color:var(--ink-3)">Your work saves on this computer as you go. You can close the tab and carry on later on the same computer.</p>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Start the lesson</h2>
+        <p class="lede" style="font-size:0.93rem">Type your details so your work is labelled correctly. You need both before you can begin.</p>
+        <form id="entryForm" novalidate>
+          <div class="field">
+            <label for="entryName">Full name</label>
+            <div class="help">First name and last name, as your teacher knows you.</div>
+            <input type="text" id="entryName" name="entryName" autocomplete="name" placeholder="e.g. David Kang" required aria-describedby="entryNameErr">
+            <div class="validation" id="entryNameErr" hidden></div>
+          </div>
+          <div class="field">
+            <label for="entryClass">Class</label>
+            <div class="help">Your Computing class code.</div>
+            <input type="text" id="entryClass" name="entryClass" placeholder="e.g. 9T" required aria-describedby="entryClassErr">
+            <div class="validation" id="entryClassErr" hidden></div>
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="btnStart">Start the lesson</button>
+          </div>
+        </form>
+        <div id="resumeBox" hidden style="margin-top:14px">
+          <div class="note good">
+            <span class="note-title">Saved work found on this computer</span>
+            <span id="resumeText"></span>
+            <div class="btn-row" style="margin-top:9px">
+              <button type="button" class="btn btn-primary btn-small" id="btnResume">Carry on</button>
+              <button type="button" class="btn btn-small btn-danger" id="btnClearSaved">Start again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card soft">
+        <h3>Moving computer?</h3>
+        <p style="font-size:0.9rem">If you saved a progress file last lesson, load it here to carry on with everything you did before.</p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-small" id="btnImportEntry">Load progress file</button>
+        </div>
+        <p style="font-size:0.8rem;color:var(--ink-3);margin-top:8px">The file stays on this computer. Nothing is uploaded anywhere.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== MAIN LAYOUT ============================== -->
+<div class="layout" id="lessonLayout" hidden>
+  <main class="main-col" id="main" tabindex="-1">
+
+    <!-- ---------------- STARTER ---------------- -->
+    <section class="section" id="sec-starter" data-section="starter" aria-labelledby="h-starter">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">1</div>
+          <div>
+            <div class="section-kicker">Starter <span class="timing">8 minutes</span></div>
+            <h2 id="h-starter">How would you ask for help?</h2>
+          </div>
+        </div>
+        <p class="lede">You are stuck during a lesson, but you do not want to call across the classroom. How could a small device let the teacher know?</p>
+        <div class="note tip">
+          <span class="note-title">Keep it short</span>
+          A signal has to be read from a few metres away, in about a second.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Three situations — write a signal for each</h3>
+        <p style="font-size:0.9rem;color:var(--ink-3)">A short word or message, plus a picture idea if you want one.</p>
+
+        <div class="grid-3">
+          <div class="mini-card">
+            <h4>1. You do not understand the task</h4>
+            <div class="field">
+              <label for="starter_sig1_msg">Your message</label>
+              <input type="text" id="starter_sig1_msg" data-response="starter_sig1_msg" maxlength="40" placeholder="e.g. STUCK">
+              <div class="chips-label" style="margin-top:7px">Ideas (tap to use)</div>
+              <div class="chips" data-chip-target="starter_sig1_msg" data-chip-mode="fill">
+                <button type="button" class="chip">STUCK</button>
+                <button type="button" class="chip">HELP?</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="starter_sig1_pic">Picture or symbol idea (optional)</label>
+              <input type="text" id="starter_sig1_pic" data-response="starter_sig1_pic" maxlength="40" placeholder="e.g. confused face">
+              <div class="chips" data-chip-target="starter_sig1_pic" data-chip-mode="fill" style="margin-top:7px">
+                <button type="button" class="chip">confused face</button>
+                <button type="button" class="chip">question mark</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h4>2. You want the teacher to check your work</h4>
+            <div class="field">
+              <label for="starter_sig2_msg">Your message</label>
+              <input type="text" id="starter_sig2_msg" data-response="starter_sig2_msg" maxlength="40" placeholder="e.g. CHECK THIS">
+              <div class="chips-label" style="margin-top:7px">Ideas (tap to use)</div>
+              <div class="chips" data-chip-target="starter_sig2_msg" data-chip-mode="fill">
+                <button type="button" class="chip">CHECK THIS</button>
+                <button type="button" class="chip">CAN YOU CHECK?</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="starter_sig2_pic">Picture or symbol idea (optional)</label>
+              <input type="text" id="starter_sig2_pic" data-response="starter_sig2_pic" maxlength="40" placeholder="e.g. tick">
+              <div class="chips" data-chip-target="starter_sig2_pic" data-chip-mode="fill" style="margin-top:7px">
+                <button type="button" class="chip">tick</button>
+                <button type="button" class="chip">raised hand</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h4>3. You need to speak to the teacher privately</h4>
+            <div class="field">
+              <label for="starter_sig3_msg">Your message</label>
+              <input type="text" id="starter_sig3_msg" data-response="starter_sig3_msg" maxlength="40" placeholder="e.g. CAN I TALK?">
+              <div class="chips-label" style="margin-top:7px">Ideas (tap to use)</div>
+              <div class="chips" data-chip-target="starter_sig3_msg" data-chip-mode="fill">
+                <button type="button" class="chip">CAN I TALK?</button>
+                <button type="button" class="chip">HELP?</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="starter_sig3_pic">Picture or symbol idea (optional)</label>
+              <input type="text" id="starter_sig3_pic" data-response="starter_sig3_pic" maxlength="40" placeholder="e.g. raised hand">
+              <div class="chips" data-chip-target="starter_sig3_pic" data-chip-mode="fill" style="margin-top:7px">
+                <button type="button" class="chip">raised hand</button>
+                <button type="button" class="chip">question mark</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Input → Processing → Output</h3>
+        <p style="font-size:0.9rem">Every micro:bit program works the same way. Use your own signal idea to fill these in.</p>
+        <div class="grid-3">
+          <div class="mini-card">
+            <h4>Input</h4>
+            <label for="starter_ipo_input">What would the student do?</label>
+            <textarea id="starter_ipo_input" data-response="starter_ipo_input" maxlength="200" placeholder="The student..."></textarea>
+          </div>
+          <div class="mini-card">
+            <h4>Processing</h4>
+            <label for="starter_ipo_process">What would the program check?</label>
+            <textarea id="starter_ipo_process" data-response="starter_ipo_process" maxlength="200" placeholder="The program checks..."></textarea>
+          </div>
+          <div class="mini-card">
+            <h4>Output</h4>
+            <label for="starter_ipo_output">What would the micro:bit show?</label>
+            <textarea id="starter_ipo_output" data-response="starter_ipo_output" maxlength="200" placeholder="The micro:bit shows..."></textarea>
+          </div>
+        </div>
+        <div class="note tip" style="margin-top:14px">
+          <span class="note-title">Next</span>
+          Today, you will turn one of your ideas into a working micro:bit help button. You will build and test it in the simulator first — no micro:bits yet.
+        </div>
+      </div>
+
+      <div class="validation" id="err-starter" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="starter">Fill in the three signals and the Input, Processing, Output boxes.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: build your help button</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 1 PART A ---------------- -->
+    <section class="section" id="sec-m1a" data-section="m1a" aria-labelledby="h-m1a">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">2</div>
+          <div>
+            <div class="section-kicker">Main Activity 1 · Part A <span class="timing">22 minutes for Parts A–C</span></div>
+            <h2 id="h-m1a">Create and save your file</h2>
+          </div>
+        </div>
+        <p class="lede">Set up your folders first so your work is easy to find all year.</p>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3>1. Make these folders</h3>
+          <div class="code-panel">
+            <div class="code-bar"><span class="filename">Your documents area</span></div>
+            <div class="code-scroll">
+<pre class="code plain"><span class="ln">Year 9 Computer Science</span><span class="ln">└── Term 1</span><span class="ln">    └── Week 1 Help Button</span></pre>
+            </div>
+          </div>
+
+          <h3 style="margin-top:16px">2. Save your Python file as</h3>
+          <p style="font-size:0.9rem">Filename format: <code class="inline">Class_FullName_W1_HelpButton.py</code></p>
+          <div class="note tip">
+            <span class="note-title">Your filename</span>
+            <code class="inline" id="suggestedFilename" style="font-size:0.95rem">—</code>
+            <div class="btn-row" style="margin-top:9px">
+              <button type="button" class="btn btn-small" id="btnCopyFilename">Copy filename</button>
+            </div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--ink-3)">Spaces and symbols are removed automatically so the file opens on any computer.</p>
+
+          <h4 style="margin-top:14px">These names are not good enough</h4>
+          <div class="chips">
+            <span class="chip" style="border-color:var(--danger);color:var(--danger);cursor:default">work.py ✗</span>
+            <span class="chip" style="border-color:var(--danger);color:var(--danger);cursor:default">new.py ✗</span>
+            <span class="chip" style="border-color:var(--danger);color:var(--danger);cursor:default">python.py ✗</span>
+          </div>
+          <p style="font-size:0.85rem;color:var(--ink-3)">Nobody can tell whose work that is, or which week it belongs to.</p>
+        </div>
+
+        <div class="card">
+          <h3>Confirm you have done it</h3>
+          <label class="check"><input type="checkbox" data-response="m1a_folder_made"> <span>I made the folder <strong>Week 1 Help Button</strong> inside Term 1.</span></label>
+          <label class="check"><input type="checkbox" data-response="m1a_file_saved"> <span>I saved my Python file in that folder.</span></label>
+          <label class="check"><input type="checkbox" data-response="m1a_name_matches"> <span>My filename matches the format above.</span></label>
+
+          <div class="uploader" data-slot="m1a_file_screenshot" data-max="2" style="margin-top:14px">
+            <h4>Upload a screenshot showing your saved Python file.</h4>
+            <div class="hint">Optional but useful evidence. Paste a screenshot or choose a file. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="validation" id="err-m1a" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m1a">Tick all three boxes once your file is saved.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: build the first version</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 1 PART B ---------------- -->
+    <section class="section" id="sec-m1b" data-section="m1b" aria-labelledby="h-m1b">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">3</div>
+          <div>
+            <div class="section-kicker">Main Activity 1 · Part B</div>
+            <h2 id="h-m1b">Build the first version</h2>
+          </div>
+        </div>
+        <p class="lede">Copy this code into the micro:bit Python Editor, then run it in the simulator.</p>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3>Starter code</h3>
+          <div class="code-panel">
+            <div class="code-bar">
+              <span class="filename" id="codeBarFilename">HelpButton_Starter.py</span>
+              <span class="spacer"></span>
+              <button type="button" class="btn btn-small" data-copy-code="code-v1">Copy code</button>
+              <button type="button" class="btn btn-small" data-download-code="code-v1">Download starter .py</button>
+            </div>
+            <div class="code-scroll"><pre class="code" data-code-render="code-v1"></pre></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:12px">
+            <a class="btn btn-primary" id="editorLink" href="#" target="_blank" rel="noopener">Open the micro:bit Python Editor ↗</a>
+          </div>
+          <p style="font-size:0.86rem;color:var(--ink-3);margin-top:8px">The editor opens in a new tab. Keep this lesson open and come back when your code works.</p>
+
+          <div class="note tip">
+            <span class="note-title">In the editor</span>
+            Paste the code, press the green play button, then click the A and B buttons on the simulator.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Before you open the editor — predict</h3>
+          <p style="font-size:0.88rem;color:var(--ink-3)">Short answers are fine. You are guessing on purpose.</p>
+          <div class="field">
+            <label for="m1b_predict_a">What will happen when button A is pressed?</label>
+            <textarea id="m1b_predict_a" data-response="m1b_predict_a" maxlength="200" placeholder="It will..."></textarea>
+          </div>
+          <div class="field">
+            <label for="m1b_predict_b">What will happen when button B is pressed?</label>
+            <textarea id="m1b_predict_b" data-response="m1b_predict_b" maxlength="200" placeholder="It will..."></textarea>
+          </div>
+          <div class="field">
+            <label for="m1b_which_checks">Which part of the code checks the button?</label>
+            <input type="text" id="m1b_which_checks" data-response="m1b_which_checks" maxlength="120" placeholder="e.g. if button_a.was_pressed()">
+          </div>
+          <div class="field">
+            <label for="m1b_which_output">Which part creates the output?</label>
+            <input type="text" id="m1b_which_output" data-response="m1b_which_output" maxlength="120" placeholder="e.g. display.show / display.scroll">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>After you have tested it in the simulator</h3>
+        <div class="split">
+          <div>
+            <label class="check"><input type="checkbox" data-response="m1b_a_worked"> <span>Button A worked in the simulator.</span></label>
+            <label class="check"><input type="checkbox" data-response="m1b_b_worked"> <span>Button B worked in the simulator.</span></label>
+            <label class="check"><input type="checkbox" data-response="m1b_different"> <span>Both buttons gave different results.</span></label>
+          </div>
+          <div class="uploader" data-slot="m1b_sim_screenshot" data-max="2">
+            <h4>Upload a screenshot of your simulator.</h4>
+            <div class="hint">Optional. Paste a screenshot or choose a file. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+        <div class="note warn" style="margin-top:6px">
+          <span class="note-title">Not working?</span>
+          Check your spelling, check the indentation under each <code class="inline">if</code>, and make sure the quotation marks are straight.
+        </div>
+      </div>
+
+      <div class="validation" id="err-m1b" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m1b">Answer the four predictions and tick the three test boxes.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: make it your own</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 1 PART C ---------------- -->
+    <section class="section" id="sec-m1c" data-section="m1c" aria-labelledby="h-m1c">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">4</div>
+          <div>
+            <div class="section-kicker">Main Activity 1 · Part C</div>
+            <h2 id="h-m1c">Make the first version your own</h2>
+          </div>
+        </div>
+        <p class="lede">Choose <strong>at least two</strong> changes, make them in the editor, then test both buttons again.</p>
+      </div>
+
+      <div class="card">
+        <h3>Choose your changes</h3>
+        <div class="grid-2" id="m1cChoices">
+          <label class="choice-card" data-choice="words">
+            <div class="choice-top"><input type="checkbox" data-choice-input="words"><h4>Change the words</h4></div>
+            <div class="code-panel" style="margin-bottom:6px">
+              <div class="code-scroll"><pre class="code" data-code-render="opt-words"></pre></div>
+            </div>
+            <p class="why">Short messages are faster to read on the micro:bit.</p>
+          </label>
+
+          <label class="choice-card" data-choice="picture">
+            <div class="choice-top"><input type="checkbox" data-choice-input="picture"><h4>Change the picture</h4></div>
+            <div class="code-panel" style="margin-bottom:6px">
+              <div class="code-scroll"><pre class="code" data-code-render="opt-picture"></pre></div>
+            </div>
+            <p class="why">Choose a picture that matches the message.</p>
+          </label>
+
+          <label class="choice-card" data-choice="speed">
+            <div class="choice-top"><input type="checkbox" data-choice-input="speed"><h4>Change the speed</h4></div>
+            <div class="code-panel" style="margin-bottom:6px">
+              <div class="code-scroll"><pre class="code" data-code-render="opt-speed"></pre></div>
+            </div>
+            <p class="why">Can people see the picture clearly without waiting too long?</p>
+          </label>
+
+          <label class="choice-card" data-choice="start">
+            <div class="choice-top"><input type="checkbox" data-choice-input="start"><h4>Change the starting screen</h4></div>
+            <div class="code-panel" style="margin-bottom:6px">
+              <div class="code-scroll"><pre class="code" data-code-render="opt-start"></pre></div>
+            </div>
+            <p class="why">This is what your micro:bit shows while it waits.</p>
+          </label>
+
+          <label class="choice-card" data-choice="finish">
+            <div class="choice-top"><input type="checkbox" data-choice-input="finish"><h4>Add a finishing picture</h4></div>
+            <div class="code-panel" style="margin-bottom:6px">
+              <div class="code-scroll"><pre class="code" data-code-render="opt-finish"></pre></div>
+            </div>
+            <p class="why">A finishing tick can show that the button press was received.</p>
+          </label>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3>Say what you changed</h3>
+          <div class="field">
+            <label for="m1c_explain">What did you change, and why?</label>
+            <textarea id="m1c_explain" data-response="m1c_explain" maxlength="400" placeholder="I changed... because..."></textarea>
+          </div>
+          <label class="check"><input type="checkbox" data-response="m1c_both_work"> <span>I tested it again and <strong>both buttons still work</strong>.</span></label>
+        </div>
+        <div class="card">
+          <h3>Evidence</h3>
+          <div class="uploader" data-slot="m1c_sim_screenshot" data-max="3" data-required="true">
+            <h4>Upload a new simulator screenshot showing your changes.</h4>
+            <div class="hint">Required for this part. Paste a screenshot or choose a file. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="checkpoint" id="m1Checkpoint">
+          <h3>Checkpoint — before you collect a micro:bit</h3>
+          <div class="cp-item" data-cp="a"><span class="cp-mark">–</span> Button A works</div>
+          <div class="cp-item" data-cp="b"><span class="cp-mark">–</span> Button B works</div>
+          <div class="cp-item" data-cp="diff"><span class="cp-mark">–</span> The outputs are different</div>
+          <div class="cp-item" data-cp="changes"><span class="cp-mark">–</span> At least two changes were made</div>
+          <div class="cp-item" data-cp="file"><span class="cp-mark">–</span> The file was saved correctly</div>
+        </div>
+      </div>
+
+      <div class="validation" id="err-m1c" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m1c">Two changes, a short explanation, a tick that both buttons work, and a screenshot.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: use a real micro:bit</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 2 PART A ---------------- -->
+    <section class="section" id="sec-m2a" data-section="m2a" aria-labelledby="h-m2a">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">5</div>
+          <div>
+            <div class="section-kicker">Main Activity 2 · Part A <span class="timing">23 minutes for Parts A–C</span></div>
+            <h2 id="h-m2a">Connect, send and test</h2>
+          </div>
+        </div>
+        <p class="lede">Collect a micro:bit and a cable. Work in pairs and swap roles after your first successful test.</p>
+        <div class="grid-2">
+          <div class="mini-card"><h4>Coder</h4><ul><li>sends the code</li><li>changes the program</li></ul></div>
+          <div class="mini-card"><h4>Tester</h4><ul><li>presses the buttons</li><li>checks the results</li></ul></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="split">
+          <div>
+            <h3>Connect the micro:bit</h3>
+            <ol>
+              <li>Collect one micro:bit and one USB cable.</li>
+              <li>Check the number on the micro:bit.</li>
+              <li>Plug the small end into the micro:bit.</li>
+              <li>Plug the USB end into the laptop.</li>
+              <li>Wait for the device to appear.</li>
+            </ol>
+            <div class="note tip"><span class="note-title">If nothing appears</span> Try a different USB port or a different cable.</div>
+          </div>
+          <figure class="guide">
+            <img src="assets/images/Image 1.png"
+                 alt="Four-step guide showing how to check, connect and recognise a micro:bit on a laptop."
+                 data-lightbox="Connect the micro:bit"
+                 data-fallback="Step 1: check your micro:bit and USB cable. Step 2: plug the smaller end into the micro:bit. Step 3: plug the USB end into the laptop. Step 4: wait for the MICROBIT device to appear.">
+            <figcaption>Tap the picture to make it bigger.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="split">
+          <div>
+            <h3>Send your code</h3>
+            <ol>
+              <li>Check that the code works in the simulator.</li>
+              <li>Select Send, Flash or Download.</li>
+              <li>Choose the connected micro:bit if asked.</li>
+              <li>Wait until the transfer finishes.</li>
+              <li>Do not unplug the cable while code is being sent.</li>
+            </ol>
+            <div class="note warn">
+              <span class="note-title">Warning</span>
+              Do not unplug the micro:bit while the transfer is still running.
+            </div>
+          </div>
+          <figure class="guide">
+            <img src="assets/images/Image 2.png"
+                 alt="Visual guide showing how to send Python code from the micro:bit editor to a connected micro:bit."
+                 data-lightbox="Send your code"
+                 data-fallback="Step 1: check it works in the simulator. Step 2: click Send, Flash or Download. Step 3: choose your connected micro:bit. Step 4: wait for 'Done!' or 100%. Do not unplug while sending.">
+            <figcaption>Tap the picture to make it bigger.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="split">
+          <div>
+            <h3>Test your real micro:bit</h3>
+            <ol>
+              <li>Press button A.</li>
+              <li>Watch the picture and message.</li>
+              <li>Press button B.</li>
+              <li>Watch the second picture and message.</li>
+              <li>Compare the real micro:bit with the simulator.</li>
+              <li>After changing the code, test both buttons again.</li>
+            </ol>
+          </div>
+          <figure class="guide">
+            <img src="assets/images/Image 3.png"
+                 alt="Visual guide showing how to test buttons A and B and compare the physical micro:bit with the simulator."
+                 data-lightbox="Test your real micro:bit"
+                 data-fallback="Press button A and watch the picture and message. Press button B and watch the second picture and message. Compare the real micro:bit with the simulator. Repeat after every change.">
+            <figcaption>Tap the picture to make it bigger.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Record your results</h3>
+        <div class="split">
+          <div>
+            <div class="field">
+              <label for="m2a_number">Your micro:bit number</label>
+              <div class="help">The number written on the device. You need it again when you return it.</div>
+              <input type="text" id="m2a_number" data-response="m2a_number" maxlength="20" placeholder="e.g. 07">
+            </div>
+            <fieldset style="border:0;padding:0;margin:0 0 12px">
+              <legend style="font-weight:600;font-size:0.9rem;margin-bottom:6px">Did button A work on the real micro:bit?</legend>
+              <div class="radio-row" data-radio="m2a_a_worked">
+                <label class="radio-pill"><input type="radio" name="m2a_a_worked" value="Yes"> Yes</label>
+                <label class="radio-pill"><input type="radio" name="m2a_a_worked" value="Not yet"> Not yet</label>
+              </div>
+            </fieldset>
+            <fieldset style="border:0;padding:0;margin:0 0 12px">
+              <legend style="font-weight:600;font-size:0.9rem;margin-bottom:6px">Did button B work on the real micro:bit?</legend>
+              <div class="radio-row" data-radio="m2a_b_worked">
+                <label class="radio-pill"><input type="radio" name="m2a_b_worked" value="Yes"> Yes</label>
+                <label class="radio-pill"><input type="radio" name="m2a_b_worked" value="Not yet"> Not yet</label>
+              </div>
+            </fieldset>
+            <fieldset style="border:0;padding:0;margin:0 0 12px">
+              <legend style="font-weight:600;font-size:0.9rem;margin-bottom:6px">Did the real micro:bit match the simulator?</legend>
+              <div class="radio-row" data-radio="m2a_matched">
+                <label class="radio-pill"><input type="radio" name="m2a_matched" value="Yes, the same"> Yes, the same</label>
+                <label class="radio-pill"><input type="radio" name="m2a_matched" value="Almost"> Almost</label>
+                <label class="radio-pill"><input type="radio" name="m2a_matched" value="No, different"> No, different</label>
+              </div>
+            </fieldset>
+            <label class="check"><input type="checkbox" data-response="m2a_swapped"> <span>We swapped roles after the first successful test.</span></label>
+          </div>
+          <div class="uploader" data-slot="m2a_device_photo" data-max="3">
+            <h4>Upload a photo of your micro:bit working.</h4>
+            <div class="hint">Optional. One or more photos or pasted screenshots. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="validation" id="err-m2a" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m2a">Add your micro:bit number and answer the three questions.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: let your partner try it</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 2 PART B ---------------- -->
+    <section class="section" id="sec-m2b" data-section="m2b" aria-labelledby="h-m2b">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">6</div>
+          <div>
+            <div class="section-kicker">Main Activity 2 · Part B</div>
+            <h2 id="h-m2b">Let your partner try it</h2>
+          </div>
+        </div>
+        <p class="lede">Give the micro:bit to your partner. Do not explain the buttons yet.</p>
+      </div>
+
+      <div class="card">
+        <h3>Your partner answers</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label for="m2b_a_meaning">What do you think button A means?</label>
+            <input type="text" id="m2b_a_meaning" data-response="m2b_a_meaning" maxlength="120" placeholder="I think it means...">
+          </div>
+          <div class="field">
+            <label for="m2b_b_meaning">What do you think button B means?</label>
+            <input type="text" id="m2b_b_meaning" data-response="m2b_b_meaning" maxlength="120" placeholder="I think it means...">
+          </div>
+          <div class="field">
+            <label for="m2b_easiest">Which message was easiest to understand?</label>
+            <input type="text" id="m2b_easiest" data-response="m2b_easiest" maxlength="120" placeholder="e.g. button B, because...">
+          </div>
+          <div class="field">
+            <label for="m2b_slow">Was anything slow or confusing?</label>
+            <input type="text" id="m2b_slow" data-response="m2b_slow" maxlength="160" placeholder="e.g. the message took too long">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>One suggestion from your partner</h3>
+        <div class="field">
+          <label for="m2b_suggestion">I think you should change…</label>
+          <div class="chips-label">Quick ideas (tap to add)</div>
+          <div class="chips" data-chip-target="m2b_suggestion" data-chip-mode="append">
+            <button type="button" class="chip">the word</button>
+            <button type="button" class="chip">the picture</button>
+            <button type="button" class="chip">the speed</button>
+            <button type="button" class="chip">the starting screen</button>
+            <button type="button" class="chip">what appears at the end</button>
+          </div>
+          <input type="text" id="m2b_suggestion" data-response="m2b_suggestion" maxlength="160" placeholder="I think you should change...">
+        </div>
+      </div>
+
+      <div class="validation" id="err-m2b" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m2b">Write what your partner thought each button meant, and one suggestion.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: make it better</button>
+      </div>
+    </section>
+
+    <!-- ---------------- MAIN 2 PART C ---------------- -->
+    <section class="section" id="sec-m2c" data-section="m2c" aria-labelledby="h-m2c">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">7</div>
+          <div>
+            <div class="section-kicker">Main Activity 2 · Part C</div>
+            <h2 id="h-m2c">Make it better</h2>
+          </div>
+        </div>
+        <p class="lede">Use what your partner said. Change one thing at a time, then test it again.</p>
+      </div>
+
+      <div class="card">
+        <h3>Your changes from earlier</h3>
+        <div id="m2cPrevChoices" class="chips"></div>
+        <div id="m2cPartnerRecap" class="note tip" style="margin-top:6px"></div>
+        <fieldset style="border:0;padding:0;margin:10px 0 0">
+          <legend style="font-weight:600;font-size:0.9rem;margin-bottom:6px">Did your first choices work well on the real micro:bit?</legend>
+          <div class="radio-row" data-radio="m2c_worked_well">
+            <label class="radio-pill"><input type="radio" name="m2c_worked_well" value="Yes, they worked well"> Yes, they worked well</label>
+            <label class="radio-pill"><input type="radio" name="m2c_worked_well" value="Partly"> Partly</label>
+            <label class="radio-pill"><input type="radio" name="m2c_worked_well" value="No, I changed them"> No, I changed them</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="card">
+        <h3>Ideas for making it clearer</h3>
+        <div class="grid-2">
+          <div class="mini-card">
+            <h4>If the message was unclear</h4>
+            <p style="font-size:0.87rem"><code class="inline">display.scroll("CHECK")</code> → <code class="inline">display.scroll("CHECK THIS")</code></p>
+            <p style="font-size:0.87rem"><code class="inline">display.scroll("HELP")</code> → <code class="inline">display.scroll("I'M STUCK")</code></p>
+          </div>
+          <div class="mini-card">
+            <h4>If the message took too long</h4>
+            <p style="font-size:0.87rem">Use a shorter message: <code class="inline">display.scroll("STUCK")</code> instead of <code class="inline">display.scroll("I NEED SOME HELP")</code></p>
+            <p style="font-size:0.87rem">Or reduce <code class="inline">sleep(1000)</code> to <code class="inline">sleep(500)</code></p>
+          </div>
+          <div class="mini-card">
+            <h4>If the two choices looked too similar</h4>
+            <p style="font-size:0.87rem">Use different pictures: <code class="inline">Image.CONFUSED</code> and <code class="inline">Image.YES</code></p>
+          </div>
+          <div class="mini-card">
+            <h4>If your partner did not know it had worked</h4>
+            <div class="code-panel" style="margin:0"><div class="code-scroll"><pre class="code" data-code-render="opt-finish"></pre></div></div>
+          </div>
+          <div class="mini-card">
+            <h4>If the screen became confusing</h4>
+            <p style="font-size:0.87rem">Use <code class="inline">display.clear()</code>, or go back to the starting screen with <code class="inline">display.show("?")</code></p>
+          </div>
+          <div class="mini-card">
+            <h4>If a choice no longer feels right</h4>
+            <p style="font-size:0.87rem">Replace it completely. You are allowed to change your mind after testing.</p>
+          </div>
+        </div>
+
+        <table class="simple">
+          <caption class="visually-hidden">Examples of first choices and improved choices</caption>
+          <thead><tr><th scope="col">First choice</th><th scope="col">Possible improved choice</th></tr></thead>
+          <tbody>
+            <tr><td>HELP</td><td>I'M STUCK</td></tr>
+            <tr><td>CHECK</td><td>CHECK THIS</td></tr>
+            <tr><td>Same image for both buttons</td><td>Two clearly different images</td></tr>
+            <tr><td>Long sentence</td><td>One short phrase</td></tr>
+            <tr><td>No ending</td><td>A tick followed by a clear screen</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Now do it</h3>
+        <ol>
+          <li>Change the code.</li>
+          <li>Try it in the simulator.</li>
+          <li>Send it to the micro:bit again.</li>
+          <li>Test buttons A and B.</li>
+          <li>Let your partner try it again.</li>
+        </ol>
+        <div class="btn-row"><a class="btn btn-small" id="editorLink2" href="#" target="_blank" rel="noopener">Open the micro:bit Python Editor ↗</a></div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3>Write your improvement</h3>
+          <div class="field">
+            <label for="m2c_from">I changed…</label>
+            <input type="text" id="m2c_from" data-response="m2c_from" maxlength="120" placeholder='e.g. display.scroll("HELP")'>
+          </div>
+          <div class="field">
+            <label for="m2c_to">…to…</label>
+            <input type="text" id="m2c_to" data-response="m2c_to" maxlength="120" placeholder='e.g. display.scroll("I&apos;M STUCK")'>
+          </div>
+          <div class="field">
+            <label for="m2c_because">…because…</label>
+            <textarea id="m2c_because" data-response="m2c_because" maxlength="300" placeholder="my partner thought HELP could mean anything"></textarea>
+          </div>
+          <label class="check"><input type="checkbox" data-response="m2c_retested"> <span>I sent the new code and tested both buttons again.</span></label>
+        </div>
+        <div class="card">
+          <h3>Evidence of your improved version</h3>
+          <div class="uploader" data-slot="m2c_evidence" data-max="3" data-required="true">
+            <h4>Upload a screenshot or photo of your improved version.</h4>
+            <div class="hint">Required for this part. Paste a screenshot or choose a file. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="validation" id="err-m2c" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="m2c">Fill in what you changed, to what, and why — then add your evidence.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: extension or plenary</button>
+      </div>
+    </section>
+
+    <!-- ---------------- EXTENSION ---------------- -->
+    <section class="section" id="sec-ext" data-section="ext" aria-labelledby="h-ext">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">8</div>
+          <div>
+            <div class="section-kicker">Optional extension <span class="timing">early finishers</span></div>
+            <h2 id="h-ext">Add "Can I talk?"</h2>
+          </div>
+        </div>
+        <p class="lede">Add a third choice for when a student wants to speak to the teacher privately. Use buttons A and B together.</p>
+        <div class="note tip">
+          <span class="note-title">Optional</span>
+          You do not need this to finish the lesson. You can skip straight to the plenary at any time.
+        </div>
+        <div class="btn-row"><button type="button" class="btn btn-small" data-nav="goto" data-target="plenary">Skip to the plenary</button></div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3>Example code</h3>
+          <div class="code-panel">
+            <div class="code-bar">
+              <span class="filename">Three signals</span>
+              <span class="spacer"></span>
+              <button type="button" class="btn btn-small" data-copy-code="code-ext">Copy code</button>
+              <button type="button" class="btn btn-small" data-download-code="code-ext">Download .py</button>
+            </div>
+            <div class="code-scroll"><pre class="code" data-code-render="code-ext"></pre></div>
+          </div>
+          <p style="font-size:0.86rem;color:var(--ink-3)">Check A and B together <strong>first</strong>, or the single-button code runs before it gets the chance.</p>
+        </div>
+
+        <div class="card">
+          <h3>Test all three</h3>
+          <label class="check"><input type="checkbox" data-response="ext_test_a"> <span>Button A only</span></label>
+          <label class="check"><input type="checkbox" data-response="ext_test_b"> <span>Button B only</span></label>
+          <label class="check"><input type="checkbox" data-response="ext_test_ab"> <span>Buttons A and B together</span></label>
+
+          <h3 style="margin-top:14px">Choose an extra idea</h3>
+          <div class="chips" data-chip-target="ext_choices" data-chip-mode="toggle">
+            <button type="button" class="chip" aria-pressed="false">use a different picture</button>
+            <button type="button" class="chip" aria-pressed="false">flash the picture twice</button>
+            <button type="button" class="chip" aria-pressed="false">shorten the message to TALK?</button>
+            <button type="button" class="chip" aria-pressed="false">return to the starting screen</button>
+            <button type="button" class="chip" aria-pressed="false">make the third signal clearly different</button>
+          </div>
+          <input type="hidden" data-response="ext_choices">
+
+          <div class="field" style="margin-top:12px">
+            <label for="ext_explain">What did you add?</label>
+            <textarea id="ext_explain" data-response="ext_explain" maxlength="300" placeholder="I added..."></textarea>
+          </div>
+          <div class="uploader" data-slot="ext_evidence" data-max="2">
+            <h4>Upload evidence of your extension.</h4>
+            <div class="hint">Optional. Paste a screenshot or choose a file. PNG, JPG or JPEG.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="validation" id="err-ext" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="ext">Optional — nothing here is required.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: plenary</button>
+      </div>
+    </section>
+
+    <!-- ---------------- PLENARY ---------------- -->
+    <section class="section" id="sec-plenary" data-section="plenary" aria-labelledby="h-plenary">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">9</div>
+          <div>
+            <div class="section-kicker">Plenary <span class="timing">7 minutes</span></div>
+            <h2 id="h-plenary">What worked and what changed?</h2>
+          </div>
+        </div>
+        <h3>Class signal check</h3>
+        <div class="grid-3">
+          <div class="mini-card"><h4>I'm stuck</h4><p style="margin:0">press button A</p></div>
+          <div class="mini-card"><h4>Check this</h4><p style="margin:0">press button B</p></div>
+          <div class="mini-card" id="plenarySignal3"><h4>Can I talk?</h4><p style="margin:0">press A and B together, if you completed the extension</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Talk with your partner</h3>
+        <div class="grid-3">
+          <div class="field">
+            <label for="ple_quickest">Which signal did your partner understand most quickly?</label>
+            <input type="text" id="ple_quickest" data-response="ple_quickest" maxlength="120" placeholder="e.g. button A">
+          </div>
+          <div class="field">
+            <label for="ple_changed">What did you change after your partner tried it?</label>
+            <input type="text" id="ple_changed" data-response="ple_changed" maxlength="160" placeholder="e.g. a shorter message">
+          </div>
+          <div class="field">
+            <label for="ple_real_vs_sim">Did anything feel different on the real micro:bit? (optional)</label>
+            <input type="text" id="ple_real_vs_sim" data-response="ple_real_vs_sim" maxlength="160" placeholder="e.g. the scrolling felt slower">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Final learning check</h3>
+        <div class="grid-3">
+          <div class="field">
+            <label for="ple_ipo_input">Input: The student presses…</label>
+            <input type="text" id="ple_ipo_input" data-response="ple_ipo_input" maxlength="140" placeholder="button A or button B">
+          </div>
+          <div class="field">
+            <label for="ple_ipo_process">Processing: The program checks…</label>
+            <input type="text" id="ple_ipo_process" data-response="ple_ipo_process" maxlength="140" placeholder="which button was pressed">
+          </div>
+          <div class="field">
+            <label for="ple_ipo_output">Output: The micro:bit shows…</label>
+            <input type="text" id="ple_ipo_output" data-response="ple_ipo_output" maxlength="140" placeholder="a picture and a message">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="ple_best">The best improvement I made was…</label>
+            <input type="text" id="ple_best" data-response="ple_best" maxlength="160" placeholder="e.g. adding a tick at the end">
+          </div>
+          <div class="field">
+            <label for="ple_best_because">…because…</label>
+            <input type="text" id="ple_best_because" data-response="ple_best_because" maxlength="200" placeholder="e.g. my partner knew the press had worked">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exit question</h3>
+        <div class="field">
+          <label for="ple_exit">What other classroom problem could a micro:bit button help with?</label>
+          <div class="chips-label">Ideas (tap to use)</div>
+          <div class="chips" data-chip-target="ple_exit" data-chip-mode="fill">
+            <button type="button" class="chip">asking for equipment</button>
+            <button type="button" class="chip">showing that work is finished</button>
+            <button type="button" class="chip">asking for instructions again</button>
+            <button type="button" class="chip">choosing a confidence level</button>
+            <button type="button" class="chip">voting on a class question</button>
+            <button type="button" class="chip">requesting a quieter space</button>
+          </div>
+          <input type="text" id="ple_exit" data-response="ple_exit" maxlength="200" placeholder="A micro:bit button could help with...">
+        </div>
+      </div>
+
+      <div class="validation" id="err-plenary" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="plenary">Answer the learning check, the best improvement and the exit question.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: return the equipment</button>
+      </div>
+    </section>
+
+    <!-- ---------------- RETURN EQUIPMENT ---------------- -->
+    <section class="section" id="sec-return" data-section="return" aria-labelledby="h-return">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">10</div>
+          <div>
+            <div class="section-kicker">Before you finish</div>
+            <h2 id="h-return">Before You Finish — Return the Equipment Safely</h2>
+          </div>
+        </div>
+        <div class="split">
+          <div>
+            <ol>
+              <li>Wait until the code has finished transferring.</li>
+              <li>Hold the connector when removing the cable.</li>
+              <li>Do not pull the wire.</li>
+              <li>Check the micro:bit number.</li>
+              <li>Return the micro:bit and cable to the correct place.</li>
+            </ol>
+            <div class="note warn"><span class="note-title">Take care of our equipment</span> Be responsible so everyone can use it.</div>
+            <p id="returnNumberRecap" style="font-weight:700"></p>
+            <label class="check"><input type="checkbox" data-response="ret_microbit"> <span>micro:bit returned</span></label>
+            <label class="check"><input type="checkbox" data-response="ret_cable"> <span>cable returned</span></label>
+            <label class="check"><input type="checkbox" data-response="ret_storage"> <span>correct storage space used</span></label>
+          </div>
+          <figure class="guide">
+            <img src="assets/images/Image 4.png"
+                 alt="Four-step guide showing how to disconnect a micro:bit safely and return the numbered device and cable."
+                 data-lightbox="Return the equipment safely"
+                 data-fallback="Step 1: wait until the code has finished transferring. Step 2: remove the cable by holding the connector, not the wire. Step 3: check the micro:bit number. Step 4: return the micro:bit and cable to the correct place.">
+            <figcaption>Tap the picture to make it bigger.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="validation" id="err-return" hidden></div>
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="next-hint" data-hint="return">Tick all three once the equipment is back where it belongs.</span>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-nav="next">Next: check your work</button>
+      </div>
+    </section>
+
+    <!-- ---------------- REVIEW ---------------- -->
+    <section class="section" id="sec-review" data-section="review" aria-labelledby="h-review">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-num">11</div>
+          <div>
+            <div class="section-kicker">Final review and export</div>
+            <h2 id="h-review">Check your work, then export your PDF</h2>
+          </div>
+        </div>
+        <p class="lede">Read through everything below. If something is missing you can go back and finish it.</p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="btnExportPdf">Export my work as a PDF</button>
+          <button type="button" class="btn" id="btnPrint">Print / save as PDF (backup)</button>
+          <button type="button" class="btn" id="btnExportJson">Download progress file</button>
+          <button type="button" class="btn" id="btnImportReview">Load progress file</button>
+        </div>
+        <p style="font-size:0.82rem;color:var(--ink-3);margin-top:8px">The PDF is made on this computer. Nothing is uploaded anywhere.</p>
+      </div>
+
+      <div id="reviewContent"></div>
+
+      <div class="card teams-panel" id="teamsPanel" hidden>
+        <h3>Submit Your Work</h3>
+        <p>Upload your completed PDF to the Microsoft Teams Assignment named <strong>Week 1 Project</strong>.</p>
+        <p style="font-weight:700;margin-bottom:4px">Check before you submit:</p>
+        <ul>
+          <li>Your name and class are visible.</li>
+          <li>All required sections are included.</li>
+          <li>Your screenshots are readable.</li>
+          <li>The PDF downloaded successfully.</li>
+          <li>You are uploading the PDF, not separate screenshots.</li>
+          <li>You selected the correct Teams assignment.</li>
+        </ul>
+        <p style="font-size:0.85rem;color:var(--ink-2)">The progress file (.json) is only for carrying on at home or on another computer. Do not submit it unless your teacher asks for it.</p>
+      </div>
+
+      <div class="section-footer">
+        <button type="button" class="btn" data-nav="back">Back</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-danger" id="btnResetBottom">Reset progress</button>
+      </div>
+    </section>
+
+    <!-- print-only view, filled by export.js -->
+    <div id="print-view" aria-hidden="true"></div>
+  </main>
+
+  <!-- ---------------- LEARNING PANEL ---------------- -->
+  <details class="learning-panel" id="learningPanel" open>
+    <summary>Lesson information — tap to open</summary>
+    <div class="lp-head">This lesson at a glance</div>
+    <div class="lp-body">
+      <div class="lp-block">
+        <h4>Key topic</h4>
+        <p>Python input, processing and output with a micro:bit</p>
+      </div>
+      <div class="lp-block">
+        <h4>WAGBA</h4>
+        <p>Create, test and improve a micro:bit help button using Python.</p>
+      </div>
+      <div class="lp-block">
+        <h4>Knowledge — you will know</h4>
+        <ul>
+          <li>pressing a button provides an input</li>
+          <li>the program checks which button was pressed</li>
+          <li>the picture or message is the output</li>
+          <li>code can be tested in a simulator before being sent to a micro:bit</li>
+          <li>a Python file needs a clear and recognisable filename</li>
+        </ul>
+      </div>
+      <div class="lp-block">
+        <h4>Skills — you will be able to</h4>
+        <ul>
+          <li>edit a short micro:bit Python program</li>
+          <li>test buttons A and B in the simulator</li>
+          <li>save a Python file correctly</li>
+          <li>send working code to a physical micro:bit</li>
+          <li>collect feedback from a partner</li>
+          <li>improve the project after testing</li>
+        </ul>
+      </div>
+      <div class="lp-block">
+        <h4>Understanding — you will understand</h4>
+        <ul>
+          <li>input, processing and output work together</li>
+          <li>a simulator helps find problems before using a physical device</li>
+          <li>a message must make sense to the person using it</li>
+          <li>testing and improving are normal parts of creating a project</li>
+        </ul>
+      </div>
+      <div class="lp-block">
+        <h4>Keywords</h4>
+        <div class="keyword-list">
+          <span class="keyword">input</span><span class="keyword">processing</span><span class="keyword">output</span>
+          <span class="keyword">Python</span><span class="keyword">button</span><span class="keyword">simulator</span>
+          <span class="keyword">micro:bit</span><span class="keyword">test</span><span class="keyword">message</span>
+          <span class="keyword">prototype</span><span class="keyword">improve</span>
+        </div>
+      </div>
+      <div class="lp-challenge">
+        <h4 style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Challenge</h4>
+        <p style="margin:0">Make your help signals clearer, quicker or more useful for another student.</p>
+      </div>
+    </div>
+  </details>
+</div>
+
+<footer class="app-footer" id="appFooter" hidden>
+  Year 9 Computing · Term 1, Week 1 · Classroom Help Button — your work is saved on this computer only.
+</footer>
+
+<!-- ============================== DIALOGS ============================== -->
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged picture">
+  <div class="lightbox-bar">
+    <span id="lightboxTitle">Picture</span>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-small" id="lightboxClose">Close</button>
+  </div>
+  <img id="lightboxImg" src="" alt="">
+</dialog>
+
+<dialog class="modal" id="confirmModal" aria-labelledby="confirmTitle">
+  <div class="modal-head" id="confirmTitle">Are you sure?</div>
+  <div class="modal-body" id="confirmBody"></div>
+  <div class="modal-foot">
+    <button type="button" class="btn" id="confirmNo">Cancel</button>
+    <button type="button" class="btn btn-danger" id="confirmYes">Yes, do it</button>
+  </div>
+</dialog>
+
+<input type="file" id="jsonFileInput" accept="application/json,.json" hidden>
+<div class="toast-area" id="toastArea" aria-live="polite"></div>
+
+<!-- ============================== CODE SOURCES ============================== -->
+<script type="text/plain" id="code-v1">from microbit import *
+
+display.show("?")
+
+while True:
+    if button_a.was_pressed():
+        display.show(Image.CONFUSED)
+        sleep(700)
+        display.scroll("STUCK")
+        display.clear()
+    elif button_b.was_pressed():
+        display.show(Image.HAPPY)
+        sleep(700)
+        display.scroll("CHECK?")
+        display.clear()
+</script>
+
+<script type="text/plain" id="code-ext">while True:
+    if button_a.is_pressed() and button_b.is_pressed():
+        display.show(Image.DIAMOND)
+        sleep(500)
+        display.scroll("CAN I TALK?")
+        display.clear()
+    elif button_a.was_pressed():
+        display.show(Image.CONFUSED)
+        sleep(700)
+        display.scroll("STUCK")
+        display.clear()
+    elif button_b.was_pressed():
+        display.show(Image.YES)
+        sleep(700)
+        display.scroll("CHECK THIS")
+        display.clear()
+</script>
+
+<script type="text/plain" id="opt-words">display.scroll("HELP?")
+display.scroll("I'M STUCK")
+display.scroll("CHECK THIS")
+display.scroll("CAN YOU CHECK?")
+</script>
+
+<script type="text/plain" id="opt-picture">Image.CONFUSED
+Image.SAD
+Image.SURPRISED
+Image.HAPPY
+Image.YES
+</script>
+
+<script type="text/plain" id="opt-speed">sleep(400)
+sleep(1000)
+</script>
+
+<script type="text/plain" id="opt-start">display.show("?")
+display.show(Image.HAPPY)
+display.show(Image.DIAMOND)
+</script>
+
+<script type="text/plain" id="opt-finish">display.show(Image.YES)
+sleep(500)
+display.clear()
+</script>
+
+<script src="libraries/jspdf.umd.min.js"></script>
+<script src="storage.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
