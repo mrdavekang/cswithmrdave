@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission 0 — Meet the Micro:bit | Year 8 Computer Science</title>
+<meta name="description" content="Year 8 Term 1 Week 1 project lesson: micro:bit onboarding and creating a first physical program.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ============================================================= -->
+<!-- LANDING                                                        -->
+<!-- ============================================================= -->
+<div id="landing" class="landing">
+  <div class="landing-card">
+    <p class="eyebrow">Year 8 Computer Science &middot; Term 1, Week 1</p>
+    <h1 class="landing-title">Mission 0<span class="dash">—</span>Meet the Micro:bit</h1>
+    <p class="landing-sub">Your first physical computing project lesson. In about 60 minutes you will
+      set up a micro:bit safely, write a short program, test it, and get it running on real hardware.</p>
+
+    <ul class="landing-points">
+      <li><span class="lp-num">1</span> Identify the parts of a micro:bit and handle it safely</li>
+      <li><span class="lp-num">2</span> Create and correctly name a project in the official editor</li>
+      <li><span class="lp-num">3</span> Build an icon and message, test it, and transfer it to the device</li>
+    </ul>
+
+    <form id="entryForm" class="entry-form" novalidate>
+      <div class="field">
+        <label for="entryName">Full name <span class="req" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+        <input type="text" id="entryName" name="entryName" autocomplete="name" required
+               aria-describedby="entryNameErr" placeholder="e.g. Amara Osei">
+        <p class="err" id="entryNameErr" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="entryClass">Class <span class="req" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+        <input type="text" id="entryClass" name="entryClass" required
+               aria-describedby="entryClassErr" placeholder="e.g. 8T">
+        <p class="err" id="entryClassErr" role="alert"></p>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" id="entryStart">Start the lesson</button>
+      <p class="entry-note">Your work saves automatically in this browser on this computer.
+        Nothing is uploaded anywhere. Export a PDF at the end for your Teams assignment.</p>
+      <div class="entry-resume" id="entryResume" hidden>
+        <p id="entryResumeText"></p>
+        <button type="button" class="btn btn-secondary btn-sm" id="entryStartFresh">Start fresh instead (clears saved progress for this name)</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="fatalBanner" class="fatal-banner" role="alert" hidden>
+  <p><strong>Something went wrong loading this lesson.</strong>
+    <span id="fatalBannerMsg"></span> Your answers so far should still be saved — try reloading the page.</p>
+  <button type="button" class="btn btn-secondary btn-sm" onclick="location.reload()">Reload the page</button>
+</div>
+
+<!-- ============================================================= -->
+<!-- APP SHELL                                                      -->
+<!-- ============================================================= -->
+<div id="app" class="app" hidden>
+
+  <header class="appbar">
+    <div class="appbar-inner">
+      <div class="appbar-id">
+        <p class="appbar-lesson">Year 8 &middot; Term 1, Week 1 &middot; Project Lesson</p>
+        <h1 class="appbar-title">Mission 0 — Meet the Micro:bit</h1>
+        <p class="appbar-student"><span id="hdrName">—</span> <span class="sep" aria-hidden="true">|</span>
+          Class <span id="hdrClass">—</span>
+          <span id="teacherBadge" class="teacher-badge" hidden>TEACHER TEST MODE</span></p>
+      </div>
+      <div class="appbar-tools">
+        <p class="save-status" id="saveStatus" role="status" aria-live="polite"><span class="dot"></span><span id="saveStatusText">Saved</span></p>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnExportPartial">Export current progress (PDF)</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnBackup">Backup progress</button>
+        <button type="button" class="btn btn-ghost btn-sm panel-toggle" id="btnPanelToggle"
+                aria-expanded="false" aria-controls="learnPanel">Lesson information</button>
+      </div>
+    </div>
+
+    <nav class="stepper" aria-label="Lesson sections">
+      <ol id="stepperList"></ol>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="progress-text" id="progressText">0 of 6 core sections complete</p>
+      </div>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <main id="main" class="content" tabindex="-1">
+      <div id="sections"></div>
+
+      <nav class="pager" aria-label="Section navigation">
+        <button type="button" class="btn btn-secondary" id="btnBack">&larr; Back</button>
+        <p class="pager-hint" id="pagerHint"></p>
+        <button type="button" class="btn btn-primary" id="btnNext">Next &rarr;</button>
+      </nav>
+    </main>
+
+    <!-- Sticky learning panel -->
+    <aside id="learnPanel" class="learn-panel" aria-label="Lesson information">
+      <div class="learn-inner">
+        <button type="button" class="panel-close" id="btnPanelClose" aria-label="Close lesson information">&times;</button>
+        <h2 class="lp-title">Lesson information</h2>
+
+        <details class="lp-block" open>
+          <summary>Key Topic</summary>
+          <p>Micro:bit onboarding and creating a first physical program.</p>
+        </details>
+
+        <details class="lp-block" open>
+          <summary>WAGBA</summary>
+          <p class="wagba">We are getting better at safely setting up a micro:bit, creating and transferring
+            a program, and testing its LED output.</p>
+        </details>
+
+        <details class="lp-block">
+          <summary>Knowledge</summary>
+          <p class="lp-lead">Students will know:</p>
+          <ul>
+            <li>the location and purpose of the LED matrix, Buttons A and B, USB port and edge connectors</li>
+            <li>the purpose of a programming editor and simulator</li>
+            <li>that a program must be transferred before it can run on the physical micro:bit</li>
+            <li>that the LED matrix is an output device</li>
+          </ul>
+        </details>
+
+        <details class="lp-block">
+          <summary>Skills</summary>
+          <p class="lp-lead">Students will be able to:</p>
+          <ul>
+            <li>connect and disconnect a micro:bit safely</li>
+            <li>create and correctly name a project</li>
+            <li>build a simple icon and short message</li>
+            <li>test a program using the simulator</li>
+            <li>download and transfer a program</li>
+            <li>compare expected and actual output</li>
+            <li>capture evidence of their work</li>
+          </ul>
+        </details>
+
+        <details class="lp-block">
+          <summary>Understanding</summary>
+          <p class="lp-lead">Students will understand that:</p>
+          <ul>
+            <li>code in an editor does not automatically appear on a physical device</li>
+            <li>testing in the simulator reduces avoidable mistakes</li>
+            <li>the physical output should be compared with the expected output</li>
+            <li>debugging involves making small changes, testing again and improving</li>
+            <li>careful handling protects the micro USB port and cable</li>
+          </ul>
+        </details>
+
+        <details class="lp-block">
+          <summary>Keywords</summary>
+          <ul class="kw">
+            <li>micro:bit</li><li>LED matrix</li><li>Button A</li><li>Button B</li><li>input</li>
+            <li>output</li><li>USB</li><li>micro USB</li><li>editor</li><li>simulator</li>
+            <li>program</li><li>download</li><li>transfer</li><li>flash</li><li>test</li><li>debug</li>
+          </ul>
+        </details>
+
+        <details class="lp-block lp-challenge">
+          <summary>Challenge</summary>
+          <p>Add a Button A behaviour that displays a second symbol or short message without removing
+            the original welcome output.</p>
+        </details>
+      </div>
+    </aside>
+    <div class="panel-scrim" id="panelScrim" hidden></div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- IMAGE MODAL                                                    -->
+<!-- ============================================================= -->
+<div class="modal" id="imgModal" role="dialog" aria-modal="true" aria-labelledby="imgModalTitle" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="imgModalTitle" class="modal-title">Diagram</h2>
+      <button type="button" class="modal-close" id="imgModalClose" aria-label="Close diagram">&times;</button>
+    </div>
+    <div class="modal-body"><img id="imgModalImg" src="" alt=""></div>
+    <p class="modal-cap" id="imgModalCap"></p>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- CONFIRM DIALOG                                                 -->
+<!-- ============================================================= -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+  <div class="modal-box modal-sm">
+    <div class="modal-head">
+      <h2 id="confirmTitle" class="modal-title">Are you sure?</h2>
+      <button type="button" class="modal-close" id="confirmCloseX" aria-label="Cancel">&times;</button>
+    </div>
+    <div class="modal-body"><p id="confirmBody"></p></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" id="confirmNo">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmYes">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Hidden file input for backup import -->
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script src="libraries/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
