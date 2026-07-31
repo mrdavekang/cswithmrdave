@@ -1,0 +1,2041 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-paced Year 10 OxfordAQA Computer Science lesson on input, process and output in Python.">
+  <title>Week 1 Session 2 | My First Python Program</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111111;
+      --muted: #5f6368;
+      --line: #dedede;
+      --soft: #f6f7f6;
+      --green: #00843d;
+      --green-soft: #eaf6ef;
+      --amber: #b95d00;
+      --amber-soft: #fff4e8;
+      --blue: #185abd;
+      --blue-soft: #eef4ff;
+      --danger: #b42318;
+      --radius: 18px;
+      --shadow: 0 14px 38px rgba(17, 17, 17, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      font-family: "Raleway", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    button { cursor: pointer; }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [tabindex="0"]:focus-visible {
+      outline: 3px solid rgba(24, 90, 189, 0.28);
+      outline-offset: 2px;
+    }
+
+    .hidden { display: none !important; }
+
+    .landing {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 34px 20px;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(0, 132, 61, 0.10), transparent 30%),
+        radial-gradient(circle at 88% 84%, rgba(24, 90, 189, 0.09), transparent 31%),
+        #ffffff;
+    }
+
+    .landing-card {
+      width: min(980px, 100%);
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .landing-intro {
+      padding: clamp(34px, 6vw, 70px);
+      background: #101412;
+      color: #ffffff;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: #75d59e;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .landing h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .landing-intro p {
+      max-width: 42rem;
+      margin: 24px 0 0;
+      color: #d7ddd9;
+      font-size: 1.05rem;
+    }
+
+    .lesson-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .lesson-pills span {
+      padding: 7px 11px;
+      border: 1px solid #465149;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .landing-form {
+      padding: clamp(30px, 5vw, 58px);
+      align-self: center;
+    }
+
+    .landing-form h2 {
+      margin: 0 0 6px;
+      font-size: 1.55rem;
+    }
+
+    .landing-form > p {
+      margin: 0 0 26px;
+      color: var(--muted);
+    }
+
+    .field { margin: 0 0 18px; }
+
+    .field label,
+    .question-label {
+      display: block;
+      margin: 0 0 7px;
+      font-weight: 700;
+    }
+
+    .required::after { content: " *"; color: var(--danger); }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #bdbdbd;
+      border-radius: 11px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 11px 12px;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    textarea { min-height: 92px; resize: vertical; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(24, 90, 189, 0.10);
+    }
+
+    .code-entry {
+      min-height: 220px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+
+    .primary,
+    .secondary,
+    .ghost,
+    .danger-button {
+      min-height: 44px;
+      border-radius: 11px;
+      padding: 10px 15px;
+      font-weight: 800;
+      transition: transform 120ms ease, background 120ms ease;
+    }
+
+    .primary {
+      border: 1px solid var(--green);
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .primary:hover { background: #006f34; transform: translateY(-1px); }
+
+    .secondary {
+      border: 1px solid #202020;
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .secondary:hover { background: #f4f4f4; }
+
+    .ghost {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: #333333;
+    }
+
+    .danger-button {
+      border: 1px solid #f4c7c3;
+      background: #fff7f6;
+      color: var(--danger);
+    }
+
+    .wide { width: 100%; }
+
+    .teacher-note,
+    .saved-profile {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .saved-profile button {
+      margin-top: 10px;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 800;
+      padding: 0;
+    }
+
+    .error-message {
+      min-height: 1.4em;
+      margin: 8px 0 0;
+      color: var(--danger);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .app-shell { min-height: 100vh; background: #fbfbfa; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(180px, 420px) auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 76px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand strong { display: block; font-size: 0.98rem; }
+    .brand span { color: var(--muted); font-size: 0.78rem; }
+
+    .progress-wrap { display: grid; gap: 6px; }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8e8e8;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+      transition: width 200ms ease;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .save-state {
+      color: var(--muted);
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .review-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 9px 16px;
+      background: var(--blue-soft);
+      color: #123f82;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .review-banner button { min-height: 34px; padding: 5px 10px; }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      width: min(1500px, 100%);
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      height: calc(100vh - 76px);
+      overflow-y: auto;
+      padding: 24px 20px 40px;
+      border-right: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .side-card {
+      margin-bottom: 14px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .side-card h2,
+    .side-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.055em;
+    }
+
+    .side-card p { margin: 0; font-size: 0.86rem; }
+
+    .ksu-list { display: grid; gap: 8px; }
+
+    .ksu-list p strong {
+      display: inline-grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .step-nav {
+      display: grid;
+      gap: 7px;
+      margin-top: 18px;
+    }
+
+    .step-button {
+      display: grid;
+      grid-template-columns: 31px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #303030;
+      padding: 9px 10px;
+      text-align: left;
+    }
+
+    .step-button:hover { background: var(--soft); }
+    .step-button.active { background: var(--green-soft); color: #005d2b; }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      border: 1px solid #c9c9c9;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .step-button.active .step-number {
+      border-color: var(--green);
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .step-button.done .step-number {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .step-name { font-size: 0.86rem; font-weight: 800; }
+    .step-time { color: var(--muted); font-size: 0.7rem; }
+
+    .main-content {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 38px clamp(20px, 5vw, 64px) 60px;
+    }
+
+    .activity-step { display: none; animation: enter 180ms ease; }
+    .activity-step.active { display: block; }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-kicker {
+      margin: 0 0 7px;
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .activity-step h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.03;
+      letter-spacing: -0.05em;
+    }
+
+    .section-lead {
+      max-width: 720px;
+      margin: 15px 0 26px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .task-card {
+      margin: 16px 0;
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(17, 17, 17, 0.035);
+    }
+
+    .task-card h2,
+    .task-card h3 { margin: 0 0 10px; line-height: 1.2; }
+    .task-card p:first-child { margin-top: 0; }
+    .task-card p:last-child { margin-bottom: 0; }
+
+    .callout {
+      margin: 18px 0;
+      padding: 14px 16px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-soft);
+      color: #15365f;
+    }
+
+    .callout.amber {
+      border-left-color: var(--amber);
+      background: var(--amber-soft);
+      color: #6c3900;
+    }
+
+    .callout.green {
+      border-left-color: var(--green);
+      background: var(--green-soft);
+      color: #064d27;
+    }
+
+    .callout strong { display: block; margin-bottom: 3px; }
+
+    .code-wrap {
+      position: relative;
+      margin: 14px 0;
+      overflow: hidden;
+      border-radius: 14px;
+      background: #121816;
+      color: #edf7f0;
+    }
+
+    pre {
+      margin: 0;
+      padding: 20px;
+      overflow-x: auto;
+      white-space: pre;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.62;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      min-height: 32px;
+      border: 1px solid #52605a;
+      border-radius: 8px;
+      background: #222c28;
+      color: #ffffff;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .question-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .question { margin-top: 16px; }
+    .question small { display: block; margin-top: 5px; color: var(--muted); }
+
+    .check-list { display: grid; gap: 10px; margin: 14px 0; }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .check-row:last-child { border-bottom: 0; }
+    .check-row input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--green); }
+
+    .test-table {
+      width: 100%;
+      margin: 12px 0;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .test-table th,
+    .test-table td {
+      padding: 11px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .test-table th { background: var(--soft); font-size: 0.78rem; }
+    .test-table input, .test-table select { min-width: 105px; padding: 8px; }
+
+    .hint-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--amber-soft);
+      color: #673700;
+    }
+
+    .hint-panel.visible { display: block; }
+
+    .evidence-zone {
+      margin-top: 14px;
+      padding: 22px;
+      border: 1.5px dashed #a9ada9;
+      border-radius: 14px;
+      background: #fafcfa;
+      text-align: center;
+      transition: background 130ms ease, border-color 130ms ease;
+    }
+
+    .evidence-zone.dragging {
+      border-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .evidence-zone strong { display: block; margin-bottom: 5px; }
+    .evidence-zone p { margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
+    .evidence-zone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+    .evidence-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .evidence-item {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #ffffff;
+    }
+
+    .evidence-item img {
+      display: block;
+      width: 100%;
+      height: 118px;
+      object-fit: contain;
+      background: #f2f2f2;
+    }
+
+    .evidence-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      font-size: 0.72rem;
+    }
+
+    .evidence-caption span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .evidence-caption button {
+      border: 0;
+      background: transparent;
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .step-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .export-card {
+      margin-top: 24px;
+      padding: clamp(22px, 4vw, 34px);
+      border-radius: 20px;
+      background: #101412;
+      color: #ffffff;
+    }
+
+    .export-card h2 { margin: 0 0 8px; }
+    .export-card p { color: #d4ddd7; }
+
+    .export-card ol { padding-left: 20px; }
+    .export-card .primary { margin-top: 8px; background: #39aa6d; border-color: #39aa6d; }
+
+    .filename {
+      display: block;
+      margin: 12px 0;
+      padding: 11px 13px;
+      border: 1px solid #48524c;
+      border-radius: 10px;
+      background: #1c2420;
+      color: #ffffff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .print-report { display: none; }
+
+    .report-page-header h1 { margin: 0 0 5px; font-size: 24pt; }
+    .report-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin: 14px 0 18px; }
+
+    .report-ksu {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid #bbbbbb;
+    }
+
+    .report-ksu p { margin: 4px 0; }
+
+    .report-section {
+      break-before: page;
+      page-break-before: always;
+    }
+
+    .report-section:first-of-type { break-before: auto; page-break-before: auto; }
+
+    .report-section h2 {
+      margin: 0 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #111111;
+      font-size: 18pt;
+    }
+
+    .report-entry { margin: 0 0 13px; break-inside: avoid; page-break-inside: avoid; }
+    .report-entry h3 { margin: 0 0 4px; font-size: 10pt; }
+    .report-entry p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    .report-code {
+      margin: 4px 0 0;
+      padding: 10px;
+      border: 1px solid #bcbcbc;
+      background: #f6f6f6;
+      color: #111111;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 8.5pt;
+    }
+
+    .report-evidence {
+      margin: 15px 0 22px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .report-evidence img {
+      display: block;
+      max-width: 100%;
+      max-height: 230mm;
+      margin: 8px auto 2px;
+      border: 1px solid #bcbcbc;
+      object-fit: contain;
+    }
+
+    .report-evidence figcaption { font-size: 8pt; color: #444444; text-align: center; }
+
+    .teams-report {
+      break-before: page;
+      page-break-before: always;
+      padding: 14mm;
+      border: 2px solid #111111;
+    }
+
+    .mobile-ksu { display: none; }
+
+    @media (max-width: 980px) {
+      .topbar { grid-template-columns: 1fr auto; }
+      .progress-wrap { grid-column: 1 / -1; grid-row: 2; }
+      .save-state { display: none; }
+      .app-layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 12px 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .sidebar .side-card { display: none; }
+      .step-nav {
+        display: flex;
+        overflow-x: auto;
+        margin: 0;
+        padding-bottom: 3px;
+      }
+      .step-button { min-width: 170px; }
+      .mobile-ksu { display: block; margin: 0 0 18px; }
+      .mobile-ksu summary { cursor: pointer; font-weight: 800; }
+    }
+
+    @media (max-width: 760px) {
+      .landing-card { grid-template-columns: 1fr; }
+      .landing-intro { padding: 36px 28px; }
+      .landing-form { padding: 30px 26px; }
+      .topbar { padding: 10px 14px; }
+      .top-actions .ghost { display: none; }
+      .main-content { padding: 28px 17px 44px; }
+      .question-grid { grid-template-columns: 1fr; }
+      .test-table, .test-table tbody, .test-table tr, .test-table td { display: block; width: 100%; }
+      .test-table thead { display: none; }
+      .test-table tr { margin: 0 0 16px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; }
+      .test-table td { padding: 6px 0; border: 0; }
+      .test-table td::before { content: attr(data-label); display: block; color: var(--muted); font-size: 0.72rem; font-weight: 800; }
+      .step-footer { flex-direction: column-reverse; }
+      .step-footer button { width: 100%; }
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      body { background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 9.5pt; }
+      #landing, #app { display: none !important; }
+      #printReport { display: block !important; }
+      a { color: #000000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <div class="landing-intro">
+        <p class="eyebrow">OxfordAQA 9210 · Week 1 Session 2</p>
+        <h1 id="landingTitle">My first Python program</h1>
+        <p>Read, modify and create simple console programs using input, output, variables and arithmetic. All code is completed in your own Python IDE.</p>
+        <div class="lesson-pills" aria-label="Lesson features">
+          <span>60 minutes</span>
+          <span>Device autosave</span>
+          <span>Evidence upload</span>
+          <span>Complete PDF report</span>
+        </div>
+      </div>
+
+      <form id="entryForm" class="landing-form" novalidate>
+        <h2>Enter the lesson</h2>
+        <p>Your responses are saved only on this device.</p>
+
+        <div class="field">
+          <label class="required" for="studentName">Name</label>
+          <input id="studentName" name="studentName" type="text" autocomplete="name" placeholder="Enter your full name">
+        </div>
+
+        <div class="field">
+          <label class="required" for="studentClass">Class</label>
+          <input id="studentClass" name="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A">
+        </div>
+
+        <button class="primary wide" type="submit">Start lesson</button>
+        <p id="entryError" class="error-message" role="alert"></p>
+
+        <div id="savedProfile" class="saved-profile hidden"></div>
+
+        <div class="teacher-note">
+          <strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be left blank. Teacher mode allows free navigation and sample-answer testing.
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand">
+        <strong>W01S02 · Python baseline</strong>
+        <span id="profileLabel">Student · Class</span>
+      </div>
+
+      <div class="progress-wrap" aria-label="Lesson progress">
+        <div class="progress-meta">
+          <span id="stepIndicator">Starter · Step 1 of 5</span>
+          <span id="progressText">0% complete</span>
+        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+
+      <div class="top-actions">
+        <span id="saveState" class="save-state" aria-live="polite">Saved on this device</span>
+        <button id="quickExport" class="ghost" type="button">Export current work</button>
+        <button id="exitButton" class="secondary" type="button">Exit</button>
+      </div>
+    </header>
+
+    <div id="reviewBanner" class="review-banner hidden">
+      Teacher preview is active. All sections are available and teacher data is stored separately.
+      <button id="fillSamples" class="secondary" type="button">Fill sample answers</button>
+      <button id="clearPreview" class="ghost" type="button">Clear preview</button>
+    </div>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Lesson information and navigation">
+        <div class="side-card">
+          <h2>Topic</h2>
+          <p>Input, process and output in Python</p>
+        </div>
+
+        <div class="side-card">
+          <h3>WAGBA</h3>
+          <p>We are getting better at reading, modifying and creating simple Python programs using input, output, variables and arithmetic.</p>
+        </div>
+
+        <div class="side-card ksu-list">
+          <h3>Knowledge · Skills · Understanding</h3>
+          <p><strong>K</strong> Know what input, output, assignment and variables do.</p>
+          <p><strong>S</strong> Create, run, save, modify and test a Python program.</p>
+          <p><strong>U</strong> Explain how a program follows input → process → output.</p>
+        </div>
+
+        <div class="side-card">
+          <h3>Keywords</h3>
+          <p>input · output · variable · assignment · integer · operator · test</p>
+        </div>
+
+        <nav id="stepNav" class="step-nav" aria-label="Lesson sections">
+          <button class="step-button active" type="button" data-step="0">
+            <span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span>
+          </button>
+          <button class="step-button" type="button" data-step="1">
+            <span class="step-number">2</span><span class="step-name">Main activity 1</span><span class="step-time">17 min</span>
+          </button>
+          <button class="step-button" type="button" data-step="2">
+            <span class="step-number">3</span><span class="step-name">Main activity 2</span><span class="step-time">22 min</span>
+          </button>
+          <button class="step-button" type="button" data-step="3">
+            <span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Optional</span>
+          </button>
+          <button class="step-button" type="button" data-step="4">
+            <span class="step-number">5</span><span class="step-name">Plenary & PDF</span><span class="step-time">13 min</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <details class="mobile-ksu side-card">
+          <summary>Show WAGBA and K/S/U</summary>
+          <p><strong>WAGBA:</strong> We are getting better at reading, modifying and creating simple Python programs using input, output, variables and arithmetic.</p>
+          <p><strong>K:</strong> Input, output, assignment and variables.</p>
+          <p><strong>S:</strong> Create, run, save, modify and test.</p>
+          <p><strong>U:</strong> Explain input → process → output.</p>
+        </details>
+
+        <section class="activity-step active" data-step="0" data-section="starter">
+          <p class="section-kicker">Starter · Predict before you run</p>
+          <h1>Read the code first.</h1>
+          <p class="section-lead">Do not run this code yet. Use what you can see to make a prediction, then check it in your own IDE.</p>
+
+          <div class="code-wrap">
+            <button class="copy-button" type="button" data-copy-target="starterCode">Copy code</button>
+            <pre id="starterCode"><code>print("Welcome to Computer Science")
+
+name = input("Enter your name: ")
+
+print("Hello", name)</code></pre>
+          </div>
+
+          <div class="task-card">
+            <h2>Your predictions</h2>
+            <div class="question-grid">
+              <div class="question">
+                <label class="question-label" for="starterFirst">1. What appears first?</label>
+                <input id="starterFirst" type="text" data-field="starter_first" placeholder="Write the exact output">
+              </div>
+              <div class="question">
+                <label class="question-label" for="starterWait">2. Which line waits for the user?</label>
+                <input id="starterWait" type="text" data-field="starter_wait" placeholder="Describe or copy the line">
+              </div>
+              <div class="question">
+                <label class="question-label" for="starterVariable">3. Which variable stores the answer?</label>
+                <input id="starterVariable" type="text" data-field="starter_variable" placeholder="Variable name">
+              </div>
+              <div class="question">
+                <label class="question-label" for="starterAisha">4. What appears if the user enters Aisha?</label>
+                <input id="starterAisha" type="text" data-field="starter_aisha" placeholder="Write the final output">
+              </div>
+            </div>
+            <div class="question">
+              <label class="question-label" for="starterLabels">5. Identify the input, storage and output lines.</label>
+              <textarea id="starterLabels" data-field="starter_labels" placeholder="Input: ...&#10;Storage: ...&#10;Output: ..."></textarea>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Run and check</h2>
+            <p>Copy the code into your chosen Python IDE. Run it once and compare the result with your prediction.</p>
+            <div class="question">
+              <label class="question-label" for="setupStatus">My setup status</label>
+              <select id="setupStatus" data-field="setup_status">
+                <option value="">Choose one</option>
+                <option>My Python IDE is ready</option>
+                <option>I am using the school-approved browser alternative</option>
+                <option>I need help with a specific issue</option>
+              </select>
+            </div>
+            <div class="question">
+              <label class="question-label" for="setupIssue">If you are blocked, record what you tried, expected and observed.</label>
+              <textarea id="setupIssue" data-field="setup_issue" placeholder="I tried... I expected... Instead..."></textarea>
+            </div>
+          </div>
+
+          <div class="callout green">
+            <strong>Course connection</strong>
+            Predicting and explaining code supports written understanding. Running and checking code develops practical Paper 1 habits.
+          </div>
+
+          <div class="step-footer">
+            <span></span>
+            <button class="primary next-step" type="button">Continue to Main activity 1</button>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section="main1">
+          <p class="section-kicker">Main activity 1 · Modify existing code</p>
+          <h1>Personalise a working program.</h1>
+          <p class="section-lead">Paper 1 requires you to understand and modify existing code. Start with a program that works, then make controlled changes.</p>
+
+          <div class="task-card">
+            <h2>Starter program</h2>
+            <div class="code-wrap">
+              <button class="copy-button" type="button" data-copy-target="mainOneStarter">Copy code</button>
+              <pre id="mainOneStarter"><code>print("Welcome to OxfordAQA Computer Science 9210")
+
+name = input("Enter your name: ")
+
+print("Hello", name)</code></pre>
+            </div>
+
+            <div class="check-list" aria-label="Main activity 1 checklist">
+              <label class="check-row"><input type="checkbox" data-check="m1_run_original"><span>I ran the original program before changing it.</span></label>
+              <label class="check-row"><input type="checkbox" data-check="m1_saved"><span>I saved it as <strong>W01S02_Welcome_Firstname.py</strong>.</span></label>
+              <label class="check-row"><input type="checkbox" data-check="m1_changed"><span>I changed the welcome message.</span></label>
+              <label class="check-row"><input type="checkbox" data-check="m1_class_input"><span>I added an input asking for the student’s class.</span></label>
+              <label class="check-row"><input type="checkbox" data-check="m1_final_output"><span>I displayed the student’s name and class.</span></label>
+              <label class="check-row"><input type="checkbox" data-check="m1_rerun"><span>I ran and saved the completed program.</span></label>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Paste your completed code</h2>
+            <textarea class="code-entry" data-field="m1_code" spellcheck="false" placeholder="Paste your final Python code here. Your code is not run on this website."></textarea>
+
+            <div class="question-grid">
+              <div class="question">
+                <label class="question-label" for="m1Output">Give one output statement.</label>
+                <input id="m1Output" type="text" data-field="m1_output" placeholder="For example, print(...)">
+              </div>
+              <div class="question">
+                <label class="question-label" for="m1Input">Give one input statement.</label>
+                <input id="m1Input" type="text" data-field="m1_input" placeholder="For example, name = input(...)">
+              </div>
+              <div class="question">
+                <label class="question-label" for="m1Variables">List your variable names.</label>
+                <input id="m1Variables" type="text" data-field="m1_variables" placeholder="Separate names with commas">
+              </div>
+              <div class="question">
+                <label class="question-label" for="m1Meaningful">Why is name better than x?</label>
+                <input id="m1Meaningful" type="text" data-field="m1_meaningful" placeholder="Explain meaningful identifiers">
+              </div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Evidence</h2>
+            <p>Upload, drag or paste a clear screenshot showing your code or program output.</p>
+            <div class="evidence-zone" data-evidence-zone="main1" tabindex="0">
+              <strong>Add Main activity 1 evidence</strong>
+              <p>PNG, JPG or screenshot from the clipboard. Images are resized for reliable PDF export.</p>
+              <label class="secondary" for="evidenceMain1">Choose image</label>
+              <input id="evidenceMain1" type="file" accept="image/*" multiple data-evidence-input="main1">
+              <div class="evidence-list" data-evidence-list="main1"></div>
+            </div>
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Starter</button>
+            <button class="primary next-step" type="button">Continue to Main activity 2</button>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section="main2">
+          <p class="section-kicker">Main activity 2 · Baseline programming task</p>
+          <h1>Build a course points calculator.</h1>
+          <p class="section-lead">This is a starting-point task, not a graded test. Try independently first, then reveal a hint when it genuinely helps.</p>
+
+          <div class="task-card">
+            <h2>Program requirements</h2>
+            <ol>
+              <li>Ask for the student’s name.</li>
+              <li>Ask how many questions were answered correctly.</li>
+              <li>Award five points for each correct answer.</li>
+              <li>Calculate the total.</li>
+              <li>Display a personalised result.</li>
+            </ol>
+
+            <div class="code-wrap">
+              <button class="copy-button" type="button" data-copy-target="mainTwoFrame">Copy frame</button>
+              <pre id="mainTwoFrame"><code>name = input("Enter your name: ")
+
+correct_answers = int(input("How many answers were correct? "))
+
+points_per_answer = 5
+
+total_points = ______________________________
+
+print(_______________________________________)</code></pre>
+            </div>
+
+            <button class="secondary hint-button" type="button" data-hint="hint1">Reveal hint 1</button>
+            <div id="hint1" class="hint-panel">Multiply <code>correct_answers</code> by <code>points_per_answer</code>.</div>
+            <button class="secondary hint-button" type="button" data-hint="hint2">Reveal hint 2</button>
+            <div id="hint2" class="hint-panel">Use <code>print(name, "scored", total_points, "points")</code> for the final output.</div>
+          </div>
+
+          <div class="callout amber">
+            <strong>Why is int() provided?</strong>
+            Python normally receives keyboard input as text. <code>int()</code> converts whole-number input so it can be used in a calculation. You may copy this pattern today.
+          </div>
+
+          <div class="task-card">
+            <h2>Paste your final calculator</h2>
+            <textarea class="code-entry" data-field="m2_code" spellcheck="false" placeholder="Paste your completed Python program here."></textarea>
+          </div>
+
+          <div class="task-card">
+            <h2>Test your program twice</h2>
+            <table class="test-table">
+              <thead><tr><th>Test</th><th>Input</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td data-label="Test">1</td>
+                  <td data-label="Input">0 correct answers</td>
+                  <td data-label="Expected"><input type="text" data-field="m2_test1_expected" value="0 points"></td>
+                  <td data-label="Actual"><input type="text" data-field="m2_test1_actual" placeholder="What appeared?"></td>
+                  <td data-label="Result"><select data-field="m2_test1_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option></select></td>
+                </tr>
+                <tr>
+                  <td data-label="Test">2</td>
+                  <td data-label="Input">4 correct answers</td>
+                  <td data-label="Expected"><input type="text" data-field="m2_test2_expected" value="20 points"></td>
+                  <td data-label="Actual"><input type="text" data-field="m2_test2_actual" placeholder="What appeared?"></td>
+                  <td data-label="Result"><select data-field="m2_test2_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option></select></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="task-card">
+            <h2>Evidence</h2>
+            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0">
+              <strong>Add calculator evidence</strong>
+              <p>Show the code, one test run, or both.</p>
+              <label class="secondary" for="evidenceMain2">Choose image</label>
+              <input id="evidenceMain2" type="file" accept="image/*" multiple data-evidence-input="main2">
+              <div class="evidence-list" data-evidence-list="main2"></div>
+            </div>
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Main activity 1</button>
+            <button class="primary next-step" type="button">Continue to Extension</button>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="3" data-section="extension">
+          <p class="section-kicker">Extension · Early finishers</p>
+          <h1>Add bonus points.</h1>
+          <p class="section-lead">Only begin this after Main activity 2 is complete. This is a small extension using the same ideas, not a new topic.</p>
+
+          <div class="task-card">
+            <label class="check-row"><input type="checkbox" data-check="ext_attempted"><span>I attempted the extension.</span></label>
+            <h2>Requirements</h2>
+            <p>Ask how many bonus tasks were completed. Each bonus task is worth two points. Add the bonus points to the existing total and display the final score.</p>
+
+            <div class="code-wrap">
+              <button class="copy-button" type="button" data-copy-target="extensionCode">Copy example</button>
+              <pre id="extensionCode"><code>bonus_tasks = int(input("How many bonus tasks did you complete? "))
+
+bonus_points = bonus_tasks * 2
+
+final_score = total_points + bonus_points
+
+print(name, "scored", final_score, "points altogether")</code></pre>
+            </div>
+
+            <div class="question">
+              <label class="question-label" for="extensionFinal">Paste your extended program</label>
+              <textarea id="extensionFinal" class="code-entry" data-field="ext_code" spellcheck="false" placeholder="Paste your extension code here, if attempted."></textarea>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Extension test</h2>
+            <p>Use 4 correct answers and 2 bonus tasks.</p>
+            <div class="question-grid">
+              <div class="question">
+                <label class="question-label" for="extensionExpected">Expected final score</label>
+                <input id="extensionExpected" type="text" data-field="ext_expected" value="24 points">
+              </div>
+              <div class="question">
+                <label class="question-label" for="extensionActual">Actual final score</label>
+                <input id="extensionActual" type="text" data-field="ext_actual" placeholder="What appeared?">
+              </div>
+            </div>
+            <div class="question">
+              <label class="question-label" for="extensionResult">Test result</label>
+              <select id="extensionResult" data-field="ext_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select>
+            </div>
+            <div class="question">
+              <label class="question-label" for="extensionIPO">Identify the input, processing and output in your extension.</label>
+              <textarea id="extensionIPO" data-field="ext_ipo" placeholder="Input: ...&#10;Processing: ...&#10;Output: ..."></textarea>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Optional evidence</h2>
+            <div class="evidence-zone" data-evidence-zone="extension" tabindex="0">
+              <strong>Add extension evidence</strong>
+              <p>Show your extended code or successful test.</p>
+              <label class="secondary" for="evidenceExtension">Choose image</label>
+              <input id="evidenceExtension" type="file" accept="image/*" multiple data-evidence-input="extension">
+              <div class="evidence-list" data-evidence-list="extension"></div>
+            </div>
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Main activity 2</button>
+            <button class="primary next-step" type="button">Continue to Plenary</button>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="4" data-section="plenary">
+          <p class="section-kicker">Plenary · Explain and submit</p>
+          <h1>Show what you now understand.</h1>
+          <p class="section-lead">Complete the exit ticket, check your evidence and export one complete PDF containing every section.</p>
+
+          <div class="task-card">
+            <h2>Read this final program</h2>
+            <div class="code-wrap">
+              <button class="copy-button" type="button" data-copy-target="plenaryCode">Copy code</button>
+              <pre id="plenaryCode"><code>correct_answers = 3
+points_per_answer = 5
+total_points = correct_answers * points_per_answer
+
+print(total_points)</code></pre>
+            </div>
+
+            <div class="question-grid">
+              <div class="question">
+                <label class="question-label" for="plenaryOutput">1. What is the output?</label>
+                <input id="plenaryOutput" type="text" data-field="p_output" placeholder="Predict the value">
+              </div>
+              <div class="question">
+                <label class="question-label" for="plenaryProcess">2. Which line performs the processing?</label>
+                <input id="plenaryProcess" type="text" data-field="p_process" placeholder="Copy or describe the line">
+              </div>
+              <div class="question">
+                <label class="question-label" for="plenaryValue">3. What is stored in total_points?</label>
+                <input id="plenaryValue" type="text" data-field="p_value" placeholder="Stored value">
+              </div>
+              <div class="question">
+                <label class="question-label" for="plenaryPurpose">4. What is the purpose of the program?</label>
+                <input id="plenaryPurpose" type="text" data-field="p_purpose" placeholder="Explain in one sentence">
+              </div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>K/S/U exit ticket</h2>
+            <div class="question">
+              <label class="question-label" for="pKnowledge">Knowledge: A variable is…</label>
+              <textarea id="pKnowledge" data-field="p_knowledge" placeholder="Complete the sentence."></textarea>
+            </div>
+            <div class="question">
+              <label class="question-label" for="pSkill">Skill: Today I successfully created, ran and saved…</label>
+              <textarea id="pSkill" data-field="p_skill" placeholder="Describe what you completed."></textarea>
+            </div>
+            <div class="question">
+              <label class="question-label" for="pUnderstanding">Understanding: The points calculator follows input → process → output because…</label>
+              <textarea id="pUnderstanding" data-field="p_understanding" placeholder="Explain each stage."></textarea>
+            </div>
+
+            <div class="question-grid">
+              <div class="question">
+                <label class="question-label" for="ratingK">My knowledge</label>
+                <select id="ratingK" data-field="rating_k"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
+              </div>
+              <div class="question">
+                <label class="question-label" for="ratingS">My skill</label>
+                <select id="ratingS" data-field="rating_s"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
+              </div>
+              <div class="question">
+                <label class="question-label" for="ratingU">My understanding</label>
+                <select id="ratingU" data-field="rating_u"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
+              </div>
+              <div class="question">
+                <label class="question-label" for="confidence">Overall support level</label>
+                <select id="confidence" data-field="confidence"><option value="">Choose</option><option>I completed the tasks independently</option><option>I completed them using a hint</option><option>I completed part of the lesson</option><option>I need help with setup or syntax</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Paper connection</h2>
+            <div class="question">
+              <label class="question-label" for="paperOneReflection">Which part of today felt most like Paper 1 practical programming?</label>
+              <textarea id="paperOneReflection" data-field="p_paper1" placeholder="Choose an activity and explain why."></textarea>
+            </div>
+            <div class="question">
+              <label class="question-label" for="paperTwoReflection">Which question required you to explain your understanding in writing?</label>
+              <textarea id="paperTwoReflection" data-field="p_paper2" placeholder="Choose a question and explain what it tested."></textarea>
+            </div>
+          </div>
+
+          <div class="export-card">
+            <h2>Export and submit your complete work</h2>
+            <p>The report includes your responses, checklists, pasted Python code, tests, K/S/U reflection and every uploaded evidence image—even if you export before finishing.</p>
+            <ol>
+              <li>Select <strong>Export complete PDF</strong>.</li>
+              <li>In the print window, choose <strong>Save as PDF</strong>.</li>
+              <li>Use the filename shown below.</li>
+              <li>Open the saved PDF and check that the pages and screenshots are complete.</li>
+              <li>Attach it to the correct Microsoft Teams assignment and select <strong>Turn in</strong>.</li>
+            </ol>
+            <code id="filenamePreview" class="filename">W01S02_Name_Class.pdf</code>
+            <button id="finalExport" class="primary" type="button">Export complete PDF</button>
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Extension</button>
+            <button id="returnToStarter" class="ghost" type="button">Review from Starter</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <article id="printReport" class="print-report" aria-label="Complete student lesson report"></article>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const APP_VERSION = "w01s02-v1";
+      const LAST_PROFILE_KEY = `${APP_VERSION}:last-profile`;
+      const DB_NAME = "OxfordAQA9210LessonEvidence";
+      const DB_STORE = "evidence";
+
+      const stepNames = ["Starter", "Main activity 1", "Main activity 2", "Extension", "Plenary & PDF"];
+      const sectionKeys = ["starter", "main1", "main2", "extension", "plenary"];
+      const requiredByStep = [
+        ["starter_first", "starter_wait", "starter_variable", "starter_aisha", "setup_status"],
+        ["m1_code", "m1_output", "m1_input", "m1_variables", "m1_meaningful"],
+        ["m2_code", "m2_test1_actual", "m2_test1_result", "m2_test2_actual", "m2_test2_result"],
+        [],
+        ["p_output", "p_process", "p_value", "p_purpose", "p_knowledge", "p_skill", "p_understanding", "rating_k", "rating_s", "rating_u", "confidence"]
+      ];
+
+      const reportSchema = [
+        {
+          key: "starter",
+          title: "Starter - Predict before you run",
+          entries: [
+            ["What appears first?", "starter_first"],
+            ["Which line waits for the user?", "starter_wait"],
+            ["Which variable stores the answer?", "starter_variable"],
+            ["Output when the user enters Aisha", "starter_aisha"],
+            ["Input, storage and output identification", "starter_labels"],
+            ["Python setup status", "setup_status"],
+            ["Setup issue or support request", "setup_issue"]
+          ]
+        },
+        {
+          key: "main1",
+          title: "Main activity 1 - Modify a working program",
+          checks: [
+            ["Ran the original program", "m1_run_original"],
+            ["Saved with the required filename", "m1_saved"],
+            ["Changed the welcome message", "m1_changed"],
+            ["Added the class input", "m1_class_input"],
+            ["Displayed name and class", "m1_final_output"],
+            ["Ran and saved the completed program", "m1_rerun"]
+          ],
+          entries: [
+            ["Completed Python code", "m1_code", "code"],
+            ["Example output statement", "m1_output"],
+            ["Example input statement", "m1_input"],
+            ["Variable names", "m1_variables"],
+            ["Why name is better than x", "m1_meaningful"]
+          ]
+        },
+        {
+          key: "main2",
+          title: "Main activity 2 - Course points calculator",
+          entries: [
+            ["Completed Python code", "m2_code", "code"],
+            ["Test 1 expected result", "m2_test1_expected"],
+            ["Test 1 actual result", "m2_test1_actual"],
+            ["Test 1 outcome", "m2_test1_result"],
+            ["Test 2 expected result", "m2_test2_expected"],
+            ["Test 2 actual result", "m2_test2_actual"],
+            ["Test 2 outcome", "m2_test2_result"],
+            ["Hints opened", "__hints__"]
+          ]
+        },
+        {
+          key: "extension",
+          title: "Extension - Bonus points",
+          checks: [["Attempted the extension", "ext_attempted"]],
+          entries: [
+            ["Extended Python code", "ext_code", "code"],
+            ["Expected final score", "ext_expected"],
+            ["Actual final score", "ext_actual"],
+            ["Extension test outcome", "ext_result"],
+            ["Input, processing and output", "ext_ipo"]
+          ]
+        },
+        {
+          key: "plenary",
+          title: "Plenary - Explain and submit",
+          entries: [
+            ["Predicted output", "p_output"],
+            ["Processing line", "p_process"],
+            ["Value stored in total_points", "p_value"],
+            ["Purpose of the program", "p_purpose"],
+            ["Knowledge reflection", "p_knowledge"],
+            ["Skill reflection", "p_skill"],
+            ["Understanding reflection", "p_understanding"],
+            ["Knowledge rating", "rating_k"],
+            ["Skill rating", "rating_s"],
+            ["Understanding rating", "rating_u"],
+            ["Overall support level", "confidence"],
+            ["Paper 1 connection", "p_paper1"],
+            ["Written explanation connection", "p_paper2"]
+          ]
+        }
+      ];
+
+      let state = {
+        owner: "",
+        profile: { name: "", className: "", teacher: false },
+        currentStep: 0,
+        fields: {},
+        checks: {},
+        hints: []
+      };
+
+      let dbPromise;
+
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+      function slug(value) {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "student";
+      }
+
+      function safeText(value) {
+        return String(value ?? "");
+      }
+
+      function stateKey(owner) {
+        return `${APP_VERSION}:state:${owner}`;
+      }
+
+      function suggestedFilename() {
+        const firstName = state.profile.teacher ? "TeacherPreview" : (state.profile.name.trim().split(/\s+/)[0] || "Name");
+        const className = state.profile.className || "Class";
+        return `W01S02_${slug(firstName).replace(/(^|-)([a-z])/g, (_, a, b) => b.toUpperCase())}_${slug(className).toUpperCase()}.pdf`;
+      }
+
+      function saveState() {
+        if (!state.owner) return;
+        localStorage.setItem(stateKey(state.owner), JSON.stringify(state));
+        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify({ owner: state.owner, profile: state.profile }));
+        const saveStateLabel = $("#saveState");
+        if (saveStateLabel) {
+          saveStateLabel.textContent = "Saved on this device";
+          window.clearTimeout(saveStateLabel._timer);
+          saveStateLabel._timer = window.setTimeout(() => { saveStateLabel.textContent = "Saved"; }, 1300);
+        }
+      }
+
+      function loadState(owner, profile) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(stateKey(owner)) || "null");
+          if (saved && saved.owner === owner) {
+            state = {
+              owner,
+              profile,
+              currentStep: Number(saved.currentStep) || 0,
+              fields: saved.fields || {},
+              checks: saved.checks || {},
+              hints: Array.isArray(saved.hints) ? saved.hints : []
+            };
+            return;
+          }
+        } catch (error) {
+          console.warn("Saved lesson data could not be read.", error);
+        }
+        state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
+      }
+
+      function showSavedProfile() {
+        const container = $("#savedProfile");
+        try {
+          const saved = JSON.parse(localStorage.getItem(LAST_PROFILE_KEY) || "null");
+          if (!saved?.profile?.name || saved.profile.teacher) return;
+          container.classList.remove("hidden");
+          container.innerHTML = `<strong>Continue saved work</strong><br>${escapeHtml(saved.profile.name)} · ${escapeHtml(saved.profile.className)}<br><button type="button" id="continueSaved">Continue this lesson</button>`;
+          $("#continueSaved").addEventListener("click", () => {
+            $("#studentName").value = saved.profile.name;
+            $("#studentClass").value = saved.profile.className;
+            startLesson(saved.profile.name, saved.profile.className);
+          });
+        } catch (error) {
+          container.classList.add("hidden");
+        }
+      }
+
+      function escapeHtml(value) {
+        return safeText(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function applyStateToForm() {
+        $$('[data-field]').forEach((element) => {
+          const key = element.dataset.field;
+          if (Object.prototype.hasOwnProperty.call(state.fields, key)) {
+            element.value = state.fields[key];
+          } else if (element.value) {
+            state.fields[key] = element.value;
+          }
+        });
+
+        $$('[data-check]').forEach((element) => {
+          element.checked = Boolean(state.checks[element.dataset.check]);
+        });
+
+        state.hints.forEach((hintId) => {
+          const panel = document.getElementById(hintId);
+          if (panel) panel.classList.add("visible");
+        });
+      }
+
+      function startLesson(name, className) {
+        const cleanName = name.trim();
+        const teacher = cleanName.toLowerCase() === "teacher";
+        const profile = {
+          name: teacher ? "Teacher preview" : cleanName,
+          className: teacher ? "Review mode" : className.trim(),
+          teacher
+        };
+        const owner = teacher ? "teacher-preview" : `${slug(profile.name)}-${slug(profile.className)}`;
+        loadState(owner, profile);
+        applyStateToForm();
+        $("#landing").classList.add("hidden");
+        $("#app").classList.remove("hidden");
+        $("#reviewBanner").classList.toggle("hidden", !teacher);
+        $("#profileLabel").textContent = `${profile.name} · ${profile.className}`;
+        $("#filenamePreview").textContent = suggestedFilename();
+        goToStep(state.currentStep, false);
+        refreshEvidenceLists();
+        updateProgress();
+        saveState();
+      }
+
+      function goToStep(step, shouldScroll = true) {
+        const next = Math.max(0, Math.min(stepNames.length - 1, Number(step)));
+        state.currentStep = next;
+        $$('.activity-step').forEach((section) => section.classList.toggle("active", Number(section.dataset.step) === next));
+        $$('.step-button').forEach((button) => button.classList.toggle("active", Number(button.dataset.step) === next));
+        $("#stepIndicator").textContent = `${stepNames[next]} · Step ${next + 1} of ${stepNames.length}`;
+        saveState();
+        updateProgress();
+        if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function fieldComplete(key) {
+        return safeText(state.fields[key]).trim().length > 0;
+      }
+
+      function stepCompletion(index) {
+        if (index === 3) {
+          if (!state.checks.ext_attempted) return { complete: false, optional: true, ratio: 0 };
+          const keys = ["ext_code", "ext_actual", "ext_result"];
+          const done = keys.filter(fieldComplete).length;
+          return { complete: done === keys.length, optional: true, ratio: done / keys.length };
+        }
+        const keys = requiredByStep[index];
+        const done = keys.filter(fieldComplete).length;
+        return { complete: keys.length > 0 && done === keys.length, optional: false, ratio: keys.length ? done / keys.length : 0 };
+      }
+
+      function updateProgress() {
+        const coreSteps = [0, 1, 2, 4];
+        const total = coreSteps.reduce((sum, index) => sum + requiredByStep[index].length, 0);
+        const done = coreSteps.reduce((sum, index) => sum + requiredByStep[index].filter(fieldComplete).length, 0);
+        const percent = Math.round((done / total) * 100);
+        $("#progressBar").style.width = `${percent}%`;
+        $("#progressText").textContent = `${percent}% complete`;
+
+        $$('.step-button').forEach((button, index) => {
+          const completion = stepCompletion(index);
+          button.classList.toggle("done", completion.complete);
+          const number = $(".step-number", button);
+          number.textContent = completion.complete ? "✓" : String(index + 1);
+        });
+      }
+
+      function bindFormPersistence() {
+        $$('[data-field]').forEach((element) => {
+          const save = () => {
+            state.fields[element.dataset.field] = element.value;
+            saveState();
+            updateProgress();
+          };
+          element.addEventListener("input", save);
+          element.addEventListener("change", save);
+        });
+
+        $$('[data-check]').forEach((element) => {
+          element.addEventListener("change", () => {
+            state.checks[element.dataset.check] = element.checked;
+            saveState();
+            updateProgress();
+          });
+        });
+      }
+
+      async function copyCode(targetId, button) {
+        const text = document.getElementById(targetId)?.innerText || "";
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (error) {
+          const helper = document.createElement("textarea");
+          helper.value = text;
+          helper.style.position = "fixed";
+          helper.style.opacity = "0";
+          document.body.appendChild(helper);
+          helper.select();
+          document.execCommand("copy");
+          helper.remove();
+        }
+        const previous = button.textContent;
+        button.textContent = "Copied";
+        window.setTimeout(() => { button.textContent = previous; }, 1200);
+      }
+
+      function openDatabase() {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            const store = db.createObjectStore(DB_STORE, { keyPath: "id" });
+            store.createIndex("owner", "owner", { unique: false });
+            store.createIndex("ownerSection", ["owner", "section"], { unique: false });
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return dbPromise;
+      }
+
+      async function evidenceFor(section) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const transaction = db.transaction(DB_STORE, "readonly");
+          const request = transaction.objectStore(DB_STORE).index("ownerSection").getAll([state.owner, section]);
+          request.onsuccess = () => resolve(request.result.sort((a, b) => a.created - b.created));
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function allEvidence() {
+        const result = {};
+        for (const section of sectionKeys) result[section] = await evidenceFor(section);
+        return result;
+      }
+
+      async function putEvidence(record) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const transaction = db.transaction(DB_STORE, "readwrite");
+          transaction.objectStore(DB_STORE).put(record);
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+        });
+      }
+
+      async function deleteEvidence(id) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const transaction = db.transaction(DB_STORE, "readwrite");
+          transaction.objectStore(DB_STORE).delete(id);
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+        });
+      }
+
+      async function clearOwnerEvidence(owner = state.owner) {
+        const db = await openDatabase();
+        const records = await new Promise((resolve, reject) => {
+          const transaction = db.transaction(DB_STORE, "readonly");
+          const request = transaction.objectStore(DB_STORE).index("owner").getAll(owner);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        const transaction = db.transaction(DB_STORE, "readwrite");
+        records.forEach((record) => transaction.objectStore(DB_STORE).delete(record.id));
+        return new Promise((resolve, reject) => {
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+        });
+      }
+
+      function imageFromFile(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const image = new Image();
+          image.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve(image);
+          };
+          image.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("The image could not be opened."));
+          };
+          image.src = url;
+        });
+      }
+
+      async function compressImage(file) {
+        const image = await imageFromFile(file);
+        const maxDimension = 1800;
+        const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+        const width = Math.max(1, Math.round(image.naturalWidth * scale));
+        const height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+        return canvas.toDataURL("image/jpeg", 0.9);
+      }
+
+      async function addEvidence(section, files) {
+        const images = [...files].filter((file) => file.type.startsWith("image/"));
+        if (!images.length) return;
+        for (const file of images) {
+          const dataUrl = await compressImage(file);
+          await putEvidence({
+            id: `${state.owner}:${section}:${Date.now()}:${Math.random().toString(36).slice(2)}`,
+            owner: state.owner,
+            section,
+            name: file.name || "Pasted screenshot",
+            dataUrl,
+            created: Date.now()
+          });
+        }
+        await renderEvidenceList(section);
+      }
+
+      async function renderEvidenceList(section) {
+        const list = document.querySelector(`[data-evidence-list="${section}"]`);
+        if (!list) return;
+        const records = await evidenceFor(section);
+        list.innerHTML = "";
+        records.forEach((record) => {
+          const item = document.createElement("div");
+          item.className = "evidence-item";
+          const image = document.createElement("img");
+          image.src = record.dataUrl;
+          image.alt = `Evidence: ${record.name}`;
+          const caption = document.createElement("div");
+          caption.className = "evidence-caption";
+          const name = document.createElement("span");
+          name.textContent = record.name;
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.textContent = "Remove";
+          remove.addEventListener("click", async () => {
+            await deleteEvidence(record.id);
+            await renderEvidenceList(section);
+          });
+          caption.append(name, remove);
+          item.append(image, caption);
+          list.appendChild(item);
+        });
+      }
+
+      async function refreshEvidenceLists() {
+        for (const section of sectionKeys) await renderEvidenceList(section);
+      }
+
+      function bindEvidenceZones() {
+        $$('[data-evidence-input]').forEach((input) => {
+          input.addEventListener("change", async () => {
+            await addEvidence(input.dataset.evidenceInput, input.files);
+            input.value = "";
+          });
+        });
+
+        $$('[data-evidence-zone]').forEach((zone) => {
+          const section = zone.dataset.evidenceZone;
+          ["dragenter", "dragover"].forEach((eventName) => zone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            zone.classList.add("dragging");
+          }));
+          ["dragleave", "drop"].forEach((eventName) => zone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            zone.classList.remove("dragging");
+          }));
+          zone.addEventListener("drop", (event) => addEvidence(section, event.dataTransfer.files));
+          zone.addEventListener("paste", (event) => {
+            const files = [...event.clipboardData.items]
+              .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+              .map((item) => item.getAsFile())
+              .filter(Boolean);
+            if (files.length) {
+              event.preventDefault();
+              addEvidence(section, files);
+            }
+          });
+        });
+      }
+
+      function entryValue(key) {
+        if (key === "__hints__") return state.hints.length ? state.hints.join(", ") : "No hints opened";
+        const value = safeText(state.fields[key]).trim();
+        return value || "Not completed";
+      }
+
+      function makeReportEntry(label, value, type) {
+        const wrapper = document.createElement("section");
+        wrapper.className = "report-entry";
+        const heading = document.createElement("h3");
+        heading.textContent = label;
+        const content = type === "code" ? document.createElement("pre") : document.createElement("p");
+        if (type === "code") content.className = "report-code";
+        content.textContent = value;
+        wrapper.append(heading, content);
+        return wrapper;
+      }
+
+      async function buildReport() {
+        saveState();
+        const evidence = await allEvidence();
+        const report = $("#printReport");
+        report.innerHTML = "";
+
+        const header = document.createElement("header");
+        header.className = "report-page-header";
+        header.innerHTML = `
+          <p>OxfordAQA International GCSE Computer Science 9210</p>
+          <h1>Week 1 Session 2 - My First Python Program</h1>
+          <div class="report-meta">
+            <p><strong>Student:</strong> ${escapeHtml(state.profile.name)}</p>
+            <p><strong>Class:</strong> ${escapeHtml(state.profile.className)}</p>
+            <p><strong>Generated:</strong> ${escapeHtml(new Date().toLocaleString())}</p>
+            <p><strong>Suggested filename:</strong> ${escapeHtml(suggestedFilename())}</p>
+          </div>
+          <div class="report-ksu">
+            <p><strong>WAGBA:</strong> We are getting better at reading, modifying and creating simple Python programs using input, output, variables and arithmetic.</p>
+            <p><strong>K:</strong> Know what input, output, assignment and variables do.</p>
+            <p><strong>S:</strong> Create, run, save, modify and test a Python program.</p>
+            <p><strong>U:</strong> Explain how a program follows input -> process -> output.</p>
+          </div>`;
+        report.appendChild(header);
+
+        for (const schema of reportSchema) {
+          const section = document.createElement("section");
+          section.className = "report-section";
+          const title = document.createElement("h2");
+          title.textContent = schema.title;
+          section.appendChild(title);
+
+          if (schema.checks) {
+            schema.checks.forEach(([label, key]) => {
+              section.appendChild(makeReportEntry(label, state.checks[key] ? "Completed" : "Not marked complete"));
+            });
+          }
+
+          schema.entries.forEach(([label, key, type]) => {
+            section.appendChild(makeReportEntry(label, entryValue(key), type));
+          });
+
+          const images = evidence[schema.key] || [];
+          if (!images.length) {
+            section.appendChild(makeReportEntry("Evidence images", "No image submitted for this section"));
+          } else {
+            const evidenceHeading = document.createElement("h3");
+            evidenceHeading.textContent = "Evidence images";
+            section.appendChild(evidenceHeading);
+            images.forEach((record, index) => {
+              const figure = document.createElement("figure");
+              figure.className = "report-evidence";
+              const image = document.createElement("img");
+              image.src = record.dataUrl;
+              image.alt = `Evidence image ${index + 1} for ${schema.title}`;
+              const caption = document.createElement("figcaption");
+              caption.textContent = `${schema.title} - ${record.name}`;
+              figure.append(image, caption);
+              section.appendChild(figure);
+            });
+          }
+          report.appendChild(section);
+        }
+
+        const teams = document.createElement("section");
+        teams.className = "teams-report";
+        teams.innerHTML = `
+          <h2>Microsoft Teams submission</h2>
+          <ol>
+            <li>In the print window, select <strong>Save as PDF</strong>.</li>
+            <li>Save the file as <strong>${escapeHtml(suggestedFilename())}</strong>.</li>
+            <li>Open the PDF and check that your text, code and evidence images are complete.</li>
+            <li>Open the correct assignment in Microsoft Teams.</li>
+            <li>Attach this PDF and select <strong>Turn in</strong>.</li>
+          </ol>
+          <p>If an image is missing, cancel the submission, return to the relevant section, add the image again and re-export.</p>`;
+        report.appendChild(teams);
+
+        await Promise.all($$("img", report).map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => {
+          image.onload = resolve;
+          image.onerror = resolve;
+        })));
+      }
+
+      async function exportPdf() {
+        const button = document.activeElement;
+        if (button instanceof HTMLButtonElement) {
+          button.disabled = true;
+          button.dataset.previousText = button.textContent;
+          button.textContent = "Preparing complete report…";
+        }
+        try {
+          await buildReport();
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          window.print();
+        } finally {
+          if (button instanceof HTMLButtonElement) {
+            button.disabled = false;
+            button.textContent = button.dataset.previousText || "Export complete PDF";
+          }
+        }
+      }
+
+      function fillTeacherSamples() {
+        const samples = {
+          starter_first: "Welcome to Computer Science",
+          starter_wait: "name = input(\"Enter your name: \")",
+          starter_variable: "name",
+          starter_aisha: "Hello Aisha",
+          starter_labels: "Input: input(...)\nStorage: name\nOutput: both print(...) lines",
+          setup_status: "My Python IDE is ready",
+          setup_issue: "No issue - teacher sample.",
+          m1_code: 'print("Welcome to OxfordAQA Computer Science 9210")\nname = input("Enter your name: ")\nstudent_class = input("Enter your class: ")\nprint("Hello", name)\nprint("You are in", student_class)',
+          m1_output: 'print("Hello", name)',
+          m1_input: 'name = input("Enter your name: ")',
+          m1_variables: "name, student_class",
+          m1_meaningful: "The name describes the value stored in the variable.",
+          m2_code: 'name = input("Enter your name: ")\ncorrect_answers = int(input("How many answers were correct? "))\npoints_per_answer = 5\ntotal_points = correct_answers * points_per_answer\nprint(name, "scored", total_points, "points")',
+          m2_test1_expected: "0 points",
+          m2_test1_actual: "0 points",
+          m2_test1_result: "Pass",
+          m2_test2_expected: "20 points",
+          m2_test2_actual: "20 points",
+          m2_test2_result: "Pass",
+          ext_code: "",
+          ext_expected: "24 points",
+          ext_actual: "",
+          ext_result: "Not attempted",
+          ext_ipo: "",
+          p_output: "15",
+          p_process: "total_points = correct_answers * points_per_answer",
+          p_value: "15",
+          p_purpose: "It calculates the number of points awarded for three correct answers.",
+          p_knowledge: "A named storage location for a value that can change.",
+          p_skill: "a Python program that receives input and calculates a score.",
+          p_understanding: "the user enters data, multiplication processes it, and print displays the result.",
+          rating_k: "Independent",
+          rating_s: "Independent",
+          rating_u: "Independent",
+          confidence: "I completed the tasks independently",
+          p_paper1: "Modifying and testing the welcome program.",
+          p_paper2: "Explaining input, processing and output in the plenary."
+        };
+        state.fields = { ...state.fields, ...samples };
+        ["m1_run_original", "m1_saved", "m1_changed", "m1_class_input", "m1_final_output", "m1_rerun"].forEach((key) => { state.checks[key] = true; });
+        applyStateToForm();
+        saveState();
+        updateProgress();
+      }
+
+      async function clearCurrentProfile() {
+        const confirmed = window.confirm("Clear all saved responses and evidence for this profile?");
+        if (!confirmed) return;
+        localStorage.removeItem(stateKey(state.owner));
+        await clearOwnerEvidence();
+        const profile = state.profile;
+        const owner = state.owner;
+        state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
+        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; });
+        $$('[data-check]').forEach((element) => { element.checked = false; });
+        $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
+        applyStateToForm();
+        await refreshEvidenceLists();
+        goToStep(0);
+        saveState();
+      }
+
+      function exitToLanding() {
+        saveState();
+        $("#app").classList.add("hidden");
+        $("#landing").classList.remove("hidden");
+        $("#studentName").value = state.profile.teacher ? "" : state.profile.name;
+        $("#studentClass").value = state.profile.teacher ? "" : state.profile.className;
+        showSavedProfile();
+      }
+
+      function bindEvents() {
+        $("#entryForm").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const name = $("#studentName").value.trim();
+          const className = $("#studentClass").value.trim();
+          const teacher = name.toLowerCase() === "teacher";
+          if (!name || (!teacher && !className)) {
+            $("#entryError").textContent = "Enter your name and class. Teacher preview only requires the name teacher.";
+            return;
+          }
+          $("#entryError").textContent = "";
+          startLesson(name, className);
+        });
+
+        $$('.step-button').forEach((button) => button.addEventListener("click", () => goToStep(button.dataset.step)));
+        $$('.next-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep + 1)));
+        $$('.previous-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep - 1)));
+        $("#returnToStarter").addEventListener("click", () => goToStep(0));
+        $("#exitButton").addEventListener("click", exitToLanding);
+        $("#quickExport").addEventListener("click", exportPdf);
+        $("#finalExport").addEventListener("click", exportPdf);
+        $("#fillSamples").addEventListener("click", fillTeacherSamples);
+        $("#clearPreview").addEventListener("click", clearCurrentProfile);
+
+        $$('.copy-button').forEach((button) => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
+        $$('.hint-button').forEach((button) => button.addEventListener("click", () => {
+          const hintId = button.dataset.hint;
+          document.getElementById(hintId).classList.add("visible");
+          if (!state.hints.includes(hintId)) state.hints.push(hintId);
+          saveState();
+        }));
+      }
+
+      bindFormPersistence();
+      bindEvidenceZones();
+      bindEvents();
+      showSavedProfile();
+    })();
+  </script>
+</body>
+</html>
