@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <title>Embedded Systems | Year 11 Computer Science</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <main id="landing" class="landing">
+      <section class="landing-visual" aria-labelledby="landing-title">
+        <p class="eyebrow light">Year 11 Computer Science · Week 1 Session 2</p>
+        <h1 id="landing-title">The computers<br />you cannot see.</h1>
+        <p class="landing-copy">
+          Discover how embedded computer systems control everyday devices, then
+          apply your understanding using OxfordAQA-style thinking.
+        </p>
+        <div class="ao-strip" aria-label="Assessment objectives covered">
+          <span>AO1 · Know</span><span>AO2 · Apply</span><span>AO3 · Analyse</span>
+        </div>
+      </section>
+
+      <section class="entry-panel" aria-labelledby="entry-title">
+        <div class="entry-inner">
+          <p class="eyebrow">Interactive lesson</p>
+          <h2 id="entry-title">Start your learning record</h2>
+          <p class="muted">
+            Your work saves on this device. At the end, download one PDF and
+            submit it to your Teams assignment.
+          </p>
+
+          <form id="student-entry" class="entry-form">
+            <label>
+              Your full name
+              <input id="student-name" type="text" autocomplete="name" placeholder="e.g. Alex Tan" required />
+            </label>
+            <label>
+              Class
+              <input id="student-class" type="text" placeholder="e.g. 11CS1" required />
+            </label>
+            <button class="primary-button wide" type="submit">Begin lesson <span aria-hidden="true">→</span></button>
+          </form>
+
+          <p class="privacy-note">No account required · No data leaves this browser</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="lesson-app" class="app-shell" hidden>
+      <aside class="sidebar">
+        <div class="brand-block">
+          <span class="brand-mark">CS</span>
+          <div>
+            <strong>Embedded Systems</strong>
+            <small>Week 1 · Session 2</small>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <span id="profile-role" class="profile-role">Student</span>
+          <strong id="profile-name">Student name</strong>
+          <span id="profile-class">Class</span>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-label"><span>Lesson progress</span><strong id="progress-percent">0%</strong></div>
+          <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+        </div>
+
+        <nav id="lesson-nav" class="lesson-nav" aria-label="Lesson sections">
+          <button type="button" data-nav="overview"><span>00</span>Lesson map</button>
+          <button type="button" data-nav="starter"><span>01</span>Starter <em>Think</em></button>
+          <button type="button" data-nav="main1"><span>02</span>Main Activity 1 <em>AO1–2</em></button>
+          <button type="button" data-nav="main2"><span>03</span>Main Activity 2 <em>AO2–3</em></button>
+          <button type="button" data-nav="extension"><span>04</span>Extension <em>AO1–2</em></button>
+          <button type="button" data-nav="plenary"><span>05</span>Plenary <em>AO2–3</em></button>
+          <button type="button" data-nav="finish"><span>06</span>Finish &amp; export</button>
+        </nav>
+
+        <button id="return-home" class="text-button" type="button">← Return to sign-in</button>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-header">
+          <button id="mobile-menu" class="mobile-menu" type="button" aria-label="Open lesson menu">☰</button>
+          <div>
+            <span class="eyebrow">What are we getting better at?</span>
+            <strong>Identifying embedded systems and explaining how they differ from general-purpose computers.</strong>
+          </div>
+          <span id="autosave-status" class="save-status">Saved</span>
+        </header>
+
+        <div id="pages" class="pages">
+          <article class="lesson-page" data-page="overview">
+            <div class="page-heading">
+              <div><span class="section-number">00</span><p class="eyebrow">Lesson map</p><h2>Embedded systems</h2></div>
+              <span class="time-chip">60 minutes</span>
+            </div>
+
+            <div class="objective-grid">
+              <section class="objective-card key-card">
+                <span>Lesson objective</span>
+                <h3>Understand the term “embedded system” and explain how it differs from a non-embedded system.</h3>
+              </section>
+              <section class="objective-card">
+                <span>Knowledge</span>
+                <p>Know the definition, examples and common characteristics of embedded computer systems.</p>
+              </section>
+              <section class="objective-card">
+                <span>Skills</span>
+                <p>Classify devices, compare systems and support decisions using precise technical evidence.</p>
+              </section>
+              <section class="objective-card">
+                <span>Understanding</span>
+                <p>Understand why a dedicated controller may be built into a larger electrical or mechanical product.</p>
+              </section>
+            </div>
+
+            <section class="ao-journey">
+              <div><span>AO1</span><strong>Remember and describe</strong><p>Starter, definitions and characteristics</p></div>
+              <div class="journey-arrow">→</div>
+              <div><span>AO2</span><strong>Apply to devices</strong><p>Inputs, outputs and classifications</p></div>
+              <div class="journey-arrow">→</div>
+              <div><span>AO3</span><strong>Analyse and justify</strong><p>Evaluate an unfamiliar, ambiguous example</p></div>
+            </section>
+
+            <div class="page-actions">
+              <p>Begin by observing everyday devices and recording your initial ideas.</p>
+              <button class="primary-button" type="button" data-next="starter">Start the Do Now →</button>
+            </div>
+          </article>
+
+          <article class="lesson-page" data-page="starter">
+            <div class="page-heading">
+              <div><span class="section-number">01</span><p class="eyebrow">Do Now · 7 minutes</p><h2>Hidden computers</h2></div>
+              <span class="ao-badge">Observe · Predict</span>
+            </div>
+
+            <figure class="lesson-figure">
+              <img src="assets/image-1-hidden-computers.png" alt="A monochrome room and street scene containing household appliances, a thermostat, camera, car, traffic lights and laptop." />
+              <figcaption>Computers do not always look like computers. What might be happening inside these objects?</figcaption>
+            </figure>
+
+            <div class="instruction-bar"><strong>Look carefully:</strong> use the image to record your current thinking. These are initial ideas, so you are not expected to use perfect terminology yet.</div>
+
+            <div class="question-list">
+              <section class="question-card">
+                <div class="question-top"><span>1</span><strong>Identify four objects in the image that you think contain a computer system.</strong><em>Observe</em></div>
+                <textarea data-save="starter_objects" data-required rows="4" placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ..."></textarea>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>2</span><strong>Choose one object. What do you think its computer controls?</strong><em>Predict</em></div>
+                <textarea data-save="starter_control" data-required rows="3" placeholder="I chose... I think its computer controls..."></textarea>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>3</span><strong>Which object is the clearest example of a general-purpose computer?</strong><em>Identify</em></div>
+                <textarea data-save="starter_general_purpose" data-required rows="3" placeholder="The... because..."></textarea>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>4</span><strong>Suggest one difference between the computer inside the washing machine and the laptop.</strong><em>Compare</em></div>
+                <textarea data-save="starter_difference" data-required rows="4" placeholder="The computer inside the washing machine... whereas the laptop..."></textarea>
+              </section>
+            </div>
+            <aside class="teacher-note"><strong>Teacher guidance · Starter</strong><p>Do not mark these as right or wrong yet. Collect initial ideas, especially the comparison in Question 4, and return to it after the Main Activity 1 reading.</p></aside>
+            <div class="page-actions"><p>Save these ideas now; you will improve one of them after the reading.</p><button class="primary-button complete-button" type="button" data-complete="starter">Save initial ideas →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="main1">
+            <div class="page-heading">
+              <div><span class="section-number">02</span><p class="eyebrow">Main Activity 1 · 18 minutes</p><h2>See the computer inside</h2></div>
+              <span class="ao-badge">AO1 → AO2</span>
+            </div>
+
+            <figure class="lesson-figure">
+              <img src="assets/image-2-inside-washing-machine.png" alt="A cutaway washing machine diagram showing sensors as inputs, a microcontroller and controlled outputs." />
+              <figcaption>The controller receives data from inputs, processes it and controls outputs inside the larger machine.</figcaption>
+            </figure>
+
+            <section class="reading-card" aria-labelledby="reading-main1">
+              <div class="reading-header">
+                <span>Read before you apply</span>
+                <strong>OxfordAQA Computer Science textbook · pages 202–203</strong>
+              </div>
+              <div class="reading-body">
+                <h3 id="reading-main1">What is an embedded system?</h3>
+                <blockquote>“Embedded systems are computers designed to do one specific task.”</blockquote>
+                <p>
+                  A processor does not have to sit inside a laptop or desktop computer. It can be built
+                  into a larger machine or everyday object so that it regulates and controls that device.
+                  The computer inside a washing machine, for example, monitors inputs such as the door,
+                  water level and temperature, then controls outputs including the motor, heater and pump.
+                </p>
+                <p>
+                  The software that controls an embedded system is called <strong>firmware</strong> and is
+                  normally stored in ROM. Many embedded systems use a <strong>microcontroller</strong>: a
+                  compact computer whose main components are integrated onto one chip. Because it is
+                  designed for a limited range of actions, it may need less memory, processing power and
+                  user interaction than a general-purpose computer.
+                </p>
+                <div class="reading-keywords">
+                  <span><strong>Firmware</strong>Instructions that control the device</span>
+                  <span><strong>Microcontroller</strong>A small computer integrated onto one chip</span>
+                  <span><strong>Dedicated purpose</strong>A limited set of related functions</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="knowledge-strip">
+              <strong>Core idea</strong>
+              <p>An embedded system is a computer system built into a larger device, usually to perform a dedicated or limited function.</p>
+            </section>
+
+            <section class="hypothesis-return">
+              <div>
+                <span class="eyebrow">Return to your starter</span>
+                <h3>Your first comparison</h3>
+                <p data-answer-preview="starter_difference">No starter idea recorded yet.</p>
+              </div>
+              <label>Now improve that comparison using the reading and the technical visual.
+                <textarea data-save="main1_starter_revisit" data-required rows="4" placeholder="The embedded computer inside the washing machine... whereas the general-purpose laptop..."></textarea>
+              </label>
+            </section>
+
+            <div class="question-list">
+              <section class="question-card">
+                <div class="question-top"><span>A</span><strong>Write your own precise definition of an embedded system.</strong><em>AO1 · [2]</em></div>
+                <textarea data-save="main1_definition" data-required rows="4" placeholder="An embedded system is..."></textarea>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>B</span><strong>Use the visual to trace the input–process–output cycle.</strong><em>AO2</em></div>
+                <div class="three-field-grid">
+                  <label>Two inputs<textarea data-save="main1_inputs" data-required rows="3" placeholder="1. ...&#10;2. ..."></textarea></label>
+                  <label>What the controller does<textarea data-save="main1_process" data-required rows="3" placeholder="The microcontroller..."></textarea></label>
+                  <label>Two outputs<textarea data-save="main1_outputs" data-required rows="3" placeholder="1. ...&#10;2. ..."></textarea></label>
+                </div>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>C</span><strong>Select the three characteristics normally associated with an embedded system.</strong><em>AO1</em></div>
+                <div class="choice-grid" data-required-group="main1_characteristics" data-min="3">
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Built into a larger device" />Built into a larger device</label>
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Dedicated or limited purpose" />Dedicated or limited purpose</label>
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Fixed inputs and outputs" />Fixed inputs and outputs</label>
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Always connected to the internet" />Always connected to the internet</label>
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Runs any software selected by the user" />Runs any software selected by the user</label>
+                  <label><input type="checkbox" data-save="main1_characteristics" value="Must have a keyboard and monitor" />Must have a keyboard and monitor</label>
+                </div>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>D</span><strong>Explain why a central-heating controller is an embedded system.</strong><em>AO2 · [2]</em></div>
+                <textarea data-save="main1_heating" data-required rows="4" placeholder="It is embedded because..."></textarea>
+              </section>
+            </div>
+
+            <button class="secondary-button reveal-button" type="button" data-reveal="main1-guide" data-preserve="main1_starter_revisit,main1_definition,main1_inputs,main1_process,main1_outputs,main1_characteristics,main1_heating">Check the success criteria</button>
+            <section id="main1-guide" class="mark-guide" hidden>
+              <h3>Success criteria</h3>
+              <ul><li>The revised starter comparison now uses <strong>embedded</strong>, <strong>dedicated purpose</strong> and <strong>general-purpose</strong> accurately.</li><li>The definition identifies a <strong>computer system</strong>, a <strong>larger device</strong> and a <strong>dedicated or limited purpose</strong>.</li><li>Inputs provide data; the controller processes it; outputs cause an action or display information.</li><li>The correct characteristics are the first three choices.</li><li>The heating explanation links a specific purpose—monitoring and controlling temperature—to the larger heating system.</li></ul>
+              <label class="full-field">Improve one response using the success criteria<textarea data-save="main1_improvement" data-required rows="3" placeholder="My improved response..."></textarea></label>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · AO1/AO2</strong><p>Listen for “computer system inside a larger device” rather than accepting “a device that uses electricity”. Challenge students to distinguish a sensor, the microcontroller and an actuator.</p></aside>
+            <div class="page-actions"><p>Use technical evidence, not only the name of the device.</p><button class="primary-button complete-button" type="button" data-complete="main1">Complete Activity 1 →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="main2">
+            <div class="page-heading">
+              <div><span class="section-number">03</span><p class="eyebrow">Main Activity 2 · 20 minutes</p><h2>Classify, compare, evaluate</h2></div>
+              <span class="ao-badge">AO2 → AO3</span>
+            </div>
+
+            <figure class="lesson-figure">
+              <img src="assets/image-3-comparison.png" alt="A side-by-side comparison of an embedded controller inside a washing machine and a general-purpose desktop computer." />
+              <figcaption>Classification needs evidence: purpose, position in a larger system, inputs and outputs, and flexibility.</figcaption>
+            </figure>
+
+            <section class="reading-card" aria-labelledby="reading-main2">
+              <div class="reading-header">
+                <span>Read before you evaluate</span>
+                <strong>OxfordAQA Computer Science textbook · page 203</strong>
+              </div>
+              <div class="reading-body">
+                <h3 id="reading-main2">Embedded does not mean disconnected</h3>
+                <p>
+                  Embedded processors appear in consumer electronics, household appliances, cars,
+                  industrial machinery and medical equipment. Modern embedded systems may also include
+                  wireless internet connectivity so that the device can be monitored or controlled
+                  remotely. A network connection therefore does not automatically make a device a
+                  general-purpose computer.
+                </p>
+                <p>
+                  The better test is to examine the system’s role. An embedded controller is normally part
+                  of a larger product and is designed around a limited purpose. A desktop or laptop is a
+                  standalone computer that can run many unrelated applications and accept changeable
+                  peripherals. Embedded systems can be smaller, cheaper and more energy efficient, but
+                  they are usually harder to adjust, replace or upgrade.
+                </p>
+                <div class="comparison-reading">
+                  <div><strong>Ask about purpose</strong><span>Is the system designed around one device or a limited set of related actions?</span></div>
+                  <div><strong>Ask about position</strong><span>Is the controller part of a larger electrical or mechanical product?</span></div>
+                  <div><strong>Ask about flexibility</strong><span>Can the user freely change applications and peripherals?</span></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="question-list">
+              <section class="question-card">
+                <div class="question-top"><span>A</span><strong>A digital camera contains which type of computer system?</strong><em>AO2</em></div>
+                <select data-save="main2_camera_class" data-required><option value="">Choose a classification</option><option>Contains an embedded computer system</option><option>Is a general-purpose desktop computer</option><option>Does not contain a computer system</option></select>
+                <textarea data-save="main2_camera_reason" data-required rows="3" placeholder="Justify your classification with two characteristics."></textarea>
+              </section>
+              <section class="question-card">
+                <div class="question-top"><span>B</span><strong>A laptop is best described as which type of computer?</strong><em>AO2</em></div>
+                <select data-save="main2_laptop_class" data-required><option value="">Choose a classification</option><option>Embedded computer system</option><option>General-purpose computer</option><option>Not a computer system</option></select>
+                <textarea data-save="main2_laptop_reason" data-required rows="3" placeholder="Justify your classification with two characteristics."></textarea>
+              </section>
+              <section class="question-card evaluation-card">
+                <div class="question-top"><span>C</span><strong>“A smart TV runs apps, so it cannot contain an embedded system.” Evaluate this claim.</strong><em>AO3 · [6]</em></div>
+                <p class="scaffold-intro">Consider both sides, then reach a reasoned conclusion.</p>
+                <div class="evaluation-grid">
+                  <label>Evidence supporting the claim<textarea data-save="main2_smarttv_for" data-required rows="4" placeholder="The claim seems reasonable because..."></textarea></label>
+                  <label>Evidence challenging the claim<textarea data-save="main2_smarttv_against" data-required rows="4" placeholder="However, the TV..."></textarea></label>
+                </div>
+                <label class="full-field">Your justified conclusion<textarea data-save="main2_smarttv_conclusion" data-required rows="4" placeholder="Overall, I conclude... because..."></textarea></label>
+              </section>
+            </div>
+
+            <button class="secondary-button reveal-button" type="button" data-reveal="main2-guide" data-preserve="main2_camera_class,main2_camera_reason,main2_laptop_class,main2_laptop_reason,main2_smarttv_for,main2_smarttv_against,main2_smarttv_conclusion">Review the reasoning guide</button>
+            <section id="main2-guide" class="mark-guide" hidden>
+              <h3>Reasoning guide</h3>
+              <ul><li>A digital camera contains an embedded system: its controller is built into the camera for a limited set of related functions.</li><li>A laptop is general purpose: it independently runs many types of software and accepts different peripherals.</li><li>For the smart TV, recognise its app flexibility, but weigh this against its principal purpose, integrated hardware and fixed TV-related inputs/outputs. A supported conclusion matters more than a simple label.</li></ul>
+              <label class="full-field">Reclaim one mark: strengthen one justification<textarea data-save="main2_improvement" data-required rows="3" placeholder="Add one precise point or improve your conclusion."></textarea></label>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · AO2/AO3</strong><p>Sorting alone demonstrates AO2. AO3 appears when students weigh the smart TV’s app flexibility against its dedicated role, challenge the claim and reach a supported judgement.</p></aside>
+            <div class="page-actions"><p>Strong conclusions follow from evidence rather than from appearance.</p><button class="primary-button complete-button" type="button" data-complete="main2">Complete Activity 2 →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="extension">
+            <div class="page-heading">
+              <div><span class="section-number">04</span><p class="eyebrow">Extension · authentic exam practice</p><h2>Past-paper challenge</h2></div>
+              <span class="ao-badge">AO1 + AO2</span>
+            </div>
+
+            <div class="source-bar">OxfordAQA International GCSE Computer Science 9210/2 · November 2024 · Question 04</div>
+            <div class="exam-paper">
+              <section class="exam-question">
+                <div><span>04.1</span><p>State an example of an embedded system.</p><strong>[1 mark]</strong></div>
+                <textarea data-save="ext_q1" data-required rows="4" placeholder="Write your answer here."></textarea>
+              </section>
+              <section class="exam-question">
+                <div><span>04.2</span><p>Describe three common differences between embedded systems and desktop computers.</p><strong>[3 marks]</strong></div>
+                <textarea data-save="ext_q2" data-required rows="9" placeholder="Difference 1...&#10;&#10;Difference 2...&#10;&#10;Difference 3..."></textarea>
+              </section>
+              <div class="exam-total">TOTAL: 4</div>
+            </div>
+
+            <button class="secondary-button reveal-button" type="button" data-reveal="extension-guide" data-preserve="ext_q1,ext_q2">Lock original answers &amp; reveal mark scheme</button>
+            <section id="extension-guide" class="mark-guide" hidden>
+              <h3>Published mark-scheme guidance</h3>
+              <p><strong>04.1:</strong> Award one mark for a reasonable embedded-system example, such as a fridge, microwave, central-heating system, digital camera, suitable medical device, burglar alarm, flight-control system or suitable industrial machinery.</p>
+              <p><strong>04.2:</strong> Award one mark for each valid comparison, maximum three. Accepted differences include processing power or cores, memory, ROM/RAM balance, secondary storage, fixed or changeable I/O, user interface, dedicated or general purpose, modularity, firmware, being part of a larger system, and electrical power.</p>
+              <div class="self-mark-grid two-col">
+                <label>04.1 mark<select data-save="mark_ext_q1" data-required><option value="">Choose</option><option>0 / 1</option><option>1 / 1</option></select></label>
+                <label>04.2 mark<select data-save="mark_ext_q2" data-required><option value="">Choose</option><option>0 / 3</option><option>1 / 3</option><option>2 / 3</option><option>3 / 3</option></select></label>
+              </div>
+              <label class="full-field">Improved answer: reclaim one mark<textarea data-save="extension_improvement" data-required rows="5" placeholder="Rewrite one part using a precise comparison."></textarea></label>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Past-paper use</strong><p>Question wording is retained from November 2024 Question 04. Encourage students to compare both systems in each difference rather than listing isolated embedded-system features.</p></aside>
+            <div class="page-actions"><p>Your PDF will preserve both the original response and the improvement.</p><button class="primary-button complete-button" type="button" data-complete="extension">Complete extension →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="plenary">
+            <div class="page-heading">
+              <div><span class="section-number">05</span><p class="eyebrow">Plenary · 5 minutes</p><h2>One final explanation</h2></div>
+              <span class="ao-badge">AO2 → AO3</span>
+            </div>
+
+            <section class="exit-ticket">
+              <span class="ticket-label">Exit ticket</span>
+              <h3>A smart washing machine connects to Wi-Fi and runs several wash programmes. Explain why it still contains an embedded computer system.</h3>
+              <p>Make three linked points. Do not simply repeat the device name.</p>
+              <textarea data-save="plenary_response" data-required rows="9" placeholder="The washing machine contains an embedded system because..."></textarea>
+            </section>
+
+            <button class="secondary-button reveal-button" type="button" data-reveal="plenary-guide" data-preserve="plenary_response">Check the three success points</button>
+            <section id="plenary-guide" class="mark-guide" hidden>
+              <h3>A strong response explains that:</h3>
+              <ol><li>the controller is built into and forms part of the larger washing machine;</li><li>it performs a dedicated set of washing and monitoring functions;</li><li>Wi-Fi and several related programs do not make it a standalone general-purpose computer.</li></ol>
+              <label class="full-field">How many success points are clearly explained?<select data-save="mark_plenary" data-required><option value="">Choose</option><option>0 / 3</option><option>1 / 3</option><option>2 / 3</option><option>3 / 3</option></select></label>
+              <label class="full-field">Final improved response<textarea data-save="plenary_improvement" data-required rows="5" placeholder="Improve your explanation before exporting."></textarea></label>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Plenary</strong><p>This is not another confidence rating. It checks whether students can transfer the definition to a connected device and resist the misconception that internet access automatically makes a system general purpose.</p></aside>
+            <div class="page-actions"><p>Use the success points to finish with your strongest explanation.</p><button class="primary-button complete-button" type="button" data-complete="plenary">Complete lesson →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="finish">
+            <div class="page-heading">
+              <div><span class="section-number">06</span><p class="eyebrow">Finish &amp; submit</p><h2>Your learning record</h2></div>
+              <span class="ao-badge">AO1 · AO2 · AO3</span>
+            </div>
+
+            <section class="completion-hero">
+              <div class="completion-score"><strong id="finish-percent">0%</strong><span>complete</span></div>
+              <div><h3 id="finish-message">Complete each activity to build your report.</h3><p>Your PDF records what you wrote, your original exam answers, self-marking, improvements and the assessment objectives practised.</p></div>
+            </section>
+
+            <div id="completion-list" class="completion-list"></div>
+
+            <section class="export-panel">
+              <div>
+                <span class="eyebrow light">Step 1</span>
+                <h3>Download your PDF learning report</h3>
+                <p>The file is created in your browser. Check that your name and class are correct before downloading.</p>
+              </div>
+              <button id="export-pdf" class="inverse-button" type="button">Download PDF report ↓</button>
+            </section>
+
+            <section class="teams-panel">
+              <div class="teams-step"><span>1</span><p><strong>Download</strong><br />Save the PDF where you can find it.</p></div>
+              <div class="teams-step"><span>2</span><p><strong>Open Teams</strong><br />Go to the assignment for this lesson.</p></div>
+              <div class="teams-step"><span>3</span><p><strong>Add work</strong><br />Upload the PDF, check the filename, then submit.</p></div>
+              <a class="secondary-button" href="https://teams.microsoft.com/" target="_blank" rel="noopener">Open Microsoft Teams ↗</a>
+            </section>
+
+            <div class="data-controls">
+              <p><strong>Your privacy:</strong> this static website does not send responses to a server. Work remains in this browser until you clear it.</p>
+              <button id="clear-work" class="danger-button" type="button">Clear this learning record</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <script src="vendor/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
