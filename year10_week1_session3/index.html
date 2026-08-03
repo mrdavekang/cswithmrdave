@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-paced Year 10 OxfordAQA 9210 lesson about algorithms, programs and introductory pseudocode.">
+  <title>Week 1 Session 3 | From Algorithms to Programs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111111;
+      --muted: #60656a;
+      --line: #dedede;
+      --soft: #f6f7f6;
+      --green: #00843d;
+      --green-soft: #eaf6ef;
+      --blue: #185abd;
+      --blue-soft: #eef4ff;
+      --amber: #a95500;
+      --amber-soft: #fff4e7;
+      --purple: #6842a5;
+      --purple-soft: #f3effa;
+      --danger: #b42318;
+      --radius: 18px;
+      --shadow: 0 14px 38px rgba(17, 17, 17, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      font-family: "Raleway", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex="0"]:focus-visible {
+      outline: 3px solid rgba(24, 90, 189, 0.28);
+      outline-offset: 2px;
+    }
+    .hidden { display: none !important; }
+
+    .landing {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 20px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(0, 132, 61, 0.11), transparent 30%),
+        radial-gradient(circle at 88% 84%, rgba(24, 90, 189, 0.08), transparent 30%),
+        #ffffff;
+    }
+    .landing-card {
+      width: min(1000px, 100%);
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+    .landing-intro { padding: clamp(36px, 6vw, 72px); background: #101412; color: #ffffff; }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: #79d8a2;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .landing h1 { margin: 0; font-size: clamp(2.35rem, 5vw, 4.6rem); line-height: 0.98; letter-spacing: -0.055em; }
+    .landing-intro > p:not(.eyebrow) { margin: 24px 0 0; color: #d8dedb; font-size: 1.03rem; }
+    .lesson-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .lesson-pills span { padding: 7px 11px; border: 1px solid #465149; border-radius: 999px; font-size: 0.76rem; font-weight: 700; }
+    .landing-form { padding: clamp(30px, 5vw, 58px); align-self: center; }
+    .landing-form h2 { margin: 0 0 6px; font-size: 1.55rem; }
+    .landing-form > p { margin: 0 0 25px; color: var(--muted); }
+
+    .field, .question { margin: 0 0 17px; }
+    .field label, .question-label { display: block; margin: 0 0 7px; font-weight: 700; }
+    .required::after { content: " *"; color: var(--danger); }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      border: 1px solid #bdbdbd;
+      border-radius: 11px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 11px 12px;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24, 90, 189, 0.10); }
+    .code-entry { min-height: 210px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; }
+
+    .primary, .secondary, .ghost, .danger-button {
+      min-height: 44px;
+      border-radius: 11px;
+      padding: 10px 15px;
+      font-weight: 800;
+      transition: transform 120ms ease, background 120ms ease;
+    }
+    .primary { border: 1px solid var(--green); background: var(--green); color: #ffffff; }
+    .primary:hover { background: #006f34; transform: translateY(-1px); }
+    .secondary { border: 1px solid #202020; background: #ffffff; color: #111111; }
+    .secondary:hover, .ghost:hover { background: #f4f4f4; }
+    .ghost { border: 1px solid var(--line); background: #ffffff; color: #333333; }
+    .danger-button { border: 1px solid #f4c7c3; background: #fff7f6; color: var(--danger); }
+    .wide { width: 100%; }
+    .teacher-note, .saved-profile { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--soft); color: var(--muted); font-size: 0.86rem; }
+    .saved-profile button { margin-top: 8px; border: 0; background: transparent; color: var(--blue); font-weight: 800; padding: 0; }
+    .error-message { min-height: 1.4em; margin: 8px 0 0; color: var(--danger); font-size: 0.86rem; font-weight: 700; }
+
+    .app-shell { min-height: 100vh; background: #ffffff; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: minmax(190px, 0.8fr) minmax(240px, 1.2fr) auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 72px;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+    }
+    .brand { display: grid; }
+    .brand strong { font-size: 0.9rem; }
+    .brand span { color: var(--muted); font-size: 0.76rem; }
+    .progress-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 0.74rem; font-weight: 700; }
+    .progress-track { height: 7px; margin-top: 5px; overflow: hidden; border-radius: 999px; background: #eceeec; }
+    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: var(--green); transition: width 180ms ease; }
+    .top-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    .save-state { color: var(--green); font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
+    .review-banner { padding: 12px 20px; border-bottom: 1px solid #dccdf2; background: var(--purple-soft); color: #3c2760; font-size: 0.86rem; }
+    .review-banner button { min-height: 36px; margin-left: 8px; padding: 6px 10px; }
+
+    .app-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 72px); }
+    .sidebar {
+      position: sticky;
+      top: 72px;
+      align-self: start;
+      height: calc(100vh - 72px);
+      overflow-y: auto;
+      padding: 22px 18px 30px;
+      border-right: 1px solid var(--line);
+      background: #fbfbfb;
+    }
+    .side-card { margin-bottom: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #ffffff; }
+    .side-card h2, .side-card h3 { margin: 0 0 7px; font-size: 0.95rem; }
+    .side-card p { margin: 5px 0; color: #343434; font-size: 0.79rem; }
+    .ksu-list strong { color: var(--green); }
+
+    .ao-strip { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+    .ao-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; }
+    .ao1 { background: var(--blue-soft); color: #17457c; }
+    .ao2 { background: var(--green-soft); color: #07522a; }
+    .ao3 { background: var(--purple-soft); color: #4f327b; }
+
+    .step-nav { display: grid; gap: 7px; margin-top: 16px; }
+    .step-button {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      background: transparent;
+      padding: 9px;
+      text-align: left;
+    }
+    .step-button:hover, .step-button.active { border-color: var(--line); background: #ffffff; }
+    .step-number { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #bdbdbd; border-radius: 50%; font-size: 0.72rem; font-weight: 800; }
+    .step-button.active .step-number { border-color: var(--green); background: var(--green); color: #ffffff; }
+    .step-button.done .step-number { border-color: var(--green); color: var(--green); }
+    .step-name { font-size: 0.84rem; font-weight: 800; }
+    .step-time { color: var(--muted); font-size: 0.68rem; }
+
+    .main-content { width: min(990px, 100%); margin: 0 auto; padding: 38px clamp(20px, 5vw, 64px) 64px; }
+    .activity-step { display: none; animation: enter 180ms ease; }
+    .activity-step.active { display: block; }
+    @keyframes enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .section-kicker { margin: 0 0 7px; color: var(--green); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
+    .activity-step h1 { max-width: 780px; margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.03; letter-spacing: -0.05em; }
+    .section-lead { max-width: 760px; margin: 15px 0 24px; color: var(--muted); font-size: 1rem; }
+
+    .task-card, .reading-card { margin: 16px 0; padding: clamp(18px, 3vw, 28px); border: 1px solid var(--line); border-radius: var(--radius); background: #ffffff; box-shadow: 0 8px 24px rgba(17, 17, 17, 0.035); }
+    .task-card h2, .task-card h3, .reading-card h2, .reading-card h3 { margin: 0 0 10px; line-height: 1.2; }
+    .reading-card { border-left: 4px solid var(--blue); background: #fcfdff; }
+    .reading-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 14px; color: var(--muted); font-size: 0.76rem; font-weight: 700; }
+    .reading-meta span { padding: 4px 8px; border: 1px solid #d5e1ef; border-radius: 999px; background: #ffffff; }
+    .reading-card p { max-width: 780px; }
+    .reading-card ul { max-width: 760px; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .comparison-panel { padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: var(--soft); }
+    .comparison-panel h3 { margin: 0 0 9px; }
+    .mini-label { display: inline-block; margin-bottom: 8px; color: var(--green); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+
+    .callout { margin: 18px 0; padding: 14px 16px; border-left: 4px solid var(--blue); border-radius: 0 12px 12px 0; background: var(--blue-soft); color: #15365f; }
+    .callout.green { border-left-color: var(--green); background: var(--green-soft); color: #064d27; }
+    .callout.amber { border-left-color: var(--amber); background: var(--amber-soft); color: #6c3900; }
+    .callout.purple { border-left-color: var(--purple); background: var(--purple-soft); color: #3f2763; }
+    .callout strong { display: block; margin-bottom: 3px; }
+
+    .code-wrap { position: relative; margin: 14px 0; overflow: hidden; border-radius: 14px; background: #121816; color: #edf7f0; }
+    pre { margin: 0; padding: 20px; overflow-x: auto; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88rem; line-height: 1.62; }
+    .copy-button { position: absolute; top: 10px; right: 10px; min-height: 32px; border: 1px solid #52605a; border-radius: 8px; background: #222c28; color: #ffffff; padding: 4px 9px; font-size: 0.74rem; font-weight: 800; }
+    .question-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .question { margin-top: 16px; }
+    .question small { display: block; margin-top: 5px; color: var(--muted); }
+    .hint-panel { display: none; margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: var(--amber-soft); color: #673700; }
+    .hint-panel.visible { display: block; }
+    .check-row { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 9px 0; border-bottom: 1px solid #efefef; }
+    .check-row:last-child { border-bottom: 0; }
+    .check-row input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--green); }
+
+    .evidence-zone { margin-top: 14px; padding: 22px; border: 1.5px dashed #a9ada9; border-radius: 14px; background: #fafcfa; text-align: center; transition: background 130ms ease, border-color 130ms ease; }
+    .evidence-zone.dragging { border-color: var(--green); background: var(--green-soft); }
+    .evidence-zone strong { display: block; margin-bottom: 5px; }
+    .evidence-zone p { margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
+    .evidence-zone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .evidence-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 14px; text-align: left; }
+    .evidence-item { overflow: hidden; border: 1px solid var(--line); border-radius: 11px; background: #ffffff; }
+    .evidence-item img { display: block; width: 100%; height: 118px; object-fit: contain; background: #f2f2f2; }
+    .evidence-caption { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px; font-size: 0.72rem; }
+    .evidence-caption span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .evidence-caption button { border: 0; background: transparent; color: var(--danger); font-weight: 800; }
+
+    .step-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .export-card { margin-top: 24px; padding: clamp(22px, 4vw, 34px); border-radius: 20px; background: #101412; color: #ffffff; }
+    .export-card h2 { margin: 0 0 8px; }
+    .export-card p { color: #d4ddd7; }
+    .export-card ol { padding-left: 20px; }
+    .export-card .primary { margin-top: 8px; background: #39aa6d; border-color: #39aa6d; }
+    .filename { display: block; margin: 12px 0; padding: 11px 13px; border: 1px solid #48524c; border-radius: 10px; background: #1c2420; color: #ffffff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+
+    .mobile-ksu, .print-report { display: none; }
+    .report-page-header h1 { margin: 0 0 5px; font-size: 24pt; }
+    .report-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin: 14px 0 18px; }
+    .report-ksu { margin: 16px 0; padding: 12px; border: 1px solid #bbbbbb; }
+    .report-ksu p { margin: 4px 0; }
+    .report-section { break-before: page; page-break-before: always; }
+    .report-section:first-of-type { break-before: auto; page-break-before: auto; }
+    .report-section h2 { margin: 0 0 12px; padding-bottom: 6px; border-bottom: 2px solid #111111; font-size: 18pt; }
+    .report-entry { margin: 0 0 13px; break-inside: avoid; page-break-inside: avoid; }
+    .report-entry h3 { margin: 0 0 4px; font-size: 10pt; }
+    .report-entry p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .report-code { margin: 4px 0 0; padding: 10px; border: 1px solid #bcbcbc; background: #f6f6f6; color: #111111; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8.5pt; }
+    .report-evidence { margin: 15px 0 22px; break-inside: avoid; page-break-inside: avoid; }
+    .report-evidence img { display: block; max-width: 100%; max-height: 230mm; margin: 8px auto 2px; border: 1px solid #bcbcbc; object-fit: contain; }
+    .report-evidence figcaption { font-size: 8pt; color: #444444; text-align: center; }
+    .teams-report { break-before: page; page-break-before: always; padding: 14mm; border: 2px solid #111111; }
+
+    @media (max-width: 980px) {
+      .topbar { grid-template-columns: 1fr auto; }
+      .progress-wrap { grid-column: 1 / -1; grid-row: 2; }
+      .save-state { display: none; }
+      .app-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; padding: 12px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .sidebar .side-card { display: none; }
+      .step-nav { display: flex; overflow-x: auto; margin: 0; padding-bottom: 3px; }
+      .step-button { min-width: 170px; }
+      .mobile-ksu { display: block; margin: 0 0 18px; }
+      .mobile-ksu summary { cursor: pointer; font-weight: 800; }
+    }
+    @media (max-width: 760px) {
+      .landing-card, .comparison-grid, .question-grid { grid-template-columns: 1fr; }
+      .landing-intro { padding: 36px 28px; }
+      .landing-form { padding: 30px 26px; }
+      .topbar { padding: 10px 14px; }
+      .top-actions .ghost { display: none; }
+      .main-content { padding: 28px 17px 44px; }
+      .step-footer { flex-direction: column-reverse; }
+      .step-footer button { width: 100%; }
+    }
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      body { background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 9.5pt; }
+      #landing, #app { display: none !important; }
+      #printReport { display: block !important; }
+      a { color: #000000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <div class="landing-intro">
+        <p class="eyebrow">OxfordAQA 9210 · Week 1 Session 3</p>
+        <h1 id="landingTitle">From algorithms to programs</h1>
+        <p>Read, interpret, trace and test a familiar input-process-output solution. Your written answers, code and evidence will be saved into one complete PDF.</p>
+        <div class="lesson-pills" aria-label="Lesson features">
+          <span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Device autosave</span><span>Evidence images</span><span>Complete PDF</span>
+        </div>
+      </div>
+
+      <form id="entryForm" class="landing-form" novalidate>
+        <h2>Enter the lesson</h2>
+        <p>Your work is saved only on this device.</p>
+        <div class="field">
+          <label class="required" for="studentName">Name</label>
+          <input id="studentName" name="studentName" type="text" autocomplete="name" placeholder="Enter your full name">
+        </div>
+        <div class="field">
+          <label class="required" for="studentClass">Class</label>
+          <input id="studentClass" name="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A">
+        </div>
+        <button class="primary wide" type="submit">Start lesson</button>
+        <p id="entryError" class="error-message" role="alert"></p>
+        <div id="savedProfile" class="saved-profile hidden"></div>
+        <div class="teacher-note"><strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be blank. You can open every page and fill sample answers.</div>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand"><strong>W01S03 · Algorithms and pseudocode</strong><span id="profileLabel">Student · Class</span></div>
+      <div class="progress-wrap" aria-label="Lesson progress">
+        <div class="progress-meta"><span id="stepIndicator">Starter · Step 1 of 5</span><span id="progressText">0% complete</span></div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+      <div class="top-actions">
+        <span id="saveState" class="save-state" aria-live="polite">Saved on this device</span>
+        <button id="quickExport" class="ghost" type="button">Export current work</button>
+        <button id="exitButton" class="secondary" type="button">Exit</button>
+      </div>
+    </header>
+
+    <div id="reviewBanner" class="review-banner hidden">
+      Teacher preview is active. All pages are available and preview data is stored separately.
+      <button id="fillSamples" class="secondary" type="button">Fill sample answers</button>
+      <button id="clearPreview" class="ghost" type="button">Clear preview</button>
+    </div>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Lesson information and navigation">
+        <div class="side-card"><h2>Topic</h2><p>Algorithms, programs and introductory pseudocode</p></div>
+        <div class="side-card"><h3>WAGBA</h3><p>We are getting better at explaining how an algorithm becomes a program and tracing an input-process-output solution.</p></div>
+        <div class="side-card ksu-list">
+          <h3>Knowledge · Skills · Understanding</h3>
+          <p><strong>K</strong> Know algorithm, program, pseudocode, assignment, input and output.</p>
+          <p><strong>S</strong> Identify, compare, trace, translate and test.</p>
+          <p><strong>U</strong> Explain why pseudocode describes logic but cannot be executed.</p>
+        </div>
+        <div class="side-card">
+          <h3>Assessment objectives</h3>
+          <p><strong>AO1</strong> Knowledge and understanding</p>
+          <p><strong>AO2</strong> Apply knowledge</p>
+          <p><strong>AO3</strong> Analyse, develop and test</p>
+        </div>
+        <nav id="stepNav" class="step-nav" aria-label="Lesson sections">
+          <button class="step-button active" type="button" data-step="0"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span></button>
+          <button class="step-button" type="button" data-step="1"><span class="step-number">2</span><span class="step-name">Main activity 1</span><span class="step-time">17 min</span></button>
+          <button class="step-button" type="button" data-step="2"><span class="step-number">3</span><span class="step-name">Main activity 2</span><span class="step-time">25 min</span></button>
+          <button class="step-button" type="button" data-step="3"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Optional</span></button>
+          <button class="step-button" type="button" data-step="4"><span class="step-number">5</span><span class="step-name">Plenary & PDF</span><span class="step-time">10 min</span></button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <details class="mobile-ksu side-card">
+          <summary>Show WAGBA, K/S/U and AOs</summary>
+          <p><strong>WAGBA:</strong> Explain how an algorithm becomes a program and trace an input-process-output solution.</p>
+          <p><strong>K:</strong> Algorithm, program, pseudocode, assignment, input and output.</p>
+          <p><strong>S:</strong> Identify, compare, trace, translate and test.</p>
+          <p><strong>U:</strong> Explain why pseudocode describes logic but cannot be executed.</p>
+          <p><strong>AOs:</strong> AO1 know · AO2 apply · AO3 analyse, develop and test.</p>
+        </details>
+
+        <section class="activity-step active" data-step="0" data-section="starter">
+          <p class="section-kicker">Starter · Retrieve and diagnose</p>
+          <h1>Predict before you run.</h1>
+          <p class="section-lead">This is the familiar course-points calculator. Read it carefully and answer every question before using your Python IDE.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 · identify</span><span class="ao-badge ao2">AO2 · apply</span></div>
+
+          <div class="code-wrap">
+            <button class="copy-button" type="button" data-copy-target="starterCode">Copy code</button>
+            <pre id="starterCode"><code>name = input("Enter your name: ")
+correct_answers = int(input("Correct answers: "))
+total = correct_answers * 5
+print(name, total)</code></pre>
+          </div>
+
+          <div class="task-card">
+            <h2>Your predictions</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="sInput">1. Which line obtains the first input?</label><input id="sInput" type="text" data-field="s_input" placeholder="Copy or describe the line"></div>
+              <div class="question"><label class="question-label" for="sProcess">2. Which line performs the processing?</label><input id="sProcess" type="text" data-field="s_process" placeholder="Copy the calculation"></div>
+              <div class="question"><label class="question-label" for="sOutput">3. Which line produces the output?</label><input id="sOutput" type="text" data-field="s_output" placeholder="Copy the output line"></div>
+              <div class="question"><label class="question-label" for="sPrediction">4. Predict the output for Aisha and 3 correct answers.</label><input id="sPrediction" type="text" data-field="s_prediction" placeholder="Write the output"></div>
+            </div>
+            <div class="question"><label class="question-label" for="sVariables">5. List the three variable names.</label><input id="sVariables" type="text" data-field="s_variables" placeholder="Separate the names with commas"></div>
+          </div>
+
+          <div class="task-card">
+            <h2>Run and review</h2>
+            <p>Now run the program in your own IDE and compare the actual result with your prediction.</p>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="sActual">What actually appeared?</label><input id="sActual" type="text" data-field="s_actual" placeholder="Record the output"></div>
+              <div class="question"><label class="question-label" for="sResult">Did your prediction match?</label><select id="sResult" data-field="s_result"><option value="">Choose one</option><option>Yes - it matched</option><option>No - I corrected my answer</option><option>I need help running the program</option></select></div>
+            </div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="sSecure">One thing I can already do confidently</label><textarea id="sSecure" data-field="s_secure" placeholder="For example: identify an input statement"></textarea></div>
+              <div class="question"><label class="question-label" for="sSupport">One thing I need to revisit</label><textarea id="sSupport" data-field="s_support" placeholder="Be specific so your teacher can support you"></textarea></div>
+            </div>
+          </div>
+
+          <div class="callout green"><strong>Paper connection</strong>Reading and running code develops Paper 1 habits. Identifying input, processing and output also supports Paper 2 explanations.</div>
+          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main activity 1</button></div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section="main1">
+          <p class="section-kicker">Main activity 1 · Read, compare and explain</p>
+          <h1>Algorithm or program?</h1>
+          <p class="section-lead">Read the short textbook-based extract, prove your AO1 knowledge, and then apply it to the calculator from the starter.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 · know and explain</span><span class="ao-badge ao2">AO2 · compare and apply</span><span class="ao-badge ao3">AO3 · analyse</span></div>
+
+          <article class="reading-card">
+            <span class="mini-label">Read before attempting the questions</span>
+            <h2>Algorithms and programs</h2>
+            <div class="reading-meta"><span>Textbook: printed page 10</span><span>Digital PDF: page 14 of 317</span><span>Approx. 3 minutes</span></div>
+            <p>An <strong>algorithm</strong> is an ordered set of steps used to solve a problem or complete a task. In Computer Science, an algorithm describes the logical actions a program should perform. It can show what data is entered as input, how the data is processed, and what information is produced as output.</p>
+            <p>An algorithm describes a solution, but it is not a working computer program. It cannot be run directly because it is not written in a particular programming language.</p>
+            <p>A <strong>program</strong> is an implementation of an algorithm. It translates the planned steps into instructions written in a programming language such as Python. Programmers plan with algorithms so they can check their logic, find missing steps, communicate the solution and keep a record before coding.</p>
+            <p>The same clear algorithm could be implemented in Python, Java or another suitable language.</p>
+          </article>
+
+          <div class="task-card">
+            <h2>Reading check</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m1Algorithm">1. Define an algorithm.</label><textarea id="m1Algorithm" data-field="m1_algorithm" placeholder="Use a complete sentence"></textarea></div>
+              <div class="question"><label class="question-label" for="m1Program">2. Define a computer program.</label><textarea id="m1Program" data-field="m1_program" placeholder="Use the word implementation"></textarea></div>
+              <div class="question"><label class="question-label" for="m1CannotRun">3. Why can an algorithm not be run directly?</label><textarea id="m1CannotRun" data-field="m1_cannot_run" placeholder="Explain the key reason"></textarea></div>
+              <div class="question"><label class="question-label" for="m1Reason">4. Give one reason programmers create algorithms first.</label><textarea id="m1Reason" data-field="m1_reason" placeholder="Choose one reason from the reading"></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Compare the two representations</h2>
+            <div class="comparison-grid">
+              <div class="comparison-panel">
+                <span class="mini-label">Representation A</span>
+                <ol><li>Ask for the student’s name.</li><li>Ask how many answers were correct.</li><li>Multiply the number by five.</li><li>Display the name and total.</li></ol>
+              </div>
+              <div class="comparison-panel">
+                <span class="mini-label">Representation B</span>
+                <div class="code-wrap"><pre><code>name = input("Enter your name: ")
+correct_answers = int(input("Correct answers: "))
+total = correct_answers * 5
+print(name, total)</code></pre></div>
+              </div>
+            </div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m1Identify">5. Identify A and B. Justify both choices.</label><textarea id="m1Identify" data-field="m1_identify" placeholder="A is... because... B is... because..."></textarea></div>
+              <div class="question"><label class="question-label" for="m1Match">6. Match each numbered step to a Python line.</label><textarea id="m1Match" data-field="m1_match" placeholder="Step 1 → ...&#10;Step 2 → ..."></textarea></div>
+              <div class="question"><label class="question-label" for="m1IPO">7. Identify the input, processing and output.</label><textarea id="m1IPO" data-field="m1_ipo" placeholder="Input: ...&#10;Processing: ...&#10;Output: ..."></textarea></div>
+              <div class="question"><label class="question-label" for="m1Language">8. Why could the same algorithm be coded in more than one language?</label><textarea id="m1Language" data-field="m1_language" placeholder="Analyse the relationship between logic and language"></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Optional evidence</h2>
+            <div class="evidence-zone" data-evidence-zone="main1" tabindex="0">
+              <strong>Add Main Activity 1 evidence</strong><p>Upload, drag or paste an image of annotated work. Images are resized for reliable PDF export.</p>
+              <label class="secondary" for="evidenceMain1">Choose image</label><input id="evidenceMain1" type="file" accept="image/*" multiple data-evidence-input="main1"><div class="evidence-list" data-evidence-list="main1"></div>
+            </div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Starter</button><button class="primary next-step" type="button">Continue to Main activity 2</button></div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section="main2">
+          <p class="section-kicker">Main activity 2 · Interpret, trace, translate and test</p>
+          <h1>Your first pseudocode taster.</h1>
+          <p class="section-lead">Learn only the notation needed today, then apply it to a familiar calculation. You are not expected to memorise the full pseudocode guide.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 · recognise notation</span><span class="ao-badge ao2">AO2 · trace and interpret</span><span class="ao-badge ao3">AO3 · translate and test</span></div>
+
+          <article class="reading-card">
+            <span class="mini-label">Read before attempting the questions</span>
+            <h2>Introduction to pseudocode</h2>
+            <div class="reading-meta"><span>Textbook: printed pages 12–13</span><span>Digital PDF: pages 16–17 of 317</span><span>Approx. 4 minutes</span></div>
+            <p><strong>Pseudocode</strong> represents an algorithm using structured, readable instructions. It looks similar to program code, but it is not written in a programming language and cannot be run on a computer. It helps programmers focus on the logic before writing the real program.</p>
+            <p>The assignment arrow points from a value towards the variable that will store it. For example, <code>Score ← 20</code> assigns the value 20 to <code>Score</code>. In Python, this would be written <code>score = 20</code>.</p>
+            <p><code>USERINPUT</code> represents data entered by the user. <code>Name ← USERINPUT</code> stores the user’s entry in <code>Name</code>. A processing statement such as <code>Total ← CorrectAnswers * 5</code> performs a calculation. The command <code>OUTPUT</code> displays a value or message.</p>
+          </article>
+
+          <div class="task-card">
+            <h2>Reading check</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2Run">1. Can pseudocode be run in a Python IDE? Explain.</label><textarea id="m2Run" data-field="m2_run" placeholder="Answer and explain"></textarea></div>
+              <div class="question"><label class="question-label" for="m2Arrow">2. What does the assignment arrow mean?</label><textarea id="m2Arrow" data-field="m2_arrow" placeholder="Explain what happens to the value"></textarea></div>
+              <div class="question"><label class="question-label" for="m2InputWord">3. Which word represents user input?</label><input id="m2InputWord" type="text" data-field="m2_input_word" placeholder="Command word"></div>
+              <div class="question"><label class="question-label" for="m2OutputWord">4. Which word displays information?</label><input id="m2OutputWord" type="text" data-field="m2_output_word" placeholder="Command word"></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Interpret and trace the algorithm</h2>
+            <div class="code-wrap"><button class="copy-button" type="button" data-copy-target="pseudoCore">Copy pseudocode</button><pre id="pseudoCore"><code>Name ← USERINPUT
+CorrectAnswers ← USERINPUT
+Total ← CorrectAnswers * 5
+OUTPUT Name
+OUTPUT Total</code></pre></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2Labels">5. Label every line as input, processing or output.</label><textarea id="m2Labels" data-field="m2_labels" placeholder="Line 1: ...&#10;Line 2: ..."></textarea></div>
+              <div class="question"><label class="question-label" for="m2Trace">6. Trace it for Name = Arun and CorrectAnswers = 4.</label><textarea id="m2Trace" data-field="m2_trace" placeholder="Name = ...&#10;CorrectAnswers = ...&#10;Total = ...&#10;Output = ..."></textarea></div>
+              <div class="question"><label class="question-label" for="m2Missing">7. Complete: Total ← __________</label><input id="m2Missing" type="text" data-field="m2_missing" placeholder="Write the expression only"></div>
+              <div class="question"><label class="question-label" for="m2Purpose">8. State the purpose of the algorithm.</label><textarea id="m2Purpose" data-field="m2_purpose" placeholder="It obtains... calculates... and outputs..."></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Translate and test in Python</h2>
+            <p>Write a Python version in your own IDE. You may use the frame below. Do not try to run pseudocode.</p>
+            <div class="code-wrap"><button class="copy-button" type="button" data-copy-target="pythonFrame">Copy Python frame</button><pre id="pythonFrame"><code>name = input("Enter your name: ")
+correct_answers = int(input("Correct answers: "))
+
+total = ______________________________
+
+print(_______________________________)</code></pre></div>
+            <button class="secondary hint-button" type="button" data-hint="m2Hint">Reveal a hint</button>
+            <div id="m2Hint" class="hint-panel">Use <code>total = correct_answers * 5</code>. Your output can be <code>print(name, total)</code>.</div>
+            <div class="question"><label class="question-label" for="m2Python">9. Paste your completed Python program.</label><textarea id="m2Python" class="code-entry" data-field="m2_python" spellcheck="false" placeholder="Paste your final Python code here. It will not run on this website."></textarea></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2Actual">10. Actual output for Arun and 4 correct answers</label><input id="m2Actual" type="text" data-field="m2_actual" placeholder="Record exactly what appeared"></div>
+              <div class="question"><label class="question-label" for="m2Test">11. Did the result match your trace?</label><select id="m2Test" data-field="m2_test"><option value="">Choose one</option><option>Pass - it matched</option><option>Not yet - I corrected the program</option><option>I need support</option></select></div>
+            </div>
+            <div class="question"><label class="question-label" for="m2Comparison">12. Explain one similarity and one difference between the pseudocode and Python.</label><textarea id="m2Comparison" data-field="m2_comparison" placeholder="Similarity: ...&#10;Difference: ..."></textarea></div>
+          </div>
+
+          <div class="task-card">
+            <h2>Evidence</h2>
+            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0">
+              <strong>Add your Python test evidence</strong><p>Upload, drag or paste a screenshot showing the code, output or both.</p>
+              <label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" type="file" accept="image/*" multiple data-evidence-input="main2"><div class="evidence-list" data-evidence-list="main2"></div>
+            </div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Main activity 1</button><button class="primary next-step" type="button">Continue to Extension</button></div>
+        </section>
+
+        <section class="activity-step" data-step="3" data-section="extension">
+          <p class="section-kicker">Extension · Early finishers</p>
+          <h1>Add bonus tasks.</h1>
+          <p class="section-lead">Complete this only after Main Activity 2. It raises the challenge from interpreting an algorithm to designing and testing an adapted solution.</p>
+          <div class="ao-strip"><span class="ao-badge ao2">AO2 · apply</span><span class="ao-badge ao3">AO3 · design and test</span></div>
+
+          <div class="task-card">
+            <label class="check-row"><input type="checkbox" data-check="ext_attempted"><span>I attempted the extension.</span></label>
+            <p>Add a new input called <code>BonusTasks</code>. Each bonus task is worth two points. Add the bonus points to the existing total and output the final result.</p>
+            <div class="question"><label class="question-label" for="extPseudo">1. Write the complete adapted pseudocode.</label><textarea id="extPseudo" class="code-entry" data-field="ext_pseudocode" spellcheck="false" placeholder="Name ← USERINPUT&#10;..."></textarea></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="extExpected">2. Expected total for 4 correct answers and 2 bonus tasks</label><input id="extExpected" type="text" data-field="ext_expected" placeholder="Calculate the expected result"></div>
+              <div class="question"><label class="question-label" for="extExplain">3. Why is your pseudocode still an algorithm rather than a program?</label><textarea id="extExplain" data-field="ext_explain" placeholder="Use precise terminology"></textarea></div>
+            </div>
+            <div class="question"><label class="question-label" for="extPython">4. Optional: translate it into Python and paste your tested program.</label><textarea id="extPython" class="code-entry" data-field="ext_python" spellcheck="false" placeholder="Paste your extension code here"></textarea></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="extActual">Actual result</label><input id="extActual" type="text" data-field="ext_actual" placeholder="Record the result"></div>
+              <div class="question"><label class="question-label" for="extResult">Test outcome</label><select id="extResult" data-field="ext_result"><option value="">Choose one</option><option>Pass - result was 24</option><option>Not yet - I am debugging</option><option>Pseudocode only completed</option></select></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>Optional evidence</h2><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension evidence</strong><p>Upload, drag or paste an image if you tested the extension.</p><label class="secondary" for="evidenceExtension">Choose image</label><input id="evidenceExtension" type="file" accept="image/*" multiple data-evidence-input="extension"><div class="evidence-list" data-evidence-list="extension"></div></div></div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Main activity 2</button><button class="primary next-step" type="button">Continue to Plenary</button></div>
+        </section>
+
+        <section class="activity-step" data-step="4" data-section="plenary">
+          <p class="section-kicker">Plenary · Prove and submit</p>
+          <h1>Explain without running.</h1>
+          <p class="section-lead">Complete the exit ticket independently, review your AO evidence, and export one PDF containing every response and uploaded image.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 · recall</span><span class="ao-badge ao2">AO2 · apply</span><span class="ao-badge ao3">AO3 · analyse</span></div>
+
+          <div class="task-card">
+            <h2>Exit ticket</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="pAlgorithm">1. What is an algorithm?</label><textarea id="pAlgorithm" data-field="p_algorithm" placeholder="Write one precise sentence"></textarea></div>
+              <div class="question"><label class="question-label" for="pProgram">2. How is a program related to an algorithm?</label><textarea id="pProgram" data-field="p_program" placeholder="Use the word implementation"></textarea></div>
+              <div class="question"><label class="question-label" for="pArrow">3. What does ← mean?</label><textarea id="pArrow" data-field="p_arrow" placeholder="Explain assignment"></textarea></div>
+              <div class="question"><label class="question-label" for="pClassify">4. Classify: Score ← CorrectAnswers * 5</label><select id="pClassify" data-field="p_classify"><option value="">Choose one</option><option>Input</option><option>Processing</option><option>Output</option></select></div>
+            </div>
+            <div class="question"><label class="question-label" for="pExplain">5. Explain why tracing before running can help a programmer.</label><textarea id="pExplain" data-field="p_explain" placeholder="Explain how prediction can reveal errors"></textarea></div>
+          </div>
+
+          <div class="task-card">
+            <h2>K/S/U reflection</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="pKnowledge">K: One fact I now know</label><textarea id="pKnowledge" data-field="p_knowledge"></textarea></div>
+              <div class="question"><label class="question-label" for="pSkill">S: One skill I demonstrated</label><textarea id="pSkill" data-field="p_skill"></textarea></div>
+            </div>
+            <div class="question"><label class="question-label" for="pUnderstanding">U: Explain why pseudocode cannot be run directly in Python.</label><textarea id="pUnderstanding" data-field="p_understanding"></textarea></div>
+          </div>
+
+          <div class="task-card">
+            <h2>AO1–AO3 self-review</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="ratingAo1">AO1: knowledge and understanding</label><select id="ratingAo1" data-field="rating_ao1"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
+              <div class="question"><label class="question-label" for="ratingAo2">AO2: applying knowledge</label><select id="ratingAo2" data-field="rating_ao2"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
+              <div class="question"><label class="question-label" for="ratingAo3">AO3: analysing, developing and testing</label><select id="ratingAo3" data-field="rating_ao3"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
+              <div class="question"><label class="question-label" for="pSupport">What support or question should your teacher see?</label><textarea id="pSupport" data-field="p_support" placeholder="Write none if you do not need support"></textarea></div>
+            </div>
+          </div>
+
+          <div class="export-card">
+            <h2>Export and submit your evidence</h2>
+            <p>The report includes every response, pasted code and uploaded image—even if a section is unfinished.</p>
+            <ol>
+              <li>Check your name, class, answers and evidence.</li>
+              <li>Select <strong>Export complete PDF</strong>.</li>
+              <li>In the print window choose <strong>Save as PDF</strong>.</li>
+              <li>Use this filename:</li>
+            </ol>
+            <span id="filenamePreview" class="filename">W01S03_Firstname_Class.pdf</span>
+            <ol start="5">
+              <li>Open the saved PDF and check that the text and images are complete.</li>
+              <li>Open the correct assignment in Microsoft Teams.</li>
+              <li>Select <strong>Add work</strong>, upload the PDF and then select <strong>Turn in</strong>.</li>
+            </ol>
+            <button id="finalExport" class="primary" type="button">Export complete PDF</button>
+          </div>
+          <div class="callout amber"><strong>Before leaving</strong>Do not submit a browser screenshot. Submit the exported PDF and open it once to check it first.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Extension</button><button id="returnToStarter" class="ghost" type="button">Review from Starter</button></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <article id="printReport" class="print-report" aria-label="Complete student lesson report"></article>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const APP_VERSION = "w01s03-v1";
+      const LAST_PROFILE_KEY = `${APP_VERSION}:last-profile`;
+      const DB_NAME = "OxfordAQA9210W01S03Evidence";
+      const DB_STORE = "evidence";
+      const stepNames = ["Starter", "Main activity 1", "Main activity 2", "Extension", "Plenary & PDF"];
+      const sectionKeys = ["starter", "main1", "main2", "extension", "plenary"];
+      const requiredByStep = [
+        ["s_input", "s_process", "s_output", "s_prediction", "s_variables", "s_actual", "s_result", "s_secure", "s_support"],
+        ["m1_algorithm", "m1_program", "m1_cannot_run", "m1_reason", "m1_identify", "m1_match", "m1_ipo", "m1_language"],
+        ["m2_run", "m2_arrow", "m2_input_word", "m2_output_word", "m2_labels", "m2_trace", "m2_missing", "m2_purpose", "m2_python", "m2_actual", "m2_test", "m2_comparison"],
+        [],
+        ["p_algorithm", "p_program", "p_arrow", "p_classify", "p_explain", "p_knowledge", "p_skill", "p_understanding", "rating_ao1", "rating_ao2", "rating_ao3", "p_support"]
+      ];
+
+      const reportSchema = [
+        { key: "starter", title: "Starter - Predict before you run", entries: [
+          ["First input line", "s_input"], ["Processing line", "s_process"], ["Output line", "s_output"], ["Predicted output", "s_prediction"], ["Variable names", "s_variables"], ["Actual output", "s_actual"], ["Prediction check", "s_result"], ["Confident skill", "s_secure"], ["Revisit or support need", "s_support"]
+        ]},
+        { key: "main1", title: "Main activity 1 - Algorithm or program?", entries: [
+          ["Definition of algorithm", "m1_algorithm"], ["Definition of program", "m1_program"], ["Why an algorithm cannot run directly", "m1_cannot_run"], ["Reason for planning with algorithms", "m1_reason"], ["Identification and justification", "m1_identify"], ["Matched steps and Python lines", "m1_match"], ["Input, processing and output", "m1_ipo"], ["Why one algorithm can use different languages", "m1_language"]
+        ]},
+        { key: "main2", title: "Main activity 2 - Pseudocode taster", entries: [
+          ["Can pseudocode run?", "m2_run"], ["Meaning of assignment arrow", "m2_arrow"], ["Input command word", "m2_input_word"], ["Output command word", "m2_output_word"], ["Line classifications", "m2_labels"], ["Trace for Arun and 4", "m2_trace"], ["Missing processing expression", "m2_missing"], ["Purpose of algorithm", "m2_purpose"], ["Translated Python program", "m2_python", "code"], ["Actual Python output", "m2_actual"], ["Test outcome", "m2_test"], ["Pseudocode/Python comparison", "m2_comparison"], ["Hints opened", "__hints__"]
+        ]},
+        { key: "extension", title: "Extension - Bonus tasks", checks: [["Attempted the extension", "ext_attempted"]], entries: [
+          ["Adapted pseudocode", "ext_pseudocode", "code"], ["Expected result", "ext_expected"], ["Why it remains an algorithm", "ext_explain"], ["Optional Python translation", "ext_python", "code"], ["Actual result", "ext_actual"], ["Test outcome", "ext_result"]
+        ]},
+        { key: "plenary", title: "Plenary - Explain and submit", entries: [
+          ["Definition of algorithm", "p_algorithm"], ["Relationship between program and algorithm", "p_program"], ["Meaning of assignment arrow", "p_arrow"], ["Classification of Score statement", "p_classify"], ["Why tracing helps", "p_explain"], ["Knowledge reflection", "p_knowledge"], ["Skill reflection", "p_skill"], ["Understanding reflection", "p_understanding"], ["AO1 rating", "rating_ao1"], ["AO2 rating", "rating_ao2"], ["AO3 rating", "rating_ao3"], ["Support or question", "p_support"]
+        ]}
+      ];
+
+      let state = { owner: "", profile: { name: "", className: "", teacher: false }, currentStep: 0, fields: {}, checks: {}, hints: [] };
+      let dbPromise;
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+      function slug(value) { return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "student"; }
+      function safeText(value) { return String(value ?? ""); }
+      function escapeHtml(value) { return safeText(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+      function stateKey(owner) { return `${APP_VERSION}:state:${owner}`; }
+      function suggestedFilename() {
+        const firstName = state.profile.teacher ? "TeacherPreview" : (state.profile.name.trim().split(/\s+/)[0] || "Name");
+        const className = state.profile.className || "Class";
+        const tidyName = slug(firstName).replace(/(^|-)([a-z])/g, (_, a, b) => b.toUpperCase());
+        return `W01S03_${tidyName}_${slug(className).toUpperCase()}.pdf`;
+      }
+
+      function saveState() {
+        if (!state.owner) return;
+        localStorage.setItem(stateKey(state.owner), JSON.stringify(state));
+        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify({ owner: state.owner, profile: state.profile }));
+        const label = $("#saveState");
+        if (label) {
+          label.textContent = "Saved on this device";
+          window.clearTimeout(label._timer);
+          label._timer = window.setTimeout(() => { label.textContent = "Saved"; }, 1300);
+        }
+      }
+
+      function loadState(owner, profile) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(stateKey(owner)) || "null");
+          if (saved && saved.owner === owner) {
+            state = { owner, profile, currentStep: Number(saved.currentStep) || 0, fields: saved.fields || {}, checks: saved.checks || {}, hints: Array.isArray(saved.hints) ? saved.hints : [] };
+            return;
+          }
+        } catch (error) { console.warn("Saved lesson data could not be read.", error); }
+        state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
+      }
+
+      function showSavedProfile() {
+        const container = $("#savedProfile");
+        try {
+          const saved = JSON.parse(localStorage.getItem(LAST_PROFILE_KEY) || "null");
+          if (!saved?.profile?.name || saved.profile.teacher) return;
+          container.classList.remove("hidden");
+          container.innerHTML = `<strong>Continue saved work</strong><br>${escapeHtml(saved.profile.name)} · ${escapeHtml(saved.profile.className)}<br><button type="button" id="continueSaved">Continue this lesson</button>`;
+          $("#continueSaved").addEventListener("click", () => startLesson(saved.profile.name, saved.profile.className));
+        } catch (error) { container.classList.add("hidden"); }
+      }
+
+      function applyStateToForm() {
+        $$('[data-field]').forEach((element) => {
+          const key = element.dataset.field;
+          if (Object.prototype.hasOwnProperty.call(state.fields, key)) element.value = state.fields[key];
+          else if (element.value) state.fields[key] = element.value;
+        });
+        $$('[data-check]').forEach((element) => { element.checked = Boolean(state.checks[element.dataset.check]); });
+        state.hints.forEach((hintId) => { const panel = document.getElementById(hintId); if (panel) panel.classList.add("visible"); });
+      }
+
+      function startLesson(name, className) {
+        const cleanName = name.trim();
+        const teacher = cleanName.toLowerCase() === "teacher";
+        const profile = { name: teacher ? "Teacher preview" : cleanName, className: teacher ? "Review mode" : className.trim(), teacher };
+        const owner = teacher ? "teacher-preview" : `${slug(profile.name)}-${slug(profile.className)}`;
+        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; });
+        $$('[data-check]').forEach((element) => { element.checked = false; });
+        $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
+        loadState(owner, profile);
+        applyStateToForm();
+        $("#landing").classList.add("hidden");
+        $("#app").classList.remove("hidden");
+        $("#reviewBanner").classList.toggle("hidden", !teacher);
+        $("#profileLabel").textContent = `${profile.name} · ${profile.className}`;
+        $("#filenamePreview").textContent = suggestedFilename();
+        goToStep(state.currentStep, false);
+        refreshEvidenceLists();
+        updateProgress();
+        saveState();
+      }
+
+      function goToStep(step, shouldScroll = true) {
+        const next = Math.max(0, Math.min(stepNames.length - 1, Number(step)));
+        state.currentStep = next;
+        $$('.activity-step').forEach((section) => section.classList.toggle("active", Number(section.dataset.step) === next));
+        $$('.step-button').forEach((button) => button.classList.toggle("active", Number(button.dataset.step) === next));
+        $("#stepIndicator").textContent = `${stepNames[next]} · Step ${next + 1} of ${stepNames.length}`;
+        saveState(); updateProgress();
+        if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function fieldComplete(key) { return safeText(state.fields[key]).trim().length > 0; }
+      function stepCompletion(index) {
+        if (index === 3) {
+          if (!state.checks.ext_attempted) return { complete: false, optional: true };
+          const keys = ["ext_pseudocode", "ext_expected", "ext_explain"];
+          return { complete: keys.every(fieldComplete), optional: true };
+        }
+        const keys = requiredByStep[index];
+        return { complete: keys.length > 0 && keys.every(fieldComplete), optional: false };
+      }
+      function updateProgress() {
+        const coreSteps = [0, 1, 2, 4];
+        const total = coreSteps.reduce((sum, index) => sum + requiredByStep[index].length, 0);
+        const done = coreSteps.reduce((sum, index) => sum + requiredByStep[index].filter(fieldComplete).length, 0);
+        const percent = Math.round((done / total) * 100);
+        $("#progressBar").style.width = `${percent}%`;
+        $("#progressText").textContent = `${percent}% complete`;
+        $$('.step-button').forEach((button, index) => {
+          const complete = stepCompletion(index).complete;
+          button.classList.toggle("done", complete);
+          $(".step-number", button).textContent = complete ? "✓" : String(index + 1);
+        });
+      }
+
+      function bindFormPersistence() {
+        $$('[data-field]').forEach((element) => {
+          const save = () => { state.fields[element.dataset.field] = element.value; saveState(); updateProgress(); };
+          element.addEventListener("input", save); element.addEventListener("change", save);
+        });
+        $$('[data-check]').forEach((element) => element.addEventListener("change", () => { state.checks[element.dataset.check] = element.checked; saveState(); updateProgress(); }));
+      }
+
+      async function copyCode(targetId, button) {
+        const text = document.getElementById(targetId)?.innerText || "";
+        try { await navigator.clipboard.writeText(text); }
+        catch (error) {
+          const helper = document.createElement("textarea"); helper.value = text; helper.style.position = "fixed"; helper.style.opacity = "0";
+          document.body.appendChild(helper); helper.select(); document.execCommand("copy"); helper.remove();
+        }
+        const previous = button.textContent; button.textContent = "Copied"; window.setTimeout(() => { button.textContent = previous; }, 1200);
+      }
+
+      function openDatabase() {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result; const store = db.createObjectStore(DB_STORE, { keyPath: "id" });
+            store.createIndex("owner", "owner", { unique: false }); store.createIndex("ownerSection", ["owner", "section"], { unique: false });
+          };
+          request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+        });
+        return dbPromise;
+      }
+      async function evidenceFor(section) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const transaction = db.transaction(DB_STORE, "readonly");
+          const request = transaction.objectStore(DB_STORE).index("ownerSection").getAll([state.owner, section]);
+          request.onsuccess = () => resolve(request.result.sort((a, b) => a.created - b.created)); request.onerror = () => reject(request.error);
+        });
+      }
+      async function allEvidence() { const result = {}; for (const section of sectionKeys) result[section] = await evidenceFor(section); return result; }
+      async function putEvidence(record) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => { const t = db.transaction(DB_STORE, "readwrite"); t.objectStore(DB_STORE).put(record); t.oncomplete = resolve; t.onerror = () => reject(t.error); });
+      }
+      async function deleteEvidence(id) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => { const t = db.transaction(DB_STORE, "readwrite"); t.objectStore(DB_STORE).delete(id); t.oncomplete = resolve; t.onerror = () => reject(t.error); });
+      }
+      async function clearOwnerEvidence(owner = state.owner) {
+        const db = await openDatabase();
+        const records = await new Promise((resolve, reject) => {
+          const t = db.transaction(DB_STORE, "readonly"); const request = t.objectStore(DB_STORE).index("owner").getAll(owner);
+          request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+        });
+        const t = db.transaction(DB_STORE, "readwrite"); records.forEach((record) => t.objectStore(DB_STORE).delete(record.id));
+        return new Promise((resolve, reject) => { t.oncomplete = resolve; t.onerror = () => reject(t.error); });
+      }
+      function imageFromFile(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file); const image = new Image();
+          image.onload = () => { URL.revokeObjectURL(url); resolve(image); }; image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Image could not be opened.")); }; image.src = url;
+        });
+      }
+      async function compressImage(file) {
+        const image = await imageFromFile(file); const maxDimension = 1800; const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+        const width = Math.max(1, Math.round(image.naturalWidth * scale)); const height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height; const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff"; context.fillRect(0, 0, width, height); context.drawImage(image, 0, 0, width, height);
+        return canvas.toDataURL("image/jpeg", 0.9);
+      }
+      async function addEvidence(section, files) {
+        const images = [...files].filter((file) => file.type.startsWith("image/"));
+        for (const file of images) {
+          const dataUrl = await compressImage(file);
+          await putEvidence({ id: `${state.owner}:${section}:${Date.now()}:${Math.random().toString(36).slice(2)}`, owner: state.owner, section, name: file.name || "Pasted screenshot", dataUrl, created: Date.now() });
+        }
+        await renderEvidenceList(section);
+      }
+      async function renderEvidenceList(section) {
+        const list = document.querySelector(`[data-evidence-list="${section}"]`); if (!list) return;
+        const records = await evidenceFor(section); list.innerHTML = "";
+        records.forEach((record) => {
+          const item = document.createElement("div"); item.className = "evidence-item";
+          const image = document.createElement("img"); image.src = record.dataUrl; image.alt = `Evidence: ${record.name}`;
+          const caption = document.createElement("div"); caption.className = "evidence-caption";
+          const name = document.createElement("span"); name.textContent = record.name;
+          const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "Remove";
+          remove.addEventListener("click", async () => { await deleteEvidence(record.id); await renderEvidenceList(section); });
+          caption.append(name, remove); item.append(image, caption); list.appendChild(item);
+        });
+      }
+      async function refreshEvidenceLists() { for (const section of sectionKeys) await renderEvidenceList(section); }
+      function bindEvidenceZones() {
+        $$('[data-evidence-input]').forEach((input) => input.addEventListener("change", async () => { await addEvidence(input.dataset.evidenceInput, input.files); input.value = ""; }));
+        $$('[data-evidence-zone]').forEach((zone) => {
+          const section = zone.dataset.evidenceZone;
+          ["dragenter", "dragover"].forEach((name) => zone.addEventListener(name, (event) => { event.preventDefault(); zone.classList.add("dragging"); }));
+          ["dragleave", "drop"].forEach((name) => zone.addEventListener(name, (event) => { event.preventDefault(); zone.classList.remove("dragging"); }));
+          zone.addEventListener("drop", (event) => addEvidence(section, event.dataTransfer.files));
+          zone.addEventListener("paste", (event) => {
+            const files = [...event.clipboardData.items].filter((item) => item.kind === "file" && item.type.startsWith("image/")).map((item) => item.getAsFile()).filter(Boolean);
+            if (files.length) { event.preventDefault(); addEvidence(section, files); }
+          });
+        });
+      }
+
+      function entryValue(key) {
+        if (key === "__hints__") return state.hints.length ? state.hints.join(", ") : "No hints opened";
+        const value = safeText(state.fields[key]).trim(); return value || "Not completed";
+      }
+      function makeReportEntry(label, value, type) {
+        const wrapper = document.createElement("section"); wrapper.className = "report-entry";
+        const heading = document.createElement("h3"); heading.textContent = label;
+        const content = type === "code" ? document.createElement("pre") : document.createElement("p");
+        if (type === "code") content.className = "report-code"; content.textContent = value; wrapper.append(heading, content); return wrapper;
+      }
+      async function buildReport() {
+        saveState(); const evidence = await allEvidence(); const report = $("#printReport"); report.innerHTML = "";
+        const header = document.createElement("header"); header.className = "report-page-header";
+        header.innerHTML = `<p>OxfordAQA International GCSE Computer Science 9210</p><h1>Week 1 Session 3 - From Algorithms to Programs</h1>
+          <div class="report-meta"><p><strong>Student:</strong> ${escapeHtml(state.profile.name)}</p><p><strong>Class:</strong> ${escapeHtml(state.profile.className)}</p><p><strong>Generated:</strong> ${escapeHtml(new Date().toLocaleString())}</p><p><strong>Suggested filename:</strong> ${escapeHtml(suggestedFilename())}</p></div>
+          <div class="report-ksu"><p><strong>WAGBA:</strong> Explain how an algorithm becomes a program and trace an input-process-output solution.</p><p><strong>K:</strong> Algorithm, program, pseudocode, assignment, input and output.</p><p><strong>S:</strong> Identify, compare, trace, translate and test.</p><p><strong>U:</strong> Explain why pseudocode describes logic but cannot be executed.</p><p><strong>AOs:</strong> AO1 knowledge · AO2 application · AO3 analysis, development and testing.</p></div>`;
+        report.appendChild(header);
+        for (const schema of reportSchema) {
+          const section = document.createElement("section"); section.className = "report-section";
+          const title = document.createElement("h2"); title.textContent = schema.title; section.appendChild(title);
+          if (schema.checks) schema.checks.forEach(([label, key]) => section.appendChild(makeReportEntry(label, state.checks[key] ? "Completed" : "Not marked complete")));
+          schema.entries.forEach(([label, key, type]) => section.appendChild(makeReportEntry(label, entryValue(key), type)));
+          const images = evidence[schema.key] || [];
+          if (!images.length) section.appendChild(makeReportEntry("Evidence images", "No image submitted for this section"));
+          else {
+            const evidenceHeading = document.createElement("h3"); evidenceHeading.textContent = "Evidence images"; section.appendChild(evidenceHeading);
+            images.forEach((record, index) => {
+              const figure = document.createElement("figure"); figure.className = "report-evidence";
+              const image = document.createElement("img"); image.src = record.dataUrl; image.alt = `Evidence image ${index + 1} for ${schema.title}`;
+              const caption = document.createElement("figcaption"); caption.textContent = `${schema.title} - ${record.name}`; figure.append(image, caption); section.appendChild(figure);
+            });
+          }
+          report.appendChild(section);
+        }
+        const teams = document.createElement("section"); teams.className = "teams-report";
+        teams.innerHTML = `<h2>Microsoft Teams submission</h2><ol><li>In the print window select <strong>Save as PDF</strong>.</li><li>Save the file as <strong>${escapeHtml(suggestedFilename())}</strong>.</li><li>Open the PDF and check that your answers, code and evidence images are complete.</li><li>Open the correct assignment in Microsoft Teams.</li><li>Select <strong>Add work</strong>, upload this PDF and select <strong>Turn in</strong>.</li></ol><p>If anything is missing, cancel the submission, return to the relevant lesson page and export again.</p>`;
+        report.appendChild(teams);
+        await Promise.all($$("img", report).map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => { image.onload = resolve; image.onerror = resolve; })));
+      }
+      async function exportPdf() {
+        const button = document.activeElement;
+        if (button instanceof HTMLButtonElement) { button.disabled = true; button.dataset.previousText = button.textContent; button.textContent = "Preparing complete report…"; }
+        try { await buildReport(); await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))); window.print(); }
+        finally { if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = button.dataset.previousText || "Export complete PDF"; } }
+      }
+
+      function fillTeacherSamples() {
+        state.fields = { ...state.fields,
+          s_input: 'name = input("Enter your name: ")', s_process: "total = correct_answers * 5", s_output: "print(name, total)", s_prediction: "Aisha 15", s_variables: "name, correct_answers, total", s_actual: "Aisha 15", s_result: "Yes - it matched", s_secure: "I can identify input, processing and output.", s_support: "No support needed in this sample.",
+          m1_algorithm: "An ordered sequence of steps used to solve a problem or complete a task.", m1_program: "An implementation of an algorithm written in a programming language that a computer can execute.", m1_cannot_run: "It is not executable code written in a particular programming language.", m1_reason: "It allows the programmer to check the logic before coding.", m1_identify: "A is the algorithm because it describes the steps. B is the program because it is executable Python.", m1_match: "1 → name input\n2 → correct_answers input\n3 → total calculation\n4 → print output", m1_ipo: "Input: name and correct_answers\nProcessing: multiply by 5\nOutput: name and total", m1_language: "The logical steps are language independent, so the same solution can be translated into different programming languages.",
+          m2_run: "No. Pseudocode represents logic but is not executable Python.", m2_arrow: "Assign the value on the right to the variable on the left.", m2_input_word: "USERINPUT", m2_output_word: "OUTPUT", m2_labels: "Line 1 input\nLine 2 input\nLine 3 processing\nLines 4 and 5 output", m2_trace: "Name = Arun\nCorrectAnswers = 4\nTotal = 20\nOutput = Arun and 20", m2_missing: "CorrectAnswers * 5", m2_purpose: "It obtains a name and number of correct answers, calculates points and outputs the result.", m2_python: 'name = input("Enter your name: ")\ncorrect_answers = int(input("Correct answers: "))\ntotal = correct_answers * 5\nprint(name, total)', m2_actual: "Arun 20", m2_test: "Pass - it matched", m2_comparison: "Both follow the same logic. Python uses executable syntax while pseudocode uses language-independent notation.",
+          ext_pseudocode: "", ext_expected: "24", ext_explain: "", ext_python: "", ext_actual: "", ext_result: "",
+          p_algorithm: "An ordered sequence of steps used to solve a problem.", p_program: "A program is an executable implementation of an algorithm.", p_arrow: "It assigns the value on the right to the variable on the left.", p_classify: "Processing", p_explain: "Tracing predicts values step by step and can reveal logical errors before or during testing.", p_knowledge: "Pseudocode is not executable code.", p_skill: "I traced and translated a short algorithm.", p_understanding: "It uses a representation of logic rather than exact Python syntax.", rating_ao1: "Independent", rating_ao2: "Independent", rating_ao3: "Nearly secure", p_support: "No support needed in this sample."
+        };
+        applyStateToForm(); saveState(); updateProgress();
+      }
+      async function clearCurrentProfile() {
+        if (!window.confirm("Clear all saved responses and evidence for this profile?")) return;
+        localStorage.removeItem(stateKey(state.owner)); await clearOwnerEvidence();
+        const profile = state.profile; const owner = state.owner; state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
+        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; }); $$('[data-check]').forEach((element) => { element.checked = false; }); $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
+        applyStateToForm(); await refreshEvidenceLists(); goToStep(0); saveState();
+      }
+      function exitToLanding() {
+        saveState(); $("#app").classList.add("hidden"); $("#landing").classList.remove("hidden");
+        $("#studentName").value = state.profile.teacher ? "" : state.profile.name; $("#studentClass").value = state.profile.teacher ? "" : state.profile.className; showSavedProfile();
+      }
+      function bindEvents() {
+        $("#entryForm").addEventListener("submit", (event) => {
+          event.preventDefault(); const name = $("#studentName").value.trim(); const className = $("#studentClass").value.trim(); const teacher = name.toLowerCase() === "teacher";
+          if (!name || (!teacher && !className)) { $("#entryError").textContent = "Enter your name and class. Teacher preview only requires the name teacher."; return; }
+          $("#entryError").textContent = ""; startLesson(name, className);
+        });
+        $$('.step-button').forEach((button) => button.addEventListener("click", () => goToStep(button.dataset.step)));
+        $$('.next-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep + 1)));
+        $$('.previous-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep - 1)));
+        $("#returnToStarter").addEventListener("click", () => goToStep(0)); $("#exitButton").addEventListener("click", exitToLanding);
+        $("#quickExport").addEventListener("click", exportPdf); $("#finalExport").addEventListener("click", exportPdf); $("#fillSamples").addEventListener("click", fillTeacherSamples); $("#clearPreview").addEventListener("click", clearCurrentProfile);
+        $$('.copy-button').forEach((button) => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
+        $$('.hint-button').forEach((button) => button.addEventListener("click", () => { const hintId = button.dataset.hint; document.getElementById(hintId).classList.add("visible"); if (!state.hints.includes(hintId)) state.hints.push(hintId); saveState(); }));
+      }
+
+      bindFormPersistence(); bindEvidenceZones(); bindEvents(); showSavedProfile();
+      window.__lessonApp = { buildReport, startLesson, goToStep, getState: () => state };
+    })();
+  </script>
+</body>
+</html>
