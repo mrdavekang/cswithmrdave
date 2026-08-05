@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title description">
+  <title id="title">Digital doorbell flowchart</title>
+  <desc id="description">A four-by-three classroom image showing a complete sequence-based flowchart for a digital doorbell.</desc>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="16" markerHeight="16" refX="15" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L16 8 L0 16 Z" fill="#6B2FB9"/>
+    </marker>
+    <style>
+      .raleway { font-family: Raleway, Arial, sans-serif; }
+      .black { fill: #111111; }
+      .purple { fill: #6B2FB9; }
+      .card { fill: #FFFFFF; stroke: #111111; stroke-width: 4; }
+      .shape { fill: #F4EFF9; stroke: #111111; stroke-width: 4; stroke-linejoin: round; }
+      .arrow { fill: none; stroke: #6B2FB9; stroke-width: 6; stroke-linecap: round; marker-end: url(#arrowhead); }
+      .thin { fill: none; stroke: #111111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="900" fill="#FFFFFF"/>
+  <rect x="24" y="24" width="1152" height="852" rx="18" fill="#FFFFFF" stroke="#111111" stroke-width="4"/>
+
+  <text x="600" y="82" text-anchor="middle" class="raleway black" font-size="51" font-weight="800" letter-spacing="1">DIGITAL DOORBELL FLOWCHART</text>
+  <text x="600" y="124" text-anchor="middle" class="raleway black" font-size="21" font-weight="600" letter-spacing="2">A COMPLETE SEQUENCE-BASED EXAMPLE</text>
+
+  <!-- Flowchart panel -->
+  <rect x="58" y="158" width="700" height="600" rx="22" class="card"/>
+  <rect x="80" y="180" width="190" height="42" rx="21" fill="#6B2FB9"/>
+  <text x="175" y="208" text-anchor="middle" class="raleway" font-size="16" font-weight="800" fill="#FFFFFF">FOLLOW THE ARROWS</text>
+
+  <!-- Start -->
+  <rect x="280" y="190" width="260" height="68" rx="34" class="shape"/>
+  <text x="410" y="233" text-anchor="middle" class="raleway purple" font-size="24" font-weight="800">START</text>
+  <path d="M410 258 V295" class="arrow"/>
+
+  <!-- Input -->
+  <path d="M236 309 H584 L562 385 H214 Z" class="shape"/>
+  <text x="399" y="341" text-anchor="middle" class="raleway black" font-size="19" font-weight="800">DOORBELL BUTTON</text>
+  <text x="399" y="367" text-anchor="middle" class="raleway purple" font-size="19" font-weight="800">IS PRESSED</text>
+  <rect x="89" y="324" width="102" height="42" rx="21" fill="#6B2FB9"/>
+  <text x="140" y="352" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">INPUT</text>
+  <path d="M191 345 H218" fill="none" stroke="#6B2FB9" stroke-width="4" stroke-dasharray="7 7"/>
+  <path d="M399 385 V422" class="arrow"/>
+
+  <!-- Process -->
+  <rect x="236" y="436" width="326" height="78" class="shape"/>
+  <text x="399" y="468" text-anchor="middle" class="raleway black" font-size="19" font-weight="800">RETRIEVE THE</text>
+  <text x="399" y="494" text-anchor="middle" class="raleway purple" font-size="19" font-weight="800">STORED CHIME</text>
+  <rect x="78" y="454" width="113" height="42" rx="21" fill="#6B2FB9"/>
+  <text x="134.5" y="482" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">PROCESS</text>
+  <path d="M191 475 H234" fill="none" stroke="#6B2FB9" stroke-width="4" stroke-dasharray="7 7"/>
+  <path d="M399 514 V551" class="arrow"/>
+
+  <!-- Output -->
+  <path d="M236 565 H584 L562 641 H214 Z" class="shape"/>
+  <text x="399" y="597" text-anchor="middle" class="raleway black" font-size="19" font-weight="800">SPEAKER PLAYS</text>
+  <text x="399" y="623" text-anchor="middle" class="raleway purple" font-size="19" font-weight="800">THE SOUND</text>
+  <rect x="83" y="582" width="108" height="42" rx="21" fill="#6B2FB9"/>
+  <text x="137" y="610" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">OUTPUT</text>
+  <path d="M191 603 H218" fill="none" stroke="#6B2FB9" stroke-width="4" stroke-dasharray="7 7"/>
+  <path d="M399 641 V678" class="arrow"/>
+
+  <!-- End -->
+  <rect x="280" y="692" width="260" height="50" rx="25" class="shape"/>
+  <text x="410" y="725" text-anchor="middle" class="raleway purple" font-size="23" font-weight="800">END</text>
+
+  <!-- Side illustration -->
+  <rect x="607" y="274" width="111" height="111" rx="24" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <circle cx="662.5" cy="329.5" r="27" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+  <circle cx="662.5" cy="329.5" r="14" fill="#6B2FB9"/>
+  <path d="M633 405 H660 L692 379 V431 L660 405 H633 Z" fill="#6B2FB9" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M703 386 Q724 405 703 424" class="thin"/>
+
+  <!-- Explanation panel -->
+  <rect x="790" y="158" width="352" height="600" rx="22" class="card"/>
+  <rect x="790" y="158" width="352" height="84" rx="20" fill="#F4EFF9" stroke="#111111" stroke-width="4"/>
+  <rect x="790" y="218" width="352" height="24" fill="#F4EFF9"/>
+  <text x="966" y="211" text-anchor="middle" class="raleway black" font-size="29" font-weight="800">READ IT LIKE THIS</text>
+
+  <circle cx="843" cy="290" r="24" fill="#6B2FB9"/>
+  <text x="843" y="299" text-anchor="middle" class="raleway" font-size="23" font-weight="800" fill="#FFFFFF">1</text>
+  <text x="885" y="297" class="raleway black" font-size="19" font-weight="800">Begin the algorithm.</text>
+
+  <circle cx="843" cy="372" r="24" fill="#6B2FB9"/>
+  <text x="843" y="381" text-anchor="middle" class="raleway" font-size="23" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="885" y="363" class="raleway black" font-size="19" font-weight="800">Wait for the</text>
+  <text x="885" y="389" class="raleway black" font-size="19" font-weight="800">input event.</text>
+
+  <circle cx="843" cy="454" r="24" fill="#6B2FB9"/>
+  <text x="843" y="463" text-anchor="middle" class="raleway" font-size="23" font-weight="800" fill="#FFFFFF">3</text>
+  <text x="885" y="445" class="raleway black" font-size="19" font-weight="800">Process the input</text>
+  <text x="885" y="471" class="raleway black" font-size="19" font-weight="800">using stored steps.</text>
+
+  <circle cx="843" cy="536" r="24" fill="#6B2FB9"/>
+  <text x="843" y="545" text-anchor="middle" class="raleway" font-size="23" font-weight="800" fill="#FFFFFF">4</text>
+  <text x="885" y="527" class="raleway black" font-size="19" font-weight="800">Produce a sound</text>
+  <text x="885" y="553" class="raleway black" font-size="19" font-weight="800">as the output.</text>
+
+  <circle cx="843" cy="618" r="24" fill="#6B2FB9"/>
+  <text x="843" y="627" text-anchor="middle" class="raleway" font-size="23" font-weight="800" fill="#FFFFFF">5</text>
+  <text x="885" y="625" class="raleway black" font-size="19" font-weight="800">Finish.</text>
+
+  <line x1="828" y1="674" x2="1104" y2="674" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="966" y="707" text-anchor="middle" class="raleway black" font-size="17" font-weight="700">A flowchart is a visual algorithm.</text>
+  <text x="966" y="732" text-anchor="middle" class="raleway purple" font-size="17" font-weight="800">It is not executable code.</text>
+
+  <!-- Footer takeaway -->
+  <rect x="64" y="786" width="1072" height="56" rx="16" fill="#6B2FB9"/>
+  <text x="600" y="823" text-anchor="middle" class="raleway" font-size="28" font-weight="800" fill="#FFFFFF">START AT THE TOP AND FOLLOW EACH ARROW</text>
+</svg>

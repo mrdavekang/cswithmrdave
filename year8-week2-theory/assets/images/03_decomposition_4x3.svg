@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title description">
+  <title id="title">Decomposition</title>
+  <desc id="description">A four-by-three classroom diagram showing a digital alarm system broken into five smaller subproblems.</desc>
+
+  <defs>
+    <style>
+      .raleway { font-family: Raleway, Arial, sans-serif; }
+      .black { fill: #111111; }
+      .purple { fill: #6B2FB9; }
+      .card { fill: #FFFFFF; stroke: #111111; stroke-width: 4; }
+      .line { fill: none; stroke: #111111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .accent-line { fill: none; stroke: #6B2FB9; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="900" fill="#FFFFFF"/>
+  <rect x="24" y="24" width="1152" height="852" rx="18" fill="#FFFFFF" stroke="#111111" stroke-width="4"/>
+
+  <text x="600" y="82" text-anchor="middle" class="raleway black" font-size="54" font-weight="800" letter-spacing="1">DECOMPOSITION</text>
+  <text x="600" y="124" text-anchor="middle" class="raleway black" font-size="22" font-weight="600" letter-spacing="2">BREAK ONE LARGE PROBLEM INTO SMALLER PARTS</text>
+
+  <!-- Complete system -->
+  <rect x="350" y="158" width="500" height="164" rx="22" fill="#F4EFF9" stroke="#111111" stroke-width="4"/>
+  <circle cx="424" cy="240" r="52" fill="#6B2FB9"/>
+  <path d="M399 253 H449 M406 253 C409 244 410 228 410 218 C410 202 420 194 424 194 C428 194 438 202 438 218 C438 228 439 244 442 253 M416 262 C418 271 430 271 432 262" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M392 215 Q382 240 392 265 M456 215 Q466 240 456 265" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <text x="660" y="220" text-anchor="middle" class="raleway purple" font-size="22" font-weight="800" letter-spacing="2">LARGE PROBLEM</text>
+  <text x="660" y="267" text-anchor="middle" class="raleway black" font-size="26" font-weight="800">DIGITAL ALARM SYSTEM</text>
+
+  <!-- Branch structure -->
+  <path d="M600 322 V374 M146 374 H1054" class="accent-line"/>
+  <path d="M146 374 V414 M373 374 V414 M600 374 V414 M827 374 V414 M1054 374 V414" class="accent-line"/>
+
+  <!-- Card 1 -->
+  <rect x="48" y="414" width="196" height="316" rx="18" class="card"/>
+  <circle cx="146" cy="474" r="38" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <circle cx="146" cy="474" r="17" fill="#6B2FB9"/>
+  <path d="M112 458 Q98 474 112 490 M180 458 Q194 474 180 490" class="line" stroke-width="3"/>
+  <circle cx="146" cy="428" r="18" fill="#6B2FB9"/>
+  <text x="146" y="435" text-anchor="middle" class="raleway" font-size="20" font-weight="800" fill="#FFFFFF">1</text>
+  <text x="146" y="548" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">DETECT</text>
+  <text x="146" y="576" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">AN INPUT</text>
+  <line x1="87" y1="597" x2="205" y2="597" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="146" y="635" text-anchor="middle" class="raleway black" font-size="17">Which sensor or</text>
+  <text x="146" y="661" text-anchor="middle" class="raleway black" font-size="17">button starts it?</text>
+
+  <!-- Card 2 -->
+  <rect x="275" y="414" width="196" height="316" rx="18" class="card"/>
+  <path d="M373 437 L414 478 L373 519 L332 478 Z" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <text x="373" y="490" text-anchor="middle" class="raleway purple" font-size="38" font-weight="800">?</text>
+  <circle cx="373" cy="428" r="18" fill="#6B2FB9"/>
+  <text x="373" y="435" text-anchor="middle" class="raleway" font-size="20" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="373" y="548" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">DECIDE THE</text>
+  <text x="373" y="576" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">RESPONSE</text>
+  <line x1="314" y1="597" x2="432" y2="597" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="373" y="635" text-anchor="middle" class="raleway black" font-size="17">What should happen</text>
+  <text x="373" y="661" text-anchor="middle" class="raleway black" font-size="17">after the input?</text>
+
+  <!-- Card 3 -->
+  <rect x="502" y="414" width="196" height="316" rx="18" class="card"/>
+  <path d="M548 487 H573 L604 462 V510 L573 487 H548 Z" fill="#6B2FB9" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M616 462 Q638 486 616 510 M629 449 Q663 486 629 523" class="line" stroke-width="3"/>
+  <circle cx="600" cy="428" r="18" fill="#6B2FB9"/>
+  <text x="600" y="435" text-anchor="middle" class="raleway" font-size="20" font-weight="800" fill="#FFFFFF">3</text>
+  <text x="600" y="548" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">PRODUCE</text>
+  <text x="600" y="576" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">AN OUTPUT</text>
+  <line x1="541" y1="597" x2="659" y2="597" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="600" y="635" text-anchor="middle" class="raleway black" font-size="17">What will the user</text>
+  <text x="600" y="661" text-anchor="middle" class="raleway black" font-size="17">see or hear?</text>
+
+  <!-- Card 4 -->
+  <rect x="729" y="414" width="196" height="316" rx="18" class="card"/>
+  <rect x="785" y="445" width="84" height="76" rx="7" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <path d="M799 465 l8 8 l14 -17 M799 495 l8 8 l14 -17 M831 465 H855 M831 495 H855" fill="none" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="827" cy="428" r="18" fill="#6B2FB9"/>
+  <text x="827" y="435" text-anchor="middle" class="raleway" font-size="20" font-weight="800" fill="#FFFFFF">4</text>
+  <text x="827" y="548" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">TEST EACH</text>
+  <text x="827" y="576" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">SMALL PART</text>
+  <line x1="768" y1="597" x2="886" y2="597" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="827" y="635" text-anchor="middle" class="raleway black" font-size="17">Does each component</text>
+  <text x="827" y="661" text-anchor="middle" class="raleway black" font-size="17">work correctly?</text>
+
+  <!-- Card 5 -->
+  <rect x="956" y="414" width="196" height="316" rx="18" class="card"/>
+  <path d="M1010 455 h38 v18 c9 -9 24 -2 24 10 s-15 19 -24 10 v24 h-38 v-21 c-9 9 -24 2 -24 -10 s15 -19 24 -10 z" fill="#F4EFF9" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M1050 455 h38 v21 c9 -9 24 -2 24 10 s-15 19 -24 10 v21 h-38 v-24 c-9 9 -24 2 -24 -10 s15 -19 24 -10 z" fill="#6B2FB9" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="1054" cy="428" r="18" fill="#6B2FB9"/>
+  <text x="1054" y="435" text-anchor="middle" class="raleway" font-size="20" font-weight="800" fill="#FFFFFF">5</text>
+  <text x="1054" y="548" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">COMBINE &amp;</text>
+  <text x="1054" y="576" text-anchor="middle" class="raleway black" font-size="22" font-weight="800">IMPROVE</text>
+  <line x1="995" y1="597" x2="1113" y2="597" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="1054" y="635" text-anchor="middle" class="raleway black" font-size="17">How do the smaller</text>
+  <text x="1054" y="661" text-anchor="middle" class="raleway black" font-size="17">parts work together?</text>
+
+  <!-- Footer takeaway -->
+  <rect x="64" y="766" width="1072" height="76" rx="16" fill="#6B2FB9"/>
+  <text x="600" y="815" text-anchor="middle" class="raleway" font-size="29" font-weight="800" fill="#FFFFFF">SMALLER PARTS ARE EASIER TO PLAN • BUILD • TEST • DEBUG</text>
+</svg>

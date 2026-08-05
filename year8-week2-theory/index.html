@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 8 Week 2 Computer Science theory lesson: algorithms, decomposition, input-process-output and flowcharts.">
+  <title>Year 8 Week 2 Theory — Smart Badge Algorithms</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#lessonContent">Skip to lesson content</a>
+
+  <section id="landingPage" class="landing-page" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <p class="eyebrow">YEAR 8 • TERM 1 • WEEK 2 THEORY</p>
+      <h1 id="landingTitle">From Instructions to a Smart Badge Algorithm</h1>
+      <p class="landing-lead">Learn the theory, test your understanding, then design a precise algorithm and flowchart before programming.</p>
+
+      <form id="entryForm" novalidate>
+        <div class="form-grid two-col">
+          <label>
+            <span>Full name</span>
+            <input id="studentName" name="studentName" autocomplete="name" required maxlength="80">
+          </label>
+          <label>
+            <span>Class</span>
+            <input id="studentClass" name="studentClass" autocomplete="organization-title" required maxlength="30" placeholder="e.g. 8T">
+          </label>
+        </div>
+        <p id="entryError" class="validation-message" role="alert"></p>
+        <p id="resumeNotice" class="resume-notice" hidden>Saved progress was found for this student on this device.</p>
+        <button class="button primary large" type="submit">Enter the lesson</button>
+      </form>
+
+      <div class="landing-features" aria-label="Lesson features">
+        <span>60 minutes</span>
+        <span>Autosaves locally</span>
+        <span>PDF evidence report</span>
+      </div>
+    </div>
+  </section>
+
+  <div id="lessonApp" class="app" hidden>
+    <header class="app-header">
+      <div class="brand-block">
+        <p class="eyebrow light">YEAR 8 • WEEK 2 THEORY</p>
+        <h1>Smart Badge Algorithms</h1>
+      </div>
+      <div class="header-actions">
+        <div class="student-chip" aria-label="Current student">
+          <strong id="headerStudentName"></strong>
+          <span id="headerStudentClass"></span>
+        </div>
+        <div id="saveStatus" class="save-status" role="status" aria-live="polite">Saved</div>
+        <button id="headerExportButton" class="button light" type="button">Export progress</button>
+        <button id="learningDrawerButton" class="button light mobile-only" type="button" aria-expanded="false" aria-controls="mobileLearningPanel">Learning</button>
+      </div>
+    </header>
+
+    <div class="progress-strip" aria-label="Overall lesson progress">
+      <div class="progress-label"><span>Overall progress</span><strong id="progressText">0%</strong></div>
+      <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+
+    <div id="mobileLearningPanel" class="mobile-learning-panel" hidden></div>
+
+    <div class="app-layout">
+      <nav class="journey-nav" aria-label="Lesson journey">
+        <h2>Lesson journey</h2>
+        <div id="journeyButtons"></div>
+        <button id="resetButton" class="button danger-outline full-width" type="button">Reset progress</button>
+      </nav>
+
+      <main id="lessonContent" class="lesson-content" tabindex="-1">
+        <section class="lesson-section active" data-section="overview" aria-labelledby="overviewHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">LESSON OVERVIEW</p><h2 id="overviewHeading">Know where today’s learning is going</h2></div>
+            <span class="time-badge">3 minutes</span>
+          </div>
+
+          <div class="callout purpose-callout">
+            <h3>Today’s purpose</h3>
+            <p>You are producing the design blueprint for the Smart Badge project. Today is about planning precise behaviour—not writing the finished program.</p>
+          </div>
+
+          <div class="card-grid three-col">
+            <article class="info-card"><span class="card-number">1</span><h3>Learn</h3><p>Read about algorithms, decomposition, IPO and flowcharts.</p></article>
+            <article class="info-card"><span class="card-number">2</span><h3>Apply</h3><p>Use the theory to plan a purposeful Smart Badge.</p></article>
+            <article class="info-card"><span class="card-number">3</span><h3>Evidence</h3><p>Save your answers and upload your completed flowchart.</p></article>
+          </div>
+
+          <label class="confirm-row"><input type="checkbox" data-track="overview_ready"> <span>I have read the learning information and I am ready to begin.</span></label>
+          <div id="overviewFeedback" class="feedback" hidden></div>
+          <div class="section-actions"><span></span><button id="completeOverview" class="button primary" type="button">Begin the starter</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="starter" aria-labelledby="starterHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">STARTER</p><h2 id="starterHeading">The mixed-up Smart Badge plan</h2></div>
+            <span class="time-badge">8 minutes</span>
+          </div>
+
+          <div class="scenario-panel">
+            <p class="scenario-label">YOUR SCENARIO</p>
+            <h3>You are checking a trainee programmer’s plan</h3>
+            <p>The school wants a simple micro:bit Smart Badge for the Year 8 welcome desk. Before anyone writes code, the plan must describe exactly what the badge will do.</p>
+            <ol class="scenario-requirements">
+              <li>When the badge starts, it displays a welcome icon.</li>
+              <li>It then waits for the visitor to press Button A.</li>
+              <li>After Button A is pressed, it displays the student’s initials.</li>
+            </ol>
+            <p><strong>Your job:</strong> inspect the trainee’s draft, correct its order and remove any vague instructions.</p>
+          </div>
+
+          <figure class="lesson-figure">
+            <button class="image-button" type="button" data-image="assets/images/01_literal_computer_4x3.png" data-alt="A literal computer contrasts an ambiguous instruction with a precise instruction.">
+              <img src="assets/images/01_literal_computer_4x3.png" alt="A literal computer contrasts an ambiguous instruction with a precise instruction.">
+            </button>
+            <figcaption>The picture is a reminder: a computer follows the instruction it receives and cannot guess what the programmer intended.</figcaption>
+          </figure>
+
+          <article class="task-card">
+            <div class="task-title"><span>Task 1</span><h3>Put the trainee’s algorithm in order</h3></div>
+            <p>The four instructions below belong to the Smart Badge scenario. Use the arrow buttons to arrange them from the moment the badge begins until the final output appears.</p>
+            <div class="task-purpose"><strong>Think about:</strong> What must happen before the system can wait for Button A? What can only happen after the button is pressed?</div>
+            <ol id="sequenceList" class="sequence-list" aria-label="Algorithm sequencing task"></ol>
+            <button id="checkStarterSequence" class="button secondary" type="button">Check Task 1</button>
+            <div id="starterSequenceFeedback" class="feedback inline-feedback" hidden></div>
+          </article>
+
+          <article class="task-card">
+            <div class="task-title"><span>Task 2</span><h3>Identify what enters and leaves the system</h3></div>
+            <p>Use the same Smart Badge scenario. An <strong>input</strong> is an event or data entering the system. An <strong>output</strong> is information produced for the user.</p>
+            <fieldset>
+              <legend>Which event is the input that triggers the badge?</legend>
+              <label class="choice"><input type="radio" name="starterInput" value="microbit" data-track="starter_input"> The micro:bit</label>
+              <label class="choice"><input type="radio" name="starterInput" value="button" data-track="starter_input"> Button A is pressed</label>
+              <label class="choice"><input type="radio" name="starterInput" value="initials" data-track="starter_input"> The initials appear</label>
+            </fieldset>
+            <fieldset>
+              <legend>Which two visible results are outputs? Select two.</legend>
+              <label class="choice"><input type="checkbox" value="icon" data-track="starter_outputs"> The welcome icon</label>
+              <label class="choice"><input type="checkbox" value="button" data-track="starter_outputs"> Button A</label>
+              <label class="choice"><input type="checkbox" value="initials" data-track="starter_outputs"> The student’s initials</label>
+              <label class="choice"><input type="checkbox" value="instructions" data-track="starter_outputs"> The stored instructions</label>
+            </fieldset>
+            <button id="checkStarterIpo" class="button secondary" type="button">Check Task 2</button>
+            <div id="starterIpoFeedback" class="feedback inline-feedback" hidden></div>
+          </article>
+
+          <article class="task-card">
+            <div class="task-title"><span>Task 3</span><h3>Decide whether the plan is precise enough</h3></div>
+            <fieldset>
+              <legend>At this stage, the ordered instructions are best described as:</legend>
+              <label class="choice"><input type="radio" name="starterType" value="algorithm" data-track="starter_type"> An algorithm</label>
+              <label class="choice"><input type="radio" name="starterType" value="program" data-track="starter_type"> A finished program</label>
+              <label class="choice"><input type="radio" name="starterType" value="output" data-track="starter_type"> An output device</label>
+            </fieldset>
+            <label><span>The trainee wrote: “Display something nice.” Rewrite this as one precise Smart Badge instruction.</span><textarea data-track="starter_improvement" rows="3" maxlength="500" placeholder="State exactly what should be displayed and when."></textarea></label>
+            <button id="checkStarterPrecision" class="button secondary" type="button">Check Task 3</button>
+            <div id="starterPrecisionFeedback" class="feedback inline-feedback" hidden></div>
+          </article>
+
+          <div id="starterCompletionFeedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="overview" type="button">Back</button><button id="completeStarter" class="button primary" type="button">Complete starter</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="activity1" aria-labelledby="activity1Heading">
+          <div class="section-heading">
+            <div><p class="stage-label">MAIN ACTIVITY 1</p><h2 id="activity1Heading">From a problem to an algorithm</h2></div>
+            <span class="time-badge">17 minutes</span>
+          </div>
+
+          <div class="reading-hub" aria-labelledby="a1ReadingTitle">
+            <div>
+              <p class="reading-label">LIGHT READING</p>
+              <h3 id="a1ReadingTitle">Open both short readings before attempting the checks</h3>
+              <p>Each reading introduces one part of the theory you will apply to the Smart Badge. A tick appears after you open it.</p>
+            </div>
+            <div class="reading-buttons">
+              <button class="button reading-toggle" type="button" data-reading-key="a1_read_algorithms" data-reading-panel="a1ReadingAlgorithms" aria-expanded="false">1. Algorithm and program <span aria-hidden="true">○</span></button>
+              <button class="button reading-toggle" type="button" data-reading-key="a1_read_decomposition" data-reading-panel="a1ReadingDecomposition" aria-expanded="false">2. Decomposition and IPO <span aria-hidden="true">○</span></button>
+            </div>
+          </div>
+
+          <article id="a1ReadingAlgorithms" class="reading-card reading-panel" hidden>
+            <div class="reading-label">READ 1</div>
+            <h3>What are algorithms and programs?</h3>
+            <p>An <strong>algorithm</strong> is a precise, ordered set of instructions for completing a task or solving a problem. An algorithm can be written as numbered steps, pseudocode, a diagram or a flowchart. It does not have to be computer code.</p>
+            <p>A useful algorithm must be clear enough for another person to follow without guessing. “Put it in the correct place” is unclear because the object and location are not identified. “Move the purple counter into the first square on the left” is precise.</p>
+            <p>A <strong>program</strong> is an algorithm implemented in a programming language that a computer can execute. The algorithm is the plan; the program is one implementation of that plan.</p>
+            <figure class="lesson-figure compact">
+              <button class="image-button" type="button" data-image="assets/images/02_algorithm_vs_program_4x3.svg" data-alt="Diagram comparing an algorithm as a precise plan with a program as executable instructions.">
+                <img src="assets/images/02_algorithm_vs_program_4x3.svg" alt="Diagram comparing an algorithm as a precise plan with a program as executable instructions.">
+              </button>
+            </figure>
+          </article>
+
+          <article id="a1ReadingDecomposition" class="reading-card reading-panel" hidden>
+            <div class="reading-label">READ 2</div>
+            <h3>What are decomposition and IPO?</h3>
+            <p><strong>Decomposition</strong> means breaking a large problem into smaller, manageable subproblems. Each smaller part can be planned and tested separately before the complete system is assembled. This makes complicated problems easier to understand, build, test and debug.</p>
+            <figure class="lesson-figure compact">
+              <button class="image-button" type="button" data-image="assets/images/03_decomposition_4x3.svg" data-alt="A digital alarm system decomposed into five smaller subproblems.">
+                <img src="assets/images/03_decomposition_4x3.svg" alt="A digital alarm system decomposed into five smaller subproblems.">
+              </button>
+            </figure>
+            <p>Many computer systems can be described using <strong>input–process–output</strong>. Input is data or an event entering the system. Processing is what the system does internally. Output is the information or action produced.</p>
+            <figure class="lesson-figure compact">
+              <button class="image-button" type="button" data-image="assets/images/04_input_process_output_4x3.svg" data-alt="Input-process-output diagram for a digital doorbell.">
+                <img src="assets/images/04_input_process_output_4x3.svg" alt="Input-process-output diagram for a digital doorbell.">
+              </button>
+            </figure>
+          </article>
+
+          <article class="task-card">
+            <div class="task-title"><span>Check</span><h3>Test your theory understanding</h3></div>
+            <p>Check each question separately. Read the feedback directly below it and improve only that answer before moving on.</p>
+
+            <div class="question-block">
+              <p class="question-number">Question 1 — Algorithm</p>
+            <fieldset>
+              <legend>Which is the best definition of an algorithm?</legend>
+              <label class="choice"><input type="radio" name="a1Definition" value="any" data-track="a1_definition"> Any instructions written by a programmer</label>
+              <label class="choice"><input type="radio" name="a1Definition" value="precise" data-track="a1_definition"> A precise, ordered set of steps for solving a problem</label>
+              <label class="choice"><input type="radio" name="a1Definition" value="errorfree" data-track="a1_definition"> A program containing no errors</label>
+            </fieldset>
+              <button id="checkA1Q1" class="button secondary" type="button">Check Question 1</button>
+              <div id="a1q1Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 2 — Algorithm and program</p>
+            <fieldset>
+                <legend>Which statement correctly explains their relationship?</legend>
+                <label class="choice"><input type="radio" name="a1Relationship" value="same" data-track="a1_relationship"> An algorithm and a program are exactly the same thing.</label>
+                <label class="choice"><input type="radio" name="a1Relationship" value="planImplementation" data-track="a1_relationship"> An algorithm is the plan; a program is an implementation written in a programming language.</label>
+                <label class="choice"><input type="radio" name="a1Relationship" value="hardware" data-track="a1_relationship"> An algorithm is hardware; a program is an output device.</label>
+              </fieldset>
+              <button id="checkA1Q2" class="button secondary" type="button">Check Question 2</button>
+              <div id="a1q2Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 3 — Precision</p>
+              <p>A trainee writes: “Make the screen look better.”</p>
+              <label><span>What important details are missing?</span><textarea data-track="a1_why_vague" rows="3" maxlength="500" placeholder="Identify what the computer has not been told."></textarea></label>
+              <label><span>Rewrite it as a precise instruction.</span><textarea data-track="a1_precise_rewrite" rows="3" maxlength="500" placeholder="Name the exact output and when it should appear."></textarea></label>
+              <button id="checkA1Q3" class="button secondary" type="button">Check Question 3</button>
+              <div id="a1q3Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 4 — Decomposition</p>
+              <fieldset>
+              <legend>What does decomposition mean?</legend>
+              <label class="choice"><input type="radio" name="a1Decomposition" value="remove" data-track="a1_decomposition"> Removing all difficult parts</label>
+              <label class="choice"><input type="radio" name="a1Decomposition" value="python" data-track="a1_decomposition"> Turning an algorithm into Python</label>
+              <label class="choice"><input type="radio" name="a1Decomposition" value="break" data-track="a1_decomposition"> Breaking a large problem into smaller subproblems</label>
+            </fieldset>
+              <button id="checkA1Q4" class="button secondary" type="button">Check Question 4</button>
+              <div id="a1q4Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 5 — IPO</p>
+              <p>An automatic hand dryer detects a user’s hands, decides to activate the motor and then blows air.</p>
+              <div class="ipo-grid">
+                <label><span>Input: what enters the system?</span><textarea data-track="a1_dryer_input" rows="3" maxlength="400"></textarea></label>
+                <label><span>Process: what does the system do internally?</span><textarea data-track="a1_dryer_process" rows="3" maxlength="400"></textarea></label>
+                <label><span>Output: what physical result is produced?</span><textarea data-track="a1_dryer_output" rows="3" maxlength="400"></textarea></label>
+              </div>
+              <button id="checkA1Q5" class="button secondary" type="button">Check Question 5</button>
+              <div id="a1q5Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+          </article>
+
+          <article class="task-card mission-card">
+            <div class="task-title"><span>Apply</span><h3>Decompose the Smart Badge brief</h3></div>
+            <div class="scenario-panel compact-scenario">
+              <p class="scenario-label">PROJECT BRIEF</p>
+              <h4>Plan a welcome badge before the practical lesson</h4>
+              <p>You are the project planner for a micro:bit badge used at the Year 8 welcome desk. The finished badge must:</p>
+              <ul class="scenario-requirements">
+                <li>show a welcome icon when it starts;</li>
+                <li>wait for Button A to be pressed;</li>
+                <li>display the student’s initials after the press; and</li>
+                <li>be testable so another student can confirm the order is correct.</li>
+              </ul>
+              <p><strong>What you are producing now:</strong> a decomposition plan. You are separating the large project into smaller problems that can be designed and tested one at a time. You are not writing code yet.</p>
+            </div>
+            <figure class="lesson-figure compact">
+              <button class="image-button" type="button" data-image="assets/images/08_smart_badge_mission_4x3.svg" data-alt="Smart Badge mission showing the brief and planning stages without revealing the solution.">
+                <img src="assets/images/08_smart_badge_mission_4x3.svg" alt="Smart Badge mission showing the brief and planning stages without revealing the solution.">
+              </button>
+            </figure>
+            <h4>Complete each planning area</h4>
+            <p>In each box, describe what that part of the Smart Badge must achieve. Do not write a full solution in every box: focus only on the named subproblem.</p>
+            <div class="form-grid two-col">
+              <label><span>1. Starting display</span><small>Plan what appears as soon as the badge starts.</small><textarea data-track="decomp_start" rows="3" maxlength="500" placeholder="Describe the required starting behaviour."></textarea></label>
+              <label><span>2. Input</span><small>Identify the user event the badge must detect.</small><textarea data-track="decomp_input" rows="3" maxlength="500" placeholder="Describe the event entering the system."></textarea></label>
+              <label><span>3. Processing</span><small>Explain what the system must recognise or decide after the input.</small><textarea data-track="decomp_process" rows="3" maxlength="500" placeholder="Describe what happens internally."></textarea></label>
+              <label><span>4. Output</span><small>State the information that should be visible to the user.</small><textarea data-track="decomp_output" rows="3" maxlength="500" placeholder="Describe the visible result."></textarea></label>
+              <label><span>5. Testing</span><small>Describe a test and the result that would count as success.</small><textarea data-track="decomp_testing" rows="3" maxlength="500" placeholder="State the action, expected result and order."></textarea></label>
+              <label><span>6. Why decomposition helps</span><small>Connect your answer to planning, building, testing or debugging.</small><textarea data-track="decomp_why" rows="3" maxlength="500"></textarea></label>
+            </div>
+            <div class="upload-card">
+              <h4>Evidence for this activity</h4>
+              <p>Your six typed planning responses are the required evidence. If you also sketched or planned elsewhere, you may add one optional screenshot or photograph.</p>
+              <div class="evidence-methods">
+                <label class="button secondary file-button"><span>Choose an image file</span><input id="activity1Upload" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                <button id="pasteActivity1Button" class="button secondary" type="button">Paste screenshot from clipboard</button>
+              </div>
+              <div id="activity1PasteZone" class="paste-zone" tabindex="0" role="button" aria-label="Paste an Activity 1 screenshot here">Click here, then press Ctrl+V or Command+V to paste a copied screenshot.</div>
+              <div id="activity1EvidenceFeedback" class="feedback inline-feedback" hidden></div>
+              <label><span>Evidence caption</span><input data-track="a1_evidence_caption" maxlength="160" placeholder="Describe what the image shows"></label>
+              <div id="activity1Preview" class="upload-preview"></div>
+            </div>
+          </article>
+
+          <div id="activity1Feedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="starter" type="button">Back</button><button id="completeActivity1" class="button primary" type="button">Complete Main Activity 1</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="activity2" aria-labelledby="activity2Heading">
+          <div class="section-heading">
+            <div><p class="stage-label">MAIN ACTIVITY 2</p><h2 id="activity2Heading">Represent the Smart Badge algorithm</h2></div>
+            <span class="time-badge">25 minutes</span>
+          </div>
+
+          <article class="reading-card">
+            <div class="reading-label">READ 3</div>
+            <h3>What is a flowchart?</h3>
+            <p>A <strong>flowchart</strong> is a diagram used to represent an algorithm. Standard shapes and arrows show the order of instructions, inputs, outputs, processes and possible paths. Flowcharts help programmers find missing or unclear steps before writing code.</p>
+            <p>A flowchart is not a finished program. It is a visual plan that can later be implemented using a programming language.</p>
+            <figure class="lesson-figure compact">
+              <button class="image-button" type="button" data-image="assets/images/05_flowchart_symbol_guide_4x3.svg" data-alt="Reference guide to standard flowchart symbols.">
+                <img src="assets/images/05_flowchart_symbol_guide_4x3.svg" alt="Reference guide to standard flowchart symbols.">
+              </button>
+              <figcaption>Keep this symbol guide available while drawing your flowchart.</figcaption>
+            </figure>
+          </article>
+
+          <article class="reading-card">
+            <div class="reading-label">WORKED EXAMPLES</div>
+            <h3>Study two different flowcharts</h3>
+            <p>The first example is a simple sequence. The second includes a decision with labelled Yes and No paths. Neither example gives you the Smart Badge solution.</p>
+            <div class="example-grid">
+              <figure class="lesson-figure compact">
+                <button class="image-button" type="button" data-image="assets/images/06_digital_doorbell_flowchart_4x3.svg" data-alt="Sequence-based digital doorbell flowchart.">
+                  <img src="assets/images/06_digital_doorbell_flowchart_4x3.svg" alt="Sequence-based digital doorbell flowchart.">
+                </button>
+                <figcaption>Sequence: one ordered path from Start to End.</figcaption>
+              </figure>
+              <figure class="lesson-figure compact">
+                <button class="image-button" type="button" data-image="assets/images/07_automatic_light_flowchart_4x3.svg" data-alt="Automatic light flowchart with a decision and a repeat loop.">
+                  <img src="assets/images/07_automatic_light_flowchart_4x3.svg" alt="Automatic light flowchart with a decision and a repeat loop.">
+                </button>
+                <figcaption>Decision: conditions lead to different paths.</figcaption>
+              </figure>
+            </div>
+            <label class="confirm-row"><input type="checkbox" data-track="a2_read"> <span>I have read the flowchart explanation and studied both examples.</span></label>
+          </article>
+
+          <article class="task-card">
+            <div class="task-title"><span>Check</span><h3>Test your flowchart understanding</h3></div>
+            <p>Check each idea separately. Use the symbol guide above when you need to revisit a shape.</p>
+
+            <div class="question-block">
+              <p class="question-number">Question 1 — Start and End</p>
+              <label><span>Which shape represents Start or End?</span><select data-track="a2_symbol_start"><option value="">Choose...</option><option value="rectangle">Rectangle</option><option value="oval">Oval</option><option value="diamond">Diamond</option><option value="parallelogram">Parallelogram</option></select></label>
+              <button id="checkA2Q1" class="button secondary" type="button">Check Question 1</button>
+              <div id="a2q1Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 2 — Input and Output</p>
+              <label><span>Which shape represents entering a name?</span><select data-track="a2_symbol_input"><option value="">Choose...</option><option value="rectangle">Rectangle</option><option value="oval">Oval</option><option value="diamond">Diamond</option><option value="parallelogram">Parallelogram</option></select></label>
+              <button id="checkA2Q2" class="button secondary" type="button">Check Question 2</button>
+              <div id="a2q2Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 3 — Arrows</p>
+              <label><span>What do the arrows communicate to the reader?</span><textarea data-track="a2_arrow_purpose" rows="3" maxlength="400" placeholder="Explain their role in following the algorithm."></textarea></label>
+              <button id="checkA2Q3" class="button secondary" type="button">Check Question 3</button>
+              <div id="a2q3Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 4 — Decisions</p>
+              <label><span>Why should paths leaving a decision be labelled, for example Yes and No?</span><textarea data-track="a2_decision_labels" rows="3" maxlength="400"></textarea></label>
+              <button id="checkA2Q4" class="button secondary" type="button">Check Question 4</button>
+              <div id="a2q4Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+
+            <div class="question-block">
+              <p class="question-number">Question 5 — Flowchart or program?</p>
+              <fieldset>
+                <legend>A computer can normally execute a flowchart directly.</legend>
+                <label class="choice"><input type="radio" name="a2Executable" value="true" data-track="a2_executable"> True</label>
+                <label class="choice"><input type="radio" name="a2Executable" value="false" data-track="a2_executable"> False</label>
+              </fieldset>
+              <label><span>Explain why the flowchart still has to be implemented.</span><textarea data-track="a2_executable_explain" rows="3" maxlength="400"></textarea></label>
+              <button id="checkA2Q5" class="button secondary" type="button">Check Question 5</button>
+              <div id="a2q5Feedback" class="feedback inline-feedback" hidden></div>
+            </div>
+          </article>
+
+          <article class="task-card mission-card">
+            <div class="task-title"><span>Apply</span><h3>Create the Smart Badge blueprint</h3></div>
+            <div class="scenario-panel compact-scenario">
+              <p class="scenario-label">DESIGN MISSION</p>
+              <h4>Turn the project brief into a plan another programmer could implement</h4>
+              <p>The welcome team has approved the Smart Badge idea. Your decomposition identified the smaller problems. Now a programmer needs one complete blueprint that explains the data flow and the exact order of behaviour.</p>
+              <p><strong>Required behaviour:</strong> show a welcome icon at startup, wait for Button A, then show the student’s initials. The programmer must be able to follow your plan without asking what any step means.</p>
+              <p><strong>Your deliverables:</strong> an IPO model, a five-to-seven-step algorithm, a matching flowchart and a short test record.</p>
+            </div>
+
+            <h4>Part A — Complete the IPO model</h4>
+            <p>Describe the same system from three viewpoints. Do not copy the whole scenario into every box.</p>
+            <ul class="instruction-list">
+              <li><strong>Input:</strong> identify the event or data that enters the badge.</li>
+              <li><strong>Process:</strong> explain what the badge detects, stores or decides internally.</li>
+              <li><strong>Output:</strong> state what the user can see on the LED matrix.</li>
+            </ul>
+            <div class="ipo-grid">
+              <label><span>Input</span><textarea data-track="badge_input" rows="4" maxlength="500" placeholder="What event enters the system?"></textarea></label>
+              <label><span>Process</span><textarea data-track="badge_process" rows="4" maxlength="500" placeholder="What happens internally?"></textarea></label>
+              <label><span>Output</span><textarea data-track="badge_output" rows="4" maxlength="500" placeholder="What does the user see?"></textarea></label>
+            </div>
+
+            <h4>Part B — Write the numbered algorithm</h4>
+            <p>Write five to seven precise steps from Start to End. Include the startup output, the waiting/input event, the response output and what happens after the initials appear. Each step should describe one clear action.</p>
+            <div class="algorithm-steps">
+              <label><span>1</span><textarea data-track="algorithm_step_1" rows="2" maxlength="350"></textarea></label>
+              <label><span>2</span><textarea data-track="algorithm_step_2" rows="2" maxlength="350"></textarea></label>
+              <label><span>3</span><textarea data-track="algorithm_step_3" rows="2" maxlength="350"></textarea></label>
+              <label><span>4</span><textarea data-track="algorithm_step_4" rows="2" maxlength="350"></textarea></label>
+              <label><span>5</span><textarea data-track="algorithm_step_5" rows="2" maxlength="350"></textarea></label>
+              <label><span>6</span><textarea data-track="algorithm_step_6" rows="2" maxlength="350" placeholder="Use if needed"></textarea></label>
+            </div>
+
+            <h4>Part C — Draw and upload your flowchart</h4>
+            <p>Translate your numbered algorithm into a visual plan. Draw it on paper or digitally, then compare it line by line with your algorithm. The flowchart should communicate the same behaviour—not a different solution.</p>
+            <div class="success-checklist">
+              <label><input type="checkbox" data-track="flow_start"> Start is shown with an oval.</label>
+              <label><input type="checkbox" data-track="flow_io"> Inputs and outputs use the correct symbol.</label>
+              <label><input type="checkbox" data-track="flow_process"> Processing uses a rectangle.</label>
+              <label><input type="checkbox" data-track="flow_arrows"> Arrows show the correct order.</label>
+              <label><input type="checkbox" data-track="flow_matches"> The flowchart matches my algorithm.</label>
+            </div>
+            <div class="upload-card required-upload">
+              <h4>Required flowchart evidence</h4>
+              <p>Submit one readable screenshot or photograph showing your complete flowchart. You can choose a saved image or paste a screenshot directly from the clipboard.</p>
+              <div class="evidence-methods">
+                <label class="button secondary file-button"><span>Choose an image file</span><input id="flowchartUpload" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                <button id="pasteFlowchartButton" class="button secondary" type="button">Paste screenshot from clipboard</button>
+              </div>
+              <div id="flowchartPasteZone" class="paste-zone" tabindex="0" role="button" aria-label="Paste a flowchart screenshot here">Click here, then press Ctrl+V or Command+V to paste a copied screenshot.</div>
+              <div id="flowchartEvidenceFeedback" class="feedback inline-feedback" hidden></div>
+              <label><span>Evidence caption</span><input data-track="flowchart_caption" maxlength="160" placeholder="Describe what the evidence shows"></label>
+              <div id="flowchartPreview" class="upload-preview"></div>
+            </div>
+
+            <h4>Part D — Peer-test and improve</h4>
+            <p>Ask a partner to trace your plan from Start to End as if they were the computer. If no partner is available, complete a careful self-check. Record the first ambiguity, missing step or successful test they identify.</p>
+            <div class="form-grid two-col">
+              <label><span>Tester’s name or “self-check”</span><input data-track="tester_name" maxlength="80"></label>
+              <label><span>What did the test identify?</span><textarea data-track="peer_feedback" rows="3" maxlength="500"></textarea></label>
+              <label class="span-two"><span>What did you improve, or why was no correction required?</span><textarea data-track="algorithm_improvement" rows="3" maxlength="600"></textarea></label>
+            </div>
+          </article>
+
+          <div id="activity2Feedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="activity1" type="button">Back</button><button id="completeActivity2" class="button primary" type="button">Complete Main Activity 2</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="extension" aria-labelledby="extensionHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">OPTIONAL EXTENSION</p><h2 id="extensionHeading">Compare representations</h2></div>
+            <span class="time-badge optional">Optional</span>
+          </div>
+          <div class="callout"><p>This extension is optional. You can continue to the plenary without completing it.</p></div>
+
+          <article class="task-card">
+            <h3>One solution, three representations</h3>
+            <div class="pseudocode-intro">
+              <h4>New extension idea: what is pseudocode?</h4>
+              <p><strong>Pseudocode</strong> is a structured way of writing an algorithm using readable, code-like language. It is designed for people to understand and plan from; it is not tied to one programming language and is not normally executed directly.</p>
+              <p>This example is for an automatic light, not the Smart Badge:</p>
+              <pre><code>START
+READ light_level
+IF light_level is low THEN
+    DISPLAY "LIGHT ON"
+END IF
+STOP</code></pre>
+              <p>Keywords, indentation and one action per line make the logic easier to follow. You are only comparing representations here; pseudocode is not required in the core lesson.</p>
+            </div>
+            <p>Now compare how numbered instructions, a flowchart and pseudocode communicate the same solution. Consider how easy each format is to read, change, trace and convert into a program.</p>
+            <div class="comparison-grid">
+              <div class="comparison-heading">Representation</div><div class="comparison-heading">Strength</div><div class="comparison-heading">Possible limitation</div>
+              <div class="comparison-label">Numbered instructions</div><textarea aria-label="Numbered instructions strength" data-track="ext_steps_strength" rows="3"></textarea><textarea aria-label="Numbered instructions limitation" data-track="ext_steps_limit" rows="3"></textarea>
+              <div class="comparison-label">Flowchart</div><textarea aria-label="Flowchart strength" data-track="ext_flow_strength" rows="3"></textarea><textarea aria-label="Flowchart limitation" data-track="ext_flow_limit" rows="3"></textarea>
+              <div class="comparison-label">Pseudocode</div><textarea aria-label="Pseudocode strength" data-track="ext_pseudo_strength" rows="3"></textarea><textarea aria-label="Pseudocode limitation" data-track="ext_pseudo_limit" rows="3"></textarea>
+            </div>
+            <label><span>Greater depth: How would you add a Button B behaviour without removing the original Button A behaviour?</span><textarea data-track="ext_button_b" rows="4" maxlength="700"></textarea></label>
+          </article>
+
+          <div id="extensionFeedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="activity2" type="button">Back</button><button id="continueFromExtension" class="button primary" type="button">Save extension and continue</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="plenary" aria-labelledby="plenaryHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">PLENARY</p><h2 id="plenaryHeading">Algorithm exit check</h2></div>
+            <span class="time-badge">5 minutes</span>
+          </div>
+
+          <article class="task-card">
+            <label><span>1. An algorithm is...</span><textarea data-track="plenary_algorithm" rows="3" maxlength="500"></textarea></label>
+            <label><span>2. An algorithm is different from a program because...</span><textarea data-track="plenary_difference" rows="3" maxlength="500"></textarea></label>
+            <p class="question-prompt">3. Describe the Smart Badge using IPO.</p>
+            <div class="ipo-grid">
+              <label><span>Input</span><textarea data-track="plenary_input" rows="3" maxlength="400"></textarea></label>
+              <label><span>Process</span><textarea data-track="plenary_process" rows="3" maxlength="400"></textarea></label>
+              <label><span>Output</span><textarea data-track="plenary_output" rows="3" maxlength="400"></textarea></label>
+            </div>
+            <label><span>4. Improve this instruction: “Make the badge respond.”</span><textarea data-track="plenary_improve" rows="3" maxlength="500"></textarea></label>
+            <label><span>5. One way decomposition helped today was...</span><textarea data-track="plenary_decomposition" rows="3" maxlength="500"></textarea></label>
+            <label><span>6. The LED matrix is an output device because...</span><textarea data-track="plenary_led" rows="3" maxlength="500"></textarea></label>
+            <fieldset>
+              <legend>7. My algorithm is:</legend>
+              <label class="choice"><input type="radio" name="plenaryReadiness" value="ready" data-track="plenary_readiness"> Ready to program</label>
+              <label class="choice"><input type="radio" name="plenaryReadiness" value="nearly" data-track="plenary_readiness"> Nearly ready but needs one correction</label>
+              <label class="choice"><input type="radio" name="plenaryReadiness" value="notready" data-track="plenary_readiness"> Not ready because a step is still missing</label>
+            </fieldset>
+          </article>
+
+          <div id="plenaryFeedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="activity2" type="button">Back</button><button id="completePlenary" class="button primary" type="button">Complete plenary</button></div>
+        </section>
+
+        <section class="lesson-section" data-section="review" aria-labelledby="reviewHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">REVIEW AND EXPORT</p><h2 id="reviewHeading">Review your complete lesson evidence</h2></div>
+            <span class="time-badge">Final step</span>
+          </div>
+
+          <div id="reviewSummary"></div>
+
+          <article class="teams-card">
+            <h3>Microsoft Teams submission</h3>
+            <p>After the PDF downloads, upload it to the Microsoft Teams Assignment named:</p>
+            <div class="teams-assignment">Week 2 Theory</div>
+            <ul>
+              <li>Check that your name and class are visible.</li>
+              <li>Check that the required lesson sections are included.</li>
+              <li>Confirm that the PDF downloaded successfully.</li>
+              <li>Upload the PDF—not a screenshot of the PDF.</li>
+            </ul>
+          </article>
+
+          <div class="export-grid">
+            <button id="finalExportButton" class="button primary large" type="button">Download complete PDF</button>
+            <button id="printButton" class="button secondary" type="button">Print / Save as PDF</button>
+            <button id="backupButton" class="button secondary" type="button">Download progress backup</button>
+            <label class="button secondary file-button">Import progress backup<input id="importBackup" type="file" accept="application/json"></label>
+          </div>
+          <div id="exportFeedback" class="feedback" hidden></div>
+          <div class="section-actions"><button class="button secondary" data-back="plenary" type="button">Return to plenary</button><span></span></div>
+        </section>
+      </main>
+
+      <aside id="desktopLearningPanel" class="learning-panel" aria-label="Learning information"></aside>
+    </div>
+  </div>
+
+  <dialog id="imageDialog" class="image-dialog">
+    <button id="closeImageDialog" class="dialog-close" type="button" aria-label="Close enlarged image">×</button>
+    <img id="dialogImage" alt="">
+  </dialog>
+
+  <template id="learningPanelTemplate">
+    <div class="learning-panel-inner">
+      <p class="eyebrow">LEARNING INFORMATION</p>
+      <h2>Algorithms, decomposition and IPO</h2>
+      <details open><summary>WAGBA</summary><p>We are getting better at representing a precise algorithm and applying input–process–output to a Smart Badge.</p></details>
+      <details><summary>Knowledge</summary><ul><li>Algorithm and program</li><li>Decomposition</li><li>Input, process and output</li><li>Flowchart symbols</li></ul></details>
+      <details><summary>Skills</summary><ul><li>Decompose a problem</li><li>Identify IPO</li><li>Write precise instructions</li><li>Represent and test an algorithm</li></ul></details>
+      <details><summary>Understanding</summary><p>A computer follows the implemented instructions, not the programmer’s intention. Precise planning and testing reveal missing or ambiguous steps.</p></details>
+      <details><summary>Keywords</summary><p class="keyword-list">algorithm • program • sequence • decomposition • abstraction • input • process • output • flowchart • button • LED matrix</p></details>
+      <details><summary>Challenge</summary><p>Represent the same solution using numbered instructions, a flowchart and pseudocode, then compare their strengths.</p></details>
+    </div>
+  </template>
+
+  <script src="libraries/pdf-lib.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

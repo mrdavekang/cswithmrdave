@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title description">
+  <title id="title">Smart Badge mission</title>
+  <desc id="description">A four-by-three classroom mission image showing a student wearing a microbit-style Smart Badge and a project brief that asks students to plan before programming.</desc>
+
+  <defs>
+    <style>
+      .raleway { font-family: Raleway, Arial, sans-serif; }
+      .black { fill: #111111; }
+      .purple { fill: #6B2FB9; }
+      .card { fill: #FFFFFF; stroke: #111111; stroke-width: 4; }
+      .line { fill: none; stroke: #111111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .accent { fill: none; stroke: #6B2FB9; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="900" fill="#FFFFFF"/>
+  <rect x="24" y="24" width="1152" height="852" rx="18" fill="#FFFFFF" stroke="#111111" stroke-width="4"/>
+
+  <text x="600" y="82" text-anchor="middle" class="raleway black" font-size="54" font-weight="800" letter-spacing="1">SMART BADGE MISSION</text>
+  <text x="600" y="124" text-anchor="middle" class="raleway black" font-size="21" font-weight="600" letter-spacing="2">APPLY ALGORITHMS, DECOMPOSITION AND IPO</text>
+
+  <!-- Illustration panel -->
+  <rect x="58" y="158" width="490" height="600" rx="22" fill="#F4EFF9" stroke="#111111" stroke-width="4"/>
+  <rect x="82" y="180" width="176" height="42" rx="21" fill="#6B2FB9"/>
+  <text x="170" y="208" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">PROJECT SCENARIO</text>
+
+  <!-- Student head -->
+  <circle cx="300" cy="312" r="78" fill="#FFFFFF" stroke="#111111" stroke-width="4"/>
+  <path d="M228 301 C228 245 257 224 304 224 C350 224 378 250 375 294 C351 278 328 272 303 273 C277 274 255 284 228 301 Z" fill="#111111"/>
+  <path d="M271 321 Q282 329 293 321 M326 321 Q337 329 348 321" class="line" stroke-width="3"/>
+  <path d="M292 352 Q310 365 330 350" class="accent" stroke-width="4"/>
+  <path d="M300 328 V342" class="line" stroke-width="3"/>
+
+  <!-- Hoodie/body -->
+  <path d="M190 690 C190 552 218 434 300 421 C382 434 410 552 410 690 Z" fill="#FFFFFF" stroke="#111111" stroke-width="4"/>
+  <path d="M246 440 Q300 490 354 440" fill="#F4EFF9" stroke="#111111" stroke-width="4"/>
+  <path d="M260 459 L284 548 M340 459 L316 548" class="accent"/>
+  <path d="M220 545 Q197 582 190 628 M380 545 Q403 582 410 628" class="line"/>
+
+  <!-- Lanyard -->
+  <path d="M255 454 L274 526 M345 454 L326 526" class="accent"/>
+
+  <!-- Smart badge -->
+  <rect x="218" y="516" width="164" height="138" rx="19" fill="#FFFFFF" stroke="#111111" stroke-width="5"/>
+  <rect x="242" y="536" width="116" height="72" rx="10" fill="#111111"/>
+  <!-- 5x5 LED matrix, showing a generic welcome sparkle -->
+  <g fill="#6B2FB9">
+    <circle cx="258" cy="550" r="4"/><circle cx="279" cy="550" r="4"/><circle cx="300" cy="550" r="4"/><circle cx="321" cy="550" r="4"/><circle cx="342" cy="550" r="4"/>
+    <circle cx="258" cy="563" r="4"/><circle cx="279" cy="563" r="4"/><circle cx="300" cy="563" r="5"/><circle cx="321" cy="563" r="4"/><circle cx="342" cy="563" r="4"/>
+    <circle cx="258" cy="576" r="4"/><circle cx="279" cy="576" r="5"/><circle cx="300" cy="576" r="7"/><circle cx="321" cy="576" r="5"/><circle cx="342" cy="576" r="4"/>
+    <circle cx="258" cy="589" r="4"/><circle cx="279" cy="589" r="4"/><circle cx="300" cy="589" r="5"/><circle cx="321" cy="589" r="4"/><circle cx="342" cy="589" r="4"/>
+    <circle cx="258" cy="602" r="4"/><circle cx="279" cy="602" r="4"/><circle cx="300" cy="602" r="4"/><circle cx="321" cy="602" r="4"/><circle cx="342" cy="602" r="4"/>
+  </g>
+  <circle cx="264" cy="630" r="15" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <circle cx="336" cy="630" r="15" fill="#F4EFF9" stroke="#111111" stroke-width="3"/>
+  <text x="264" y="636" text-anchor="middle" class="raleway purple" font-size="15" font-weight="800">A</text>
+  <text x="336" y="636" text-anchor="middle" class="raleway purple" font-size="15" font-weight="800">B</text>
+
+  <!-- Component callouts -->
+  <rect x="84" y="490" width="112" height="40" rx="20" fill="#FFFFFF" stroke="#6B2FB9" stroke-width="3"/>
+  <text x="140" y="517" text-anchor="middle" class="raleway purple" font-size="15" font-weight="800">LED DISPLAY</text>
+  <path d="M196 510 H225 L242 544" class="accent" stroke-width="4"/>
+
+  <rect x="392" y="608" width="112" height="40" rx="20" fill="#FFFFFF" stroke="#6B2FB9" stroke-width="3"/>
+  <text x="448" y="635" text-anchor="middle" class="raleway purple" font-size="15" font-weight="800">BUTTON A</text>
+  <path d="M392 628 H366 L279 630" class="accent" stroke-width="4"/>
+
+  <text x="300" y="722" text-anchor="middle" class="raleway black" font-size="19" font-weight="700">A physical device needs a precise plan.</text>
+
+  <!-- Mission brief panel -->
+  <rect x="580" y="158" width="562" height="600" rx="22" class="card"/>
+  <rect x="580" y="158" width="562" height="86" rx="20" fill="#F4EFF9" stroke="#111111" stroke-width="4"/>
+  <rect x="580" y="220" width="562" height="24" fill="#F4EFF9"/>
+  <circle cx="630" cy="201" r="25" fill="#6B2FB9"/>
+  <path d="M620 201 l8 8 l17 -20" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="861" y="213" text-anchor="middle" class="raleway black" font-size="31" font-weight="800">YOUR MISSION BRIEF</text>
+
+  <text x="622" y="290" class="raleway purple" font-size="20" font-weight="800" letter-spacing="2">DESIGN A SMART BADGE THAT:</text>
+
+  <circle cx="628" cy="337" r="17" fill="#6B2FB9"/>
+  <text x="628" y="344" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">1</text>
+  <text x="662" y="343" class="raleway black" font-size="20" font-weight="700">Displays a welcome icon.</text>
+
+  <circle cx="628" cy="389" r="17" fill="#6B2FB9"/>
+  <text x="628" y="396" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="662" y="395" class="raleway black" font-size="20" font-weight="700">Responds when Button A is pressed.</text>
+
+  <circle cx="628" cy="441" r="17" fill="#6B2FB9"/>
+  <text x="628" y="448" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">3</text>
+  <text x="662" y="447" class="raleway black" font-size="20" font-weight="700">Displays the student’s initials.</text>
+
+  <line x1="622" y1="482" x2="1100" y2="482" stroke="#6B2FB9" stroke-width="4" stroke-linecap="round"/>
+  <text x="622" y="526" class="raleway purple" font-size="20" font-weight="800" letter-spacing="2">PLAN BEFORE YOU PROGRAM</text>
+
+  <rect x="622" y="554" width="218" height="58" rx="13" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+  <circle cx="652" cy="583" r="17" fill="#6B2FB9"/>
+  <text x="652" y="590" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">1</text>
+  <text x="678" y="590" class="raleway black" font-size="18" font-weight="700">Decompose it</text>
+
+  <rect x="862" y="554" width="238" height="58" rx="13" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+  <circle cx="892" cy="583" r="17" fill="#6B2FB9"/>
+  <text x="892" y="590" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="918" y="590" class="raleway black" font-size="18" font-weight="700">Complete the IPO</text>
+
+  <rect x="622" y="630" width="218" height="58" rx="13" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+  <circle cx="652" cy="659" r="17" fill="#6B2FB9"/>
+  <text x="652" y="666" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">3</text>
+  <text x="678" y="666" class="raleway black" font-size="18" font-weight="700">Write the steps</text>
+
+  <rect x="862" y="630" width="238" height="58" rx="13" fill="#FFFFFF" stroke="#111111" stroke-width="3"/>
+  <circle cx="892" cy="659" r="17" fill="#6B2FB9"/>
+  <text x="892" y="666" text-anchor="middle" class="raleway" font-size="17" font-weight="800" fill="#FFFFFF">4</text>
+  <text x="918" y="666" class="raleway black" font-size="18" font-weight="700">Draw the flowchart</text>
+
+  <text x="861" y="725" text-anchor="middle" class="raleway black" font-size="18" font-weight="700">The completed solution is deliberately not shown.</text>
+
+  <!-- Footer takeaway -->
+  <rect x="64" y="786" width="1072" height="56" rx="16" fill="#6B2FB9"/>
+  <text x="600" y="823" text-anchor="middle" class="raleway" font-size="28" font-weight="800" fill="#FFFFFF">TODAY’S MISSION: PLAN THE BEHAVIOUR BEFORE WRITING CODE</text>
+</svg>
