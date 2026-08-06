@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-paced Year 10 OxfordAQA 9210 lesson on data types in algorithms and Python.">
+  <title>Week 2 Session 1 | Choosing Data Types</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#111; --muted:#62676b; --line:#dedede; --soft:#f7f8f7;
+      --green:#00843d; --green-soft:#eaf6ef; --blue:#185abd; --blue-soft:#eef4ff;
+      --amber:#9a5000; --amber-soft:#fff4e7; --purple:#6842a5; --purple-soft:#f4effa;
+      --danger:#b42318; --radius:17px; --shadow:0 14px 38px rgba(17,17,17,.07);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:#fff;font-family:"Raleway",Arial,sans-serif;line-height:1.55}
+    button,input,select,textarea{font:inherit} button{cursor:pointer}.hidden{display:none!important}
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex="0"]:focus-visible{outline:3px solid rgba(24,90,189,.28);outline-offset:2px}
+
+    .landing{min-height:100vh;display:grid;place-items:center;padding:30px 20px;background:radial-gradient(circle at 10% 10%,rgba(0,132,61,.12),transparent 30%),radial-gradient(circle at 90% 85%,rgba(24,90,189,.09),transparent 30%),#fff}
+    .landing-card{width:min(1020px,100%);display:grid;grid-template-columns:1.08fr .92fr;overflow:hidden;border:1px solid var(--line);border-radius:28px;background:#fff;box-shadow:var(--shadow)}
+    .landing-intro{padding:clamp(36px,6vw,72px);background:#101412;color:#fff}.eyebrow{margin:0 0 16px;color:#79d8a2;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .landing h1{margin:0;font-size:clamp(2.45rem,5vw,4.8rem);line-height:.97;letter-spacing:-.055em}.landing-intro>p:not(.eyebrow){margin:24px 0 0;color:#d8dedb;font-size:1.03rem}
+    .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}.pills span{padding:7px 11px;border:1px solid #465149;border-radius:999px;font-size:.76rem;font-weight:700}
+    .landing-form{padding:clamp(30px,5vw,58px);align-self:center}.landing-form h2{margin:0 0 6px;font-size:1.55rem}.landing-form>p{margin:0 0 24px;color:var(--muted)}
+    .field,.question{margin:0 0 17px}.field label,.question-label{display:block;margin:0 0 7px;font-weight:700}.required::after{content:" *";color:var(--danger)}
+    input[type="text"],input[type="number"],select,textarea{width:100%;border:1px solid #bdbdbd;border-radius:11px;background:#fff;color:var(--ink);padding:11px 12px;transition:border-color 140ms,box-shadow 140ms}
+    textarea{min-height:95px;resize:vertical}.code-entry{min-height:190px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;line-height:1.55}
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,90,189,.1)}
+    .primary,.secondary,.ghost,.danger-button{min-height:44px;border-radius:11px;padding:10px 15px;font-weight:800;transition:transform 120ms,background 120ms}
+    .primary{border:1px solid var(--green);background:var(--green);color:#fff}.primary:hover{background:#006f34;transform:translateY(-1px)}
+    .secondary{border:1px solid #202020;background:#fff;color:#111}.ghost{border:1px solid var(--line);background:#fff;color:#333}.secondary:hover,.ghost:hover{background:#f4f4f4}.danger-button{border:1px solid #f4c7c3;background:#fff7f6;color:var(--danger)}.wide{width:100%}
+    .teacher-note,.saved-profile{margin-top:18px;padding:12px 14px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:.86rem}.saved-profile button{margin-top:8px;border:0;background:transparent;color:var(--blue);font-weight:800;padding:0}.error-message{min-height:1.4em;margin:8px 0 0;color:var(--danger);font-size:.86rem;font-weight:700}
+
+    .app-shell{min-height:100vh;background:#fff}.topbar{position:sticky;top:0;z-index:30;display:grid;grid-template-columns:minmax(200px,.8fr) minmax(260px,1.2fr) auto;gap:18px;align-items:center;min-height:72px;padding:10px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.96);backdrop-filter:blur(12px)}
+    .brand{display:grid}.brand strong{font-size:.9rem}.brand span{color:var(--muted);font-size:.76rem}.progress-meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.74rem;font-weight:700}.progress-track{height:7px;margin-top:5px;overflow:hidden;border-radius:999px;background:#eceeec}.progress-bar{width:0;height:100%;border-radius:inherit;background:var(--green);transition:width 180ms}.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}.save-state{color:var(--green);font-size:.72rem;font-weight:800;white-space:nowrap}.review-banner{padding:12px 20px;border-bottom:1px solid #dccdf2;background:var(--purple-soft);color:#3c2760;font-size:.86rem}.review-banner button{min-height:36px;margin-left:8px;padding:6px 10px}
+    .app-layout{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:calc(100vh - 72px)}.sidebar{position:sticky;top:72px;align-self:start;height:calc(100vh - 72px);overflow-y:auto;padding:22px 18px 30px;border-right:1px solid var(--line);background:#fbfbfb}
+    .side-card{margin-bottom:12px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff}.side-card h2,.side-card h3{margin:0 0 7px;font-size:.95rem}.side-card p{margin:5px 0;color:#343434;font-size:.79rem}.ksu-list strong{color:var(--green)}
+    .ao-strip{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.ao-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:.72rem;font-weight:800}.ao1{background:var(--blue-soft);color:#17457c}.ao2{background:var(--green-soft);color:#07522a}.ao3{background:var(--purple-soft);color:#4f327b}
+    .step-nav{display:grid;gap:7px;margin-top:16px}.step-button{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;width:100%;border:1px solid transparent;border-radius:11px;background:transparent;padding:9px;text-align:left}.step-button:hover,.step-button.active{border-color:var(--line);background:#fff}.step-number{display:grid;place-items:center;width:26px;height:26px;border:1px solid #bdbdbd;border-radius:50%;font-size:.72rem;font-weight:800}.step-button.active .step-number{border-color:var(--green);background:var(--green);color:#fff}.step-button.done .step-number{border-color:var(--green);color:var(--green)}.step-name{font-size:.84rem;font-weight:800}.step-time{color:var(--muted);font-size:.68rem}
+
+    .main-content{width:min(1030px,100%);margin:0 auto;padding:38px clamp(20px,5vw,64px) 64px}.activity-step{display:none;animation:enter 180ms ease}.activity-step.active{display:block}@keyframes enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .section-kicker{margin:0 0 7px;color:var(--green);font-size:.78rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.activity-step h1{max-width:820px;margin:0;font-size:clamp(2rem,5vw,3.65rem);line-height:1.03;letter-spacing:-.05em}.section-lead{max-width:790px;margin:15px 0 24px;color:var(--muted);font-size:1rem}
+    .task-card,.reading-card,.challenge-card{margin:16px 0;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:0 8px 24px rgba(17,17,17,.035)}.task-card h2,.task-card h3,.reading-card h2,.reading-card h3,.challenge-card h2,.challenge-card h3{margin:0 0 10px;line-height:1.2}
+    .reading-card{border-left:4px solid var(--blue);background:#fcfdff}.reading-meta{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px;color:var(--muted);font-size:.76rem;font-weight:700}.reading-meta span{padding:4px 8px;border:1px solid #d5e1ef;border-radius:999px;background:#fff}.reading-card p,.reading-card ul{max-width:800px}
+    .type-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}.type-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.type-card strong{display:block;color:var(--green)}.type-card code{font-size:.82rem}
+    .callout{margin:18px 0;padding:14px 16px;border-left:4px solid var(--blue);border-radius:0 12px 12px 0;background:var(--blue-soft);color:#15365f}.callout.green{border-left-color:var(--green);background:var(--green-soft);color:#064d27}.callout.amber{border-left-color:var(--amber);background:var(--amber-soft);color:#6c3900}.callout.purple{border-left-color:var(--purple);background:var(--purple-soft);color:#3f2763}.callout strong{display:block;margin-bottom:3px}
+    .code-wrap{position:relative;margin:14px 0;overflow:hidden;border-radius:14px;background:#121816;color:#edf7f0}.code-wrap pre{margin:0;padding:20px;overflow-x:auto;white-space:pre;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;line-height:1.62}.copy-button{position:absolute;top:10px;right:10px;min-height:32px;border:1px solid #52605a;border-radius:8px;background:#222c28;color:#fff;padding:4px 9px;font-size:.74rem;font-weight:800}
+    .question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.question{margin-top:16px}.question small{display:block;margin-top:5px;color:var(--muted)}
+    .data-table{width:100%;border-collapse:collapse;margin:14px 0}.data-table th,.data-table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.data-table th{font-size:.79rem;background:var(--soft)}.data-table select,.data-table input{min-width:120px}.data-table textarea{min-width:260px;min-height:72px}.instruction-steps{margin:14px 0;padding-left:22px}.instruction-steps li{margin:8px 0}.model-answer{margin:16px 0;padding:18px;border:1px solid #bcdcc9;border-radius:13px;background:var(--green-soft)}.model-answer h3{margin:0 0 10px}.model-answer p{margin:6px 0}.column-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.column-guide div{padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}.column-guide strong{display:block;margin-bottom:5px;color:var(--green)}
+    .challenge-card{counter-increment:challenge}.challenge-card header{display:flex;gap:12px;align-items:flex-start}.challenge-number{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#111;color:#fff;font-weight:800}.challenge-card header div:last-child{min-width:0}.challenge-card .sample{margin:12px 0;padding:12px 14px;border-left:3px solid var(--green);background:var(--green-soft);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}.challenge-card details{margin:12px 0;padding:10px 12px;border:1px solid #ead7bd;border-radius:10px;background:var(--amber-soft)}.challenge-card summary{cursor:pointer;font-weight:800;color:#6c3900}.challenge-level{display:inline-block;margin-top:4px;color:var(--muted);font-size:.76rem;font-weight:700}
+    .evidence-zone{margin-top:14px;padding:22px;border:1.5px dashed #a9ada9;border-radius:14px;background:#fafcfa;text-align:center;transition:background 130ms,border-color 130ms}.evidence-zone.dragging{border-color:var(--green);background:var(--green-soft)}.evidence-zone strong{display:block;margin-bottom:5px}.evidence-zone p{margin:0 0 12px;color:var(--muted);font-size:.85rem}.evidence-zone input{position:absolute;width:1px;height:1px;opacity:0}.evidence-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:14px;text-align:left}.evidence-item{overflow:hidden;border:1px solid var(--line);border-radius:11px;background:#fff}.evidence-item img{display:block;width:100%;height:118px;object-fit:contain;background:#f2f2f2}.evidence-caption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;font-size:.72rem}.evidence-caption span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.evidence-caption button{border:0;background:transparent;color:var(--danger);font-weight:800}
+    .step-footer{display:flex;justify-content:space-between;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}.export-card{margin-top:24px;padding:clamp(22px,4vw,34px);border-radius:20px;background:#101412;color:#fff}.export-card h2{margin:0 0 8px}.export-card p{color:#d4ddd7}.export-card ol{padding-left:20px}.export-card .primary{margin-top:8px;background:#39aa6d;border-color:#39aa6d}.filename{display:block;margin:12px 0;padding:11px 13px;border:1px solid #48524c;border-radius:10px;background:#1c2420;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+    .source-note{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem}.source-note a{color:var(--blue)}.mobile-ksu,.print-report{display:none}
+
+    .report-page-header h1{margin:0 0 5px;font-size:24pt}.report-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin:14px 0 18px}.report-ksu{margin:16px 0;padding:12px;border:1px solid #bbb}.report-ksu p{margin:4px 0}.report-section{break-before:page;page-break-before:always}.report-section:first-of-type{break-before:auto;page-break-before:auto}.report-section h2{margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid #111;font-size:18pt}.report-entry{margin:0 0 13px;break-inside:avoid;page-break-inside:avoid}.report-entry h3{margin:0 0 4px;font-size:10pt}.report-entry p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.report-code{margin:4px 0 0;padding:10px;border:1px solid #bcbcbc;background:#f6f6f6;color:#111;white-space:pre-wrap;overflow-wrap:anywhere;font-size:8.5pt}.report-evidence{margin:15px 0 22px;break-inside:avoid;page-break-inside:avoid}.report-evidence img{display:block;max-width:100%;max-height:230mm;margin:8px auto 2px;border:1px solid #bcbcbc;object-fit:contain}.report-evidence figcaption{font-size:8pt;color:#444;text-align:center}.teams-report{break-before:page;page-break-before:always;padding:14mm;border:2px solid #111}
+
+    @media(max-width:1050px){.type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:980px){.topbar{grid-template-columns:1fr auto}.progress-wrap{grid-column:1/-1;grid-row:2}.save-state{display:none}.app-layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line)}.sidebar .side-card{display:none}.step-nav{display:flex;overflow-x:auto;margin:0;padding-bottom:3px}.step-button{min-width:170px}.mobile-ksu{display:block;margin:0 0 18px}.mobile-ksu summary{cursor:pointer;font-weight:800}}
+    @media(max-width:760px){.landing-card,.question-grid,.column-guide{grid-template-columns:1fr}.landing-intro{padding:36px 28px}.landing-form{padding:30px 26px}.topbar{padding:10px 14px}.top-actions .ghost{display:none}.main-content{padding:28px 17px 44px}.step-footer{flex-direction:column-reverse}.step-footer button{width:100%}.data-table{display:block;overflow-x:auto}.type-grid{grid-template-columns:1fr}}
+    @media print{@page{size:A4 portrait;margin:12mm}body{background:#fff;color:#000;font-family:Arial,sans-serif;font-size:9.5pt}#landing,#app{display:none!important}#printReport{display:block!important}a{color:#000;text-decoration:none}}
+  </style>
+</head>
+<body>
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <div class="landing-intro">
+        <p class="eyebrow">OxfordAQA 9210 · Week 2 Session 1</p>
+        <h1 id="landingTitle">Choosing data types</h1>
+        <p>Read, classify, predict and test how Python stores different values. Your answers, code and evidence will be saved into one complete PDF.</p>
+        <div class="pills"><span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Own Python IDE</span><span>8 optional code challenges</span><span>Complete PDF</span></div>
+      </div>
+      <form id="entryForm" class="landing-form" novalidate>
+        <h2>Enter the lesson</h2><p>Your work is saved only on this device.</p>
+        <div class="field"><label class="required" for="studentName">Name</label><input id="studentName" type="text" autocomplete="name" placeholder="Enter your full name"></div>
+        <div class="field"><label class="required" for="studentClass">Class</label><input id="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A"></div>
+        <button class="primary wide" type="submit">Start lesson</button><p id="entryError" class="error-message" role="alert"></p>
+        <div id="savedProfile" class="saved-profile hidden"></div>
+        <div class="teacher-note"><strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be blank. Every page will be available.</div>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand"><strong>W02S01 · Data types</strong><span id="profileLabel">Student · Class</span></div>
+      <div class="progress-wrap"><div class="progress-meta"><span id="stepIndicator">Starter · Step 1 of 6</span><span id="progressText">0% complete</span></div><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div></div>
+      <div class="top-actions"><span id="saveState" class="save-state" aria-live="polite">Saved on this device</span><button id="quickExport" class="ghost" type="button">Export current work</button><button id="exitButton" class="secondary" type="button">Exit</button></div>
+    </header>
+    <div id="reviewBanner" class="review-banner hidden">Teacher preview is active. All pages are open and preview data is stored separately.<button id="fillSamples" class="secondary" type="button">Fill sample answers</button><button id="clearPreview" class="ghost" type="button">Clear preview</button></div>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Lesson information and navigation">
+        <div class="side-card"><h2>WAGBA</h2><p>Choosing suitable data types and explaining how Python represents different values.</p></div>
+        <div class="side-card ksu-list"><h3>Knowledge · Skills · Understanding</h3><p><strong>K</strong> Integer, real, Boolean, character and string.</p><p><strong>S</strong> Identify, select, predict, test and justify.</p><p><strong>U</strong> Explain why context and notation change how a value is represented.</p><div class="ao-strip"><span class="ao-badge ao1">AO1 recall</span><span class="ao-badge ao2">AO2 apply</span><span class="ao-badge ao3">AO3 analyse</span></div></div>
+        <nav class="step-nav" aria-label="Lesson steps">
+          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">6 min</span></button>
+          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Read</span><span class="step-time">8 min</span></button>
+          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 1</span><span class="step-time">12 min</span></button>
+          <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Main Activity 2</span><span class="step-time">21 min</span></button>
+          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Extension Lab</span><span class="step-time">Optional</span></button>
+          <button class="step-button" data-step="5" type="button"><span class="step-number">6</span><span class="step-name">Plenary</span><span class="step-time">6 min</span></button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <details class="mobile-ksu"><summary>Show WAGBA and K/S/U</summary><p><strong>WAGBA:</strong> Choosing suitable data types and explaining how Python represents different values.</p><p><strong>K:</strong> five specification types. <strong>S:</strong> identify, predict, test and justify. <strong>U:</strong> context and notation affect representation.</p></details>
+
+        <section class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - Same appearance, different data">
+          <p class="section-kicker">Starter · Notice before naming</p><h1>Same appearance, different data</h1><p class="section-lead">Study the five values. Make sensible predictions; you are not expected to know every technical term yet.</p>
+          <div class="task-card"><h2>Do not run these yet</h2><div class="code-wrap"><pre id="starterCode">6
+6.0
+"6"
+True
+"A"</pre><button class="copy-button" data-copy-target="starterCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="s_quotes">Which values contain quotation marks?</label><input id="s_quotes" data-field="s_quotes" data-label="Values containing quotation marks" type="text"></div>
+              <div class="question"><label class="question-label" for="s_calc">Which values could be used directly in a calculation?</label><input id="s_calc" data-field="s_calc" data-label="Values usable directly in a calculation" type="text"></div>
+              <div class="question"><label class="question-label" for="s_yesno">Which value represents a yes/no condition?</label><input id="s_yesno" data-field="s_yesno" data-label="Yes/no value" type="text"></div>
+              <div class="question"><label class="question-label" for="s_difference">Why might <code>6</code>, <code>6.0</code> and <code>"6"</code> be treated differently?</label><textarea id="s_difference" data-field="s_difference" data-label="Initial explanation of 6, 6.0 and quoted 6"></textarea></div>
+            </div>
+          </div>
+          <div class="callout amber"><strong>Starter challenge</strong>Why might a telephone number be stored as text even though it contains digits?</div>
+          <div class="question"><label class="question-label" for="s_phone">Your explanation</label><textarea id="s_phone" data-field="s_phone" data-label="Telephone number challenge"></textarea></div>
+          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to reading</button></div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section-key="reading" data-report-title="Reading - Understanding data types">
+          <p class="section-kicker">Textbook reading · AO1</p><h1>What is a data type?</h1><p class="section-lead">Read carefully before Main Activity 1. The examination vocabulary and Python vocabulary are not always identical.</p>
+          <article class="reading-card"><div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed page 16</span><span>PDF page 20</span><span>Specification 3.2.1</span></div><h2>Student reading</h2>
+            <p>Programs work with values, and values can be stored in variables. A computer needs to know what kind of value it is storing because different kinds of data are represented and processed differently. The category assigned to a value is its <strong>data type</strong>.</p>
+            <div class="type-grid">
+              <div class="type-card"><strong>Integer</strong>Whole number without a decimal point.<br><code>6 · -12 · 250</code></div>
+              <div class="type-card"><strong>Real</strong>Number with a decimal point. Python calls it <code>float</code>.<br><code>6.0 · 19.99</code></div>
+              <div class="type-card"><strong>String</strong>One or more characters inside quotes.<br><code>"Aisha" · "6"</code></div>
+              <div class="type-card"><strong>Boolean</strong>One of two logical values.<br><code>True · False</code></div>
+              <div class="type-card"><strong>Character</strong>One text symbol. Python stores it as a one-character <code>str</code>.<br><code>"A" · "?"</code></div>
+            </div>
+            <div class="callout green"><strong>Exam-to-Python translation</strong>OxfordAQA <em>real</em> = Python <code>float</code>. OxfordAQA <em>character</em> = Python <code>str</code> containing one character.</div>
+          </article>
+          <div class="task-card"><h2>Reading check</h2><div class="question-grid">
+            <div class="question"><label class="question-label" for="r_definition">1. What is a data type?</label><textarea id="r_definition" data-field="r_definition" data-label="Definition of data type"></textarea></div>
+            <div class="question"><label class="question-label" for="r_intreal">2. What is the difference between an integer and a real?</label><textarea id="r_intreal" data-field="r_intreal" data-label="Integer versus real"></textarea></div>
+            <div class="question"><label class="question-label" for="r_string">3. How can you normally recognise a string in Python?</label><textarea id="r_string" data-field="r_string" data-label="Recognising a string"></textarea></div>
+            <div class="question"><label class="question-label" for="r_boolean">4. What are the only two Boolean values?</label><input id="r_boolean" data-field="r_boolean" data-label="Boolean values" type="text"></div>
+            <div class="question"><label class="question-label" for="r_character">5. Why does Python report <code>"A"</code> as <code>str</code>?</label><textarea id="r_character" data-field="r_character" data-label="Character representation in Python"></textarea></div>
+            <div class="question"><label class="question-label" for="r_six">6. Explain why <code>6</code>, <code>6.0</code> and <code>"6"</code> have different types.</label><textarea id="r_six" data-field="r_six" data-label="Explanation of the three six values"></textarea></div>
+          </div></div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Main Activity 1</button></div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section-key="main1" data-report-title="Main Activity 1 - Classify and justify">
+          <p class="section-kicker">Main Activity 1 · AO1 and AO2</p><h1>Classify and justify</h1><p class="section-lead">First learn exactly what each answer column means. Then use the worked example to complete the six scenarios.</p>
+
+          <div class="task-card"><h2>Before you start: understand the three answers</h2><p>For every scenario, you will provide <strong>three separate pieces of information</strong>. They are related, but they are not the same.</p>
+            <div class="column-guide">
+              <div><strong>1. Specification term</strong>The examination word used by OxfordAQA: <em>integer, real, Boolean, character</em> or <em>string</em>.</div>
+              <div><strong>2. Python type</strong>The label Python would display using <code>type()</code>: <code>int</code>, <code>float</code>, <code>bool</code> or <code>str</code>.</div>
+              <div><strong>3. Justification</strong>A sentence explaining what the value represents and why that type is suitable.</div>
+            </div>
+            <div class="callout"><strong>Why are there two sets of names?</strong>OxfordAQA tests general computer-science vocabulary that works across programming languages. Python uses its own shorter, language-specific type names. For example, OxfordAQA says <em>real</em>, while Python reports <code>float</code>.</div>
+          </div>
+
+          <article class="reading-card"><div class="reading-meta"><span>Textbook comparison</span><span>Printed page 16</span><span>PDF page 20</span></div><h2>Compare the textbook examples</h2><p>The textbook uses the following three values to show how punctuation changes the data type:</p>
+            <table class="data-table">
+              <thead><tr><th>Value</th><th>OxfordAQA specification term</th><th>Python <code>type()</code> label</th><th>How we know</th></tr></thead>
+              <tbody>
+                <tr><td><code>6</code></td><td>Integer</td><td><code>int</code></td><td>It is a whole number with no decimal point and no quotation marks.</td></tr>
+                <tr><td><code>6.0</code></td><td>Real</td><td><code>float</code></td><td>It contains a decimal point, even though the digit after it is zero.</td></tr>
+                <tr><td><code>"6"</code></td><td>String</td><td><code>str</code></td><td>The quotation marks make the digit a piece of text rather than a number.</td></tr>
+                <tr><td><code>"B"</code></td><td>Character</td><td><code>str</code></td><td>It is one text character. Python has no separate <code>char</code> type, so it uses a one-character string.</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <div class="task-card"><h2>Follow these four steps</h2>
+            <ol class="instruction-steps">
+              <li><strong>Look at the value.</strong> Check for quotation marks, a decimal point, or the literals <code>True</code>/<code>False</code>.</li>
+              <li><strong>Choose the OxfordAQA term.</strong> Select integer, real, Boolean, character or string.</li>
+              <li><strong>Translate it into Python vocabulary.</strong> Select <code>int</code>, <code>float</code>, <code>bool</code> or <code>str</code>.</li>
+              <li><strong>Justify the choice.</strong> Explain what the value represents and whether it needs arithmetic, decimal precision, text, or a yes/no state.</li>
+            </ol>
+            <div class="model-answer"><h3>Fully worked example: Average time = <code>7.5</code></h3><p><strong>OxfordAQA specification term:</strong> Real</p><p><strong>Python type:</strong> <code>float</code></p><p><strong>Justification:</strong> The value represents a measured amount of time and contains a decimal point, so it needs to store a fractional numerical value.</p></div>
+            <div class="callout green"><strong>Useful sentence frame</strong>I would use the OxfordAQA type ______, which Python calls ______, because the value represents ______ and needs to ______.</div>
+          </div>
+
+          <div class="task-card"><h2>Now complete the six scenarios</h2><p>Complete one row at a time. Use the textbook comparison and worked example above whenever you are unsure.</p>
+            <table class="data-table">
+              <thead><tr><th>Scenario and value</th><th>OxfordAQA specification term</th><th>Python type</th><th>Justification</th></tr></thead>
+              <tbody>
+                <tr><td>Student name<br><code>"Aisha"</code></td><td><select id="m1_name_oxford" data-field="m1_name_oxford" data-label="Student name - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_name_python" data-field="m1_name_python" data-label="Student name - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_name_reason" data-field="m1_name_reason" data-label="Student name - justification" placeholder="What does the value represent, and why is this type suitable?"></textarea></td></tr>
+                <tr><td>Correct answers<br><code>4</code></td><td><select id="m1_score_oxford" data-field="m1_score_oxford" data-label="Correct answers - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_score_python" data-field="m1_score_python" data-label="Correct answers - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_score_reason" data-field="m1_score_reason" data-label="Correct answers - justification" placeholder="What does the value represent, and why is this type suitable?"></textarea></td></tr>
+                <tr><td>Average time<br><code>7.5</code></td><td><select id="m1_time_oxford" data-field="m1_time_oxford" data-label="Average time - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_time_python" data-field="m1_time_python" data-label="Average time - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_time_reason" data-field="m1_time_reason" data-label="Average time - justification" placeholder="Use the model above, but write the reason in your own words."></textarea></td></tr>
+                <tr><td>Work completed<br><code>True</code></td><td><select id="m1_complete_oxford" data-field="m1_complete_oxford" data-label="Work completed - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_complete_python" data-field="m1_complete_python" data-label="Work completed - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_complete_reason" data-field="m1_complete_reason" data-label="Work completed - justification" placeholder="What does the value represent, and why is this type suitable?"></textarea></td></tr>
+                <tr><td>Grade code<br><code>"B"</code></td><td><select id="m1_grade_oxford" data-field="m1_grade_oxford" data-label="Grade code - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_grade_python" data-field="m1_grade_python" data-label="Grade code - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_grade_reason" data-field="m1_grade_reason" data-label="Grade code - justification" placeholder="Why do OxfordAQA and Python use different labels here?"></textarea></td></tr>
+                <tr><td>Telephone number<br><code>"0123456789"</code></td><td><select id="m1_phone_oxford" data-field="m1_phone_oxford" data-label="Telephone number - OxfordAQA term"><option value="">Choose</option><option>Integer</option><option>Real</option><option>Boolean</option><option>Character</option><option>String</option></select></td><td><select id="m1_phone_python" data-field="m1_phone_python" data-label="Telephone number - Python type"><option value="">Choose</option><option>int</option><option>float</option><option>bool</option><option>str</option></select></td><td><textarea id="m1_phone_reason" data-field="m1_phone_reason" data-label="Telephone number - justification" placeholder="Think about arithmetic and the first zero."></textarea></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="task-card"><h2>AO3 challenge</h2><label class="question-label" for="m1_claim">A student says, “Anything containing only digits should be an integer.” Explain why this is incorrect using two examples.</label><textarea id="m1_claim" data-field="m1_claim" data-label="Evaluation of digits-always-integer claim"></textarea></div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Main Activity 2</button></div>
+        </section>
+
+        <section class="activity-step" data-step="3" data-section-key="main2" data-report-title="Main Activity 2 - Predict, run and explain">
+          <p class="section-kicker">Main Activity 2 · AO2 and AO3</p><h1>Predict, run and explain</h1><p class="section-lead">Predict first. Copy the supplied code into your own Python IDE, run it, then compare the actual result with your prediction.</p>
+          <article class="reading-card"><div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed pages 16–17</span><span>PDF pages 20–21</span></div><h2>How Python chooses a type</h2><p>Python normally chooses a type when a value is assigned. Whole-number literals become <code>int</code>; decimal literals become <code>float</code>; quoted values become <code>str</code>; and <code>True</code> or <code>False</code> become <code>bool</code>.</p><ul><li>Adding, subtracting or multiplying integers normally produces an integer.</li><li>If a calculation includes a float, the result is normally a float.</li><li>Ordinary division <code>/</code> produces a float.</li><li><code>input()</code> initially produces a string, even when the user types digits.</li></ul><div class="callout amber"><strong>Scope boundary</strong>Observe the input-string problem today. You will learn type conversion in the later planned session.</div></article>
+          <div class="task-card"><h2>Worked example A: assigned values</h2><div class="code-wrap"><pre id="assignedCode">score = 36
+average_score = 36.0
+student_name = "Aisha"
+completed = True
+grade_code = "B"
+
+print(type(score))
+print(type(average_score))
+print(type(student_name))
+print(type(completed))
+print(type(grade_code))</pre><button class="copy-button" data-copy-target="assignedCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_assigned_prediction">Predict all five Python types before running.</label><textarea id="m2_assigned_prediction" data-field="m2_assigned_prediction" data-label="Assigned-values predictions"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_assigned_actual">Run it. Record the actual output and any correction.</label><textarea id="m2_assigned_actual" data-field="m2_assigned_actual" data-label="Assigned-values actual output"></textarea></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>Worked example B: calculated values</h2><div class="code-wrap"><pre id="calculatedCode">print(36, type(36))
+print(36.0, type(36.0))
+print(36 * 10, type(36 * 10))
+print(36 + 1.0, type(36 + 1.0))
+print(36 / 6, type(36 / 6))</pre><button class="copy-button" data-copy-target="calculatedCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_calc_prediction">Predict each value and type.</label><textarea id="m2_calc_prediction" data-field="m2_calc_prediction" data-label="Calculated-values predictions"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_calc_actual">Record the actual results. Explain the two float results.</label><textarea id="m2_calc_actual" data-field="m2_calc_actual" data-label="Calculated-values results and explanation"></textarea></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>Worked example C: the input surprise</h2><div class="code-wrap"><pre id="inputCode">age = input("Enter your age: ")
+print(age)
+print(type(age))</pre><button class="copy-button" data-copy-target="inputCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_input_prediction">What type do you predict if the user enters <code>15</code>?</label><textarea id="m2_input_prediction" data-field="m2_input_prediction" data-label="Input type prediction"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_input_explain">Run it and explain why Python chose that type.</label><textarea id="m2_input_explain" data-field="m2_input_explain" data-label="Input type result and explanation"></textarea></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>Your evidence</h2><label class="question-label" for="m2_code">Paste your final combined code.</label><textarea id="m2_code" class="code-entry" data-field="m2_code" data-label="Main Activity 2 final code" data-report-type="code" spellcheck="false"></textarea>
+            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0"><strong>Add a clear IDE screenshot</strong><p>Paste an image here, drag it here, or choose an image. The complete image will be included in the PDF.</p><label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" data-evidence-input="main2" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="main2"></div></div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Optional Extension Lab</button></div>
+        </section>
+
+        <section class="activity-step" data-step="4" data-section-key="extension" data-report-title="Extension Lab - MOOC-inspired programming practice">
+          <p class="section-kicker">Extension · Original MOOC-style practice</p><h1>Eight small programming challenges</h1><p class="section-lead">These original exercises use the University of Helsinki MOOC pattern: one focused problem, a clear expected outcome, and progressively harder variations. Complete as many as time allows in your own IDE.</p>
+          <div class="callout purple"><strong>How to work</strong>Read the brief → predict → write or repair the program → run it in your IDE → compare with the sample → paste your final code. Do not worry if you do not finish all eight.</div>
+
+          <article class="challenge-card"><header><span class="challenge-number">1</span><div><h2>Three versions of six</h2><span class="challenge-level">Warm-up · AO1/AO2</span></div></header><p>Create three variables containing <code>6</code>, <code>6.0</code> and <code>"6"</code>. Print each value and its Python type.</p><div class="sample">6 &lt;class 'int'&gt;
+6.0 &lt;class 'float'&gt;
+6 &lt;class 'str'&gt;</div><details><summary>Hint</summary>Use three assignment statements, then <code>print(value, type(value))</code>.</details><label class="question-label" for="e1_code">Your code</label><textarea id="e1_code" class="code-entry" data-field="e1_code" data-label="Extension 1 - Three versions of six" data-report-type="code" spellcheck="false"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">2</span><div><h2>Student profile</h2><span class="challenge-level">Warm-up · AO2</span></div></header><p>Create variables for a student’s name, age, average score and completion status. Choose suitable values and print a four-line profile.</p><div class="sample">Name: Mina
+Age: 15
+Average: 82.5
+Completed: True</div><details><summary>Hint</summary>You need one <code>str</code>, one <code>int</code>, one <code>float</code> and one <code>bool</code>.</details><label class="question-label" for="e2_code">Your code</label><textarea id="e2_code" class="code-entry" data-field="e2_code" data-label="Extension 2 - Student profile" data-report-type="code" spellcheck="false"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">3</span><div><h2>Fix the type mistakes</h2><span class="challenge-level">Debugging · AO2/AO3</span></div></header><p>The intention is to store a name, whole-number score and Boolean completion status. Repair the code.</p><div class="code-wrap"><pre id="fixCode">student_name = Aisha
+score = "18"
+completed = "False"
+
+print(student_name, score, completed)</pre><button class="copy-button" data-copy-target="fixCode" type="button">Copy</button></div><div class="sample">Aisha 18 False</div><details><summary>Hint</summary>Names need quotes; a count does not; Boolean literals use no quotes.</details><label class="question-label" for="e3_code">Corrected code</label><textarea id="e3_code" class="code-entry" data-field="e3_code" data-label="Extension 3 - Corrected type mistakes" data-report-type="code" spellcheck="false"></textarea><label class="question-label" for="e3_explain">Explain all three corrections</label><textarea id="e3_explain" data-field="e3_explain" data-label="Extension 3 - Explanation"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">4</span><div><h2>The telephone-number trap</h2><span class="challenge-level">Scenario · AO2/AO3</span></div></header><p>Store the telephone number <code>0123456789</code> without losing its first zero. Print the number and its type, then explain your choice.</p><div class="sample">0123456789
+&lt;class 'str'&gt;</div><details><summary>Hint</summary>This value identifies something. It is not a quantity used in arithmetic.</details><label class="question-label" for="e4_code">Your code</label><textarea id="e4_code" class="code-entry" data-field="e4_code" data-label="Extension 4 - Telephone number code" data-report-type="code" spellcheck="false"></textarea><label class="question-label" for="e4_explain">Why is this type appropriate?</label><textarea id="e4_explain" data-field="e4_explain" data-label="Extension 4 - Justification"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">5</span><div><h2>Predict the calculation types</h2><span class="challenge-level">Prediction · AO2</span></div></header><p>Write a program that prints the value and type of <code>8 * 5</code>, <code>8 + 0.5</code> and <code>8 / 5</code>. Predict all results before running.</p><label class="question-label" for="e5_prediction">Prediction</label><textarea id="e5_prediction" data-field="e5_prediction" data-label="Extension 5 - Prediction"></textarea><label class="question-label" for="e5_code">Your tested code</label><textarea id="e5_code" class="code-entry" data-field="e5_code" data-label="Extension 5 - Calculation type code" data-report-type="code" spellcheck="false"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">6</span><div><h2>One character, two vocabularies</h2><span class="challenge-level">Specification bridge · AO1/AO3</span></div></header><p>Store a student’s grade code <code>"A"</code>. Print its value, Python type and length. Explain why OxfordAQA calls it a character while Python calls it <code>str</code>.</p><div class="sample">A
+&lt;class 'str'&gt;
+1</div><details><summary>Hint</summary>Use <code>len(grade_code)</code> for the final line.</details><label class="question-label" for="e6_code">Your code</label><textarea id="e6_code" class="code-entry" data-field="e6_code" data-label="Extension 6 - Character code" data-report-type="code" spellcheck="false"></textarea><label class="question-label" for="e6_explain">Your explanation</label><textarea id="e6_explain" data-field="e6_explain" data-label="Extension 6 - Character explanation"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">7</span><div><h2>Explain the TypeError</h2><span class="challenge-level">Debugging · AO3</span></div></header><p>Run the program, read the error, then repair it without using type conversion.</p><div class="code-wrap"><pre id="errorCode">points = "10"
+bonus = 5
+total = points + bonus
+print(total)</pre><button class="copy-button" data-copy-target="errorCode" type="button">Copy</button></div><div class="sample">15</div><details><summary>Hint</summary>The intended value of <code>points</code> is a number used in addition. Change the original literal.</details><label class="question-label" for="e7_code">Corrected code</label><textarea id="e7_code" class="code-entry" data-field="e7_code" data-label="Extension 7 - Corrected TypeError code" data-report-type="code" spellcheck="false"></textarea><label class="question-label" for="e7_explain">Why did the original fail?</label><textarea id="e7_explain" data-field="e7_explain" data-label="Extension 7 - TypeError explanation"></textarea></article>
+
+          <article class="challenge-card"><header><span class="challenge-number">8</span><div><h2>Design a library record</h2><span class="challenge-level">Open scenario · AO2/AO3</span></div></header><p>Create a record using separate variables for a book title, page count, replacement price, availability and shelf code. Use at least four different OxfordAQA data types and print a readable record.</p><div class="sample">Title: The Hobbit
+Pages: 310
+Price: 12.99
+Available: True
+Shelf code: F</div><details><summary>Hint</summary>Plan the five variable names, sample values and types before coding.</details><label class="question-label" for="e8_plan">Variable plan and justifications</label><textarea id="e8_plan" data-field="e8_plan" data-label="Extension 8 - Variable plan"></textarea><label class="question-label" for="e8_code">Your final code</label><textarea id="e8_code" class="code-entry" data-field="e8_code" data-label="Extension 8 - Library record code" data-report-type="code" spellcheck="false"></textarea></article>
+
+          <div class="task-card"><h2>Extension evidence</h2><label class="question-label" for="ext_summary">Which challenges did you complete, and what did you learn?</label><textarea id="ext_summary" data-field="ext_summary" data-label="Extension completion summary"></textarea><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension screenshots</strong><p>Paste, drag or choose one or more complete IDE screenshots.</p><label class="secondary" for="evidenceExtension">Choose images</label><input id="evidenceExtension" data-evidence-input="extension" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="extension"></div></div></div>
+          <div class="source-note">Exercise design is original but informed by the scaffolded, example-led practice style of the <a href="https://programming-26.mooc.fi/part-1/3-more-about-variables/" target="_blank" rel="noopener">University of Helsinki Python Programming MOOC 2026</a>.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Go to plenary</button></div>
+        </section>
+
+        <section class="activity-step" data-step="5" data-section-key="plenary" data-report-title="Plenary - Exit ticket and self-review">
+          <p class="section-kicker">Plenary · AO1, AO2 and AO3</p><h1>Complete, export and submit</h1><p class="section-lead">Answer independently without running Python. Then review your evidence and export the complete lesson PDF.</p>
+          <div class="task-card"><h2>Six-value exit ticket</h2><div class="question-grid">
+            <div class="question"><label class="question-label" for="p_42">Type of <code>42</code></label><select id="p_42" data-field="p_42" data-label="Type of 42"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+            <div class="question"><label class="question-label" for="p_420">Type of <code>42.0</code></label><select id="p_420" data-field="p_420" data-label="Type of 42.0"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+            <div class="question"><label class="question-label" for="p_q42">Type of <code>"42"</code></label><select id="p_q42" data-field="p_q42" data-label="Type of quoted 42"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+            <div class="question"><label class="question-label" for="p_true">Type of <code>True</code></label><select id="p_true" data-field="p_true" data-label="Type of True"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+            <div class="question"><label class="question-label" for="p_qtrue">Type of <code>"True"</code></label><select id="p_qtrue" data-field="p_qtrue" data-label="Type of quoted True"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+            <div class="question"><label class="question-label" for="p_q">OxfordAQA and Python types of <code>"Q"</code></label><select id="p_q" data-field="p_q" data-label="Types of quoted Q"><option value="">Choose</option><option>Integer / int</option><option>Real / float</option><option>String / str</option><option>Boolean / bool</option><option>Character / str</option></select></div>
+          </div></div>
+          <div class="task-card"><h2>Explain and reflect</h2><div class="question-grid">
+            <div class="question"><label class="question-label" for="p_true_difference">Why are <code>True</code> and <code>"True"</code> different?</label><textarea id="p_true_difference" data-field="p_true_difference" data-label="True versus quoted True"></textarea></div>
+            <div class="question"><label class="question-label" for="p_input">What type does <code>input()</code> initially produce?</label><textarea id="p_input" data-field="p_input" data-label="Initial input type"></textarea></div>
+            <div class="question"><label class="question-label" for="p_character">Why is <code>"Q"</code> a character in the specification but <code>str</code> in Python?</label><textarea id="p_character" data-field="p_character" data-label="Character terminology explanation"></textarea></div>
+            <div class="question"><label class="question-label" for="p_wagba">Complete: I am getting better at choosing suitable data types because I can…</label><textarea id="p_wagba" data-field="p_wagba" data-label="WAGBA reflection"></textarea></div>
+            <div class="question"><label class="question-label" for="p_papers">How could data types appear in Paper 1 and Paper 2?</label><textarea id="p_papers" data-field="p_papers" data-label="Paper 1 and Paper 2 connection"></textarea></div>
+            <div class="question"><label class="question-label" for="p_support">What support or further practice do you need?</label><textarea id="p_support" data-field="p_support" data-label="Support needed"></textarea></div>
+          </div></div>
+          <div class="export-card"><h2>Export your complete lesson evidence</h2><p>The PDF includes your profile, every answer, pasted code and all evidence images—even unfinished sections.</p><span id="filenamePreview" class="filename">W02S01_Firstname_Class.pdf</span><ol><li>Select <strong>Export complete PDF</strong>.</li><li>In the print window choose <strong>Save as PDF</strong>.</li><li>Open the saved PDF and check all pages and images.</li><li>Open the correct Microsoft Teams assignment.</li><li>Select <strong>Add work</strong>, upload the PDF and select <strong>Turn in</strong>.</li></ol><button id="finalExport" class="primary" type="button">Export complete PDF</button></div>
+          <div class="source-note">Lesson reading adapted from the OxfordAQA International GCSE Computer Science Student Book, printed pages 16–17. Extension structure informed by the University of Helsinki Python Programming MOOC 2026; all challenge scenarios and wording are original.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button id="returnToStarter" class="ghost" type="button">Return to starter</button></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <article id="printReport" class="print-report" aria-label="Printable complete lesson report"></article>
+
+  <script>
+    (() => {
+      "use strict";
+      const LESSON_ID = "w02s01-data-types-v1";
+      const DB_NAME = "OxfordAQA9210Evidence";
+      const DB_STORE = "images";
+      const stepNames = ["Starter", "Read", "Main Activity 1", "Main Activity 2", "Extension Lab", "Plenary"];
+      const main1Required = ["m1_name_oxford","m1_name_python","m1_name_reason","m1_score_oxford","m1_score_python","m1_score_reason","m1_time_oxford","m1_time_python","m1_time_reason","m1_complete_oxford","m1_complete_python","m1_complete_reason","m1_grade_oxford","m1_grade_python","m1_grade_reason","m1_phone_oxford","m1_phone_python","m1_phone_reason","m1_claim"];
+      const coreRequired = ["s_quotes","s_calc","s_yesno","s_difference","s_phone","r_definition","r_intreal","r_string","r_boolean","r_character","r_six",...main1Required,"m2_assigned_prediction","m2_assigned_actual","m2_calc_prediction","m2_calc_actual","m2_input_prediction","m2_input_explain","m2_code","p_42","p_420","p_q42","p_true","p_qtrue","p_q","p_true_difference","p_input","p_character","p_wagba","p_papers","p_support"];
+      const sectionKeys = ["main2","extension"];
+      let dbPromise;
+      let state = { owner:"", profile:{name:"",className:"",teacher:false}, currentStep:0, fields:{} };
+      const $ = (selector, root=document) => root.querySelector(selector);
+      const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
+      const safe = value => value == null ? "" : String(value);
+      const slug = value => safe(value).trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "student";
+      const ownerFor = (name,className,teacher) => teacher ? "teacher-preview" : `${slug(name)}-${slug(className)}`;
+      const stateKey = owner => `${LESSON_ID}:${owner}`;
+      const escapeHtml = value => safe(value).replace(/[&<>"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[char]);
+      const suggestedFilename = () => `W02S01_${(state.profile.name.split(/\s+/)[0]||"Firstname").replace(/[^a-z0-9_-]/gi,"")}_${(state.profile.className||"Class").replace(/[^a-z0-9_-]/gi,"")}.pdf`;
+
+      function saveState(){localStorage.setItem(stateKey(state.owner),JSON.stringify(state));$("#saveState").textContent="Saved on this device";window.clearTimeout(saveState.timer);saveState.timer=window.setTimeout(()=>{$("#saveState").textContent="All changes saved"},500)}
+      function loadState(owner,profile){try{const loaded=JSON.parse(localStorage.getItem(stateKey(owner))||"null");if(loaded&&loaded.fields)return {...loaded,owner,profile}}catch(error){}return {owner,profile,currentStep:0,fields:{}}}
+      function applyState(){$$('[data-field]').forEach(element=>{element.value=state.fields[element.dataset.field]??""});$("#profileLabel").textContent=state.profile.teacher?"Teacher preview":`${state.profile.name} · ${state.profile.className}`;$("#filenamePreview").textContent=suggestedFilename()}
+      function startLesson(name,className){const teacher=name.trim().toLowerCase()==="teacher";const profile={name:teacher?"Teacher Preview":name,className:teacher?"":className,teacher};const owner=ownerFor(name,className,teacher);state=loadState(owner,profile);localStorage.setItem(`${LESSON_ID}:lastProfile`,JSON.stringify({name,className}));applyState();$("#landing").classList.add("hidden");$("#app").classList.remove("hidden");$("#reviewBanner").classList.toggle("hidden",!teacher);goToStep(state.currentStep||0,false);refreshEvidenceLists();saveState()}
+      function showSavedProfile(){try{const profile=JSON.parse(localStorage.getItem(`${LESSON_ID}:lastProfile`)||"null");if(!profile||!profile.name)return;const box=$("#savedProfile");box.classList.remove("hidden");box.innerHTML=`Continue as <strong>${escapeHtml(profile.name)}</strong>${profile.className?` · ${escapeHtml(profile.className)}`:""}<br>`;const button=document.createElement("button");button.type="button";button.textContent="Use saved profile";button.addEventListener("click",()=>{$("#studentName").value=profile.name;$("#studentClass").value=profile.className||""});box.append(button)}catch(error){}}
+      function goToStep(value,scroll=true){const next=Math.max(0,Math.min(stepNames.length-1,Number(value)||0));state.currentStep=next;$$('.activity-step').forEach(section=>section.classList.toggle("active",Number(section.dataset.step)===next));$$('.step-button').forEach(button=>button.classList.toggle("active",Number(button.dataset.step)===next));$("#stepIndicator").textContent=`${stepNames[next]} · Step ${next+1} of ${stepNames.length}`;saveState();updateProgress();if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
+      function updateProgress(){const done=coreRequired.filter(key=>safe(state.fields[key]).trim()).length;const percent=Math.round(done/coreRequired.length*100);$("#progressBar").style.width=`${percent}%`;$("#progressText").textContent=`${percent}% complete`;const requiredByStep={0:["s_quotes","s_calc","s_yesno","s_difference","s_phone"],1:["r_definition","r_intreal","r_string","r_boolean","r_character","r_six"],2:main1Required,3:["m2_assigned_prediction","m2_assigned_actual","m2_calc_prediction","m2_calc_actual","m2_input_prediction","m2_input_explain","m2_code"],4:[],5:["p_42","p_420","p_q42","p_true","p_qtrue","p_q","p_true_difference","p_input","p_character","p_wagba","p_papers","p_support"]};$$('.step-button').forEach((button,index)=>{const keys=requiredByStep[index];const complete=index===4?Object.keys(state.fields).some(key=>/^e\d_|^ext_/.test(key)&&safe(state.fields[key]).trim()):keys.every(key=>safe(state.fields[key]).trim());button.classList.toggle("done",complete);$(".step-number",button).textContent=complete?"✓":String(index+1)})}
+      function bindPersistence(){$$('[data-field]').forEach(element=>{const save=()=>{state.fields[element.dataset.field]=element.value;saveState();updateProgress()};element.addEventListener("input",save);element.addEventListener("change",save)})}
+      async function copyCode(id,button){const code=document.getElementById(id)?.innerText||"";try{await navigator.clipboard.writeText(code)}catch(error){const helper=document.createElement("textarea");helper.value=code;helper.style.position="fixed";helper.style.opacity="0";document.body.append(helper);helper.select();document.execCommand("copy");helper.remove()}const old=button.textContent;button.textContent="Copied";setTimeout(()=>button.textContent=old,1100)}
+
+      function openDatabase(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>{const db=request.result;const store=db.createObjectStore(DB_STORE,{keyPath:"id"});store.createIndex("owner","owner",{unique:false});store.createIndex("ownerSection",["owner","section"],{unique:false})};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)});return dbPromise}
+      async function recordsFor(section){const db=await openDatabase();return new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,"readonly").objectStore(DB_STORE).index("ownerSection").getAll([state.owner,section]);request.onsuccess=()=>resolve(request.result.sort((a,b)=>a.created-b.created));request.onerror=()=>reject(request.error)})}
+      async function putRecord(record){const db=await openDatabase();return new Promise((resolve,reject)=>{const t=db.transaction(DB_STORE,"readwrite");t.objectStore(DB_STORE).put(record);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
+      async function deleteRecord(id){const db=await openDatabase();return new Promise((resolve,reject)=>{const t=db.transaction(DB_STORE,"readwrite");t.objectStore(DB_STORE).delete(id);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
+      async function clearOwnerEvidence(){const db=await openDatabase();const all=await new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,"readonly").objectStore(DB_STORE).index("owner").getAll(state.owner);request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)});return new Promise((resolve,reject)=>{const t=db.transaction(DB_STORE,"readwrite");all.forEach(record=>t.objectStore(DB_STORE).delete(record.id));t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
+      function imageFromFile(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file);const image=new Image();image.onload=()=>{URL.revokeObjectURL(url);resolve(image)};image.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Image could not be opened"))};image.src=url})}
+      async function compressImage(file){const image=await imageFromFile(file);const scale=Math.min(1,1800/Math.max(image.naturalWidth,image.naturalHeight));const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));const context=canvas.getContext("2d");context.fillStyle="#fff";context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);return canvas.toDataURL("image/jpeg",.9)}
+      async function addEvidence(section,files){for(const file of [...files].filter(file=>file.type.startsWith("image/"))){await putRecord({id:`${state.owner}:${section}:${Date.now()}:${Math.random().toString(36).slice(2)}`,owner:state.owner,section,name:file.name||"Pasted screenshot",dataUrl:await compressImage(file),created:Date.now()})}await renderEvidence(section)}
+      async function renderEvidence(section){const list=$(`[data-evidence-list="${section}"]`);if(!list)return;list.innerHTML="";for(const record of await recordsFor(section)){const item=document.createElement("div");item.className="evidence-item";const image=document.createElement("img");image.src=record.dataUrl;image.alt=`Evidence: ${record.name}`;const caption=document.createElement("div");caption.className="evidence-caption";const name=document.createElement("span");name.textContent=record.name;const remove=document.createElement("button");remove.type="button";remove.textContent="Remove";remove.addEventListener("click",async()=>{await deleteRecord(record.id);await renderEvidence(section)});caption.append(name,remove);item.append(image,caption);list.append(item)}}
+      async function refreshEvidenceLists(){for(const section of sectionKeys)await renderEvidence(section)}
+      function bindEvidence(){$$('[data-evidence-input]').forEach(input=>input.addEventListener("change",async()=>{await addEvidence(input.dataset.evidenceInput,input.files);input.value=""}));$$('[data-evidence-zone]').forEach(zone=>{const section=zone.dataset.evidenceZone;["dragenter","dragover"].forEach(name=>zone.addEventListener(name,event=>{event.preventDefault();zone.classList.add("dragging")}));["dragleave","drop"].forEach(name=>zone.addEventListener(name,event=>{event.preventDefault();zone.classList.remove("dragging")}));zone.addEventListener("drop",event=>addEvidence(section,event.dataTransfer.files));zone.addEventListener("paste",event=>{const files=[...event.clipboardData.items].filter(item=>item.kind==="file"&&item.type.startsWith("image/")).map(item=>item.getAsFile()).filter(Boolean);if(files.length){event.preventDefault();addEvidence(section,files)}})})}
+
+      function reportEntry(label,value,type){const wrapper=document.createElement("section");wrapper.className="report-entry";const heading=document.createElement("h3");heading.textContent=label;const content=type==="code"?document.createElement("pre"):document.createElement("p");if(type==="code")content.className="report-code";content.textContent=safe(value).trim()||"Not completed";wrapper.append(heading,content);return wrapper}
+      async function buildReport(){saveState();const report=$("#printReport");report.innerHTML="";const header=document.createElement("header");header.className="report-page-header";header.innerHTML=`<p>OxfordAQA International GCSE Computer Science 9210</p><h1>Week 2 Session 1 - Choosing Data Types</h1><div class="report-meta"><p><strong>Student:</strong> ${escapeHtml(state.profile.name)}</p><p><strong>Class:</strong> ${escapeHtml(state.profile.className)}</p><p><strong>Generated:</strong> ${escapeHtml(new Date().toLocaleString())}</p><p><strong>Suggested filename:</strong> ${escapeHtml(suggestedFilename())}</p></div><div class="report-ksu"><p><strong>WAGBA:</strong> Choosing suitable data types and explaining how Python represents different values.</p><p><strong>K:</strong> Integer, real, Boolean, character and string.</p><p><strong>S:</strong> Identify, select, predict, test and justify.</p><p><strong>U:</strong> Explain why context and notation change representation.</p><p><strong>AOs:</strong> AO1 recall · AO2 application · AO3 analysis and justification.</p></div>`;report.append(header);
+        for(const section of $$('.activity-step')){const printable=document.createElement("section");printable.className="report-section";const title=document.createElement("h2");title.textContent=section.dataset.reportTitle;printable.append(title);for(const field of $$('[data-field]',section)){printable.append(reportEntry(field.dataset.label||field.id,state.fields[field.dataset.field],field.dataset.reportType))}const evidenceSection=section.dataset.sectionKey;if(sectionKeys.includes(evidenceSection)){const records=await recordsFor(evidenceSection);if(!records.length)printable.append(reportEntry("Evidence images","No image submitted"));for(const [index,record] of records.entries()){const figure=document.createElement("figure");figure.className="report-evidence";const image=document.createElement("img");image.src=record.dataUrl;image.alt=`Evidence image ${index+1}`;const caption=document.createElement("figcaption");caption.textContent=`${section.dataset.reportTitle} - ${record.name}`;figure.append(image,caption);printable.append(figure)}}report.append(printable)}
+        const teams=document.createElement("section");teams.className="teams-report";teams.innerHTML=`<h2>Microsoft Teams submission</h2><ol><li>In the print window choose <strong>Save as PDF</strong>.</li><li>Save the file as <strong>${escapeHtml(suggestedFilename())}</strong>.</li><li>Open the PDF and check that answers, code and evidence images are complete.</li><li>Open the correct assignment in Microsoft Teams.</li><li>Select <strong>Add work</strong>, upload this PDF and select <strong>Turn in</strong>.</li></ol><p>If anything is missing, cancel, return to the relevant page and export again.</p>`;report.append(teams);await Promise.all($$("img",report).map(image=>image.complete?Promise.resolve():new Promise(resolve=>{image.onload=resolve;image.onerror=resolve})))}
+      async function exportPdf(){const button=document.activeElement;if(button instanceof HTMLButtonElement){button.disabled=true;button.dataset.old=button.textContent;button.textContent="Preparing complete report…"}try{await buildReport();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));window.print()}finally{if(button instanceof HTMLButtonElement){button.disabled=false;button.textContent=button.dataset.old||"Export complete PDF"}}}
+
+      function fillTeacherSamples(){const selectAnswers={m1_name_oxford:"String",m1_name_python:"str",m1_score_oxford:"Integer",m1_score_python:"int",m1_time_oxford:"Real",m1_time_python:"float",m1_complete_oxford:"Boolean",m1_complete_python:"bool",m1_grade_oxford:"Character",m1_grade_python:"str",m1_phone_oxford:"String",m1_phone_python:"str",p_42:"Integer / int",p_420:"Real / float",p_q42:"String / str",p_true:"Boolean / bool",p_qtrue:"String / str",p_q:"Character / str"};const textAnswers={m1_name_reason:"A name contains several text characters and is not used in arithmetic.",m1_score_reason:"The value is a whole-number count of correct answers.",m1_time_reason:"The measured time contains a decimal point and may include a fractional value.",m1_complete_reason:"The value represents one of two possible states: completed or not completed.",m1_grade_reason:"OxfordAQA calls one text symbol a character; Python stores it as a one-character string.",m1_phone_reason:"A telephone number is an identifier, is not used in arithmetic and may begin with zero."};$$('[data-field]').forEach(field=>{const key=field.dataset.field;if(field.tagName==="SELECT"){field.value=selectAnswers[key]||field.options[Math.min(1,field.options.length-1)].value;state.fields[key]=field.value}else{const sample=textAnswers[key]||(field.dataset.reportType==="code"?'# Teacher preview sample\nvalue = 6\nprint(value, type(value))':`Teacher preview response for: ${field.dataset.label||field.id}`);field.value=sample;state.fields[key]=sample}});applyState();saveState();updateProgress()}
+      async function clearCurrentProfile(){if(!confirm("Clear all saved responses and evidence for this profile?"))return;localStorage.removeItem(stateKey(state.owner));await clearOwnerEvidence();const profile=state.profile,owner=state.owner;state={owner,profile,currentStep:0,fields:{}};$$('[data-field]').forEach(field=>field.value="");await refreshEvidenceLists();goToStep(0);saveState()}
+      function exitToLanding(){saveState();$("#app").classList.add("hidden");$("#landing").classList.remove("hidden");$("#studentName").value=state.profile.teacher?"":state.profile.name;$("#studentClass").value=state.profile.teacher?"":state.profile.className;showSavedProfile()}
+      function bindEvents(){$("#entryForm").addEventListener("submit",event=>{event.preventDefault();const name=$("#studentName").value.trim(),className=$("#studentClass").value.trim(),teacher=name.toLowerCase()==="teacher";if(!name||(!teacher&&!className)){$("#entryError").textContent="Enter your name and class. Teacher preview only requires the name teacher.";return}$("#entryError").textContent="";startLesson(name,className)});$$('.step-button').forEach(button=>button.addEventListener("click",()=>goToStep(button.dataset.step)));$$('.next-step').forEach(button=>button.addEventListener("click",()=>goToStep(state.currentStep+1)));$$('.previous-step').forEach(button=>button.addEventListener("click",()=>goToStep(state.currentStep-1)));$$('.copy-button').forEach(button=>button.addEventListener("click",()=>copyCode(button.dataset.copyTarget,button)));$("#returnToStarter").addEventListener("click",()=>goToStep(0));$("#exitButton").addEventListener("click",exitToLanding);$("#quickExport").addEventListener("click",exportPdf);$("#finalExport").addEventListener("click",exportPdf);$("#fillSamples").addEventListener("click",fillTeacherSamples);$("#clearPreview").addEventListener("click",clearCurrentProfile)}
+
+      bindPersistence();bindEvidence();bindEvents();showSavedProfile();updateProgress();window.__lessonApp={startLesson,goToStep,buildReport,getState:()=>state};
+    })();
+  </script>
+</body>
+</html>
