@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-paced Year 10 OxfordAQA 9210 lesson on variables, constants, assignment and meaningful identifiers.">
+  <title>Week 2 Session 2 | Variables and Constants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <div class="landing-intro">
+        <p class="eyebrow">OxfordAQA 9210 · Week 2 Session 2</p>
+        <h1 id="landingTitle">Variables and constants</h1>
+        <p>Learn how names store values, decide what should change, and build a short Python program in your own IDE.</p>
+        <div class="pills"><span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Paper 1 + Paper 2</span><span>Own Python IDE</span><span>Complete PDF evidence</span></div>
+      </div>
+      <form id="entryForm" class="landing-form" novalidate>
+        <h2>Enter the lesson</h2>
+        <p>Your work is saved only on this device and browser.</p>
+        <div class="field"><label class="required" for="studentName">Name</label><input id="studentName" type="text" autocomplete="name" placeholder="Enter your full name"></div>
+        <div class="field"><label class="required" for="studentClass">Class</label><input id="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A"></div>
+        <button class="primary wide" type="submit">Start lesson</button>
+        <p id="entryError" class="error-message" role="alert"></p>
+        <div id="savedProfile" class="saved-profile hidden"></div>
+        <div class="teacher-note"><strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be blank; every page will be open.</div>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand"><strong>W02S02 · Variables & constants</strong><span id="profileLabel">Student · Class</span></div>
+      <div class="progress-wrap">
+        <div class="progress-meta"><span id="stepIndicator">Starter · Page 1 of 5</span><span id="progressText">0% complete</span></div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+      <div class="top-actions"><span id="saveState" class="save-state" aria-live="polite">Saved on this device</span><button id="quickExport" class="ghost" type="button">Export PDF</button><button id="exitButton" class="secondary" type="button">Exit</button></div>
+    </header>
+
+    <div id="reviewBanner" class="review-banner hidden">Teacher preview is active. Every page is open and preview data is stored separately.<button id="fillSamples" class="secondary" type="button">Fill sample answers</button><button id="clearPreview" class="ghost" type="button">Clear preview</button></div>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Lesson information and navigation">
+        <div class="side-card wagba-card"><h2>WAGBA</h2><p>Using meaningful identifiers and assignment to store and change values, while distinguishing variables from constants.</p></div>
+        <div class="side-card ksu-list">
+          <h3>Knowledge · Skills · Understanding</h3>
+          <p><strong>K</strong> A variable can change; a constant should remain unchanged; <code>=</code> assigns a value.</p>
+          <p><strong>S</strong> Classify names, predict state, assign and reassign values, write and test code.</p>
+          <p><strong>U</strong> Purpose determines variable or constant; clear names and constants improve maintainability.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 recall</span><span class="ao-badge ao2">AO2 apply</span><span class="ao-badge ao3">AO3 program</span></div>
+        </div>
+        <nav class="step-nav" aria-label="Lesson pages">
+          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">7 min</span></button>
+          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Main Activity 1</span><span class="step-time">20 min</span></button>
+          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 2</span><span class="step-time">22 min</span></button>
+          <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Early finish</span></button>
+          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Plenary & export</span><span class="step-time">8 min</span></button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <details class="mobile-ksu" open><summary>WAGBA and Knowledge · Skills · Understanding</summary><p><strong>WAGBA:</strong> Using meaningful identifiers and assignment to store and change values, while distinguishing variables from constants.</p><p><strong>K:</strong> variables, constants and assignment. <strong>S:</strong> classify, predict, write and test. <strong>U:</strong> purpose determines the role of a name.</p></details>
+
+        <section class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - What changes?">
+          <p class="section-kicker">Starter · First thoughts · AO1/AO2</p>
+          <h1>What changes—and what stays fixed?</h1>
+          <p class="section-lead">Work independently. Make sensible predictions; today’s vocabulary will be taught after you answer.</p>
+          <div class="time-chip">Target: 7 minutes</div>
+          <div class="task-card">
+            <h2>Five quick questions</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="s_type">1. What data type is <code>"10"</code>?</label><input id="s_type" data-field="s_type" data-label="Type of quoted 10" type="text" placeholder="Write the OxfordAQA or Python term"></div>
+              <div class="question"><label class="question-label" for="s_best_name">2. Best name for a student’s score: <code>x</code>, <code>s</code> or <code>student_score</code>? Why?</label><textarea id="s_best_name" data-field="s_best_name" data-label="Best identifier and reason"></textarea></div>
+              <div class="question"><label class="question-label" for="s_valid">3. Which identifiers are valid: <code>player_name</code>, <code>2score</code>, <code>first name</code>, <code>level3</code>?</label><input id="s_valid" data-field="s_valid" data-label="Valid identifiers" type="text"></div>
+              <div class="question"><label class="question-label" for="s_predict">4. Predict the output.</label><div class="code-wrap compact"><pre id="starterCode">score = 5
+score = 8
+print(score)</pre><button class="copy-button" data-copy-target="starterCode" type="button">Copy</button></div><input id="s_predict" data-field="s_predict" data-label="Starter output prediction" type="text"></div>
+              <div class="question full"><label class="question-label" for="s_changed">5. In the program above, what changed: the identifier or the value stored by it?</label><textarea id="s_changed" data-field="s_changed" data-label="What changed in the starter program"></textarea></div>
+            </div>
+          </div>
+          <div class="callout green"><strong>Today’s objective</strong>To create, run and explain a short Python program that uses variables, constants, assignment and meaningful identifiers.</div>
+          <div class="paper-strip"><div><strong>Paper 1</strong><span>Read, write, run and change Python code.</span></div><div><strong>Paper 2</strong><span>Define, distinguish, predict and explain.</span></div></div>
+          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main Activity 1</button></div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section-key="main1" data-report-title="Main Activity 1 - Build confidence">
+          <p class="section-kicker">Main Activity 1 · Learn, classify and justify · AO1/AO2</p>
+          <h1>Build confidence with names and roles</h1>
+          <p class="section-lead">Read the short teaching notes first. Then complete the confidence ladder from simple identification to explanation.</p>
+          <div class="time-chip">Target: 20 minutes</div>
+
+          <article class="reading-card">
+            <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed pages 6–7 and 22</span><span>Specification 3.2.1</span></div>
+            <h2>Reading: named storage</h2>
+            <p>A <strong>variable</strong> is a named storage location whose value can change while a program runs. An <strong>assignment statement</strong> stores a value using <code>=</code>. In Python, the first assignment creates the variable; a later assignment can replace its stored value.</p>
+            <p>A <strong>constant</strong> is a named value that should not change while the program runs. Python does not enforce constants, so programmers use <code>UPPERCASE_SNAKE_CASE</code> to communicate “do not change this”. Variables normally use <code>lowercase_snake_case</code>.</p>
+            <p>Identifiers should start with a letter, contain only letters, numbers and underscores, have no spaces, and describe their purpose.</p>
+          </article>
+
+          <div class="visual-grid two">
+            <figure class="lesson-visual" tabindex="0"><img src="assets/image-01-named-storage.png" alt="Named storage diagram showing identifiers attached to stored values"><figcaption>Visual 1 · An identifier labels stored data. Select to enlarge.</figcaption></figure>
+            <figure class="lesson-visual" tabindex="0"><img src="assets/image-02-assignment-flow.png" alt="Assignment flow showing a value moving into a named storage location"><figcaption>Visual 2 · Assignment stores or replaces a value.</figcaption></figure>
+          </div>
+
+          <div class="task-card">
+            <h2>Worked example</h2>
+            <div class="code-wrap"><pre id="workedCode">player_score = 12</pre><button class="copy-button" data-copy-target="workedCode" type="button">Copy</button></div>
+            <div class="worked-grid"><div><strong>Identifier</strong><code>player_score</code></div><div><strong>Stored value</strong><code>12</code></div><div><strong>Data type</strong>Integer / <code>int</code></div><div><strong>Role</strong>Variable, because the score may change</div></div>
+          </div>
+
+          <div class="visual-grid two">
+            <figure class="lesson-visual" tabindex="0"><img src="assets/image-03-variable-vs-constant.png" alt="Comparison of a changing variable and a fixed constant"><figcaption>Visual 3 · The program purpose determines the role.</figcaption></figure>
+            <figure class="lesson-visual" tabindex="0"><img src="assets/image-04-identifier-rules.png" alt="Valid and invalid Python identifier rules with examples"><figcaption>Visual 4 · Check every identifier before coding.</figcaption></figure>
+          </div>
+
+          <div class="callout"><strong>The decision model</strong>If the name represents a fixed rule or setting that should remain unchanged, use a constant. If it represents user data, a result, or changing program state, use a variable. <strong>The current value alone does not decide the role.</strong></div>
+
+          <div class="task-card">
+            <h2>Confidence ladder A: classify 12 names</h2>
+            <p>Choose the role that matches the purpose described by each name.</p>
+            <div class="classification-list">
+              <div class="class-row"><code>DAYS_IN_WEEK = 7</code><span>fixed calendar fact</span><select id="c1" data-field="c1" data-label="DAYS_IN_WEEK classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>student_name = "Aina"</code><span>user data</span><select id="c2" data-field="c2" data-label="student_name classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>MAX_LIVES = 3</code><span>fixed game rule</span><select id="c3" data-field="c3" data-label="MAX_LIVES classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>lives_remaining = 3</code><span>changes during play</span><select id="c4" data-field="c4" data-label="lives_remaining classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>SCHOOL_NAME = "Tenby"</code><span>fixed for this program</span><select id="c5" data-field="c5" data-label="SCHOOL_NAME classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>current_score = 0</code><span>changes during play</span><select id="c6" data-field="c6" data-label="current_score classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>PASS_MARK = 50</code><span>fixed assessment rule</span><select id="c7" data-field="c7" data-label="PASS_MARK classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>student_mark = 72</code><span>result for one student</span><select id="c8" data-field="c8" data-label="student_mark classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>TICKET_PRICE = 12.50</code><span>fixed setting</span><select id="c9" data-field="c9" data-label="TICKET_PRICE classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>tickets_sold = 0</code><span>changes after each sale</span><select id="c10" data-field="c10" data-label="tickets_sold classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>GAME_VERSION = "1.0"</code><span>fixed for this release</span><select id="c11" data-field="c11" data-label="GAME_VERSION classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+              <div class="class-row"><code>player_level = 1</code><span>changes as player progresses</span><select id="c12" data-field="c12" data-label="player_level classification"><option value="">Choose role</option><option>Constant</option><option>Variable</option></select></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Confidence ladder B: explain the pairs</h2>
+            <p>Both names in each pair may initially store the same value. Explain why their roles differ.</p>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="pair1"><code>MAX_ATTEMPTS = 3</code> vs <code>attempts_remaining = 3</code></label><textarea id="pair1" data-field="pair1" data-label="MAX_ATTEMPTS versus attempts_remaining"></textarea></div>
+              <div class="question"><label class="question-label" for="pair2"><code>STARTING_SCORE = 0</code> vs <code>current_score = 0</code></label><textarea id="pair2" data-field="pair2" data-label="STARTING_SCORE versus current_score"></textarea></div>
+              <div class="question"><label class="question-label" for="pair3"><code>ROOM_CAPACITY = 30</code> vs <code>students_present = 30</code></label><textarea id="pair3" data-field="pair3" data-label="ROOM_CAPACITY versus students_present"></textarea></div>
+              <div class="question"><label class="question-label" for="pair4"><code>TICKET_PRICE = 12.50</code> vs <code>customer_payment = 12.50</code></label><textarea id="pair4" data-field="pair4" data-label="TICKET_PRICE versus customer_payment"></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Identifier check</h2>
+            <div class="question-grid"><div class="question"><label class="question-label" for="id_valid">Which are valid: <code>first_name</code>, <code>2players</code>, <code>MAX-LIVES</code>, <code>level3</code>, <code>school name</code>?</label><textarea id="id_valid" data-field="id_valid" data-label="Valid identifier check"></textarea></div><div class="question"><label class="question-label" for="id_repair">Repair every invalid name and improve the unclear name <code>s</code> when it stores a score.</label><textarea id="id_repair" data-field="id_repair" data-label="Identifier repairs"></textarea></div></div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Continue to Main Activity 2</button></div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section-key="main2" data-report-title="Main Activity 2 - Predict, run and explain">
+          <p class="section-kicker">Main Activity 2 · Paper 1 practical · AO2/AO3</p>
+          <h1>Predict, run, adapt and explain</h1>
+          <p class="section-lead">Do the prediction before opening your IDE. Run the code on your own device; this webpage does not execute Python.</p>
+          <div class="time-chip">Target: 22 minutes</div>
+
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-05-program-state-timeline.png" alt="Timeline showing constants staying fixed while variables are reassigned"><figcaption>Visual 5 · Trace the stored values from top to bottom.</figcaption></figure>
+
+          <div class="task-card">
+            <h2>Part A: inspect and predict</h2>
+            <div class="code-wrap"><pre id="mainProgram">GAME_TITLE = "Code Quest"
+MAX_LIVES = 3
+STARTING_SCORE = 0
+
+player_name = "Aisha"
+lives_remaining = MAX_LIVES
+current_score = STARTING_SCORE
+
+print("Game:", GAME_TITLE)
+print("Player:", player_name)
+print("Maximum lives:", MAX_LIVES)
+print("Lives remaining:", lives_remaining)
+print("Current score:", current_score)
+
+lives_remaining = 2
+current_score = 20
+
+print("Updated lives:", lives_remaining)
+print("Updated score:", current_score)</pre><button class="copy-button" data-copy-target="mainProgram" type="button">Copy code</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_constants">Identify the three constants.</label><textarea id="m2_constants" data-field="m2_constants" data-label="Three constants in the program"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_variables">Identify the three variables.</label><textarea id="m2_variables" data-field="m2_variables" data-label="Three variables in the program"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_first_outputs">Predict the first five output lines.</label><textarea id="m2_first_outputs" data-field="m2_first_outputs" data-label="First five output predictions"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_final_outputs">Predict the final two output lines.</label><textarea id="m2_final_outputs" data-field="m2_final_outputs" data-label="Final two output predictions"></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Part B: run and adapt in your IDE</h2>
+            <ol class="instruction-steps">
+              <li>Copy the program into your own Python IDE and run it.</li>
+              <li>Compare the actual output with your prediction; correct any misconception.</li>
+              <li>Change <code>player_name</code>.</li>
+              <li>Reassign <code>lives_remaining</code> and <code>current_score</code> to sensible new values.</li>
+              <li>Do <strong>not</strong> change the three supplied constants.</li>
+              <li>Add one new uppercase constant and one new lowercase variable.</li>
+              <li>Print both new names with clear labels.</li>
+              <li>Paste your final code and add a clear screenshot below.</li>
+            </ol>
+            <label class="question-label" for="m2_actual">Actual output and any correction to your prediction</label><textarea id="m2_actual" data-field="m2_actual" data-label="Actual output and corrections"></textarea>
+            <label class="question-label" for="m2_code">Your final adapted Python code</label><textarea id="m2_code" class="code-entry" data-field="m2_code" data-label="Final adapted Python code" data-report-type="code" spellcheck="false"></textarea>
+            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0"><strong>Add a complete IDE screenshot</strong><p>Paste, drag or choose an image. It will be kept at full aspect ratio in the PDF report.</p><label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" data-evidence-input="main2" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="main2"></div></div>
+          </div>
+
+          <div class="task-card">
+            <h2>Part C: Paper 2 explanation</h2>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_q1">Why is <code>MAX_LIVES</code> a constant but <code>lives_remaining</code> a variable?</label><textarea id="m2_q1" data-field="m2_q1" data-label="MAX_LIVES and lives_remaining explanation"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_q2">Why can both initially store <code>3</code>?</label><textarea id="m2_q2" data-field="m2_q2" data-label="Why both names may store 3"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_q3">What does reassignment do?</label><textarea id="m2_q3" data-field="m2_q3" data-label="Meaning of reassignment"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_q4">Would Python prevent <code>MAX_LIVES = 5</code>? Explain the convention.</label><textarea id="m2_q4" data-field="m2_q4" data-label="Python constant convention"></textarea></div>
+            </div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Open extension tasks</button></div>
+        </section>
+
+        <section class="activity-step" data-step="3" data-section-key="extension" data-report-title="Extension - Ten MOOC-style challenges">
+          <p class="section-kicker">Extension · Early finisher practice · AO1/AO2/AO3</p>
+          <h1>Ten small coding challenges</h1>
+          <p class="section-lead">Complete as many as time allows. Each original task follows a MOOC-style cycle: read → predict → code → run → improve.</p>
+          <div class="callout purple"><strong>Scope reminder</strong>Use only assignment, reassignment and <code>print()</code>. You do not need <code>input()</code>, arithmetic, <code>//</code>, <code>%</code> or type conversion today.</div>
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-06-quick-reference.png" alt="Quick reference for variable and constant naming, assignment and reassignment"><figcaption>Visual 6 · Keep this quick reference open as you work.</figcaption></figure>
+          <div id="extensionChallenges"></div>
+          <div class="task-card"><h2>Extension reflection and evidence</h2><label class="question-label" for="ext_summary">Which challenges did you complete, and what did you improve?</label><textarea id="ext_summary" data-field="ext_summary" data-label="Extension completion summary"></textarea><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension screenshots</strong><p>Paste, drag or choose one or more complete IDE screenshots.</p><label class="secondary" for="evidenceExtension">Choose images</label><input id="evidenceExtension" data-evidence-input="extension" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="extension"></div></div></div>
+          <div class="source-note">The challenge sequence uses an original, scaffolded practice style inspired by the <a href="https://programming-26.mooc.fi/part-1/3-more-about-variables/" target="_blank" rel="noopener">University of Helsinki Python Programming MOOC</a>. All scenarios and wording are original.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Go to plenary</button></div>
+        </section>
+
+        <section class="activity-step" data-step="4" data-section-key="plenary" data-report-title="Plenary - Exit ticket and reflection">
+          <p class="section-kicker">Plenary · Independent exit ticket · AO1/AO2</p>
+          <h1>Prove what changed</h1>
+          <p class="section-lead">Answer without running the code. Then export every answer, code sample and evidence image as one PDF.</p>
+          <div class="time-chip">Target: 8 minutes</div>
+          <div class="task-card">
+            <h2>Exit code</h2>
+            <div class="code-wrap"><pre id="plenaryCode">MAX_ATTEMPTS = 3
+attempts_remaining = MAX_ATTEMPTS
+attempts_remaining = 2</pre><button class="copy-button" data-copy-target="plenaryCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="p_constant">Which name is the constant? How do you know?</label><textarea id="p_constant" data-field="p_constant" data-label="Plenary constant identification"></textarea></div>
+              <div class="question"><label class="question-label" for="p_variable">Which name is the variable? How do you know?</label><textarea id="p_variable" data-field="p_variable" data-label="Plenary variable identification"></textarea></div>
+              <div class="question"><label class="question-label" for="p_values">What final value is stored by each name?</label><textarea id="p_values" data-field="p_values" data-label="Final stored values"></textarea></div>
+              <div class="question"><label class="question-label" for="p_independent">Why did changing <code>attempts_remaining</code> not change <code>MAX_ATTEMPTS</code>?</label><textarea id="p_independent" data-field="p_independent" data-label="Independent stored values explanation"></textarea></div>
+              <div class="question"><label class="question-label" for="p_uppercase">Why is uppercase useful for a Python constant?</label><textarea id="p_uppercase" data-field="p_uppercase" data-label="Benefit of uppercase constant convention"></textarea></div>
+              <div class="question"><label class="question-label" for="p_benefit">Write one Paper 2-style sentence explaining one benefit of meaningful identifiers.</label><textarea id="p_benefit" data-field="p_benefit" data-label="Benefit of meaningful identifiers"></textarea></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>WAGBA and exam reflection</h2><div class="question-grid"><div class="question"><label class="question-label" for="p_wagba">I am getting better at… because I can…</label><textarea id="p_wagba" data-field="p_wagba" data-label="WAGBA reflection"></textarea></div><div class="question"><label class="question-label" for="p_papers">How could today’s learning appear differently in Paper 1 and Paper 2?</label><textarea id="p_papers" data-field="p_papers" data-label="Paper 1 and Paper 2 reflection"></textarea></div><div class="question full"><label class="question-label" for="p_support">What support or further practice do you need?</label><textarea id="p_support" data-field="p_support" data-label="Support or further practice needed"></textarea></div></div></div>
+          <div class="export-card">
+            <h2>Export your complete lesson evidence</h2>
+            <p>The report includes your profile, every response, all pasted code and each evidence image—even from unfinished sections.</p>
+            <span id="filenamePreview" class="filename">W02S02_Firstname_Class.pdf</span>
+            <ol><li>Select <strong>Export complete PDF</strong>.</li><li>In the print window choose <strong>Save as PDF</strong>.</li><li>Use the suggested filename and open the saved PDF to check it.</li><li>Open the correct Microsoft Teams assignment.</li><li>Select <strong>Add work</strong> → <strong>Upload from this device</strong>.</li><li>Select the PDF, check it has attached, then select <strong>Turn in</strong>.</li></ol>
+            <button id="finalExport" class="primary" type="button">Export complete PDF</button>
+          </div>
+          <div class="source-note">Reading is adapted and paraphrased from the OxfordAQA International GCSE Computer Science Student Book, printed pages 6–7 and 22, and aligned to OxfordAQA 9210 specification section 3.2.1.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button id="returnToStarter" class="ghost" type="button">Return to starter</button></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="imageModal" class="image-modal hidden" role="dialog" aria-modal="true" aria-label="Enlarged lesson visual"><button id="closeModal" type="button" aria-label="Close enlarged visual">×</button><img id="modalImage" alt=""></div>
+  <article id="printReport" class="print-report" aria-label="Printable complete lesson report"></article>
+  <script src="app.js"></script>
+</body>
+</html>
