@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>November 2024 Paper 1 Programming Lab | Week 2 Session 3</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <main id="landing" class="landing">
+      <section class="landing-visual" aria-labelledby="landing-title">
+        <p class="eyebrow light">Year 11 Computer Science · Term 1 · Week 2 · Session 3</p>
+        <h1 id="landing-title">Read it.<br />Change it.<br />Prove it.</h1>
+        <p>Work from the authentic November 2024 Paper 1 skeleton program. Modify real examination code, run the specified tests and capture valid evidence.</p>
+        <div class="paper-strip"><span>INPUT / OUTPUT</span><span>SELECTION</span><span>ITERATION</span><span>AO3 EVIDENCE</span></div>
+      </section>
+      <section class="entry-panel">
+        <div class="entry-card">
+          <p class="eyebrow">Programming learning record</p>
+          <h2>Begin your lesson</h2>
+          <p class="muted">Your work saves on this device. At the end, export one PDF and submit it to Teams.</p>
+          <form id="entry-form" novalidate>
+            <label>Full name<input id="student-name" type="text" autocomplete="name" placeholder="e.g. Aisha Tan" /></label>
+            <label>Class<input id="student-class" type="text" placeholder="e.g. 11CS1" /></label>
+            <button class="button primary wide" type="submit">Begin lesson <span>→</span></button>
+          </form>
+          <small>No account required · Work remains in this browser</small>
+        </div>
+      </section>
+    </main>
+    <div id="lesson-app" class="app-shell" hidden>
+      <aside class="sidebar">
+        <div class="brand"><span>P1</span><div><strong>November 2024</strong><small>Programming Lab</small></div></div>
+        <div class="profile"><small id="profile-role">Student</small><strong id="profile-name"></strong><span id="profile-class"></span></div>
+        <div class="progress"><div><span>Core progress</span><strong id="progress-percent">0%</strong></div><i><b id="progress-bar"></b></i></div>
+        <nav id="lesson-nav" aria-label="Lesson sections">
+          <button data-nav="overview"><span>00</span>Lesson map</button>
+          <button data-nav="resources"><span>01</span>Resources</button>
+          <button data-nav="starter"><span>02</span>Starter</button>
+          <button data-nav="main1"><span>03</span>Main Activity 1</button>
+          <button data-nav="main2"><span>04</span>Main Activity 2</button>
+          <button data-nav="extension"><span>05</span>Extension</button>
+          <button data-nav="plenary"><span>06</span>Plenary</button>
+          <button data-nav="finish"><span>07</span>Finish &amp; export</button>
+        </nav>
+        <button id="return-home" class="text-button" type="button">← Return to sign-in</button>
+      </aside>
+      <section class="workspace">
+        <header class="workspace-header">
+          <button id="mobile-menu" class="mobile-menu" type="button" aria-label="Open lesson menu">☰</button>
+          <div><span class="eyebrow">WAGBA</span><strong>Interpreting requirements, modifying an existing program and presenting valid test evidence.</strong></div>
+          <span id="save-status">Saved</span>
+        </header>
+        <div class="pages">
+          <article class="lesson-page" data-page="overview">
+            <div class="page-heading"><div><span class="section-number">00</span><p class="eyebrow">Lesson map</p><h2>November 2024 programming lab</h2></div><span class="badge">60 minutes</span></div>
+            <section class="notice"><strong>Original-question safeguard</strong><p>The official tasks below are displayed as images taken directly from the supplied November 2024 question paper. They have not been rewritten or adapted.</p></section>
+            <div class="objective-grid">
+              <section class="objective key"><span>Objective</span><h3>Analyse and modify the November 2024 skeleton program using variables, input/output, selection and iteration.</h3></section>
+              <section class="objective"><span>Knowledge</span><p>Parameters, local variables, strings, integers, conversion, conditions and definite/indefinite iteration.</p></section>
+              <section class="objective"><span>Skills</span><p>Locate code, translate requirements, amend subroutines, run specified tests and capture evidence.</p></section>
+              <section class="objective"><span>Understanding</span><p>Explain why code position, changing loop variables and matching evidence determine whether a solution earns marks.</p></section>
+            </div>
+            <div class="marks-strip"><div><b>3</b><span>Starter marks</span></div><div><b>11</b><span>Core AO3 marks</span></div><div><b>9</b><span>Extension marks</span></div><div><b>23</b><span>Available total</span></div></div>
+            <aside class="teacher-note"><strong>Teacher review</strong><p>All pages are open in one continuous view. The mark-scheme PDF is not included in this website package.</p></aside>
+            <div class="page-actions"><p>Start by preparing the complete examination resource folder.</p><button class="button primary" data-next="resources">Review resources →</button></div>
+          </article>
+          <article class="lesson-page" data-page="resources">
+            <div class="page-heading"><div><span class="section-number">01</span><p class="eyebrow">Before the starter</p><h2>Resource pack</h2></div><span class="badge">No mark scheme</span></div>
+            <section class="notice"><strong>Keep the files together</strong><p>Download the skeleton program and text files into one folder. Python must be able to find the text files when the program runs.</p></section>
+            <div class="resource-grid">
+              <a href="resources/Nov24-Paper1-Preliminary-Material.pdf" target="_blank"><b>PDF</b><strong>Preliminary Material</strong><span>Open</span></a>
+              <a href="resources/Nov24-Paper1-Question-Paper.pdf" target="_blank"><b>PDF</b><strong>Question Paper</strong><span>Open</span></a>
+              <a href="resources/Paper_1_November_2024_Skeleton.py" download><b>PY</b><strong>Skeleton Program</strong><span>Download</span></a>
+              <a href="resources/pattern.txt" download><b>TXT</b><strong>pattern.txt</strong><span>Download</span></a>
+              <a href="resources/0.txt" download><b>TXT</b><strong>0.txt</strong><span>Download</span></a>
+              <a href="resources/1.txt" download><b>TXT</b><strong>1.txt</strong><span>Download</span></a>
+              <a href="resources/zero.txt" download><b>TXT</b><strong>zero.txt</strong><span>Official filename</span></a>
+              <a href="resources/one.txt" download><b>TXT</b><strong>one.txt</strong><span>Official filename</span></a>
+            </div>
+            <section class="working-rule"><span>01</span><div><strong>Create three clean copies</strong><p>Use separate folders or filenames for Q05, Q06 and Q07. This prevents one modification affecting another question.</p></div></section>
+            <div class="page-actions"><p>Open the skeleton once to confirm it runs before editing.</p><button class="button primary" data-next="starter">Continue to starter →</button></div>
+          </article>
+          <article class="lesson-page" data-page="starter">
+            <div class="page-heading"><div><span class="section-number">02</span><p class="eyebrow">Starter · 7 minutes</p><h2>Navigate the skeleton</h2></div><span class="badge">Q01.1–01.3 · 3 marks</span></div>
+            <div class="instruction"><strong>Use the unmodified skeleton program.</strong><span>Do not run or alter it. Locate the evidence before writing each answer.</span></div>
+            <figure class="official-question"><figcaption>Original November 2024 Paper 1 · Q01.1–Q01.3 · click to enlarge</figcaption><img src="assets/starter-q01-1-3.png" alt="Original November 2024 Paper 1 Questions 01.1 to 01.3" data-zoom /></figure>
+            <div class="answer-grid two">
+              <label><span>01.1 Answer</span><input data-save="q01_1" data-required /></label>
+              <label><span>01.2 Answer</span><input data-save="q01_2" data-required /></label>
+            </div>
+            <label class="field"><span>01.3 Answer</span><textarea data-save="q01_3" data-required rows="4"></textarea></label>
+            <aside class="teacher-note"><strong>Teacher guidance</strong><p>01.1: createImage, darkenImage or lightenImage. 01.2: row or col. 01.3: joining strings together.</p></aside>
+            <div class="page-actions"><p>These are retrieval questions. Main Activity 1 moves directly into AO3.</p><button class="button primary" data-complete="starter">Save starter →</button></div>
+          </article>
+          <article class="lesson-page" data-page="main1">
+            <div class="page-heading"><div><span class="section-number">03</span><p class="eyebrow">Main Activity 1 · 15 minutes</p><h2>Output after loading</h2></div><span class="badge">Q05 · AO3 · 5 marks</span></div>
+            <section class="skill-card">
+              <div class="skill-title"><span>Read before coding</span><strong>Find the correct insertion point</strong></div>
+              <pre><code>case "1":
+    width, height, image = loadImage()</code></pre>
+              <div class="answer-grid two">
+                <label><span>How many values are returned?</span><input data-save="q5_count" data-required /></label>
+                <label><span>Which variables receive them?</span><input data-save="q5_vars" data-required /></label>
+                <label><span>Where must the new output be placed?</span><textarea data-save="q5_location" data-required rows="3"></textarea></label>
+                <label><span>Data types of width and height</span><input data-save="q5_types" data-required /></label>
+              </div>
+            </section>
+            <div class="instruction"><strong>Now complete the official task.</strong><span>Use a fresh skeleton copy and <code>pattern.txt</code>. Follow the test exactly.</span></div>
+            <figure class="official-question"><figcaption>Original November 2024 Paper 1 · Question 05 · click to enlarge</figcaption><img src="assets/main1-q05.png" alt="Original November 2024 Paper 1 Question 05" data-zoom /></figure>
+            <label class="field code-field"><span>05.1 — Paste ALL the amended <code>main</code> subroutine</span><textarea data-save="q05_code" data-required rows="20" spellcheck="false"></textarea></label>
+            <section class="evidence" data-upload-required="q05_image1">
+              <div><p class="eyebrow">05.2 evidence</p><h3>Upload the requested test result</h3><p>Select, drag or paste a screenshot. A second slot is available if one image cannot show all necessary evidence.</p></div>
+              <div class="upload-grid">
+                <div class="upload-slot" data-upload-slot="q05_image1" tabindex="0"><input type="file" accept="image/*" /><span>Required screenshot</span><img hidden alt="Q05 evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+                <div class="upload-slot" data-upload-slot="q05_image2" tabindex="0"><input type="file" accept="image/*" /><span>Optional second screenshot</span><img hidden alt="Q05 second evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+              </div>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Q05</strong><p>Check placement immediately after loadImage, use of both width and height, correct order and exact requested message. Evidence should show pattern loading and the 5 by 9 result.</p></aside>
+            <div class="page-actions"><p>Check that the screenshot agrees with the submitted source code.</p><button class="button primary" data-complete="main1">Save Main Activity 1 →</button></div>
+          </article>
+          <article class="lesson-page" data-page="main2">
+            <div class="page-heading"><div><span class="section-number">04</span><p class="eyebrow">Main Activity 2 · 25 minutes</p><h2>Validate the stretch factor</h2></div><span class="badge">Q06 · AO3 · 6 marks</span></div>
+            <section class="skill-card">
+              <div class="skill-title"><span>Read before coding</span><strong>Turn the requirement into a loop</strong></div>
+              <pre><code>factor = int(input("Please enter the stretch factor: "))</code></pre>
+              <div class="answer-grid two">
+                <label><span>Data type stored in factor</span><input data-save="q6_type" data-required /></label>
+                <label><span>Which part performs conversion?</span><input data-save="q6_conversion" data-required /></label>
+                <label><span>Definite or indefinite iteration?</span><input data-save="q6_iteration" data-required /></label>
+                <label><span>Write a condition meaning “invalid”</span><input data-save="q6_condition" data-required placeholder="Use factor in your condition" /></label>
+              </div>
+            </section>
+            <div class="instruction"><strong>Complete the official task.</strong><span>Start from a fresh skeleton copy and use <code>one.txt</code>. The invalid and valid entries must both appear in the evidence.</span></div>
+            <figure class="official-question"><figcaption>Original November 2024 Paper 1 · Question 06 · click to enlarge</figcaption><img src="assets/main2-q06.png" alt="Original November 2024 Paper 1 Question 06" data-zoom /></figure>
+            <label class="field code-field"><span>06.1 — Paste ALL the amended <code>stretchImage</code> subroutine</span><textarea data-save="q06_code" data-required rows="20" spellcheck="false"></textarea></label>
+            <section class="evidence" data-upload-required="q06_image1">
+              <div><p class="eyebrow">06.2 evidence</p><h3>Upload the requested test result</h3><p>Your evidence must show the values entered and the validation response.</p></div>
+              <div class="upload-grid">
+                <div class="upload-slot" data-upload-slot="q06_image1" tabindex="0"><input type="file" accept="image/*" /><span>Required screenshot</span><img hidden alt="Q06 evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+                <div class="upload-slot" data-upload-slot="q06_image2" tabindex="0"><input type="file" accept="image/*" /><span>Optional second screenshot</span><img hidden alt="Q06 second evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+              </div>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Q06</strong><p>Five source-code marks: indefinite iteration; test factor; correct invalid criterion; error message inside the loop; another input requested so the loop can terminate. The evidence mark requires the specified 6 then 3 test.</p></aside>
+            <div class="page-actions"><p>An <code>if</code> checks once. This requirement must continue until valid.</p><button class="button primary" data-complete="main2">Save Main Activity 2 →</button></div>
+          </article>
+          <article class="lesson-page" data-page="extension">
+            <div class="page-heading"><div><span class="section-number">05</span><p class="eyebrow">Extension · optional</p><h2>Create a random image</h2></div><span class="badge">Q07 · AO3 · 9 marks</span></div>
+            <section class="notice"><strong>Use a new clean copy</strong><p>Do not build this on top of Q05 or Q06. Convert each bullet in the official task into a code requirement before programming.</p></section>
+            <figure class="official-question"><figcaption>Original November 2024 Paper 1 · Question 07 · click to enlarge</figcaption><img src="assets/extension-q07.png" alt="Original November 2024 Paper 1 Question 07" data-zoom /></figure>
+            <div class="requirements-check">
+              <label><input type="checkbox" data-save="q7_req1" value="checked" /> Detect the special filename.</label>
+              <label><input type="checkbox" data-save="q7_req2" value="checked" /> Create the required blank image.</label>
+              <label><input type="checkbox" data-save="q7_req3" value="checked" /> Iterate across every pixel position.</label>
+              <label><input type="checkbox" data-save="q7_req4" value="checked" /> Generate and store values in the correct range.</label>
+              <label><input type="checkbox" data-save="q7_req5" value="checked" /> Preserve ordinary file loading.</label>
+              <label><input type="checkbox" data-save="q7_req6" value="checked" /> Return all required values.</label>
+            </div>
+            <label class="field code-field"><span>07.1 — Paste ALL the amended <code>loadImage</code> subroutine</span><textarea data-save="q07_code" rows="24" spellcheck="false"></textarea></label>
+            <section class="evidence">
+              <div><p class="eyebrow">07.2 evidence</p><h3>Upload the requested test result</h3></div>
+              <div class="upload-grid">
+                <div class="upload-slot" data-upload-slot="q07_image1" tabindex="0"><input type="file" accept="image/*" /><span>Test screenshot</span><img hidden alt="Q07 evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+                <div class="upload-slot" data-upload-slot="q07_image2" tabindex="0"><input type="file" accept="image/*" /><span>Optional second screenshot</span><img hidden alt="Q07 second evidence preview" /><button class="remove-upload" hidden type="button">Remove</button></div>
+              </div>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Q07</strong><p>Look for selection on the filename, a 5 by 6 image, iteration over 30 positions, random integers 0–4, pixel updates, a functioning alternative file-load branch and the correct return values.</p></aside>
+            <div class="page-actions"><button class="button secondary" data-next="plenary">Skip extension →</button><button class="button primary" id="save-extension" type="button">Save extension →</button></div>
+          </article>
+          <article class="lesson-page" data-page="plenary">
+            <div class="page-heading"><div><span class="section-number">06</span><p class="eyebrow">Plenary · 8 minutes</p><h2>Recover one mark</h2></div><span class="badge">Self-assessment</span></div>
+            <section class="mark-review">
+              <div><span>Q06 source requirement</span><strong>My evidence</strong></div>
+              <label>Indefinite iteration is used<select data-save="mark_loop" data-required><option value="">Choose</option><option>Met</option><option>Not yet met</option><option>Cannot tell</option></select></label>
+              <label>The condition tests <code>factor</code><select data-save="mark_factor" data-required><option value="">Choose</option><option>Met</option><option>Not yet met</option><option>Cannot tell</option></select></label>
+              <label>The invalid boundary is correct<select data-save="mark_boundary" data-required><option value="">Choose</option><option>Met</option><option>Not yet met</option><option>Cannot tell</option></select></label>
+              <label>The message is inside the iteration<select data-save="mark_message" data-required><option value="">Choose</option><option>Met</option><option>Not yet met</option><option>Cannot tell</option></select></label>
+              <label>Another value is requested after invalid input<select data-save="mark_reinput" data-required><option value="">Choose</option><option>Met</option><option>Not yet met</option><option>Cannot tell</option></select></label>
+            </section>
+            <div class="answer-grid two">
+              <label><span>The first missing mark I would recover is…</span><textarea data-save="recover_mark" data-required rows="4"></textarea></label>
+              <label><span>The exact code change required is…</span><textarea data-save="recover_change" data-required rows="4"></textarea></label>
+            </div>
+            <section class="exit-ticket">
+              <span>Exit ticket</span>
+              <pre><code>factor = int(input("Enter factor: "))
+
+while factor &gt; 5:
+    print("Invalid")</code></pre>
+              <label><span>Explain why this loop might never terminate.</span><textarea data-save="exit_reason" data-required rows="4"></textarea></label>
+              <label><span>Write the additional statement required inside the loop.</span><input data-save="exit_statement" data-required /></label>
+            </section>
+            <aside class="teacher-note"><strong>Teacher guidance · Exit ticket</strong><p>factor never changes after an invalid entry. A new input/conversion assignment to factor is required inside the loop.</p></aside>
+            <div class="page-actions"><p>Improve the actual Q06 code before exporting if you identified a missing mark.</p><button class="button primary" data-complete="plenary">Save plenary →</button></div>
+          </article>
+          <article class="lesson-page" data-page="finish">
+            <div class="page-heading"><div><span class="section-number">07</span><p class="eyebrow">Finish</p><h2>Export your learning record</h2></div><span class="badge">Submit to Teams</span></div>
+            <section class="completion"><div><strong id="finish-percent">0%</strong><span>core complete</span></div><div><h3 id="finish-message">Complete the core activities.</h3><p>The PDF contains your written answers, complete source code, self-assessment and uploaded evidence.</p></div></section>
+            <div id="completion-list" class="completion-list"></div>
+            <section class="export-panel"><div><p class="eyebrow light">One final file</p><h3>Download, check and submit</h3><p>Open the PDF after downloading. Check that your code and screenshots are readable before uploading it to the correct Teams assignment.</p></div><button id="export-pdf" class="button inverse" type="button">Download progress PDF ↓</button></section>
+            <div class="teams-steps"><div><b>1</b><span>Download PDF</span></div><div><b>2</b><span>Open and check</span></div><div><b>3</b><span>Submit to Teams</span></div></div>
+            <button id="clear-work" class="button secondary" type="button">Clear this student's saved work</button>
+          </article>
+        </div>
+      </section>
+    </div>
+    <div id="image-modal" class="image-modal" hidden role="dialog" aria-modal="true" aria-label="Enlarged official question">
+      <button id="close-modal" type="button" aria-label="Close enlarged question">×</button>
+      <img id="modal-image" alt="Enlarged official examination question" />
+    </div>
+    <script src="vendor/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
