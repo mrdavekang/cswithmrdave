@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>Coordinate Quest | Year 6 Computing</title>
+  <meta name="description" content="Year 6 Term 1 Week 3 coordinate programming lesson with Scratch activities and PDF evidence export.">
+  <link rel="stylesheet" href="styles.css">
+  <script src="vendor/jspdf.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <noscript><p class="noscript">This lesson needs JavaScript enabled so it can save answers and export the evidence PDF.</p></noscript>
+
+  <section class="landing" id="landingView" aria-labelledby="landingTitle">
+    <div class="landing-grid" aria-hidden="true"></div>
+    <header class="landing-header">
+      <div class="wordmark"><span>CQ</span> Coordinate Quest</div>
+      <p>Year 6 Computing · Term 1 Week 3</p>
+    </header>
+    <div class="landing-content">
+      <div class="landing-copy">
+        <p class="kicker yellow">MISSION / 03</p>
+        <h1 id="landingTitle">Predict it.<br>Program it.<br>Prove it.</h1>
+        <p>Use events, sequencing and coordinates to guide an explorer through the maze and reach the key.</p>
+        <div class="lesson-flow" aria-label="Lesson sections">
+          <span>Starter</span><i>→</i><span>Main 1</span><i>→</i><span>Main 2</span><i>→</i><span>Extension</span><i>→</i><span>Plenary</span>
+        </div>
+      </div>
+      <form class="entry-card" id="entryForm">
+        <div class="entry-number">01</div>
+        <p class="kicker">IDENTIFY YOUR WORK</p>
+        <h2>Enter the mission</h2>
+        <label for="studentName">Your name</label>
+        <input id="studentName" name="studentName" autocomplete="name" placeholder="Type your full name" required>
+        <label for="studentClass">Your class</label>
+        <input id="studentClass" name="studentClass" placeholder="Type your class">
+        <p class="field-help">Students: both fields are required. Teacher view: type <strong>teacher</strong> as the name.</p>
+        <button class="button primary wide" type="submit">Start the lesson <span>→</span></button>
+        <button class="text-button" id="resumeButton" type="button" hidden>Resume saved student work</button>
+        <p class="entry-error" id="entryError" role="alert"></p>
+      </form>
+    </div>
+  </section>
+
+  <div class="app" id="appView" hidden>
+    <header class="app-header">
+      <button class="menu-button" id="menuButton" aria-label="Open lesson menu" aria-expanded="false">☰</button>
+      <div class="app-brand"><span>CQ</span><div><strong>Coordinate Quest</strong><small>Year 6 · T1W3</small></div></div>
+      <div class="profile-chip"><span id="profileMode">STUDENT</span><strong id="profileName">—</strong><small id="profileClass">—</small></div>
+      <button class="button ghost small" id="switchUserButton">Switch user</button>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <p class="kicker">LESSON MAP</p>
+        <div class="overall-progress"><div id="progressFill"></div></div>
+        <small id="progressText">0% complete</small>
+        <p class="nav-help">Follow the steps from top to bottom. Finish the highlighted step to unlock the next one.</p>
+      </div>
+      <nav id="lessonNav" aria-label="Lesson pages">
+        <button data-page="teacher" class="nav-item teacher-only"><span>00</span><div><strong>Teacher view</strong><small>Overview & records</small></div></button>
+        <button data-page="starter" class="nav-item"><span>01</span><div><strong>Starter</strong><small>Read coordinates</small></div><i class="nav-status">NOW</i></button>
+        <button data-page="main1" class="nav-item"><span>02</span><div><strong>Main activity 1</strong><small>Predict the code</small></div><i class="nav-status">LOCKED</i></button>
+        <button data-page="main2" class="nav-item"><span>03</span><div><strong>Main activity 2</strong><small>Program the route</small></div><i class="nav-status">LOCKED</i></button>
+        <button data-page="extension" class="nav-item"><span>04</span><div><strong>Extension</strong><small>Five challenges</small></div><i class="nav-status">LOCKED</i></button>
+        <button data-page="plenary" class="nav-item"><span>05</span><div><strong>Plenary</strong><small>Explain & reflect</small></div><i class="nav-status">LOCKED</i></button>
+        <button data-page="report" class="nav-item"><span>06</span><div><strong>Evidence report</strong><small>Export PDF</small></div><i class="nav-status">LOCKED</i></button>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">New Scratch project ↗</a>
+        <button class="text-button" id="resetWorkButton">Reset this profile</button>
+      </div>
+    </aside>
+
+    <main class="workspace" id="workspace">
+      <div class="sequence-banner" id="sequenceBanner">
+        <span id="sequenceNumber">STEP 1 OF 6</span>
+        <div><strong id="sequenceTitle">Do this now: complete the Starter</strong><small id="sequenceHelp">The next activity will unlock when this step is complete.</small></div>
+        <div class="sequence-arrow" aria-hidden="true">↓</div>
+      </div>
+      <section class="page teacher-only" data-page-panel="teacher" aria-labelledby="teacherTitle">
+        <div class="page-heading">
+          <div><p class="kicker purple">TEACHER OVERVIEW</p><h1 id="teacherTitle">Whole lesson unlocked.</h1><p>Review every student page, download the resources and inspect saved profiles on this device.</p></div>
+          <div class="timing-card"><span>60</span><small>minute lesson</small></div>
+        </div>
+        <div class="teacher-grid">
+          <article class="info-card accent-yellow"><span>Starter · 8 min</span><h3>Coordinate decoder</h3><p>Teach x before y, horizontal before vertical, then check four understanding questions.</p><button class="button outline jump-button" data-jump="starter">Open starter →</button></article>
+          <article class="info-card accent-blue"><span>Main 1 · 12 min</span><h3>Predict before running</h3><p>Students trace three block sequences using the accurate prediction images.</p><button class="button outline jump-button" data-jump="main1">Open Main 1 →</button></article>
+          <article class="info-card accent-purple"><span>Main 2 · 25 min</span><h3>Complete Version 1</h3><p>Students build START → A → B → C → D → KEY and upload evidence.</p><button class="button outline jump-button" data-jump="main2">Open Main 2 →</button></article>
+          <article class="info-card accent-green"><span>Extension · 10 min</span><h3>Five mission levels</h3><p>Fast finishers complete at least three increasingly demanding improvements.</p><button class="button outline jump-button" data-jump="extension">Open extension →</button></article>
+        </div>
+        <div class="resource-strip">
+          <div><p class="kicker">LESSON RESOURCES</p><h2>Everything travels with this site.</h2></div>
+          <a class="button black" href="assets/scratch/Year6_T1W3_Coordinate_Quest_Starter.sb3" download>Download starter .sb3</a>
+          <a class="button black" href="assets/scratch/Year6_T1W3_Main_Activity_2_Template.sb3" download>Download Main 2 .sb3</a>
+          <a class="button black" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open blank Scratch ↗</a>
+        </div>
+        <div class="records-card">
+          <div class="records-head"><div><p class="kicker">THIS DEVICE</p><h2>Saved student profiles</h2></div><button class="button outline" id="refreshRecordsButton">Refresh</button></div>
+          <div class="records-table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Progress</th><th>Last saved</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="page" data-page-panel="starter" aria-labelledby="starterTitle">
+        <div class="page-heading compact">
+          <div><p class="kicker yellow">STARTER · 8 MINUTES</p><h1 id="starterTitle">Decode the coordinates.</h1><p>Learn the rule, then answer all four questions before moving on.</p></div>
+          <div class="keyword-card"><small>KEYWORDS</small><strong>coordinate · x-axis · y-axis · event</strong></div>
+        </div>
+        <div class="wagba-row">
+          <div><span>K</span><p><strong>Know</strong> that a coordinate has x and y values.</p></div>
+          <div><span>S</span><p><strong>Use</strong> coordinates to locate a sprite.</p></div>
+          <div><span>U</span><p><strong>Explain</strong> which value changes movement.</p></div>
+        </div>
+        <div class="starter-layout">
+          <article class="concept-card">
+            <div class="concept-tabs"><button class="active" data-concept="x">X coordinate</button><button data-concept="y">Y coordinate</button><button data-concept="event">Event</button></div>
+            <div class="concept-panel" id="conceptPanel">
+              <div class="big-letter blue">X</div><div><h2>Across first</h2><p>The x coordinate moves a sprite left or right. Negative x is left; positive x is right.</p><p class="memory-tip"><strong>Memory tip:</strong> walk along the corridor before climbing the stairs.</p></div>
+            </div>
+            <button class="image-toggle" id="referenceToggle">Show the full coordinate reference ↓</button>
+            <img class="reference-image" id="referenceImage" src="assets/images/coordinate-reference.png" alt="Scratch coordinate grid showing x and y axes" hidden>
+          </article>
+          <form class="quiz-card" id="starterForm">
+            <div class="question"><span>01</span><fieldset><legend>Which direction does the x coordinate control?</legend><label><input type="radio" name="starterXDirection" value="up-down"> Up and down</label><label><input type="radio" name="starterXDirection" value="left-right"> Left and right</label></fieldset></div>
+            <div class="question"><span>02</span><fieldset><legend>Which coordinate is written first?</legend><label><input type="radio" name="starterFirstCoordinate" value="x"> x coordinate</label><label><input type="radio" name="starterFirstCoordinate" value="y"> y coordinate</label></fieldset></div>
+            <div class="question coordinate-question"><span>03</span><div>
+              <p class="question-title">Look at Point A. Build its coordinate.</p>
+              <p class="question-help"><strong>Across first:</strong> read x. <strong>Then:</strong> read y.</p>
+              <div class="mini-coordinate-grid" aria-label="Point A is left of the y-axis and below the x-axis. Dotted guides show x is negative 120 and y is negative 135.">
+                <div class="mini-axis mini-axis-x"></div><div class="mini-axis mini-axis-y"></div>
+                <div class="mini-guide mini-guide-x"></div><div class="mini-guide mini-guide-y"></div>
+                <div class="mini-point">A</div><span class="mini-x-label">x = −120</span><span class="mini-y-label">y = −135</span><span class="mini-origin">0</span>
+              </div>
+              <div class="coordinate-builder">
+                <span class="pair-bracket">(</span>
+                <label for="starterPointAX"><strong>x</strong><input id="starterPointAX" name="starterPointAX" inputmode="numeric" autocomplete="off" placeholder="x value" aria-label="Point A x value"></label>
+                <span class="pair-comma">,</span>
+                <label for="starterPointAY"><strong>y</strong><input id="starterPointAY" name="starterPointAY" inputmode="numeric" autocomplete="off" placeholder="y value" aria-label="Point A y value"></label>
+                <span class="pair-bracket">)</span>
+              </div>
+            </div></div>
+            <div class="question"><span>04</span><fieldset><legend>Which block begins a Scratch program when the flag is clicked?</legend><label><input type="radio" name="starterEvent" value="move"> move 10 steps</label><label><input type="radio" name="starterEvent" value="flag"> when green flag clicked</label></fieldset></div>
+            <div class="feedback" id="starterFeedback" aria-live="polite"></div>
+            <button class="button primary wide" type="submit">Check my starter</button>
+          </form>
+        </div>
+        <div class="page-actions"><span>Complete all four questions. The yellow button will unlock next.</span><button class="button black continue-button" data-current="starter" data-next="main1" disabled>Continue to Main Activity 1 →</button></div>
+      </section>
+
+      <section class="page" data-page-panel="main1" aria-labelledby="main1Title">
+        <div class="page-heading compact"><div><p class="kicker blue">MAIN ACTIVITY 1 · 12 MINUTES</p><h1 id="main1Title">Predict before you run.</h1><p>Read every block from top to bottom. Work out the final x and y without using Scratch first.</p></div><div class="challenge-pill">3 prediction levels</div></div>
+        <div class="activity-carousel" id="predictionCarousel">
+          <div class="carousel-top"><button class="icon-button" id="predictionPrev" aria-label="Previous prediction">←</button><div><span id="predictionCounter">LEVEL 1 / 3</span><strong id="predictionHeading">One coordinate changes</strong></div><button class="icon-button" id="predictionNext" aria-label="Next prediction">→</button></div>
+          <div class="prediction-layout">
+            <div class="prediction-image-wrap"><img id="predictionImage" src="assets/images/prediction-level-1.png" alt="Prediction level 1 Scratch blocks and coordinate grid"></div>
+            <form class="prediction-form" id="predictionForm">
+              <p class="kicker">YOUR PREDICTION</p>
+              <h2 id="predictionPrompt">Where will the sprite finish?</h2>
+              <div class="coordinate-inputs"><label>Final x<input id="predictionX" inputmode="numeric" placeholder="x"></label><label>Final y<input id="predictionY" inputmode="numeric" placeholder="y"></label></div>
+              <label for="predictionExplain">Explain how you know</label>
+              <textarea id="predictionExplain" rows="5" placeholder="First the event starts... Next... Therefore..."></textarea>
+              <button class="button primary wide" type="submit">Save this prediction</button>
+              <div class="feedback" id="predictionFeedback" aria-live="polite"></div>
+            </form>
+          </div>
+          <div class="level-dots" id="predictionDots" aria-label="Prediction levels"></div>
+        </div>
+        <div class="evidence-mini"><div><span>OPTIONAL EVIDENCE</span><strong>Add a photo of your working or partner discussion notes.</strong></div><label class="button outline upload-label">Add image<input type="file" accept="image/*" data-upload="main1"></label><div class="thumb-list" data-thumbs="main1"></div></div>
+        <div class="page-actions"><span>Save all three predictions. Then use the one Continue button.</span><button class="button black continue-button" data-current="main1" data-next="main2" disabled>Continue to Main Activity 2 →</button></div>
+      </section>
+
+      <section class="page" data-page-panel="main2" aria-labelledby="main2Title">
+        <div class="page-heading compact"><div><p class="kicker purple">MAIN ACTIVITY 2 · 25 MINUTES</p><h1 id="main2Title">Build Coordinate Quest.</h1><p>Choose the prepared template or a blank Scratch project, then complete Version 1.</p></div><div class="status-card"><small>TARGET ROUTE</small><strong>START → A → B → C → D → KEY</strong></div></div>
+        <div class="launch-grid">
+          <article class="launch-card recommended"><div class="tag">RECOMMENDED</div><span class="launch-number">A</span><h2>Use the student template</h2><p>The stage, explorer, key, portal and first START → A movement are already prepared.</p><a class="button primary wide" href="assets/scratch/Year6_T1W3_Main_Activity_2_Template.sb3" download>Download Main Activity 2 template</a><ol><li>Download the `.sb3` file.</li><li>Open Scratch and choose <strong>File → Load from your computer</strong>.</li><li>Complete the missing glide blocks.</li></ol></article>
+          <article class="launch-card"><span class="launch-number">B</span><h2>Build from a blank project</h2><p>Choose this route if you are confident creating the sprites and stage yourself.</p><a class="button black wide" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open a new Scratch project ↗</a><a class="button outline wide" href="assets/scratch/Year6_T1W3_Coordinate_Quest_Starter.sb3" download>Download starter reference</a><p class="small-note">Scratch opens in a new tab. Keep this lesson tab open.</p></article>
+        </div>
+        <div class="route-table-card">
+          <div><p class="kicker">EXACT COORDINATES</p><h2>Build one connected sequence.</h2></div>
+          <div class="route-steps"><div><span>START</span><strong>(−200, −135)</strong></div><i>→</i><div><span>A</span><strong>(−120, −135)</strong></div><i>→</i><div><span>B</span><strong>(−120, −35)</strong></div><i>→</i><div><span>C</span><strong>(10, −35)</strong></div><i>→</i><div><span>D</span><strong>(10, 95)</strong></div><i>→</i><div class="key-step"><span>KEY</span><strong>(170, 95)</strong></div></div>
+        </div>
+        <div class="main2-work">
+          <form class="build-reflection" id="main2Form">
+            <p class="kicker">PLAN → BUILD → TEST</p>
+            <label for="main2Prediction">Before testing: where should the explorer finish?</label><input id="main2Prediction" name="main2Prediction" placeholder="Checkpoint and coordinates">
+            <label for="main2Debug">Describe one mistake you found and how you fixed it.</label><textarea id="main2Debug" name="main2Debug" rows="4" placeholder="The explorer went... I checked... I changed..."></textarea>
+            <label for="main2Filename">What did you name your Scratch file?</label><input id="main2Filename" name="main2Filename" placeholder="Name_CoordinateQuest_v1.sb3">
+            <button class="button primary wide" type="submit">Save my build notes</button>
+            <div class="feedback" id="main2Feedback" aria-live="polite"></div>
+          </form>
+          <div class="upload-zone">
+            <p class="kicker">REQUIRED SCREENSHOT</p><h2>Show the stage and your blocks.</h2><p>Your screenshot is saved on this device and placed into your final PDF report.</p>
+            <label class="drop-upload"><span>+</span><strong>Add Scratch screenshot</strong><small>PNG or JPG</small><input type="file" accept="image/*" data-upload="main2" multiple></label>
+            <div class="thumb-list large" data-thumbs="main2"></div>
+          </div>
+        </div>
+        <div class="page-actions"><span>Save build notes and add at least one screenshot.</span><button class="button black continue-button" data-current="main2" data-next="extension" disabled>Continue to Extension →</button></div>
+      </section>
+
+      <section class="page" data-page-panel="extension" aria-labelledby="extensionTitle">
+        <div class="page-heading compact"><div><p class="kicker green">EXTENSION · UP TO 10 MINUTES</p><h1 id="extensionTitle">Complete at least three levels.</h1><p>Each level adds a more demanding idea to your working coordinate algorithm.</p></div><div class="extension-score"><span id="extensionCount">0</span><small>/ 3 required</small></div></div>
+        <div class="extension-carousel">
+          <div class="extension-card" id="extensionCard">
+            <div class="extension-top"><span id="extensionLevel">LEVEL 1</span><div class="difficulty" id="extensionDifficulty">●○○○○</div></div>
+            <div class="extension-content"><div class="extension-visual" id="extensionVisual"><span>KEY</span><i>→</i><span class="portal">PORTAL</span></div><div><p class="kicker" id="extensionType">COORDINATE CHALLENGE</p><h2 id="extensionHeading">Reach the portal</h2><p id="extensionDescription">After reaching the key, add one more glide block to the portal at (195, −140).</p><div class="success-box"><strong>Success looks like:</strong><p id="extensionSuccess">The explorer visits all checkpoints, collects the key and finishes inside the portal.</p></div><label class="complete-level"><input type="checkbox" id="extensionComplete"><span>Mark this level complete</span></label></div></div>
+          </div>
+          <div class="carousel-controls"><button class="button outline" id="extensionPrev">← Previous level</button><div class="level-dots" id="extensionDots"></div><button class="button black" id="extensionNext">Next level →</button></div>
+        </div>
+        <div class="extension-evidence"><label for="extensionNotes"><strong>What did you improve?</strong><span>Describe the hardest extension you completed.</span></label><textarea id="extensionNotes" rows="4" placeholder="I added... It was difficult because... I solved it by..."></textarea><label class="button outline upload-label">Add extension screenshot<input type="file" accept="image/*" data-upload="extension" multiple></label><div class="thumb-list" data-thumbs="extension"></div></div>
+        <div class="page-actions"><span>Complete at least three levels and write your notes.</span><button class="button black continue-button" data-current="extension" data-next="plenary" disabled>Continue to Plenary →</button></div>
+      </section>
+
+      <section class="page" data-page-panel="plenary" aria-labelledby="plenaryTitle">
+        <div class="page-heading compact"><div><p class="kicker pink">PLENARY · 5 MINUTES</p><h1 id="plenaryTitle">Explain what your code did.</h1><p>Your answers are included in the evidence PDF, so write complete sentences.</p></div><div class="exit-ticket">EXIT<br>TICKET</div></div>
+        <form class="plenary-form" id="plenaryForm">
+          <label><span>01</span><div><strong>What is a coordinate?</strong><small>Use the words x and y.</small><textarea name="plenaryCoordinate" rows="3" placeholder="A coordinate is..."></textarea></div></label>
+          <label><span>02</span><div><strong>Why does the order of blocks matter?</strong><small>Describe what could happen if the order changes.</small><textarea name="plenarySequence" rows="3" placeholder="The order matters because..."></textarea></div></label>
+          <label><span>03</span><div><strong>How did you debug your algorithm?</strong><small>Name one strategy that helped.</small><textarea name="plenaryDebug" rows="3" placeholder="I debugged by..."></textarea></div></label>
+          <fieldset class="confidence"><legend>How confident are you now?</legend><label><input type="radio" name="confidence" value="1"><span>1</span><small>I need help</small></label><label><input type="radio" name="confidence" value="2"><span>2</span><small>Getting there</small></label><label><input type="radio" name="confidence" value="3"><span>3</span><small>Mostly secure</small></label><label><input type="radio" name="confidence" value="4"><span>4</span><small>Confident</small></label><label><input type="radio" name="confidence" value="5"><span>5</span><small>I can teach it</small></label></fieldset>
+          <button class="button primary wide" type="submit">Save my exit ticket</button><div class="feedback" id="plenaryFeedback" aria-live="polite"></div>
+        </form>
+        <div class="page-actions"><span>Complete all three answers and select confidence.</span><button class="button black continue-button" data-current="plenary" data-next="report" disabled>Build my evidence report →</button></div>
+      </section>
+
+      <section class="page" data-page-panel="report" aria-labelledby="reportTitle">
+        <div class="page-heading compact"><div><p class="kicker red">FINAL EVIDENCE</p><h1 id="reportTitle">Download. Check. Upload.</h1><p>Your report combines every saved response, completed challenge and screenshot.</p></div><div class="pdf-badge">PDF</div></div>
+        <div class="report-summary">
+          <div class="report-student"><span>STUDENT</span><strong id="reportStudentName">—</strong><small id="reportStudentClass">—</small></div>
+          <div><span>STARTER</span><strong id="reportStarterStatus">Not complete</strong></div><div><span>PREDICTIONS</span><strong id="reportPredictionStatus">0 / 3</strong></div><div><span>SCREENSHOTS</span><strong id="reportScreenshotStatus">0 added</strong></div><div><span>EXTENSIONS</span><strong id="reportExtensionStatus">0 / 5</strong></div><div><span>PLENARY</span><strong id="reportPlenaryStatus">Not complete</strong></div>
+        </div>
+        <div class="export-panel">
+          <div class="export-copy"><p class="kicker">STEP 1</p><h2>Export your lesson PDF</h2><p>The filename automatically uses your name and class. Open the PDF after downloading and check that your screenshots are visible.</p><button class="button primary huge" id="exportPdfButton">Export my evidence PDF ↓</button><div class="feedback" id="pdfFeedback" aria-live="polite"></div></div>
+          <div class="pdf-preview" aria-hidden="true"><div class="paper-page"><span>COORDINATE QUEST</span><h3 id="previewStudentName">Student Evidence</h3><div class="fake-lines"></div><div class="fake-image">SCRATCH EVIDENCE</div><small>Year 6 Computing · T1W3</small></div></div>
+        </div>
+        <div class="teams-panel">
+          <div class="teams-icon">T</div><div><p class="kicker">STEP 2 · MICROSOFT TEAMS</p><h2>Upload the downloaded PDF</h2></div>
+          <ol><li>Open the correct <strong>Computing assignment</strong> in Teams.</li><li>Select <strong>Add work</strong> or <strong>Attach</strong>.</li><li>Choose your downloaded file: <code id="teamsFilename">Name_Class_CoordinateQuest.pdf</code>.</li><li>Wait until the upload finishes, then select <strong>Turn in</strong>.</li></ol>
+          <label class="teams-check"><input type="checkbox" id="teamsSubmitted"><span>I have checked my PDF and uploaded it to Teams.</span></label>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="confirmDialog"><form method="dialog"><h2 id="dialogTitle">Are you sure?</h2><p id="dialogMessage"></p><div><button class="button outline" value="cancel">Cancel</button><button class="button black" id="dialogConfirm" value="confirm">Confirm</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
