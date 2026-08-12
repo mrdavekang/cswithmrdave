@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-paced Year 10 OxfordAQA 9210 lesson on input, output, arithmetic operators and type conversion in Python.">
+  <title>Week 2 Session 3 | Input, Arithmetic and Conversion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <div class="landing-intro">
+        <p class="eyebrow">OxfordAQA 9210 · Week 2 Session 3</p>
+        <h1 id="landingTitle">Input, arithmetic and conversion</h1>
+        <p>Turn keyboard input into usable numerical data, choose the correct arithmetic operator and prove your program works in your own Python IDE.</p>
+        <div class="pills"><span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Paper 1 + Paper 2</span><span>Own Python IDE</span><span>Complete PDF evidence</span></div>
+      </div>
+      <form id="entryForm" class="landing-form" novalidate>
+        <h2>Enter the lesson</h2>
+        <p>Your answers and evidence are saved only on this device and browser.</p>
+        <div class="field"><label class="required" for="studentName">Name</label><input id="studentName" type="text" autocomplete="name" placeholder="Enter your full name"></div>
+        <div class="field"><label class="required" for="studentClass">Class</label><input id="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A"></div>
+        <button class="primary wide" type="submit">Start lesson</button>
+        <p id="entryError" class="error-message" role="alert"></p>
+        <div id="savedProfile" class="saved-profile hidden"></div>
+        <div class="teacher-note"><strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be blank; all pages and preview controls will be available.</div>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand"><strong>W02S03 · Input &amp; arithmetic</strong><span id="profileLabel">Student · Class</span></div>
+      <div class="progress-wrap">
+        <div class="progress-meta"><span id="stepIndicator">Starter · Page 1 of 5</span><span id="progressText">0% complete</span></div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+      <div class="top-actions"><span id="saveState" class="save-state" aria-live="polite">Saved on this device</span><button id="quickExport" class="ghost" type="button">Export PDF</button><button id="exitButton" class="secondary" type="button">Exit</button></div>
+    </header>
+
+    <div id="reviewBanner" class="review-banner hidden">Teacher preview is active. Preview responses are stored separately.<button id="fillSamples" class="secondary" type="button">Fill sample answers</button><button id="clearPreview" class="ghost" type="button">Clear preview</button></div>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Lesson information and navigation">
+        <div class="side-card objective-card"><h2>Objective</h2><p>Create, run and explain a Python program that accepts input, converts it, performs arithmetic and displays clearly labelled output.</p></div>
+        <div class="side-card wagba-card"><h2>WAGBA</h2><p>Converting user input into usable data and selecting the correct arithmetic operator to produce accurate output.</p></div>
+        <div class="side-card ksu-list">
+          <h3>Knowledge · Skills · Understanding</h3>
+          <p><strong>K</strong> <code>input()</code> initially returns a string; <code>int()</code> and <code>float()</code> convert data; <code>/</code>, <code>//</code> and <code>%</code> produce different results.</p>
+          <p><strong>S</strong> Predict, convert, calculate, write, run, test and debug Python code.</p>
+          <p><strong>U</strong> The problem determines the data type and operator; quotient and remainder describe different parts of a result.</p>
+          <div class="ao-strip"><span class="ao-badge ao1">AO1 recall</span><span class="ao-badge ao2">AO2 apply</span><span class="ao-badge ao3">AO3 program</span></div>
+        </div>
+        <nav class="step-nav" aria-label="Lesson pages">
+          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span></button>
+          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Main Activity 1</span><span class="step-time">20 min</span></button>
+          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 2</span><span class="step-time">25 min</span></button>
+          <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Early finish</span></button>
+          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Plenary &amp; export</span><span class="step-time">7 min</span></button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <details class="mobile-ksu" open><summary>Objective, WAGBA and Knowledge · Skills · Understanding</summary><p><strong>Objective:</strong> Create, run and explain a Python program that accepts, converts and processes input.</p><p><strong>WAGBA:</strong> Converting user input into usable data and selecting the correct arithmetic operator.</p><p><strong>K:</strong> input, output, conversion and operators. <strong>S:</strong> predict, write, test and debug. <strong>U:</strong> data type and operator choices depend on the problem.</p></details>
+
+        <section class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - Diagnose the input problem">
+          <p class="section-kicker">Starter · Diagnose before running · AO1/AO2</p>
+          <h1>Why will this program fail?</h1>
+          <p class="section-lead">Work independently. Predict from the code first—do not run it yet.</p>
+          <div class="time-chip">Target: 8 minutes</div>
+          <div class="task-card">
+            <h2>Do Now: five quick questions</h2>
+            <div class="code-wrap"><pre id="starterCode">age = input("Enter your age: ")
+print(type(age))
+next_age = age + 1</pre><button class="copy-button" data-copy-target="starterCode" type="button">Copy</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="s_stored">1. If the user types <code>15</code>, what value is stored in <code>age</code>?</label><input id="s_stored" data-field="s_stored" data-label="Starter value stored in age" type="text"></div>
+              <div class="question"><label class="question-label" for="s_type">2. What data type will <code>type(age)</code> report?</label><input id="s_type" data-field="s_type" data-label="Starter data type of age" type="text"></div>
+              <div class="question"><label class="question-label" for="s_error_line">3. Which line will cause an error?</label><input id="s_error_line" data-field="s_error_line" data-label="Starter line causing an error" type="text"></div>
+              <div class="question"><label class="question-label" for="s_error_reason">4. Why can Python not calculate that line?</label><textarea id="s_error_reason" data-field="s_error_reason" data-label="Starter reason for the error"></textarea></div>
+              <div class="question full"><label class="question-label" for="s_conversion">5. Should the age be converted with <code>int()</code> or <code>float()</code>? Give a reason.</label><textarea id="s_conversion" data-field="s_conversion" data-label="Starter conversion choice and reason"></textarea></div>
+            </div>
+            <details class="answer-check"><summary>Check after answering</summary><p>If the user types 15, <code>input()</code> stores the string <code>"15"</code>. The final line attempts to add a string and an integer, causing a type error. <code>int()</code> is suitable because age in years is being treated as a whole number.</p></details>
+          </div>
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-1-input-process-output.png" alt="Five-stage journey from keyboard input to string data, conversion, processing and printed output"><figcaption>Visual 1 · A numerical program still receives keyboard input as text first. Select to enlarge.</figcaption></figure>
+          <div class="callout green"><strong>Today’s objective</strong>Create, run and explain a Python program that accepts user input, converts it into a suitable data type, performs arithmetic and displays clearly labelled output.</div>
+          <div class="paper-strip"><div><strong>Paper 1</strong><span>Write, run, test and repair Python programs in your own IDE.</span></div><div><strong>Paper 2</strong><span>Predict results and explain input, output, conversion and arithmetic operators.</span></div></div>
+          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main Activity 1</button></div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section-key="main1" data-report-title="Main Activity 1 - Input, conversion and debugging">
+          <p class="section-kicker">Main Activity 1 · Read, diagnose and repair · AO1/AO2/AO3</p>
+          <h1>Turn text input into numerical data</h1>
+          <p class="section-lead">Read the teaching notes and worked example before repairing the delivery-cost program in your own IDE.</p>
+          <div class="time-chip">Target: 20 minutes</div>
+
+          <article class="reading-card">
+            <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed p4, pp8–9 and pp18–19</span><span>PDF pp8, 12–13 and 22–23</span><span>Specification 3.2.7</span></div>
+            <h2>Reading: input, output and conversion</h2>
+            <p><code>input()</code> pauses a program and collects characters typed using the keyboard. Python initially stores those characters as a <strong>string</strong>, even when they look like a number. A string can be displayed, but it cannot be used directly in numerical arithmetic.</p>
+            <p>Use <code>int()</code> when the program needs a whole number. Use <code>float()</code> when the value may contain a decimal part. <code>print()</code> displays output; a useful program labels its output so the user knows what the result means.</p>
+            <p>The conversion can happen on a separate line, or around the input statement: <code>item_cost = float(input("Enter the item cost: "))</code>.</p>
+          </article>
+
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-2-type-conversion-bridge.png" alt="Input 35 becoming the string 35 and branching through int or float conversion"><figcaption>Visual 2 · Choose the conversion according to the kind of number the program needs.</figcaption></figure>
+
+          <div class="task-card">
+            <h2>Worked example before you begin</h2>
+            <div class="code-wrap"><pre id="workedConversion">quantity_text = input("Enter a quantity: ")
+quantity = int(quantity_text)
+double_quantity = quantity * 2
+print("Double quantity:", double_quantity)</pre><button class="copy-button" data-copy-target="workedConversion" type="button">Copy</button></div>
+            <div class="worked-grid"><div><strong>Keyboard entry</strong><code>"6"</code></div><div><strong>Initial type</strong>String</div><div><strong>After conversion</strong><code>6</code> as an integer</div><div><strong>Output</strong><code>Double quantity: 12</code></div></div>
+          </div>
+
+          <div class="task-card">
+            <h2>Part A: diagnose before running</h2>
+            <div class="code-wrap"><pre id="brokenDelivery">DELIVERY_CHARGE = 5.50
+
+item_cost = input("Enter the item cost: ")
+total_cost = item_cost + DELIVERY_CHARGE
+
+print("Total cost:", total_cost)</pre><button class="copy-button" data-copy-target="brokenDelivery" type="button">Copy code</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m1_names">Identify the constant and the two variables.</label><textarea id="m1_names" data-field="m1_names" data-label="Constant and variables in delivery program"></textarea></div>
+              <div class="question"><label class="question-label" for="m1_predict">If the user enters <code>35</code>, predict what will happen.</label><textarea id="m1_predict" data-field="m1_predict" data-label="Prediction for delivery program with input 35"></textarea></div>
+              <div class="question"><label class="question-label" for="m1_type">What data type is <code>item_cost</code> immediately after <code>input()</code>?</label><input id="m1_type" data-field="m1_type" data-label="Initial type of item_cost" type="text"></div>
+              <div class="question"><label class="question-label" for="m1_mismatch">Name the two incompatible data types in the calculation.</label><input id="m1_mismatch" data-field="m1_mismatch" data-label="Incompatible types in delivery calculation" type="text"></div>
+            </div>
+          </div>
+
+          <details class="visual-reveal"><summary>Open after attempting Part A: visual explanation</summary><figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-3-type-error-diagnosis.png" alt="Comparison showing why string 35 cannot be added to float 5.50 and how float conversion repairs it"><figcaption>Visual 3 · Conversion makes both values numerical before addition.</figcaption></figure></details>
+
+          <div class="task-card">
+            <h2>Part B: run, repair and test</h2>
+            <ol class="instruction-steps">
+              <li>Copy the broken program into your own Python IDE and run it with <code>35</code>.</li>
+              <li>Record the error message in your own words.</li>
+              <li>Repair the program using <code>float()</code>.</li>
+              <li>Test it with <code>35</code> and <code>19.99</code>.</li>
+              <li>Paste your final code and add one complete IDE screenshot.</li>
+            </ol>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m1_error">What error occurred, and what caused it?</label><textarea id="m1_error" data-field="m1_error" data-label="Observed error and cause"></textarea></div>
+              <div class="question"><label class="question-label" for="m1_test35">Record the output when the item cost is <code>35</code>.</label><textarea id="m1_test35" data-field="m1_test35" data-label="Delivery program test with 35"></textarea></div>
+              <div class="question"><label class="question-label" for="m1_test1999">Record the output when the item cost is <code>19.99</code>.</label><textarea id="m1_test1999" data-field="m1_test1999" data-label="Delivery program test with 19.99"></textarea></div>
+              <div class="question"><label class="question-label" for="m1_paper2">Paper 2: explain why conversion is required before the calculation.</label><textarea id="m1_paper2" data-field="m1_paper2" data-label="Paper 2 explanation of type conversion"></textarea></div>
+            </div>
+            <label class="question-label" for="m1_code">Your final tested Python code</label><textarea id="m1_code" class="code-entry" data-field="m1_code" data-label="Final repaired delivery-cost code" data-report-type="code" spellcheck="false"></textarea>
+            <div class="evidence-zone" data-evidence-zone="main1" tabindex="0"><strong>Add your IDE evidence</strong><p>Paste, drag or choose a complete screenshot showing the code and a successful run.</p><label class="secondary" for="evidenceMain1">Choose image</label><input id="evidenceMain1" data-evidence-input="main1" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="main1"></div></div>
+          </div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Continue to Main Activity 2</button></div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section-key="main2" data-report-title="Main Activity 2 - Division, remainder and testing">
+          <p class="section-kicker">Main Activity 2 · Apply operators in Python and pseudocode · AO1/AO2/AO3</p>
+          <h1>Complete groups or exact division?</h1>
+          <p class="section-lead">Learn the three division operators, then build and test a minutes-to-hours converter in your own IDE.</p>
+          <div class="time-chip">Target: 25 minutes</div>
+
+          <article class="reading-card">
+            <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed pp14–15 and pp20–21</span><span>PDF pp18–19 and pp24–25</span><span>Specification 3.2.3 and 3.2.7</span></div>
+            <h2>Reading: three different division results</h2>
+            <p>Real division <code>/</code> calculates the full numerical result, including a decimal part when needed. Integer division <code>//</code> returns the number of <strong>complete groups</strong>. The remainder operator <code>%</code> returns the amount <strong>left over</strong>.</p>
+            <p>OxfordAQA pseudocode uses <code>DIV</code> for integer division and <code>MOD</code> for remainder. Python uses <code>//</code> and <code>%</code>. The notation changes, but the calculation and meaning stay the same.</p>
+          </article>
+
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-4-python-division-operators.png" alt="Nineteen objects grouped in fours to compare slash, double slash and percent operators"><figcaption>Visual 4 · Real division, complete groups and what remains answer different questions.</figcaption></figure>
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-5-python-oxfordaqa-operator-bridge.png" alt="Mapping between Python division operators and OxfordAQA pseudocode slash, DIV and MOD"><figcaption>Visual 5 · Recognise both Python and OxfordAQA pseudocode notation.</figcaption></figure>
+
+          <div class="task-card">
+            <h2>Operator check</h2>
+            <div class="operator-grid">
+              <div><code>/</code><strong>Real division</strong><span>Exact numerical result</span></div>
+              <div><code>//</code><strong>Integer division</strong><span>Complete groups</span></div>
+              <div><code>%</code><strong>Remainder</strong><span>Amount left over</span></div>
+            </div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_operator_hours">Which operator finds complete hours?</label><input id="m2_operator_hours" data-field="m2_operator_hours" data-label="Operator for complete hours" type="text"></div>
+              <div class="question"><label class="question-label" for="m2_operator_remaining">Which operator finds remaining minutes?</label><input id="m2_operator_remaining" data-field="m2_operator_remaining" data-label="Operator for remaining minutes" type="text"></div>
+              <div class="question"><label class="question-label" for="m2_aqa_terms">What are the OxfordAQA pseudocode equivalents of <code>//</code> and <code>%</code>?</label><input id="m2_aqa_terms" data-field="m2_aqa_terms" data-label="OxfordAQA equivalents of integer division and remainder" type="text"></div>
+              <div class="question"><label class="question-label" for="m2_operator_explain">Explain the difference between <code>//</code> and <code>%</code>.</label><textarea id="m2_operator_explain" data-field="m2_operator_explain" data-label="Difference between integer division and remainder"></textarea></div>
+            </div>
+          </div>
+
+          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-6-minutes-to-hours-model.png" alt="Timeline showing 220 minutes as three complete hours and 40 minutes remaining using double slash and percent"><figcaption>Visual 6 · Model the problem before reading the program.</figcaption></figure>
+
+          <div class="task-card">
+            <h2>Part A: inspect and predict</h2>
+            <div class="code-wrap"><pre id="minutesProgram">MINUTES_PER_HOUR = 60
+
+total_minutes = int(input("Enter the number of minutes: "))
+
+whole_hours = total_minutes // MINUTES_PER_HOUR
+minutes_remaining = total_minutes % MINUTES_PER_HOUR
+
+print("Whole hours:", whole_hours)
+print("Minutes remaining:", minutes_remaining)</pre><button class="copy-button" data-copy-target="minutesProgram" type="button">Copy code</button></div>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="m2_constant">Identify the constant and explain why it should not change.</label><textarea id="m2_constant" data-field="m2_constant" data-label="Constant in minutes program and reason"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_variables">Identify the three variables.</label><textarea id="m2_variables" data-field="m2_variables" data-label="Variables in minutes program"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_predict220">Predict both output lines when the user enters <code>220</code>.</label><textarea id="m2_predict220" data-field="m2_predict220" data-label="Prediction for 220 minutes"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_int_reason">Why is <code>int()</code> suitable for this program?</label><textarea id="m2_int_reason" data-field="m2_int_reason" data-label="Reason int conversion is suitable"></textarea></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h2>Part B: run four deliberate tests</h2>
+            <ol class="instruction-steps"><li>Copy the program into your own Python IDE.</li><li>Run each test below and record the actual output.</li><li>If a result differs from the expected output, inspect your conversion and operators.</li><li>Paste your final code and add a screenshot showing at least one successful run.</li></ol>
+            <div class="test-table" role="table" aria-label="Minutes converter test plan">
+              <div class="test-head" role="row"><span>Input</span><span>Expected output</span><span>Your actual output</span></div>
+              <div class="test-row" role="row"><code>220</code><span>3 hours, 40 minutes</span><input id="m2_test220" data-field="m2_test220" data-label="Actual output for 220 minutes" type="text"></div>
+              <div class="test-row" role="row"><code>60</code><span>1 hour, 0 minutes</span><input id="m2_test60" data-field="m2_test60" data-label="Actual output for 60 minutes" type="text"></div>
+              <div class="test-row" role="row"><code>59</code><span>0 hours, 59 minutes</span><input id="m2_test59" data-field="m2_test59" data-label="Actual output for 59 minutes" type="text"></div>
+              <div class="test-row" role="row"><code>0</code><span>0 hours, 0 minutes</span><input id="m2_test0" data-field="m2_test0" data-label="Actual output for 0 minutes" type="text"></div>
+            </div>
+            <label class="question-label" for="m2_code">Your final tested Python code</label><textarea id="m2_code" class="code-entry" data-field="m2_code" data-label="Final minutes-to-hours code" data-report-type="code" spellcheck="false"></textarea>
+            <div class="question-grid"><div class="question full"><label class="question-label" for="m2_paper2">Paper 2: explain why the program needs both integer division and remainder.</label><textarea id="m2_paper2" data-field="m2_paper2" data-label="Paper 2 explanation of integer division and remainder"></textarea></div></div>
+            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0"><strong>Add your converter evidence</strong><p>Paste, drag or choose a complete IDE screenshot. It will retain its full aspect ratio in the PDF.</p><label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" data-evidence-input="main2" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="main2"></div></div>
+          </div>
+          <div class="callout purple"><strong>Quick challenge if time remains</strong>Adapt the same structure to convert a total number of seconds into complete minutes and remaining seconds.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Open extension tasks</button></div>
+        </section>
+
+        <section class="activity-step" data-step="3" data-section-key="extension" data-report-title="Extension - Ten MOOC-style programming challenges">
+          <p class="section-kicker">Extension · Early finisher practice · AO1/AO2/AO3</p>
+          <h1>Ten small scenario-based challenges</h1>
+          <p class="section-lead">Complete as many as time allows. Follow the same cycle each time: understand → predict → code → run → test → improve.</p>
+          <div class="callout purple"><strong>Scope reminder</strong>Use input, output, variables, constants, conversion and arithmetic. Selection and loops are not required.</div>
+          <div id="extensionChallenges"></div>
+          <div class="task-card"><h2>Extension reflection and evidence</h2><label class="question-label" for="ext_summary">Which challenges did you complete, and what did you learn or improve?</label><textarea id="ext_summary" data-field="ext_summary" data-label="Extension completion summary"></textarea><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension screenshots</strong><p>Paste, drag or choose one or more complete IDE screenshots.</p><label class="secondary" for="evidenceExtension">Choose images</label><input id="evidenceExtension" data-evidence-input="extension" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="extension"></div></div></div>
+          <div class="source-note">The extension uses an original scaffolded practice style inspired by the <a href="https://programming-26.mooc.fi/part-1/" target="_blank" rel="noopener">University of Helsinki Python Programming MOOC</a>. The scenarios and wording are original.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Go to plenary</button></div>
+        </section>
+
+        <section class="activity-step" data-step="4" data-section-key="plenary" data-report-title="Plenary - Exit ticket and reflection">
+          <p class="section-kicker">Plenary · Independent exit ticket · AO1/AO2</p>
+          <h1>Explain every stage</h1>
+          <p class="section-lead">Answer without running the code. Then export every answer, code sample and evidence image as one PDF.</p>
+          <div class="time-chip">Target: 7 minutes</div>
+          <div class="task-card">
+            <h2>Exit code</h2>
+            <div class="code-wrap"><pre id="plenaryCode">number_text = input("Enter a number: ")
+number = int(number_text)
+
+groups = number // 4
+left_over = number % 4
+
+print(groups)
+print(left_over)</pre><button class="copy-button" data-copy-target="plenaryCode" type="button">Copy</button></div>
+            <p>Assume that the user enters <code>19</code>.</p>
+            <div class="question-grid">
+              <div class="question"><label class="question-label" for="p_type_text">What is the data type of <code>number_text</code>?</label><input id="p_type_text" data-field="p_type_text" data-label="Plenary type of number_text" type="text"></div>
+              <div class="question"><label class="question-label" for="p_type_number">What is the data type of <code>number</code>?</label><input id="p_type_number" data-field="p_type_number" data-label="Plenary type of number" type="text"></div>
+              <div class="question"><label class="question-label" for="p_outputs">What two values are printed?</label><input id="p_outputs" data-field="p_outputs" data-label="Plenary printed values" type="text"></div>
+              <div class="question"><label class="question-label" for="p_groups_mean">What does the value stored in <code>groups</code> mean?</label><textarea id="p_groups_mean" data-field="p_groups_mean" data-label="Meaning of groups value"></textarea></div>
+              <div class="question"><label class="question-label" for="p_remainder_mean">What does the value stored in <code>left_over</code> mean?</label><textarea id="p_remainder_mean" data-field="p_remainder_mean" data-label="Meaning of left_over value"></textarea></div>
+              <div class="question"><label class="question-label" for="p_int_reason">Why is <code>int()</code> required before the calculations?</label><textarea id="p_int_reason" data-field="p_int_reason" data-label="Plenary reason for int conversion"></textarea></div>
+            </div>
+          </div>
+          <div class="task-card"><h2>WAGBA and exam reflection</h2><div class="question-grid"><div class="question"><label class="question-label" for="p_wagba">I am getting better at… because I can…</label><textarea id="p_wagba" data-field="p_wagba" data-label="WAGBA reflection"></textarea></div><div class="question"><label class="question-label" for="p_papers">How could today’s learning appear differently in Paper 1 and Paper 2?</label><textarea id="p_papers" data-field="p_papers" data-label="Paper 1 and Paper 2 reflection"></textarea></div><div class="question full"><label class="question-label" for="p_support">What support or further practice do you need?</label><textarea id="p_support" data-field="p_support" data-label="Support or further practice needed"></textarea></div></div></div>
+          <div class="export-card">
+            <h2>Export your complete lesson evidence</h2>
+            <p>The report includes your profile, every response, all pasted code and each evidence image—even from sections you did not finish.</p>
+            <span id="filenamePreview" class="filename">W02S03_Firstname_Class.pdf</span>
+            <ol><li>Select <strong>Export complete PDF</strong>.</li><li>In the print window choose <strong>Save as PDF</strong>.</li><li>Use the suggested filename and open the saved PDF to check every page.</li><li>Open the correct Microsoft Teams assignment.</li><li>Select <strong>Add work</strong> → <strong>Upload from this device</strong>.</li><li>Select the PDF, check that it has attached, then select <strong>Turn in</strong>.</li></ol>
+            <button id="finalExport" class="primary" type="button">Export complete PDF</button>
+          </div>
+          <div class="source-note">Reading is adapted and paraphrased from the OxfordAQA International GCSE Computer Science Student Book, printed pages 4, 8–9, 14–15 and 18–21, and aligned to OxfordAQA 9210 specification sections 3.2.3 and 3.2.7.</div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button id="returnToStarter" class="ghost" type="button">Return to starter</button></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="imageModal" class="image-modal hidden" role="dialog" aria-modal="true" aria-label="Enlarged lesson visual"><button id="closeModal" type="button" aria-label="Close enlarged visual">×</button><img id="modalImage" alt=""></div>
+  <article id="printReport" class="print-report" aria-label="Printable complete lesson report"></article>
+  <script src="app.js"></script>
+</body>
+</html>
