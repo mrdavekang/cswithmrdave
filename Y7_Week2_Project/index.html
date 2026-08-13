@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Year 7 Week 2 Practical — Wayfinding Route Planner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <noscript><div class="fatal">This lesson needs JavaScript enabled. Ask your teacher for help.</div></noscript>
+
+  <section id="landing" class="landing" aria-labelledby="landing-title">
+    <div class="landing-card">
+      <p class="eyebrow">Year 7 Computer Science · Term 1 Week 2 · Practical</p>
+      <h1 id="landing-title">Plan a New Student Wayfinding Route</h1>
+      <p class="lead">Plan, test and preview a clear route from the <strong>Main Entrance</strong> to <strong>CS Room C1</strong>.</p>
+      <img src="assets/image-01-what-are-we-creating.png" alt="Comparison showing that the project is a Python Turtle route check, not a live GPS app or decorative poster" class="hero-image">
+      <div class="submission-note"><strong>At the end:</strong> download your PDF evidence report and Python file, then upload both to the Microsoft Teams Assignment <strong>Week 2 Practical</strong>.</div>
+      <form id="entry-form" novalidate>
+        <label for="student-name">Full name</label>
+        <input id="student-name" name="studentName" autocomplete="name" maxlength="80" required>
+        <label for="student-class">Class</label>
+        <input id="student-class" name="studentClass" maxlength="20" placeholder="For example: 7T">
+        <p id="entry-error" class="form-error" role="alert"></p>
+        <button type="submit" class="primary">Start lesson</button>
+        <button type="button" id="resume-button" class="secondary hidden">Resume saved work</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Year 7 · Week 2 Practical</p>
+        <h1>Wayfinding Route Planner</h1>
+      </div>
+      <div class="student-badge"><span id="header-name"></span><span id="header-class"></span></div>
+    </header>
+
+    <aside class="learning-panel" aria-label="Lesson learning information">
+      <button id="learning-toggle" class="learning-toggle" aria-expanded="true">Learning goals <span aria-hidden="true">▾</span></button>
+      <div id="learning-content">
+        <section><h2>Key topic</h2><p>Planning clear route instructions with Python Turtle</p></section>
+        <section><h2>WAGBA</h2><p>Plan and test a First-Day School Tour that takes a new student to several required places in the correct order, then use Python Turtle to draw the route.</p></section>
+        <section><h2>Knowledge</h2><ul><li>A journey with several stops can be split into smaller journeys.</li><li>A useful map keeps the places and route details needed by the student.</li><li>The First-Day Tour program reads route points in order and draws a line.</li></ul></section>
+        <section><h2>Skills</h2><ul><li>Explain who the route is for.</li><li>Split and plan the journey.</li><li>Write and test clear instructions.</li><li>Use coordinates with Python Turtle.</li></ul></section>
+        <section><h2>Understanding</h2><p>Someone who has never visited the school should be able to visit every required stop safely, in the correct order, without guessing.</p></section>
+        <section><h2>Keywords</h2><p>route · instruction · split (decompose) · simplify (abstract) · input · process · output · pseudocode · coordinate · test</p></section>
+        <section><h2>Challenge</h2><p>Can another student follow every instruction without asking what you mean?</p></section>
+      </div>
+    </aside>
+
+    <main class="lesson-area">
+      <div class="progress-wrap" aria-label="Lesson progress">
+        <div class="progress-meta"><span id="progress-text">0% complete</span><span id="save-status" role="status">Ready</span></div>
+        <div class="progress-track"><div id="progress-bar"></div></div>
+      </div>
+      <nav id="journey-nav" class="journey-nav" aria-label="Lesson sections"></nav>
+      <div id="section-host"></div>
+      <div class="nav-controls">
+        <button id="back-button" class="secondary">Back</button>
+        <button id="next-button" class="primary">Save and continue</button>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="image-dialog"><button id="close-image" aria-label="Close enlarged image">Close</button><img id="dialog-image" alt=""></dialog>
+
+  <script src="vendor/skulpt.min.js"></script>
+  <script src="vendor/skulpt-stdlib.js"></script>
+  <script src="vendor/html2canvas.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
