@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="A guided Year 9 cybersecurity project lesson: design, model and trace a fictional Scam Detective.">
+  <title>Year 9 Week 2 Project | Scam Detective Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<noscript><div class="fatal">This lesson needs JavaScript enabled. Ask your teacher for help.</div></noscript>
+
+<section id="landing" class="landing" aria-labelledby="landing-title">
+  <div class="landing-card">
+    <div class="landing-copy">
+      <p class="eyebrow">YEAR 9 · TERM 1 · WEEK 2 PROJECT</p>
+      <h1 id="landing-title">Scam Detective Lab</h1>
+      <p class="lead">A fictional gaming-reward message has arrived. Your job is to design a small program that notices warning signs, explains its judgement and recommends a safe next step.</p>
+      <div class="lesson-chips"><span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Planning before Python</span></div>
+      <div class="safety-note"><strong>Stay safe:</strong> every message and link in this lesson is invented. Never open, copy or test a real suspicious link.</div>
+      <form id="entry-form" novalidate>
+        <label for="student-name">Full name</label>
+        <input id="student-name" autocomplete="name" maxlength="80" required>
+        <label for="student-class">Class</label>
+        <input id="student-class" maxlength="20" placeholder="For example: 9T" required>
+        <p id="entry-error" class="form-error" role="alert"></p>
+        <button type="submit" class="button primary wide">Open the case file</button>
+        <button type="button" id="resume-button" class="button secondary wide hidden">Resume saved work</button>
+      </form>
+    </div>
+    <figure class="landing-visual">
+      <img src="assets/images/02-scam-detective-journey.png" alt="Retro educational comic showing the journey from observing a message to recommending a safe action">
+      <figcaption>Observe. Model. Test. Explain.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div><p class="eyebrow">YEAR 9 · WEEK 2 PROJECT</p><strong>Scam Detective Lab</strong></div>
+    <div class="header-actions">
+      <span id="save-status" class="save-status" role="status">Saved locally</span>
+      <span id="student-badge" class="student-badge"></span>
+      <button id="learning-toggle" class="button ghost" type="button" aria-expanded="true">Learning panel</button>
+      <button id="report-button" class="button ghost" type="button">View report</button>
+      <button id="reset-button" class="button ghost danger" type="button">Reset</button>
+    </div>
+  </header>
+  <div class="progress-shell"><div id="progress-bar" class="progress-bar"></div></div>
+
+  <div class="workspace">
+    <aside id="learning-panel" class="learning-panel">
+      <button id="learning-close" class="panel-close" type="button" aria-label="Close learning panel">×</button>
+      <p class="eyebrow">TODAY'S LEARNING</p>
+      <h2>From a problem to a testable plan</h2>
+      <section><h3>WAGBA</h3><p>We are getting better at turning a familiar cybersecurity problem into a clear, testable program plan.</p></section>
+      <details open><summary>Knowledge</summary><ul><li><strong>Decomposition</strong> splits one large job into smaller jobs.</li><li><strong>IPO</strong> shows what enters, what the program does and what it produces.</li><li><strong>Pseudocode</strong> records the steps of an algorithm in readable language.</li></ul></details>
+      <details><summary>Skills</summary><ul><li>Classify message details as useful warning signs or neutral details.</li><li>Describe the five jobs completed by the detector.</li><li>Build an IPO model.</li><li>Predict and trace changes to a variable.</li></ul></details>
+      <details><summary>Understanding</summary><p>A program follows rules written by people. It can estimate concern and explain why, but it cannot prove that a message is a scam.</p></details>
+      <section><h3>Keywords</h3><p class="keyword-list">warning sign · decomposition · abstraction · input · validation · process · output · rule · variable · algorithm · pseudocode · trace · test data</p></section>
+      <section class="challenge-mini"><h3>Today's challenge</h3><p>Could another student follow your plan and always reach the same result?</p></section>
+    </aside>
+
+    <nav id="journey-nav" class="journey-nav" aria-label="Lesson journey"></nav>
+
+    <main class="lesson">
+      <section class="lesson-hero">
+        <div><p class="eyebrow">ONE CASE · ONE PROGRAM · ONE TESTABLE PLAN</p><h1>Help Sam judge a message safely.</h1><p>You will not write Python today. You will create the plan that makes next lesson's programming possible.</p></div>
+        <div class="hero-evidence"><strong>Evidence today</strong><span>Classified clues</span><span>Program purpose</span><span>Five smaller jobs</span><span>IPO model</span><span>Built and traced algorithm</span></div>
+      </section>
+      <div class="scope-banner"><strong>The detector estimates concern.</strong> It does not click links, collect real messages or declare “scam confirmed”.</div>
+      <div id="stage-host"></div>
+      <div class="nav-controls"><button id="back-button" class="button secondary" type="button">Back</button><button id="next-button" class="button primary" type="button">Check and continue</button></div>
+    </main>
+  </div>
+</div>
+
+<template id="stage-starter">
+<article class="stage" data-stage="starter">
+  <header class="stage-header"><span class="stage-number">01</span><div><p class="eyebrow">DO NOW · 6 MINUTES · AO1 + AO2</p><h2>Open the case file</h2><p>First understand the situation. Then decide which details matter.</p></div></header>
+  <div class="case-file">
+    <div><span class="case-label">CASE 01</span><h3>Sam's gaming-reward message</h3><p>Sam is 13 and plays an online game after school. A message appears from <strong>PrizePulse Alerts</strong>:</p><blockquote>“ACT NOW! Your game-credit reward expires today. Sign in to claim 5,000 coins: rewards-check.example”</blockquote><p>Sam does not remember entering a competition. Sam wants help deciding what to do next without opening the link.</p></div>
+    <figure><button class="image-button" type="button" data-enlarge="assets/images/01-suspicious-message.png"><img src="assets/images/01-suspicious-message.png" alt="Retro educational comic of Sam examining a fictional reward message"></button><figcaption>Select the picture to enlarge it.</figcaption></figure>
+  </div>
+
+  <h3>Warm-up: remember two thinking tools</h3>
+  <div class="teach-cards two">
+    <section><span class="mini-number">1</span><h4>Decomposition</h4><p><strong>Split one big job into smaller jobs.</strong></p><p class="example">Big job: organise a school event.<br>Smaller jobs: choose a room, invite people, prepare equipment.</p></section>
+    <section><span class="mini-number">2</span><h4>Abstraction</h4><p><strong>Keep details that affect the solution; ignore details that do not.</strong></p><p class="example">The message wording affects Sam's judgement. The colour of Sam's notebook does not.</p></section>
+  </div>
+  <div class="quick-check">
+    <label>Which thinking tool will help us split the detector into smaller programming jobs?<select data-save="starterTool"><option value="">Choose…</option><option>Decomposition</option><option>Abstraction</option></select></label>
+    <label>Which thinking tool will help us ignore Sam's timetable and headphones?<select data-save="starterIgnore"><option value="">Choose…</option><option>Decomposition</option><option>Abstraction</option></select></label>
+    <button type="button" class="button check-answer" data-action="check-starter">Check my memory</button><p class="feedback" data-feedback="starter"></p>
+  </div>
+
+  <h3>Clue sorter: what should the program notice?</h3>
+  <p>For each detail, decide whether it is a <strong>warning sign used by the detector</strong> or a <strong>neutral detail to ignore</strong>.</p>
+  <div class="clue-grid">
+    <label><span>“ACT NOW” and “expires today”</span><select data-save="clueUrgency"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+    <label><span>An unexpected reward of 5,000 coins</span><select data-save="clueReward"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+    <label><span>A link Sam did not expect</span><select data-save="clueLink"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+    <label><span>A request to sign in</span><select data-save="clueSignIn"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+    <label><span>The phone shows 11:47</span><select data-save="clueTime"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+    <label><span>Sam's notebook is orange</span><select data-save="clueNotebook"><option value="">Classify…</option><option>Warning sign</option><option>Neutral detail</option></select></label>
+  </div>
+  <button type="button" class="button primary" data-action="check-clues">Check the six details</button><p class="feedback" data-feedback="clues"></p>
+</article>
+</template>
+
+<template id="stage-brief">
+<article class="stage" data-stage="brief">
+  <header class="stage-header"><span class="stage-number">02</span><div><p class="eyebrow">MAIN ACTIVITY 1A · 8 MINUTES · AO2</p><h2>Give the program one clear job</h2><p>Before decomposing anything, agree what the whole program is supposed to achieve.</p></div></header>
+  <div class="mission-strip"><strong>THE BIG JOB</strong><p>Ask Sam about four observable details, use simple rules to estimate concern, explain the reasons and recommend a safe next step.</p></div>
+  <figure class="wide-visual compact"><button class="image-button" type="button" data-enlarge="assets/images/03-need-requirement-success.png"><img src="assets/images/03-need-requirement-success.png" alt="Retro educational comic distinguishing a user need, a program requirement and a success criterion"></button></figure>
+
+  <div class="teach-cards three">
+    <section><h4>User need</h4><p>Why a person needs the solution.</p><p class="example">Sam needs help noticing warning signs before deciding what to do.</p></section>
+    <section><h4>Requirement</h4><p>A function the program <strong>must</strong> perform.</p><p class="example">The program must ask whether the message uses urgent language.</p></section>
+    <section><h4>Success criterion</h4><p>Evidence we can observe during a test.</p><p class="example">For the high-concern test, it displays the level, reasons and safe advice.</p></section>
+  </div>
+
+  <h3>Build Sam's design brief</h3>
+  <div class="guided-builder">
+    <label><span class="step-chip">1 · USER</span>Who will use this first version?<select data-save="briefUser"><option value="">Choose…</option><option>Sam, a Year 9 student who received a message</option><option>The person who sent the reward message</option><option>A computer repair company</option></select></label>
+    <label><span class="step-chip">2 · NEED</span>What does Sam need?<select data-save="briefNeed"><option value="">Choose…</option><option>Help noticing warning signs and choosing a safe next step</option><option>A program that opens the link automatically</option><option>A program that stores Sam's password</option></select></label>
+    <label><span class="step-chip">3 · LIMIT</span>What must the program never do?<select data-save="briefLimit"><option value="">Choose…</option><option>Claim certainty, request a password or open a link</option><option>Explain why concern was raised</option><option>Ask simple YES or NO questions</option></select></label>
+  </div>
+
+  <h3>Choose the three functions we will build</h3>
+  <p>Tick only the statements that describe this detector. Each chosen requirement must be testable.</p>
+  <div class="requirement-picker">
+    <label><input type="checkbox" data-save="reqAsk">The program must ask four YES/NO questions about observable warning signs.</label>
+    <label><input type="checkbox" data-save="reqScore">The program must use the answers to calculate a concern score.</label>
+    <label><input type="checkbox" data-save="reqExplain">The program must display a concern level, reasons and a safe next step.</label>
+    <label class="decoy"><input type="checkbox" data-save="reqOpen">The program must open the message link to see where it goes.</label>
+    <label class="decoy"><input type="checkbox" data-save="reqPassword">The program must ask for the user's password.</label>
+  </div>
+  <label class="success-choice">Which result would prove that the first version works?<select data-save="successCriterion"><option value="">Choose one testable result…</option><option>Given a test case with three warning signs, the program displays HIGH concern, gives the reasons and advises the user not to open the link.</option><option>The program looks impressive and uses lots of code.</option><option>The program always says every message is definitely a scam.</option></select></label>
+  <button type="button" class="button primary" data-action="check-brief">Check my design brief</button><p class="feedback" data-feedback="brief"></p>
+
+  <h3>Sequence sprint: three users, three safe journeys</h3>
+  <p>The program must follow a sensible order for different situations. Choose the sequence that protects the user and still gives useful information.</p>
+  <div class="scenario-sequence-grid">
+    <section><span class="scenario-tag">SCENARIO A</span><h4>Gaming reward</h4><p>A message promises coins and includes an unexpected sign-in link.</p><label>Best sequence<select data-save="briefSequenceA"><option value="">Choose…</option><option>Ask about warning signs → calculate concern → explain reasons → recommend a safe action</option><option>Open the link → ask for password → calculate concern</option><option>Display HIGH before asking any questions</option></select></label></section>
+    <section><span class="scenario-tag">SCENARIO B</span><h4>School email</h4><p>A familiar teacher emails from the usual address with no link or urgent language.</p><label>Best sequence<select data-save="briefSequenceB"><option value="">Choose…</option><option>Collect observations → apply the same rules → explain a LOW result while reminding the user to stay cautious</option><option>Skip all questions and display “safe confirmed”</option><option>Delete the message automatically</option></select></label></section>
+    <section><span class="scenario-tag">SCENARIO C</span><h4>Unclear response</h4><p>The detector asks “Unexpected link? YES/NO” and the user types MAYBE.</p><label>Best sequence<select data-save="briefSequenceC"><option value="">Choose…</option><option>Validate → explain the allowed answers → ask the same question again → continue scoring</option><option>Add a point for MAYBE and continue</option><option>End the program without explaining why</option></select></label></section>
+  </div>
+  <button type="button" class="button check-answer" data-action="check-brief-sequences">Check the three sequences</button><p class="feedback" data-feedback="briefSequences"></p>
+</article>
+</template>
+
+<template id="stage-model">
+<article class="stage" data-stage="model">
+  <header class="stage-header"><span class="stage-number">03</span><div><p class="eyebrow">MAIN ACTIVITY 1B · 12 MINUTES · AO2</p><h2>Decompose the big job, then build the IPO model</h2><p>Here, “decompose” means splitting the Scam Detective into five exact programming jobs.</p></div></header>
+  <figure class="wide-visual"><button class="image-button" type="button" data-enlarge="assets/images/04-decomposition.png"><img src="assets/images/04-decomposition.png" alt="Retro educational comic showing five smaller jobs inside the Scam Detective"></button></figure>
+
+  <div class="job-intro"><strong>What are we decomposing?</strong><p>The big job is: <em>turn four observations about Sam's message into an explained concern level and a safe next step.</em></p></div>
+  <div class="job-cards">
+    <section><span class="job-number">1</span><div><h3>COLLECT</h3><p><strong>Job:</strong> ask four YES/NO questions.</p><p><strong>Observations:</strong> unknown sender, urgent language, unexpected link, request for sign-in information.</p><p class="why"><strong>Why?</strong> The program needs facts before it can make a decision.</p></div></section>
+    <section><span class="job-number">2</span><div><h3>VALIDATE</h3><p><strong>Job:</strong> accept only YES or NO.</p><p><strong>Example:</strong> if Sam types MAYBE, display “Please enter YES or NO” and ask again.</p><p class="why"><strong>Why?</strong> The rules cannot reliably use unclear input.</p></div></section>
+    <section><span class="job-number">3</span><div><h3>APPLY RULES</h3><p><strong>Job:</strong> start <code>concern</code> at 0 and add 1 for each warning sign.</p><p><strong>Example:</strong> urgent = YES means <code>concern ← concern + 1</code>.</p><p class="why"><strong>Why?</strong> Rules turn observations into a repeatable calculation.</p></div></section>
+    <section><span class="job-number">4</span><div><h3>CHOOSE A LEVEL</h3><p><strong>Job:</strong> compare the final score with boundaries.</p><p><strong>Rules:</strong> 0 = LOW, 1–2 = MEDIUM, 3–4 = HIGH concern.</p><p class="why"><strong>Why?</strong> A level is easier for the user to interpret than a number alone.</p></div></section>
+    <section><span class="job-number">5</span><div><h3>EXPLAIN + ADVISE</h3><p><strong>Job:</strong> display the level, the warning signs found and a safe next step.</p><p><strong>Example:</strong> “HIGH concern: urgent language and an unexpected link. Do not open it; show a trusted adult.”</p><p class="why"><strong>Why?</strong> The output should support a decision, not just show a score.</p></div></section>
+  </div>
+
+  <h3>Sequence check</h3><p>Choose the job performed at each point. Use the cards above if you are unsure.</p>
+  <div class="sequence-grid">
+    <label>First<select data-save="jobFirst"><option value="">Choose…</option><option>Collect observations</option><option>Choose a concern level</option><option>Explain the next step</option></select></label>
+    <label>After collecting<select data-save="jobSecond"><option value="">Choose…</option><option>Validate responses</option><option>Display the output</option><option>Open the link</option></select></label>
+    <label>Before choosing a level<select data-save="jobThird"><option value="">Choose…</option><option>Apply the scoring rules</option><option>Ask for a password</option><option>Ignore the answers</option></select></label>
+    <label>Last<select data-save="jobLast"><option value="">Choose…</option><option>Explain reasons and safe advice</option><option>Collect the observations again</option><option>Claim the message is definitely a scam</option></select></label>
+  </div>
+  <button type="button" class="button check-answer" data-action="check-jobs">Check the sequence</button><p class="feedback" data-feedback="jobs"></p>
+
+  <figure class="wide-visual compact"><button class="image-button" type="button" data-enlarge="assets/images/05-ipo.png"><img src="assets/images/05-ipo.png" alt="Retro educational comic showing input, process and output for the Scam Detective"></button></figure>
+  <div class="ipo-explainer"><section><strong>INPUT</strong><p>Facts supplied before the decision.</p></section><span>→</span><section><strong>PROCESS</strong><p>Work performed inside the program.</p></section><span>→</span><section><strong>OUTPUT</strong><p>Information produced for the user.</p></section></div>
+  <h3>IPO evidence tray: classify the mixed items</h3>
+  <div class="classification-brief"><strong>Refer back to the agreed first version.</strong><p>Some items belong in its IPO model. Others might sound useful, but this version does not collect or use them. For every item, choose:</p><ul><li><strong>Input</strong> — information supplied to the program;</li><li><strong>Process</strong> — work performed inside the program;</li><li><strong>Output</strong> — information presented to the user;</li><li><strong>Not used</strong> — outside the requirements of this version.</li></ul></div>
+  <div class="ipo-classifier">
+    <label><span>YES/NO answer: Is the sender unknown?</span><select data-save="ipoClass1"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>Compare the final score with the LOW, MEDIUM and HIGH boundaries</span><select data-save="ipoClass2"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>The time shown on the phone when the message arrived</span><select data-save="ipoClass3"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>The warning signs that caused concern points</span><select data-save="ipoClass4"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>YES/NO answer: Does the message request sign-in information?</span><select data-save="ipoClass5"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>The complete original message copied into the program</span><select data-save="ipoClass6"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>Reject an answer such as MAYBE and ask the same question again</span><select data-save="ipoClass7"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>A LOW, MEDIUM or HIGH concern level</span><select data-save="ipoClass8"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>YES/NO answer: Is there an unexpected link?</span><select data-save="ipoClass9"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>Add one concern point when a warning-sign rule is true</span><select data-save="ipoClass10"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>The user's gaming username</span><select data-save="ipoClass11"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>A recommended safe next step</span><select data-save="ipoClass12"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>YES/NO answer: Does the message use urgent language?</span><select data-save="ipoClass13"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+    <label><span>The name of the game mentioned in the message</span><select data-save="ipoClass14"><option value="">Classify…</option><option>Input</option><option>Process</option><option>Output</option><option>Not used</option></select></label>
+  </div>
+  <button type="button" class="button primary" data-action="check-ipo">Test my IPO model</button><p class="feedback" data-feedback="ipo"></p>
+</article>
+</template>
+
+<template id="stage-algorithm">
+<article class="stage" data-stage="algorithm">
+  <header class="stage-header"><span class="stage-number">04</span><div><p class="eyebrow">MAIN ACTIVITY 2 · 28 MINUTES · AO1 + AO2 + AO3</p><h2>Read, describe, build and trace algorithms</h2><p>Begin with complete samples, explain their logic, then construct and test a Scam Detective algorithm.</p></div></header>
+
+  <div class="pseudo-intro">
+    <div><span class="plain-badge">PLAIN ENGLISH</span><p>Ask whether the message is urgent. If it is, add one concern point. Then show the score.</p></div>
+    <div><span class="pseudo-badge">PSEUDOCODE</span><p>Readable instructions for an algorithm. It is not Python and does not need exact Python punctuation.</p></div>
+  </div>
+
+  <section class="pseudo-reading">
+    <h3>How to read a complete algorithm</h3>
+    <p>Do not try to translate one line at a time without understanding the whole job. Read pseudocode in four passes:</p>
+    <div class="reading-passes"><div><span>1</span><strong>PURPOSE</strong><p>What problem is the complete algorithm solving?</p></div><div><span>2</span><strong>INPUT</strong><p>What information is supplied?</p></div><div><span>3</span><strong>PROCESS + DECISIONS</strong><p>What is calculated, compared or repeated?</p></div><div><span>4</span><strong>OUTPUT</strong><p>What does the user finally see?</p></div></div>
+  </section>
+
+  <h3>Worked sample: tournament entry checker</h3>
+  <p>Read the whole example first. Then use the annotations to see how each group of lines contributes to one complete job.</p>
+  <div class="annotated-pseudo">
+    <pre><span class="code-group group-a">checks ← 0</span>
+
+<span class="code-group group-b">INPUT registered
+INPUT permission</span>
+
+<span class="code-group group-c">IF registered = YES THEN
+    checks ← checks + 1
+ENDIF
+
+IF permission = YES THEN
+    checks ← checks + 1
+ENDIF</span>
+
+<span class="code-group group-d">IF checks = 2 THEN
+    OUTPUT "Ready to enter"
+ELSE
+    OUTPUT "One or more checks are missing"
+ENDIF</span></pre>
+    <div class="annotation-list"><div class="group-a"><strong>Initialise</strong><p>Create <code>checks</code> and start it at zero.</p></div><div class="group-b"><strong>Input</strong><p>Collect two YES/NO facts about the player.</p></div><div class="group-c"><strong>Process</strong><p>Test each fact. Every YES adds one to <code>checks</code>.</p></div><div class="group-d"><strong>Output decision</strong><p>Only a total of two selects “Ready to enter”. Every other total selects the alternative message.</p></div></div>
+  </div>
+  <div class="model-description"><strong>A strong description of this pseudocode</strong><p>“This algorithm checks whether a player is ready to enter a tournament. It inputs whether the player is registered and has permission. It adds one to <code>checks</code> for each YES answer. If the final value is 2, it displays ‘Ready to enter’; otherwise, it explains that at least one check is missing.”</p><p><strong>Notice:</strong> the description explains the whole algorithm in order. It does not copy every line or simply say “it checks things”.</p></div>
+
+  <h3>Guided practice 1: describe a new scoring algorithm</h3>
+  <div class="practice-scenario"><span class="scenario-tag">SAMPLE B · SCHOOL EVENT MESSAGE</span><p>A student receives a message about a school event. The algorithm checks two observable details before suggesting what to do.</p></div>
+  <div class="practice-code-grid"><pre>concern ← 0
+INPUT sender_known
+INPUT unexpected_link
+
+IF sender_known = NO THEN
+    concern ← concern + 1
+ENDIF
+
+IF unexpected_link = YES THEN
+    concern ← concern + 1
+ENDIF
+
+IF concern = 0 THEN
+    OUTPUT "No warning signs found"
+ELSE
+    OUTPUT "Check before acting"
+ENDIF</pre><div class="reading-questions"><label>What is the algorithm's main purpose?<select data-save="sampleBPurpose"><option value="">Choose the best description…</option><option>Use two observations to decide whether the student should check before acting</option><option>Open an event link and confirm that it is safe</option><option>Count how many school events the student attends</option></select></label><label>Test case: <code>sender_known = YES</code> and <code>unexpected_link = YES</code>. What is the final value of <code>concern</code>?<select data-save="sampleBScore"><option value="">Choose…</option><option>0</option><option>1</option><option>2</option></select></label><label>Which output is selected for that test case?<select data-save="sampleBOutput"><option value="">Choose…</option><option>No warning signs found</option><option>Check before acting</option><option>Ready to enter</option></select></label></div></div>
+  <label class="description-box"><strong>Describe Sample B in your own words</strong><span>Write 3–4 sentences. State its purpose, two inputs, how <code>concern</code> changes and how the output is selected.</span><textarea data-save="sampleBDescription" rows="5" placeholder="This algorithm… First, it inputs… If… The final output…"></textarea></label>
+
+  <h3>Guided practice 2: describe validation and repetition</h3>
+  <div class="practice-scenario second"><span class="scenario-tag">SAMPLE C · VALID ANSWER CHECKER</span><p>This algorithm does not calculate concern. Its job is to make sure the program receives one usable answer.</p></div>
+  <div class="practice-code-grid"><pre>INPUT answer
+
+WHILE answer ≠ YES AND answer ≠ NO
+    OUTPUT "Enter YES or NO"
+    INPUT answer
+ENDWHILE
+
+OUTPUT "Answer accepted"</pre><div class="reading-questions"><label>If the first answer is MAYBE, what happens next?<select data-save="sampleCMaybe"><option value="">Choose…</option><option>The program explains the allowed answers and asks again</option><option>The program treats MAYBE as YES</option><option>The program immediately displays “Answer accepted”</option></select></label><label>When does the loop stop?<select data-save="sampleCStop"><option value="">Choose…</option><option>When the answer is YES or NO</option><option>After exactly two attempts</option><option>When the answer is MAYBE</option></select></label><label>Why is the second <code>INPUT answer</code> inside the loop?<select data-save="sampleCInput"><option value="">Choose…</option><option>To give the user another opportunity to enter a valid answer</option><option>To increase the concern score</option><option>To display the final concern level</option></select></label></div></div>
+  <label class="description-box"><strong>Describe Sample C in your own words</strong><span>Write 2–3 sentences. Explain what is repeated, why it repeats and what causes it to stop.</span><textarea data-save="sampleCDescription" rows="4" placeholder="This algorithm checks… While… It stops when…"></textarea></label>
+  <button type="button" class="button primary" data-action="check-pseudo-reading">Check both reading practices</button><p class="feedback" data-feedback="pseudoReading"></p>
+
+  <h3>Vocabulary bridge: five building blocks you will now use</h3>
+  <div class="pseudo-cards">
+    <section><span>1</span><code>concern ← 0</code><p>Create the variable and give it a starting value.</p></section>
+    <section><span>2</span><code>INPUT urgent</code><p>Collect one YES/NO observation.</p></section>
+    <section><span>3</span><code>IF urgent = YES THEN</code><p>Ask a question that is either true or false.</p></section>
+    <section><span>4</span><code>concern ← concern + 1</code><p>Only when the condition is true, change the variable.</p></section>
+    <section><span>5</span><code>OUTPUT concern</code><p>Show the final value to the user.</p></section>
+  </div>
+
+  <h3>Mini-build: complete the one-sign algorithm</h3>
+  <p>Choose the line that completes each purpose. Read down the finished algorithm like a recipe.</p>
+  <div class="algorithm-builder">
+    <label><span>1 · Start the score</span><select data-save="pseudoStart"><option value="">Choose pseudocode…</option><option>concern ← 0</option><option>OUTPUT urgent</option><option>urgent ← concern</option></select></label>
+    <label><span>2 · Collect the observation</span><select data-save="pseudoInput"><option value="">Choose pseudocode…</option><option>INPUT urgent</option><option>concern ← 4</option><option>OUTPUT concern</option></select></label>
+    <label><span>3 · Test the observation</span><select data-save="pseudoDecision"><option value="">Choose pseudocode…</option><option>IF urgent = YES THEN</option><option>OUTPUT HIGH</option><option>INPUT concern</option></select></label>
+    <label><span>4 · Change the variable</span><select data-save="pseudoUpdate"><option value="">Choose pseudocode…</option><option>concern ← concern + 1</option><option>urgent ← urgent + 1</option><option>concern ← 0</option></select></label>
+    <label><span>5 · Show the result</span><select data-save="pseudoOutput"><option value="">Choose pseudocode…</option><option>OUTPUT concern</option><option>INPUT concern</option><option>concern = urgent</option></select></label>
+  </div>
+  <button type="button" class="button primary" data-action="check-pseudo">Build my pseudocode</button><p class="feedback" data-feedback="pseudo"></p>
+  <div id="built-algorithm" class="built-algorithm" aria-live="polite"></div>
+  <label class="description-box own-description"><strong>Describe the mini-algorithm you built</strong><span>Explain its purpose, input, decision, variable change and output. Use the Sample B description structure if needed.</span><textarea data-save="ownPseudoDescription" rows="4" placeholder="This algorithm… It inputs… If… Finally…"></textarea></label>
+
+  <h3>Sequence workshop: repair three mini-algorithms</h3>
+  <p>Each scenario focuses on a different kind of order. Think about what information must exist before the next instruction can work.</p>
+  <div class="sequence-workshop">
+    <section><span class="scenario-tag">REPAIR 1 · DATA</span><h4>When can a rule use <code>urgent</code>?</h4><p>The program must collect the answer before testing it, and test it before changing the score.</p><div class="line-order"><label>Line 1<select data-save="algoOrder1a"><option value="">Choose…</option><option>INPUT urgent</option><option>IF urgent = YES THEN</option><option>concern ← concern + 1</option></select></label><label>Line 2<select data-save="algoOrder1b"><option value="">Choose…</option><option>INPUT urgent</option><option>IF urgent = YES THEN</option><option>concern ← concern + 1</option></select></label><label>Line 3<select data-save="algoOrder1c"><option value="">Choose…</option><option>INPUT urgent</option><option>IF urgent = YES THEN</option><option>concern ← concern + 1</option></select></label></div></section>
+    <section><span class="scenario-tag">REPAIR 2 · VALIDATION</span><h4>What if the input is MAYBE?</h4><p>Choose the instruction immediately after an invalid answer is detected.</p><label>Next instruction<select data-save="algoValidationNext"><option value="">Choose…</option><option>Display “Enter YES or NO”, then ask again</option><option>Choose the HIGH branch</option><option>Output the unfinished score</option></select></label></section>
+    <section><span class="scenario-tag">REPAIR 3 · OUTPUT</span><h4>When should the level be displayed?</h4><p>All four warning-sign rules must run before the final branch is chosen.</p><label>Best order<select data-save="algoOutputOrder"><option value="">Choose…</option><option>Initialise → collect four answers → apply four rules → choose level → explain output</option><option>Display level → collect answers → initialise</option><option>Collect one answer → display final level → check the other answers</option></select></label></section>
+  </div>
+  <button type="button" class="button check-answer" data-action="check-algo-sequences">Check the repaired sequences</button><p class="feedback" data-feedback="algoSequences"></p>
+
+  <details class="growth-panel"><summary>How does the mini-algorithm grow into the full detector?</summary><p>The same <strong>IF → add one</strong> pattern is repeated for each warning sign:</p><ol><li>unknown sender</li><li>urgent language</li><li>unexpected link</li><li>request for sign-in information</li></ol><p>After all four decisions, the program compares the total with the boundaries: <strong>0 LOW, 1–2 MEDIUM, 3–4 HIGH</strong>.</p></details>
+
+  <figure class="wide-visual compact"><button class="image-button" type="button" data-enlarge="assets/images/06-tracing-pseudocode.png"><img src="assets/images/06-tracing-pseudocode.png" alt="Retro educational comic following one test case through an algorithm and recording variable changes"></button></figure>
+
+  <div class="trace-lab">
+    <div class="trace-instructions"><h3>Trace lab: what does “trace” mean?</h3><p>Tracing means following an algorithm <strong>one step at a time</strong> using fixed test data. Each time the variable changes, record its new value. This helps us find mistakes before coding.</p><ol><li>Read the four test answers.</li><li>Predict the final score and level.</li><li>Select <strong>Run next step</strong>.</li><li>Watch which rule runs and how <code>concern</code> changes.</li><li>Compare the result with your prediction.</li></ol></div>
+    <div class="test-case-card"><span class="case-label">TEST CASE B · FICTIONAL</span><h4>School tournament message</h4><dl><div><dt>Unknown sender?</dt><dd>NO</dd></div><div><dt>Urgent language?</dt><dd>YES</dd></div><div><dt>Unexpected link?</dt><dd>YES</dd></div><div><dt>Requests sign-in information?</dt><dd>NO</dd></div></dl></div>
+  </div>
+  <div class="prediction-row"><label>Before running it, predict the final score<select data-save="tracePredictionScore"><option value="">Choose…</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label><label>Predict the concern level<select data-save="tracePredictionLevel"><option value="">Choose…</option><option>LOW</option><option>MEDIUM</option><option>HIGH</option></select></label></div>
+  <div class="trace-console">
+    <div class="score-display"><span>concern</span><strong id="trace-score">?</strong><small id="trace-level">Not started</small></div>
+    <div class="trace-screen"><p id="trace-line">Make both predictions, then run the first step.</p><div id="trace-history" class="trace-history"></div></div>
+  </div>
+  <div class="trace-actions"><button type="button" class="button primary" data-action="trace-next">Run next step</button><button type="button" class="button secondary" data-action="trace-reset">Reset trace</button></div><p class="feedback" data-feedback="trace"></p>
+  <label class="trace-reflection">After the trace, complete this sentence:<textarea data-save="traceReflection" rows="3" placeholder="My prediction was correct / different because the concern variable…"></textarea></label>
+
+  <h3>Peer check that everyone can complete</h3>
+  <div class="peer-protocol"><ol><li>Partner A selects one new test case below.</li><li>Partner B predicts its score and level without being told the answer.</li><li>Select <strong>Check peer prediction</strong>.</li><li>If there is a difference, return to the four scoring rules and find the first missed point.</li></ol></div>
+  <div class="peer-grid"><label>Partner name, or write “solo”<input data-save="peerName"></label><label>New case<select data-save="peerCase"><option value="">Choose…</option><option value="A">A: NO unknown, NO urgent, NO link, NO information request</option><option value="B">B: YES unknown, YES urgent, NO link, NO information request</option><option value="C">C: YES unknown, YES urgent, YES link, YES information request</option></select></label><label>Predicted score<select data-save="peerScore"><option value="">Choose…</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label><label>Predicted level<select data-save="peerLevel"><option value="">Choose…</option><option>LOW</option><option>MEDIUM</option><option>HIGH</option></select></label></div>
+  <button type="button" class="button primary" data-action="check-peer">Check peer prediction</button><p class="feedback" data-feedback="peer"></p>
+</article>
+</template>
+
+<template id="stage-extension">
+<article class="stage" data-stage="extension">
+  <header class="stage-header"><span class="stage-number">★</span><div><p class="eyebrow">OPTIONAL LEVEL-UP LAB · EARLY COMPLETERS · AO3</p><h2>Improve the detector through three quick experiments</h2><p>These are small design decisions you can test immediately—not extra essay questions.</p></div></header>
+  <div class="levelup-grid">
+    <section><span class="level-tag">MISSION 1</span><h3>Handle an unclear answer</h3><p>The program asks “Urgent language? YES/NO” and the user types <strong>MAYBE</strong>. What should happen?</p><label><select data-save="extValidation"><option value="">Choose an action…</option><option>Display “Enter YES or NO” and ask the same question again</option><option>Treat MAYBE as YES without telling the user</option><option>Stop the entire program</option></select></label></section>
+    <section><span class="level-tag">MISSION 2</span><h3>Test a boundary</h3><p>HIGH concern begins at 3. A test case scores exactly <strong>3</strong>. Which branch must run?</p><label><select data-save="extBoundary"><option value="">Choose a branch…</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option></select></label></section>
+    <section><span class="level-tag">MISSION 3</span><h3>Improve the wording</h3><p>Which HIGH-concern output is accurate, useful and honest about the detector's limit?</p><label><select data-save="extOutput"><option value="">Choose an output…</option><option>HIGH concern: three warning signs found. Do not open the link; show a trusted adult. This is an estimate, not proof.</option><option>SCAM CONFIRMED! Delete everything now.</option><option>Score 3.</option></select></label></section>
+  </div>
+  <button type="button" class="button primary" data-action="check-extension">Check all three experiments</button><p class="feedback" data-feedback="extension"></p>
+  <div id="extension-unlock" class="unlock-card hidden"><strong>LEVEL-UP COMPLETE</strong><p>You improved robustness through validation, boundary testing and honest output design. Your Python studio is now unlocked.</p></div>
+  <section id="python-studio" class="python-studio hidden">
+    <div class="studio-heading"><div><span class="level-tag">OPTIONAL CREATOR MODE</span><h3>Program your own Scam Detective</h3><p>Turn today's plan into a working command-line Python program. This is your program: choose your questions, rules and wording.</p></div><div class="studio-status"><span>Python 3</span><strong>Browser studio</strong></div></div>
+    <div class="python-mission">
+      <strong>Your minimum mission</strong>
+      <ul><li>Ask about at least <strong>two</strong> observable warning signs.</li><li>Use a <code>concern</code> variable.</li><li>Use selection with <code>if</code>.</li><li>Display a concern level and a safe next step.</li><li>Do not claim that the message is definitely a scam.</li></ul>
+    </div>
+    <details class="minimal-tips"><summary>Need a small starting hint?</summary><p>Start with <code>concern = 0</code>. Collect an answer using <code>input()</code>. An answer can add one point inside an <code>if</code> statement. Test one small part before adding another.</p></details>
+    <div class="ide-toolbar"><button type="button" class="button primary" data-action="run-python">Run program ▶</button><button type="button" class="button secondary" data-action="stop-python">Stop</button><button type="button" class="button secondary" data-action="reset-python">Reset starter</button><button type="button" class="button secondary" data-action="download-python">Download .py</button></div>
+    <div class="ide-grid"><div><label for="python-code">Python editor</label><textarea id="python-code" class="python-editor" spellcheck="false" aria-label="Python code editor"></textarea></div><div><strong>Program console</strong><pre id="python-console" class="python-console" role="log">Complete the three missions above to unlock Python.</pre></div></div>
+    <label>After running it, record one change you made<textarea data-save="pythonReflection" rows="3" placeholder="I changed… because…"></textarea></label>
+    <p id="python-evidence-status" class="feedback" data-feedback="python" role="status"></p>
+  </section>
+</article>
+</template>
+
+<template id="stage-plenary">
+<article class="stage" data-stage="plenary">
+  <header class="stage-header"><span class="stage-number">05</span><div><p class="eyebrow">PLENARY · 6 MINUTES · AO1 + AO2 + AO3</p><h2>Three questions, three assessment objectives</h2><p>Show what you know, apply and can evaluate.</p></div></header>
+  <div class="ao-grid">
+    <section><span class="ao-badge">AO1 · KNOW</span><h3>What is decomposition?</h3><label><select data-save="plenaryAO1"><option value="">Choose…</option><option>Splitting a large problem into smaller manageable jobs</option><option>Removing all details from a problem</option><option>Running a finished Python program</option></select></label></section>
+    <section><span class="ao-badge">AO2 · APPLY</span><h3>Sam's test has two warning signs. Which level should the planned rules produce?</h3><label><select data-save="plenaryAO2"><option value="">Choose…</option><option>LOW</option><option>MEDIUM</option><option>HIGH</option></select></label></section>
+    <section><span class="ao-badge">AO3 · EVALUATE</span><h3>Which change most improves the detector?</h3><label><select data-save="plenaryAO3"><option value="">Choose…</option><option>Explain the warning signs and give a safe action</option><option>Always display “scam confirmed”</option><option>Ask the user for the message password</option></select></label></section>
+  </div>
+  <button type="button" class="button primary" data-action="check-plenary">Check my exit questions</button><p class="feedback" data-feedback="plenary"></p>
+  <label>Choose your focus before Week 3 Python implementation<select data-save="nextTarget"><option value="">Choose one honest target…</option><option>I need to practise how IF decisions work.</option><option>I need to practise tracing variable changes.</option><option>I need to make my output explanations clearer.</option><option>I am ready to turn this plan into Python and test it.</option></select></label>
+</article>
+</template>
+
+<template id="stage-review">
+<article class="stage report-stage" data-stage="review">
+  <header class="stage-header"><span class="stage-number">✓</span><div><p class="eyebrow">REVIEW · EXPORT · SUBMIT</p><h2>Your Scam Detective design evidence</h2><p>Check the decisions you made before creating the PDF.</p></div></header>
+  <div id="report-summary" class="report-summary"></div>
+  <section class="upload-evidence"><h3>Optional supporting image</h3><p>If you also planned on paper, upload or paste one clear image. Do not upload real suspicious messages, links, passwords or personal information.</p><label class="file-label">Choose image<input id="evidence-file" type="file" accept="image/*"></label><div id="paste-zone" class="paste-zone" tabindex="0" role="button">Click here, then paste a screenshot with Ctrl+V or Cmd+V.</div><div id="image-preview" class="image-preview"></div></section>
+  <div class="teams-callout"><strong>Submit to Microsoft Teams</strong><ol><li>Select <strong>Download PDF report</strong>.</li><li>Open it and check your name, class and decisions.</li><li>Upload it to <strong>Week 2 Project</strong>.</li><li>If you used Creator Mode, also upload your downloaded Python <strong>.py</strong> file.</li><li>Select <strong>Turn in</strong> after the upload finishes.</li></ol></div>
+  <div class="review-actions"><button id="download-backup" class="button secondary" type="button">Download progress backup</button><button id="download-pdf" class="button primary" type="button">Download PDF report</button></div><p id="pdf-status" class="pdf-status" role="status"></p>
+</article>
+</template>
+
+<dialog id="image-dialog"><button id="dialog-close" class="button secondary" type="button">Close image</button><img id="dialog-image" alt=""></dialog>
+<script src="vendor/skulpt.min.js"></script>
+<script src="vendor/skulpt-stdlib.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
