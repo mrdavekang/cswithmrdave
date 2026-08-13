@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 8 Week 2 Smart Badge project lesson">
+  <title>Year 8 Week 2 | Smart Badge Project</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>.paste-zone{border:2px dashed #9da49f;border-radius:10px;padding:15px;text-align:center;color:#5d625f;background:#f4f6f4;cursor:pointer}.paste-zone:focus{border-color:#00843d;background:#e7f5ec}.image-preview{display:grid;justify-items:start;gap:8px;margin-top:12px}</style>
+</head>
+<body>
+  <div id="entry" class="entry-screen">
+    <main class="entry-card">
+      <p class="eyebrow">YEAR 8 · TERM 1 · WEEK 2 PROJECT</p>
+      <h1>Smart Badge Mission 1</h1>
+      <p class="entry-lede">Turn a precise plan into a physical input–process–output system.</p>
+      <img src="assets/images/1-smart-badge-scenario.png" alt="Student helper wearing a micro:bit badge while a visitor approaches Button A" class="entry-image">
+      <form id="entryForm" novalidate>
+        <div class="field-grid">
+          <label>Full name<input id="studentName" autocomplete="name" required></label>
+          <label>Class<input id="studentClass" autocomplete="organization" required></label>
+        </div>
+        <p id="entryError" class="error" role="alert"></p>
+        <button class="primary wide" type="submit">Begin mission</button>
+      </form>
+    </main>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">SMART BADGE MISSION 1</span>
+        <strong id="studentHeader"></strong>
+      </div>
+      <div class="header-actions">
+        <span id="saveStatus" class="save-status" aria-live="polite">Saved</span>
+        <button id="learningToggle" class="ghost" type="button" aria-expanded="false">Learning</button>
+        <button id="printButton" class="ghost" type="button">Print report</button>
+        <button id="resetButton" class="ghost" type="button">Reset</button>
+      </div>
+    </header>
+
+    <div class="progress-shell" aria-label="Lesson progress">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <div class="layout">
+      <aside id="learningPanel" class="learning-panel">
+        <button id="learningClose" class="panel-close" type="button" aria-label="Close learning panel">×</button>
+        <p class="eyebrow">LEARNING PANEL</p>
+        <h2>Smart Badge using IPO</h2>
+        <section><h3>WAGBA</h3><p>We are getting better at representing a precise algorithm and applying input–process–output to a Smart Badge.</p></section>
+        <details open><summary>Knowledge</summary><p>Algorithms, decomposition, IPO, button events and LED output.</p></details>
+        <details><summary>Skills</summary><p>Plan, program, transfer, test, capture evidence and explain.</p></details>
+        <details><summary>Understanding</summary><p>The device follows the implemented program, so intended and actual behaviour must be compared.</p></details>
+        <section><h3>Keywords</h3><p class="keyword-list">algorithm · program · sequence · decomposition · input · process · output · event · Button A · LED matrix · simulator · transfer · test · debug</p></section>
+        <section class="challenge-mini"><h3>Challenge</h3><p>Represent the same solution as steps, a flowchart and code; compare their strengths.</p></section>
+      </aside>
+
+      <nav id="journey" class="journey" aria-label="Lesson journey"></nav>
+
+      <main class="lesson">
+        <section class="lesson-hero">
+          <div><p class="eyebrow">60-MINUTE PROJECT SESSION</p><h1>Input becomes output.</h1><p>Create a welcome icon, use Button A as an input and make the physical LED matrix respond.</p></div>
+          <div class="hero-meta"><span>Core: sequence + event + output</span><span>Next week: variables</span></div>
+        </section>
+        <div id="stageHost"></div>
+        <div class="nav-actions">
+          <button id="backButton" class="secondary" type="button">Back</button>
+          <button id="nextButton" class="primary" type="button">Check and continue</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <template id="stage-preparation">
+    <article class="stage" data-stage="preparation">
+      <header class="stage-header"><span class="stage-number">00</span><div><p class="eyebrow">PREPARE · 3 MIN</p><h2>Set up your project</h2></div></header>
+      <div class="content-grid"><div>
+        <p>You need one micro:bit, a tested USB data cable and access to an editor. Work independently or use Driver and Navigator roles.</p>
+        <div class="field-grid"><label>Device number<input data-save="deviceNumber"></label><label>Partner name (optional)<input data-save="partner"></label></div>
+        <label>Project filename<input data-save="projectName" placeholder="Y8_Class_FullName_W2_SmartBadge"></label>
+        <fieldset><legend>Choose your editor route</legend><div class="choice-cards">
+          <label><input type="radio" name="editor" value="MakeCode Blocks" data-save="editor"><span><strong>MakeCode Blocks</strong><small>Visual event blocks</small></span></label>
+          <label><input type="radio" name="editor" value="micro:bit Python" data-save="editor"><span><strong>micro:bit Python</strong><small>Text-based programming</small></span></label>
+        </div></fieldset>
+        <div class="editor-links"><a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer">Open MakeCode Blocks ↗</a><a href="https://python.microbit.org/v/3" target="_blank" rel="noopener noreferrer">Open micro:bit Python ↗</a></div>
+        <label class="check"><input type="checkbox" data-save="equipmentReady">I have checked my device, cable and editor access.</label>
+      </div><figure class="visual"><img src="assets/images/5-blocks-python-same-outcome.png" alt="Blocks and Python routes leading to the same micro:bit outcome"><figcaption>Different editors can express the same behaviour.</figcaption></figure></div>
+    </article>
+  </template>
+
+  <template id="stage-starter">
+    <article class="stage" data-stage="starter">
+      <header class="stage-header"><span class="stage-number">01</span><div><p class="eyebrow">STARTER · 7 MIN</p><h2>What makes the badge work?</h2></div></header>
+      <div class="scenario"><strong>Scenario</strong><p>A Year 8 helper’s badge displays a welcome icon. When a visitor presses Button A, it displays the helper’s initials.</p></div>
+      <div class="content-grid"><div>
+        <h3>Task 1 · Order the algorithm</h3><p>Number each instruction from 1 to 5.</p>
+        <div class="order-grid">
+          <label><input type="number" min="1" max="5" data-save="orderDisplayInitials"> Display the student’s initials.</label>
+          <label><input type="number" min="1" max="5" data-save="orderStart"> Start the program.</label>
+          <label><input type="number" min="1" max="5" data-save="orderIcon"> Display the welcome icon.</label>
+          <label><input type="number" min="1" max="5" data-save="orderWait"> Wait for Button A.</label>
+          <label><input type="number" min="1" max="5" data-save="orderEnd"> End the button action.</label>
+        </div>
+        <button class="check-answer" type="button" data-check="starterOrder">Check Task 1</button><p class="feedback" data-feedback="starterOrder"></p>
+        <h3>Task 2 · Identify IPO</h3>
+        <label>Input<select data-save="starterInput"><option value="">Choose…</option><option>Button A is pressed</option><option>The LED displays a symbol</option><option>The badge is transferred</option></select></label>
+        <label>Process<select data-save="starterProcess"><option value="">Choose…</option><option>The program detects the event and runs its instructions</option><option>The visitor reads the LEDs</option><option>The cable sends electricity</option></select></label>
+        <label>Output<select data-save="starterOutput"><option value="">Choose…</option><option>Initials or a message appear on the LEDs</option><option>Button A is pressed</option><option>The editor opens</option></select></label>
+        <button class="check-answer" type="button" data-check="starterIPO">Check Task 2</button><p class="feedback" data-feedback="starterIPO"></p>
+        <label>Is the ordered list an algorithm before it becomes code? Explain.<textarea data-save="starterHinge" rows="3"></textarea></label>
+      </div><figure class="visual"><img src="assets/images/2-input-process-output.png" alt="Input process output journey for a micro:bit badge"><figcaption>Use the journey to distinguish the trigger from the result.</figcaption></figure></div>
+    </article>
+  </template>
+
+  <template id="stage-plan">
+    <article class="stage" data-stage="plan">
+      <header class="stage-header"><span class="stage-number">02</span><div><p class="eyebrow">MAIN ACTIVITY 1 · 14 MIN</p><h2>Plan the Smart Badge</h2></div></header>
+      <div class="scenario"><strong>Project brief</strong><p>Create a digital badge for a Year 8 student helper. It must welcome a visitor and respond when Button A is pressed.</p></div>
+      <figure class="wide-visual"><img src="assets/images/3-decompose-smart-badge.png" alt="Smart Badge project decomposed into purpose user startup input output and test"></figure>
+      <h3>A · Decompose the brief</h3><div class="response-grid">
+        <label>Purpose<textarea data-save="purpose" rows="2" placeholder="What problem should it solve?"></textarea></label><label>User<textarea data-save="user" rows="2" placeholder="Who will use or view it?"></textarea></label>
+        <label>Startup output<textarea data-save="startupOutput" rows="2"></textarea></label><label>Input<textarea data-save="inputPlan" rows="2"></textarea></label>
+        <label>Button output<textarea data-save="buttonOutput" rows="2"></textarea></label><label>Testing<textarea data-save="testingPlan" rows="2" placeholder="How will you know it works?"></textarea></label>
+      </div>
+      <h3>B · Write your IPO</h3><div class="ipo-grid"><label>Input<textarea data-save="ipoInput" rows="3"></textarea></label><label>Process<textarea data-save="ipoProcess" rows="3"></textarea></label><label>Output<textarea data-save="ipoOutput" rows="3"></textarea></label></div>
+      <h3>C · Write a precise algorithm</h3><p>Write 5–7 ordered steps. Someone else should be able to build the behaviour without asking you a question.</p><textarea data-save="algorithm" rows="8" placeholder="1. Start the program…"></textarea>
+      <label class="check"><input type="checkbox" data-save="planChecked">I checked that the button press happens before the button output.</label>
+      <figure class="wide-visual compact"><img src="assets/images/4-plan-before-programming.png" alt="Brief to IPO plan to algorithm to program pathway"></figure>
+    </article>
+  </template>
+
+  <template id="stage-build">
+    <article class="stage" data-stage="build">
+      <header class="stage-header"><span class="stage-number">03</span><div><p class="eyebrow">MAIN ACTIVITY 2 · 26 MIN</p><h2>Build, transfer and test</h2></div></header>
+      <div class="editor-strip"><div><strong id="chosenEditor">Your editor</strong><span>Open the official editor in a new tab.</span></div><a id="chosenEditorLink" href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer">Open editor ↗</a></div>
+      <div class="build-steps">
+        <section><span>1</span><div><h3>Create the startup output</h3><p>Add one welcome icon that appears when the program begins.</p><label>Chosen icon<input data-save="chosenIcon"></label></div></section>
+        <section><span>2</span><div><h3>Add Button A behaviour</h3><p>When Button A is pressed, display your initials or a short welcome word.</p><label>Button A output<input data-save="chosenMessage" maxlength="12"></label></div></section>
+        <section><span>3</span><div><h3>Predict before testing</h3><label>What should appear at startup?<textarea data-save="predictStartup" rows="2"></textarea></label><label>What should happen after Button A?<textarea data-save="predictButton" rows="2"></textarea></label></div></section>
+      </div>
+      <figure class="wide-visual"><img src="assets/images/6-build-test-simulator.png" alt="Build start and press A testing sequence in the simulator"></figure>
+      <h3>Test record</h3><div class="test-table" role="group" aria-label="Test record">
+        <div class="test-head">Test</div><div class="test-head">Expected</div><div class="test-head">Actual</div><div class="test-head">Result</div>
+        <div>Start/restart</div><input data-save="test1Expected"><input data-save="test1Actual"><select data-save="test1Result"><option value="">Choose</option><option>Pass</option><option>Improve</option></select>
+        <div>Press A once</div><input data-save="test2Expected"><input data-save="test2Actual"><select data-save="test2Result"><option value="">Choose</option><option>Pass</option><option>Improve</option></select>
+        <div>Restart + press A</div><input data-save="test3Expected"><input data-save="test3Actual"><select data-save="test3Result"><option value="">Choose</option><option>Pass</option><option>Improve</option></select>
+      </div>
+      <label>Correction, successful test or limitation<textarea data-save="debugNote" rows="3"></textarea></label>
+      <figure class="wide-visual"><img src="assets/images/7-download-connect-wait-test.png" alt="Download connect wait and test sequence for a physical micro:bit"></figure>
+      <h3>Evidence checklist</h3><div class="check-grid">
+        <label class="check"><input type="checkbox" data-save="simulatorDone">Simulator tested</label><label class="check"><input type="checkbox" data-save="transferDone">Transferred to the device</label>
+        <label class="check"><input type="checkbox" data-save="physicalDone">Physical output checked</label><label class="check"><input type="checkbox" data-save="screenshotDone">Program screenshot captured</label>
+      </div>
+      <label>Program screenshot or device photo<input type="file" accept="image/*" data-image="buildEvidence"></label>
+      <div class="paste-zone" data-paste="buildEvidence" tabindex="0" role="button" aria-label="Paste a screenshot here">Or click here, then paste a screenshot with Ctrl+V or Cmd+V.</div>
+      <div class="image-preview" data-preview="buildEvidence"></div>
+    </article>
+  </template>
+
+  <template id="stage-extension">
+    <article class="stage" data-stage="extension">
+      <header class="stage-header"><span class="stage-number">★</span><div><p class="eyebrow">OPTIONAL EXTENSION</p><h2>Add a second input</h2></div></header>
+      <div class="scenario"><strong>Challenge</strong><p>Add Button B so it displays a different symbol or short message. Preserve the original Button A behaviour.</p></div>
+      <div class="response-grid"><label>What should Button B do?<textarea data-save="extensionIntent" rows="3"></textarea></label><label>What did you change?<textarea data-save="extensionChange" rows="3"></textarea></label><label>What did you predict?<textarea data-save="extensionPrediction" rows="3"></textarea></label><label>What happened when tested?<textarea data-save="extensionResult" rows="3"></textarea></label></div>
+      <label>Why does this button-event solution not necessarily need an if statement?<textarea data-save="extensionExplain" rows="4"></textarea></label>
+    </article>
+  </template>
+
+  <template id="stage-plenary">
+    <article class="stage" data-stage="plenary">
+      <header class="stage-header"><span class="stage-number">04</span><div><p class="eyebrow">PLENARY · 6 MIN</p><h2>Explain your Smart Badge</h2></div></header>
+      <div class="content-grid"><div class="plenary-list">
+        <label>My Smart Badge input is…<textarea data-save="plenaryInput" rows="2"></textarea></label><label>The processing that occurs is…<textarea data-save="plenaryProcess" rows="2"></textarea></label>
+        <label>The output is…<textarea data-save="plenaryOutput" rows="2"></textarea></label><label>My algorithm helped me because…<textarea data-save="plenaryAlgorithm" rows="2"></textarea></label>
+        <label>One test I completed was…<textarea data-save="plenaryTest" rows="2"></textarea></label><label>One correction, success or limitation was…<textarea data-save="plenaryReflection" rows="2"></textarea></label>
+        <fieldset><legend>If the simulator works but the physical device does not, is the project fully tested?</legend><label class="radio-line"><input type="radio" name="fullyTested" value="Yes" data-save="fullyTested"> Yes</label><label class="radio-line"><input type="radio" name="fullyTested" value="No" data-save="fullyTested"> No</label></fieldset>
+        <label>Explain your answer.<textarea data-save="fullyTestedExplain" rows="3"></textarea></label>
+      </div><figure class="visual"><img src="assets/images/8-evidence-and-reflection.png" alt="Student reviewing IPO plan code device and testing evidence"><figcaption>A working device is only one part of your evidence.</figcaption></figure></div>
+    </article>
+  </template>
+
+  <template id="stage-review">
+    <article class="stage report-stage" data-stage="review">
+      <header class="stage-header"><span class="stage-number">✓</span><div><p class="eyebrow">REVIEW AND SUBMIT</p><h2>Your project evidence</h2></div></header>
+      <div id="report"></div>
+      <div class="teams-callout"><strong>Upload your completed report to Microsoft Teams:</strong><span>Week 2 Project</span><p>Check that your name, class, IPO, algorithm, test record and evidence are included. Upload the PDF—not a screenshot.</p></div>
+      <div class="review-actions"><button id="downloadJson" class="secondary" type="button">Download progress backup</button><button id="printFinal" class="primary" type="button">Print / Save as PDF</button></div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
