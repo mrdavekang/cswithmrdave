@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OxfordAQA Year 11 lesson on star and bus network topologies.">
+  <meta name="theme-color" content="#111111">
+  <title>Network Topologies | Year 11 Computer Science</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#lessonContent">Skip to lesson content</a>
+
+  <div id="landing" class="landing" role="dialog" aria-modal="true" aria-labelledby="landingTitle">
+    <div class="landing-card">
+      <p class="kicker">YEAR 11 · TERM 1 · WEEK 3 · SESSION 1</p>
+      <h1 id="landingTitle">Network Topologies</h1>
+      <p class="landing-lead">Learn to draw, explain and apply star and bus physical network topologies.</p>
+      <form id="entryForm" class="entry-form">
+        <label for="studentName">Full name
+          <input id="studentName" name="studentName" autocomplete="name" required placeholder="Enter your full name">
+        </label>
+        <label for="studentClass">Class
+          <input id="studentClass" name="studentClass" autocomplete="organization" required placeholder="e.g. 11A CS">
+        </label>
+        <button class="button button-dark button-large" type="submit">Enter lesson</button>
+      </form>
+      <p class="privacy-note">Your work is saved only in this browser. Nothing is uploaded by this website.</p>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="#overview" data-go="overview" aria-label="Go to lesson overview">
+      <span class="brand-number">3.5</span>
+      <span><strong>Network Topologies</strong><small>OxfordAQA 9210 · Paper 2</small></span>
+    </a>
+    <div class="topbar-progress" aria-label="Lesson progress">
+      <span id="progressLabel">0% complete</span>
+      <div class="progress-track"><span id="progressBar"></span></div>
+    </div>
+    <div class="topbar-actions">
+      <span id="saveStatus" class="save-status" aria-live="polite">Saved locally</span>
+      <button id="topExport" class="button button-outline" type="button">Evidence report</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="lesson-nav" aria-label="Lesson sections">
+      <p class="nav-label">Lesson route</p>
+      <button data-nav="overview" class="nav-item active"><span>00</span>Overview</button>
+      <button data-nav="starter" class="nav-item"><span>01</span>Do Now</button>
+      <button data-nav="learn" class="nav-item"><span>02</span>Learn</button>
+      <button data-nav="main1" class="nav-item"><span>03</span>Main Activity 1</button>
+      <button data-nav="main2" class="nav-item"><span>04</span>Main Activity 2</button>
+      <button data-nav="extension" class="nav-item"><span>05</span>Extension <em>optional</em></button>
+      <button data-nav="plenary" class="nav-item"><span>06</span>Plenary</button>
+      <button data-nav="report" class="nav-item"><span>07</span>Report</button>
+      <div class="nav-student">
+        <strong id="navStudentName">Student</strong>
+        <span id="navStudentClass">Class</span>
+        <button id="changeStudent" class="text-button" type="button">Change details</button>
+      </div>
+    </aside>
+
+    <main id="lessonContent" class="lesson-content">
+      <section id="overview" class="lesson-stage active" data-stage="overview" tabindex="-1">
+        <div class="stage-header">
+          <p class="stage-index">00 · LESSON OVERVIEW</p>
+          <h1>Connections shape behaviour.</h1>
+          <p class="stage-lead">A network topology is not just a picture. Its physical connections affect cost, performance, expansion and what happens when something fails.</p>
+        </div>
+
+        <div class="wagba-box">
+          <span>WAGBA</span>
+          <div><strong>What are we getting better at?</strong><p>Explaining and comparing star and bus topologies, then applying their trade-offs to a network scenario.</p></div>
+        </div>
+
+        <div class="ksu-grid">
+          <article><span>K</span><h2>Knowledge</h2><p>Know the defining structure, equipment, benefits and limitations of star and bus topologies.</p></article>
+          <article><span>S</span><h2>Skills</h2><p>Draw and label accurate topology diagrams, identify fault effects and construct linked explanations.</p></article>
+          <article><span>U</span><h2>Understanding</h2><p>Understand that requirements determine suitability; no topology is universally best.</p></article>
+        </div>
+
+        <div class="objective-panel">
+          <div>
+            <p class="kicker">BY THE END</p>
+            <h2>Learning objectives</h2>
+          </div>
+          <ol>
+            <li>Explain and accurately draw star and bus physical network topologies.</li>
+            <li>Compare the effect of cabling, traffic, expansion and component failure.</li>
+            <li>Use scenario evidence to justify a suitable topology and acknowledge a trade-off.</li>
+          </ol>
+        </div>
+
+        <div class="lesson-map">
+          <article><span>6 min</span><strong>Retrieve</strong><p>Recall prerequisite network knowledge.</p></article>
+          <article><span>10 min</span><strong>Build meaning</strong><p>Read, inspect and reconstruct.</p></article>
+          <article><span>15 min</span><strong>Compare</strong><p>Classify properties and draw.</p></article>
+          <article><span>17 min</span><strong>Apply</strong><p>Model, then justify independently.</p></article>
+          <article><span>5 min</span><strong>Exit</strong><p>Retrieve the defining ideas.</p></article>
+        </div>
+
+        <div id="teacherConsole" class="teacher-console" hidden>
+          <p class="kicker">TEACHER REVIEW</p>
+          <h2>All sections are unlocked</h2>
+          <p>Answer keys, exemplars and review notes are visible. Use the navigation to inspect any part of the lesson.</p>
+        </div>
+
+        <div class="stage-actions">
+          <span></span>
+          <button class="button button-dark" data-complete="overview" data-next="starter">Begin Do Now</button>
+        </div>
+      </section>
+
+      <section id="starter" class="lesson-stage" data-stage="starter" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">01 · DO NOW · 6 MINUTES · 5 MARKS</p>
+          <h1>Retrieve before you learn.</h1>
+          <p class="stage-lead">Work from memory. Write an answer for every question before checking.</p>
+        </div>
+
+        <div class="instruction-strip"><strong>Instructions</strong><span>Answer independently → reveal the mark points → self-mark honestly → correct any missing knowledge.</span></div>
+
+        <div class="question-list" id="starterQuestions">
+          <article class="question-card" data-question="starter1">
+            <div class="question-number">1</div>
+            <div><h2>What does LAN stand for?</h2><p class="mark-label">[1 mark]</p><input data-save="starter.q1" aria-label="Answer to starter question 1"></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>Local Area Network.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="starter1" data-value="1">Yes</button><button data-selfmark="starter1" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="starter2">
+            <div class="question-number">2</div>
+            <div><h2>State two typical characteristics of a LAN.</h2><p class="mark-label">[1 mark]</p><input data-save="starter.q2" aria-label="Answer to starter question 2"></div>
+            <div class="answer-panel" hidden><strong>Award the mark for two</strong><p>Covers a relatively small geographical area; normally owned and managed by one person or organisation.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="starter2" data-value="1">Yes</button><button data-selfmark="starter2" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="starter3">
+            <div class="question-number">3</div>
+            <div><h2>Name the device that connects computers on a typical wired LAN.</h2><p class="mark-label">[1 mark]</p><input data-save="starter.q3" aria-label="Answer to starter question 3"></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>A switch.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="starter3" data-value="1">Yes</button><button data-selfmark="starter3" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="starter4">
+            <div class="question-number">4</div>
+            <div><h2>Fibre-optic cable transmits data using what?</h2><p class="mark-label">[1 mark]</p><input data-save="starter.q4" aria-label="Answer to starter question 4"></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>Pulses of light.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="starter4" data-value="1">Yes</button><button data-selfmark="starter4" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="starter5">
+            <div class="question-number">5</div>
+            <div><h2>Give one reason fibre-optic cable is suitable for longer distances.</h2><p class="mark-label">[1 mark]</p><input data-save="starter.q5" aria-label="Answer to starter question 5"></div>
+            <div class="answer-panel" hidden><strong>Accept one</strong><p>Higher bandwidth; less signal loss over distance; resistant to electrical interference.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="starter5" data-value="1">Yes</button><button data-selfmark="starter5" data-value="0">Not yet</button></div>
+          </article>
+        </div>
+
+        <div class="correction-box" id="starterCorrection" hidden>
+          <label for="starterCorrectionText"><strong>Repair one missing mark</strong><span>Rewrite one answer using the correct technical vocabulary.</span></label>
+          <textarea id="starterCorrectionText" data-save="starter.correction" rows="3"></textarea>
+        </div>
+
+        <div class="score-banner"><span>Starter score</span><strong id="starterScore">Not marked</strong></div>
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="overview">Back</button>
+          <button id="checkStarter" class="button button-dark">Reveal answers</button>
+          <button id="finishStarter" class="button button-dark" hidden>Continue to Learn</button>
+        </div>
+      </section>
+
+      <section id="learn" class="lesson-stage" data-stage="learn" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">02 · LEARN · 10 MINUTES</p>
+          <h1>See the structure. Explain the consequence.</h1>
+          <p class="stage-lead">Read the short explanations beside the diagrams. The image supports the idea; your explanation proves the learning.</p>
+        </div>
+
+        <figure class="learning-figure full">
+          <img src="assets/images/image-1-what-is-network-topology.png" alt="A physical network topology diagram showing nodes and links as the arrangement of devices and connections." loading="lazy">
+          <figcaption><strong>Network topology</strong><p>The physical topology describes how network nodes and communication links are arranged. Two rooms can contain the same computers but behave differently if their physical connections are arranged differently.</p></figcaption>
+        </figure>
+
+        <div class="concept-grid">
+          <figure class="learning-figure">
+            <img src="assets/images/image-2-star-topology-structure-and-faults.png" alt="Star topology with separate links from computers to a central switch and examples of link and switch failure." loading="lazy">
+            <figcaption><strong>Star topology</strong></figcaption>
+          </figure>
+          <article class="reading-card">
+            <p class="kicker">READING A · STAR</p>
+            <h2>Separate links to one central device</h2>
+            <p>Every node has its own connection to a central switch. Communication passes through the switch, which forwards data towards its intended destination.</p>
+            <ul>
+              <li>One node or link failing normally affects only that node.</li>
+              <li>A switch failure can stop the entire network.</li>
+              <li>Faults are easier to isolate and new nodes are easier to add.</li>
+              <li>More cable and central hardware increase initial cost.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="concept-grid reverse">
+          <figure class="learning-figure">
+            <img src="assets/images/image-3-bus-topology-structure-and-faults.png" alt="Bus topology with computers connected to one shared backbone and a terminator at each end." loading="lazy">
+            <figcaption><strong>Bus topology</strong></figcaption>
+          </figure>
+          <article class="reading-card">
+            <p class="kicker">READING B · BUS</p>
+            <h2>One shared backbone</h2>
+            <p>Every node connects to one shared main cable called the bus or backbone. A terminator at each end absorbs signals and prevents unwanted reflections.</p>
+            <ul>
+              <li>It uses less cable and can have a lower initial cost.</li>
+              <li>A node failing does not normally stop the other nodes.</li>
+              <li>A backbone failure can disrupt the entire network.</li>
+              <li>Shared traffic can cause collisions and reduced performance.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="source-note">
+          <strong>Course reading reference</strong>
+          <p>OxfordAQA International GCSE Computer Science textbook, printed pages 230–231. Physical bus networks have limited modern use; we study them because they remain part of specification section 3.5.</p>
+        </div>
+
+        <div class="knowledge-check" id="learnCheck">
+          <h2>Retrieval checkpoint</h2>
+          <label>1. Which topology connects every node separately to a central switch?
+            <select data-save="learn.q1" data-answer="star"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select>
+          </label>
+          <label>2. What is the purpose of a terminator?
+            <select data-save="learn.q2" data-answer="absorb"><option value="">Choose</option><option value="repeat">Repeat the signal</option><option value="absorb">Absorb the signal and prevent reflections</option><option value="encrypt">Encrypt network traffic</option></select>
+          </label>
+          <label>3. Which failure can stop every node in a star network?
+            <select data-save="learn.q3" data-answer="switch"><option value="">Choose</option><option value="node">One workstation</option><option value="link">One workstation cable</option><option value="switch">The central switch</option></select>
+          </label>
+          <div id="learnFeedback" class="feedback-box" hidden></div>
+        </div>
+
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="starter">Back</button>
+          <button id="checkLearn" class="button button-dark">Check my understanding</button>
+          <button id="finishLearn" class="button button-dark" hidden>Continue to Main Activity 1</button>
+        </div>
+      </section>
+
+      <section id="main1" class="lesson-stage" data-stage="main1" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">03 · MAIN ACTIVITY 1 · 15 MINUTES</p>
+          <h1>Compare, then reconstruct.</h1>
+          <p class="stage-lead">First classify the structural and fault statements. Then draw both topologies without tracing the image.</p>
+        </div>
+
+        <figure class="learning-figure full">
+          <img src="assets/images/image-4-star-vs-bus-trade-offs.png" alt="Side-by-side comparison of star and bus topology connections, faults, cabling, traffic and growth." loading="lazy">
+          <figcaption><strong>Compare the trade-offs</strong><p>Use the criteria, not the colour or shape, to decide which property belongs to which topology.</p></figcaption>
+        </figure>
+
+        <div class="classification-task">
+          <div class="section-title-row"><div><p class="kicker">PART A · 6 MARKS</p><h2>Classify each statement</h2></div><span id="classificationScore">Not checked</span></div>
+          <div class="classification-grid">
+            <label>Each node has a separate link to a central switch.<select data-classify data-save="main1.c1" data-answer="star"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+            <label>Every node shares one main backbone cable.<select data-classify data-save="main1.c2" data-answer="bus"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+            <label>One link failure normally affects only one node.<select data-classify data-save="main1.c3" data-answer="star"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+            <label>A backbone failure can disrupt the whole network.<select data-classify data-save="main1.c4" data-answer="bus"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+            <label>The central device is a single point of failure.<select data-classify data-save="main1.c5" data-answer="star"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+            <label>A terminator is required at both ends of the main cable.<select data-classify data-save="main1.c6" data-answer="bus"><option value="">Choose</option><option value="star">Star</option><option value="bus">Bus</option></select></label>
+          </div>
+          <div id="classificationFeedback" class="feedback-box" hidden></div>
+          <button id="checkClassification" class="button button-dark">Check classifications</button>
+        </div>
+
+        <div class="drawing-task">
+          <div class="section-title-row"><div><p class="kicker">PART B · DIAGRAM SKILL</p><h2>Draw and label from memory</h2></div><span>Use mouse, trackpad or touch</span></div>
+          <div class="drawing-grid">
+            <article class="drawing-card">
+              <h3>Star topology</h3>
+              <canvas id="starCanvas" class="draw-canvas" width="720" height="430" aria-label="Drawing canvas for star topology"></canvas>
+              <div class="drawing-tools"><button class="button button-small button-outline" data-undo="star">Undo</button><button class="button button-small button-outline" data-clear="star">Clear</button></div>
+              <label class="accessible-alternative">Keyboard alternative: describe your diagram
+                <textarea data-save="main1.starDescription" rows="3" placeholder="Describe the nodes, switch and links..."></textarea>
+              </label>
+            </article>
+            <article class="drawing-card">
+              <h3>Bus topology</h3>
+              <canvas id="busCanvas" class="draw-canvas" width="720" height="430" aria-label="Drawing canvas for bus topology"></canvas>
+              <div class="drawing-tools"><button class="button button-small button-outline" data-undo="bus">Undo</button><button class="button button-small button-outline" data-clear="bus">Clear</button></div>
+              <label class="accessible-alternative">Keyboard alternative: describe your diagram
+                <textarea data-save="main1.busDescription" rows="3" placeholder="Describe the nodes, backbone, drops and terminators..."></textarea>
+              </label>
+            </article>
+          </div>
+          <button id="revealDiagramCheck" class="button button-outline">Show diagram checklist</button>
+          <div id="diagramCheck" class="diagram-check" hidden>
+            <h3>Check and improve your drawings</h3>
+            <label><input type="checkbox" data-save="main1.d1"> My star has one central switch.</label>
+            <label><input type="checkbox" data-save="main1.d2"> Every star node has its own link to the switch.</label>
+            <label><input type="checkbox" data-save="main1.d3"> My bus has one continuous backbone with node drop lines.</label>
+            <label><input type="checkbox" data-save="main1.d4"> My bus has a terminator at both ends.</label>
+            <details class="model-details teacher-key"><summary>Compare with the model diagrams</summary><div class="model-image-grid"><img src="assets/images/image-2-star-topology-structure-and-faults.png" alt="Model star topology diagram"><img src="assets/images/image-3-bus-topology-structure-and-faults.png" alt="Model bus topology diagram"></div></details>
+          </div>
+        </div>
+
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="learn">Back</button>
+          <button id="finishMain1" class="button button-dark">Finish Main Activity 1</button>
+        </div>
+      </section>
+
+      <section id="main2" class="lesson-stage" data-stage="main2" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">04 · MAIN ACTIVITY 2 · 17 MINUTES</p>
+          <h1>Turn scenario facts into a justified decision.</h1>
+          <p class="stage-lead">Study one expert example, then apply the same reasoning process independently to a contrasting situation.</p>
+        </div>
+
+        <div class="worked-example">
+          <div class="section-title-row"><div><p class="kicker">MODELLED EXAMPLE</p><h2>The growing digital media lab</h2></div><span>Read → map → justify</span></div>
+          <figure class="learning-figure full">
+            <img src="assets/images/image-5-growing-digital-media-lab-scenario.png" alt="Digital media lab with twelve computers, a printer, a file server, space to expand and four network requirements." loading="lazy">
+          </figure>
+          <div class="reasoning-chain">
+            <article><span>1</span><strong>Requirement</strong><p>The room needs reliable lessons, fast file access, easy expansion and fault finding.</p></article>
+            <article><span>2</span><strong>Property</strong><p>A star gives every node a separate link to a central switch.</p></article>
+            <article><span>3</span><strong>Consequence</strong><p>A link fault normally isolates one computer, and another node can be added to an available switch port.</p></article>
+            <article><span>4</span><strong>Decision</strong><p>Star is more suitable because reliability and expansion are important.</p></article>
+            <article><span>5</span><strong>Trade-off</strong><p>It requires more cabling and central hardware, increasing cost.</p></article>
+          </div>
+          <blockquote><strong>Expert response:</strong> The media lab expects six additional computers and needs to remain available during lessons. In a star topology, every node has a separate connection to a central switch, so a single link failure normally affects only one computer and new nodes can be added using available switch ports. Star is therefore the more suitable choice for reliability and expansion, although it requires more cabling and central hardware.</blockquote>
+        </div>
+
+        <div class="independent-scenario">
+          <div class="section-title-row"><div><p class="kicker">INDEPENDENT APPLICATION</p><h2>The two-day science exhibition</h2></div><span>AO2 application</span></div>
+          <figure class="learning-figure full">
+            <img src="assets/images/image-6-two-day-science-exhibition-scenario.png" alt="Temporary two-day science exhibition with six interactive stations in a straight row, low data demand and a limited budget." loading="lazy">
+          </figure>
+          <p class="authenticity-note"><strong>Context note:</strong> This is a simplified comparison scenario. Modern school LANs usually use star topology; physical bus networks now have limited application.</p>
+
+          <div class="scenario-form">
+            <fieldset><legend>1. Choose the topology you will justify.</legend><label><input type="radio" name="main2Choice" value="star" data-save="main2.choice"> Star</label><label><input type="radio" name="main2Choice" value="bus" data-save="main2.choice"> Bus</label></fieldset>
+            <label>2. Identify the most important scenario requirement.<textarea data-save="main2.requirement" rows="2"></textarea></label>
+            <label>3. State one relevant property of your chosen topology.<textarea data-save="main2.property" rows="2"></textarea></label>
+            <label>4. Explain the consequence for this exhibition.<textarea data-save="main2.consequence" rows="2"></textarea></label>
+            <label>5. Give your overall decision.<textarea data-save="main2.decision" rows="2"></textarea></label>
+            <label>6. Acknowledge one disadvantage or competing priority.<textarea data-save="main2.tradeoff" rows="2"></textarea></label>
+          </div>
+          <button id="commitScenario" class="button button-dark">Commit response and self-check</button>
+
+          <div id="scenarioReview" class="review-panel" hidden>
+            <h3>Review the quality of your reasoning</h3>
+            <p>A supported decision matters more than selecting a topology without explanation.</p>
+            <div class="review-checks">
+              <label><input type="checkbox" data-save="main2.r1"> I referred to a specific fact from the exhibition.</label>
+              <label><input type="checkbox" data-save="main2.r2"> I stated an accurate topology property.</label>
+              <label><input type="checkbox" data-save="main2.r3"> I explained the consequence using because, so or therefore.</label>
+              <label><input type="checkbox" data-save="main2.r4"> My conclusion follows from the priorities I identified.</label>
+              <label><input type="checkbox" data-save="main2.r5"> I acknowledged a disadvantage or competing priority.</label>
+            </div>
+            <details class="model-details"><summary>Show possible expert reasoning</summary>
+              <p><strong>Bus can be justified:</strong> The exhibition is temporary, has only six stations in a straight row and sends small files. A bus uses one shared backbone, so it requires less cabling and can reduce initial equipment cost. The limited traffic means reduced performance may be acceptable. However, a backbone fault could disconnect every station.</p>
+              <p><strong>Star can also be justified:</strong> If avoiding lost exhibition time is the highest priority, separate links make faults easier to isolate and one link failure normally affects only one station. This reliability must be weighed against the extra cable and switch cost.</p>
+            </details>
+            <label>Reclaim or strengthen one mark<textarea data-save="main2.reclaim" rows="3" placeholder="Add one precise sentence that improves your response..."></textarea></label>
+            <label class="review-confirm"><input type="checkbox" data-save="main2.reviewed"> I reviewed my response and made any necessary improvement.</label>
+          </div>
+        </div>
+
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="main1">Back</button>
+          <button id="finishMain2" class="button button-dark">Finish Main Activity 2</button>
+        </div>
+      </section>
+
+      <section id="extension" class="lesson-stage" data-stage="extension" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">05 · EXTENSION · OPTIONAL · 6 MARKS</p>
+          <h1>Independent exam challenge.</h1>
+          <p class="stage-lead">No sentence frame this time. Build a precise response using evidence, consequence and a balanced judgement.</p>
+        </div>
+
+        <article class="exam-question">
+          <p class="scenario-label">E-SPORTS CHAMPIONSHIP</p>
+          <p>A school is creating a permanent network for 20 gaming computers. The computers exchange large amounts of data during matches. A fault in one computer connection should not stop the other matches. Technicians must be able to locate faults quickly, and the school may add more computers next year.</p>
+          <h2>Recommend either a star or bus topology for the network. Justify your recommendation.</h2>
+          <p class="mark-label">[6 marks]</p>
+          <textarea data-save="extension.response" rows="10" placeholder="Write your independent response here..."></textarea>
+          <button id="markExtension" class="button button-dark">Show marking guidance</button>
+        </article>
+
+        <div id="extensionMarking" class="review-panel" hidden>
+          <h2>Self-marking guidance</h2>
+          <p>A strong response would normally recommend star and build linked explanations from the scenario.</p>
+          <div class="mark-grid">
+            <label><input type="checkbox" data-save="extension.m1"> 1 mark: recommends star.</label>
+            <label><input type="checkbox" data-save="extension.m2"> 1 mark: states that each node has a separate link to a switch.</label>
+            <label><input type="checkbox" data-save="extension.m3"> 1 mark: links separate/switch-managed communication to high traffic or reduced collisions.</label>
+            <label><input type="checkbox" data-save="extension.m4"> 1 mark: explains that one link fault normally affects only one computer.</label>
+            <label><input type="checkbox" data-save="extension.m5"> 1 mark: links available switch ports/separate connections to expansion or fault finding.</label>
+            <label><input type="checkbox" data-save="extension.m6"> 1 mark: acknowledges extra cabling/switch cost while maintaining a supported conclusion.</label>
+          </div>
+          <label>Reclaim one mark<textarea data-save="extension.reclaim" rows="3" placeholder="Write the missing sentence here..."></textarea></label>
+          <button id="finishExtension" class="button button-outline">Save extension evidence</button>
+        </div>
+
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="main2">Back</button>
+          <button class="button button-dark" data-go="plenary">Continue to Plenary</button>
+        </div>
+      </section>
+
+      <section id="plenary" class="lesson-stage" data-stage="plenary" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">06 · PLENARY · 5 MINUTES · 3 MARKS</p>
+          <h1>Finish with retrieval, not confidence.</h1>
+          <p class="stage-lead">Close the learning materials. Answer from memory, then repair anything missing.</p>
+        </div>
+
+        <div class="question-list" id="plenaryQuestions">
+          <article class="question-card" data-question="plenary1">
+            <div class="question-number">1</div>
+            <div><h2>State the defining connection difference between star and bus topology.</h2><p class="mark-label">[1 mark]</p><textarea data-save="plenary.q1" rows="3"></textarea></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>Star gives each node a separate connection to a central switch; bus connects every node to one shared backbone.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="plenary1" data-value="1">Yes</button><button data-selfmark="plenary1" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="plenary2">
+            <div class="question-number">2</div>
+            <div><h2>What do the terminators at the ends of a bus backbone do?</h2><p class="mark-label">[1 mark]</p><textarea data-save="plenary.q2" rows="3"></textarea></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>They absorb signals and prevent unwanted reflections or interference.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="plenary2" data-value="1">Yes</button><button data-selfmark="plenary2" data-value="0">Not yet</button></div>
+          </article>
+          <article class="question-card" data-question="plenary3">
+            <div class="question-number">3</div>
+            <div><h2>A central switch fails. Name the affected topology and state the consequence.</h2><p class="mark-label">[1 mark]</p><textarea data-save="plenary.q3" rows="3"></textarea></div>
+            <div class="answer-panel" hidden><strong>Mark point</strong><p>Star topology; the nodes lose network communication because all connections depend on the switch.</p></div>
+            <div class="self-mark" hidden><span>Did you earn the mark?</span><button data-selfmark="plenary3" data-value="1">Yes</button><button data-selfmark="plenary3" data-value="0">Not yet</button></div>
+          </article>
+        </div>
+
+        <div class="wagba-evidence">
+          <label><strong>WAGBA evidence sentence</strong><span>Complete this with evidence from your work: “I am getting better at…”</span><textarea data-save="plenary.wagba" rows="4" placeholder="I am getting better at... My work shows this because..."></textarea></label>
+        </div>
+        <div id="plenaryCorrection" class="correction-box" hidden><label><strong>Final repair</strong><span>Correct one answer that did not earn its mark.</span><textarea data-save="plenary.correction" rows="3"></textarea></label></div>
+        <div class="score-banner"><span>Plenary score</span><strong id="plenaryScore">Not marked</strong></div>
+
+        <div class="stage-actions">
+          <button class="button button-outline" data-go="main2">Back</button>
+          <button id="checkPlenary" class="button button-dark">Reveal answers</button>
+          <button id="finishPlenary" class="button button-dark" hidden>Build Evidence Report</button>
+        </div>
+      </section>
+
+      <section id="report" class="lesson-stage" data-stage="report" tabindex="-1" hidden>
+        <div class="stage-header compact">
+          <p class="stage-index">07 · EVIDENCE REPORT</p>
+          <h1>Show the learning, not just completion.</h1>
+          <p class="stage-lead">Your report contains your responses, self-marking, diagrams and improvements. Review it before saving as PDF.</p>
+        </div>
+
+        <div class="report-actions">
+          <button id="buildReport" class="button button-outline">Refresh report</button>
+          <button id="printReport" class="button button-dark">Export / Save as PDF</button>
+        </div>
+
+        <div class="teams-instruction">
+          <span>TEAMS SUBMISSION</span>
+          <ol>
+            <li>Select <strong>Export / Save as PDF</strong>.</li>
+            <li>Choose <strong>Save as PDF</strong> in the print window.</li>
+            <li>Name the file <strong>W3S1_Topologies_YourName.pdf</strong>.</li>
+            <li>Upload the PDF to the correct Microsoft Teams assignment.</li>
+          </ol>
+        </div>
+
+        <article id="reportDocument" class="report-document" aria-label="Student evidence report preview"></article>
+
+        <div class="data-controls">
+          <p><strong>Local saving:</strong> this website stores progress only on this device and browser.</p>
+          <button id="resetProgress" class="button button-danger">Reset all progress</button>
+        </div>
+
+        <div class="stage-actions"><button class="button button-outline" data-go="plenary">Back</button><span></span></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

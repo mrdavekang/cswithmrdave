@@ -1,0 +1,42 @@
+TEACHER GUIDE
+Year 11 · Term 1 · Week 3 · Session 1 · Network Topologies
+
+WAGBA
+Explaining and comparing star and bus topologies, then applying their trade-offs to a network scenario.
+
+ASSESSMENT ALIGNMENT
+This lesson primarily develops OxfordAQA AO1 and AO2.
+- AO1: recall, explain and draw star and bus topologies.
+- AO2: apply topology properties to faults, traffic, cost, expansion and scenarios.
+OxfordAQA AO3 is predominantly concerned with analysing computational problems and developing/testing programmed solutions, so the scenario work is not labelled AO3.
+
+SUGGESTED TIMING
+- Overview and Do Now: 7 minutes
+- Visual reading and checkpoint: 10 minutes
+- Main Activity 1 comparison and diagrams: 15 minutes
+- Main Activity 2 model and independent scenario: 17 minutes
+- Extension: for early finishers
+- Plenary and report export: 7 minutes
+
+LEARNING-DESIGN DECISIONS
+- Prior knowledge is retrieved before topology images are shown.
+- Images are paired with concise adjacent explanations.
+- Students reconstruct diagrams rather than only viewing them.
+- One scenario is modelled through requirement, property, consequence, decision and trade-off.
+- The second scenario fades the scaffold and requires independent explanation.
+- Feedback is followed by a mark-reclaim or correction action.
+- The plenary retrieves knowledge and does not repeat a confidence survey.
+
+CONTENT ACCURACY
+- Course textbook reference: printed pages 230–231.
+- A terminator absorbs signals and prevents unwanted reflections; it does not turn a signal around and resend it.
+- Physical bus networks have limited modern application. The exhibition is explicitly framed as a simplified examination comparison scenario.
+
+TEACHER REVIEW ACCESS
+Enter teacher as the full name on the landing page. The class can be left blank.
+This unlocks all sections and makes answer materials available without placing a teacher-mode option on the student interface.
+
+EVIDENCE AND DATA
+Student work is saved in browser local storage only. The app has no server or database.
+Students should export the final report using the browser's Save as PDF option and submit it in Microsoft Teams.
+
