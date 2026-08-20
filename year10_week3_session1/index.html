@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 10 OxfordAQA Computer Science lesson on sequence, decomposition and abstraction.">
+  <meta name="theme-color" content="#ffffff">
+  <title>From Problems to Algorithms | Year 10 Computer Science</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#lessonContent">Skip to lesson content</a>
+
+  <div id="landing" class="landing" role="dialog" aria-modal="true" aria-labelledby="landingTitle">
+    <div class="landing-inner">
+      <p class="eyebrow">YEAR 10 · TERM 1 · WEEK 3 · SESSION 1</p>
+      <h1 id="landingTitle">From problems<br>to algorithms</h1>
+      <p class="landing-lead">Learn how programmers use sequence, decomposition and abstraction before they begin coding.</p>
+      <form id="entryForm" class="entry-form">
+        <label for="studentName">Your full name
+          <input id="studentName" name="studentName" autocomplete="name" required placeholder="Enter your full name">
+        </label>
+        <label for="studentClass">Your class
+          <input id="studentClass" name="studentClass" autocomplete="organization" placeholder="For example: 10A CS">
+        </label>
+        <button class="primary-button" type="submit">Start lesson</button>
+      </form>
+      <p class="privacy-note">Your responses and evidence stay in this browser until you export or clear them. Teacher review: enter <strong>teacher</strong> as the name.</p>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <button id="routeToggle" class="route-toggle" type="button" aria-expanded="false" aria-controls="routePanel">
+      <span aria-hidden="true">☰</span><span>Lesson route</span>
+    </button>
+    <div class="topbar-title">
+      <strong>From Problems to Algorithms</strong>
+      <span id="currentStageLabel">Overview</span>
+    </div>
+    <div class="progress-area" aria-label="Lesson progress">
+      <span id="progressLabel">0% complete</span>
+      <div class="progress-track"><span id="progressBar"></span></div>
+    </div>
+    <button id="topExport" class="quiet-button" type="button">Export work</button>
+  </header>
+
+  <div class="learning-focus" aria-label="Learning focus">
+    <p><strong>WAGBA</strong> Turning a problem into a precise, ordered and manageable solution.</p>
+    <p class="ksu-line"><strong>K</strong> key concepts <span>·</span> <strong>S</strong> plan and implement <span>·</span> <strong>U</strong> explain why structure matters</p>
+  </div>
+
+  <nav id="routePanel" class="route-panel" aria-label="Lesson sections" hidden>
+    <div class="route-panel-inner">
+      <button data-nav="overview"><span>0</span>Overview</button>
+      <button data-nav="starter"><span>1</span>Starter</button>
+      <button data-nav="main1"><span>2</span>Main Activity 1</button>
+      <button data-nav="main2"><span>3</span>Main Activity 2</button>
+      <button data-nav="extension"><span>4</span>Extension <em>optional</em></button>
+      <button data-nav="plenary"><span>5</span>Plenary</button>
+      <button data-nav="report"><span>6</span>Evidence report</button>
+      <div class="route-identity">
+        <strong id="routeName">Student</strong>
+        <span id="routeClass">Class</span>
+        <button id="changeStudent" type="button">Change details</button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="lessonContent" class="lesson-content">
+    <section id="overview" class="stage active" data-stage="overview" tabindex="-1">
+      <p class="stage-meta">OVERVIEW · ABOUT 3 MINUTES</p>
+      <h1>Think before you code.</h1>
+      <p class="lead">A programmer does not begin with Python. They first decide what the problem is, which information matters, and what order the solution must follow.</p>
+
+      <figure class="lesson-image">
+        <img src="assets/images/image-1-problem-to-program.png" alt="Four-stage journey from a real-world problem, through decomposition, abstraction and sequence, to an algorithm and then a Python program.">
+      </figure>
+
+      <div class="focus-statement">
+        <span>WAGBA</span>
+        <p><strong>What are we getting better at?</strong><br>Turning a problem into a precise, ordered and manageable solution.</p>
+      </div>
+
+      <div class="reading-flow">
+        <h2>By the end of this lesson</h2>
+        <p>You will be able to identify the information a program needs, break a problem into smaller tasks, order the solution and implement it using familiar Python.</p>
+
+        <h3>Knowledge</h3>
+        <p>Know the meanings of <strong>algorithm</strong>, <strong>sequence</strong>, <strong>decomposition</strong> and <strong>abstraction</strong>.</p>
+
+        <h3>Skills</h3>
+        <p>Identify inputs, processing and outputs; remove unnecessary information; order steps; and turn a plan into a short program.</p>
+
+        <h3>Understanding</h3>
+        <p>Understand that instruction order affects the result and that whether a detail matters depends on the program’s purpose.</p>
+      </div>
+
+      <div class="course-connection">
+        <p><strong>Paper 1 habit:</strong> analyse a problem before creating or modifying code.</p>
+        <p><strong>Paper 2 habit:</strong> define, apply and explain algorithmic concepts precisely.</p>
+      </div>
+
+      <div id="teacherNotice" class="teacher-notice" hidden>
+        <strong>Teacher review mode</strong>
+        <p>Every section is unlocked and model answers are visible.</p>
+      </div>
+
+      <div class="stage-footer">
+        <span></span>
+        <button class="primary-button" data-complete="overview" data-next="starter">Begin starter</button>
+      </div>
+    </section>
+
+    <section id="starter" class="stage" data-stage="starter" tabindex="-1" hidden>
+      <p class="stage-meta">STARTER · PREDICT, RUN, INVESTIGATE · 8 MINUTES</p>
+      <h1>Trace a school-shop calculation.</h1>
+      <p class="lead">Act as a program detective: work out what this short checkout program will do before you allow the computer to run it.</p>
+
+      <article class="scenario-brief">
+        <p class="reading-label">YOUR STARTING SCENARIO</p>
+        <h2>A notebook order at the school shop</h2>
+        <p>The school shop sells notebooks for <strong>RM3.50 each</strong>. The price stays the same during the transaction, but each customer may buy a different quantity. A cashier needs a small program that asks for the quantity, calculates the cost and displays the total to charge.</p>
+        <p>The program below is one possible solution. Your job is not to rewrite it yet. You are going to <strong>trace</strong> it: follow each instruction in order and keep track of how the stored values change.</p>
+        <ol class="mission-steps">
+          <li>Notice which value is already known before the customer responds.</li>
+          <li>Pretend the customer enters <code>4</code> when the program asks a question.</li>
+          <li>Follow the calculation using those stored values.</li>
+          <li>Predict exactly what the final instruction will display.</li>
+        </ol>
+      </article>
+
+      <div class="instruction-line"><strong>Important:</strong> answer Question 1 without running the code. After making your prediction, use your own Python IDE to test and correct your thinking.</div>
+
+      <div class="code-example" aria-label="Python starter program">
+        <div class="code-heading"><span>starter.py</span><button class="copy-button" data-copy="starterCode" type="button">Copy code</button></div>
+        <pre id="starterCode"><code>PRICE = 3.50
+quantity = int(input("How many notebooks? "))
+total = PRICE * quantity
+print("Total cost:", total)</code></pre>
+      </div>
+
+      <div class="task-block">
+        <p class="task-label">YOUR TURN</p>
+        <fieldset class="question">
+          <legend><span>1</span> Predict the exact output if the user enters <code>4</code>.</legend>
+          <textarea data-save="starter.prediction" rows="3" aria-label="Starter prediction"></textarea>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>2</span> Identify the role of each instruction.</legend>
+          <label>The line containing <code>input</code>
+            <select data-save="starter.roleInput">
+              <option value="">Choose a role</option><option value="input">Input</option><option value="processing">Processing</option><option value="output">Output</option>
+            </select>
+          </label>
+          <label>The multiplication line
+            <select data-save="starter.roleProcessing">
+              <option value="">Choose a role</option><option value="input">Input</option><option value="processing">Processing</option><option value="output">Output</option>
+            </select>
+          </label>
+          <label>The <code>print</code> line
+            <select data-save="starter.roleOutput">
+              <option value="">Choose a role</option><option value="input">Input</option><option value="processing">Processing</option><option value="output">Output</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>3</span> What would go wrong if the final two lines exchanged places?</legend>
+          <textarea data-save="starter.swap" rows="4"></textarea>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>4</span> Why must <code>PRICE</code> receive a value before it is used?</legend>
+          <textarea data-save="starter.priceReason" rows="4"></textarea>
+        </fieldset>
+
+        <button id="checkStarter" class="primary-button" type="button">Check my thinking</button>
+      </div>
+
+      <div id="starterFeedback" class="feedback-section" hidden>
+        <p class="stage-meta">WORKED FEEDBACK</p>
+        <h2>The computer follows the sequence.</h2>
+        <figure class="lesson-image">
+          <img src="assets/images/image-2-program-execution.png" alt="The notebook program executing from top to bottom: set price, receive quantity four, calculate fourteen, and display the total.">
+        </figure>
+        <div class="model-answer">
+          <p><strong>Output:</strong> <code>Total cost: 14.0</code> or an equivalent display of fourteen.</p>
+          <p><strong>If the lines were swapped:</strong> the program would try to output <code>total</code> before the value had been calculated.</p>
+          <p><strong>Why PRICE comes first:</strong> a variable or constant must have a value before an expression can use it.</p>
+        </div>
+        <div class="self-check">
+          <p>Confirm your corrections:</p>
+          <label><input type="checkbox" data-save="starter.check1"> My predicted result is now correct.</label>
+          <label><input type="checkbox" data-save="starter.check2"> I correctly identified input, processing and output.</label>
+          <label><input type="checkbox" data-save="starter.check3"> I explained why instruction order matters.</label>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="overview">Back</button>
+        <button id="finishStarter" class="primary-button" data-next="main1">Continue to Main Activity 1</button>
+      </div>
+    </section>
+
+    <section id="main1" class="stage" data-stage="main1" tabindex="-1" hidden>
+      <p class="stage-meta">MAIN ACTIVITY 1 · UNDERSTAND AND ORGANISE · 17 MINUTES · AO1/AO2</p>
+      <h1>Turn a scenario into a plan.</h1>
+      <p class="lead">First build the meaning of the three concepts. Then use them to analyse one realistic problem.</p>
+
+      <article class="reading-flow">
+        <p class="reading-label">READ THIS FIRST</p>
+        <h2>Three decisions made before coding</h2>
+        <p>An <strong>algorithm</strong> is an ordered set of steps that can be followed to complete a task. A program is an implementation of an algorithm.</p>
+        <p><strong>Sequence</strong> determines the order in which instructions are carried out. Changing that order can change the result or make the solution fail.</p>
+        <p><strong>Decomposition</strong> means breaking a problem into smaller, identifiable tasks. A programmer can plan, implement and test each part more easily.</p>
+        <p><strong>Abstraction</strong> means removing unnecessary detail. A detail is only unnecessary in relation to a particular purpose.</p>
+        <p class="source-line">Textbook reference: printed page 8; pages 88–89; pages 98–101. Specification: 3.1.1 and 3.2.2.</p>
+      </article>
+
+      <figure class="lesson-image">
+        <img src="assets/images/image-3-computational-thinking-concepts.png" alt="Sequence shown as ordered school-work actions, decomposition shown as a school event split into smaller tasks, and abstraction shown as a detailed map simplified to a useful route.">
+      </figure>
+
+      <details class="worked-example" open>
+        <summary>Worked example: a notebook-order calculator</summary>
+        <div>
+          <p><strong>Problem:</strong> calculate the cost of a notebook order.</p>
+          <ol>
+            <li><strong>Abstract:</strong> keep the price and quantity. The weather and the colour of the shop wall do not affect the calculation.</li>
+            <li><strong>Decompose:</strong> receive the quantity, calculate price × quantity, display the total.</li>
+            <li><strong>Sequence:</strong> input must happen before calculation; calculation must happen before output.</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="section-break"></div>
+      <p class="reading-label">NOW APPLY IT</p>
+      <h2>Design an application for a sponsored run.</h2>
+
+      <article class="scenario-brief">
+        <p class="reading-label">THE CLIENT AND THE PROBLEM</p>
+        <h3>Riverside School Charity Run</h3>
+        <p>Riverside School is holding a sponsored run to raise money for a local children’s library. Before the event, runners ask family members, friends, teachers or local businesses to promise an amount of money for every lap they complete. For example, a sponsor might promise <strong>RM2.00 per lap</strong>.</p>
+        <p>At the finish desk, a marshal confirms each runner’s completed laps. The charity team then needs to calculate how much that runner has raised. Doing every calculation by hand is slow and could lead to mistakes, so the team has asked you to plan a simple application.</p>
+        <p>For this first version, the application will record the <strong>participant’s name</strong>, the <strong>number of completed laps</strong> and one combined <strong>sponsorship rate per lap</strong>. It will calculate the total raised and display a clear result for the charity team. It does not need to store sponsor names or payment details.</p>
+        <p><strong>Example:</strong> Aisha completes 5 laps and has sponsorship of RM2.00 per lap. The application should calculate RM10.00 and display a message that connects the total to Aisha.</p>
+      </article>
+
+      <figure class="lesson-image">
+        <img src="assets/images/image-4-sponsored-run-scenario.png" alt="Aisha finishes a sponsored run. The image shows her name, five completed laps, sponsorship of 2.00 per lap, blue shoes, sunny weather, Art as her favourite subject, and an unknown total raised.">
+      </figure>
+
+      <div class="coach-note">
+        <p class="reading-label">YOUR DESIGN MISSION</p>
+        <p>The event poster contains realistic details, but the application only needs information that helps it perform its stated purpose. Work through the four design decisions below in order.</p>
+        <ol class="mission-steps">
+          <li><strong>Abstract:</strong> decide what the application must keep and what it can ignore.</li>
+          <li><strong>Justify:</strong> explain why removing a detail does not affect the required calculation.</li>
+          <li><strong>Decompose:</strong> break the job into input, processing and output tasks.</li>
+          <li><strong>Sequence:</strong> arrange the smaller tasks so every value exists before it is used.</li>
+        </ol>
+        <p><strong>A successful plan</strong> will give another programmer enough information to build the application without guessing what it is supposed to do.</p>
+      </div>
+
+      <div class="task-block">
+        <p class="task-label">ALGORITHM CLINIC</p>
+        <fieldset class="question compact-list">
+          <legend><span>1</span> Decide how the application should treat each detail.</legend>
+          <label>Participant name<select data-save="main1.factName"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Laps completed<select data-save="main1.factLaps"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Sponsorship per lap<select data-save="main1.factRate"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Shoe colour<select data-save="main1.factShoes"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Weather<select data-save="main1.factWeather"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Favourite subject<select data-save="main1.factSubject"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+          <label>Total raised<select data-save="main1.factTotal"><option value="">Choose</option><option value="input">Needed as input</option><option value="not-needed">Unnecessary for this application</option><option value="output">Calculated output</option></select></label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>2</span> Choose two unnecessary details. For each one, explain why removing it will not stop the application calculating the total raised.</legend>
+          <textarea data-save="main1.abstractionReason" rows="5"></textarea>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>3</span> Decompose the problem into three smaller jobs. State the specific values involved rather than writing only “get input” or “show output.”</legend>
+          <label>Input task<textarea data-save="main1.decomposeInput" rows="3" placeholder="Which three values must the application receive?"></textarea></label>
+          <label>Processing task<textarea data-save="main1.decomposeProcess" rows="3" placeholder="What calculation must it perform?"></textarea></label>
+          <label>Output task<textarea data-save="main1.decomposeOutput" rows="3" placeholder="What useful message must it display, and for whom?"></textarea></label>
+        </fieldset>
+
+        <fieldset class="question sequence-question">
+          <legend><span>4</span> Number the algorithmic steps from 1 to 5.</legend>
+          <label><select data-save="main1.seqDisplay"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select> Display the participant’s name and total raised.</label>
+          <label><select data-save="main1.seqLaps"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select> Ask for the number of laps.</label>
+          <label><select data-save="main1.seqCalculate"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select> Calculate laps multiplied by sponsorship per lap.</label>
+          <label><select data-save="main1.seqName"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select> Ask for the participant’s name.</label>
+          <label><select data-save="main1.seqRate"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select> Ask for the sponsorship per lap.</label>
+        </fieldset>
+
+        <button id="checkMain1" class="primary-button" type="button">Check my analysis</button>
+        <div id="main1Feedback" class="inline-feedback" hidden aria-live="polite"></div>
+      </div>
+
+      <details class="teacher-key" hidden>
+        <summary>Teacher model answer</summary>
+        <p>Inputs: name, laps and rate. Output: total raised. Shoes, weather and favourite subject are unnecessary for this purpose. Sequence: name → laps → rate → calculate → display.</p>
+      </details>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="starter">Back</button>
+        <button id="finishMain1" class="primary-button" data-next="main2">Continue to Main Activity 2</button>
+      </div>
+    </section>
+
+    <section id="main2" class="stage" data-stage="main2" tabindex="-1" hidden>
+      <p class="stage-meta">MAIN ACTIVITY 2 · PLAN, IMPLEMENT AND TEST · 20 MINUTES · AO2/AO3</p>
+      <h1>Move from algorithm to Python.</h1>
+      <p class="lead">You have analysed the charity’s problem and designed its smaller tasks. Now you will translate that thinking into a working application in your own Python IDE.</p>
+
+      <article class="reading-flow">
+        <p class="reading-label">THE NEXT DEVELOPMENT STAGE</p>
+        <h2>Your plan is the bridge to your code.</h2>
+        <p>In Main Activity 1, you decided what information mattered, split the problem into input, processing and output, and placed those jobs in a sensible sequence. That is your algorithmic design. You should not begin Main Activity 2 by guessing Python statements: translate one planned job at a time.</p>
+        <p>The application needs text for the participant’s name, a whole number for completed laps and a number that may contain a decimal part for the sponsorship rate. In Python, <code>input()</code> initially returns text, so use <code>int(...)</code> for laps and <code>float(...)</code> for the rate before performing the multiplication.</p>
+        <p>Build in the same order as your algorithm: receive the inputs, calculate the total, then display the participant’s name and result. Run the program after each meaningful addition. If an error appears, you will know which small part to inspect.</p>
+      </article>
+
+      <details class="worked-example" open>
+        <summary>Worked translation: the notebook plan from the starter</summary>
+        <div>
+          <p><strong>Planned input:</strong> receive a whole-number quantity → <code>quantity = int(input("How many notebooks? "))</code></p>
+          <p><strong>Planned processing:</strong> multiply the fixed price by the quantity → <code>total = PRICE * quantity</code></p>
+          <p><strong>Planned output:</strong> display the calculated cost → <code>print("Total cost:", total)</code></p>
+          <p>The sponsored-run program follows the same translation process, but its variable names and prompts must match the charity scenario.</p>
+        </div>
+      </details>
+
+      <figure class="lesson-image">
+        <img src="assets/images/image-5-plan-code-test.png" alt="The sponsored-run input, processing and output plan becomes a Python program and is tested by comparing an expected result of ten with an actual result of ten.">
+      </figure>
+
+      <div class="coach-note">
+        <p class="reading-label">YOUR BUILD BRIEF</p>
+        <p>Create a file called <code>sponsored_run.py</code> for the Riverside charity team. Your finished application must:</p>
+        <ol class="mission-steps">
+          <li>ask for the participant’s name, completed laps and sponsorship rate per lap;</li>
+          <li>convert the two numerical responses into suitable Python number types;</li>
+          <li>calculate <code>laps × rate</code> and store the result;</li>
+          <li>display a clear message containing the participant’s name and total raised;</li>
+          <li>produce the expected results for all three supplied tests.</li>
+        </ol>
+        <p>You may use the scaffold below or type the program independently. Either way, run the completed code in <strong>your own Python IDE</strong>; the webpage does not execute Python.</p>
+      </div>
+
+      <div class="task-block">
+        <p class="task-label">STEP 1 · RECORD YOUR PLAN</p>
+        <p>Return to the three smaller jobs you identified in Main Activity 1. Rewrite them here precisely so they can guide your Python statements. Include the names of the values and the calculation.</p>
+        <fieldset class="question">
+          <legend><span>1</span> Write your planned input, processing and output.</legend>
+          <label>Input<textarea data-save="main2.planInput" rows="3"></textarea></label>
+          <label>Processing<textarea data-save="main2.planProcess" rows="3"></textarea></label>
+          <label>Output<textarea data-save="main2.planOutput" rows="3"></textarea></label>
+        </fieldset>
+
+        <p class="task-label spaced">STEP 2 · IMPLEMENT IN YOUR IDE</p>
+        <p>Open your Python IDE and create <code>sponsored_run.py</code>. Add and run the input statements first. Then add the calculation and run again. Finally add the output. Use this scaffold only if you need support.</p>
+        <div class="code-example">
+          <div class="code-heading"><span>sponsored_run.py</span><button class="copy-button" data-copy="mainCode" type="button">Copy scaffold</button></div>
+          <pre id="mainCode"><code>name = input("Enter the participant's name: ")
+laps = int(input("Enter the number of laps: "))
+rate = float(input("Enter the sponsorship per lap: "))
+
+total = ______________________
+
+print(________________________________________)</code></pre>
+        </div>
+
+        <fieldset class="question">
+          <legend><span>2</span> Paste your completed Python code.</legend>
+          <p class="field-help">Copy the final working version from your IDE, including the input, processing and output statements.</p>
+          <textarea class="code-input" data-save="main2.code" rows="11" spellcheck="false"></textarea>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend><span>3</span> Add screenshot evidence from your IDE.</legend>
+          <p class="field-help">Upload up to six images showing your code or program output. Images are resized and saved locally for the PDF report.</p>
+          <input id="evidenceUpload" type="file" accept="image/*" multiple>
+          <div id="evidencePreview" class="evidence-preview"></div>
+        </fieldset>
+
+        <p class="task-label spaced">STEP 3 · TEST</p>
+        <p>For each row, calculate the <strong>expected</strong> total yourself before running the program. Enter the supplied values exactly, record the program’s <strong>actual</strong> output, then choose Pass only when the two results agree. A result of zero is useful because it checks that the calculation handles a participant who completed no laps.</p>
+        <div class="test-table-wrap">
+          <table class="test-table">
+            <thead><tr><th>Test data</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Aisha, 5, 2.00</td><td><input data-save="main2.test1Expected" aria-label="Test 1 expected result"></td><td><input data-save="main2.test1Actual" aria-label="Test 1 actual result"></td><td><select data-save="main2.test1Result"><option value="">Choose</option><option>Pass</option><option>Fail</option></select></td></tr>
+              <tr><td>Daniel, 0, 3.50</td><td><input data-save="main2.test2Expected" aria-label="Test 2 expected result"></td><td><input data-save="main2.test2Actual" aria-label="Test 2 actual result"></td><td><select data-save="main2.test2Result"><option value="">Choose</option><option>Pass</option><option>Fail</option></select></td></tr>
+              <tr><td>Mei, 12, 1.25</td><td><input data-save="main2.test3Expected" aria-label="Test 3 expected result"></td><td><input data-save="main2.test3Actual" aria-label="Test 3 actual result"></td><td><select data-save="main2.test3Result"><option value="">Choose</option><option>Pass</option><option>Fail</option></select></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <fieldset class="question">
+          <legend><span>4</span> How did decomposition help you create or test this program?</legend>
+          <textarea data-save="main2.reflection" rows="5"></textarea>
+        </fieldset>
+
+        <div class="self-check">
+          <label><input type="checkbox" data-save="main2.confirmRun"> I ran my program in my own Python IDE.</label>
+          <label><input type="checkbox" data-save="main2.confirmTests"> I compared expected and actual results for all three tests.</label>
+        </div>
+      </div>
+
+      <details class="teacher-key" hidden>
+        <summary>Teacher model code and test results</summary>
+        <pre><code>total = laps * rate
+print(name, "raised", total)</code></pre>
+        <p>Expected results: 10.00, 0.00 and 15.00.</p>
+      </details>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="main1">Back</button>
+        <button id="finishMain2" class="primary-button" data-next="extension">Continue to extension</button>
+      </div>
+    </section>
+
+    <section id="extension" class="stage" data-stage="extension" tabindex="-1" hidden>
+      <p class="stage-meta">EXTENSION · TRANSFER AND GENERALISE · OPTIONAL</p>
+      <h1>Three ways to transfer your thinking.</h1>
+      <p class="lead">Choose one challenge first. If you complete it securely, move to another. Each scenario uses the same computational-thinking habits in a different setting.</p>
+
+      <figure class="lesson-image">
+        <img src="assets/images/image-6-same-structure-different-problems.png" alt="A sponsored-run calculation and a school-shop calculation both converge on the abstract pattern total equals quantity multiplied by rate.">
+      </figure>
+
+      <article class="reading-flow">
+        <p class="reading-label">RECOGNISE THE PATTERN</p>
+        <h2>The story changes; the algorithmic structure can remain.</h2>
+        <p>The sponsored-run application receives a quantity and a rate, multiplies them and displays a total. Programmers often reuse this underlying pattern in a new context, but they must still choose meaningful variable names, prompts and output messages for the new client.</p>
+        <p><strong>How to work:</strong> read the complete scenario before coding. Identify the client, purpose, required information and expected output. Then decompose, sequence, implement and test. Complete at least one challenge if lesson time remains.</p>
+      </article>
+
+      <div class="task-block">
+        <p class="challenge-label">CHALLENGE 1 · SUPPORTED TRANSFER</p>
+        <h2>School-shop preorder calculator</h2>
+        <article class="scenario-brief extension-scenario">
+          <p>The student council lets families preorder supplies before the new term. A staff member enters the <strong>product name</strong>, <strong>price for one item</strong> and <strong>quantity ordered</strong>. The application calculates the item total and displays a short receipt so the family knows how much to pay.</p>
+          <p>For delivered orders, the school charges one fixed <strong>RM4.50 delivery fee</strong>, regardless of quantity. Represent this using the named constant <code>DELIVERY_FEE</code>. The fee must be defined before it is used and added during processing before the receipt is displayed.</p>
+          <p><strong>Example:</strong> three pen packs at RM6.00 cost RM18.00 before delivery and RM22.50 after the delivery fee.</p>
+        </article>
+        <fieldset class="question">
+          <legend><span>1</span> Explain how this problem has the same underlying structure as the sponsored-run problem.</legend>
+          <textarea data-save="extension.structure" rows="5"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>2</span> Which variable names would you change?</legend>
+          <textarea data-save="extension.variables" rows="4"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>3</span> Write the school-shop Python program.</legend>
+          <textarea class="code-input" data-save="extension.code" rows="11" spellcheck="false"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>4</span> Add a named constant called <code>DELIVERY_FEE</code> and update your calculation.</legend>
+          <textarea class="code-input" data-save="extension.deliveryCode" rows="6" spellcheck="false"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>5</span> Explain where the fee calculation belongs in the sequence and why.</legend>
+          <textarea data-save="extension.feeReason" rows="5"></textarea>
+        </fieldset>
+
+        <div class="challenge-divider"></div>
+        <p class="challenge-label">CHALLENGE 2 · INDEPENDENT TRANSFER</p>
+        <h2>Library reading-marathon calculator</h2>
+        <article class="scenario-brief extension-scenario">
+          <p>The school library is running a reading marathon. Supporters promise a particular amount for every book a student finishes during the month. The librarian needs an application that asks for the <strong>reader’s name</strong>, <strong>number of completed books</strong> and <strong>sponsorship amount per book</strong>. It should calculate the total raised and display a clear message for the library’s records.</p>
+          <p><strong>Example:</strong> Hana completes 7 books with sponsorship of RM3.50 per book. Her total should be RM24.50. Build this version without using the supplied sponsored-run scaffold.</p>
+        </article>
+        <fieldset class="question">
+          <legend><span>1</span> Write the input, processing and output plan for the librarian.</legend>
+          <textarea data-save="extension.readingPlan" rows="6" placeholder="Input: …&#10;Processing: …&#10;Output: …"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>2</span> Write the complete Python program using meaningful variable names and prompts.</legend>
+          <textarea class="code-input" data-save="extension.readingCode" rows="11" spellcheck="false"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>3</span> Test with Hana’s data. Record your expected result, actual result and whether the test passed.</legend>
+          <textarea data-save="extension.readingTest" rows="4"></textarea>
+        </fieldset>
+
+        <div class="challenge-divider"></div>
+        <p class="challenge-label">CHALLENGE 3 · ADVANCED TRANSFER</p>
+        <h2>Community recycling-points calculator</h2>
+        <article class="scenario-brief extension-scenario">
+          <p>The eco committee awards points to each house for collecting waste paper. A coordinator enters the <strong>house name</strong>, <strong>kilograms collected</strong> and <strong>points awarded per kilogram</strong>. Every participating house also receives a fixed 25-point starter bonus, represented by <code>STARTER_BONUS</code>.</p>
+          <p>The event notice also mentions that the collection truck is green and Saturday’s forecast is sunny. Those details make the event description realistic, but consider whether the points application needs them.</p>
+          <p><strong>Example:</strong> Cedar House collects 18.5 kg at 4 points per kilogram. Including the starter bonus, the expected total is 99 points.</p>
+        </article>
+        <fieldset class="question">
+          <legend><span>1</span> Identify the details you would remove through abstraction and justify your decision.</legend>
+          <textarea data-save="extension.recyclingAbstract" rows="5"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>2</span> Decompose the application into input, processing and output, including where the constant is used.</legend>
+          <textarea data-save="extension.recyclingPlan" rows="6" placeholder="Input: …&#10;Processing: …&#10;Output: …"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>3</span> Write the complete Python program.</legend>
+          <textarea class="code-input" data-save="extension.recyclingCode" rows="12" spellcheck="false"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>4</span> Test with Cedar House’s data. Record the expected result, actual result and whether the test passed.</legend>
+          <textarea data-save="extension.recyclingTest" rows="4"></textarea>
+        </fieldset>
+      </div>
+
+      <details class="teacher-key" hidden>
+        <summary>Teacher extension guidance</summary>
+        <p><strong>Challenge 1:</strong> both programs receive a quantity and rate, multiply them and output a total. Define <code>DELIVERY_FEE = 4.50</code> before processing, then calculate <code>total = price * quantity + DELIVERY_FEE</code>.</p>
+        <p><strong>Challenge 2:</strong> <code>total = books * rate</code>; Hana’s expected result is 24.50.</p>
+        <p><strong>Challenge 3:</strong> truck colour and weather are unnecessary. Define <code>STARTER_BONUS = 25</code>, then calculate <code>points = kilograms * points_per_kg + STARTER_BONUS</code>; Cedar House’s expected result is 99.</p>
+      </details>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="main2">Back</button>
+        <div class="button-group"><button id="skipExtension" class="secondary-button" type="button">Skip for now</button><button id="finishExtension" class="primary-button" data-next="plenary">Save my extension work</button></div>
+      </div>
+    </section>
+
+    <section id="plenary" class="stage" data-stage="plenary" tabindex="-1" hidden>
+      <p class="stage-meta">PLENARY · OXFORDAQA EXIT TICKET · 6 MINUTES · AO1/AO2/AO3</p>
+      <h1>Show what you can now do.</h1>
+      <p class="lead">Complete this without looking back. Your answers will show which part should be revisited next lesson.</p>
+
+      <div class="task-block">
+        <fieldset class="question">
+          <legend><span>1</span> <strong>AO1:</strong> Define decomposition.</legend>
+          <textarea data-save="plenary.q1" rows="4"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>2</span> <strong>AO2:</strong> A library-fine program needs the overdue days and charge per day. Explain why the library wall colour can be removed through abstraction.</legend>
+          <textarea data-save="plenary.q2" rows="5"></textarea>
+        </fieldset>
+        <fieldset class="question">
+          <legend><span>3</span> <strong>AO3:</strong> Rewrite these instructions in a sensible sequence and explain one change.</legend>
+          <pre class="small-code"><code>print(total)
+total = days * charge
+days = int(input("Days overdue: "))</code></pre>
+          <textarea class="code-input" data-save="plenary.q3" rows="7" spellcheck="false"></textarea>
+        </fieldset>
+        <button id="checkPlenary" class="primary-button" type="button">Reveal marking guidance</button>
+      </div>
+
+      <div id="plenaryFeedback" class="feedback-section" hidden>
+        <h2>Mark and improve.</h2>
+        <div class="model-answer">
+          <p><strong>1:</strong> Decomposition is breaking a problem into smaller subproblems, each with an identifiable task.</p>
+          <p><strong>2:</strong> Wall colour does not affect the fine calculation, so it is unnecessary for this program’s purpose.</p>
+          <p><strong>3:</strong> Input the days, calculate the total, then output the total. A value must exist before it can be used or displayed.</p>
+        </div>
+        <div class="self-check">
+          <label><input type="checkbox" data-save="plenary.mark1"> AO1 answer uses the idea of smaller identifiable tasks.</label>
+          <label><input type="checkbox" data-save="plenary.mark2"> AO2 answer links relevance to the program’s purpose.</label>
+          <label><input type="checkbox" data-save="plenary.mark3"> AO3 answer has input → processing → output and explains why.</label>
+        </div>
+        <fieldset class="question reflection-question">
+          <legend>WAGBA reflection</legend>
+          <label>My current confidence
+            <select data-save="plenary.confidence">
+              <option value="">Choose</option>
+              <option>I can identify the three concepts.</option>
+              <option>I can apply them with support.</option>
+              <option>I can independently plan and implement a short solution.</option>
+            </select>
+          </label>
+          <label>I still need support with<textarea data-save="plenary.support" rows="3"></textarea></label>
+        </fieldset>
+      </div>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="extension">Back</button>
+        <button id="finishPlenary" class="primary-button" data-next="report">Create evidence report</button>
+      </div>
+    </section>
+
+    <section id="report" class="stage report-stage" data-stage="report" tabindex="-1" hidden>
+      <p class="stage-meta">EVIDENCE REPORT · AVAILABLE AT ANY TIME</p>
+      <h1>Save your learning evidence.</h1>
+      <p class="lead">Your report includes every recorded response, your Python code, test results, reflection and uploaded screenshots.</p>
+
+      <div class="teams-steps">
+        <h2>Submit to Microsoft Teams</h2>
+        <ol>
+          <li>Select <strong>Save or print PDF</strong> below.</li>
+          <li>Choose <strong>Save as PDF</strong> in the print window.</li>
+          <li>Use the suggested filename shown below.</li>
+          <li>Open the correct assignment in Microsoft Teams, attach the PDF and select <strong>Turn in</strong>.</li>
+        </ol>
+        <p>Suggested filename: <strong id="suggestedFilename">Week3_Session1.pdf</strong></p>
+      </div>
+
+      <div class="report-actions">
+        <button id="printReport" class="primary-button" type="button">Save or print PDF</button>
+        <button id="refreshReport" class="secondary-button" type="button">Refresh report</button>
+      </div>
+
+      <article id="reportPrint" class="report-document" aria-label="Student evidence report"></article>
+
+      <div class="data-actions">
+        <p><strong>Saved locally.</strong> Clear the browser copy only after confirming that your PDF has been saved and submitted.</p>
+        <button id="clearWork" class="danger-button" type="button">Clear saved work</button>
+      </div>
+
+      <div class="stage-footer">
+        <button class="secondary-button" data-go="plenary">Back to plenary</button>
+        <span></span>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
