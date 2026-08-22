@@ -298,6 +298,8 @@
 /* ============================ STATE ============================ */
 const LS_KEY='classroomDesigner_v1';
 const GRID=10, NEIGHBOR_DIST=150;
+const LOW_ABILITY_MAX=4, SUPPORT_ABILITY_MIN=6;
+const OPTIMIZE_RESTARTS=32, OPTIMIZE_SWAPS=1800;
 const SEATABLE=['desk','desktop'];
 let state={};
 let selectedId=null;
@@ -407,6 +409,28 @@ function clusterSeats(list){
   return Object.values(groups);
 }
 function pods(){ return clusterSeats(seatItems()); }
+function academicSupportSummary(assign,podList){
+  let totalLower=0,supported=0;
+  (podList||pods()).forEach(grp=>{
+    const students=grp.map(id=>assign[id]).filter(Boolean).map(id=>state.students[id]).filter(Boolean);
+    const hasStrongPeer=students.some(s=>abilityOf(s)>=SUPPORT_ABILITY_MIN);
+    const lowerCount=students.filter(s=>abilityOf(s)<=LOW_ABILITY_MAX).length;
+    totalLower+=lowerCount;
+    if(hasStrongPeer)supported+=lowerCount;
+  });
+  return {totalLower,supported,unsupported:totalLower-supported};
+}
+function prohibitedPairCount(assign,podList){
+  let count=0;
+  (podList||pods()).forEach(grp=>{
+    const students=grp.map(id=>assign[id]).filter(Boolean).map(id=>state.students[id]).filter(Boolean);
+    for(let i=0;i<students.length;i++)for(let j=i+1;j<students.length;j++){
+      const a=students[i],b=students[j];
+      if((a.cannot||[]).includes(b.id)||(b.cannot||[]).includes(a.id))count++;
+    }
+  });
+  return count;
+}
 function scoreAssignment(assign,podList){
   const P=podList||pods(); let score=0;
   P.forEach(grp=>{
@@ -423,7 +447,7 @@ function scoreAssignment(assign,podList){
       const std=Math.sqrt(abil.reduce((x,c)=>x+(c-mean)**2,0)/abil.length);
       score+=Math.min(std,3)*14;
       if(Math.max(...abil)<5)score-=45;
-      sids.forEach((s,i)=>{ if(abil[i]<=4 && abil.some((a,j)=>j!==i&&a>=6))score+=20; });
+      sids.forEach((s,i)=>{ if(abil[i]<=LOW_ABILITY_MAX && abil.some((a,j)=>j!==i&&a>=SUPPORT_ABILITY_MIN))score+=160; });
     }
     sids.filter(s=>s.eal).forEach(s=>{ if(sids.some(o=>o!==s&&!o.eal&&abilityOf(o)>=abilityOf(s)))score+=15; });
     if(sids.length>=3){
@@ -433,17 +457,42 @@ function scoreAssignment(assign,podList){
   });
   return score;
 }
+function supportSeedAssignment(slotIds,studentIds,podList){
+  const shuffle=list=>[...list].sort(()=>Math.random()-0.5);
+  const lows=shuffle(studentIds.filter(id=>state.students[id]&&abilityOf(state.students[id])<=LOW_ABILITY_MAX));
+  const strongs=shuffle(studentIds.filter(id=>state.students[id]&&abilityOf(state.students[id])>=SUPPORT_ABILITY_MIN));
+  const groups=(podList||[]).map(grp=>grp.filter(id=>slotIds.includes(id))).filter(grp=>grp.length).sort((a,b)=>b.length-a.length);
+  const assign={},usedSeats=new Set(),usedStudents=new Set();
+
+  groups.forEach(grp=>{
+    if(!lows.length||!strongs.length||grp.length<2)return;
+    const anchor=strongs.shift();
+    assign[grp[0]]=anchor; usedSeats.add(grp[0]); usedStudents.add(anchor);
+    for(let i=1;i<grp.length&&lows.length;i++){
+      const low=lows.shift(); assign[grp[i]]=low; usedSeats.add(grp[i]); usedStudents.add(low);
+    }
+  });
+
+  const remainingStudents=shuffle(studentIds.filter(id=>!usedStudents.has(id)));
+  slotIds.filter(id=>!usedSeats.has(id)).forEach((seatId,i)=>assign[seatId]=remainingStudents[i]||null);
+  return assign;
+}
+function assignmentObjective(assign,podList){
+  const support=academicSupportSummary(assign,podList);
+  return scoreAssignment(assign,podList)-prohibitedPairCount(assign,podList)*100000-support.unsupported*10000;
+}
 function optimizeAssignment(slotIds,studentIds,podList){
   let best=null,bestScore=-Infinity; const slots=[...slotIds];
-  for(let restart=0;restart<60;restart++){
+  for(let restart=0;restart<OPTIMIZE_RESTARTS;restart++){
     const order=[...studentIds].sort(()=>Math.random()-0.5);
-    const assign={}; slots.forEach((d,i)=>assign[d]=order[i]||null);
-    let cur=scoreAssignment(assign,podList), T=8;
-    for(let it=0;it<3000;it++){
+    const assign=restart===0?supportSeedAssignment(slots,studentIds,podList):{};
+    if(restart!==0)slots.forEach((d,i)=>assign[d]=order[i]||null);
+    let cur=assignmentObjective(assign,podList), T=8;
+    for(let it=0;it<OPTIMIZE_SWAPS;it++){
       const i=slots[Math.floor(Math.random()*slots.length)], j=slots[Math.floor(Math.random()*slots.length)];
       if(i===j)continue;
       [assign[i],assign[j]]=[assign[j],assign[i]];
-      const ns=scoreAssignment(assign,podList);
+      const ns=assignmentObjective(assign,podList);
       if(ns>=cur||Math.random()<Math.exp((ns-cur)/T))cur=ns;
       else [assign[i],assign[j]]=[assign[j],assign[i]];
       T*=0.999;
@@ -490,8 +539,8 @@ function computeWarnings(){
       const pod=[s,...nbrs.map(n=>n.stu)];
       if(pod.length>=3 && pod.filter(o=>o.gender===s.gender).length===1){ lines.push({cls:'warn',text:`Only ${s.gender==='F'?'girl':'boy'} in this group of ${pod.length}`}); if(level==='good')level='warn'; }
     }
-    if(abilityOf(s)<=4){
-      const anchor=nbrs.some(({stu:o})=>abilityOf(o)>=6);
+    if(abilityOf(s)<=LOW_ABILITY_MAX){
+      const anchor=nbrs.some(({stu:o})=>abilityOf(o)>=SUPPORT_ABILITY_MIN);
       lines.push(anchor?{cls:'good',text:'Lower attainer — stronger peer nearby ✓'}:{cls:'warn',text:'Lower attainer — no higher-grade peer adjacent'});
       if(!anchor&&level==='good')level='warn';
     }
@@ -503,11 +552,13 @@ function updateScoreBar(warn){
   let bad=0,caution=0,good=0;
   Object.values(warn||{}).forEach(w=>{ if(w.level==='bad')bad++; else if(w.level==='warn')caution++; w.lines.forEach(l=>{if(l.cls==='good')good++;}); });
   const a=getAssign(); const seated=Object.values(a).filter(Boolean).length; const total=classStudents().length;
+  const support=academicSupportSummary(a,pods());
+  const supportLabel=support.totalLower?`<span class="${support.unsupported?'warn':'good'}">● <span class="b">${support.supported}/${support.totalLower}</span> lower attainers supported</span>`:'';
   document.getElementById('scoreBar').innerHTML=
     `<span class="stat"><b>${seated}</b>/${total} seated</span>`+
     `<span class="bad">● <span class="b">${bad}</span> conflicts</span>`+
     `<span class="warn">● <span class="b">${caution}</span> cautions</span>`+
-    `<span class="good">● <span class="b">${good}</span> good pairings</span>`;
+    `<span class="good">● <span class="b">${good}</span> good pairings</span>`+supportLabel;
 }
 
 /* ============================ TOOLTIP ============================ */
