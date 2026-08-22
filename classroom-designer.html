@@ -196,7 +196,9 @@
 
   <section class="work">
     <div class="toolbar">
-      <button class="primary" id="autoBtn">⚡ Auto-assign seats</button>
+      <button id="autoDesksBtn" title="Auto-assign students to student desks only">⚡ Assign desks</button>
+      <button id="autoComputersBtn" title="Auto-assign students to computers only">💻 Assign computers</button>
+      <button class="primary" id="autoAllBtn" title="Auto-assign students to student desks and computers">⚡ Assign both</button>
       <button id="clearSeatsBtn">Clear seats</button>
       <span style="border-left:1px solid var(--line);height:22px;margin:0 4px"></span>
       <button class="sm" id="zoomOutBtn">−</button>
@@ -450,12 +452,15 @@ function optimizeAssignment(slotIds,studentIds,podList){
   }
   return best||{};
 }
-function autoArrange(){
+function autoArrange(seatKinds){
   const studs=classStudents(); if(!studs.length){alert('Add students to this class first.');return;}
-  const seats=seatItems().map(s=>s.id);
-  if(!seats.length){alert('This room has no desks or computers yet. Add some from "Add to room".');return;}
-  if(studs.length>seats.length){ if(!confirm(`You have ${studs.length} students but only ${seats.length} seats. Extra pupils will stay unseated. Continue?`))return; }
-  const best=optimizeAssignment(seats,studs.map(s=>s.id),pods());
+  const kinds=seatKinds||SEATABLE;
+  const selectedSeats=seatItems().filter(s=>kinds.includes(s.kind));
+  const seats=selectedSeats.map(s=>s.id);
+  const seatLabel=kinds.length===1?(kinds[0]==='desk'?'student desks':'computers'):'student desks and computers';
+  if(!seats.length){alert(`This room has no ${seatLabel} yet. Add some from "Add to room".`);return;}
+  if(studs.length>seats.length){ if(!confirm(`You have ${studs.length} students but only ${seats.length} ${seatLabel}. Extra pupils will stay unseated. Continue?`))return; }
+  const best=optimizeAssignment(seats,studs.map(s=>s.id),clusterSeats(selectedSeats));
   const a={}; seats.forEach(id=>{ if(best[id])a[id]=best[id]; });
   state.assign[assignKey()]=a; save(); renderCanvas(); renderRoster();
 }
@@ -808,7 +813,9 @@ document.getElementById('stuCancelBtn').onclick=closeModals;
 document.getElementById('stuDeleteBtn').onclick=deleteStudent;
 document.getElementById('manageCloseBtn').onclick=closeModals;
 
-document.getElementById('autoBtn').onclick=autoArrange;
+document.getElementById('autoDesksBtn').onclick=()=>autoArrange(['desk']);
+document.getElementById('autoComputersBtn').onclick=()=>autoArrange(['desktop']);
+document.getElementById('autoAllBtn').onclick=()=>autoArrange(SEATABLE);
 document.getElementById('clearSeatsBtn').onclick=()=>{ state.assign[assignKey()]={}; save(); renderCanvas(); renderRoster(); };
 
 document.getElementById('zoomInBtn').onclick=()=>setZoom(zoom+0.1);
