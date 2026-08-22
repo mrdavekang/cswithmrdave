@@ -1,138 +1,126 @@
-# Year 8 Week 1 Theory Web App
+# Year 8 Week 1 Theory — Redesigned Web App
 
 ## Lesson
 
-**Year group:** Year 8  
-**Week:** 1  
-**Lesson:** Computer Science Foundations — expectations, algorithms and Python baseline  
-**Normal student entry:** `index.html`  
-**Hidden testing route:** `index.html?teacher=1`
+**Computer Science Foundations: algorithms, programs, IPO and productive learning habits**
 
-The app is a static HTML/CSS/JavaScript lesson. It does not require a server, database, student account, build tool or external API.
+This is a static, self-directed lesson for Year 8. It includes:
 
-## Extract and open locally
+- a short diagnostic starter;
+- explicit teaching and a worked IPO example;
+- immediate feedback beside each checked question;
+- Algorithm Rescue application tasks;
+- a three-level optional extension ladder;
+- exact instructions for the Level 3 A4 paper design;
+- a vocabulary drawer with Plain English, Bahasa Melayu and Simplified Chinese support;
+- browser-based progress saving;
+- A4 photograph upload, drag-and-drop and clipboard paste;
+- a complete evidence review;
+- direct PDF export and a print-friendly fallback.
 
-1. Extract the ZIP file.
-2. Keep the folder structure unchanged.
+## Open locally
+
+1. Extract the complete folder.
+2. Keep `index.html`, `styles.css`, `app.js`, `assets` and `libraries` together.
 3. Open `index.html` in a modern browser.
 
-For the most reliable local behaviour, particularly on managed devices, serve the extracted folder with a simple static web server. The app can still open directly from the file system in current versions of Chrome, Edge, Firefox and Safari.
+For the most reliable clipboard and download behaviour, use static hosting or a local web server rather than opening the file directly.
 
-## Hosting
-
-Upload the complete extracted folder to any static host:
-
-- GitHub Pages
-- Vercel
-- Netlify
-- a school web server
-- SharePoint static hosting where HTML/JavaScript assets are permitted
-
-Do not upload only `index.html`; the CSS, JavaScript and image folders are also required.
-
-## Student route
+## Student entry
 
 Open:
 
-`index.html`
+```text
+index.html
+```
 
-Students enter their full name and class before beginning. Core sections unlock progressively. The optional extension does not block the plenary.
+Students enter their full name and class. The landing page is hidden after the lesson begins.
 
-## Hidden teacher testing route
+## Teacher testing
 
-Open:
+Either:
 
-`index.html?teacher=1`
+- open `index.html?teacher=1`, or
+- enter `teacher` as the full name.
 
-This route uses separate browser storage, relaxes required-field restrictions and pre-fills sample student details. No teacher controls or teacher-mode labels appear in the student interface.
+Teacher mode uses separate saved progress, unlocks all lesson sections and relaxes completion gates. No teacher controls are shown in the normal student interface.
 
-Do not publish the testing route in student instructions.
+## Saving and privacy
 
-## Progress saving and resuming
+Progress and the compressed A4 evidence image are saved in the browser on the current device. They are not uploaded to a server.
 
-Progress is saved automatically in browser `localStorage`, including:
+Students should use the same device and browser when returning to the lesson. Clearing browser data removes saved work. Uploaded photographs should contain lesson evidence only and should not include other students or unnecessary personal information.
 
-- full name and class
-- current section
-- task responses
-- checked results and corrections
-- section completion
-- optional extension work
-- plenary responses
-- timestamps
+If browser storage becomes full, the app displays a warning. Export a PDF before clearing any data.
 
-When the normal route is opened again on the same browser and device, the landing page offers to resume the saved lesson.
+## A4 paper evidence
 
-Student and hidden teacher testing work use separate storage keys.
+Level 3 tells students to:
 
-## Resetting progress
+1. write their name, class and lesson title;
+2. turn the A4 sheet to landscape;
+3. divide it into six labelled sections;
+4. complete the chosen system design;
+5. photograph the whole page clearly;
+6. upload, drag or paste the image into the app.
 
-On the landing page, choose **Start as another student** to remove the current saved student work after confirmation.
-
-On the final review page, choose **Reset all progress**. Deletion requires confirmation.
-
-Browser storage is device- and browser-specific. Clearing browser site data also removes saved lesson progress.
+Images are resized and compressed before being stored.
 
 ## PDF export
 
-The review page includes **Export lesson PDF**.
+The local `libraries/pdf-lib.min.js` file provides direct PDF export without a CDN. The PDF includes:
 
-The app contains a dependency-free client-side PDF generator. It creates a multi-page A4 PDF using standard PDF fonts, structured headings and automatic page breaks. The PDF filename follows this format:
+- student and lesson information;
+- WAGBA, KSU, keywords and challenge;
+- all current answers;
+- automatic-check summaries;
+- teacher-review responses;
+- optional extension work;
+- the A4 photograph when submitted;
+- plenary evidence;
+- completion states;
+- the Microsoft Teams submission reminder.
 
-`Year8_Class_Full_Name_Week1_Theory.pdf`
+Filename format:
 
-After export, the app shows the Microsoft Teams submission instruction for **Week 1 Theory**.
+```text
+Year8_Class_FullName_Week1_Theory.pdf
+```
 
-## Print fallback
+If direct PDF export is blocked, use **Print-friendly fallback** and select **Save as PDF** in the browser print window.
 
-Choose **Print-friendly fallback** on the review page if direct PDF download is blocked. The browser print dialog will open a print-only version of the lesson evidence. Select **Save as PDF** in the browser or operating-system print dialog.
+## GitHub Pages
 
-## Images
+This app can run on GitHub Pages because it uses only HTML, CSS, JavaScript and local assets.
 
-Lesson images are stored in:
+1. Copy the entire folder into the repository.
+2. Commit and push every file, including `assets` and `libraries`.
+3. In the repository settings, enable GitHub Pages for the required branch and folder.
+4. Open the published `index.html` route.
 
-`assets/images/`
+Do not move the images or PDF library without also updating their paths in the HTML, CSS or JavaScript.
 
-Current image files:
+## Replacing lesson images
 
-- `starter-baseline-overview.png`
-- `computer-science-learning-habits.png`
-- `algorithm-rescue-name-badge.png`
-- `plenary-reflection.png`
+Images are stored in:
 
-The images are inserted within the relevant activities. Students can select an image to enlarge it.
+```text
+assets/images/
+```
 
-If an image is missing, the app displays an accessible fallback message and the activity remains usable.
+The revised Algorithm Rescue image is:
 
-## Replacing or adding images
+```text
+algorithm-rescue-ipo-scenario.png
+```
 
-1. Add the new image to `assets/images/`.
-2. Use a descriptive, lowercase filename.
-3. Update the relevant image path in `app.js`.
-4. Provide accurate descriptive alt text in the corresponding `imageBlock(...)` call.
-5. Preserve the folder structure when repackaging.
+Use the same filename to replace an image without changing code. Preserve the image proportions and keep instructional text out of the image wherever possible.
 
-Avoid embedding large images as base64.
+## Browser notes
 
-## Browser limitations
-
-- Saved progress is available only in the same browser profile and device.
-- Private browsing may remove progress when the window closes.
-- School browser policies may block file downloads; use the print fallback in that case.
-- Direct local opening can behave differently under strict managed-browser policies. Static hosting is recommended for deployment.
-- PDF text uses standard PDF fonts and converts unusual symbols to readable ASCII equivalents.
-- The app does not sync progress between devices.
-
-## Accessibility
-
-The app includes:
-
-- keyboard-accessible controls
-- visible focus indicators
-- labelled form fields
-- accessible alternatives to drag-and-drop through move-up/move-down controls
-- responsive layouts
-- descriptive image alt text
-- reduced-motion support
-- contrast-aware success, warning and error states
-- a persistent or collapsible learning-focus panel
+- Current versions of Chrome, Edge, Firefox and Safari are recommended.
+- Clipboard image access normally requires HTTPS, localhost or explicit browser permission.
+- File selection remains available when clipboard access is blocked.
+- PDF and image downloads may be restricted by managed-browser policies.
+- Local browser saving is device-specific and is not a school-cloud backup.
+- The vocabulary translations support meaning; students should still use the English computing keywords in their submitted answers.
