@@ -31,16 +31,63 @@
   const BADGE_ORDER = ["Start", "Ask the user for their name", "Store the name", "Create a greeting using the name", "Display the greeting", "End"];
 
   const GLOSSARY = [
-    { term: "Algorithm", en: "A finite, ordered and precise set of steps for solving a problem.", ms: "Algoritma — satu set langkah yang teratur dan tepat untuk menyelesaikan masalah.", zh: "算法——为解决问题而设计的一组有序、明确的步骤。" },
-    { term: "Program", en: "An algorithm written in a language that a computer can execute.", ms: "Atur cara — algoritma yang ditulis dalam bahasa yang boleh dilaksanakan oleh komputer.", zh: "程序——用计算机可以执行的语言写成的算法。" },
-    { term: "Sequence", en: "The order in which instructions happen.", ms: "Urutan — susunan arahan dilaksanakan.", zh: "顺序——指令执行的先后次序。" },
-    { term: "Input", en: "Data that enters a system.", ms: "Input / masukan — data yang masuk ke dalam sistem.", zh: "输入——进入系统的数据。" },
-    { term: "Process", en: "What the system does to the input data.", ms: "Proses — apa yang sistem lakukan terhadap data input.", zh: "处理——系统对输入数据所做的操作。" },
-    { term: "Output", en: "Information produced by a system.", ms: "Output / keluaran — maklumat yang dihasilkan oleh sistem.", zh: "输出——系统产生的信息。" },
-    { term: "Variable", en: "A named place used to store a value in a program.", ms: "Pemboleh ubah — tempat bernama untuk menyimpan nilai dalam atur cara.", zh: "变量——程序中用名称保存数值或信息的位置。" },
-    { term: "Debug", en: "Find, understand and correct a problem.", ms: "Nyahpepijat — mencari, memahami dan membetulkan masalah.", zh: "调试——查找、理解并修正问题。" },
-    { term: "Evidence", en: "Work that shows what you attempted, understood or improved.", ms: "Bukti — kerja yang menunjukkan percubaan, pemahaman atau penambahbaikan.", zh: "证据——展示你尝试、理解或改进内容的学习成果。" }
+    { term: "Algorithm", en: "A finite, ordered and precise set of steps for solving a problem.", ms: "Algoritma — satu set langkah yang teratur dan tepat untuk menyelesaikan masalah.", zh: "算法——为解决问题而设计的一组有序、明确的步骤。", ko: "알고리즘 — 문제를 해결하기 위한 유한하고 순서가 있으며 명확한 단계의 모음입니다." },
+    { term: "Program", en: "An algorithm written in a language that a computer can execute.", ms: "Atur cara — algoritma yang ditulis dalam bahasa yang boleh dilaksanakan oleh komputer.", zh: "程序——用计算机可以执行的语言写成的算法。", ko: "프로그램 — 컴퓨터가 실행할 수 있는 언어로 작성된 알고리즘입니다." },
+    { term: "Sequence", en: "The order in which instructions happen.", ms: "Urutan — susunan arahan dilaksanakan.", zh: "顺序——指令执行的先后次序。", ko: "순서 — 명령이 실행되는 차례입니다." },
+    { term: "Input", en: "Data that enters a system.", ms: "Input / masukan — data yang masuk ke dalam sistem.", zh: "输入——进入系统的数据。", ko: "입력(Input) — 시스템 안으로 들어가는 데이터입니다." },
+    { term: "Process", en: "What the system does to the input data.", ms: "Proses — apa yang sistem lakukan terhadap data input.", zh: "处理——系统对输入数据所做的操作。", ko: "처리(Process) — 시스템이 입력 데이터에 수행하는 작업입니다." },
+    { term: "Output", en: "Information produced by a system.", ms: "Output / keluaran — maklumat yang dihasilkan oleh sistem.", zh: "输出——系统产生的信息。", ko: "출력(Output) — 시스템이 만들어 내는 정보입니다." },
+    { term: "Variable", en: "A named place used to store a value in a program.", ms: "Pemboleh ubah — tempat bernama untuk menyimpan nilai dalam atur cara.", zh: "变量——程序中用名称保存数值或信息的位置。", ko: "변수 — 프로그램에서 값을 저장하기 위해 이름을 붙인 공간입니다." },
+    { term: "Debug", en: "Find, understand and correct a problem.", ms: "Nyahpepijat — mencari, memahami dan membetulkan masalah.", zh: "调试——查找、理解并修正问题。", ko: "디버그 — 문제를 찾고 이해한 뒤 수정하는 과정입니다." },
+    { term: "Evidence", en: "Work that shows what you attempted, understood or improved.", ms: "Bukti — kerja yang menunjukkan percubaan, pemahaman atau penambahbaikan.", zh: "证据——展示你尝试、理解或改进内容的学习成果。", ko: "학습 증거 — 무엇을 시도하고 이해하고 개선했는지 보여 주는 결과물입니다." }
   ];
+
+  const SUPPORT_COPY = {
+    en: {
+      name: "English only",
+      preview: "English instructions will be shown. You can still open the vocabulary help at any time.",
+      wagba: "",
+      starter: { instruction: "Read the scenario, answer one question at a time, then use the Check button below it. Read the feedback and try again when needed.", frame: "The input is ___ because ___ enters the program." },
+      main1: { instruction: "Read both short explanations, study the worked example, then check each practice question. You may correct an answer and check it again.", frame: "This part is ___ because it ___ the system." },
+      main2: { instruction: "Use the name-badge scenario to classify IPO, order the algorithm, read the Python and rewrite the vague instructions.", frame: "My algorithm is clearer because ___." },
+      extension: { instruction: "Choose one system at each level. Continue to the next level when one is complete. Level 3 uses one A4 sheet in landscape.", frame: "The system input is ___. The process is ___. The output is ___." },
+      plenary: { instruction: "Complete the three concept checks, then rate your confidence and identify a useful next step.", frame: "The instruction is clearer because it now says ___." },
+      review: { instruction: "Check your saved answers and incomplete stages before exporting the PDF.", frame: "Use the section buttons to return to anything that needs improvement." }
+    },
+    ms: {
+      name: "Bahasa Melayu",
+      preview: "Arahan sokongan Bahasa Melayu akan dipaparkan bersama kandungan Bahasa Inggeris. Istilah Sains Komputer kekal dalam Bahasa Inggeris.",
+      wagba: "Kami sedang meningkatkan keupayaan untuk menerangkan cara kami belajar dalam Sains Komputer dan menunjukkan pengetahuan sedia ada tentang algoritma dan Python.",
+      starter: { instruction: "Baca situasi, jawab satu soalan pada satu masa, kemudian tekan butang Semak di bawah soalan itu. Baca maklum balas dan cuba lagi jika perlu.", frame: "Input ialah ___ kerana ___ masuk ke dalam atur cara." },
+      main1: { instruction: "Baca kedua-dua penerangan ringkas, teliti contoh lengkap, kemudian semak setiap soalan latihan. Anda boleh membetulkan jawapan dan menyemaknya semula.", frame: "Bahagian ini ialah ___ kerana ia ___ sistem." },
+      main2: { instruction: "Gunakan situasi lencana nama untuk mengelaskan IPO, menyusun algoritma, membaca Python dan menulis semula arahan yang kurang jelas.", frame: "Algoritma saya lebih jelas kerana ___." },
+      extension: { instruction: "Pilih satu sistem pada setiap tahap. Selepas satu tahap siap, teruskan ke tahap seterusnya. Tahap 3 menggunakan satu kertas A4 secara melintang.", frame: "Input sistem ialah ___. Prosesnya ialah ___. Outputnya ialah ___." },
+      plenary: { instruction: "Lengkapkan tiga semakan konsep, kemudian nilai keyakinan anda dan nyatakan langkah seterusnya yang berguna.", frame: "Arahan ini lebih jelas kerana sekarang ia menyatakan ___." },
+      review: { instruction: "Semak jawapan yang disimpan dan bahagian yang belum lengkap sebelum mengeksport PDF.", frame: "Gunakan butang bahagian untuk kembali kepada kerja yang perlu diperbaiki." }
+    },
+    zh: {
+      name: "简体中文",
+      preview: "页面会在英文内容旁提供简体中文支持。计算机科学关键词仍保留英文，方便课堂学习和提交作业。",
+      wagba: "我们正在提升解释自己如何学习计算机科学的能力，并展示我们对算法和 Python 已有的认识。",
+      starter: { instruction: "阅读情境，每次完成一道题，然后点击该题下方的“检查”按钮。如有需要，请阅读反馈并再次尝试。", frame: "输入（Input）是 ___，因为 ___ 进入了程序。" },
+      main1: { instruction: "阅读两段简短说明，学习完整示例，然后逐题检查练习。你可以修改答案后再次检查。", frame: "这一部分是 ___，因为它在系统中 ___。" },
+      main2: { instruction: "根据姓名牌情境划分 IPO、排列算法步骤、阅读 Python，并重写含糊的指令。", frame: "我的算法更清楚，因为 ___。" },
+      extension: { instruction: "每一级选择一个系统。完成一级后继续下一级。第三级需要把一张 A4 纸横放使用。", frame: "系统的输入是 ___。处理过程是 ___。输出是 ___。" },
+      plenary: { instruction: "完成三个概念检查，然后评价自己的信心，并写出一个有用的下一步。", frame: "这条指令更清楚，因为它现在说明了 ___。" },
+      review: { instruction: "导出 PDF 前，检查已保存的答案和未完成的部分。", frame: "使用课程部分按钮返回并改进尚未完成的内容。" }
+    },
+    ko: {
+      name: "한국어",
+      preview: "영어 내용과 함께 한국어 학습 지원이 표시됩니다. 수업과 과제 제출을 위해 컴퓨터 과학 핵심 용어는 영어로 유지됩니다.",
+      wagba: "우리는 컴퓨터 과학을 어떻게 배우는지 설명하고, 알고리즘과 Python에 대해 이미 알고 있는 내용을 보여 주는 능력을 기르고 있습니다.",
+      starter: { instruction: "상황을 읽고 한 번에 한 문제씩 답한 뒤, 해당 문제 아래의 확인 버튼을 누르세요. 필요하면 피드백을 읽고 다시 시도하세요.", frame: "입력(Input)은 ___입니다. 왜냐하면 ___이(가) 프로그램에 들어가기 때문입니다." },
+      main1: { instruction: "두 개의 짧은 설명을 모두 읽고 완성된 예시를 살펴본 다음, 각 연습 문제를 확인하세요. 답을 고친 뒤 다시 확인할 수 있습니다.", frame: "이 부분은 ___입니다. 왜냐하면 시스템에서 ___하기 때문입니다." },
+      main2: { instruction: "이름표 상황을 이용해 IPO를 분류하고, 알고리즘 순서를 정하고, Python 코드를 읽은 뒤 모호한 지시를 다시 작성하세요.", frame: "내 알고리즘이 더 명확한 이유는 ___입니다." },
+      extension: { instruction: "각 단계에서 시스템 하나를 선택하세요. 한 단계를 끝내면 다음 단계로 이동하세요. 3단계에서는 A4 용지 한 장을 가로로 사용합니다.", frame: "시스템의 Input은 ___입니다. Process는 ___입니다. Output은 ___입니다." },
+      plenary: { instruction: "세 가지 개념 확인을 완료한 다음, 자신의 자신감을 평가하고 도움이 될 다음 단계를 적으세요.", frame: "이 지시가 더 명확한 이유는 이제 ___을(를) 분명히 말하기 때문입니다." },
+      review: { instruction: "PDF를 내보내기 전에 저장된 답과 완료하지 않은 부분을 확인하세요.", frame: "수업 단계 버튼을 사용하여 보완할 부분으로 돌아가세요." }
+    }
+  };
 
   const LEVEL1_SYSTEMS = {
     locker: {
@@ -208,6 +255,7 @@
     populateLearning();
     bindGlobalEvents();
     renderGlossary();
+    syncEntryLanguage();
     if (teacherMode && !state.startedAt) {
       state.startedAt = new Date().toISOString();
       saveState(true);
@@ -231,6 +279,7 @@
 
   function bindGlobalEvents() {
     $("#entryForm").addEventListener("submit", startLesson);
+    $$("input[name='entryLanguage']").forEach(input => input.addEventListener("change", updateEntryLanguagePreview));
     $("#resumeButton").addEventListener("click", showApp);
     $("#startDifferentButton").addEventListener("click", () => {
       $("#resumePanel").classList.add("hidden");
@@ -254,7 +303,13 @@
     $("#closeLearning").addEventListener("click", () => toggleLearning(false));
     $("#languageButton").addEventListener("click", () => $("#languageDialog").showModal());
     $("#closeLanguageDialog").addEventListener("click", () => $("#languageDialog").close());
-    $("#supportLanguage").addEventListener("change", event => { state.supportLanguage = event.target.value; saveState(); renderGlossary(); });
+    $("#supportLanguage").addEventListener("change", event => {
+      state.supportLanguage = event.target.value;
+      saveState();
+      renderGlossary();
+      updateLanguageUi();
+      render();
+    });
     $("#exportHeaderButton").addEventListener("click", exportPdf);
     $("#closeImageDialog").addEventListener("click", () => $("#imageDialog").close());
     $("#imageDialog").addEventListener("click", event => { if (event.target === $("#imageDialog")) $("#imageDialog").close(); });
@@ -264,6 +319,7 @@
     event.preventDefault();
     const fullName = $("#fullName").value.trim();
     const className = $("#className").value.trim();
+    const selectedLanguage = $("input[name='entryLanguage']:checked")?.value || "en";
     $("#nameError").textContent = "";
     $("#classError").textContent = "";
 
@@ -272,6 +328,7 @@
       storageKey = "tta_y8_w1_theory_redesign_teacher_v3";
       state = loadState();
       state.student = { fullName: "Test Student", className: className || "8T" };
+      state.supportLanguage = selectedLanguage;
       state.startedAt ||= new Date().toISOString();
       saveState(true);
       showApp();
@@ -283,6 +340,7 @@
     if (className.length < 2) { $("#classError").textContent = "Enter your class, for example 8T."; valid = false; }
     if (!valid) return;
     state.student = { fullName, className };
+    state.supportLanguage = selectedLanguage;
     state.startedAt ||= new Date().toISOString();
     saveState(true);
     showApp();
@@ -292,6 +350,8 @@
     $("#entryScreen").classList.add("hidden");
     $("#appShell").classList.remove("hidden");
     $("#studentChip").textContent = `${state.student.fullName} · ${state.student.className}`;
+    renderGlossary();
+    updateLanguageUi();
     render();
     window.scrollTo({ top: 0, behavior: "auto" });
   }
@@ -305,6 +365,50 @@
     const lang = state.supportLanguage || "en";
     $("#supportLanguage").value = lang;
     $("#glossaryList").innerHTML = GLOSSARY.map(item => `<article class="glossary-item"><strong>${item.term}</strong><p>${escapeHtml(item[lang])}</p></article>`).join("");
+  }
+
+  function syncEntryLanguage() {
+    const selected = $("input[name='entryLanguage'][value='" + (state.supportLanguage || "en") + "']");
+    if (selected) selected.checked = true;
+    updateEntryLanguagePreview();
+  }
+
+  function updateEntryLanguagePreview() {
+    const lang = $("input[name='entryLanguage']:checked")?.value || "en";
+    const copy = SUPPORT_COPY[lang] || SUPPORT_COPY.en;
+    $("#entryLanguagePreview").textContent = copy.preview;
+    $("#entryLanguagePreview").setAttribute("lang", languageCode(lang));
+  }
+
+  function updateLanguageUi() {
+    const lang = state.supportLanguage || "en";
+    const copy = SUPPORT_COPY[lang] || SUPPORT_COPY.en;
+    $("#languageButton").textContent = lang === "en" ? "Vocabulary help" : `Language support · ${copy.name}`;
+    const translation = $("#learningTranslation");
+    translation.textContent = copy.wagba || "";
+    translation.setAttribute("lang", languageCode(lang));
+    translation.classList.toggle("hidden", lang === "en" || !copy.wagba);
+  }
+
+  function languageCode(lang) {
+    return ({ en: "en", ms: "ms", zh: "zh-Hans", ko: "ko" })[lang] || "en";
+  }
+
+  function supportLanguageName() {
+    return (SUPPORT_COPY[state.supportLanguage || "en"] || SUPPORT_COPY.en).name;
+  }
+
+  function supportLanguagePdfName() {
+    return ({ en: "English only", ms: "Bahasa Melayu", zh: "Simplified Chinese", ko: "Korean" })[state.supportLanguage || "en"] || "English only";
+  }
+
+  function bilingualSupport(sectionId) {
+    const lang = state.supportLanguage || "en";
+    if (lang === "en") return "";
+    const copy = SUPPORT_COPY[lang];
+    const section = copy?.[sectionId];
+    if (!section) return "";
+    return `<aside class="bilingual-support" lang="${languageCode(lang)}"><div class="bilingual-support-head"><h3>Language support · ${escapeHtml(copy.name)}</h3><button class="button secondary compact" data-action="open-language-dialog" type="button">Vocabulary / 词汇 / 어휘</button></div><p class="support-translation">${escapeHtml(section.instruction)}</p><div class="sentence-frame"><strong>Optional sentence frame</strong><p>${escapeHtml(SUPPORT_COPY.en[sectionId].frame)}</p><p>${escapeHtml(section.frame)}</p></div><p class="support-reminder">Keep the English Computer Science keywords in your final answer: Algorithm, Program, Input, Process and Output.</p></aside>`;
   }
 
   function sectionCompletion(id) {
@@ -487,6 +591,7 @@
     const inputCorrectNow = /age|user|typed|entered/.test(normalise(s.input));
     return shell("Starter · about 8 minutes", "What do you remember?", "This is a diagnostic, not a grade. Try each question independently so your teacher can see what you already understand.", `
       <div class="section-intro"><strong>How this works:</strong> read the scenario, answer one question, then use the Check button directly underneath it. If it is not secure yet, use the feedback and try again.</div>
+      ${bilingualSupport("starter")}
       ${imageSupport("assets/images/starter-baseline-overview.png", "Overview of sequencing, algorithms, simple Python and confidence prompts", "A visual preview of the types of thinking in this starter. Follow the interactive questions below for the exact instructions.")}
       <div class="question-list">
         <article class="question-card ${s.orderChecked ? orderCorrect ? "checked-correct" : "checked-wrong" : ""}">
@@ -543,6 +648,7 @@
       ["test", "Make one small change, then test again.", "helps", "Small tests make cause and effect easier to identify."]
     ];
     return shell("Main Task 1 · about 17 minutes", "Learn, model and practise", "Read two short explanations, study a worked example and check your understanding before the independent Algorithm Rescue.", `
+      ${bilingualSupport("main1")}
       <div class="content-grid">
         <article class="card micro-reading ${m.readAlgorithm ? "opened" : ""}"><p class="eyebrow">Reading 1</p><h3>Algorithm and program</h3><p>An <strong>algorithm</strong> is a finite, ordered and precise set of instructions for solving a problem. A <strong>program</strong> is an algorithm written in a language that a computer can execute.</p><p><strong>Example:</strong> “Ask for a name, store it, then display it” is an algorithm. Python code carrying out those steps is a program.</p><button class="button secondary compact read-confirm" data-action="mark-read" data-path="main1.readAlgorithm" type="button">I have read this explanation</button></article>
         <article class="card micro-reading ${m.readIpo ? "opened" : ""}"><p class="eyebrow">Reading 2</p><h3>Input, Process and Output</h3><p><strong>Input</strong> is data entering a system. <strong>Process</strong> is what the system does with the data. <strong>Output</strong> is information the system produces.</p><p>Use the question: <em>What goes in? What happens? What comes out?</em></p><button class="button secondary compact read-confirm" data-action="mark-read" data-path="main1.readIpo" type="button">I have read this explanation</button></article>
@@ -580,6 +686,7 @@
     const varsCorrect = variablesCorrect();
     const outCorrect = outputCorrect();
     return shell("Main Task 2 · about 23 minutes", "Algorithm Rescue", "Apply the new vocabulary to a digital name badge, read its Python program and improve an unclear algorithm.", `
+      ${bilingualSupport("main2")}
       <div class="scenario"><h3>Mission scenario</h3><p>The Year 8 welcome desk needs a digital badge. It must ask for a student’s name, store the name, create a greeting and display the greeting with a symbol.</p><p><strong>Your evidence:</strong> an IPO model, an ordered algorithm, Python predictions and a rewritten algorithm that is clear, ordered and precise.</p></div>
       <figure class="visual-support"><button type="button" class="image-button" data-image-src="assets/images/algorithm-rescue-ipo-scenario.png" data-image-alt="A student enters a name, a computer processes it, and a digital badge displays a greeting and star" data-image-caption="Visual model of the name-badge scenario"><img class="lesson-image" src="assets/images/algorithm-rescue-ipo-scenario.png" alt="A student enters a name, a computer processes it, and a digital badge displays a greeting and star"></button><figcaption class="image-caption">A visual model using a different example. Use the written scenario for your exact task.</figcaption></figure>
       <div class="task-block"><h3>Part A — Build the IPO model</h3><p class="task-prompt">Classify each statement. Check each one before continuing.</p><div class="ipo-grid">${Object.entries(ipoData).map(([key,[statement,answer]]) => `<article class="ipo-card ${m.ipoChecked[key] ? m.ipo[key]===answer ? "checked-correct" : "checked-wrong" : ""}"><strong>${statement}</strong><select data-bind="main2.ipo.${key}">${selectOptions(m.ipo[key])}</select><div class="inline-actions"><button class="button primary compact" data-action="check-main2-ipo" data-key="${key}" type="button">Check</button></div>${feedback(m.ipoChecked[key],m.ipo[key]===answer,`Correct: ${answer}.`,`This role is not correct yet.`,"Ask what goes in, what happens, and what comes out.")}</article>`).join("")}</div></div>
@@ -603,6 +710,7 @@
     const l3Unlocked = teacherMode || e.level2.complete;
     return shell("Optional extension · continue while time remains", "Extension Challenge Ladder", "Choose one scenario at each level. When you finish a level, continue to the next until your teacher asks you to begin the plenary.", `
       <span class="optional-badge">Optional — it never blocks the plenary</span>
+      ${bilingualSupport("extension")}
       <div class="section-intro"><strong>Important:</strong> completing one choice does not finish the whole ladder. Level 1 applies IPO, Level 2 analyses an algorithm, and Level 3 creates and evaluates a system. Your work saves if plenary time begins.</div>
       <div class="extension-map">
         ${levelMapCard(1,"Apply","IPO Investigator",l1Unlocked,e.level1.complete)}
@@ -667,6 +775,7 @@
     const differenceCorrect = p.difference === "difference";
     const doorCorrect = p.doorRoles[0] === "Input" && p.doorRoles[1] === "Process" && p.doorRoles[2] === "Output";
     return shell("Plenary · about 7 minutes", "Show what you understand", "Complete three independent concept checks and one reflection so your teacher can plan the next lesson.", `
+      ${bilingualSupport("plenary")}
       ${imageSupport("assets/images/plenary-reflection.png", "Students reflecting on learning, debugging habits and confidence", "Reflection inspiration only. Follow the four interactive questions below for the exact plenary.", true)}
       <div class="question-list">
         <article class="question-card ${p.differenceChecked ? differenceCorrect ? "checked-correct" : "checked-wrong" : ""}"><h3>1. Algorithm or program?</h3><p>Which statement explains the difference most accurately?</p><div class="choice-list">${radio("plenaryDifference","plenary.difference","same","They are two words for exactly the same thing.",p.difference)}${radio("plenaryDifference","plenary.difference","difference","An algorithm describes steps; a program expresses steps in executable code.",p.difference)}${radio("plenaryDifference","plenary.difference","screen","An algorithm is an output and a program is a screen.",p.difference)}</div><button class="button primary compact" data-action="check-plenary-difference" type="button">Check</button>${feedback(p.differenceChecked,differenceCorrect,"You have distinguished a plan from its executable implementation.","That statement does not accurately compare the two terms.","Revisit Reading 1 in Main Task 1.")}</article>
@@ -681,8 +790,9 @@
     const e = state.extension;
     const statuses = SECTIONS.slice(0,5).map(section => `<span>${section.short}: ${sectionStatus(section.id).label}</span>`).join("");
     return shell("Final review", "Review your evidence", "Check what has been saved, return to anything incomplete, then export a professional PDF for Microsoft Teams.", `
+      ${bilingualSupport("review")}
       <div class="review-grid">
-        <article class="review-card"><h3>Student details and lesson status</h3><p><strong>${escapeHtml(state.student.fullName)}</strong> · ${escapeHtml(state.student.className)}<br>Started: ${formatDate(state.startedAt)}<br>Last saved: ${formatDate(state.updatedAt)}</p><div class="review-meta">${statuses}</div></article>
+        <article class="review-card"><h3>Student details and lesson status</h3><p><strong>${escapeHtml(state.student.fullName)}</strong> · ${escapeHtml(state.student.className)}<br>Language support selected: ${escapeHtml(supportLanguageName())}<br>Started: ${formatDate(state.startedAt)}<br>Last saved: ${formatDate(state.updatedAt)}</p><div class="review-meta">${statuses}</div></article>
         <article class="review-card"><h3>Diagnostic summary</h3><p>Starter: ${sectionScore("starter")}/4 · Main Task 1: ${sectionScore("main1")}/7 · Main Task 2 automatically checked: ${sectionScore("main2")}/8</p><p>Checked attempts recorded: ${state.attemptLog.length}. Open explanations and algorithms remain marked for teacher review rather than being judged by character count.</p></article>
         <article class="review-card"><h3>Main Task 2 evidence</h3><div class="review-answer">IPO: ${valueOrMissing(state.main2.ipo.input)} / ${valueOrMissing(state.main2.ipo.process)} / ${valueOrMissing(state.main2.ipo.output)}\nAlgorithm: ${state.main2.order.join(" → ")}\nVariables: ${valueOrMissing(state.main2.variables)}\nPredicted output: ${valueOrMissing(state.main2.output)}\nMeaningful identifiers: ${valueOrMissing(state.main2.meaningfulName)}\nRescued algorithm:\n${valueOrMissing(state.main2.improvedAlgorithm)}</div></article>
         <article class="review-card"><h3>Extension evidence</h3><p>${e.level1.complete?"Level 1 completed.":"Level 1 not completed."} ${e.level2.complete?"Level 2 completed.":""} ${e.level3.complete?"Level 3 submitted for teacher review.":""}</p>${e.level3.evidenceData?`<img class="lesson-image small" src="${e.level3.evidenceData}" alt="Student A4 system design">`:""}</article>
@@ -755,6 +865,7 @@
       "check-starter-algorithm": () => checkFlag("starter.algorithmChecked","starter.algorithmAttempts",Boolean(state.starter.algorithm),"Choose an answer first."),
       "check-starter-output": () => checkFlag("starter.outputChecked","starter.outputAttempts",Boolean(state.starter.output.trim()),"Type your prediction first."),
       "check-starter-input": () => checkFlag("starter.inputChecked","starter.inputAttempts",Boolean(state.starter.input.trim()),"Write what enters the program first."),
+      "open-language-dialog": () => $("#languageDialog").showModal(),
       "finish-starter": finishStarter,
       "check-main1-program": () => checkFlag("main1.programChecked","main1.programAttempts",Boolean(state.main1.programChoice),"Choose an answer first."),
       "check-main1-lunch": () => checkMain1Lunch(button.dataset.key),
@@ -986,6 +1097,12 @@
 
   async function exportPdf() {
     if (!window.PDFLib) { showToast("Direct PDF support is unavailable. Use the print-friendly fallback."); return; }
+    if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(JSON.stringify(state))) {
+      buildPrintReport();
+      showToast("Multilingual writing detected. The print-friendly PDF route preserves these characters.");
+      window.print();
+      return;
+    }
     try {
       const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
       const pdf = await PDFDocument.create();
@@ -1022,6 +1139,7 @@
       drawText(`${LESSON.year} Computer Science · Week ${LESSON.week} Theory`,{size:13,font:bold});
       drawText(LESSON.title,{size:22,font:bold,color:rgb(.09,.11,.16),gap:7});
       drawText(`Date: ${new Date().toLocaleDateString()}    Student: ${state.student.fullName}    Class: ${state.student.className}`);
+      drawText(`Language support selected: ${supportLanguagePdfName()}`);
       drawText(`Started: ${formatDate(state.startedAt)}    Last saved: ${formatDate(state.updatedAt)}`);
 
       heading("Learning information");
@@ -1084,7 +1202,7 @@
 
   function buildPrintReport() {
     const e=state.extension;
-    $("#printReport").innerHTML = `<h1>${LESSON.school}</h1><p><strong>${LESSON.year} Computer Science · Week 1 Theory</strong><br>${LESSON.title}<br>${escapeHtml(state.student.fullName)} · ${escapeHtml(state.student.className)} · ${new Date().toLocaleDateString()}</p><h2>Learning information</h2><p><strong>WAGBA:</strong> ${escapeHtml(LESSON.learning.wagba)}<br><strong>Knowledge:</strong> ${escapeHtml(LESSON.learning.knowledge)}<br><strong>Skills:</strong> ${escapeHtml(LESSON.learning.skills)}<br><strong>Understanding:</strong> ${escapeHtml(LESSON.learning.understanding)}<br><strong>Keywords:</strong> ${escapeHtml(LESSON.learning.keywords)}</p><h2>Starter</h2><p>${escapeHtml(state.starter.order.join(" → "))}<br>Algorithm: ${escapeHtml(valueOrMissing(state.starter.algorithm))}<br>Output: ${escapeHtml(valueOrMissing(state.starter.output))}<br>Input: ${escapeHtml(valueOrMissing(state.starter.input))}</p><h2>Main Task 1</h2><p>Score: ${sectionScore("main1")}/7<br>Commitment: ${escapeHtml(valueOrMissing(state.main1.commitmentReason))}</p><h2>Main Task 2</h2><p>IPO: ${escapeHtml(Object.values(state.main2.ipo).join(" / "))}<br>Algorithm: ${escapeHtml(state.main2.order.join(" → "))}<br>Variables: ${escapeHtml(valueOrMissing(state.main2.variables))}<br>Output: ${escapeHtml(valueOrMissing(state.main2.output))}</p><h3>Teacher-reviewed responses</h3><p>${escapeHtml(valueOrMissing(state.main2.meaningfulName))}</p><p>${escapeHtml(valueOrMissing(state.main2.improvedAlgorithm))}</p><h2>Extension</h2><p>Level 1: ${e.level1.complete?"Completed":"Not completed"}<br>Level 2: ${e.level2.complete?"Completed":"Not completed"}<br>Level 3: ${e.level3.complete?"Submitted":"Not completed"}</p>${e.level3.evidenceData?`<img src="${e.level3.evidenceData}" alt="A4 system design evidence">`:""}<h2>Plenary</h2><p>${escapeHtml(valueOrMissing(state.plenary.improvedInstruction))}<br>Confidence: ${escapeHtml(valueOrMissing(state.plenary.confidence))}/5<br>Next step: ${escapeHtml(valueOrMissing(state.plenary.nextStep))}</p><h2>Attempts and corrections</h2><ol>${state.attemptLog.map(item=>`<li><strong>${escapeHtml(item.question)}:</strong> ${escapeHtml(item.outcome)} — ${escapeHtml(item.answer)}</li>`).join("")||"<li>No checked attempts recorded.</li>"}</ol><h2>Submission</h2><p>Upload the saved PDF to Microsoft Teams Assignment: <strong>${LESSON.assignment}</strong>.</p>`;
+    $("#printReport").innerHTML = `<h1>${LESSON.school}</h1><p><strong>${LESSON.year} Computer Science · Week 1 Theory</strong><br>${LESSON.title}<br>${escapeHtml(state.student.fullName)} · ${escapeHtml(state.student.className)} · ${new Date().toLocaleDateString()}<br>Language support selected: ${escapeHtml(supportLanguageName())}</p><h2>Learning information</h2><p><strong>WAGBA:</strong> ${escapeHtml(LESSON.learning.wagba)}<br><strong>Knowledge:</strong> ${escapeHtml(LESSON.learning.knowledge)}<br><strong>Skills:</strong> ${escapeHtml(LESSON.learning.skills)}<br><strong>Understanding:</strong> ${escapeHtml(LESSON.learning.understanding)}<br><strong>Keywords:</strong> ${escapeHtml(LESSON.learning.keywords)}</p><h2>Starter</h2><p>${escapeHtml(state.starter.order.join(" → "))}<br>Algorithm: ${escapeHtml(valueOrMissing(state.starter.algorithm))}<br>Output: ${escapeHtml(valueOrMissing(state.starter.output))}<br>Input: ${escapeHtml(valueOrMissing(state.starter.input))}</p><h2>Main Task 1</h2><p>Score: ${sectionScore("main1")}/7<br>Commitment: ${escapeHtml(valueOrMissing(state.main1.commitmentReason))}</p><h2>Main Task 2</h2><p>IPO: ${escapeHtml(Object.values(state.main2.ipo).join(" / "))}<br>Algorithm: ${escapeHtml(state.main2.order.join(" → "))}<br>Variables: ${escapeHtml(valueOrMissing(state.main2.variables))}<br>Output: ${escapeHtml(valueOrMissing(state.main2.output))}</p><h3>Teacher-reviewed responses</h3><p>${escapeHtml(valueOrMissing(state.main2.meaningfulName))}</p><p>${escapeHtml(valueOrMissing(state.main2.improvedAlgorithm))}</p><h2>Extension</h2><p>Level 1: ${e.level1.complete?"Completed":"Not completed"}<br>Level 2: ${e.level2.complete?"Completed":"Not completed"}<br>Level 3: ${e.level3.complete?"Submitted":"Not completed"}</p>${e.level3.evidenceData?`<img src="${e.level3.evidenceData}" alt="A4 system design evidence">`:""}<h2>Plenary</h2><p>${escapeHtml(valueOrMissing(state.plenary.improvedInstruction))}<br>Confidence: ${escapeHtml(valueOrMissing(state.plenary.confidence))}/5<br>Next step: ${escapeHtml(valueOrMissing(state.plenary.nextStep))}</p><h2>Attempts and corrections</h2><ol>${state.attemptLog.map(item=>`<li><strong>${escapeHtml(item.question)}:</strong> ${escapeHtml(item.outcome)} — ${escapeHtml(item.answer)}</li>`).join("")||"<li>No checked attempts recorded.</li>"}</ol><h2>Submission</h2><p>Upload the saved PDF to Microsoft Teams Assignment: <strong>${LESSON.assignment}</strong>.</p>`;
   }
   function printReport() { buildPrintReport(); window.print(); }
 

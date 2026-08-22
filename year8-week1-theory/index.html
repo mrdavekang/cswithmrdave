@@ -47,6 +47,17 @@
             <input id="className" name="className" autocomplete="off" maxlength="20" placeholder="For example, 8T" required>
             <p id="classError" class="field-error" aria-live="polite"></p>
           </div>
+          <fieldset class="language-entry">
+            <legend>Would language support help you?</legend>
+            <p>Choose one. The Computer Science keywords remain in English, with explanations available throughout the lesson.</p>
+            <div class="language-options">
+              <label><input type="radio" name="entryLanguage" value="en" checked><span><strong>English only</strong><small>Plain English explanations</small></span></label>
+              <label><input type="radio" name="entryLanguage" value="ms"><span lang="ms"><strong>Bahasa Melayu</strong><small>Sokongan dwibahasa</small></span></label>
+              <label><input type="radio" name="entryLanguage" value="zh"><span lang="zh-Hans"><strong>简体中文</strong><small>双语学习支持</small></span></label>
+              <label><input type="radio" name="entryLanguage" value="ko"><span lang="ko"><strong>한국어</strong><small>이중 언어 학습 지원</small></span></label>
+            </div>
+            <p id="entryLanguagePreview" class="language-preview" aria-live="polite"></p>
+          </fieldset>
           <button class="button primary wide" type="submit">Start Week 1 Theory</button>
         </form>
       </div>
@@ -80,6 +91,7 @@
         <div class="learning-focus">
           <strong>WAGBA</strong>
           <p id="learningWagba"></p>
+          <p id="learningTranslation" class="learning-translation hidden"></p>
         </div>
         <details open>
           <summary>Knowledge, Skills and Understanding</summary>
@@ -134,6 +146,7 @@
       <option value="en">Plain English</option>
       <option value="ms">Bahasa Melayu</option>
       <option value="zh">简体中文</option>
+      <option value="ko">한국어</option>
     </select>
     <div id="glossaryList" class="glossary-list"></div>
   </dialog>

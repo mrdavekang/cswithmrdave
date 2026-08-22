@@ -12,7 +12,9 @@ This is a static, self-directed lesson for Year 8. It includes:
 - Algorithm Rescue application tasks;
 - a three-level optional extension ladder;
 - exact instructions for the Level 3 A4 paper design;
-- a vocabulary drawer with Plain English, Bahasa Melayu and Simplified Chinese support;
+- an optional language-support choice before the lesson begins;
+- bilingual support cards and sentence frames throughout every lesson section;
+- a vocabulary drawer with Plain English, Bahasa Melayu, Simplified Chinese and Korean support;
 - browser-based progress saving;
 - A4 photograph upload, drag-and-drop and clipboard paste;
 - a complete evidence review;
@@ -35,6 +37,15 @@ index.html
 ```
 
 Students enter their full name and class. The landing page is hidden after the lesson begins.
+
+Before starting, students choose:
+
+- English only;
+- Bahasa Melayu support;
+- Simplified Chinese support; or
+- Korean support.
+
+When a support language is selected, the app keeps the English Computer Science terminology visible while adding translated task guidance and sentence frames inside each lesson section. Students can change the language later using the header control.
 
 ## Teacher testing
 
@@ -81,6 +92,8 @@ The local `libraries/pdf-lib.min.js` file provides direct PDF export without a C
 - completion states;
 - the Microsoft Teams submission reminder.
 
+If a student writes an answer using Chinese or Korean characters, the app automatically uses the print-friendly export route because it preserves multilingual characters more reliably. Choose **Save as PDF** in the browser print window.
+
 Filename format:
 
 ```text
@@ -123,4 +136,4 @@ Use the same filename to replace an image without changing code. Preserve the im
 - File selection remains available when clipboard access is blocked.
 - PDF and image downloads may be restricted by managed-browser policies.
 - Local browser saving is device-specific and is not a school-cloud backup.
-- The vocabulary translations support meaning; students should still use the English computing keywords in their submitted answers.
+- The bilingual translations support meaning; students should still use the English computing keywords in their submitted answers.

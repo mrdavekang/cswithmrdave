@@ -57,6 +57,17 @@ img { max-width: 100%; }
 input[type="text"], input:not([type]), textarea, select { width: 100%; min-height: 47px; padding: 11px 13px; color: var(--ink); background: #fff; border: 1px solid #aeb6c3; border-radius: 10px; }
 textarea { min-height: 115px; resize: vertical; line-height: 1.5; }
 .field-error { min-height: 19px; margin: 5px 0 0; color: var(--red); font-weight: 750; font-size: .88rem; }
+.language-entry { margin: 20px 0 0; padding: 15px; border: 1px solid var(--line-dark); border-radius: 12px; }
+.language-entry legend { padding: 0 6px; font-weight: 900; }
+.language-entry > p { margin: 3px 0 11px; color: var(--muted); font-size: .88rem; line-height: 1.45; }
+.language-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.language-options label { position: relative; cursor: pointer; }
+.language-options input { position: absolute; opacity: 0; }
+.language-options span { min-height: 66px; padding: 10px; display: flex; flex-direction: column; justify-content: center; background: #fff; border: 1px solid var(--line-dark); border-radius: 9px; }
+.language-options small { margin-top: 3px; color: var(--muted); }
+.language-options input:checked + span { background: var(--primary-soft); border: 2px solid var(--primary); }
+.language-options input:focus-visible + span { box-shadow: var(--focus); }
+.language-preview { min-height: 42px; margin: 10px 0 0 !important; padding: 9px 10px; color: #253142 !important; background: #f4f6f8; border-radius: 8px; }
 
 .button { min-height: 44px; padding: 10px 17px; color: var(--ink); background: #fff; border: 1px solid var(--line-dark); border-radius: 10px; font-weight: 850; transition: transform .16s ease, background .16s ease; }
 .button:hover:not(:disabled) { transform: translateY(-1px); }
@@ -86,6 +97,7 @@ textarea { min-height: 115px; resize: vertical; line-height: 1.5; }
 .learning-focus { margin-bottom: 12px; padding: 14px; color: #fff; background: var(--primary-dark); border-radius: 12px; }
 .learning-focus strong { font-size: .76rem; letter-spacing: .06em; }
 .learning-focus p { margin: 5px 0 0; line-height: 1.45; font-size: .93rem; }
+.learning-focus .learning-translation { margin-top: 10px; padding-top: 10px; color: #ebe8fa; border-top: 1px solid rgba(255,255,255,.25); font-size: .86rem; }
 .learning-panel details { margin-top: 10px; border: 1px solid var(--line); border-radius: 11px; }
 .learning-panel summary { padding: 11px; font-weight: 850; cursor: pointer; }
 .learning-list { margin: 0; padding: 0 11px 11px; display: grid; gap: 8px; }
@@ -120,6 +132,15 @@ textarea { min-height: 115px; resize: vertical; line-height: 1.5; }
 .section-hero p { max-width: 860px; margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.55; }
 .section-body { padding: 25px 27px; }
 .section-intro { margin: 0 0 18px; padding: 14px 16px; background: #f7f8fa; border-left: 5px solid var(--primary); border-radius: 0 11px 11px 0; line-height: 1.55; }
+.bilingual-support { margin: 0 0 18px; padding: 15px 16px; background: #eef6ff; border: 1px solid #9fc3e7; border-radius: 12px; }
+.bilingual-support-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bilingual-support h3 { margin: 0; color: #154d7b; font-size: 1rem; }
+.bilingual-support p { margin: 8px 0 0; line-height: 1.55; }
+.bilingual-support .support-translation { color: #1c3348; font-weight: 650; }
+.sentence-frame { margin-top: 11px; padding: 11px 12px; background: #fff; border-left: 4px solid var(--blue); border-radius: 0 9px 9px 0; }
+.sentence-frame strong { display: block; margin-bottom: 4px; color: var(--blue); }
+.sentence-frame p { margin: 3px 0; }
+.support-reminder { color: var(--muted); font-size: .83rem; }
 .scenario { margin: 18px 0; padding: 18px; background: #151b27; color: #fff; border-radius: 14px; }
 .scenario h3 { margin: 0 0 7px; }
 .scenario p, .scenario li { color: #edf0f5; line-height: 1.55; }
@@ -281,6 +302,7 @@ textarea { min-height: 115px; resize: vertical; line-height: 1.5; }
   .journey-top, .progress-meta { flex-direction: column; }
   .confidence-row { grid-template-columns: repeat(5,1fr); }
   .paper-layout { grid-template-columns: 1fr; }
+  .language-options { grid-template-columns: 1fr; }
   .navigation-bar .button { padding: 9px 11px; }
 }
 
