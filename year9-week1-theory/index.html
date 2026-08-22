@@ -3,49 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a2746">
-  <title>Year 9 Week 1 Theory — Becoming a Computer Scientist</title>
-  <link rel="stylesheet" href="styles.css?v=20260720-2">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="A supported Year 9 Computer Science learning journey for algorithms, source code, tracing and debugging.">
+  <title>Year 9 Code Quest — Week 1 Theory</title>
+  <link rel="stylesheet" href="styles.css?v=20260822-8">
 </head>
 <body>
   <a class="skip-link" href="#lesson-main">Skip to lesson content</a>
 
   <div id="entry-overlay" class="entry-overlay" role="dialog" aria-modal="true" aria-labelledby="entry-title">
-    <form id="entry-form" class="entry-card" novalidate>
-      <div class="entry-kicker">Year 9 Computer Science · Week 1 Theory</div>
-      <h1 id="entry-title">Becoming a Year 9 Computer Scientist</h1>
-      <p>Enter your details to begin. Your work saves automatically on this device.</p>
-      <label for="student-name">Full name</label>
-      <input id="student-name" name="student-name" autocomplete="name" required maxlength="80" placeholder="e.g. Alex Tan">
-      <div class="field-error" id="name-error" aria-live="polite"></div>
-      <label for="student-class">Class</label>
-      <input id="student-class" name="student-class" required maxlength="20" placeholder="e.g. 9T">
-      <div class="field-error" id="class-error" aria-live="polite"></div>
-      <button type="submit" class="primary large">Begin lesson</button>
-      <button type="button" id="resume-button" class="secondary hidden">Resume saved lesson</button>
-      <p class="entry-note">Use a school-managed device where possible. Do not enter sensitive personal information.</p>
-    </form>
+    <div class="entry-shell">
+      <div class="entry-visual"><img src="assets/images/code-quest-welcome.png" alt="Year 9 students beginning a Computer Science code quest"></div>
+      <form id="entry-form" class="entry-card" novalidate>
+        <p class="entry-kicker">Year 9 Computer Science · Week 1 Theory</p>
+        <h1 id="entry-title">Welcome to Code Quest</h1>
+        <p class="entry-intro">Today you will learn how computer scientists plan, trace and debug. This is a supported starting-point lesson—not a formal grade.</p>
+        <div class="entry-fields">
+          <div class="entry-field-group"><label for="student-name">Full name</label><input id="student-name" name="student-name" autocomplete="name" required maxlength="80" placeholder="e.g. Alex Tan"><div class="field-error" id="name-error" aria-live="polite"></div></div>
+          <div class="entry-field-group"><label for="student-class">Class</label><input id="student-class" name="student-class" required maxlength="20" placeholder="e.g. 9T"><div class="field-error" id="class-error" aria-live="polite"></div></div>
+        </div>
+        <fieldset class="language-choice">
+          <legend>Would language support help you today?</legend>
+          <p>English Computer Science terms remain visible. Your choice adds clearer explanations, translated prompts and sentence starters. You can change it later.</p>
+          <div class="language-options">
+            <label><input type="radio" name="entry-language" value="none" checked><span><strong>English only</strong><small>No additional support</small></span></label>
+            <label><input type="radio" name="entry-language" value="plain"><span><strong>Plain English</strong><small>Shorter sentences and key-word help</small></span></label>
+            <label><input type="radio" name="entry-language" value="ms"><span><strong>Bahasa Melayu</strong><small>Sokongan dwibahasa</small></span></label>
+            <label><input type="radio" name="entry-language" value="zh"><span><strong>简体中文</strong><small>双语学习支持</small></span></label>
+            <label><input type="radio" name="entry-language" value="ko"><span><strong>한국어</strong><small>이중 언어 학습 지원</small></span></label>
+          </div>
+        </fieldset>
+        <div id="entry-support-preview" class="entry-support-preview" hidden></div>
+        <button type="submit" class="primary large">Begin learning</button>
+        <button type="button" id="resume-button" class="secondary hidden">Resume saved lesson</button>
+        <p class="privacy-note">Your responses save only in this browser. Do not enter passwords or private information.</p>
+      </form>
+    </div>
   </div>
 
   <header class="topbar">
     <div class="brand-block">
-      <div class="lesson-badge">Y9 · W1</div>
-      <div>
-        <div class="eyebrow">Computer Science Theory</div>
-        <h1>Becoming a Year 9 Computer Scientist</h1>
-      </div>
+      <div class="lesson-badge">Y9<br>W1</div>
+      <div><p class="eyebrow">Computer Science Theory</p><h1>Code Quest: Think Like a Computer Scientist</h1></div>
     </div>
-    <div class="student-block">
-      <span id="header-student">Student</span>
-      <span id="header-class">Class</span>
-      <button id="reset-progress" class="icon-button" type="button" aria-label="Reset all lesson progress" title="Reset progress">↻</button>
+    <div class="header-controls">
+      <div class="student-chip"><strong id="header-student">Student</strong><span id="header-class">Class</span><span id="teacher-badge" class="teacher-badge" hidden>Teacher preview</span></div>
+      <label class="header-language">Support
+        <select id="support-language" aria-label="Language support">
+          <option value="none">English only</option><option value="plain">Plain English</option><option value="ms">Bahasa Melayu</option><option value="zh">简体中文</option><option value="ko">한국어</option>
+        </select>
+      </label>
+      <button id="glossary-button" class="icon-button" type="button" aria-expanded="false" aria-controls="glossary-drawer">Aa</button>
+      <button id="reset-progress" class="icon-button" type="button" aria-label="Reset lesson progress" title="Reset progress">↻</button>
     </div>
     <div class="status-block">
-      <div class="progress-wrap" aria-label="Lesson progress">
-        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
-        <span id="progress-text">0% complete</span>
-      </div>
-      <div id="save-status" class="save-status" aria-live="polite">Ready</div>
+      <div class="progress-wrap" aria-label="Lesson progress"><div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div><span id="progress-text">0% learned</span></div>
+      <span id="save-status" class="save-status" aria-live="polite">Ready</span>
     </div>
   </header>
 
@@ -53,344 +66,272 @@
 
   <div class="app-shell">
     <aside id="learning-panel" class="learning-panel">
-      <div class="learning-panel-head">
-        <h2>Learning focus</h2>
-        <button id="learning-close" class="icon-button mobile-only" type="button" aria-label="Close learning panel">×</button>
-      </div>
+      <div class="learning-panel-head"><h2>Today’s learning</h2><button id="learning-close" class="icon-button mobile-only" type="button" aria-label="Close learning focus">×</button></div>
       <dl>
-        <div><dt>Key Topic</dt><dd>Year 9 Computer Science readiness</dd></div>
-        <div><dt>WAGBA</dt><dd>Demonstrate what we already know about algorithms and Python, and establish the routines needed to work successfully in Year 9 Computer Science.</dd></div>
-        <div><dt>Knowledge</dt><dd>Know the difference between an algorithm, a program and source code; recognise IPO and AO1–AO3; know expectations for code, files and evidence.</dd></div>
-        <div><dt>Skills</dt><dd>Trace and debug short Python programs, use technical vocabulary, organise files correctly and reflect on current strengths.</dd></div>
-        <div><dt>Understanding</dt><dd>Understand that successful programming involves planning, testing, debugging, explaining and improving—not simply making code run.</dd></div>
-        <div><dt>Keywords</dt><dd>algorithm · program · source code · input · process · output · variable · selection · iteration · syntax error · logic error · AO1 · AO2 · AO3</dd></div>
-        <div><dt>Challenge</dt><dd>Explain and improve a working solution using test evidence and precise Computer Science vocabulary.</dd></div>
+        <div><dt>Key topic</dt><dd>Algorithms, source code, tracing and systematic debugging</dd></div>
+        <div><dt>WAGBA</dt><dd>Explain how an algorithm becomes a program, then trace and debug short Python examples using a systematic approach.</dd></div>
+        <div><dt>Knowledge</dt><dd>Know algorithm, source code, program, variable, assignment, tracing, syntax error, runtime error and logic error.</dd></div>
+        <div><dt>Skills</dt><dd>Compare representations, follow code line by line, record changing values, use an error message and explain a sensible next step.</dd></div>
+        <div><dt>Understanding</dt><dd>Understand that programs improve through planning, predicting, running, checking and changing one thing at a time.</dd></div>
+        <div><dt>Challenge</dt><dd>Justify a debugging or testing decision using precise Computer Science vocabulary.</dd></div>
       </dl>
+      <div class="objective-note"><strong>Thinking journey</strong><span>Know → apply → solve and improve</span></div>
     </aside>
 
     <main id="lesson-main" class="lesson-main" tabindex="-1">
-      <nav class="journey-nav" aria-label="Lesson sections">
-        <button class="journey-step active" data-section="starter" type="button"><span>1</span>Do Now</button>
-        <button class="journey-step locked" data-section="task1" type="button" disabled><span>2</span>Main Task 1</button>
-        <button class="journey-step locked" data-section="task2" type="button" disabled><span>3</span>Main Task 2</button>
-        <button class="journey-step locked optional" data-section="extension" type="button" disabled><span>★</span>Extension</button>
-        <button class="journey-step locked" data-section="plenary" type="button" disabled><span>4</span>Plenary</button>
-        <button class="journey-step locked" data-section="review" type="button" disabled><span>✓</span>Review</button>
+      <nav class="journey-nav" aria-label="Lesson journey">
+        <button class="journey-step active" data-section="starter" type="button"><span>1</span><small>8 min</small>Do Now</button>
+        <button class="journey-step locked" data-section="concepts" type="button" disabled><span>2</span><small>15 min</small>Plan → Program</button>
+        <button class="journey-step locked" data-section="trace" type="button" disabled><span>3</span><small>17 min</small>Trace</button>
+        <button class="journey-step locked" data-section="debug" type="button" disabled><span>4</span><small>13 min</small>Debug</button>
+        <button class="journey-step locked optional" data-section="extension" type="button" disabled><span>★</span><small>Optional</small>Extension Lab</button>
+        <button class="journey-step locked" data-section="plenary" type="button" disabled><span>5</span><small>7 min</small>Plenary</button>
+        <button class="journey-step locked" data-section="review" type="button" disabled><span>✓</span><small>Evidence</small>Report</button>
       </nav>
 
       <section id="section-starter" class="lesson-section active" data-section="starter">
-        <div class="section-heading">
-          <div><span class="section-label">Do Now · 8 minutes</span><h2>Successful Computer Science habits</h2></div>
-          <span class="completion-chip" id="chip-starter">Not submitted</span>
-        </div>
-        <div class="hero-grid">
-          <button class="image-button" type="button" data-image="assets/images/starter-successful-cs-habits.png" aria-label="Enlarge starter visual">
-            <img src="assets/images/starter-successful-cs-habits.png" alt="Starter visual showing productive and unproductive Computer Science habits" onerror="this.closest('.image-button').classList.add('image-missing')">
-          </button>
-          <div class="instruction-card">
-            <h3>Your task</h3>
-            <p>Classify each behaviour. Then choose one productive habit and explain why it matters.</p>
-            <p class="evidence-note">Evidence saved: classifications, explanation and any correction.</p>
+        <div class="section-heading"><div><span class="section-label">Do Now · Read, choose and explain · 8 minutes</span><h2>A problem appears—what should happen next?</h2></div><span class="completion-chip" id="chip-starter">Learning</span></div>
+        <article class="reading-card"><div class="reading-icon">?</div><div><h3>Good first moves collect evidence</h3><p>When a program has a problem, do not guess or change several things. First identify what was <strong>expected</strong>, what <strong>actually happened</strong>, and which clue could show where they first differ.</p><div class="scenario-guidance-grid"><div><strong>Python stops</strong><span>Read the error message and inspect the named line. The clue often identifies a grammar problem.</span></div><div><strong>The output is wrong</strong><span>Write down the expected and actual results. Trace the variables until the values first differ.</span></div><div><strong>Code comes from online</strong><span>Identify its input and output, test it safely, and explain each line before deciding whether to use it.</span></div></div></div></article>
+        <div class="language-support" data-support-key="starter" hidden></div>
+        <button class="image-button wide-image" type="button" data-image="assets/images/problem-scenarios.png" aria-label="Enlarge the four problem scenarios"><img src="assets/images/problem-scenarios.png" alt="Four Year 9 students meeting different programming problems"></button>
+        <div class="scenario-sequence">
+          <article class="model-example">
+            <div class="scenario-stage-heading"><span>Worked example</span><div><h3>Syntax error: use Python’s clue</h3><p>Watch how one piece of evidence leads to one focused action.</p></div></div>
+            <div class="model-example-grid">
+              <div class="model-code-panel"><p><strong>Goal:</strong> allow students aged 13 or over into a club.</p><pre><code>age = 13
+if age &gt;= 13
+    print("Club access")</code></pre><p class="error-inline"><strong>Python’s clue:</strong> <code>SyntaxError on line 2</code></p></div>
+              <div class="model-reasoning">
+                <div><span>1</span><p><strong>Notice the clue</strong>Python names line 2, so the search area is small.</p></div>
+                <div><span>2</span><p><strong>Compare a known pattern</strong>A Python decision uses <code>if condition:</code>. Line 2 has no colon.</p></div>
+                <div><span>3</span><p><strong>Make one focused move</strong>Add the colon, rerun, and check whether the program now reaches the output.</p></div>
+              </div>
+            </div>
+            <div class="model-conclusion"><strong>Why this is a strong first move</strong><span>It uses the error message to test one likely cause. If the program runs afterwards, the result is useful evidence.</span><code>if age &gt;= 13:</code></div>
+          </article>
+
+          <div class="your-turn-heading"><span>Your turn</span><div><h3>Which first move produces the clearest evidence?</h3><p>Choose one action in each case. More than one action may sound reasonable, but only one investigates the whole problem before deciding on a fix.</p></div></div>
+          <div class="scenario-grid independent-scenarios">
+            <fieldset class="scenario-card"><legend><span>1</span>Eco-points output mismatch</legend><p class="case-brief">The rule says to triple 6 points. <strong>Expected: 18.</strong> <strong>Actual: 12.</strong></p><pre><code>points = 6
+total = points * 2
+print(total)</code></pre>
+              <label><input type="radio" name="scenario-2" value="rerun-only"><span class="choice-copy"><strong>Repeat the same run</strong><small>Use 6 again and record only that 12 appears.</small></span></label>
+              <label><input type="radio" name="scenario-2" value="trace"><span class="choice-copy"><strong>Trace and compare</strong><small>Record <code>points</code> and <code>total</code>, then find where the values stop matching the triple rule.</small></span></label>
+              <label><input type="radio" name="scenario-2" value="fix-first"><span class="choice-copy"><strong>Change the operator immediately</strong><small>Replace <code>* 2</code> with <code>* 3</code> and check only whether 18 appears.</small></span></label>
+            </fieldset>
+            <fieldset class="scenario-card"><legend><span>2</span>Unfamiliar online code</legend><p class="case-brief">You find this greeting code on a forum and want to use it for club sign-in.</p><pre><code>user = input("Name: ")
+print("Welcome", user)</code></pre>
+              <label><input type="radio" name="scenario-4" value="one-run"><span class="choice-copy"><strong>Use one successful run</strong><small>Enter your name once and keep the code if a greeting appears.</small></span></label>
+              <label><input type="radio" name="scenario-4" value="test"><span class="choice-copy"><strong>Understand, predict and test</strong><small>Identify the input and output, predict useful tests, run safely, and explain both lines.</small></span></label>
+              <label><input type="radio" name="scenario-4" value="output-only"><span class="choice-copy"><strong>Inspect only the output line</strong><small>Read and test the <code>print</code> line, but ignore how the program receives its input.</small></span></label>
+            </fieldset>
           </div>
         </div>
-        <div id="habit-grid" class="classification-grid"></div>
-        <div class="response-card">
-          <label for="habit-choice">Choose one productive habit</label>
-          <select id="habit-choice"><option value="">Select a habit…</option></select>
-          <label for="habit-explanation">Why is this habit important for becoming a successful Computer Scientist?</label>
-          <textarea id="habit-explanation" rows="4" placeholder="Use because, so that, or therefore to explain your reasoning."></textarea>
-        </div>
-        <div id="starter-feedback" class="feedback" aria-live="polite"></div>
-        <button id="submit-starter" class="primary" type="button">Submit Do Now</button>
+        <article class="response-card"><div class="question-head"><span class="ao-tag">Explain</span><h3>Explain one independent choice</h3></div><p>Choose the eco-points or online-code scenario. Name a specific clue and explain how your chosen first move would help—not merely what you would click.</p><fieldset class="reflection-scenario-picker"><legend>Which scenario are you explaining?</legend><label><input type="radio" name="starter-reflection-scenario" value="2"><span><strong>Eco-points mismatch</strong><small>Expected 18; actual 12.</small></span></label><label><input type="radio" name="starter-reflection-scenario" value="4"><span><strong>Online greeting code</strong><small>The source is unfamiliar.</small></span></label></fieldset><div id="starter-choice-reminder" class="choice-reminder" aria-live="polite">Select one of the two independent scenarios.</div><div class="structured-response-grid two"><label>1. Which exact evidence would you inspect?<textarea id="starter-evidence" data-save rows="3" placeholder="I would inspect the expected and actual results / the input and output…"></textarea></label><label>2. What would you do, and what would it reveal?<textarea id="starter-steps" data-save rows="4" placeholder="First I would… This would show whether…"></textarea></label></div><textarea id="starter-learning" data-save hidden aria-hidden="true"></textarea><div class="quality-checklist"><strong>A strong answer includes:</strong><span>one detail from the scenario</span><span>one precise action</span><span>what new information the action gives</span></div><button class="hint-button" type="button" data-hint="starter-hint">Need a response structure?</button><div id="starter-hint" class="hint-panel" hidden><p><strong>Sentence frame:</strong> “I would inspect ___. Then I would ___. This would show whether ___.”</p></div></article>
+        <div id="starter-feedback" class="feedback" aria-live="polite"></div><button id="submit-starter" class="primary" type="button">Check my thinking</button>
       </section>
 
-      <section id="section-task1" class="lesson-section" data-section="task1" hidden>
-        <div class="section-heading">
-          <div><span class="section-label">Main Task 1 · 15 minutes</span><h2>How we work in Year 9 Computer Science</h2></div>
-          <span class="completion-chip" id="chip-task1">Not submitted</span>
+      <section id="section-concepts" class="lesson-section" data-section="concepts" hidden>
+        <div class="section-heading"><div><span class="section-label">Main Activity 1 · Learn, apply and improve · 15 minutes</span><h2>From an idea to computer behaviour</h2></div><span class="completion-chip" id="chip-concepts">Learning</span></div>
+        <div class="language-support" data-support-key="concepts" hidden></div>
+        <button class="image-button wide-image" type="button" data-image="assets/images/algorithm-to-program.png" aria-label="Enlarge algorithm to program visual"><img src="assets/images/algorithm-to-program.png" alt="An algorithm becoming Python source code and then a running program"></button>
+        <div class="teach-grid three">
+          <article class="teach-card"><span class="teach-number">1</span><h3>Algorithm</h3><p>An ordered plan for solving a problem. It can be written in words, a flowchart or pseudocode.</p><p class="example">Example: ASK for a name → DISPLAY a welcome message.</p></article>
+          <article class="teach-card"><span class="teach-number">2</span><h3>Source code</h3><p>The plan expressed as precise instructions in a programming language.</p><pre><code>name = input("Name: ")
+print("Welcome", name)</code></pre></article>
+          <article class="teach-card"><span class="teach-number">3</span><h3>Running program</h3><p>The computer executes the source code. Its observable behaviour is the input it accepts and output it produces.</p><p class="example">Input: Amina<br>Output: Welcome Amina</p></article>
         </div>
-        <div class="hero-grid visual-only">
-          <button class="image-button" type="button" data-image="assets/images/activity1-think-like-computer-scientist.png" aria-label="Enlarge Computer Scientist visual">
-            <img src="assets/images/activity1-think-like-computer-scientist.png" alt="Students collaborating while planning, testing, debugging, explaining and improving code" onerror="this.closest('.image-button').classList.add('image-missing')">
-          </button>
-          <div class="instruction-card">
-            <h3>Think beyond “the code works”</h3>
-            <p>Computer Science rewards knowledge, application and problem solving. Show how you will work, not only what you remember.</p>
-          </div>
-        </div>
-
-        <article class="task-card">
-          <h3>AO1, AO2 or AO3?</h3>
-          <p>Match each question to the kind of thinking it requires.</p>
-          <div id="ao-grid" class="ao-grid"></div>
-          <button id="check-ao" class="secondary" type="button">Check AO matches</button>
-          <div id="ao-feedback" class="feedback" aria-live="polite"></div>
-        </article>
-
-        <article class="task-card">
-          <h3>Year 9 working agreement</h3>
-          <p>Select at least five commitments you will follow. Then identify the one that will make the biggest difference to you.</p>
-          <div id="agreement-grid" class="agreement-grid"></div>
-          <label for="personal-commitment">My most important commitment is…</label>
-          <select id="personal-commitment"><option value="">Choose one…</option></select>
-          <label for="commitment-reason">This will help me because…</label>
-          <textarea id="commitment-reason" rows="3"></textarea>
-        </article>
-
-        <article class="task-card">
-          <h3>File routine check</h3>
-          <p>Which filename best follows the class routine for a Week 1 baseline Python file?</p>
-          <div id="filename-options" class="choice-list" role="radiogroup" aria-label="Filename choices"></div>
-          <div id="filename-feedback" class="feedback" aria-live="polite"></div>
-        </article>
-        <button id="submit-task1" class="primary" type="button">Submit Main Task 1</button>
+        <article class="worked-example"><div class="worked-label">Worked example</div><h3>School club sign-in</h3><p><strong>Problem:</strong> welcome a club member by name.</p><div class="representation-row"><span>Plan</span><p>Ask for the member’s name, then display a personalised greeting.</p></div><div class="representation-row"><span>Code</span><p><code>member = input("Name: ")</code><br><code>print("Hello", member)</code></p></div><div class="representation-row"><span>Behaviour</span><p>The user enters Kai. The computer displays Hello Kai.</p></div></article>
+        <article class="practice-card"><div class="question-head"><span class="ao-tag">Know</span><h3>Pause and check: identify each representation</h3></div><p>The examples are deliberately out of order. Read the evidence; do not use the position to guess.</p><div class="check-grid">
+          <label>“The screen displays <strong>Total: 14</strong>.”<select id="representation-1" data-save><option value="">Choose…</option><option value="source">Source code</option><option value="behaviour">Running-program behaviour</option><option value="algorithm">Algorithm</option></select></label>
+          <label>“Ask for two prices, add them, then display the total.”<select id="representation-2" data-save><option value="">Choose…</option><option value="behaviour">Running-program behaviour</option><option value="algorithm">Algorithm</option><option value="source">Source code</option></select></label>
+          <label><code>total = price1 + price2</code><select id="representation-3" data-save><option value="">Choose…</option><option value="algorithm">Algorithm</option><option value="source">Source code</option><option value="behaviour">Running-program behaviour</option></select></label>
+        </div></article>
+        <article class="ao-lesson compact-thinking-note"><h3>Your thinking becomes more independent</h3><p>This lesson moves from <strong>Know</strong> (recognise a plan, code and behaviour), to <strong>Apply</strong> (use the ideas in a new program), then <strong>Solve and improve</strong> (use evidence to change it). Your teacher may call these AO1, AO2 and AO3; you do not need to memorise those labels.</p></article>
+        <div class="cycle-learning-layout"><article class="cycle-reading"><div class="worked-label">Learn · one shared scenario</div><h3>The charity-points improvement cycle</h3><p>A charity app should add a 5-point participation bonus. For an input of 20, it should display 25, but the current program displays 15. A computer scientist moves through these stages:</p><ol class="cycle-stage-list"><li><strong>Understand:</strong> the rule is points + 5.</li><li><strong>Plan:</strong> input points → add bonus → output total.</li><li><strong>Predict:</strong> 20 + 5 should give 25.</li><li><strong>Run:</strong> the current program actually gives 15.</li><li><strong>Check:</strong> compare 25 with 15 and inspect the calculation.</li><li><strong>Improve:</strong> change one operator, then test again.</li></ol><p class="concept-callout"><strong>Why a cycle?</strong> The new test tells you whether to finish or return to an earlier stage.</p></article><div class="cycle-map" role="img" aria-label="Charity points cycle: understand, plan, predict, run, check and improve"><div><strong>1 Understand</strong><span>20 points + 5 bonus</span></div><div><strong>2 Plan</strong><span>input → add → output</span></div><div><strong>3 Predict</strong><span>expected: 25</span></div><div><strong>4 Run</strong><span>actual: 15</span></div><div><strong>5 Check</strong><span>first difference: operator</span></div><div><strong>6 Improve</strong><span>change − to +, retest</span></div></div></div>
+        <article class="practice-card cycle-investigation"><div class="question-head"><span class="ao-tag">Apply → Solve</span><h3>Experience the cycle: charity points</h3></div><div class="scenario-box"><strong>Problem</strong><p>A charity app asks for points and adds a 5-point participation bonus. For an input of 20, the required output is <strong>25</strong>. The current program displays <strong>15</strong>.</p></div><pre class="code-sample"><code>points = 20
+bonus = 5
+total = points - bonus
+print(total)</code></pre><div class="cycle-practice-grid"><label><span>1 · Understand</span>Which rule matches the brief?<select id="cycle-understand-rule" data-save><option value="">Choose…</option><option value="subtract">Subtract 5 from points</option><option value="add">Add 5 to points</option><option value="double">Double the points</option></select></label><label><span>2 · Plan</span>Which order is sensible?<select id="cycle-plan-order" data-save><option value="">Choose…</option><option value="output-first">Output → input → calculate</option><option value="input-calculate-output">Input → calculate total → output</option><option value="calculate-only">Calculate without input or output</option></select></label><label><span>3 · Predict</span>For input 20, what should display?<select id="cycle-predict" data-save><option value="">Choose…</option><option>15</option><option>20</option><option>25</option></select></label><label><span>4 · Run</span>The current code actually displays…<select id="cycle-run-actual" data-save><option value="">Record the result…</option><option>25</option><option>15</option><option>5</option></select></label><label><span>5 · Check</span>Where do expected and actual behaviour first disagree?<select id="cycle-check" data-save><option value="">Choose…</option><option value="input">The starting points value</option><option value="operator">The operator in the total calculation</option><option value="print">The word print</option></select></label><label><span>6 · Improve</span>Write only the corrected calculation line<input id="cycle-improve-line" data-save placeholder="total = ..."></label></div></article>
+        <article class="response-card"><div class="question-head"><span class="ao-tag">Explain with evidence</span><h3>Which stage found the fault?</h3></div><label for="cycle-stage">Choose the stage that most directly located the problem.</label><select id="cycle-stage" data-save><option value="">Choose a stage…</option><option value="understand">Understand the requirement</option><option value="predict">Predict 25</option><option value="check">Check 25 against 15 and inspect the calculation</option><option value="improve">Improve the calculation</option></select><div id="cycle-stage-reminder" class="choice-reminder" aria-live="polite">Use the expected result, actual result and calculation line as evidence.</div><label for="cycle-evidence">Explain your choice using one piece of evidence.</label><textarea id="cycle-evidence" data-save rows="3" placeholder="The check stage helped because expected… but actual… so I inspected…"></textarea><textarea id="cycle-reflection" data-save hidden aria-hidden="true"></textarea><div class="quality-checklist"><strong>A strong answer includes:</strong><span>the chosen stage</span><span>expected 25 and actual 15</span><span>the operator or calculation line</span></div></article>
+        <div id="concepts-feedback" class="feedback" aria-live="polite"></div><button id="submit-concepts" class="primary" type="button">Check and continue</button>
       </section>
 
-      <section id="section-task2" class="lesson-section" data-section="task2" hidden>
-        <div class="section-heading">
-          <div><span class="section-label">Main Task 2 · 25 minutes</span><h2>Year 9 baseline challenge</h2></div>
-          <span class="completion-chip" id="chip-task2">Not submitted</span>
-        </div>
-        <div class="hero-grid compact">
-          <button class="image-button" type="button" data-image="assets/images/activity2-baseline-challenge.png" aria-label="Enlarge baseline challenge visual">
-            <img src="assets/images/activity2-baseline-challenge.png" alt="Visual overview of a Year 9 baseline challenge with vocabulary, IPO, tracing, debugging and programming" onerror="this.closest('.image-button').classList.add('image-missing')">
-          </button>
-          <div class="instruction-card">
-            <h3>This is diagnostic, not a formal grade</h3>
-            <p>Attempt every core part independently. Feedback helps you correct misconceptions and helps your teacher plan support.</p>
-            <p class="evidence-note">Your final code, output, tests and explanations will be included in the PDF.</p>
-          </div>
-        </div>
-
-        <div class="subtask-tabs" role="tablist" aria-label="Baseline subtasks">
-          <button class="subtask-tab active" data-subtask="vocabulary" role="tab" aria-selected="true" type="button">A · Vocabulary</button>
-          <button class="subtask-tab" data-subtask="ipo" role="tab" aria-selected="false" type="button">B · IPO</button>
-          <button class="subtask-tab" data-subtask="trace" role="tab" aria-selected="false" type="button">C · Trace</button>
-          <button class="subtask-tab" data-subtask="python" role="tab" aria-selected="false" type="button">D/E · Python Lab</button>
-        </div>
-
-        <div id="subtask-vocabulary" class="subtask-panel active" role="tabpanel">
-          <article class="task-card">
-            <h3>Technical vocabulary</h3>
-            <p>Match every term to its meaning. You may revise after feedback.</p>
-            <div id="vocabulary-grid" class="matching-grid"></div>
-            <button id="check-vocabulary" class="secondary" type="button">Check vocabulary</button>
-            <div id="vocabulary-feedback" class="feedback" aria-live="polite"></div>
-          </article>
-        </div>
-
-        <div id="subtask-ipo" class="subtask-panel" role="tabpanel" hidden>
-          <article class="task-card">
-            <h3>Input–Process–Output</h3>
-            <div class="scenario-box">A program asks for the prices of three items, calculates the total and displays whether the customer qualifies for free delivery.</div>
-            <label for="ipo-input">Inputs</label><textarea id="ipo-input" rows="2" placeholder="What data enters the system?"></textarea>
-            <label for="ipo-process">Processing</label><textarea id="ipo-process" rows="2" placeholder="What calculation or decision takes place?"></textarea>
-            <label for="ipo-output">Outputs</label><textarea id="ipo-output" rows="2" placeholder="What information is displayed?"></textarea>
-            <button id="check-ipo" class="secondary" type="button">Check IPO explanation</button>
-            <div id="ipo-feedback" class="feedback" aria-live="polite"></div>
-          </article>
-        </div>
-
-        <div id="subtask-trace" class="subtask-panel" role="tabpanel" hidden>
-          <article class="task-card">
-            <h3>Trace the program</h3>
-            <pre class="code-sample"><code>score = 6
-score = score + 3
-
+      <section id="section-trace" class="lesson-section" data-section="trace" hidden>
+        <div class="section-heading"><div><span class="section-label">Main Activity 2A · Guided to independent tracing · 17 minutes</span><h2>Trace it—don’t guess it</h2></div><span class="completion-chip" id="chip-trace">Learning</span></div>
+        <div class="language-support" data-support-key="trace" hidden></div>
+        <div class="hero-split"><button class="image-button" type="button" data-image="assets/images/code-tracing.png" aria-label="Enlarge tracing visual"><img src="assets/images/code-tracing.png" alt="A student tracing code by reading one line, updating a value and recording the result"></button><article class="reading-card stacked"><div><h3>What does tracing mean?</h3><p>Tracing means pretending to be the computer. Begin at the first line. Complete exactly one instruction, update any changed value, then move to the next line.</p></div><ul class="step-list"><li><strong>Read</strong> one line.</li><li><strong>Update</strong> the newest value.</li><li><strong>Record</strong> the value or output.</li><li><strong>Repeat</strong> until the program ends.</li></ul></article></div>
+        <article class="worked-example"><div class="worked-label">Worked example — watch the value change</div><div class="code-and-table"><pre><code>lives = 3
+lives = lives - 1
+print(lives)</code></pre><table><thead><tr><th>Line executed</th><th>New value of <code>lives</code></th><th>Output</th></tr></thead><tbody><tr><td><code>lives = 3</code></td><td>3</td><td>—</td></tr><tr><td><code>lives = lives - 1</code></td><td>2</td><td>—</td></tr><tr><td><code>print(lives)</code></td><td>2</td><td>2</td></tr></tbody></table></div><p class="concept-callout"><strong>Important:</strong> <code>=</code> assigns a value. The newest value replaces the old value.</p></article>
+        <article class="practice-card"><div class="question-head"><span class="ao-tag">Guided AO2</span><h3>Your turn: complete the trace record</h3></div><p>Do not run the code yet. Predict by completing one row at a time.</p><div class="code-and-table guided-trace"><pre><code>tokens = 3
+tokens = tokens + 2
+cost = tokens * 2
+print(cost)</code></pre><table><thead><tr><th>After line</th><th>Value to record</th></tr></thead><tbody>
+          <tr><td><code>tokens = 3</code></td><td><select id="guided-trace-1" data-save><option value="">Choose…</option><option>2</option><option>3</option><option>5</option></select></td></tr>
+          <tr><td><code>tokens = tokens + 2</code></td><td><select id="guided-trace-2" data-save><option value="">Choose…</option><option>2</option><option>3</option><option>5</option></select></td></tr>
+          <tr><td><code>cost = tokens * 2</code></td><td><select id="guided-trace-3" data-save><option value="">Choose…</option><option>5</option><option>6</option><option>10</option></select></td></tr>
+          <tr><td><code>print(cost)</code></td><td><select id="guided-trace-4" data-save><option value="">Choose…</option><option>5</option><option>10</option><option>12</option></select></td></tr>
+        </tbody></table></div><button class="hint-button" type="button" data-hint="trace-hint">Show tracing support</button><div id="trace-hint" class="hint-panel" hidden><ol><li>Cover every line except the first.</li><li>Write 3 beside <code>tokens</code>.</li><li>For line 2, use the newest value: 3 + 2.</li><li>Only calculate <code>cost</code> after updating <code>tokens</code>.</li></ol></div></article>
+        <article class="practice-card trace-ladder"><div class="question-head"><span class="ao-tag">Apply</span><h3>Three core traces, then optional stretch</h3></div><p>Complete Levels 1–3. The boxes record the <strong>journey of each value</strong>, not only the final answer. Levels 4–5 are optional stretch.</p><div class="trace-practice-grid">
+          <section><span class="difficulty-chip">Level 1 · one update</span><pre><code>energy = 8
+energy = energy - 3
+print(energy)</code></pre><div class="trace-value-row"><label>After line 1, <code>energy</code> =<input id="trace-p1-start" data-save inputmode="numeric"></label><label>After line 2, <code>energy</code> =<input id="trace-p1-updated" data-save inputmode="numeric"></label></div><label>What is displayed?<select id="trace-p1-output" data-save><option value="">Choose…</option><option>11</option><option>5</option><option>3</option></select></label></section>
+          <section><span class="difficulty-chip">Level 2 · two variables</span><pre><code>tickets = 4
+price = 3
+total = tickets * price
+print(total)</code></pre><div class="trace-value-row"><label><code>tickets</code> =<input id="trace-p2-tickets" data-save inputmode="numeric"></label><label><code>price</code> =<input id="trace-p2-price" data-save inputmode="numeric"></label><label>After line 3, <code>total</code> =<input id="trace-p2-total" data-save inputmode="numeric"></label></div><label>What is displayed?<select id="trace-p2-output" data-save><option value="">Choose…</option><option>7</option><option>43</option><option>12</option></select></label></section>
+          <section><span class="difficulty-chip">Level 3 · selection</span><pre><code>score = 5
+score = score + 4
 if score &gt;= 8:
+    message = "Level up"
+else:
+    message = "Try again"
+print(message)</code></pre><div class="two-column-fields"><label>Final <code>score</code><input id="trace-final-score" data-save inputmode="numeric"></label><label>Is <code>score &gt;= 8</code> true or false?<select id="trace-condition" data-save><option value="">Choose…</option><option value="true">True</option><option value="false">False</option></select></label><label>Value stored in <code>message</code><input id="trace-final-output" data-save></label><label class="wide">Explain the branch using the value and condition.<textarea id="trace-explanation" data-save rows="3" placeholder="The score becomes 9. Since 9 is… the condition is… so…"></textarea></label></div></section>
+          <section><span class="difficulty-chip">Level 4 · chained updates</span><pre><code>value = 2
+value = value * 3
+value = value + 4
+print(value)</code></pre><label>Final value<select id="trace-p4-output" data-save><option value="">Choose…</option><option>10</option><option>14</option><option>9</option></select></label><label>Record the two changing values<input id="trace-p4-path" data-save placeholder="2 → … → …"></label></section>
+          <section><span class="difficulty-chip">Level 5 · two variables and selection</span><pre><code>level = 7
+bonus = 2
+score = level + bonus
+if score &gt;= 9:
     message = "Challenge unlocked"
 else:
-    message = "Keep practising"
+    message = "Keep going"
+print(message)</code></pre><div class="two-column-fields"><label>Final <code>score</code><input id="trace-p5-score" data-save inputmode="numeric"></label><label>Displayed message<input id="trace-p5-output" data-save></label><label class="wide">Explain which branch runs.<textarea id="trace-p5-explanation" data-save rows="3" placeholder="The score becomes… The condition score &gt;= 9 is… so…"></textarea></label></div></section>
+        </div></article>
+        <div id="trace-feedback" class="feedback" aria-live="polite"></div><button id="submit-trace" class="primary" type="button">Check my trace</button>
+      </section>
 
-print(message)</code></pre>
-            <div class="two-column-fields">
-              <label>Final value of <code>score</code><input id="trace-score" inputmode="numeric"></label>
-              <label>Displayed message<input id="trace-output"></label>
-              <label>Line containing the selection<input id="trace-line" placeholder="e.g. line 4"></label>
-              <label class="wide">Explain why that message is displayed<textarea id="trace-explanation" rows="3"></textarea></label>
-            </div>
-            <button id="check-trace" class="secondary" type="button">Check trace</button>
-            <div id="trace-feedback" class="feedback" aria-live="polite"></div>
-          </article>
-        </div>
-
-        <div id="subtask-python" class="subtask-panel" role="tabpanel" hidden>
-          <article class="task-card python-card">
-            <div class="python-head">
-              <div><h3>Python programming workspace</h3><p>Correct the error, test the program, then complete the number-comparison challenge.</p></div>
-              <div id="python-status" class="runtime-status">Loading Python…</div>
-            </div>
-            <div class="editor-tabs" role="tablist" aria-label="Python files">
-              <button class="editor-tab active" data-file="debug" role="tab" aria-selected="true" type="button">debug_task.py</button>
-              <button class="editor-tab" data-file="challenge" role="tab" aria-selected="false" type="button">number_challenge.py</button>
-              <button class="editor-tab" data-file="extension" role="tab" aria-selected="false" type="button">extension_task.py</button>
-            </div>
-            <div class="editor-toolbar" aria-label="Python editor controls">
-              <button id="run-code" class="primary compact-button" type="button" disabled>Run <span class="shortcut">Ctrl+Enter</span></button>
-              <button id="stop-code" class="danger compact-button" type="button" disabled>Stop / Restart</button>
-              <button id="reset-code" class="secondary compact-button" type="button">Reset file</button>
-              <button id="clear-output" class="secondary compact-button" type="button">Clear output</button>
-              <button id="copy-code" class="secondary compact-button" type="button">Copy code</button>
-              <button id="compare-code" class="secondary compact-button" type="button">Compare starter</button>
-              <button id="download-code" class="secondary compact-button" type="button">Download .py</button>
-              <label class="upload-button secondary compact-button">Open .py<input id="upload-code" type="file" accept=".py,text/x-python" hidden></label>
-              <button id="fullscreen-editor" class="secondary compact-button" type="button">Full screen</button>
-            </div>
-            <div id="file-task-prompt" class="file-task-prompt"></div>
-            <div id="code-compare" class="code-compare" hidden>
-              <div><h4>Starter version</h4><pre id="starter-code-view"></pre></div>
-              <div><h4>Current version</h4><pre id="current-code-view"></pre></div>
-            </div>
-            <div class="editor-layout">
-              <div class="editor-pane">
-                <div id="python-editor" aria-label="Python code editor"></div>
-                <div id="cursor-position" class="cursor-position">Ln 1, Col 1</div>
-              </div>
-              <div class="console-pane">
-                <div class="console-head"><span>Python Shell</span><span id="run-count">Runs: 0</span></div>
-                <pre id="python-console" class="python-console" aria-live="polite"><span class="console-system">Python runtime is loading locally…</span></pre>
-                <form id="console-input-form" class="console-input-form" hidden>
-                  <label id="console-prompt" for="console-input">Input</label>
-                  <div><input id="console-input" autocomplete="off"><button class="primary compact-button" type="submit">Submit</button></div>
-                </form>
-              </div>
-            </div>
-
-            <div class="python-evidence-grid">
-              <div>
-                <h4>Debugging evidence</h4>
-                <label for="error-type">Type of error</label>
-                <select id="error-type"><option value="">Choose…</option><option>Syntax error</option><option>Runtime error</option><option>Logic error</option></select>
-                <label for="debug-purpose">Purpose of the condition</label><textarea id="debug-purpose" rows="2"></textarea>
-                <label for="debug-notes">What did you change, and why?</label><textarea id="debug-notes" rows="3"></textarea>
-                <button id="test-debug" class="secondary" type="button">Run debug checks</button>
-                <div id="debug-test-feedback" class="feedback" aria-live="polite"></div>
-              </div>
-              <div>
-                <h4>Programming challenge evidence</h4>
-                <p>Ask for a number and display whether it is greater than, equal to or less than 10.</p>
-                <button id="test-challenge" class="secondary" type="button">Run visible tests</button>
-                <div id="challenge-test-feedback" class="feedback" aria-live="polite"></div>
-                <label for="program-explanation">Explain how your selection works</label><textarea id="program-explanation" rows="3"></textarea>
-              </div>
-            </div>
-
-            <h4>Student test table</h4>
-            <div class="table-wrap">
-              <table class="evidence-table">
-                <thead><tr><th>Test input</th><th>Type</th><th>Expected result</th><th>Actual result</th></tr></thead>
-                <tbody id="test-table-body"></tbody>
-              </table>
-            </div>
-            <button id="submit-python-evidence" class="primary" type="button">Submit Python evidence</button>
-            <div id="python-submit-feedback" class="feedback" aria-live="polite"></div>
-          </article>
-        </div>
-        <button id="submit-task2" class="primary section-submit" type="button">Submit Main Task 2</button>
-        <div id="task2-feedback" class="feedback" aria-live="polite"></div>
+      <section id="section-debug" class="lesson-section" data-section="debug" hidden>
+        <div class="section-heading"><div><span class="section-label">Main Activity 2B · Recognise, apply and explain · 13 minutes</span><h2>Debug like a computer scientist</h2></div><span class="completion-chip" id="chip-debug">Learning</span></div>
+        <div class="language-support" data-support-key="debug" hidden></div>
+        <button class="image-button wide-image" type="button" data-image="assets/images/debugging-cycle.png" aria-label="Enlarge debugging cycle"><img src="assets/images/debugging-cycle.png" alt="Four-step debugging cycle: read the message, find the line, change one thing, run and check"></button>
+        <article class="reading-card"><div class="reading-icon">!</div><div><h3>An error is evidence</h3><p>Debugging is the process of finding, understanding and correcting problems. Read the clue before editing. Change one thing, rerun and compare the new result with what you expected.</p></div></article>
+        <div class="syntax-anatomy"><div><strong>A correct Python decision</strong><pre><code>if condition:
+    indented_instruction</code></pre></div><p>The colon ends the <code>if</code> line. The indented line belongs to that decision. This pattern will help you interpret the first error message.</p></div>
+        <div class="teach-grid three error-types"><article class="teach-card"><h3>Syntax error</h3><p>The code breaks Python’s grammar, so Python cannot understand the instruction.</p><p class="example">Clue: <code>SyntaxError</code>, often with a line number.</p></article><article class="teach-card"><h3>Runtime error</h3><p>The code starts, but an operation becomes impossible while it is running.</p><p class="example">Clue: an error such as division by zero.</p></article><article class="teach-card"><h3>Logic error</h3><p>The code runs, but the result is different from the requirement.</p><p class="example">Clue: expected £15, actual £25.</p></article></div>
+        <article class="practice-card"><div class="question-head"><span class="ao-tag">Recognise</span><h3>Error clinic: read the context and evidence</h3></div><div class="debug-scenario-grid">
+          <label><strong>Case A · Age check</strong><span>Python stops before displaying anything.</span><pre><code>age = 13
+if age &gt;= 13
+    print("Allowed")</code></pre><small>Message: <code>SyntaxError: expected ':' on line 2</code></small><select id="error-check-1" data-save><option value="">Choose the error type…</option><option value="logic">Logic error</option><option value="syntax">Syntax error</option><option value="runtime">Runtime error</option></select></label>
+          <label><strong>Case B · Sharing team points</strong><span>The program begins, then reaches an impossible calculation.</span><pre><code>1  total = 10
+2  groups = 0
+3  per_group = total / groups
+4  print(per_group)</code></pre><small>Message: <code>ZeroDivisionError on line 3</code></small><select id="error-check-2" data-save><option value="">Choose the error type…</option><option value="syntax">Syntax error</option><option value="runtime">Runtime error</option><option value="logic">Logic error</option></select></label>
+          <label><strong>Case C · Shop discount</strong><span>Price £20, discount £5. Expected £15; actual £25.</span><pre><code>1  price = 20
+2  discount = 5
+3  final = price + discount
+4  print(final)</code></pre><select id="error-check-3" data-save><option value="">Choose the error type…</option><option value="runtime">Runtime error</option><option value="logic">Logic error</option><option value="syntax">Syntax error</option></select></label>
+        </div></article>
+        <article class="worked-example guided-debug"><div class="worked-label">Scaffolded debugging case</div><div class="code-and-clue"><pre><code>1  name = input("Enter your name: ")
+2
+3  if name == "":
+4      print("Enter a name")
+5  else
+6      print("Welcome", name)</code></pre><div class="error-message"><strong>Python clue</strong><code>SyntaxError: expected ':'<br>line 5</code></div></div><div class="scaffold-steps"><div><span>1</span><p><strong>Read:</strong> Python expected a colon.</p></div><div><span>2</span><p><strong>Locate:</strong> The message names line 5.</p></div><div><span>3</span><p><strong>Decide:</strong> Make one change, then rerun.</p></div></div><div class="check-grid">
+          <label>What type of error is this?<select id="debug-type" data-save><option value="">Choose…</option><option value="syntax">Syntax error</option><option value="runtime">Runtime error</option><option value="logic">Logic error</option></select></label>
+          <label>Which line should be inspected first?<select id="debug-line" data-save><option value="">Choose…</option><option value="3">Line 3</option><option value="5">Line 5</option><option value="6">Line 6</option></select></label>
+          <label>What is the most focused next action?<select id="debug-action" data-save><option value="">Choose…</option><option value="colon">Add the missing colon to line 5</option><option value="rewrite">Rewrite the entire program</option><option value="rename">Rename the variable</option></select></label>
+        </div></article>
+        <article class="practice-card"><div class="question-head"><span class="ao-tag">Apply</span><h3>Second case: use expected and actual results</h3></div><div class="scenario-box"><strong>Shop discount</strong><p>The Case C program should calculate £20 − £5 = £15, but it displays £25. It runs without a Python error message.</p></div><div class="two-column-fields"><label>Which line contains the logic problem?<select id="debug-logic-line" data-save><option value="">Choose…</option><option value="1">Line 1</option><option value="3">Line 3</option><option value="4">Line 4</option></select></label><label>Write the corrected line<input id="debug-logic-fix" data-save placeholder="final = ..."></label></div></article>
+        <article class="response-card"><div class="question-head"><span class="ao-tag">Explain with evidence</span><h3>Compare two real test records</h3></div><p>Both students started with the same line-5 syntax error and used the input <code>Noor</code>.</p><div class="debug-test-log"><div><strong>Attempt A</strong><p>Changed the colon, variable name, condition and output message.</p><p><strong>Result:</strong> program runs and displays <code>Hello Noor</code>.</p></div><div><strong>Attempt B</strong><p>Changed only line 5 from <code>else</code> to <code>else:</code>.</p><p><strong>Result:</strong> program runs and displays <code>Welcome Noor</code>.</p></div></div><label for="debug-strategy-choice">Which record most clearly tests whether the missing colon caused the syntax error?</label><select id="debug-strategy-choice" data-save><option value="">Choose…</option><option value="a">Attempt A</option><option value="b">Attempt B</option></select><label for="debug-test-evidence">State what changed, what stayed the same and the observed result.</label><textarea id="debug-test-evidence" data-save rows="3" placeholder="Only… changed. The input and other lines stayed… The program then…"></textarea><label for="debug-explanation">Explain what this evidence allows the student to conclude.</label><textarea id="debug-explanation" data-save rows="3" placeholder="Because only… changed, the new result supports the conclusion that…"></textarea><div class="quality-checklist"><strong>A strong answer includes:</strong><span>one controlled change</span><span>same input Noor</span><span>the observed result</span><span>a justified conclusion</span></div><button class="hint-button" type="button" data-hint="debug-hint">Need a reasoning structure?</button><div id="debug-hint" class="hint-panel" hidden><p>“Attempt ___ gives clearer evidence because only ___ changed. The input ___ stayed the same. When the program then ___, this supports the conclusion that ___.”</p></div></article>
+        <article class="evidence-upload-card"><div><h3>Optional evidence image</h3><p>If your teacher asks for a screenshot or photo of written tracing, add it here. It will be compressed and included in your report.</p></div><label class="upload-button">Choose image<input id="evidence-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button id="remove-evidence-image" class="secondary compact-button" type="button" hidden>Remove</button><img id="evidence-preview" alt="Student evidence preview" hidden><div id="image-feedback" class="feedback" aria-live="polite"></div></article>
+        <div id="debug-feedback" class="feedback" aria-live="polite"></div><button id="submit-debug" class="primary" type="button">Check my debugging</button>
       </section>
 
       <section id="section-extension" class="lesson-section" data-section="extension" hidden>
-        <div class="section-heading">
-          <div><span class="section-label">Optional · Early completers</span><h2>Extension challenge</h2></div>
-          <span class="completion-chip optional-chip" id="chip-extension">Optional</span>
+        <div class="section-heading"><div><span class="section-label">Optional · Early completers</span><h2>Extension Lab: choose your challenge</h2></div><span class="completion-chip optional-chip" id="chip-extension">No route saved</span></div>
+        <div class="language-support" data-support-key="extension" hidden></div>
+        <article class="reading-card"><div class="reading-icon">★</div><div><h3>You choose the stretch</h3><p>Select one route that suits the time and challenge you want. You may combine routes. Your report records only routes you choose and genuinely attempt.</p></div></article>
+        <div class="extension-route-grid" aria-label="Extension route choices">
+          <label class="extension-route level-one"><input id="ext-select-quiz" type="checkbox" data-extension-route="quiz"><span class="level-badge">Level 1</span><strong>Quiz Quest</strong><span>Play 20 short retrieval questions with instant explanations.</span></label>
+          <label class="extension-route level-two"><input id="ext-select-flash" type="checkbox" data-extension-route="flash"><span class="level-badge">Level 2</span><strong>Flashcard Forge</strong><span>Make a useful study set digitally or on paper.</span></label>
+          <label class="extension-route level-three"><input id="ext-select-algorithm" type="checkbox" data-extension-route="algorithm"><span class="level-badge">Level 3</span><strong>Algorithm Architect</strong><span>Design and test a solution before coding.</span></label>
+          <label class="extension-route level-four"><input id="ext-select-python" type="checkbox" data-extension-route="python"><span class="level-badge">Level 4</span><strong>Python Builder</strong><span>Turn an idea into a working, tested program.</span></label>
         </div>
-        <p class="lead">Choose one task. Extension work is included in your PDF only when attempted and never blocks the plenary.</p>
-        <div class="extension-grid">
-          <label class="extension-card"><input type="radio" name="extension-choice" value="improve"><span><strong>1 · Improve the program</strong>Use <code>extension_task.py</code> to repeat until 0, distinguish positive/negative values and add meaningful comments.</span></label>
-          <label class="extension-card"><input type="radio" name="extension-choice" value="tests"><span><strong>2 · Design stronger tests</strong>Plan normal, boundary and erroneous data. Predict before running.</span></label>
-          <label class="extension-card"><input type="radio" name="extension-choice" value="explain"><span><strong>3 · Explain debugging</strong>Why is changing several lines at once a weak debugging strategy?</span></label>
-          <label class="extension-card"><input type="radio" name="extension-choice" value="gcse"><span><strong>4 · GCSE-style Boolean challenge</strong>Analyse and rewrite a compound condition.</span></label>
-        </div>
-        <div id="extension-response-area" class="task-card" hidden>
-          <div id="extension-prompt"></div>
-          <textarea id="extension-response" rows="8" placeholder="Write your answer, plan or evidence here. For coding, use extension_task.py and summarise what you achieved."></textarea>
-          <button id="submit-extension" class="primary" type="button">Save extension evidence</button>
-          <div id="extension-feedback" class="feedback" aria-live="polite"></div>
-        </div>
-        <button id="skip-extension" class="secondary" type="button">Continue to plenary without extension</button>
+
+        <article id="extension-quiz" class="extension-workspace" data-route-panel="quiz" hidden>
+          <div class="extension-title"><div><span class="level-badge">Level 1</span><h3>Quiz Quest: 20 checkpoints</h3></div><span class="route-format">On-screen · self-marking</span></div>
+          <p>Answer one question at a time. Press <strong>Check answer</strong> to earn the explanation; an answer is saved as evidence only after you check it.</p>
+          <div class="quiz-scoreboard"><strong id="quiz-progress-text">Question 1 of 20</strong><span id="quiz-score">0 checked · 0 correct</span></div><div class="quiz-progress"><span id="quiz-progress-bar"></span></div>
+          <div id="quiz-question-card" class="quiz-question-card"></div><div id="quiz-feedback" class="feedback" aria-live="polite"></div>
+          <div class="quiz-controls"><button id="quiz-previous" class="secondary compact-button" type="button">Previous</button><button id="quiz-check" class="primary compact-button" type="button">Check answer</button><button id="quiz-next" class="secondary compact-button" type="button">Next</button></div>
+        </article>
+
+        <article id="extension-flash" class="extension-workspace" data-route-panel="flash" hidden>
+          <div class="extension-title"><div><span class="level-badge">Level 2</span><h3>Flashcard Forge</h3></div><span class="route-format">Typed or paper</span></div>
+          <p>Create four revision cards that another Year 9 student could learn from without asking you what the card means. Choose one format below.</p>
+          <div class="format-choice"><label><input type="radio" name="flash-mode" value="typed"> Type my cards</label><label><input type="radio" name="flash-mode" value="paper"> Make them on paper</label></div>
+          <div id="flash-typed-panel" class="flash-mode-panel" hidden><div class="flashcard-brief"><strong>Typed-card checklist</strong><ol><li>Put one precise Computer Science question on the front.</li><li>Answer in your own words on the back.</li><li>Include a short example, code fragment or expected/actual result where it helps.</li><li>Do not copy the same definition four times.</li></ol><p>Suggested topics: algorithm/source code/program behaviour; tracing and assignment; syntax/runtime/logic errors; improvement cycle.</p></div><div class="flashcard-grid">
+            <label>Card 1 front<input id="ext-flash-1-front" data-save placeholder="e.g. What does tracing mean?"></label><label>Card 1 back<textarea id="ext-flash-1-back" data-save rows="2" placeholder="Answer in your own words…"></textarea></label>
+            <label>Card 2 front<input id="ext-flash-2-front" data-save></label><label>Card 2 back<textarea id="ext-flash-2-back" data-save rows="2"></textarea></label>
+            <label>Card 3 front<input id="ext-flash-3-front" data-save></label><label>Card 3 back<textarea id="ext-flash-3-back" data-save rows="2"></textarea></label>
+            <label>Card 4 front<input id="ext-flash-4-front" data-save></label><label>Card 4 back<textarea id="ext-flash-4-back" data-save rows="2"></textarea></label>
+          </div></div>
+          <div id="flash-paper-panel" class="flash-mode-panel paper-card-brief" hidden><h4>Paper-card instructions</h4><ol><li>Fold or cut paper into <strong>four separate cards</strong>.</li><li>On each front, write one precise question. Example: “How is a logic error different from a syntax error?”</li><li>On each back, include: a definition in your own words, one short example, and one check or common mistake.</li><li>Use at least <strong>three different lesson topics</strong>. Suitable topics are algorithms, source code, program behaviour, tracing, assignment, error types and the improvement cycle.</li><li>Number the cards 1–4 and make both sides readable.</li></ol><div class="paper-card-model"><div><strong>Front</strong><span>What evidence helps identify a logic error?</span></div><div><strong>Back</strong><span>Compare expected and actual output. Example: expected £15, actual £25. A logic error runs but gives the wrong result.</span></div></div><label>Paper evidence summary<textarea id="ext-paper-summary" data-save rows="4" placeholder="My four card topics are… My strongest card is number… because it includes…"></textarea></label><div class="paper-evidence"><label class="upload-button">Add optional photo of the four cards<input id="extension-paper-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button id="remove-extension-image" class="secondary compact-button" type="button" hidden>Remove</button><img id="extension-image-preview" alt="Extension paper evidence preview" hidden><div id="extension-image-feedback" class="feedback" aria-live="polite"></div></div></div>
+        </article>
+
+        <article id="extension-algorithm" class="extension-workspace" data-route-panel="algorithm" hidden>
+          <div class="extension-title"><div><span class="level-badge">Level 3</span><h3>Algorithm Architect</h3></div><span class="route-format">Written design</span></div>
+          <div class="scenario-box"><strong>Design brief</strong><p>A school club needs a sign-in program. It asks for a student's name and year group. If the name is blank, it displays an error. Otherwise, it displays a welcome message and the correct meeting room: Year 7–8 use Room A; Year 9–11 use Room B.</p></div>
+          <div class="pseudocode-primer"><div><strong>What is pseudocode?</strong><p>A clear, language-independent description of an algorithm. It is not Python, so it does not need brackets, quotation rules or exact Python spelling.</p><ul><li><code>INPUT</code> receives data.</li><li><code>OUTPUT</code> displays information.</li><li><code>IF … THEN / ELSE / ENDIF</code> describes a decision.</li><li>Indent the instructions that belong inside a decision.</li></ul></div><pre><code>INPUT name
+IF name is blank THEN
+    OUTPUT "Enter a name"
+ELSE
+    OUTPUT "Welcome " + name
+ENDIF</code></pre></div>
+          <div class="algorithm-grid"><label>Inputs<textarea id="ext-algorithm-inputs" data-save rows="2" placeholder="What data must the user provide?"></textarea></label><label>Outputs<textarea id="ext-algorithm-outputs" data-save rows="2" placeholder="What messages could appear?"></textarea></label></div>
+          <label>My algorithm / pseudocode<textarea id="ext-algorithm-plan" data-save rows="10" placeholder="INPUT name&#10;INPUT yearGroup&#10;IF name is blank THEN&#10;    OUTPUT ..."></textarea></label>
+          <div class="algorithm-grid"><label>Test 1<textarea id="ext-algorithm-test1" data-save rows="3" placeholder="Input → expected output"></textarea></label><label>Test 2<textarea id="ext-algorithm-test2" data-save rows="3" placeholder="Use a different path through the algorithm"></textarea></label></div>
+          <label>One improvement after testing<textarea id="ext-algorithm-improvement" data-save rows="3" placeholder="I would improve… because…"></textarea></label>
+        </article>
+
+        <article id="extension-python" class="extension-workspace" data-route-panel="python" hidden><div class="extension-title"><div><span class="level-badge">Level 4</span><h3>Python Builder</h3></div><span class="route-format">Programming</span></div><p>Choose a small goal, make one change, run it, and use the result as your next clue. Your starter code alone is not counted as evidence.</p>
+        <div class="extension-choice-grid"><label><input type="radio" name="studio-choice" value="greeting"><span><strong>Personal greeting</strong>Ask another question and use its answer.</span></label><label><input type="radio" name="studio-choice" value="decision"><span><strong>Decision program</strong>Use <code>if</code> and <code>else</code> to choose a message.</span></label><label><input type="radio" name="studio-choice" value="quiz"><span><strong>Mini quiz</strong>Ask one question and respond to the answer.</span></label><label><input type="radio" name="studio-choice" value="own"><span><strong>Your own idea</strong>Keep it small enough to test today.</span></label></div>
+        <div id="studio-tip" class="studio-tip">Choose an idea to reveal one small starting tip.</div>
+        <article class="python-card"><div class="python-head"><div><h3>Python editor</h3><p>Student code runs locally in this browser.</p></div><div id="python-status" class="runtime-status">Loading Python…</div></div><div class="editor-toolbar"><button id="run-code" class="primary compact-button" type="button" disabled>Run <span class="shortcut">Ctrl+Enter</span></button><button id="stop-code" class="danger compact-button" type="button" disabled>Stop / Restart</button><button id="reset-code" class="secondary compact-button" type="button">Reset starter</button><button id="clear-output" class="secondary compact-button" type="button">Clear output</button><button id="download-code" class="secondary compact-button" type="button">Download .py</button><button id="fullscreen-editor" class="secondary compact-button" type="button">Full screen</button></div><div class="editor-layout"><div class="editor-pane"><div id="python-editor" aria-label="Python code editor"></div><div id="cursor-position" class="cursor-position">Ln 1, Col 1</div></div><div class="console-pane"><div class="console-head"><span>Python Shell</span><span id="run-count">Runs: 0</span></div><pre id="python-console" class="python-console" aria-live="polite"><span class="console-system">Python is loading locally…</span></pre><form id="console-input-form" class="console-input-form" hidden><label id="console-prompt" for="console-input">Input</label><div><input id="console-input" autocomplete="off"><button class="primary compact-button" type="submit">Submit</button></div></form></div></div><div class="python-reflection-grid"><label>My goal<textarea id="python-goal" data-save rows="2" placeholder="I want my program to…"></textarea></label><label>One change I made<textarea id="python-change" data-save rows="2" placeholder="I changed… because…"></textarea></label><label>One test I used<textarea id="python-test" data-save rows="2" placeholder="I entered… and expected…"></textarea></label></div><button id="save-python-evidence" class="primary" type="button">Save Python evidence</button><div id="python-feedback" class="feedback" aria-live="polite"></div></article>
+        </article>
+        <div class="extension-actions"><button id="save-extension-evidence" class="primary" type="button">Save chosen extension evidence</button><button id="skip-extension" class="secondary" type="button">Continue to plenary</button></div><div id="extension-feedback" class="feedback" aria-live="polite"></div>
       </section>
 
       <section id="section-plenary" class="lesson-section" data-section="plenary" hidden>
-        <div class="section-heading">
-          <div><span class="section-label">Plenary · 7 minutes</span><h2>Reflect, identify a next step and explain</h2></div>
-          <span class="completion-chip" id="chip-plenary">Not submitted</span>
-        </div>
-        <div class="hero-grid visual-only">
-          <button class="image-button" type="button" data-image="assets/images/plenary-reflection.png" aria-label="Enlarge plenary reflection visual">
-            <img src="assets/images/plenary-reflection.png" alt="Plenary reflection visual with confidence and next-step prompts" onerror="this.closest('.image-button').classList.add('image-missing')">
-          </button>
-          <div class="instruction-card">
-            <h3>Be specific and honest</h3>
-            <p>Your reflection is not a score. It identifies what is secure and what should be revisited next.</p>
-          </div>
-        </div>
-        <article class="task-card">
-          <label for="confidence">Confidence after today’s lesson: <strong id="confidence-label">3 — Somewhat confident</strong></label>
-          <input id="confidence" type="range" min="1" max="5" value="3" step="1">
-          <div class="confidence-scale" aria-hidden="true"><span>1<br>Not confident</span><span>2<br>A little</span><span>3<br>Somewhat</span><span>4<br>Confident</span><span>5<br>Very confident</span></div>
-        </article>
-        <div class="reflection-grid">
-          <label class="reflection-card">One thing I remember confidently…<textarea id="reflection-remember" rows="4"></textarea></label>
-          <label class="reflection-card">One area I need to revisit…<textarea id="reflection-revisit" rows="4"></textarea></label>
-          <label class="reflection-card">One Year 9 expectation I will follow…<textarea id="reflection-expectation" rows="4"></textarea></label>
-        </div>
-        <article class="task-card exit-question">
-          <h3>Exit question</h3>
-          <label for="algorithm-program">Why is an algorithm not the same as a program?</label>
-          <textarea id="algorithm-program" rows="4" placeholder="Use both terms accurately and explain the relationship between them."></textarea>
-        </article>
-        <button id="submit-plenary" class="primary" type="button">Submit plenary</button>
-        <div id="plenary-feedback" class="feedback" aria-live="polite"></div>
+        <div class="section-heading"><div><span class="section-label">Plenary · Retrieval and next step · 7 minutes</span><h2>Show what changed in your thinking</h2></div><span class="completion-chip" id="chip-plenary">Learning</span></div>
+        <div class="language-support" data-support-key="plenary" hidden></div>
+        <article class="practice-card"><div class="question-head"><span class="ao-tag">Retrieve</span><h3>Three short checks</h3></div><div class="check-grid">
+          <label>An algorithm is…<select id="plenary-q1" data-save><option value="">Choose…</option><option value="plan">an ordered plan for solving a problem</option><option value="code">only Python source code</option><option value="output">the output displayed by a program</option></select></label>
+          <label>Tracing means…<select id="plenary-q2" data-save><option value="">Choose…</option><option value="guess">guessing what the code might display</option><option value="follow">following one line at a time and recording values</option><option value="run">running the code until it works</option></select></label>
+          <label>The best first debugging move is usually…<select id="plenary-q3" data-save><option value="">Choose…</option><option value="read">read the error or compare expected and actual behaviour</option><option value="delete">delete the whole program</option><option value="many">change several lines together</option></select></label>
+        </div></article>
+        <textarea id="algorithm-program" data-save hidden aria-hidden="true"></textarea>
+        <article class="confidence-card"><h3>Confidence by skill</h3><p>Move each scale honestly. This helps your teacher plan Week 2 support.</p><label>Explain algorithm, code and program <input id="confidence-concepts" data-save type="range" min="1" max="5" value="3"><output for="confidence-concepts">3</output></label><label>Trace changing values <input id="confidence-trace" data-save type="range" min="1" max="5" value="3"><output for="confidence-trace">3</output></label><label>Use an error message <input id="confidence-debug" data-save type="range" min="1" max="5" value="3"><output for="confidence-debug">3</output></label></article>
+        <article class="response-card"><label for="next-target">Choose the skill that needs your next practice</label><select id="next-target" data-save><option value="">Choose…</option><option>Use technical vocabulary more accurately</option><option>Trace values without guessing</option><option>Read error messages before editing</option><option>Explain why my code works</option><option>Test one change at a time</option></select><label for="target-action">Write one specific action—not “try harder”</label><textarea id="target-action" data-save rows="2" placeholder="Next lesson, when I trace code, I will record each new value before reading the next line."></textarea><div class="quality-checklist"><strong>A useful target action names:</strong><span>when you will use it</span><span>what you will actually do</span></div></article>
+        <div id="plenary-feedback" class="feedback" aria-live="polite"></div><button id="submit-plenary" class="primary" type="button">Complete plenary</button>
       </section>
 
       <section id="section-review" class="lesson-section" data-section="review" hidden>
-        <div class="section-heading">
-          <div><span class="section-label">Final review and export</span><h2>Check your evidence before submitting</h2></div>
-          <span class="completion-chip complete" id="chip-review">Ready to review</span>
-        </div>
-        <div id="review-summary" class="review-summary"></div>
-        <div id="incomplete-warnings" class="warning-box"></div>
-        <div class="export-panel">
-          <h3>Download your work</h3>
-          <p>Your PDF includes all attempted core responses, corrections, code, selected output, tests and plenary evidence.</p>
-          <div class="export-buttons">
-            <button id="download-pdf" class="primary large" type="button">Download PDF</button>
-            <button id="download-bundle" class="secondary large" type="button">Download submission ZIP</button>
-            <button id="print-fallback" class="secondary large" type="button">Print-friendly fallback</button>
-          </div>
-          <div id="export-status" class="feedback" aria-live="polite"></div>
-        </div>
-        <div class="teams-panel">
-          <h3>Microsoft Teams submission</h3>
-          <p class="teams-instruction">Upload your completed PDF to the Microsoft Teams Assignment named <strong>Week 1 Theory</strong>.</p>
-          <p>Upload the PDF and the required <code>.py</code> file unless your teacher tells you otherwise.</p>
-          <ul>
-            <li>Check that your name and class are visible.</li>
-            <li>Check that all required sections are included.</li>
-            <li>Check that the PDF downloaded successfully.</li>
-            <li>Include the correct Python file.</li>
-            <li>Upload the PDF rather than screenshots.</li>
-          </ul>
-        </div>
+        <div class="section-heading"><div><span class="section-label">Learning evidence</span><h2>Review and export your lesson report</h2></div><span class="completion-chip complete" id="chip-review">Ready</span></div>
+        <p class="lead">This report shows attempts, feedback, corrections and confidence—not only final answers.</p>
+        <div id="review-summary" class="review-summary"></div><div id="incomplete-warnings" class="warning-box"></div>
+        <article class="export-panel"><h3>Download your evidence</h3><p>The PDF includes your support choice, core responses, feedback and next target. Optional extension evidence appears only for routes you selected and meaningfully attempted.</p><div class="export-buttons"><button id="download-pdf" class="primary large" type="button">Download summary PDF</button><button id="download-bundle" class="secondary large" type="button">Download evidence ZIP</button><button id="print-fallback" class="secondary large" type="button">Print-friendly fallback</button></div><div id="export-status" class="feedback" aria-live="polite"></div></article>
+        <article class="teams-panel"><h3>Submit in Microsoft Teams</h3><ol><li>Open the assignment named <strong>Week 1 Theory</strong>.</li><li>Upload the summary PDF.</li><li>If you used Python Studio, also upload your <code>.py</code> file or the evidence ZIP if your teacher requests it.</li><li>Open the PDF once to confirm your name and responses are visible.</li></ol></article>
       </section>
 
-      <div class="bottom-navigation">
-        <button id="back-button" class="secondary" type="button" disabled>Back</button>
-        <span id="current-section-label">Do Now</span>
-        <button id="next-button" class="primary" type="button" disabled>Next</button>
-      </div>
+      <div class="bottom-navigation"><button id="back-button" class="secondary" type="button" disabled>Back</button><span id="current-section-label">Do Now</span><button id="next-button" class="primary" type="button" disabled>Next</button></div>
     </main>
   </div>
 
-  <div id="image-modal" class="image-modal" role="dialog" aria-modal="true" aria-label="Enlarged lesson image" hidden>
-    <button id="image-modal-close" class="image-modal-close" type="button" aria-label="Close enlarged image">×</button>
-    <img id="image-modal-img" alt="">
-  </div>
+  <aside id="glossary-drawer" class="glossary-drawer" aria-label="Vocabulary and language support" hidden>
+    <div class="drawer-head"><div><p class="eyebrow">Language support</p><h2>Vocabulary toolkit</h2></div><button id="glossary-close" class="icon-button" type="button" aria-label="Close glossary">×</button></div>
+    <p id="glossary-intro"></p><div id="glossary-list" class="glossary-list"></div><button id="read-page-button" class="secondary" type="button">Read the current explanation aloud</button>
+  </aside>
+
+  <div id="image-modal" class="image-modal" role="dialog" aria-modal="true" aria-label="Enlarged lesson image" hidden><button id="image-modal-close" class="image-modal-close" type="button" aria-label="Close enlarged image">×</button><img id="image-modal-img" alt=""></div>
 
   <script src="libraries/ace/ace.js"></script>
   <script src="libraries/jspdf.umd.min.js"></script>
   <script src="libraries/jszip.min.js"></script>
-  <script src="app.js?v=20260720-2"></script>
+  <script src="app.js?v=20260822-8"></script>
 </body>
 </html>

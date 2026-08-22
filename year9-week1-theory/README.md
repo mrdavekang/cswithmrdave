@@ -1,188 +1,114 @@
-# Year 9 Week 1 Theory Web App
+# Year 9 Week 1 Theory — Code Quest
 
-## Lesson
+A static, GitHub Pages-ready learning app for the first Year 9 Computer Science theory lesson.
 
-**Year group:** Year 9  
-**Week:** 1  
-**Lesson:** Becoming a Year 9 Computer Scientist  
-**Key topic:** Year 9 Computer Science readiness
+## Learning design
 
-The app follows the planned Week 1 theory lesson from the Year 9 curriculum map: a low-stakes baseline on Year 8 Python, algorithms and technical vocabulary, followed by AO1/AO2/AO3, file/evidence routines, a genuine browser-based Python workspace, optional extension work and a reflective plenary.
+The redesign prioritises teaching before checking. Every core stage follows a short cycle:
 
-## Open and host
+1. Read a clear explanation.
+2. Inspect a visual or worked example.
+3. Complete guided practice.
+4. Attempt a short independent check.
+5. Receive feedback and improve.
 
-1. Extract the ZIP without changing the folder structure.
-2. For static hosting, upload the complete `year9-week1-theory` folder to GitHub Pages, Vercel, Netlify, a school web server, or another static host.
-3. Open `index.html` through the hosted URL.
+The 60-minute journey is:
 
-The lesson interface itself does not require a server, database, account, API key, package installation or build step. However, most browsers restrict Web Workers and WebAssembly when a site is opened directly with `file://`. The locally packaged Python runtime therefore works most reliably through static hosting.
+- Do Now — one model, two contextual choices and one evidence-based response (8 minutes)
+- Plan → Program — shuffled representations and a charity-points improvement-cycle investigation (15 minutes)
+- Trace — worked example, guided table and three compulsory traces that record intermediate values (17 minutes; Levels 4–5 are stretch)
+- Debug — taught syntax structure, three evidence types and controlled one-change testing (13 minutes)
+- Extension Lab — optional, levelled choice of quiz, flashcards/paper, algorithm design or Python
+- Plenary — retrieval, confidence and one specific next action (7 minutes)
+- Evidence Report — PDF/ZIP export and Microsoft Teams instructions
 
-**Approximate package size:** 13 MB as a ZIP and 21 MB after extraction. Most of the size is the locally packaged Python/WebAssembly runtime and the four lesson visuals.
+## Language support
 
-For local testing, serve the extracted folder with any simple static server already available on the computer. For example, from inside the folder, Python users can run:
+Students choose support on the starting page and can change it during the lesson:
 
-```text
-python -m http.server 8000
-```
+- English only
+- Plain English
+- Bahasa Melayu
+- Simplified Chinese
+- Korean
 
-Then open `http://localhost:8000/`.
+English Computer Science terminology remains visible. Support adds bilingual or simplified explanations, question guidance, sentence frames and vocabulary definitions. All students complete the same core objectives.
 
-## Routes
+The vocabulary drawer also includes a read-aloud control using the browser's available speech voices.
 
-- **Normal student route:** `index.html`
-- **Hidden testing route:** `index.html?teacher=1`
+## Teacher preview
 
-The hidden route unlocks every section, uses sample responses and stores data under a separate local-storage key. No teacher controls or teacher-mode labels appear in the student interface.
+Two hidden methods unlock every page:
 
-## Lesson journey
+- Open index.html?teacher=1
+- Enter teacher as the name on the normal starting page
 
-1. Do Now — classify productive and unproductive Computer Science habits.
-2. Main Task 1 — AO1/AO2/AO3, class expectations and file routines.
-3. Main Task 2 — vocabulary, IPO, code tracing, debugging and programming.
-4. Extension — optional early-completer challenge.
-5. Plenary — confidence, reflection and algorithm-versus-program explanation.
-6. Review — completion warnings, PDF, print fallback and optional submission ZIP.
+The student-facing entry page does not advertise either method. Teacher preview uses separate browser storage.
 
-Core sections unlock progressively. Opening a section does not mark it complete; students must submit meaningful evidence. The extension never blocks the plenary.
+## Saving and evidence
 
-## Progress saving
+The app saves locally in the browser, including:
 
-The app saves automatically in browser local storage, including:
+- name, class and language-support choice
+- every selection and written response
+- attempts, exact correction history, feedback scores and completion times
+- confidence ratings and next target
+- Python source code, latest output and run count
+- optional compressed image evidence
+- selected extension routes and meaningful attempts only; untouched or empty routes are excluded from the review and PDF
 
-- name and class
-- current section and completion state
-- attempted and corrected answers
-- Python source code, run counts and selected output
-- test evidence and debugging notes
-- optional extension work
-- plenary responses and timestamps
+The final report is rendered to canvas before being placed in the PDF. This preserves multilingual student responses without relying on a downloadable web font.
 
-Students can refresh or close the page and resume on the same browser profile and device. The reset button in the header asks for confirmation before deleting work.
+Students are instructed to upload the PDF to the Microsoft Teams assignment named **Week 1 Theory**.
 
-## Python runtime
+## Extension Lab
 
-> **Runtime fix in this package:** the included Pyodide build requires an ES module Web Worker. The app now starts `python/worker.js` with `{ type: "module" }`; the previous classic-worker launch caused the red **Python failed to load** status.
+Early completers may choose one or combine several routes:
 
-The ZIP includes a local Pyodide runtime under `python/runtime/`. Student code runs in an ES module Web Worker and is not sent to an external server.
+- Level 1 Quiz Quest — 20 self-marking retrieval checkpoints
+- Level 2 Flashcard Forge — four digital cards or paper evidence
+- Level 3 Algorithm Architect — a structured-English solution with tests
+- Level 4 Python Builder — an edited, tested program with reflection
 
-The workspace includes:
+A route is included in the review and exported report only after the student selects it and records sufficient evidence. An unchecked quiz choice, empty form or untouched Python starter is not included.
 
-- Ace code editor with line numbers, Python highlighting and indentation
-- bracket and quote pairing
-- cursor position
-- Run with `Ctrl+Enter` or `Command+Enter`
-- Stop / Restart by terminating and rebuilding the worker
-- console output and repeated interactive `input()` prompts
-- syntax and runtime errors with line highlighting
-- separate task files
-- automatic code recovery
-- `.py` download, upload and copy controls
-- full-screen editor
-- visible and hidden behaviour-based checks
+## Python Builder
 
-The app transforms calls to Python `input()` into an asynchronous browser bridge before running the code in real Python. This allows execution to pause, request one or more values, and continue the same program without sending code away from the device.
+The optional Python editor uses the bundled Ace editor and local Pyodide runtime. Code runs in an ES module Web Worker and does not leave the browser.
 
-An infinite loop cannot permanently freeze the lesson page because Python runs in an isolated worker. The Stop / Restart control terminates that worker.
+Python Builder includes:
 
-## PDF and submission bundle
+- syntax highlighting and line numbers
+- interactive input()
+- Run and Stop/Restart
+- error-line highlighting
+- local progress recovery
+- code download
+- full-screen mode
 
-The final PDF is generated locally with jsPDF and contains:
+It must be opened through static hosting. Browsers normally block the module worker and WebAssembly runtime when the page is opened directly through file://.
 
-- lesson and student details
-- WAGBA, Knowledge, Skills, Understanding and Keywords
-- attempted core responses and corrections
-- final Python code in a monospaced format
-- selected outputs, tests and debugging evidence
-- optional extension evidence when attempted
-- plenary and completion summary
+## Hosting on GitHub Pages
 
-The filename follows this pattern:
+Upload the complete folder without changing its internal structure. No package installation or build command is required.
 
-```text
-Year9_Class_Name_Week1_Theory.pdf
-```
+For a local check, serve the folder through an existing static server and open the resulting HTTP address.
 
-The print-friendly fallback uses the browser print dialog.
+## Important files
 
-The optional submission ZIP contains:
+- index.html — lesson content and structure
+- styles.css — responsive high-contrast theme
+- app.js — saving, support, feedback, Python and export logic
+- assets/images/ — reviewed lesson visuals
+- python/runtime/ — local Python/WebAssembly runtime
+- libraries/ — Ace, jsPDF and JSZip
 
-- the PDF
-- `debug_task.py`
-- `number_challenge.py`
-- optional `extension_task.py`
-- output log
-- metadata JSON
+## Reviewed visuals
 
-## Images
+- code-quest-welcome.png
+- problem-scenarios.png
+- algorithm-to-program.png
+- code-tracing.png
+- debugging-cycle.png
 
-Lesson images are stored in `assets/images/` and inserted into the relevant lesson stages:
-
-- `starter-successful-cs-habits.png`
-- `activity1-think-like-computer-scientist.png`
-- `activity2-baseline-challenge.png`
-- `plenary-reflection.png`
-
-To replace an image, keep the same filename and aspect ratio where possible. To add a new image, place it in `assets/images/` and reference the relative path in `index.html`. Every image has alt text, preserves its aspect ratio and can be enlarged. A visible fallback appears if an image is missing.
-
-## Local libraries
-
-Essential libraries are packaged locally:
-
-- Ace Editor
-- jsPDF
-- JSZip
-- Pyodide and Python standard library
-
-No CDN is required for lesson functionality.
-
-## Browser and hosting limitations
-
-- Direct `file://` opening will usually block the module worker or WebAssembly files; use static hosting.
-- Clipboard access may require HTTPS or a browser permission.
-- Upload and download behaviour depends on browser file permissions.
-- Large or highly recursive programs may use significant memory.
-- Stop / Restart deliberately clears the current Python process but retains saved source code.
-- The app uses the local Raleway font when installed and falls back to Segoe UI or Arial; no font files are distributed.
-
-## File structure
-
-```text
-year9-week1-theory/
-├── index.html
-├── styles.css
-├── app.js
-├── README.md
-├── assets/
-│   ├── images/
-│   ├── icons/
-│   └── fonts/
-├── python/
-│   ├── runtime/
-│   ├── worker.js
-│   └── task-files/
-├── libraries/
-│   ├── ace/
-│   ├── jspdf.umd.min.js
-│   └── jszip.min.js
-└── student-files/
-```
-
-## Testing checklist completed during packaging
-
-- HTML, JavaScript and worker syntax checks
-- student and teacher storage separation
-- required student-name and class fields
-- progressive section unlocking
-- optional extension behaviour
-- response persistence and reset confirmation
-- image paths and missing-image fallback
-- local library presence
-- genuine local Python runtime loading and execution
-- asynchronous Python input bridge
-- syntax and runtime error handling logic
-- `.py` file controls
-- PDF and submission-bundle code paths
-- Microsoft Teams wording for **Week 1 Theory**
-- responsive CSS breakpoints for laptop and tablet dimensions
-
-The local automated browser in the build environment was restricted by administrator policy, so final visual smoke testing should also be performed on the intended school browser after upload.
+The core improvement-cycle visual is built directly into the page and uses the same charity-points scenario as the guided activity, avoiding split attention between unrelated programs.
