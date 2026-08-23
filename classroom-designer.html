@@ -58,6 +58,8 @@
   .ealbg{box-shadow:0 0 0 2px var(--eal) inset}
   .item .ealtag.alone{background:var(--eal);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--eal)}
   .item.selected{outline:2px solid var(--accent);outline-offset:1px;z-index:30}
+  .item.swap-source{outline:3px solid var(--eal);outline-offset:3px;z-index:35}
+  .item.swap-source::after{content:'SWAP';position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);background:var(--eal);color:#fff;border-radius:10px;padding:2px 7px;font-size:8px;font-weight:800;letter-spacing:.04em;z-index:36}
   .rhandle{position:absolute;right:-6px;bottom:-6px;width:14px;height:14px;background:#fff;border:2px solid var(--accent);border-radius:3px;cursor:nwse-resize;z-index:31}
   .delbtn{position:absolute;top:-10px;right:-10px;width:20px;height:20px;border-radius:50%;background:var(--bad);color:#fff;border:none;font-size:12px;line-height:1;cursor:pointer;z-index:31;display:flex;align-items:center;justify-content:center}
   .item.dragover{box-shadow:0 0 0 3px rgba(37,99,235,.5)}
@@ -222,6 +224,7 @@
         <span><i class="sw" style="background:var(--warn)"></i>Caution</span>
         <span><i class="sw" style="background:var(--eal)"></i>EAL</span>
       </span>
+      <span class="stat" style="margin-left:auto">Click a seated name, then click another desk or computer to swap.</span>
     </div>
     <div class="titlebar">
       <input type="text" id="planTitle" maxlength="120" placeholder="Click to add a title (shown above the layout when exported)…">
@@ -306,6 +309,7 @@ const OPTIMIZE_RESTARTS=32, OPTIMIZE_SWAPS=1800;
 const SEATABLE=['desk','desktop'];
 let state={};
 let selectedId=null;
+let swapSeatId=null;
 let zoom=1;
 
 function uid(p){return (p||'id')+'_'+Math.random().toString(36).slice(2,9);}
@@ -388,7 +392,21 @@ function assignToSeat(sid,seatId){
   const a=getAssign(); const cur=findSeatOf(sid); const occ=a[seatId]||null;
   if(occ&&occ!==sid){ if(cur)a[cur]=occ; else delete a[seatId]; }
   else if(cur){ delete a[cur]; }
-  a[seatId]=sid; save(); renderCanvas(); renderRoster();
+  a[seatId]=sid; swapSeatId=null; save(); renderCanvas(); renderRoster();
+}
+function handleSeatSwapClick(seatId){
+  const a=getAssign();
+  if(!swapSeatId){
+    if(!a[seatId])return;
+    swapSeatId=seatId; renderCanvas(); return;
+  }
+  if(swapSeatId===seatId){swapSeatId=null;renderCanvas();return;}
+  const sourceId=swapSeatId,sourceStudent=a[sourceId];
+  if(!sourceStudent){swapSeatId=null;renderCanvas();return;}
+  const targetStudent=a[seatId]||null;
+  if(targetStudent)a[sourceId]=targetStudent; else delete a[sourceId];
+  a[seatId]=sourceStudent; swapSeatId=null;
+  save(); renderCanvas(); renderRoster();
 }
 function pruneAssign(){ const ids=new Set(seatItems().map(i=>i.id)); const a=getAssign(); Object.keys(a).forEach(k=>{ if(!ids.has(k)) delete a[k]; }); }
 
@@ -550,7 +568,7 @@ function autoArrange(seatKinds,options){
   const pairSeatItems=options&&options.computersFirst?selectedSeats.filter(s=>s.kind==='desk'):[];
   const best=optimizeAssignment(seats,studs.map(s=>s.id),clusterSeats(selectedSeats),{prioritySeatIds,pairSeatItems});
   const a={}; seats.forEach(id=>{ if(best[id])a[id]=best[id]; });
-  const key=assignKey(); state.assign[key]=a;
+  const key=assignKey(); state.assign[key]=a; swapSeatId=null;
   if(options&&options.computersFirst){
     state.computerViews[key]={computer:cloneAssignment(a),discussion:null,active:'computer'};
   }
@@ -626,13 +644,13 @@ function createDiscussionView(){
   const result=buildDiscussionAssignment(source);
   if(result.error){alert(result.error);return;}
   views.discussion=cloneAssignment(result.assign); views.active='discussion'; state.computerViews[key]=views;
-  state.assign[key]=cloneAssignment(result.assign); save(); renderCanvas(); renderRoster();
+  state.assign[key]=cloneAssignment(result.assign); swapSeatId=null; save(); renderCanvas(); renderRoster();
   if(result.unpaired)alert(`Discussion seats were created, but ${result.unpaired} computer student${result.unpaired===1?' was':'s were'} unable to sit beside an existing desk student.`);
 }
 function restoreComputerView(){
   const key=assignKey(),views=state.computerViews[key];
   if(!views||!views.computer){alert('Create a computer session first.');return;}
-  state.assign[key]=cloneAssignment(views.computer); views.active='computer'; save(); renderCanvas(); renderRoster();
+  state.assign[key]=cloneAssignment(views.computer); views.active='computer'; swapSeatId=null; save(); renderCanvas(); renderRoster();
 }
 
 /* ============================ WARNINGS ============================ */
@@ -715,10 +733,11 @@ function itemInnerHTML(it){
 }
 function renderCanvas(){
   applyCanvasSize(); pruneAssign();
+  if(swapSeatId&&!seatGetStudent(swapSeatId))swapSeatId=null;
   const cv=document.getElementById('canvas'); cv.innerHTML='';
   const warn=computeWarnings(); const a=getAssign();
   curLayout().items.forEach(it=>{
-    const el=document.createElement('div'); el.className='item '+it.kind+(it.id===selectedId?' selected':'');
+    const el=document.createElement('div'); el.className='item '+it.kind+(it.id===selectedId?' selected':'')+(it.id===swapSeatId?' swap-source':'');
     el.style.left=it.x+'px'; el.style.top=it.y+'px'; el.style.width=it.w+'px'; el.style.height=it.h+'px';
     el.dataset.id=it.id;
     const seatable=SEATABLE.includes(it.kind);
@@ -771,7 +790,10 @@ function startMove(e,it,el){
   function mm(ev){ const dx=(ev.clientX-sx)/zoom, dy=(ev.clientY-sy)/zoom; if(Math.abs(dx)+Math.abs(dy)>2)moved=true;
     it.x=snap(Math.max(0,Math.min(curLayout().width-it.w,ox+dx))); it.y=snap(Math.max(0,Math.min(curLayout().height-it.h,oy+dy)));
     el.style.left=it.x+'px'; el.style.top=it.y+'px'; }
-  function mu(){ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); if(moved)save(); }
+  function mu(){
+    document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu);
+    if(moved)save(); else if(SEATABLE.includes(it.kind))handleSeatSwapClick(it.id);
+  }
   document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu);
 }
 function startResize(e,it){
@@ -915,7 +937,7 @@ function loadPlan(pid){
   state.currentClassId=p.classId;
   state.assign[assignKey()]=JSON.parse(JSON.stringify(p.seats||{}));
   if(p.title!=null)state.titles[assignKey()]=p.title;
-  state.currentPlanId=pid; selectedId=null; save(); renderAll(); fitZoom();
+  state.currentPlanId=pid; selectedId=null; swapSeatId=null; save(); renderAll(); fitZoom();
 }
 
 /* ============================ EXPORT ============================ */
@@ -957,14 +979,14 @@ function closeModals(){ document.querySelectorAll('.modal-bg').forEach(m=>m.clas
 
 /* ============================ WIRING ============================ */
 document.querySelectorAll('#palette button').forEach(b=>b.onclick=()=>addItem(b.dataset.add));
-document.getElementById('layoutSel').onchange=e=>{ state.currentLayoutId=e.target.value; selectedId=null; save(); renderAll(); fitZoom(); };
+document.getElementById('layoutSel').onchange=e=>{ state.currentLayoutId=e.target.value; selectedId=null; swapSeatId=null; save(); renderAll(); fitZoom(); };
 document.getElementById('renameLayoutBtn').onclick=()=>{ const n=document.getElementById('layoutName').value.trim(); if(!n)return; curLayout().name=n; document.getElementById('layoutName').value=''; save(); renderAll(); };
 document.getElementById('newLayoutBtn').onclick=()=>{ const l=blankLayout('Room '+(Object.keys(state.layouts).length+1)); state.layouts[l.id]=l; state.currentLayoutId=l.id; selectedId=null; save(); renderAll(); fitZoom(); };
 document.getElementById('dupLayoutBtn').onclick=()=>{ const src=curLayout(); const l=JSON.parse(JSON.stringify(src)); l.id=uid('lay'); l.name=src.name+' (copy)'; l.items.forEach(it=>it.id=uid('it')); state.layouts[l.id]=l; state.currentLayoutId=l.id; selectedId=null; save(); renderAll(); };
 document.getElementById('delLayoutBtn').onclick=()=>{ if(Object.keys(state.layouts).length<=1){alert('Keep at least one room.');return;} if(!confirm(`Delete room "${curLayout().name}"?`))return; delete state.layouts[state.currentLayoutId]; state.currentLayoutId=Object.keys(state.layouts)[0]; selectedId=null; save(); renderAll(); fitZoom(); };
 document.getElementById('clearRoomBtn').onclick=()=>{ if(!confirm('Remove all items from this room?'))return; curLayout().items=[]; selectedId=null; save(); renderAll(); };
 
-document.getElementById('classSel').onchange=e=>{ state.currentClassId=e.target.value; state.currentPlanId=null; selectedId=null; save(); renderAll(); };
+document.getElementById('classSel').onchange=e=>{ state.currentClassId=e.target.value; state.currentPlanId=null; selectedId=null; swapSeatId=null; save(); renderAll(); };
 document.getElementById('newClassBtn').onclick=()=>{ const n=prompt('New class name:'); if(!n)return; const id=uid('class'); state.classes[id]={id,name:n.trim(),students:[]}; state.currentClassId=id; save(); renderAll(); };
 document.getElementById('renameClassBtn').onclick=()=>{ const c=state.classes[state.currentClassId]; const n=prompt('Rename class:',c.name); if(n){c.name=n.trim();save();renderAll();} };
 document.getElementById('delClassBtn').onclick=()=>{ if(Object.keys(state.classes).length<=1){alert('Keep at least one class.');return;} const c=state.classes[state.currentClassId]; if(!confirm(`Delete class "${c.name}" and its students?`))return; c.students.forEach(id=>delete state.students[id]); delete state.classes[state.currentClassId]; state.currentClassId=Object.keys(state.classes)[0]; save(); renderAll(); };
@@ -991,15 +1013,15 @@ document.getElementById('autoComputersFirstBtn').onclick=()=>autoArrange(SEATABL
 document.getElementById('autoAllBtn').onclick=()=>autoArrange(SEATABLE);
 document.getElementById('discussionViewBtn').onclick=createDiscussionView;
 document.getElementById('computerViewBtn').onclick=restoreComputerView;
-document.getElementById('clearSeatsBtn').onclick=()=>{ state.assign[assignKey()]={}; save(); renderCanvas(); renderRoster(); };
+document.getElementById('clearSeatsBtn').onclick=()=>{ state.assign[assignKey()]={}; swapSeatId=null; save(); renderCanvas(); renderRoster(); };
 
 document.getElementById('zoomInBtn').onclick=()=>setZoom(zoom+0.1);
 document.getElementById('zoomOutBtn').onclick=()=>setZoom(zoom-0.1);
 document.getElementById('zoomLabelBtn').onclick=()=>setZoom(1);
 document.getElementById('zoomFitBtn').onclick=fitZoom;
 document.querySelector('.main').addEventListener('wheel',e=>{ if(e.ctrlKey||e.metaKey){e.preventDefault();setZoom(zoom+(e.deltaY<0?0.08:-0.08));} },{passive:false});
-window.addEventListener('keydown',e=>{ const tag=(e.target.tagName||'').toLowerCase(); if((e.key==='Delete'||e.key==='Backspace')&&selectedId&&tag!=='input'&&tag!=='textarea'&&tag!=='select'){ e.preventDefault(); curLayout().items=curLayout().items.filter(x=>x.id!==selectedId); pruneAssign(); selectedId=null; save(); renderCanvas(); renderRoster(); } if(e.key==='Escape')closeModals(); });
-document.getElementById('canvas').addEventListener('mousedown',e=>{ if(e.target.id==='canvas'){ selectedId=null; renderCanvas(); } });
+window.addEventListener('keydown',e=>{ const tag=(e.target.tagName||'').toLowerCase(); if((e.key==='Delete'||e.key==='Backspace')&&selectedId&&tag!=='input'&&tag!=='textarea'&&tag!=='select'){ e.preventDefault(); curLayout().items=curLayout().items.filter(x=>x.id!==selectedId); pruneAssign(); selectedId=null; swapSeatId=null; save(); renderCanvas(); renderRoster(); } if(e.key==='Escape'){swapSeatId=null;closeModals();renderCanvas();} });
+document.getElementById('canvas').addEventListener('mousedown',e=>{ if(e.target.id==='canvas'){ selectedId=null; swapSeatId=null; renderCanvas(); } });
 
 document.getElementById('planTitle').addEventListener('input',e=>{ setTitle(e.target.value); save(); });
 document.getElementById('exportLayoutBtn').onclick=()=>document.getElementById('exportModal').classList.add('show');
