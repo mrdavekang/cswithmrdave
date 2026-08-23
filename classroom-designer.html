@@ -198,9 +198,11 @@
     <div class="toolbar">
       <button id="autoDesksBtn" title="Auto-assign students to student desks only">⚡ Assign desks</button>
       <button id="autoComputersBtn" title="Auto-assign students to computers only">💻 Assign computers</button>
-      <button id="autoComputersFirstBtn" title="Fill computers first, then place remaining students at student desks">💻 Computers → desks</button>
+      <button id="autoComputersFirstBtn" title="Fill computers first, then place remaining students at student desks">💻 Computer session</button>
       <button class="primary" id="autoAllBtn" title="Auto-assign students to student desks and computers">⚡ Assign both</button>
       <button id="clearSeatsBtn">Clear seats</button>
+      <button id="discussionViewBtn" title="Keep desk students in place and move computer students into paired discussion seats">🗣 Discussion view</button>
+      <button id="computerViewBtn" title="Restore the computer-session seating">↩ Computer view</button>
       <span style="border-left:1px solid var(--line);height:22px;margin:0 4px"></span>
       <button class="sm" id="zoomOutBtn">−</button>
       <button class="sm" id="zoomLabelBtn" style="min-width:54px">100%</button>
@@ -311,7 +313,7 @@ function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); updateData
 function load(){
   try{const r=localStorage.getItem(LS_KEY); if(r) state=JSON.parse(r);}catch(e){console.warn(e);}
   state.layouts=state.layouts||{}; state.classes=state.classes||{}; state.students=state.students||{};
-  state.plans=state.plans||{}; state.assign=state.assign||{}; state.titles=state.titles||{};
+  state.plans=state.plans||{}; state.assign=state.assign||{}; state.titles=state.titles||{}; state.computerViews=state.computerViews||{};
   if(!Object.keys(state.layouts).length){ const l=blankLayout('My classroom'); state.layouts[l.id]=l; state.currentLayoutId=l.id; }
   if(!Object.keys(state.classes).length){ seedDemo(); }
   if(!state.currentLayoutId||!state.layouts[state.currentLayoutId]) state.currentLayoutId=Object.keys(state.layouts)[0];
@@ -534,7 +536,89 @@ function autoArrange(seatKinds,options){
   const prioritySeatIds=options&&options.computersFirst?selectedSeats.filter(s=>s.kind==='desktop').map(s=>s.id):[];
   const best=optimizeAssignment(seats,studs.map(s=>s.id),clusterSeats(selectedSeats),{prioritySeatIds});
   const a={}; seats.forEach(id=>{ if(best[id])a[id]=best[id]; });
-  state.assign[assignKey()]=a; save(); renderCanvas(); renderRoster();
+  const key=assignKey(); state.assign[key]=a;
+  if(options&&options.computersFirst){
+    state.computerViews[key]={computer:cloneAssignment(a),discussion:null,active:'computer'};
+  }
+  save(); renderCanvas(); renderRoster();
+}
+function cloneAssignment(assign){ return JSON.parse(JSON.stringify(assign||{})); }
+function fixedNeighborCount(seatId,deskSeats,assign,fixedStudentIds){
+  const me=deskSeats.find(s=>s.id===seatId); if(!me)return 0;
+  const c=itemCenter(me),fixed=new Set(fixedStudentIds);
+  return deskSeats.filter(s=>s.id!==seatId&&assign[s.id]&&fixed.has(assign[s.id])).filter(s=>{
+    const c2=itemCenter(s); return Math.hypot(c.x-c2.x,c.y-c2.y)<=NEIGHBOR_DIST;
+  }).length;
+}
+function unpairedMovedCount(assign,movedStudentIds,fixedStudentIds,deskSeats){
+  const fixed=new Set(fixedStudentIds); let unpaired=0;
+  movedStudentIds.forEach(studentId=>{
+    const seat=deskSeats.find(s=>assign[s.id]===studentId);
+    if(!seat){unpaired++;return;}
+    const c=itemCenter(seat);
+    const paired=deskSeats.some(other=>{
+      if(other.id===seat.id||!assign[other.id]||!fixed.has(assign[other.id]))return false;
+      const c2=itemCenter(other); return Math.hypot(c.x-c2.x,c.y-c2.y)<=NEIGHBOR_DIST;
+    });
+    if(!paired)unpaired++;
+  });
+  return unpaired;
+}
+function discussionObjective(assign,podList,movedStudentIds,fixedStudentIds,deskSeats){
+  const support=academicSupportSummary(assign,podList);
+  return scoreAssignment(assign,podList)-prohibitedPairCount(assign,podList)*100000-
+    unpairedMovedCount(assign,movedStudentIds,fixedStudentIds,deskSeats)*50000-support.unsupported*10000;
+}
+function buildDiscussionAssignment(computerAssign){
+  const deskSeats=seatItems().filter(s=>s.kind==='desk');
+  const computerSeats=seatItems().filter(s=>s.kind==='desktop');
+  const fixedAssign={}; deskSeats.forEach(s=>{if(computerAssign[s.id])fixedAssign[s.id]=computerAssign[s.id];});
+  const movedStudentIds=computerSeats.map(s=>computerAssign[s.id]).filter(Boolean);
+  const fixedStudentIds=Object.values(fixedAssign).filter(Boolean);
+  const openSeatIds=deskSeats.filter(s=>!fixedAssign[s.id]).map(s=>s.id);
+  if(!movedStudentIds.length)return {error:'There are no students currently assigned to computers.'};
+  if(movedStudentIds.length>openSeatIds.length)return {error:`There are ${movedStudentIds.length} computer students but only ${openSeatIds.length} empty student desks.`};
+
+  const podList=clusterSeats(deskSeats); let best=null,bestScore=-Infinity;
+  const preferredOpenSeats=[...openSeatIds].sort((a,b)=>
+    fixedNeighborCount(b,deskSeats,fixedAssign,fixedStudentIds)-fixedNeighborCount(a,deskSeats,fixedAssign,fixedStudentIds));
+  const restarts=Math.min(24,OPTIMIZE_RESTARTS),swaps=Math.min(1200,OPTIMIZE_SWAPS);
+  for(let restart=0;restart<restarts;restart++){
+    const studentOrder=[...movedStudentIds].sort(()=>Math.random()-0.5);
+    const seatOrder=restart===0?[...preferredOpenSeats]:[...openSeatIds].sort(()=>Math.random()-0.5);
+    const assign=cloneAssignment(fixedAssign);
+    seatOrder.forEach((seatId,i)=>assign[seatId]=studentOrder[i]||null);
+    let cur=discussionObjective(assign,podList,movedStudentIds,fixedStudentIds,deskSeats),T=8;
+    for(let it=0;it<swaps;it++){
+      const a=openSeatIds[Math.floor(Math.random()*openSeatIds.length)],b=openSeatIds[Math.floor(Math.random()*openSeatIds.length)];
+      if(a===b)continue;
+      [assign[a],assign[b]]=[assign[b],assign[a]];
+      const next=discussionObjective(assign,podList,movedStudentIds,fixedStudentIds,deskSeats);
+      if(next>=cur||Math.random()<Math.exp((next-cur)/T))cur=next;
+      else [assign[a],assign[b]]=[assign[b],assign[a]];
+      T*=0.999;
+    }
+    if(cur>bestScore){bestScore=cur;best=cloneAssignment(assign);}
+  }
+  return {assign:best||cloneAssignment(fixedAssign),unpaired:unpairedMovedCount(best||fixedAssign,movedStudentIds,fixedStudentIds,deskSeats)};
+}
+function createDiscussionView(){
+  const key=assignKey(),current=cloneAssignment(getAssign());
+  const hasComputerStudents=seatItems().filter(s=>s.kind==='desktop').some(s=>current[s.id]);
+  const views=state.computerViews[key]||{};
+  const source=hasComputerStudents?current:views.computer;
+  if(!source){alert('Create a computer session first.');return;}
+  if(hasComputerStudents)views.computer=cloneAssignment(current);
+  const result=buildDiscussionAssignment(source);
+  if(result.error){alert(result.error);return;}
+  views.discussion=cloneAssignment(result.assign); views.active='discussion'; state.computerViews[key]=views;
+  state.assign[key]=cloneAssignment(result.assign); save(); renderCanvas(); renderRoster();
+  if(result.unpaired)alert(`Discussion seats were created, but ${result.unpaired} computer student${result.unpaired===1?' was':'s were'} unable to sit beside an existing desk student.`);
+}
+function restoreComputerView(){
+  const key=assignKey(),views=state.computerViews[key];
+  if(!views||!views.computer){alert('Create a computer session first.');return;}
+  state.assign[key]=cloneAssignment(views.computer); views.active='computer'; save(); renderCanvas(); renderRoster();
 }
 
 /* ============================ WARNINGS ============================ */
@@ -891,6 +975,8 @@ document.getElementById('autoDesksBtn').onclick=()=>autoArrange(['desk']);
 document.getElementById('autoComputersBtn').onclick=()=>autoArrange(['desktop']);
 document.getElementById('autoComputersFirstBtn').onclick=()=>autoArrange(SEATABLE,{computersFirst:true});
 document.getElementById('autoAllBtn').onclick=()=>autoArrange(SEATABLE);
+document.getElementById('discussionViewBtn').onclick=createDiscussionView;
+document.getElementById('computerViewBtn').onclick=restoreComputerView;
 document.getElementById('clearSeatsBtn').onclick=()=>{ state.assign[assignKey()]={}; save(); renderCanvas(); renderRoster(); };
 
 document.getElementById('zoomInBtn').onclick=()=>setZoom(zoom+0.1);
