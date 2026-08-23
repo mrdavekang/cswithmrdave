@@ -497,13 +497,26 @@ function prioritySeatShortfall(assign,prioritySeatIds){
   const occupied=preferred.filter(id=>assign[id]).length;
   return Math.max(0,required-occupied);
 }
-function assignmentObjective(assign,podList,prioritySeatIds){
+function unpairedOccupiedSeatCount(assign,pairSeatItems){
+  const occupied=(pairSeatItems||[]).filter(seat=>assign[seat.id]);
+  return occupied.filter(seat=>{
+    const c=itemCenter(seat);
+    return !occupied.some(other=>{
+      if(other.id===seat.id)return false;
+      const c2=itemCenter(other); return Math.hypot(c.x-c2.x,c.y-c2.y)<=NEIGHBOR_DIST;
+    });
+  }).length;
+}
+function assignmentObjective(assign,podList,prioritySeatIds,pairSeatItems){
   const support=academicSupportSummary(assign,podList);
-  return scoreAssignment(assign,podList)-prohibitedPairCount(assign,podList)*100000-prioritySeatShortfall(assign,prioritySeatIds)*50000-support.unsupported*10000;
+  return scoreAssignment(assign,podList)-prohibitedPairCount(assign,podList)*100000000-
+    prioritySeatShortfall(assign,prioritySeatIds)*5000000-
+    unpairedOccupiedSeatCount(assign,pairSeatItems)*200000-support.unsupported*10000;
 }
 function optimizeAssignment(slotIds,studentIds,podList,options){
   let best=null,bestScore=-Infinity; const slots=[...slotIds];
   const prioritySeatIds=((options&&options.prioritySeatIds)||[]).filter(id=>slots.includes(id));
+  const pairSeatItems=((options&&options.pairSeatItems)||[]).filter(seat=>slots.includes(seat.id));
   const prioritySet=new Set(prioritySeatIds);
   const initialSlots=[...prioritySeatIds,...slots.filter(id=>!prioritySet.has(id))];
   for(let restart=0;restart<OPTIMIZE_RESTARTS;restart++){
@@ -511,12 +524,12 @@ function optimizeAssignment(slotIds,studentIds,podList,options){
     const assign=restart===0?supportSeedAssignment(slots,studentIds,podList):{};
     if(restart===0)fillPrioritySeats(assign,slots,prioritySeatIds);
     else initialSlots.forEach((d,i)=>assign[d]=order[i]||null);
-    let cur=assignmentObjective(assign,podList,prioritySeatIds), T=8;
+    let cur=assignmentObjective(assign,podList,prioritySeatIds,pairSeatItems), T=8;
     for(let it=0;it<OPTIMIZE_SWAPS;it++){
       const i=slots[Math.floor(Math.random()*slots.length)], j=slots[Math.floor(Math.random()*slots.length)];
       if(i===j)continue;
       [assign[i],assign[j]]=[assign[j],assign[i]];
-      const ns=assignmentObjective(assign,podList,prioritySeatIds);
+      const ns=assignmentObjective(assign,podList,prioritySeatIds,pairSeatItems);
       if(ns>=cur||Math.random()<Math.exp((ns-cur)/T))cur=ns;
       else [assign[i],assign[j]]=[assign[j],assign[i]];
       T*=0.999;
@@ -534,7 +547,8 @@ function autoArrange(seatKinds,options){
   if(!seats.length){alert(`This room has no ${seatLabel} yet. Add some from "Add to room".`);return;}
   if(studs.length>seats.length){ if(!confirm(`You have ${studs.length} students but only ${seats.length} ${seatLabel}. Extra pupils will stay unseated. Continue?`))return; }
   const prioritySeatIds=options&&options.computersFirst?selectedSeats.filter(s=>s.kind==='desktop').map(s=>s.id):[];
-  const best=optimizeAssignment(seats,studs.map(s=>s.id),clusterSeats(selectedSeats),{prioritySeatIds});
+  const pairSeatItems=options&&options.computersFirst?selectedSeats.filter(s=>s.kind==='desk'):[];
+  const best=optimizeAssignment(seats,studs.map(s=>s.id),clusterSeats(selectedSeats),{prioritySeatIds,pairSeatItems});
   const a={}; seats.forEach(id=>{ if(best[id])a[id]=best[id]; });
   const key=assignKey(); state.assign[key]=a;
   if(options&&options.computersFirst){
