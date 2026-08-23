@@ -1,134 +1,89 @@
-/* ==========================================================================
-   LAB LAUNCH — LOCAL STORAGE LAYER
-   All data stays on this device. Nothing is ever sent to a server.
-   localStorage: progress, answers, settings.
-   IndexedDB: uploaded screenshots (images are too large for localStorage).
-   ========================================================================== */
 (function () {
   "use strict";
-
-  const LS_KEY = "labLaunch_v1";
+  const KEY = "y6ComputingLaunch_v2";
+  const LEGACY_KEY = "labLaunch_v1";
   const DB_NAME = "labLaunchDB";
   const DB_STORE = "screenshots";
 
-  function defaultState() {
+  function defaults() {
     return {
+      version: 2,
       student: { name: "", className: "" },
-      profile: { lang: null, typing: null },      // 'support' | 'full'
-      settings: { muted: false, reducedMotion: false, guidedMode: false },
-      stageIndex: 0,
-      unlocked: ["landing"],
+      profile: { language: "en", responseMode: "guided", readAloud: true },
+      settings: { muted: false },
+      current: "welcome",
+      steps: { starter: 0, main1: 0, main2: 0, extension: 0, plenary: 0 },
       completed: [],
-      badges: [],
-      chips: 0,
-      answers: {},          // keyed by question id
-      routineSort: {},      // cardId -> zone
-      fileSim: { step: 0, done: false, tree: null },
-      checklist: {},        // modification self-check
-      extChecklist: {},
-      evidence: { hasImage: false, rotation: 0 },
-      plenary: {},
-      confidence: null,
+      answers: {},
+      checks: {},
       extensionDone: [],
+      evidence: { folder: false, folderSkipped: false, scratch: false, scratchSkipped: false },
+      confidence: "",
       startedAt: null,
-      finishedAt: null,
-      teacherUnlockedAll: false
+      finishedAt: null
     };
   }
 
-  let state = null;
+  function merge(raw) {
+    const d = defaults();
+    const out = Object.assign({}, d, raw || {});
+    ["student", "profile", "settings", "steps", "answers", "checks", "evidence"].forEach(function (key) {
+      out[key] = Object.assign({}, d[key], (raw && raw[key]) || {});
+    });
+    out.completed = Array.isArray(out.completed) ? out.completed : [];
+    out.extensionDone = Array.isArray(out.extensionDone) ? out.extensionDone : [];
+    return out;
+  }
 
+  let state;
   function load() {
     try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        state = Object.assign(defaultState(), parsed);
-        // deep-merge one level for nested objects
-        const d = defaultState();
-        ["student", "profile", "settings", "fileSim", "evidence"].forEach(function (k) {
-          state[k] = Object.assign({}, d[k], parsed[k] || {});
-        });
-      } else {
-        state = defaultState();
-      }
-    } catch (e) {
-      state = defaultState();
-    }
+      const raw = localStorage.getItem(KEY);
+      state = raw ? merge(JSON.parse(raw)) : defaults();
+      if (!raw && localStorage.getItem(LEGACY_KEY)) state.migrationNotice = true;
+    } catch (e) { state = defaults(); }
     return state;
   }
-
-  function save() {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(state));
-    } catch (e) {
-      /* storage full or blocked — the lesson continues without saving */
-    }
-  }
-
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
   function resetAll() {
-    state = defaultState();
-    try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    return deleteScreenshot().catch(function () {});
+    state = defaults();
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    return deleteScreenshot();
   }
-
-  /* ---------- IndexedDB for screenshots ---------- */
 
   function openDB() {
     return new Promise(function (resolve, reject) {
-      if (!window.indexedDB) { reject(new Error("no idb")); return; }
+      if (!window.indexedDB) return reject(new Error("Image storage is unavailable."));
       const req = indexedDB.open(DB_NAME, 1);
       req.onupgradeneeded = function () {
-        if (!req.result.objectStoreNames.contains(DB_STORE)) {
-          req.result.createObjectStore(DB_STORE);
-        }
+        if (!req.result.objectStoreNames.contains(DB_STORE)) req.result.createObjectStore(DB_STORE);
       };
       req.onsuccess = function () { resolve(req.result); };
       req.onerror = function () { reject(req.error); };
     });
   }
-
   function putScreenshot(key, blob) {
-    return openDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        const tx = db.transaction(DB_STORE, "readwrite");
-        tx.objectStore(DB_STORE).put(blob, key);
-        tx.oncomplete = function () { resolve(); };
-        tx.onerror = function () { reject(tx.error); };
-      });
-    });
+    return openDB().then(function (db) { return new Promise(function (resolve, reject) {
+      const tx = db.transaction(DB_STORE, "readwrite");
+      tx.objectStore(DB_STORE).put(blob, key);
+      tx.oncomplete = resolve; tx.onerror = function () { reject(tx.error); };
+    }); });
   }
-
   function getScreenshot(key) {
-    return openDB().then(function (db) {
-      return new Promise(function (resolve, reject) {
-        const tx = db.transaction(DB_STORE, "readonly");
-        const req = tx.objectStore(DB_STORE).get(key);
-        req.onsuccess = function () { resolve(req.result || null); };
-        req.onerror = function () { reject(req.error); };
-      });
-    });
+    return openDB().then(function (db) { return new Promise(function (resolve, reject) {
+      const tx = db.transaction(DB_STORE, "readonly");
+      const req = tx.objectStore(DB_STORE).get(key);
+      req.onsuccess = function () { resolve(req.result || null); };
+      req.onerror = function () { reject(req.error); };
+    }); });
   }
-
   function deleteScreenshot(key) {
-    return openDB().then(function (db) {
-      return new Promise(function (resolve) {
-        const tx = db.transaction(DB_STORE, "readwrite");
-        if (key) { tx.objectStore(DB_STORE).delete(key); }
-        else { tx.objectStore(DB_STORE).clear(); }
-        tx.oncomplete = function () { resolve(); };
-        tx.onerror = function () { resolve(); };
-      });
-    }).catch(function () {});
+    return openDB().then(function (db) { return new Promise(function (resolve) {
+      const tx = db.transaction(DB_STORE, "readwrite");
+      if (key) tx.objectStore(DB_STORE).delete(key); else tx.objectStore(DB_STORE).clear();
+      tx.oncomplete = resolve; tx.onerror = resolve;
+    }); }).catch(function () {});
   }
 
-  window.LabStore = {
-    load: load,
-    save: save,
-    resetAll: resetAll,
-    get state() { return state; },
-    putScreenshot: putScreenshot,
-    getScreenshot: getScreenshot,
-    deleteScreenshot: deleteScreenshot
-  };
+  window.LabStore = { load: load, save: save, resetAll: resetAll, putScreenshot: putScreenshot, getScreenshot: getScreenshot, deleteScreenshot: deleteScreenshot };
 })();

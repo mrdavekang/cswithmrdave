@@ -1,2972 +1,696 @@
-/* ==========================================================================
-   LAB LAUNCH — MAIN APPLICATION
-   All lesson logic, screens, differentiation, activities and teacher mode.
-   No data ever leaves this device.
-   ========================================================================== */
 (function () {
   "use strict";
-
   const CFG = window.LAB_CONFIG || {};
   const S = window.LabStore;
-  let state = S.load();
-  let game = null;
-  let teacherMode = false;
-  let overrides = {};
-  try { overrides = JSON.parse(localStorage.getItem("labLaunch_teacherOverrides") || "{}"); } catch (e) { overrides = {}; }
 
-  function scratchUrl() { return overrides.scratchUrl || CFG.SCRATCH_PROJECT_URL || "https://scratch.mit.edu/"; }
-  function classOptions() { return overrides.classOptions || CFG.CLASS_OPTIONS || []; }
-  function soundEnabled() { return (overrides.sound !== undefined ? overrides.sound : CFG.ENABLE_SOUND) && !state.settings.muted; }
+  function showStartupFailure() {
+    function show() {
+      const main = document.getElementById("main");
+      if (!main) return;
+      main.innerHTML = "<section class='screen welcome'><div class='welcome-hero'><div><p class='eyebrow'>Year 6 Computing</p><h1>We could not open the lesson</h1><p>Your work is safe. Refresh the page once, or ask your teacher to open the published GitHub Pages link.</p></div><div class='hero-symbol' aria-hidden='true'>!</div></div><div class='welcome-form'><h2>Teacher check</h2><p>This browser may be blocking scripts or storage on a file opened directly from the computer.</p><button class='btn' type='button' onclick='location.reload()'>Try again</button></div></section>";
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show, { once:true });
+    else show();
+  }
 
-  /* ======================= STAGES ======================= */
+  function sessionGet(key) { try { return window.sessionStorage.getItem(key); } catch (e) { return null; } }
+  function sessionSet(key, value) { try { window.sessionStorage.setItem(key, value); } catch (e) {} }
+  function sessionRemove(key) { try { window.sessionStorage.removeItem(key); } catch (e) {} }
 
-  const STAGES = [
-    { id: "landing",     name: "Welcome Station",       icon: "🛰️" },
-    { id: "support",     name: "Support Setup",         icon: "🎛️" },
-    { id: "briefing",    name: "Mission Briefing",      icon: "📋" },
-    { id: "starter",     name: "Safety Corridor",       icon: "🚦", time: "about 7 min" },
-    { id: "routines",    name: "Lab Operating System",  icon: "⚙️", time: "about 10 min" },
-    { id: "files",       name: "File Management Centre",icon: "📁", time: "about 7 min" },
-    { id: "investigate", name: "Scratch Laboratory",    icon: "🔬", time: "about 6 min" },
-    { id: "modify",      name: "Modification Mission",  icon: "🧩", time: "about 10 min" },
-    { id: "evidence",    name: "Evidence Station",      icon: "📸", time: "about 7 min" },
-    { id: "extension",   name: "Extension Vault",       icon: "🗝️", optional: true },
-    { id: "plenary",     name: "Exit Terminal",         icon: "🖥️", time: "8–10 min" },
-    { id: "report",      name: "Completion Report",     icon: "📄" }
+  if (!S || typeof S.load !== "function") { showStartupFailure(); return; }
+
+  let state;
+  try { state = S.load(); } catch (e) { showStartupFailure(); return; }
+  let teacherMode = sessionGet("y6_teacher") === "1";
+  let speech = null;
+
+  const CORE = ["overview","starter","main1","main2","plenary","report"];
+  const PATH = [
+    { id:"overview", label:"Learning" }, { id:"starter", label:"Do Now" },
+    { id:"main1", label:"Main 1" }, { id:"main2", label:"Main 2" },
+    { id:"extension", label:"Fast Finishers" }, { id:"plenary", label:"Plenary" },
+    { id:"report", label:"PDF" }
   ];
+  const STEP_COUNTS = { starter:3, main1:5, main2:6, extension:8, plenary:2 };
+  const IMG = "assets/learning/";
 
-  const BADGES = {
-    safety:   { name: "Safety Scanner",   emoji: "🛡️" },
-    routine:  { name: "Routine Ranger",   emoji: "🧭" },
-    file:     { name: "File Finder",      emoji: "📂" },
-    detective:{ name: "Scratch Detective",emoji: "🔍" },
-    improver: { name: "Program Improver", emoji: "🔧" },
-    evidence: { name: "Evidence Expert",  emoji: "🏅" },
-    ready:    { name: "Year 6 Lab Ready", emoji: "🚀" }
+  const SUPPORT = {
+    ms: {
+      label:"Bahasa Melayu",
+      locale:"ms-MY",
+      overview:"Hari ini kita akan menyusun kerja digital dan menerangkan bagaimana input menghasilkan output.",
+      starter:"Lihat gambar. Pilih jawapan yang menunjukkan rutin Mula–Kerja–Tamat yang betul.",
+      main1:"Ikut setiap langkah untuk membina struktur folder dan nama fail yang mudah dicari.",
+      main2:"Ramalkan dahulu, bina kod, uji, kemudian ubah satu perkara dan terangkan kesannya.",
+      plenary:"Gunakan apa yang anda pelajari untuk menjawab soalan akhir.",
+      words:"algoritma = algorithm · input = input · output = output · fail = file · folder = folder · uji = test · nyahpepijat = debug"
+    },
+    zh: {
+      label:"简体中文",
+      locale:"zh-CN",
+      overview:"今天我们要整理电子作品，并解释输入如何让程序产生输出。",
+      starter:"观察图片。选择能正确表示“开始—工作—结束”流程的答案。",
+      main1:"按步骤建立容易寻找的文件夹结构和文件名。",
+      main2:"先预测，再搭建代码并测试；然后修改一个地方并解释结果。",
+      plenary:"运用今天所学完成最后的问题。",
+      words:"算法 = algorithm · 输入 = input · 输出 = output · 文件 = file · 文件夹 = folder · 测试 = test · 调试 = debug"
+    }
+  };
+  const TASK_SUPPORT = {
+    starter1:{ms:"Baca tiga bahagian pelajaran Aisha. Perhatikan apa yang dia lakukan dan mengapa setiap tindakan penting.",zh:"阅读 Aisha 课堂中的三个阶段。注意她做了什么，以及每个行动为什么重要。"},
+    starter2:{ms:"Baca situasi. Gunakan tujuan tindakan untuk memilih Mula, Kerja atau Tamat.",zh:"阅读情境。根据行动的目的选择“开始、工作或结束”。"},
+    starter3:{ms:"Pilih urutan penutup yang melindungi kerja, akaun dan murid seterusnya.",zh:"选择能保护作品、账户和下一位同学的结束顺序。"},
+    main1_1:{ms:"Baca masalah Aisha. Tentukan bila dia perlu bertindak dan terangkan sebabnya.",zh:"阅读 Aisha 遇到的问题。判断她何时应该行动，并解释原因。"},
+    main1_2:{ms:"Pelajari perbezaan antara fail dan folder, kemudian pilih laluan yang paling mudah dicari.",zh:"先学习文件与文件夹的区别，再选择最容易寻找的路径。"},
+    main1_3:{ms:"Cipta laluan tiga folder pada komputer sekolah. Tambah tangkap layar atau minta guru menyemaknya.",zh:"在学校电脑上建立三级文件夹路径。添加截图，或请老师直接检查。"},
+    main1_4:{ms:"Bandingkan nama fail dan pilih nama yang masih jelas pada minggu hadapan.",zh:"比较文件名，选择下周仍然清楚易懂的名称。"},
+    main1_5:{ms:"Gunakan semakan ini untuk menerangkan bagaimana folder dan nama fail bekerja bersama.",zh:"完成检查，并说明文件夹和文件名如何共同帮助我们整理作品。"},
+    main2_1:{ms:"Bantu Aisha mencari tempat memilih blok, membina kod dan melihat output.",zh:"帮助 Aisha 找到选择积木、搭建代码和观察输出的位置。"},
+    main2_2:{ms:"Baca blok dari atas ke bawah. Ramalkan input dan kedua-dua output sebelum membuka Scratch.",zh:"从上到下阅读积木。在打开 Scratch 前预测输入和两个输出。"},
+    main2_3:{ms:"Buka Scratch dalam tab baharu, bina skrip tiga blok dengan tepat, kemudian simpan menggunakan nama yang dipersetujui.",zh:"在新标签页打开 Scratch，准确搭建三块积木脚本，再用约定的文件名保存。"},
+    main2_4:{ms:"Tekan anak panah kanan tiga kali. Bandingkan hasil dengan ramalan dan periksa satu blok pada satu masa.",zh:"按右方向键三次。把结果与预测比较，并一次检查一块积木。"},
+    main2_5:{ms:"Tambah skrip anak panah kiri. Pastikan kekunci, nilai x dan mesej semuanya sepadan.",zh:"添加左方向键脚本。确保按键、x 数值和信息互相一致。"},
+    main2_6:{ms:"Tambah bukti yang menunjukkan kedua-dua skrip, kemudian terangkan bagaimana satu input menghasilkan output.",zh:"添加能清楚显示两个脚本的证据，再解释一个输入如何产生输出。"},
+    ext_o1:{ms:"Selesaikan tiga masalah rutin makmal dan gunakan tujuan tindakan untuk memilih jawapan.",zh:"解决三个电脑室常规问题，并根据行动目的选择答案。"},
+    ext_o2:{ms:"Gunakan hierarki untuk menentukan lokasi fail dan folder yang betul.",zh:"运用层级结构判断文件和文件夹的正确位置。"},
+    ext_o3:{ms:"Baiki nama fail yang kabur dan terangkan satu peraturan penamaan yang berguna.",zh:"改进含糊的文件名，并解释一条有用的命名规则。"},
+    ext_p1:{ms:"Bina dan uji kawalan kiri dan kanan menggunakan nilai x yang bertentangan.",zh:"使用相反的 x 数值搭建并测试左右控制。"},
+    ext_p2:{ms:"Tambah kawalan atas dan bawah menggunakan paksi y dan tanda yang betul.",zh:"使用 y 轴和正确的正负号添加上下控制。"},
+    ext_p3:{ms:"Cari laluan terpendek dari (0, 0) ke (80, 40) dan jelaskan mengapa ia berfungsi.",zh:"找出从 (0, 0) 到 (80, 40) 的最短路线，并解释原因。"},
+    ext_p4:{ms:"Gunakan output yang salah sebagai bukti untuk mencari dan membaiki pepijat.",zh:"把错误输出当作证据，找出并修复程序错误。"},
+    ext_p5:{ms:"Cipta sasaran yang boleh dicapai, tulis laluan terpendek dan terangkan cara menyemaknya.",zh:"设计一个可到达的目标，写出最短路线，并说明检查方法。"},
+    plenary1:{ms:"Gunakan apa yang anda pelajari untuk menjawab dua soalan dan menerangkan satu hubungan input-output.",zh:"运用今天所学回答两个问题，并解释一个输入—输出关系。"},
+    plenary2:{ms:"Pilih tahap keyakinan dengan jujur dan tulis satu langkah seterusnya yang berguna.",zh:"诚实选择信心水平，并写下一项有用的学习行动。"}
+  };
+  const GLOSSARY = {
+    algorithm:"A precise set of ordered steps.", sequence:"The order in which instructions happen.",
+    input:"An action or signal the computer receives, such as a key press.",
+    output:"What the computer does, such as movement, sound or a message.",
+    coordinate:"A pair of numbers that describes a position: (x, y).",
+    test:"Run a program to check what happens.", debug:"Find and fix a problem in an algorithm or program.",
+    file:"A saved piece of work.", folder:"A container used to organise files and other folders."
   };
 
-  function stageById(id) { return STAGES.find(function (s) { return s.id === id; }); }
-  function isUnlocked(id) { return teacherMode || state.teacherUnlockedAll || state.unlocked.indexOf(id) !== -1; }
-  function isDone(id) { return state.completed.indexOf(id) !== -1; }
-
-  function unlock(id) {
-    if (state.unlocked.indexOf(id) === -1) { state.unlocked.push(id); }
-  }
-
-  function completeStage(id) {
-    if (state.completed.indexOf(id) === -1) { state.completed.push(id); }
-    const idx = STAGES.findIndex(function (s) { return s.id === id; });
-    if (id === "evidence") {
-      unlock("extension");
-      unlock("plenary");
-    } else if (id === "extension") {
-      unlock("plenary");
-    } else if (idx >= 0 && idx + 1 < STAGES.length) {
-      unlock(STAGES[idx + 1].id);
-    }
-    S.save();
-    updateChrome();
-  }
-
-  /* ======================= DOM HELPERS ======================= */
-
-  function $(sel, root) { return (root || document).querySelector(sel); }
-
-  function esc(str) {
-    return String(str == null ? "" : str)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-
+  function $(q, root) { return (root || document).querySelector(q); }
+  function esc(v) { return String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
   function el(tag, attrs, children) {
-    const node = document.createElement(tag);
-    if (attrs) {
-      Object.keys(attrs).forEach(function (k) {
-        if (k === "html") { node.innerHTML = attrs[k]; }
-        else if (k === "text") { node.textContent = attrs[k]; }
-        else if (k === "onclick") { node.addEventListener("click", attrs[k]); }
-        else if (k === "class") { node.className = attrs[k]; }
-        else { node.setAttribute(k, attrs[k]); }
-      });
+    const n = document.createElement(tag); attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === "class") n.className = attrs[k];
+      else if (k === "text") n.textContent = attrs[k];
+      else if (k === "html") n.innerHTML = attrs[k];
+      else if (k === "checked") n.checked = attrs[k];
+      else if (k === "value") n.value = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (typeof c === "string") n.appendChild(document.createTextNode(c)); else if (c) n.appendChild(c); });
+    return n;
+  }
+  function save() { S.save(); updateChrome(); }
+  function answered(key) { return !!state.answers[key]; }
+  function correct(key) { return answered(key) && state.answers[key].correct !== false; }
+  function complete(id) { if (state.completed.indexOf(id) < 0) state.completed.push(id); save(); }
+  function unlocked(id) {
+    if (teacherMode || id === "welcome" || id === "support" || id === "overview") return true;
+    if (id === "starter") return state.completed.indexOf("overview") >= 0;
+    if (id === "main1") return state.completed.indexOf("starter") >= 0;
+    if (id === "main2") return state.completed.indexOf("main1") >= 0;
+    if (id === "extension") return state.completed.indexOf("main2") >= 0;
+    if (id === "plenary") return state.completed.indexOf("main2") >= 0;
+    if (id === "report") return state.completed.indexOf("plenary") >= 0;
+    return false;
+  }
+  function toast(message) {
+    const root = $("#toastRoot"); root.innerHTML = "";
+    const t = el("div", { class:"toast", text:message }); root.appendChild(t);
+    setTimeout(function () { if (t.parentNode) t.remove(); }, 3200);
+  }
+  function clearMain() { stopSpeech(); const m = $("#main"); m.innerHTML = ""; return m; }
+  function go(id, preserve) {
+    if (!unlocked(id)) { toast("Finish the activity before this one first."); return; }
+    state.current = id; save();
+    const y = window.scrollY;
+    const routes = { welcome:renderWelcome, support:renderSupport, overview:renderOverview, starter:renderStarter, main1:renderMain1, main2:renderMain2, extension:renderExtension, plenary:renderPlenary, report:renderReport };
+    (routes[id] || renderWelcome)(); updateChrome();
+    requestAnimationFrame(function () { if (preserve) window.scrollTo(0,y); else { window.scrollTo(0,0); $("#main").focus({preventScroll:true}); } });
+  }
+  function setStep(section, value) {
+    state.steps[section] = value; save(); go(section, true);
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      const card = document.querySelector(".lesson-card");
+      if (card) window.scrollTo({ top:Math.max(0, card.offsetTop - 135), behavior:"auto" });
+    }); });
+  }
+
+  function stopSpeech() { if (window.speechSynthesis) window.speechSynthesis.cancel(); speech = null; }
+  function speak(text) {
+    if (!window.speechSynthesis || state.settings.muted || !state.profile.readAloud) return;
+    stopSpeech(); speech = new SpeechSynthesisUtterance(text);
+    speech.lang = SUPPORT[state.profile.language] ? SUPPORT[state.profile.language].locale : "en-GB";
+    speech.rate = .92; window.speechSynthesis.speak(speech);
+  }
+  function instruction(text, section, supportKey) {
+    const box = el("div", { class:"do-this" });
+    box.appendChild(el("strong", { text:"Do this: " })); box.appendChild(document.createTextNode(text));
+    const language = state.profile.language;
+    const specific = supportKey && TASK_SUPPORT[supportKey] ? TASK_SUPPORT[supportKey][language] : "";
+    const t = SUPPORT[language];
+    const translated = specific || (t && t[section]) || "";
+    if (CFG.ENABLE_READ_ALOUD && state.profile.readAloud) {
+      const b = el("button", { type:"button", class:"icon-button", style:"margin-left:.6rem", text:"Read aloud" });
+      b.addEventListener("click", function () { speak(translated || text); }); box.appendChild(b);
     }
-    (children || []).forEach(function (c) {
-      if (typeof c === "string") { node.appendChild(document.createTextNode(c)); }
-      else if (c) { node.appendChild(c); }
-    });
-    return node;
+    if (translated) box.appendChild(el("div", { class:"support-line", lang:language, text:translated }));
+    return box;
   }
-
-  function clearMain() {
-    if (game) { game.destroy(); game = null; }
-    stopSpeech();
-    const main = $("#main");
-    main.innerHTML = "";
-    return main;
+  function supportText(section) {
+    const t = SUPPORT[state.profile.language];
+    return t && t[section] ? el("div", { class:"support-line", lang:state.profile.language, text:t[section] }) : null;
   }
-
-  function toast(msg, emoji) {
-    const root = $("#toastRoot");
-    const t = el("div", { class: "toast" }, [
-      el("span", { class: "t-emoji", "aria-hidden": "true", text: emoji || "✨" }),
-      el("span", { text: msg })
-    ]);
-    root.appendChild(t);
-    setTimeout(function () { if (t.parentNode) { t.parentNode.removeChild(t); } }, 4200);
+  function visual(file, alt, caption) {
+    const fig = el("figure", { class:"learning-visual" });
+    const btn = el("button", { type:"button", "aria-label":"Enlarge image: " + alt });
+    const img = el("img", { src:IMG + file, alt:alt, loading:"lazy" }); btn.appendChild(img);
+    btn.addEventListener("click", function () { openImage(IMG + file, alt); });
+    btn.setAttribute("title","Open a larger view");
+    fig.appendChild(btn); fig.appendChild(el("figcaption", { text:caption })); return fig;
   }
-
-  /* ======================= SOUND (original WebAudio blips) ======================= */
-
-  let audioCtx = null;
-  function beep(freqs, dur, type) {
-    if (!soundEnabled()) { return; }
-    try {
-      if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-      const now = audioCtx.currentTime;
-      freqs.forEach(function (f, i) {
-        const osc = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        osc.type = type || "sine";
-        osc.frequency.value = f;
-        g.gain.setValueAtTime(0.0001, now + i * dur);
-        g.gain.exponentialRampToValueAtTime(0.12, now + i * dur + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + (i + 1) * dur);
-        osc.connect(g); g.connect(audioCtx.destination);
-        osc.start(now + i * dur);
-        osc.stop(now + (i + 1) * dur + 0.05);
-      });
-    } catch (e) { /* audio unavailable — fine */ }
+  function openImage(src, alt) {
+    const root = $("#modalRoot"); root.innerHTML = "";
+    const bg = el("div", { class:"image-dialog", role:"dialog", "aria-modal":"true", "aria-label":alt });
+    const inner = el("div", { class:"image-dialog-inner" }); inner.appendChild(el("img", { src:src, alt:alt }));
+    const close = el("button", { type:"button", class:"btn", text:"Close image" }); close.addEventListener("click", function () { root.innerHTML = ""; });
+    inner.appendChild(close); bg.appendChild(inner); root.appendChild(bg); close.focus();
   }
-  const sfx = {
-    correct: function () { beep([523, 659, 784], 0.09); },
-    wrong:   function () { beep([330, 262], 0.14, "triangle"); },
-    chip:    function () { beep([880, 1175], 0.07); },
-    badge:   function () { beep([523, 659, 784, 1047], 0.11); }
-  };
-
-  /* ======================= READ-ALOUD ======================= */
-
-  function stopSpeech() {
-    if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  function modal(title, build) {
+    const root = $("#modalRoot"); root.innerHTML = "";
+    const bg = el("div", { class:"modal-backdrop" }); const box = el("div", { class:"modal", role:"dialog", "aria-modal":"true" });
+    box.appendChild(el("h2", { text:title })); build(box, function () { root.innerHTML = ""; }); bg.appendChild(box); root.appendChild(bg);
   }
-
-  function speakBtn(text) {
-    if (!CFG.ENABLE_READ_ALOUD || !window.speechSynthesis) { return null; }
-    const b = el("button", {
-      type: "button", class: "btn-speak", "aria-label": "Read this aloud",
-      "aria-pressed": "false", title: "Read aloud", text: "🔈"
-    });
-    b.addEventListener("click", function () {
-      const speaking = b.getAttribute("aria-pressed") === "true";
-      stopSpeech();
-      document.querySelectorAll(".btn-speak[aria-pressed='true']").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-      if (speaking) { return; }
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-GB";
-      u.rate = 0.95;
-      u.onend = function () { b.setAttribute("aria-pressed", "false"); };
-      b.setAttribute("aria-pressed", "true");
-      window.speechSynthesis.speak(u);
-    });
-    return b;
-  }
-
-  function instructionRow(text, extraClass) {
-    const row = el("div", { class: "instruction-row " + (extraClass || "") });
-    const sb = speakBtn(text);
-    if (sb) { row.appendChild(sb); }
-    row.appendChild(el("p", { text: text }));
-    return row;
-  }
-
-  /* ======================= MODAL with focus trap ======================= */
-
-  let lastFocused = null;
-
-  function openModal(build, opts) {
-    opts = opts || {};
-    closeModal();
-    lastFocused = document.activeElement;
-    const root = $("#modalRoot");
-    const backdrop = el("div", { class: "modal-backdrop" });
-    const modal = el("div", { class: "modal", role: "dialog", "aria-modal": "true" });
-    backdrop.appendChild(modal);
-    root.appendChild(backdrop);
-    build(modal);
-    const focusables = function () {
-      return Array.prototype.filter.call(
-        modal.querySelectorAll("button, input, textarea, select, a[href]"),
-        function (n) { return !n.disabled && n.offsetParent !== null; }
-      );
-    };
-    backdrop.addEventListener("keydown", function (e) {
-      if (e.key === "Tab") {
-        const f = focusables();
-        if (!f.length) { return; }
-        const first = f[0], last = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      } else if (e.key === "Escape" && opts.dismissable) {
-        closeModal();
-        if (opts.onDismiss) { opts.onDismiss(); }
-      }
-    });
-    const f = focusables();
-    if (f.length) { f[0].focus(); } else { modal.setAttribute("tabindex", "-1"); modal.focus(); }
-    return modal;
-  }
-
-  function closeModal() {
-    const root = $("#modalRoot");
-    root.innerHTML = "";
-    stopSpeech();
-    if (lastFocused && document.body.contains(lastFocused)) { try { lastFocused.focus(); } catch (e) {} }
-    lastFocused = null;
-  }
-
-  /* ======================= CHROME (header / progress / panels) ======================= */
-
-  function requiredStages() { return STAGES.filter(function (s) { return !s.optional && s.id !== "landing" && s.id !== "report"; }); }
 
   function updateChrome() {
-    const header = $("#appHeader");
-    const pw = $("#progressWrap");
-    const started = !!state.student.name;
-    header.hidden = !started;
-    pw.hidden = !started;
-    if (!started) { return; }
-    $("#headerTitle").textContent = CFG.APP_TITLE || "Lab Launch";
-    $("#headerStudent").textContent = state.student.name + " · " + state.student.className;
-    $("#chipCount").textContent = String(state.chips);
-    const req = requiredStages();
-    const done = req.filter(function (s) { return isDone(s.id); }).length;
-    const pct = Math.round((done / req.length) * 100);
-    $("#progressFill").style.width = pct + "%";
-    $("#progressBar").setAttribute("aria-valuenow", String(pct));
-    $("#btnMute").textContent = state.settings.muted ? "🔇" : "🔊";
-    $("#btnMute").setAttribute("aria-pressed", String(state.settings.muted));
-  }
-
-  function addChips(n) {
-    state.chips += n;
-    S.save();
-    updateChrome();
-    sfx.chip();
-  }
-
-  function awardBadge(key) {
-    if (state.badges.indexOf(key) !== -1) { return; }
-    state.badges.push(key);
-    S.save();
-    const b = BADGES[key];
-    toast("Badge earned: " + b.name + "!", b.emoji);
-    sfx.badge();
-    addChips(3);
-  }
-
-  /* ======================= PROFILE HELPERS ======================= */
-
-  function langSupport() { return state.profile.lang === "support"; }
-  function typingSupport() { return state.profile.typing === "support"; }
-
-  /* ======================= AVATARS (original SVG) ======================= */
-
-  const AVATARS = [
-    { id: "aqua",  name: "Aqua",  hue: 174 },
-    { id: "amber", name: "Amber", hue: 36 },
-    { id: "viola", name: "Viola", hue: 255 },
-    { id: "lime",  name: "Lime",  hue: 110 }
-  ];
-
-  function avatarSVG(hue, size) {
-    size = size || 72;
-    return '<svg viewBox="0 0 60 74" width="' + size + '" height="' + Math.round(size * 74 / 60) + '" aria-hidden="true">' +
-      '<rect x="12" y="26" width="36" height="34" rx="8" fill="hsl(' + hue + ',65%,55%)"/>' +
-      '<rect x="14" y="4" width="32" height="24" rx="8" fill="hsl(' + hue + ',55%,70%)"/>' +
-      '<rect x="20" y="10" width="20" height="10" rx="5" fill="#0d1836"/>' +
-      '<rect x="24" y="12" width="5" height="6" rx="2" fill="#40e0d0"/>' +
-      '<rect x="33" y="12" width="5" height="6" rx="2" fill="#40e0d0"/>' +
-      '<line x1="30" y1="4" x2="30" y2="-2" stroke="hsl(' + hue + ',55%,70%)" stroke-width="2"/>' +
-      '<circle cx="30" cy="0" r="3" fill="#ffb84d"/>' +
-      '<rect x="16" y="60" width="10" height="12" rx="3" fill="hsl(' + hue + ',65%,40%)"/>' +
-      '<rect x="34" y="60" width="10" height="12" rx="3" fill="hsl(' + hue + ',65%,40%)"/>' +
-      '<circle cx="30" cy="42" r="6" fill="hsl(' + hue + ',50%,35%)"/>' +
-      '<circle cx="30" cy="42" r="3" fill="#40e0d0"/>' +
-      '</svg>';
-  }
-
-  function robotGuideSVG(size) {
-    return '<svg viewBox="0 0 60 74" width="' + (size || 64) + '" height="' + Math.round((size || 64) * 74 / 60) + '" aria-hidden="true">' +
-      '<rect x="10" y="28" width="40" height="32" rx="10" fill="#8f7dff"/>' +
-      '<rect x="14" y="6" width="32" height="22" rx="10" fill="#b0a4ff"/>' +
-      '<circle cx="24" cy="17" r="4" fill="#0d1836"/><circle cx="36" cy="17" r="4" fill="#0d1836"/>' +
-      '<path d="M24 22 q6 5 12 0" stroke="#0d1836" stroke-width="2" fill="none"/>' +
-      '<circle cx="30" cy="2" r="3" fill="#40e0d0"/>' +
-      '<rect x="22" y="36" width="16" height="12" rx="3" fill="#0d1836"/>' +
-      '<text x="30" y="46" font-size="9" fill="#40e0d0" text-anchor="middle" font-family="monospace">OK</text>' +
-      '</svg>';
-  }
-
-  function currentAvatarHue() {
-    const av = AVATARS.find(function (a) { return a.id === state.student.avatar; });
-    return av ? av.hue : 174;
-  }
-
-  /* ======================= FLEXIBLE ANSWER CHECKING ======================= */
-
-  function matchKeywordGroups(text, groups) {
-    const t = " " + String(text).toLowerCase().replace(/[^a-z0-9\s]/g, " ") + " ";
-    let matched = 0;
-    groups.forEach(function (group) {
-      const hit = group.some(function (word) { return t.indexOf(word.toLowerCase()) !== -1; });
-      if (hit) { matched++; }
+    const header = $("#appHeader"), progress = $("#progressWrap");
+    const visible = state.current !== "welcome" && !!state.student.name;
+    header.hidden = !visible; progress.hidden = !visible;
+    if (!visible) return;
+    $("#headerStudent").textContent = (teacherMode ? "Teacher preview" : state.student.name + " · " + state.student.className);
+    const nav = $("#lessonPath"); nav.innerHTML = "";
+    PATH.forEach(function (p) {
+      const b = el("button", { type:"button", class:"path-item" + (state.current === p.id ? " current" : "") + (state.completed.indexOf(p.id) >= 0 ? " done" : "") + (teacherMode ? " teacher" : ""), text:p.label });
+      b.disabled = !teacherMode; if (teacherMode) b.addEventListener("click", function () { go(p.id); }); nav.appendChild(b);
     });
-    return matched;
+    const done = ["starter","main1","main2","plenary"].filter(function (x) { return state.completed.indexOf(x) >= 0; }).length;
+    const pct = Math.round(done / 4 * 100); $("#progressFill").style.width = pct + "%"; $("#progressBar").setAttribute("aria-valuenow", String(pct));
+    $("#btnSound").textContent = state.settings.muted ? "Sound off" : "Sound on"; $("#btnSound").setAttribute("aria-pressed", String(state.settings.muted));
   }
 
-  /* ======================= QUESTION BUILDERS ======================= */
+  function renderWelcome() {
+    const main = clearMain(); const screen = el("section", { class:"screen welcome" });
+    const hero = el("div", { class:"welcome-hero" });
+    const copy = el("div"); copy.appendChild(el("p", { class:"eyebrow", text:"Year 6 · Computing · 60 minutes" }));
+    copy.appendChild(el("h1", { text:"Ready, organise, program." }));
+    copy.appendChild(el("p", { text:"A clear, step-by-step lesson about digital organisation and Scratch inputs, outputs and coordinates." }));
+    hero.appendChild(copy); hero.appendChild(el("div", { class:"hero-art", html:"<span>→</span>" })); screen.appendChild(hero);
 
-  function scenarioBlock(sc) {
-    const wrap = el("div", { class: "scenario-card" });
-    wrap.innerHTML = avatarSVG(sc.hue || 200, 56);
-    const txt = langSupport() && sc.short ? sc.short : sc.text;
-    const inner = el("div");
-    const sb = speakBtn(txt);
-    const row = el("div", { class: "instruction-row" });
-    if (sb) { row.appendChild(sb); }
-    row.appendChild(el("p", { class: "scenario-text", text: txt }));
-    inner.appendChild(row);
-    wrap.appendChild(inner);
-    return wrap;
-  }
+    const form = el("form", { class:"welcome-form", novalidate:"" }); form.appendChild(el("h2", { text:"Start your lesson" }));
+    form.appendChild(el("p", { text:"Your work stays on this computer until you export the final PDF." }));
+    const grid = el("div", { class:"form-grid" });
+    const nf = el("div", { class:"field" }); nf.appendChild(el("label", { for:"studentName", text:"Your name" }));
+    const name = el("input", { id:"studentName", type:"text", autocomplete:"off", maxlength:"60", value:state.student.name, placeholder:"Type your name" }); nf.appendChild(name); grid.appendChild(nf);
+    const cf = el("div", { class:"field" }); cf.appendChild(el("label", { for:"studentClass", text:"Your class" }));
+    const cls = el("input", { id:"studentClass", type:"text", autocomplete:"off", maxlength:"30", value:state.student.className, placeholder:"Type your class" }); cf.appendChild(cls); grid.appendChild(cf); form.appendChild(grid);
 
-  /* Multiple choice question inside a modal. */
-  function askMCQ(cfg, onFinished) {
-    let attempts = 0;
-    openModal(function (m) {
-      m.appendChild(el("h2", { text: cfg.title }));
-      if (cfg.scenario) { m.appendChild(scenarioBlock(cfg.scenario)); }
-      const qRow = el("div", { class: "instruction-row" });
-      const sb = speakBtn(cfg.question);
-      if (sb) { qRow.appendChild(sb); }
-      qRow.appendChild(el("p", { html: "<strong>" + esc(cfg.question) + "</strong>" }));
-      m.appendChild(qRow);
-      const fb = el("div", { "aria-live": "polite" });
-      const optWrap = el("div");
-      const letters = ["A", "B", "C", "D", "E"];
-      cfg.options.forEach(function (opt, i) {
-        const b = el("button", { type: "button", class: "answer-option" }, [
-          el("span", { class: "opt-letter", text: letters[i] }),
-          el("span", { text: opt })
-        ]);
-        b.addEventListener("click", function () {
-          if (b.disabled) { return; }
-          attempts++;
-          fb.innerHTML = "";
-          if (i === cfg.correct) {
-            sfx.correct();
-            b.classList.add("opt-correct");
-            optWrap.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
-            fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ " + cfg.feedback }));
-            const cont = el("button", { type: "button", class: "btn", text: "Continue" });
-            cont.addEventListener("click", function () {
-              closeModal();
-              onFinished({ correct: true, attempts: attempts, chosen: cfg.options[i] });
-            });
-            fb.appendChild(el("div", { class: "modal-actions" }, [cont]));
-            cont.focus();
-          } else {
-            sfx.wrong();
-            b.classList.add("opt-wrong");
-            b.disabled = true;
-            if (attempts === 1) {
-              fb.appendChild(el("div", { class: "feedback feedback-try", text: "Not quite — have another look and try again. Everyone learns from a second try!" }));
-              if (cfg.hint) { fb.appendChild(el("div", { class: "hint-box", html: "<strong>Hint:</strong> " + esc(cfg.hint) })); }
-            } else {
-              fb.appendChild(el("div", { class: "feedback feedback-info", html: "<strong>Let's look at it together:</strong> " + esc(cfg.feedback) + " Now choose the best answer to carry on." }));
-            }
-          }
-        });
-        optWrap.appendChild(b);
-      });
-      m.appendChild(optWrap);
-      m.appendChild(fb);
+    const lf = el("fieldset", { class:"field" }); lf.appendChild(el("legend", { text:"Language support" })); const langs = el("div", { class:"choice-row" });
+    [["en","English"],["ms","Bahasa Melayu"],["zh","简体中文"]].forEach(function (o) {
+      const lab = el("label", { class:"choice-card" }); const radio = el("input", { type:"radio", name:"language", value:o[0], checked:state.profile.language === o[0] }); lab.appendChild(radio); lab.appendChild(document.createTextNode(o[1])); langs.appendChild(lab);
+    }); lf.appendChild(langs); form.appendChild(lf);
+    const rf = el("fieldset", { class:"field" }); rf.appendChild(el("legend", { text:"How would you like to answer?" })); const modes = el("div", { class:"choice-row" });
+    [["guided","Visual choices + sentence frames"],["independent","Independent full explanations"]].forEach(function (o) {
+      const lab = el("label", { class:"choice-card" }); const radio = el("input", { type:"radio", name:"mode", value:o[0], checked:state.profile.responseMode === o[0] }); lab.appendChild(radio); lab.appendChild(document.createTextNode(o[1])); modes.appendChild(lab);
+    }); rf.appendChild(modes); form.appendChild(rf);
+    const err = el("div", { class:"field-error", "aria-live":"polite" }); form.appendChild(err);
+    const start = el("button", { type:"submit", class:"btn", text:"Start lesson →" }); form.appendChild(el("div", { class:"button-row end" }, [start]));
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); const n = name.value.trim(); const c = cls.value.trim();
+      if (n.toLowerCase() === String(CFG.TEACHER_WORD || "teacher").toLowerCase()) {
+        teacherMode = true; sessionSet("y6_teacher","1"); state.student = { name:"Teacher", className:"Preview" }; state.startedAt = state.startedAt || new Date().toISOString(); save(); go("overview"); return;
+      }
+      if (n.length < 2 || !c) { err.textContent = "Please type your name and class before you continue."; return; }
+      state.student = { name:n, className:c };
+      state.profile.language = form.querySelector("input[name=language]:checked").value;
+      state.profile.responseMode = form.querySelector("input[name=mode]:checked").value;
+      state.startedAt = state.startedAt || new Date().toISOString(); save(); go("overview");
     });
-  }
-
-  /* Select-all-that-apply inside a modal. */
-  function askSelectAll(cfg, onFinished) {
-    let attempts = 0;
-    openModal(function (m) {
-      m.appendChild(el("h2", { text: cfg.title }));
-      if (cfg.scenario) { m.appendChild(scenarioBlock(cfg.scenario)); }
-      const qRow = el("div", { class: "instruction-row" });
-      const sb = speakBtn(cfg.question);
-      if (sb) { qRow.appendChild(sb); }
-      qRow.appendChild(el("p", { html: "<strong>" + esc(cfg.question) + "</strong> <em>(choose every correct answer)</em>" }));
-      m.appendChild(qRow);
-      const fb = el("div", { "aria-live": "polite" });
-      const boxes = [];
-      const wrap = el("div");
-      cfg.items.forEach(function (item) {
-        const cb = el("input", { type: "checkbox" });
-        const lab = el("label", { class: "check-option" }, [cb, el("span", { text: item.text })]);
-        boxes.push({ cb: cb, lab: lab, item: item });
-        wrap.appendChild(lab);
-      });
-      m.appendChild(wrap);
-      const check = el("button", { type: "button", class: "btn", text: "Check my answer" });
-      m.appendChild(el("div", { class: "modal-actions" }, [check]));
-      m.appendChild(fb);
-      check.addEventListener("click", function () {
-        attempts++;
-        fb.innerHTML = "";
-        let allRight = true;
-        boxes.forEach(function (b) {
-          b.lab.classList.remove("opt-correct", "opt-wrong");
-          if (b.cb.checked && b.item.correct) { b.lab.classList.add("opt-correct"); }
-          else if (b.cb.checked && !b.item.correct) { b.lab.classList.add("opt-wrong"); allRight = false; }
-          else if (!b.cb.checked && b.item.correct) { allRight = false; }
-        });
-        if (allRight) {
-          sfx.correct();
-          boxes.forEach(function (b) { b.cb.disabled = true; });
-          check.disabled = true;
-          fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ " + cfg.feedback }));
-          const cont = el("button", { type: "button", class: "btn", text: "Continue" });
-          cont.addEventListener("click", function () {
-            closeModal();
-            onFinished({ correct: true, attempts: attempts, chosen: "All correct routines selected" });
-          });
-          fb.appendChild(el("div", { class: "modal-actions" }, [cont]));
-          cont.focus();
-        } else {
-          sfx.wrong();
-          if (attempts === 1) {
-            fb.appendChild(el("div", { class: "feedback feedback-try", text: "Almost — check the highlighted choices. Tick every correct routine and untick anything that is not part of a good finishing routine." }));
-          } else {
-            fb.appendChild(el("div", { class: "feedback feedback-info", html: "<strong>Remember:</strong> " + esc(cfg.hint) }));
-          }
-        }
-      });
-    });
-  }
-
-  /* Open typed response with flexible keyword checking. */
-  function askOpen(cfg, onFinished) {
-    let attempts = 0;
-    openModal(function (m) {
-      m.appendChild(el("h2", { text: cfg.title }));
-      if (cfg.scenario) { m.appendChild(scenarioBlock(cfg.scenario)); }
-      const qRow = el("div", { class: "instruction-row" });
-      const sb = speakBtn(cfg.prompt);
-      if (sb) { qRow.appendChild(sb); }
-      qRow.appendChild(el("p", { html: "<strong>" + esc(cfg.prompt) + "</strong>" }));
-      m.appendChild(qRow);
-
-      const ta = el("textarea", { class: "plain-input", rows: "3", "aria-label": "Your answer" });
-      if (langSupport() && cfg.starter) {
-        m.appendChild(el("p", { class: "sentence-starter", text: "Sentence starter: " + cfg.starter }));
-        ta.value = "";
-        ta.placeholder = cfg.starter;
-      }
-      if (langSupport() && cfg.wordbank) {
-        m.appendChild(el("p", { html: "<strong>Word bank</strong> — click a word to add it:" }));
-        const wb = el("div", { class: "word-bank" });
-        cfg.wordbank.forEach(function (w) {
-          const wbtn = el("button", { type: "button", class: "wb-word", text: w });
-          wbtn.addEventListener("click", function () {
-            ta.value = (ta.value ? ta.value.replace(/\s+$/, "") + " " : "") + w;
-            ta.focus();
-          });
-          wb.appendChild(wbtn);
-        });
-        m.appendChild(wb);
-      }
-      m.appendChild(ta);
-      const fb = el("div", { "aria-live": "polite" });
-      const submit = el("button", { type: "button", class: "btn", text: "Submit my answer" });
-      m.appendChild(el("div", { class: "modal-actions" }, [submit]));
-      m.appendChild(fb);
-
-      function finishWith(text, ok) {
-        const cont = el("button", { type: "button", class: "btn", text: "I have compared my answer — continue" });
-        cont.addEventListener("click", function () {
-          closeModal();
-          onFinished({ correct: ok, attempts: attempts, chosen: text });
-        });
-        fb.appendChild(el("div", { class: "model-answer", html: "<strong>Model answer:</strong> " + esc(cfg.model) + "<br><em>Compare your answer with the model. Did you include similar ideas?</em>" }));
-        fb.appendChild(el("div", { class: "modal-actions" }, [cont]));
-        cont.focus();
-      }
-
-      submit.addEventListener("click", function () {
-        const text = ta.value.trim();
-        fb.innerHTML = "";
-        if (text.length < (cfg.minLen || 15)) {
-          fb.appendChild(el("div", { class: "feedback feedback-try", text: "Add a little more detail — try writing at least one full idea." }));
-          return;
-        }
-        attempts++;
-        const matched = matchKeywordGroups(text, cfg.keywords);
-        const need = cfg.minGroups || 2;
-        if (matched >= need) {
-          sfx.correct();
-          submit.disabled = true; ta.disabled = true;
-          fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Great thinking — your answer includes the important ideas." }));
-          finishWith(text, true);
-        } else if (attempts === 1) {
-          sfx.wrong();
-          fb.appendChild(el("div", { class: "feedback feedback-try", text: "You are on the way — add a bit more about the key idea and try again." }));
-          if (cfg.hint) { fb.appendChild(el("div", { class: "hint-box", html: "<strong>Hint:</strong> " + esc(cfg.hint) })); }
-        } else {
-          submit.disabled = true; ta.disabled = true;
-          fb.appendChild(el("div", { class: "feedback feedback-info", text: "Thank you for your effort — here is a model answer to compare with yours. Your teacher can review your answer later." }));
-          finishWith(text, false);
-        }
-      });
-    });
-  }
-
-  /* ======================= STARTER SCENARIO DATA ======================= */
-
-  const STARTER = [
-    {
-      id: "adam", label: "Room 1: Adam", hue: 20,
-      scenario: {
-        hue: 20,
-        text: "Adam immediately logs in and opens a game while the teacher is giving instructions.",
-        short: "Adam opens a game while the teacher is talking."
-      },
-      mcq: {
-        question: "What should Adam do?",
-        options: [
-          "Keep playing until the teacher notices.",
-          "Stop, listen and open only the application the teacher requests.",
-          "Ask another student to join the game."
-        ],
-        correct: 1,
-        feedback: "Adam should wait for instructions so that he knows the learning task and uses only the required application.",
-        hint: "Think about what helps Adam know what the learning task is."
-      },
-      open: {
-        prompt: "Explain why Adam is not ready and what he should do instead.",
-        starter: "Adam should __________ because __________.",
-        wordbank: ["stop", "close the game", "listen", "wait", "instructions", "teacher", "correct application", "focus"],
-        keywords: [
-          ["stop", "close", "quit", "exit", "pause"],
-          ["listen", "wait", "instruction", "attention", "teacher", "pay attention"],
-          ["correct app", "right app", "required app", "the application", "task", "focus", "learning"]
-        ],
-        minGroups: 2,
-        model: "Adam should stop the game and listen to the teacher, because the instructions tell him what the learning task is. Then he should open only the application the teacher asks for."
-      }
-    },
-    {
-      id: "mei", label: "Room 2: Mei", hue: 300,
-      scenario: {
-        hue: 300,
-        text: "Mei notices that a cable looks damaged. She does not touch it and informs the teacher.",
-        short: "Mei sees a damaged cable. She does not touch it. She tells the teacher."
-      },
-      mcq: {
-        question: "Why was Mei's decision responsible?",
-        options: [
-          "She avoided touching possibly unsafe equipment and reported it.",
-          "She should have repaired the cable herself.",
-          "She should have hidden the cable so nobody could see it."
-        ],
-        correct: 0,
-        feedback: "Damaged equipment can be unsafe. Mei kept herself safe by not touching it and made sure an adult could deal with it.",
-        hint: "Think about safety — who should deal with damaged equipment?"
-      },
-      open: {
-        prompt: "Explain why Mei made a safe and responsible decision.",
-        starter: "Mei was responsible because __________.",
-        wordbank: ["did not touch", "damaged", "unsafe", "dangerous", "told the teacher", "reported", "adult"],
-        keywords: [
-          ["not touch", "didn't touch", "did not touch", "avoided", "left it", "stayed away"],
-          ["unsafe", "danger", "hurt", "electric", "shock", "damaged", "broken"],
-          ["teacher", "adult", "report", "told", "inform"]
-        ],
-        minGroups: 2,
-        model: "Mei was responsible because she did not touch the damaged cable, which could be unsafe, and she reported it to the teacher so it could be fixed properly."
-      }
-    },
-    {
-      id: "rohan", label: "Room 3: Rohan", hue: 210,
-      scenario: {
-        hue: 210,
-        text: "Rohan finishes his program and saves it as: “my work final new 2”.",
-        short: "Rohan saves his file as “my work final new 2”."
-      },
-      mcq: {
-        question: "Which filename would be easiest to understand and find later?",
-        options: [
-          "my work final new 2",
-          "project",
-          "Y6_T1W01_ScratchBaseline_v1"
-        ],
-        correct: 2,
-        feedback: "Y6_T1W01_ScratchBaseline_v1 tells you the year group, term, week, project and version — so anyone can find the right file quickly.",
-        hint: "A good filename tells you what the file is, when it was made and which version it is."
-      },
-      open: {
-        prompt: "Explain the problem with Rohan's filename and suggest a better filename.",
-        starter: "The problem is __________. A better filename would be __________.",
-        wordbank: ["confusing", "hard to find", "which version", "clear", "Y6_T1W01_ScratchBaseline_v1", "meaningful", "organised"],
-        keywords: [
-          ["confus", "unclear", "hard to find", "doesn't say", "does not say", "which one", "which version", "messy", "vague", "meaning"],
-          ["y6", "baseline", "scratchbaseline", "version", "date", "clear name", "better name", "v1", "t1w01", "week", "term"]
-        ],
-        minGroups: 2,
-        model: "Rohan's filename is confusing because it does not say what the project is or which version is the newest. A better filename is Y6_T1W01_ScratchBaseline_v1, because it shows the year, term, week, project and version."
-      }
-    },
-    {
-      id: "hana", label: "Room 4: Hana", hue: 130,
-      scenario: {
-        hue: 130,
-        text: "Hana saves her work, checks the filename, closes every application, signs out and leaves the workstation ready for the next class.",
-        short: "Hana saves, checks the filename, closes everything, signs out and tidies her workstation."
-      },
-      selectAll: {
-        question: "Which correct finishing routines did Hana demonstrate?",
-        items: [
-          { text: "Save and check the file.", correct: true },
-          { text: "Leave her account logged in.", correct: false },
-          { text: "Close applications.", correct: true },
-          { text: "Disconnect the keyboard.", correct: false },
-          { text: "Sign out.", correct: true },
-          { text: "Open another website before leaving.", correct: false },
-          { text: "Leave the workstation ready.", correct: true }
-        ],
-        feedback: "Hana saved and checked her file, closed her applications, signed out and left the workstation ready — the complete finishing routine.",
-        hint: "The finishing routine is: save and check, close, sign out, leave the workstation ready."
-      },
-      open: {
-        prompt: "Explain how Hana followed the correct finishing routine.",
-        starter: "Hana followed the routine by __________.",
-        wordbank: ["saved", "checked", "closed", "signed out", "tidied", "ready for the next class"],
-        keywords: [
-          ["save", "saved"],
-          ["check", "filename"],
-          ["close", "closed", "shut"],
-          ["sign out", "signed out", "log out", "logged out", "logoff", "log off"],
-          ["tidy", "tidied", "ready", "next class", "workstation", "chair"]
-        ],
-        minGroups: 3,
-        model: "Hana saved her work and checked the filename, closed every application, signed out of her account and left the workstation tidy and ready for the next class."
-      }
+    screen.appendChild(form);
+    if (state.student.name && !teacherMode) {
+      const resume = el("button", { type:"button", class:"btn secondary", text:"Resume saved lesson" }); resume.addEventListener("click", function () { go(state.current || "overview"); });
+      screen.appendChild(el("div", { class:"button-row end" }, [resume]));
     }
-  ];
-
-  /* ======================= SCREENS ======================= */
-
-  let currentScreen = "landing";
-
-  function go(screenId) {
-    currentScreen = screenId;
-    state.lastScreen = screenId;
-    S.save();
-    const renderers = {
-      landing: renderLanding, support: renderSupport, briefing: renderBriefing,
-      map: renderMap, starter: renderStarter, routines: renderRoutines,
-      files: renderFiles, investigate: renderInvestigate, modify: renderModify,
-      evidence: renderEvidence, extension: renderExtension, plenary: renderPlenary,
-      report: renderReport
-    };
-    (renderers[screenId] || renderMap)();
-    updateChrome();
-    window.scrollTo(0, 0);
-    $("#main").focus({ preventScroll: true });
+    main.appendChild(screen);
   }
-
-  /* ---------- Landing ---------- */
-
-  function heroSVG() {
-    return '<svg viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A futuristic school computing lab with glowing screens">' +
-      '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0" stop-color="#1c2c58"/><stop offset="1" stop-color="#0e1630"/></linearGradient></defs>' +
-      '<rect width="960" height="260" fill="url(#sky)"/>' +
-      '<g stroke="#2c4176" stroke-width="2" fill="none" opacity="0.8">' +
-      '<path d="M40 200 h120 M100 200 v-60 h60 M160 140 h40"/><circle cx="204" cy="140" r="5"/>' +
-      '<path d="M760 210 h140 M830 210 v-80 h-50"/><circle cx="778" cy="130" r="5"/></g>' +
-      '<g class="hero-glow">' +
-      '<rect x="250" y="80" width="130" height="86" rx="8" fill="#22345c" stroke="#40e0d0" stroke-width="2"/>' +
-      '<rect x="262" y="92" width="106" height="54" rx="4" fill="#0d1836"/>' +
-      '<text x="315" y="125" font-family="monospace" font-size="15" fill="#40e0d0" text-anchor="middle">&gt; RESTORE_</text>' +
-      '<rect x="295" y="166" width="40" height="26" fill="#1b2a4a"/>' +
-      '<rect x="560" y="70" width="150" height="96" rx="8" fill="#22345c" stroke="#8f7dff" stroke-width="2"/>' +
-      '<rect x="572" y="82" width="126" height="62" rx="4" fill="#0d1836"/>' +
-      '<text x="635" y="110" font-family="monospace" font-size="13" fill="#8f7dff" text-anchor="middle">MISSION: Y6</text>' +
-      '<text x="635" y="130" font-family="monospace" font-size="13" fill="#ffb84d" text-anchor="middle">LAB LAUNCH</text>' +
-      '<rect x="612" y="166" width="46" height="28" fill="#1b2a4a"/></g>' +
-      '<rect x="0" y="220" width="960" height="40" fill="#16244a"/>' +
-      '<rect x="0" y="218" width="960" height="4" fill="#40e0d0" opacity="0.6"/>' +
-      '<g transform="translate(430,150) scale(1.1)">' + '' +
-      '<rect x="12" y="26" width="36" height="34" rx="8" fill="#2fbfae"/>' +
-      '<rect x="14" y="4" width="32" height="24" rx="8" fill="#7de6d8"/>' +
-      '<rect x="20" y="10" width="20" height="10" rx="5" fill="#0d1836"/>' +
-      '<rect x="24" y="12" width="5" height="6" rx="2" fill="#40e0d0"/>' +
-      '<rect x="33" y="12" width="5" height="6" rx="2" fill="#40e0d0"/>' +
-      '<circle cx="30" cy="0" r="3" fill="#ffb84d"/>' +
-      '<rect x="16" y="60" width="10" height="12" rx="3" fill="#1e8577"/>' +
-      '<rect x="34" y="60" width="10" height="12" rx="3" fill="#1e8577"/></g>' +
-      '<g fill="#40e0d0" opacity="0.9">' +
-      '<rect x="130" y="60" width="10" height="10" rx="2" transform="rotate(45 135 65)"/>' +
-      '<rect x="880" y="50" width="10" height="10" rx="2" transform="rotate(45 885 55)"/>' +
-      '<rect x="480" y="40" width="10" height="10" rx="2" transform="rotate(45 485 45)"/></g>' +
-      '</svg>';
-  }
-
-  function renderLanding() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen landing" });
-    const hero = el("div", { class: "landing-hero", html: heroSVG() });
-    wrap.appendChild(hero);
-    wrap.appendChild(el("h1", { text: CFG.APP_TITLE || "Lab Launch: Year 6 Computing Quest" }));
-    wrap.appendChild(el("p", { class: "subtitle", text: "Restore the Computing Lab, complete the missions and prove you are ready for Year 6." }));
-    if (CFG.SCHOOL_NAME || CFG.TEACHER_NAME) {
-      wrap.appendChild(el("p", { class: "school-line", text: [CFG.SCHOOL_NAME, CFG.TEACHER_NAME].filter(Boolean).join(" · ") }));
-    }
-    wrap.appendChild(instructionRow("Welcome back, Year 6! The lab's operating system has lost its routines. Enter your name and class, choose your avatar, and begin the mission to bring the lab back online."));
-
-    wrap.appendChild(el("h2", { text: "Choose your avatar" }));
-    const avRow = el("div", { class: "avatar-row", role: "group", "aria-label": "Choose your avatar" });
-    AVATARS.forEach(function (a) {
-      const b = el("button", {
-        type: "button", class: "avatar-choice",
-        "aria-pressed": String(state.student.avatar === a.id),
-        "aria-label": "Avatar " + a.name
-      });
-      b.innerHTML = avatarSVG(a.hue) + '<span class="avatar-name">' + esc(a.name) + "</span>";
-      b.addEventListener("click", function () {
-        state.student.avatar = a.id;
-        avRow.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-        b.setAttribute("aria-pressed", "true");
-        S.save();
-      });
-      avRow.appendChild(b);
-    });
-    wrap.appendChild(avRow);
-
-    const form = el("div", { class: "form-grid" });
-    const nameField = el("div", { class: "form-field" });
-    nameField.appendChild(el("label", { for: "inpName", text: "Your full name" }));
-    const inpName = el("input", { id: "inpName", type: "text", autocomplete: "off", maxlength: "60", value: state.student.name || "" });
-    nameField.appendChild(inpName);
-    const nameErr = el("div", { class: "field-error", "aria-live": "polite" });
-    nameField.appendChild(nameErr);
-    form.appendChild(nameField);
-
-    const classField = el("div", { class: "form-field" });
-    classField.appendChild(el("label", { for: "inpClass", text: "Your class" }));
-    let classInput;
-    const opts = classOptions();
-    if (opts.length) {
-      classInput = el("select", { id: "inpClass" });
-      classInput.appendChild(el("option", { value: "", text: "— choose your class —" }));
-      opts.forEach(function (c) {
-        const o = el("option", { value: c, text: c });
-        if (state.student.className === c) { o.selected = true; }
-        classInput.appendChild(o);
-      });
-    } else {
-      classInput = el("input", { id: "inpClass", type: "text", autocomplete: "off", maxlength: "20", value: state.student.className || "", placeholder: "for example 6B" });
-    }
-    classField.appendChild(classInput);
-    const classErr = el("div", { class: "field-error", "aria-live": "polite" });
-    classField.appendChild(classErr);
-    form.appendChild(classField);
-
-    const cont = el("button", { type: "button", class: "btn btn-big", text: "Continue ▶" });
-    cont.addEventListener("click", function () {
-      const name = inpName.value.trim();
-      const cls = classInput.value.trim();
-      nameErr.textContent = ""; classErr.textContent = "";
-      let ok = true;
-      if (name.length < 2) { nameErr.textContent = "Please enter your full name."; ok = false; }
-      if (!cls) { classErr.textContent = "Please enter or choose your class."; ok = false; }
-      if (!ok) { return; }
-      state.student.name = name;
-      state.student.className = cls;
-      if (!state.student.avatar) { state.student.avatar = "aqua"; }
-      if (!state.startedAt) { state.startedAt = new Date().toISOString(); }
-      unlock("support");
-      completeStage("landing");
-      go("support");
-    });
-    form.appendChild(el("div", { style: "text-align:center; margin-top:0.5rem;" }, [cont]));
-    wrap.appendChild(form);
-
-    // resume notice
-    if (state.completed.length > 1) {
-      const res = el("div", { class: "card", style: "margin-top:1.2rem;" });
-      res.appendChild(el("p", { html: "<strong>Welcome back!</strong> Your saved progress was found on this computer." }));
-      const resumeBtn = el("button", { type: "button", class: "btn btn-secondary", text: "Resume my mission" });
-      resumeBtn.addEventListener("click", function () { go("map"); });
-      res.appendChild(resumeBtn);
-      wrap.appendChild(res);
-    }
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Support selection ---------- */
 
   function renderSupport() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("p", { class: "stage-eyebrow", text: "Before you begin" }));
-    wrap.appendChild(el("h1", { text: "Choose what helps you learn best" }));
-    wrap.appendChild(instructionRow("Everyone learns differently, and you can change these choices at any time using the Support button at the top of the screen. Nobody else can see what you choose."));
-
-    function optionGroup(titleText, options, key) {
-      const card = el("div", { class: "card" });
-      card.appendChild(el("h2", { text: titleText }));
-      const grp = el("div", { class: "support-options", role: "group", "aria-label": titleText });
-      options.forEach(function (o) {
-        const b = el("button", { type: "button", class: "support-option", "aria-pressed": String(state.profile[key] === o.value) }, [
-          el("span", { class: "opt-emoji", "aria-hidden": "true", text: o.emoji }),
-          el("span", { text: o.text })
-        ]);
-        b.addEventListener("click", function () {
-          state.profile[key] = o.value;
-          grp.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-          b.setAttribute("aria-pressed", "true");
-          S.save();
-        });
-        grp.appendChild(b);
-      });
-      card.appendChild(grp);
-      return card;
-    }
-
-    wrap.appendChild(optionGroup("How would you like to read today's missions?", [
-      { value: "support", emoji: "🖼️", text: "I would like shorter instructions, pictures and sentence starters." },
-      { value: "full", emoji: "📖", text: "I am comfortable reading detailed instructions." }
-    ], "lang"));
-    wrap.appendChild(optionGroup("How would you like to answer?", [
-      { value: "support", emoji: "🎯", text: "I would prefer choosing, matching or using short answers." },
-      { value: "full", emoji: "⌨️", text: "I am comfortable typing complete sentences." }
-    ], "typing"));
-
-    const extra = el("div", { class: "card" });
-    extra.appendChild(el("h2", { text: "Comfort settings" }));
-    const rm = el("label", { class: "check-option" });
-    const rmCb = el("input", { type: "checkbox" });
-    rmCb.checked = state.settings.reducedMotion;
-    rmCb.addEventListener("change", function () {
-      state.settings.reducedMotion = rmCb.checked;
-      document.body.classList.toggle("reduced-motion", rmCb.checked);
-      S.save();
-    });
-    rm.appendChild(rmCb);
-    rm.appendChild(el("span", { text: "Reduce movement and animation" }));
-    extra.appendChild(rm);
-    const gm = el("label", { class: "check-option" });
-    const gmCb = el("input", { type: "checkbox" });
-    gmCb.checked = state.settings.guidedMode;
-    gmCb.addEventListener("change", function () { state.settings.guidedMode = gmCb.checked; S.save(); });
-    gm.appendChild(gmCb);
-    gm.appendChild(el("span", { text: "Guided Movement Mode — click where to go instead of using platform-game controls" }));
-    extra.appendChild(gm);
-    wrap.appendChild(extra);
-
-    const err = el("div", { class: "field-error", "aria-live": "polite" });
-    const cont = el("button", { type: "button", class: "btn btn-big", text: "Save my choices ▶" });
-    cont.addEventListener("click", function () {
-      if (!state.profile.lang || !state.profile.typing) {
-        err.textContent = "Please choose one option from each question first.";
-        return;
-      }
-      unlock("briefing");
-      completeStage("support");
-      go(isDone("briefing") ? "map" : "briefing");
-    });
-    wrap.appendChild(err);
-    wrap.appendChild(el("div", { style: "text-align:center;" }, [cont]));
-    main.appendChild(wrap);
+    const main = clearMain(); const screen = el("section", { class:"screen activity-shell" });
+    screen.appendChild(el("p", { class:"eyebrow", text:"Support choices" })); screen.appendChild(el("h1", { text:"Choose what helps you learn" }));
+    screen.appendChild(el("p", { text:"These choices change the support, not the learning goal. You can change them at any time." }));
+    const card = el("div", { class:"card" });
+    const lang = el("select", { "aria-label":"Language support" }); [["en","English"],["ms","Bahasa Melayu"],["zh","简体中文"]].forEach(function (o) { const x=el("option",{value:o[0],text:o[1]}); if(state.profile.language===o[0])x.selected=true; lang.appendChild(x); });
+    const mode = el("select", { "aria-label":"Answer support" }); [["guided","Visual choices and sentence frames"],["independent","Independent full explanations"]].forEach(function(o){const x=el("option",{value:o[0],text:o[1]});if(state.profile.responseMode===o[0])x.selected=true;mode.appendChild(x);});
+    const read = el("input", { type:"checkbox", checked:state.profile.readAloud });
+    card.appendChild(el("div", { class:"field" }, [el("label", { text:"Language" }), lang])); card.appendChild(el("div", { class:"field" }, [el("label", { text:"Answer support" }), mode]));
+    card.appendChild(el("label", { class:"choice-card" }, [read, document.createTextNode(" Show read-aloud buttons")]));
+    const back = el("button", { type:"button", class:"btn", text:"Save and return" }); back.addEventListener("click", function () { state.profile.language=lang.value; state.profile.responseMode=mode.value; state.profile.readAloud=read.checked; save(); go(state.returnTo || "overview"); });
+    card.appendChild(el("div", { class:"button-row end" }, [back])); screen.appendChild(card); main.appendChild(screen);
   }
 
-  /* ---------- Briefing ---------- */
+  function teacherPanel() {
+    const panel = el("div", { class:"teacher-panel" }); panel.appendChild(el("h2", { text:"Teacher preview" })); panel.appendChild(el("p", { text:"Open any section to review it. Student sequencing remains locked." }));
+    const grid = el("div", { class:"teacher-grid" }); PATH.forEach(function (p) { const b=el("button",{type:"button",class:"btn secondary",text:p.label}); b.addEventListener("click",function(){go(p.id);});grid.appendChild(b); });
+    const reset = el("button", { type:"button", class:"btn danger", text:"Reset student data" }); reset.addEventListener("click",function(){ if(confirm("Clear this browser's saved lesson and screenshots?")) S.resetAll().then(function(){sessionRemove("y6_teacher");location.reload();}); }); grid.appendChild(reset); panel.appendChild(grid); return panel;
+  }
 
-  function renderBriefing() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("p", { class: "stage-eyebrow", text: "Mission briefing" }));
-    wrap.appendChild(el("h1", { text: "The lab has lost its routines!" }));
-    const card = el("div", { class: "card" });
-    const guide = el("div", { class: "scenario-card" });
-    guide.innerHTML = robotGuideSVG(70);
-    const briefText = langSupport()
-      ? "I am BYTE, your lab guide. The lab's operating system is broken. Doors are locked. Files are messy. The Scratch Laboratory is offline. Complete the missions to fix the lab!"
-      : "Greetings — I am BYTE, the lab's guide robot. The Computing Lab's operating system has lost its routines: doors are locked, files are disorganised and the Scratch Laboratory is offline. Only a true Year 6 computer scientist can restore it.";
-    const inner = el("div");
-    const row = el("div", { class: "instruction-row" });
-    const sb = speakBtn(briefText);
-    if (sb) { row.appendChild(sb); }
-    row.appendChild(el("p", { class: "scenario-text", text: briefText }));
-    inner.appendChild(row);
-    guide.appendChild(inner);
-    card.appendChild(guide);
-    card.appendChild(el("h2", { text: "Your mission" }));
-    card.appendChild(el("p", { html:
-      "Restore the lab by: recognising responsible choices → rebuilding the <strong>Start</strong>, <strong>Work</strong> and <strong>Finish</strong> routines → organising a project file → investigating a Scratch program → improving and testing it → collecting evidence → completing the Exit Terminal." }));
-    card.appendChild(el("p", { html:
-      "Collect <strong>Data Chips</strong> ⬡ by completing learning tasks — chips are for learning, not speed. Earn all seven badges to prove you are <strong>Year 6 Lab Ready</strong>." }));
-    const badgeRow = el("div", { class: "badge-row" });
-    Object.keys(BADGES).forEach(function (k) {
-      badgeRow.appendChild(el("span", { class: "badge badge-locked" }, [
-        el("span", { class: "badge-emoji", "aria-hidden": "true", text: BADGES[k].emoji }),
-        el("span", { text: BADGES[k].name })
+  function renderOverview() {
+    const main = clearMain(); const screen = el("section", { class:"screen" }); if (teacherMode) screen.appendChild(teacherPanel());
+    screen.appendChild(el("p", { class:"eyebrow", text:"Lesson briefing · 3 minutes" })); screen.appendChild(el("h1", { html:"Your <span class='title-rule'>learning path</span>" }));
+    screen.appendChild(el("p", { class:"screen-lead", text:"You will first organise digital work, then predict, build, test and improve a short Scratch program." }));
+    if (supportText("overview")) screen.appendChild(supportText("overview"));
+    const grid = el("div", { class:"overview-grid" });
+    [["1","Do Now","Recall Start–Work–Finish."],["2","Main 1","Organise folders and filenames."],["3","Main 2","Predict, build, test and modify Scratch code."]].forEach(function (x) { grid.appendChild(el("article", { class:"overview-card" }, [el("span",{class:"number",text:x[0]}),el("h3",{text:x[1]}),el("p",{text:x[2]})])); }); screen.appendChild(grid);
+    const wagba = el("div", { class:"card" }); wagba.appendChild(el("h2", { text:"WAGBA" })); wagba.appendChild(el("p", { text:"We are getting better at organising digital work and explaining how an input makes a program produce an output." }));
+    wagba.appendChild(el("p", { html:"<strong>Knowledge:</strong> programs follow ordered instructions; x changes left/right and y changes down/up." }));
+    wagba.appendChild(el("p", { html:"<strong>Skills:</strong> organise, predict, build, test, debug and explain." }));
+    wagba.appendChild(el("p", { html:"<strong>Understanding:</strong> clear organisation protects work; testing reveals whether our prediction was accurate." })); screen.appendChild(wagba);
+    const vocab = el("div", { class:"vocab-strip", "aria-label":"Keyword glossary" }); Object.keys(GLOSSARY).forEach(function (word) { const b=el("button",{type:"button",text:word}); b.addEventListener("click",function(){toast(word+": "+GLOSSARY[word]);});vocab.appendChild(b); }); screen.appendChild(vocab);
+    const t = SUPPORT[state.profile.language]; if (t) screen.appendChild(el("p", { class:"support-line", lang:state.profile.language, text:t.words }));
+    const begin = el("button", { type:"button", class:"btn", text:"Begin Do Now →" }); begin.addEventListener("click",function(){complete("overview");go("starter");}); screen.appendChild(el("div",{class:"button-row end"},[begin])); main.appendChild(screen);
+  }
+
+  function mcq(key, question, options, right, explanation) {
+    const block = el("fieldset", { class:"question" }); block.appendChild(el("legend", { text:question }));
+    const list = el("div", { class:"options" }); const feedback = el("div", { "aria-live":"polite" });
+    options.forEach(function (option, index) {
+      const b = el("button", { type:"button", class:"option", "aria-pressed":"false" });
+      b.appendChild(el("span", { class:"option-letter", text:String.fromCharCode(65 + index) })); b.appendChild(el("span", { text:option }));
+      if (state.answers[key] && state.answers[key].value === index) {
+        b.classList.add("selected", index === right ? "correct" : "wrong"); b.setAttribute("aria-pressed","true");
+      }
+      b.addEventListener("click", function () {
+        state.answers[key] = { question:question, answer:option, value:index, correct:index === right }; save();
+        list.querySelectorAll(".option").forEach(function (x) { x.classList.remove("selected","correct","wrong"); x.setAttribute("aria-pressed","false"); });
+        b.classList.add("selected", index === right ? "correct" : "wrong"); b.setAttribute("aria-pressed","true");
+        feedback.innerHTML = ""; feedback.appendChild(el("div", { class:"feedback " + (index === right ? "good" : "try"), text:index === right ? "Correct. " + explanation : "Not yet. Re-read what happened, identify the purpose of the action or block, and compare it with each option." }));
+      }); list.appendChild(b);
+    }); block.appendChild(list);
+    if (state.answers[key]) feedback.appendChild(el("div", { class:"feedback " + (state.answers[key].correct ? "good" : "try"), text:state.answers[key].correct ? "Correct. " + explanation : "Not yet. Re-read what happened, identify the purpose of the action or block, and compare it with each option." }));
+    block.appendChild(feedback); return block;
+  }
+  function textAnswer(key, question, opts) {
+    opts = opts || {}; const field = el("div", { class:"field question" }); field.appendChild(el("label", { for:key, text:question }));
+    if (state.profile.responseMode === "guided" && opts.frame) field.appendChild(el("p", { class:"sentence-frame", text:"Sentence frame: " + opts.frame }));
+    const input = opts.rows ? el("textarea", { id:key, rows:String(opts.rows), maxlength:String(opts.max || 350) }) : el("input", { id:key, type:"text", maxlength:String(opts.max || 220) });
+    if (state.answers[key]) input.value = state.answers[key].answer || "";
+    if (opts.placeholder) input.placeholder = opts.placeholder;
+    input.addEventListener("input", function () { state.answers[key] = { question:question, answer:input.value.trim(), correct:input.value.trim().length >= (opts.min || 3) }; save(); });
+    field.appendChild(input);
+    if (opts.words && state.profile.responseMode === "guided") {
+      const bank = el("div", { class:"word-bank" }); opts.words.forEach(function (w) { const b=el("button",{type:"button",text:w});b.addEventListener("click",function(){input.value+=(input.value?" ":"")+w;input.dispatchEvent(new Event("input"));input.focus();});bank.appendChild(b); }); field.appendChild(bank);
+    }
+    return field;
+  }
+  function checkList(prefix, items) {
+    const list = el("ul", { class:"check-list" }); items.forEach(function (text, i) {
+      const key = prefix + i; const cb = el("input", { type:"checkbox", checked:!!state.checks[key] });
+      cb.addEventListener("change",function(){state.checks[key]=cb.checked;save();}); list.appendChild(el("li",{},[el("label",{},[cb,el("span",{text:text})])]));
+    }); return list;
+  }
+  function allChecked(prefix, count) { for (let i=0;i<count;i++) if(!state.checks[prefix+i]) return false; return true; }
+  function requireKeys(keys) { return keys.every(function (k) { return correct(k); }); }
+  function taskColumns(leftItems, rightItems) {
+    const grid=el("div",{class:"task-columns"});
+    const left=el("div",{class:"task-column"}); const right=el("div",{class:"task-column"});
+    (leftItems||[]).forEach(function(item){if(item)left.appendChild(item);});
+    (rightItems||[]).forEach(function(item){if(item)right.appendChild(item);});
+    grid.appendChild(left); grid.appendChild(right); return grid;
+  }
+  function cardTop(card, number, heading, instructionText, section, supportKey) {
+    card.appendChild(el("span", { class:"card-number", text:"Step " + number })); card.appendChild(el("h2", { text:heading })); card.appendChild(instruction(instructionText, section, supportKey));
+  }
+  function renderStepper(section, title, eyebrow, steps, nextSection) {
+    const main = clearMain(); const screen = el("section", { class:"screen activity-shell" }); if (teacherMode) screen.appendChild(teacherPanel());
+    const head = el("div", { class:"activity-heading" }); const left = el("div"); left.appendChild(el("p", { class:"eyebrow", text:eyebrow })); left.appendChild(el("h1", { text:title })); head.appendChild(left); head.appendChild(el("span", { class:"time-chip", text:(state.steps[section]+1)+" of "+steps.length })); screen.appendChild(head);
+    const dots = el("div", { class:"step-dots", "aria-label":"Activity steps" }); steps.forEach(function(_,i){dots.appendChild(el("span",{class:"step-dot "+(i===state.steps[section]?"active":i<state.steps[section]?"done":"")}));}); screen.appendChild(dots);
+    const card = el("article", { class:"lesson-card" }); const validator = steps[state.steps[section]](card) || function(){return true;};
+    const error = el("div", { class:"field-error", "aria-live":"polite" }); card.appendChild(error);
+    const buttons = el("div", { class:"button-row" });
+    const back = el("button", { type:"button", class:"btn secondary", text:"← Back" }); back.disabled=state.steps[section]===0; back.addEventListener("click",function(){setStep(section,state.steps[section]-1);}); buttons.appendChild(back);
+    const isLast = state.steps[section] === steps.length-1; const next = el("button", { type:"button", class:"btn", text:isLast ? "Complete activity →" : "Next step →" });
+    next.addEventListener("click",function(){ const result=teacherMode ? true : validator(); if(result!==true){error.textContent=typeof result==="string"?result:"Complete the task before you continue.";return;} error.textContent=""; if(isLast){complete(section);go(nextSection);}else setStep(section,state.steps[section]+1); }); buttons.appendChild(next); card.appendChild(buttons); screen.appendChild(card); main.appendChild(screen);
+  }
+
+  function screenshotWidget(key, evidenceKey, label) {
+    const wrap = el("div", { class:"drop-area", tabindex:"0" }); const status = el("div", { "aria-live":"polite" });
+    wrap.appendChild(el("p", { html:"<strong>"+esc(label)+"</strong>" })); wrap.appendChild(el("p", { text:"Paste a screenshot here, drag it here, or choose an image file." }));
+    wrap.appendChild(el("details",{html:"<summary><strong>How do I take a screenshot?</strong></summary><p><strong>Windows:</strong> Win + Shift + S · <strong>Chromebook:</strong> Ctrl + Show windows · <strong>Mac:</strong> Command + Shift + 4. Capture only the folder or Scratch area your teacher needs.</p>"}));
+    const input = el("input", { type:"file", accept:"image/png,image/jpeg,image/webp", "aria-label":label }); wrap.appendChild(input); wrap.appendChild(status);
+    const preview = el("div"); wrap.appendChild(preview);
+    const skipLabel = el("label", { class:"choice-card" }); const skip = el("input", { type:"checkbox", checked:!!state.evidence[evidenceKey+"Skipped"] }); skipLabel.appendChild(skip); skipLabel.appendChild(document.createTextNode(" My teacher will check this directly instead.")); wrap.appendChild(skipLabel);
+    function showBlob(blob) { preview.innerHTML=""; const img=el("img",{class:"upload-preview",alt:label});img.src=URL.createObjectURL(blob);preview.appendChild(img); }
+    function accept(file) {
+      if (!file || !/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 10*1024*1024) { status.innerHTML="<div class='feedback try'>Choose a PNG, JPG or WEBP image under 10 MB.</div>"; return; }
+      S.putScreenshot(key,file).then(function(){state.evidence[evidenceKey]=true;state.evidence[evidenceKey+"Skipped"]=false;skip.checked=false;save();showBlob(file);status.innerHTML="<div class='feedback good'>Screenshot saved locally.</div>";}).catch(function(){status.innerHTML="<div class='feedback try'>This browser could not store the image. Ask your teacher to check it directly.</div>";});
+    }
+    input.addEventListener("change",function(){accept(input.files[0]);});
+    wrap.addEventListener("paste",function(e){const items=e.clipboardData&&e.clipboardData.items; if(!items)return; for(let i=0;i<items.length;i++)if(items[i].type.indexOf("image/")===0){accept(items[i].getAsFile());e.preventDefault();break;}});
+    wrap.addEventListener("dragover",function(e){e.preventDefault();wrap.classList.add("drag");}); wrap.addEventListener("dragleave",function(){wrap.classList.remove("drag");}); wrap.addEventListener("drop",function(e){e.preventDefault();wrap.classList.remove("drag");accept(e.dataTransfer.files[0]);});
+    skip.addEventListener("change",function(){state.evidence[evidenceKey+"Skipped"]=skip.checked;if(skip.checked)state.evidence[evidenceKey]=false;save();});
+    S.getScreenshot(key).then(function(blob){if(blob)showBlob(blob);}).catch(function(){});
+    wrap.appendChild(el("p", { class:"privacy-note", text:"Privacy: crop out email addresses, other pupils’ names and personal tabs before adding the image." })); return wrap;
+  }
+
+  const STARTER_STEPS = [
+    function (card) {
+      cardTop(card,"1 of 3","A Computing lesson from start to finish","Read the three moments from Aisha’s lesson. Notice what she does and why each action matters; you will use these ideas in the next step.","starter","starter1");
+      card.appendChild(el("div",{class:"story-intro",html:"<strong>Imagine this:</strong> Aisha has arrived for her first Year 6 Computing lesson. Follow her from the moment she sits down until she leaves the room."}));
+      const storyLayout=el("div",{class:"starter-story-layout"});
+      storyLayout.appendChild(visual("image-01-start-work-finish.png","A three-panel Start, Work and Finish computing routine","The picture gives an overview of the three moments in Aisha’s lesson."));
+      storyLayout.appendChild(el("div",{class:"story-grid"},[
+        el("article",{class:"story-phase",html:"<h3><span>1</span> Start — get ready safely</h3><p>Before logging in, Aisha checks that the computer and cables look safe. She then logs in and waits for the task.</p><p class='why'><strong>Why:</strong> She is safe and ready to learn.</p>"}),
+        el("article",{class:"story-phase",html:"<h3><span>2</span> Work — protect your progress</h3><p>Aisha follows one step at a time, saves regularly and tells the teacher when something is not working.</p><p class='why'><strong>Why:</strong> Her progress is protected and problems can be solved.</p>"}),
+        el("article",{class:"story-phase",html:"<h3><span>3</span> Finish — leave securely</h3><p>At the signal, Aisha saves and checks her file. She closes her work, signs out when told and leaves the computer ready.</p><p class='why'><strong>Why:</strong> Her work and account are protected.</p>"})
+      ])); card.appendChild(storyLayout); return function(){return true;};
+    },
+    function (card) {
+      cardTop(card,"2 of 3","Use Aisha’s routine","Read each situation. Think about the purpose of the action, then choose Start, Work or Finish.","starter","starter2");
+      card.appendChild(mcq("starter_q1","You have just sat down. What is the safest first action?",["Open a game while you wait","Check the equipment, log in and wait for instructions","Move another pupil’s files"],1,"This belongs in Start because it prepares you to work safely."));
+      card.appendChild(mcq("starter_q2","You press Ctrl+S while creating a Scratch project. Which phase is this?",["Start","Work","Finish only"],1,"Saving regularly is part of Work, not something to leave until the very end."));
+      return function(){return requireKeys(["starter_q1","starter_q2"]) || "Answer both questions correctly. You may try again.";};
+    },
+    function (card) {
+      cardTop(card,"3 of 3","Finish in the right order","Aisha has two minutes left. Choose the sequence that first protects her work, then her account, and finally the shared space.","starter","starter3");
+      card.appendChild(mcq("starter_q3","The teacher says there are two minutes left. Which sequence is best?",[
+        "Switch off immediately → walk away → remember the filename later",
+        "Save → check filename/location → close → sign out when told → tidy",
+        "Sign out → continue editing → save to Downloads"
+      ],1,"The sequence first protects the work, then the account, then the shared space."));
+      card.appendChild(el("div",{class:"mini-definition"},[el("strong",{text:"Sequence"}),el("span",{text:"the order in which instructions happen. Changing the order can change the result."})]));
+      return function(){return correct("starter_q3") || "Choose the correct finishing sequence before continuing.";};
+    }
+  ];
+  function renderStarter() { renderStepper("starter","Do Now: Start–Work–Finish","Starter · about 6 minutes",STARTER_STEPS,"main1"); }
+
+  const MAIN1_STEPS = [
+    function (card) {
+      cardTop(card,"1 of 5","Routine rescue","Aisha notices a loose cable before she logs in. Decide when she should act, then explain why reporting it matters.","main1","main1_1");
+      card.appendChild(el("div",{class:"story-intro",html:"<strong>The situation:</strong> The cable behind Aisha’s computer looks loose. She has not touched it or logged in."}));
+      card.appendChild(mcq("main1_routine","Where does ‘do not touch it; tell the teacher’ belong?",["Start, because the safety check happens before work begins","Work, because every problem belongs in Work","Finish, because cables are only checked at the end"],0,"It is a Start safety check. Aisha prevents risk before beginning."));
+      card.appendChild(textAnswer("main1_explain","Why should a problem be reported rather than secretly ignored?",{frame:"It should be reported because…",words:["keeps people safe","protects the equipment","helps the teacher fix it"],min:8}));
+      return function(){return correct("main1_routine") && state.answers.main1_explain && state.answers.main1_explain.answer.length>=8 || "Choose the correct routine and explain why reporting matters.";};
+    },
+    function (card) {
+      cardTop(card,"2 of 5","File or folder?","Learn the difference between a file and a folder. Then help Aisha choose a path she can still understand next week.","main1","main1_2");
+      const fileDef=el("div",{class:"mini-definition"},[el("strong",{text:"File"}),el("span",{text:"A saved piece of work, such as a Scratch project, image or document."})]);
+      const folderDef=el("div",{class:"mini-definition"},[el("strong",{text:"Folder"}),el("span",{text:"A container that organises files and can contain more folders."})]);
+      const folderQ=mcq("main1_folder","Which path makes the project easiest to find next week?",[
+        "Downloads › stuff › new folder",
+        "Year 6 Computing › Term 1 - Digital Independence › " + (state.student.name || "Your Name"),
+        "Desktop › Untitled"
+      ],1,"The path gives the subject, term/topic and owner in a clear hierarchy.");
+      card.appendChild(taskColumns([visual("image-02-folder-hierarchy.png","Folder hierarchy showing Year 6 Computing, Term 1 and a student folder","A hierarchy moves from a broad folder to a more specific folder.")],[fileDef,folderDef,folderQ]));
+      return function(){return correct("main1_folder") || "Choose the folder path that would still make sense next week.";};
+    },
+    function (card) {
+      cardTop(card,"3 of 5","Build it for real","Create the three-folder path on your school computer. Check each folder is inside the previous one, then add evidence or choose teacher checking.","main1","main1_3");
+      card.appendChild(el("div",{class:"folder-path"},[
+        el("span",{text:"Year 6 Computing"}),document.createTextNode("›"),el("span",{text:"Term 1 - Digital Independence"}),document.createTextNode("›"),el("span",{text:state.student.name || "Your Name"})
       ]));
-    });
-    card.appendChild(badgeRow);
-    wrap.appendChild(card);
-    const cont = el("button", { type: "button", class: "btn btn-big", text: "Open the Mission Map ▶" });
-    cont.addEventListener("click", function () {
-      unlock("starter");
-      completeStage("briefing");
-      go("map");
-    });
-    wrap.appendChild(el("div", { style: "text-align:center;" }, [cont]));
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Mission map ---------- */
-
-  function renderMap() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    if (teacherMode) { wrap.appendChild(teacherBar()); }
-    wrap.appendChild(el("p", { class: "stage-eyebrow", text: "Mission map" }));
-    wrap.appendChild(el("h1", { text: "Choose your next mission" }));
-    wrap.appendChild(instructionRow("Missions unlock in order. Finish the required missions to reach the Exit Terminal. The Extension Vault is optional."));
-    const grid = el("div", { class: "mission-map" });
-    STAGES.forEach(function (st) {
-      if (st.id === "landing" || st.id === "support" || st.id === "briefing") { return; }
-      const unlocked = isUnlocked(st.id);
-      const done = isDone(st.id);
-      const node = el("button", { type: "button", class: "map-node" + (done ? " is-done" : "") + (st.optional ? " is-optional" : "") });
-      if (!done && unlocked && !(st.id === "report" && !isDone("plenary"))) { node.classList.add("is-current"); }
-      node.appendChild(el("span", { class: "node-icon", "aria-hidden": "true", text: st.icon }));
-      node.appendChild(el("span", { class: "node-name", text: st.name }));
-      const status = done ? "Completed ✓" : unlocked ? (st.time ? st.time : "Ready") : "Locked";
-      node.appendChild(el("span", { class: "node-status", text: status }));
-      if (!unlocked) {
-        node.disabled = true;
-        node.appendChild(el("span", { class: "map-lock", "aria-hidden": "true", text: "🔒" }));
-      } else {
-        node.addEventListener("click", function () { go(st.id); });
-      }
-      grid.appendChild(node);
-    });
-    wrap.appendChild(grid);
-
-    const bCard = el("div", { class: "card" });
-    bCard.appendChild(el("h2", { text: "Your badges" }));
-    const badgeRow = el("div", { class: "badge-row" });
-    Object.keys(BADGES).forEach(function (k) {
-      const has = state.badges.indexOf(k) !== -1;
-      badgeRow.appendChild(el("span", { class: "badge" + (has ? "" : " badge-locked") }, [
-        el("span", { class: "badge-emoji", "aria-hidden": "true", text: BADGES[k].emoji }),
-        el("span", { text: BADGES[k].name })
-      ]));
-    });
-    bCard.appendChild(badgeRow);
-    wrap.appendChild(bCard);
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Game shell (shared by starter + routines) ---------- */
-
-  function buildGameShell(container, stations, objective, callbacks) {
-    const shell = el("div", { class: "game-shell" });
-    const hintBar = el("div", { class: "game-hint-bar" }, [
-      el("span", { class: "game-objective", text: objective }),
-      el("span", { text: "Move: ← → or A D · Jump: ↑ / W / Space · Use terminal: E or Enter" })
-    ]);
-    shell.appendChild(hintBar);
-
-    let usingGuided = state.settings.guidedMode;
-    let gameFailed = false;
-
-    const canvasWrap = el("div", { class: "game-canvas-wrap" });
-    const canvas = el("canvas", { id: "gameCanvas", "aria-label": "Platform game. " + objective + " You can switch to Guided Movement Mode below.", role: "img" });
-    canvasWrap.appendChild(canvas);
-    shell.appendChild(canvasWrap);
-
-    // touch controls
-    const touch = el("div", { class: "touch-controls" });
-    function tBtn(label, aria, name) {
-      const b = el("button", { type: "button", class: "touch-btn", "aria-label": aria, text: label });
-      ["pointerdown", "touchstart"].forEach(function (evt) {
-        b.addEventListener(evt, function (e) { e.preventDefault(); if (game) { game.setInput(name, true); } });
-      });
-      ["pointerup", "pointerleave", "pointercancel", "touchend"].forEach(function (evt) {
-        b.addEventListener(evt, function (e) { e.preventDefault(); if (game && name !== "interact") { game.setInput(name, false); } });
-      });
-      return b;
+      card.appendChild(el("ol",{html:"<li>Open your school file area.</li><li>Create <strong>Year 6 Computing</strong>.</li><li>Inside it, create <strong>Term 1 - Digital Independence</strong>.</li><li>Inside that, create a folder with your own name.</li><li>Check the spelling and nesting.</li>"}));
+      card.appendChild(screenshotWidget("folder","folder","Folder evidence"));
+      return function(){return state.evidence.folder || state.evidence.folderSkipped || "Add a folder screenshot, or tick that your teacher will check it directly.";};
+    },
+    function (card) {
+      cardTop(card,"4 of 5","Choose a useful filename","Imagine Aisha returns next week and sees several Scratch files. Compare the names and choose the one that tells her exactly what the file is.","main1","main1_4");
+      const filenameStory=el("div",{class:"story-intro",html:"<strong>The problem:</strong> Names such as <em>project</em> and <em>final FINAL 2</em> may make sense today, but they are difficult to recognise later."});
+      const filenameKey=el("div",{class:"filename-key",html:"<span><strong>Y6</strong> year group</span><span><strong>T1W01</strong> term and week</span><span><strong>ScratchBaseline</strong> task</span><span><strong>v1</strong> version</span>"});
+      const filenameQ=mcq("main1_filename","Which filename is most useful?",["final FINAL 2.sb3","project.sb3","Y6_T1W01_ScratchBaseline_v1.sb3"],2,"It identifies year group, term/week, task and version without vague words.");
+      const filenameText=textAnswer("main1_own_filename","Type the agreed filename without the .sb3 ending.",{placeholder:"Y6_T1W01_ScratchBaseline_v1",min:10});
+      card.appendChild(taskColumns([filenameStory,visual("image-03-filename-comparison.png","Comparison of weak and useful Scratch project filenames","The useful name records the class context, lesson, task and version."),filenameKey],[filenameQ,filenameText]));
+      return function(){return correct("main1_filename") && state.answers.main1_own_filename && /^Y6_T1W01_ScratchBaseline_v1$/i.test(state.answers.main1_own_filename.answer) || "Choose the best filename and type Y6_T1W01_ScratchBaseline_v1 exactly.";};
+    },
+    function (card) {
+      cardTop(card,"5 of 5","Explain the organisation","Use the final check to explain how the folder path and filename solve different parts of the same problem.","main1","main1_5");
+      card.appendChild(mcq("main1_check","Why do folders and filenames both matter?",[
+        "Folders group related work; filenames identify the exact file",
+        "They make the computer run faster",
+        "A filename replaces the need for folders"
+      ],0,"Folder structure and filenames solve different parts of the same finding problem."));
+      card.appendChild(el("div",{class:"feedback info",text:"Core idea: organised work is easier to find, continue and prove. It is not just about making the screen look tidy."}));
+      return function(){return correct("main1_check") || "Complete the organisation check before moving into Scratch.";};
     }
-    const leftGrp = el("div", { class: "touch-group" }, [tBtn("◀", "Move left", "left"), tBtn("▶", "Move right", "right")]);
-    const rightGrp = el("div", { class: "touch-group" }, [tBtn("⚡", "Use terminal", "interact"), tBtn("▲", "Jump", "jump")]);
-    touch.appendChild(leftGrp);
-    touch.appendChild(rightGrp);
-    shell.appendChild(touch);
+  ];
+  function renderMain1() { renderStepper("main1","Main Activity 1: Organise digital work","Main task 1 · about 15 minutes",MAIN1_STEPS,"main2"); }
 
-    const guidedPanel = el("div", { class: "guided-panel" });
-    shell.appendChild(guidedPanel);
-
-    container.appendChild(shell);
-
-    const toggleWrap = el("div", { style: "margin: 0.6rem 0 1rem;" });
-    const toggle = el("button", { type: "button", class: "btn btn-secondary" });
-    toggleWrap.appendChild(toggle);
-    container.appendChild(toggleWrap);
-
-    function renderGuidedButtons() {
-      guidedPanel.innerHTML = "";
-      guidedPanel.appendChild(el("p", { html: "<strong>Guided Movement Mode:</strong> click the next place you want to visit." }));
-      let nextIndex = stations.findIndex(function (s) { return !callbacks.isStationDone(s.id); });
-      stations.forEach(function (s, i) {
-        const done = callbacks.isStationDone(s.id);
-        const b = el("button", { type: "button", class: "guided-dest" + (done ? " gd-done" : "") }, [
-          el("span", { class: "gd-icon", "aria-hidden": "true", text: done ? "✅" : (i === nextIndex ? "🚪" : "🔒") }),
-          el("span", { text: s.label + (done ? " — completed" : "") })
-        ]);
-        b.disabled = done || i !== nextIndex;
-        if (!done && i === nextIndex) {
-          b.addEventListener("click", function () { callbacks.onTerminal(s.id); });
-        }
-        guidedPanel.appendChild(b);
-      });
-      if (nextIndex === -1) {
-        const fin = el("button", { type: "button", class: "guided-dest" }, [
-          el("span", { class: "gd-icon", "aria-hidden": "true", text: "🏁" }),
-          el("span", { text: "Go to the exit door" })
-        ]);
-        fin.addEventListener("click", function () { callbacks.onLevelComplete(); });
-        guidedPanel.appendChild(fin);
-      }
-    }
-
-    function applyMode() {
-      if (usingGuided || gameFailed) {
-        if (game) { game.destroy(); game = null; }
-        canvasWrap.hidden = true; touch.hidden = true; hintBar.hidden = true;
-        guidedPanel.hidden = false;
-        renderGuidedButtons();
-        toggle.textContent = gameFailed ? "Platform game unavailable on this device" : "🎮 Switch to platform-game controls";
-        toggle.disabled = gameFailed;
-      } else {
-        guidedPanel.hidden = true;
-        canvasWrap.hidden = false; touch.hidden = false; hintBar.hidden = false;
-        toggle.textContent = "🧭 Switch to Guided Movement Mode (click to move)";
-        try {
-          if (game) { game.destroy(); }
-          game = new window.LabGame(canvas, {
-            stations: stations.map(function (s) { return { id: s.id, label: s.shortLabel || s.label, icon: s.icon }; }),
-            reducedMotion: state.settings.reducedMotion,
-            avatarHue: currentAvatarHue(),
-            onTerminal: callbacks.onTerminal,
-            onChip: function () { addChips(1); },
-            onLevelComplete: callbacks.onLevelComplete
-          });
-          stations.forEach(function (s) { if (callbacks.isStationDone(s.id)) { game.markTerminalDone(s.id); } });
-        } catch (e) {
-          gameFailed = true;
-          usingGuided = true;
-          applyMode();
-        }
-      }
-    }
-
-    toggle.addEventListener("click", function () {
-      usingGuided = !usingGuided;
-      state.settings.guidedMode = usingGuided;
-      S.save();
-      applyMode();
-    });
-
-    applyMode();
-
-    return {
-      refresh: function () {
-        if (game) {
-          stations.forEach(function (s) { if (callbacks.isStationDone(s.id)) { game.markTerminalDone(s.id); } });
-          game.resume();
-        }
-        if (usingGuided || gameFailed) { renderGuidedButtons(); }
-      }
-    };
-  }
-
-  /* ---------- Starter: Safety Corridor ---------- */
-
-  function renderStarter() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Starter mission" }),
-      el("span", { class: "time-pill", text: "⏱ about 7 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "🚦 Safety Corridor" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "Walk through the four rooms. At each terminal, answer the question to open the next door."
-      : "Guide your avatar through the four rooms of the Safety Corridor. Each room holds a terminal with a scenario about lab behaviour. Answer thoughtfully to unlock the door to the next room."));
-
-    const stations = STARTER.map(function (s) { return { id: s.id, label: s.label, shortLabel: s.label.split(": ")[1], icon: "🖥️" }; });
-
-    function answered(id) {
-      return !!state.answers["starter_" + id];
-    }
-
-    let shellApi = null;
-
-    function handleTerminal(id) {
-      const sc = STARTER.find(function (s) { return s.id === id; });
-      function record(res) {
-        state.answers["starter_" + id] = {
-          label: sc.label,
-          question: typingSupport() ? (sc.mcq ? sc.mcq.question : sc.selectAll.question) : sc.open.prompt,
-          answer: res.chosen,
-          correct: res.correct,
-          attempts: res.attempts
-        };
-        addChips(2);
-        S.save();
-        if (game) { game.markTerminalDone(id); game.resume(); }
-        if (shellApi) { shellApi.refresh(); }
-        if (STARTER.every(function (s) { return answered(s.id); })) {
-          finishStarter();
-        }
-      }
-      if (typingSupport()) {
-        if (sc.selectAll) {
-          askSelectAll({ title: sc.label, scenario: sc.scenario, question: sc.selectAll.question, items: sc.selectAll.items, feedback: sc.selectAll.feedback, hint: sc.selectAll.hint }, record);
-        } else {
-          askMCQ({ title: sc.label, scenario: sc.scenario, question: sc.mcq.question, options: sc.mcq.options, correct: sc.mcq.correct, feedback: sc.mcq.feedback, hint: sc.mcq.hint }, record);
-        }
-      } else {
-        askOpen({
-          title: sc.label, scenario: sc.scenario, prompt: sc.open.prompt,
-          starter: sc.open.starter, wordbank: sc.open.wordbank,
-          keywords: sc.open.keywords, minGroups: sc.open.minGroups,
-          hint: "Use ideas like: " + sc.open.wordbank.slice(0, 4).join(", ") + "…",
-          model: sc.open.model
-        }, record);
-      }
-    }
-
-    function finishStarter() {
-      if (!isDone("starter")) {
-        awardBadge("safety");
-        completeStage("starter");
-      }
-    }
-
-    shellApi = buildGameShell(wrap, stations, "Visit all 4 terminals and answer each scenario.", {
-      isStationDone: answered,
-      onTerminal: handleTerminal,
-      onLevelComplete: function () {
-        finishStarter();
-        toast("Safety Corridor restored!", "🚦");
-        go("map");
-      }
-    });
-
-    if (isDone("starter")) {
-      const doneBar = el("div", { class: "card" }, [
-        el("p", { html: "<strong>✔ Safety Corridor complete.</strong> You can replay for fun, or continue your mission." })
+  const MAIN2_STEPS = [
+    function (card) {
+      cardTop(card,"1 of 6","Help Aisha find her way around Scratch","Aisha needs to choose commands, join them into a program and watch the result. Use the labelled visual to find each place.","main2","main2_1");
+      const interfaceDefs=el("div",{class:"concept-pair"},[
+        el("div",{class:"mini-definition"},[el("strong",{text:"Block palette"}),el("span",{text:"Where Aisha chooses commands such as Motion, Looks and Events."})]),
+        el("div",{class:"mini-definition"},[el("strong",{text:"Stage"}),el("span",{text:"Where Aisha watches the sprite carry out the program."})])
       ]);
-      const nextB = el("button", { type: "button", class: "btn", text: "Continue to Lab Operating System ▶" });
-      nextB.addEventListener("click", function () { go("routines"); });
-      doneBar.appendChild(nextB);
-      wrap.appendChild(doneBar);
-    }
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Main 1: Routines (Lab Operating System) ---------- */
-
-  const ROUTINE_CARDS = [
-    { id: "s1", zone: "start", text: "Enter calmly and use the assigned workstation." },
-    { id: "s2", zone: "start", text: "Check the workstation and report damage or missing equipment." },
-    { id: "s3", zone: "start", text: "Wait for instructions before opening applications or websites." },
-    { id: "w1", zone: "work", text: "Use only the required applications, files and browser tabs." },
-    { id: "w2", zone: "work", text: "Keep passwords and personal information private." },
-    { id: "w3", zone: "work", text: "Save work regularly using the agreed folders and filenames." },
-    { id: "w4", zone: "work", text: "Work respectfully and take turns when collaborating." },
-    { id: "w5", zone: "work", text: "Ask for help using the agreed classroom procedure." },
-    { id: "f1", zone: "finish", text: "Save and check that the file can be found again." },
-    { id: "f2", zone: "finish", text: "Close applications and browser tabs." },
-    { id: "f3", zone: "finish", text: "Sign out of the school account." },
-    { id: "f4", zone: "finish", text: "Leave the workstation and chair ready for the next class." }
-  ];
-
-  const ROUTINE_QUESTIONS = [
-    {
-      id: "rq1",
-      q: "Why should damaged equipment be reported at the beginning?",
-      mcq: {
-        options: [
-          "So problems can be fixed safely and nobody is blamed for damage they did not cause.",
-          "So the student can move to a more comfortable seat.",
-          "So the equipment can be hidden away before the lesson starts."
-        ],
-        correct: 0,
-        feedback: "Reporting damage straight away keeps everyone safe, gets things repaired, and protects you from being blamed for damage that was already there.",
-        hint: "Think about safety — and about who might be blamed later."
-      },
-      open: {
-        starter: "Damaged equipment should be reported at the start because __________.",
-        wordbank: ["safe", "unsafe", "fixed", "repaired", "blamed", "fault", "before the lesson"],
-        keywords: [["safe", "unsafe", "danger", "hurt"], ["fix", "repair", "sorted", "replace"], ["blame", "fault", "already", "wasn't me", "was not me"]],
-        minGroups: 1,
-        model: "Damaged equipment should be reported at the beginning so it can be repaired safely, so nobody gets hurt, and so you are not blamed for damage that was already there."
-      }
+      const stageQ=mcq("main2_stage","Where do you watch the sprite’s movement and message?",["Block palette","Stage","Sprite name box"],1,"The stage displays the program’s visible output.");
+      const paletteQ=mcq("main2_palette","Where do you choose Motion, Looks and Events blocks?",["Block palette","Stage","Menu bar"],0,"The block palette groups commands by category.");
+      card.appendChild(taskColumns([visual("image-04-annotated-scratch-interface-v3.png","Annotated Scratch 3 interface with block palette, code area, stage, sprite list and green flag","The block palette supplies commands, the code area holds the program, and the stage shows the output.")],[interfaceDefs,stageQ,paletteQ]));
+      return function(){return requireKeys(["main2_stage","main2_palette"]) || "Use the labels on the visual to answer both questions correctly.";};
     },
-    {
-      id: "rq2",
-      q: "Why is “I saved it somewhere” not enough?",
-      mcq: {
-        options: [
-          "Because work must be saved in the agreed folder with a clear filename so it can be found again next lesson.",
-          "Because saving work is not really important.",
-          "Because you should always save every file twice."
-        ],
-        correct: 0,
-        feedback: "If you don't know where a file is or what it is called, it is almost the same as losing it. Agreed folders and filenames mean you — and your teacher — can always find your work.",
-        hint: "Imagine trying to find that file again next week. What would you need to know?"
-      },
-      open: {
-        starter: "Saving “somewhere” is not enough because __________.",
-        wordbank: ["find", "folder", "filename", "lost", "next lesson", "organised"],
-        keywords: [["find", "lost", "lose", "where"], ["folder", "filename", "name", "organis", "agreed", "correct place"]],
-        minGroups: 1,
-        model: "Saving “somewhere” is not enough because you might never find the file again. Using the agreed folder and a clear filename means your work is safe and easy to find next lesson."
-      }
+    function (card) {
+      cardTop(card,"2 of 6","Predict before you run","Do not open Scratch yet. Read the three blocks from top to bottom: identify what starts the script, then predict both things the sprite will do.","main2","main2_2");
+      const predictionVisuals=el("div",{class:"visual-pair"});
+      predictionVisuals.appendChild(visual("image-05-prediction-code-v2.png","Scratch blocks: when right arrow key pressed, change x by 40, say Moving right for one second","The event is a right-arrow key press. The commands change x and display a message."));
+      predictionVisuals.appendChild(visual("image-06-three-possible-outcomes.png","Three possible outcomes: move up, move right, or stay still","Compare the sign and axis in the code with the direction in each outcome."));
+      const predictionQ=mcq("main2_prediction","What will happen when the right arrow key is pressed?",[
+        "The sprite moves up and says ‘Moving right!’",
+        "The sprite moves right by 40 and says ‘Moving right!’",
+        "Nothing happens because the green flag was not clicked"
+      ],1,"Positive x moves a sprite to the right. The key event can start the script without the green flag.");
+      const inputQ=mcq("main2_input","What is the input?",["The right-arrow key press","The sprite moving","The words ‘Moving right!’"],0,"An input is what the computer receives—in this case, a key press.");
+      const outputQ=mcq("main2_output","Which answer includes both outputs?",["The right-arrow key and x","Movement and a message","The block palette and stage"],1,"The program changes the sprite’s position and shows a message.");
+      card.appendChild(taskColumns([predictionVisuals],[predictionQ,inputQ,outputQ]));
+      return function(){return requireKeys(["main2_prediction","main2_input","main2_output"]) || "Make and check all three predictions before opening Scratch.";};
     },
-    {
-      id: "rq3",
-      q: "Why must students sign out at the end?",
-      mcq: {
-        options: [
-          "To keep their account, work and personal information safe from other users.",
-          "Because the computer needs to rest between lessons.",
-          "So that the next class cannot use the computer at all."
-        ],
-        correct: 0,
-        feedback: "If you stay signed in, the next person could see or change your files — or use your account. Signing out protects your work and your personal information.",
-        hint: "Think about who uses the computer after you."
-      },
-      open: {
-        starter: "Students must sign out because __________.",
-        wordbank: ["account", "private", "safe", "other people", "personal information", "protect"],
-        keywords: [["account", "log", "sign"], ["safe", "private", "protect", "personal", "secure"], ["other", "next", "someone", "somebody", "anyone"]],
-        minGroups: 2,
-        model: "Students must sign out so that nobody else can use their account, see their personal information, or change their work. It keeps everything safe for the next lesson."
-      }
-    }
-  ];
-
-  function renderRoutines() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Main mission 1" }),
-      el("span", { class: "time-pill", text: "⏱ about 10 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "⚙️ Lab Operating System" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "The routine cards are scattered! Put each card into the correct zone: Start, Work or Finish. Drag a card, or click a card and then click a zone."
-      : "The lab's routines have been scattered into loose instruction cards. Rebuild the operating system by sorting every card into the correct zone: Start Zone, Work Zone or Finish Zone. You can drag cards, or click a card and then click its zone."));
-
-    // --- sorting board ---
-    const board = el("div", { class: "sort-layout" });
-    const pool = el("div", { class: "sort-pool", "aria-label": "Unsorted routine cards" });
-    pool.appendChild(el("h3", { text: "🗂 Scattered routine cards" }));
-    const poolList = el("div");
-    pool.appendChild(poolList);
-    board.appendChild(pool);
-
-    const zones = {};
-    const fbArea = el("div", { "aria-live": "polite" });
-    let selectedCard = null;
-
-    [["start", "▶ Start Zone", "zone-start"], ["work", "⚙ Work Zone", "zone-work"], ["finish", "⏹ Finish Zone", "zone-finish"]].forEach(function (z) {
-      const zEl = el("div", { class: "sort-zone " + z[2], "aria-label": z[1] + " drop area", role: "group" });
-      zEl.appendChild(el("h3", { text: z[1] }));
-      const list = el("div");
-      zEl.appendChild(list);
-      zones[z[0]] = { root: zEl, list: list };
-      zEl.addEventListener("dragover", function (e) { e.preventDefault(); zEl.classList.add("zone-over"); });
-      zEl.addEventListener("dragleave", function () { zEl.classList.remove("zone-over"); });
-      zEl.addEventListener("drop", function (e) {
-        e.preventDefault();
-        zEl.classList.remove("zone-over");
-        const id = e.dataTransfer.getData("text/plain");
-        if (id) { placeCard(id, z[0]); }
-      });
-      zEl.addEventListener("click", function (e) {
-        if (selectedCard && e.target.closest(".routine-card") === null) {
-          placeCard(selectedCard, z[0]);
-        }
-      });
-      board.appendChild(zEl);
-    });
-
-    function cardEl(card) {
-      const b = el("button", { type: "button", class: "routine-card", draggable: "true", "data-id": card.id, "aria-pressed": "false" }, [
-        el("span", { "aria-hidden": "true", text: "🪪" }),
-        el("span", { text: card.text })
+    function (card) {
+      cardTop(card,"3 of 6","Build the exact script","Open Scratch in a new tab, keep this lesson tab open, and build the three connected blocks exactly as shown. Save using the agreed filename.","main2","main2_3");
+      const open = el("a", { class:"btn scratch", href:CFG.SCRATCH_PROJECT_URL || "https://scratch.mit.edu/projects/editor/", target:"_blank", rel:"noopener", text:"Open a new Scratch project ↗" });
+      const buildChecks=checkList("build_",[
+        "I added ‘when right arrow key pressed’.",
+        "I connected ‘change x by 40’.",
+        "I connected ‘say Moving right! for 1 seconds’.",
+        "I saved or downloaded the project as Y6_T1W01_ScratchBaseline_v1 and placed it in my lesson folder."
       ]);
-      b.addEventListener("dragstart", function (e) { e.dataTransfer.setData("text/plain", card.id); });
-      b.addEventListener("click", function (e) {
-        e.stopPropagation();
-        if (state.routineSort[card.id]) { return; }
-        if (selectedCard === card.id) {
-          selectedCard = null;
-          b.setAttribute("aria-pressed", "false");
-        } else {
-          document.querySelectorAll(".routine-card[aria-pressed='true']").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-          selectedCard = card.id;
-          b.setAttribute("aria-pressed", "true");
-          fbArea.innerHTML = "";
-          fbArea.appendChild(el("div", { class: "feedback feedback-info", text: "Card selected. Now click the zone where it belongs." }));
-        }
-      });
-      return b;
-    }
-
-    function renderBoard() {
-      poolList.innerHTML = "";
-      Object.keys(zones).forEach(function (z) { zones[z].list.innerHTML = ""; });
-      ROUTINE_CARDS.forEach(function (card) {
-        const placedZone = state.routineSort[card.id];
-        const node = cardEl(card);
-        if (placedZone) {
-          node.classList.add("rc-correct");
-          node.draggable = false;
-          zones[placedZone].list.appendChild(node);
-        } else {
-          poolList.appendChild(node);
-        }
-      });
-      const remaining = ROUTINE_CARDS.filter(function (c) { return !state.routineSort[c.id]; }).length;
-      if (!remaining) {
-        poolList.appendChild(el("p", { class: "sim-empty", text: "All cards sorted — the operating system is rebuilding!" }));
-      }
-    }
-
-    function placeCard(id, zone) {
-      const card = ROUTINE_CARDS.find(function (c) { return c.id === id; });
-      if (!card || state.routineSort[id]) { return; }
-      selectedCard = null;
-      fbArea.innerHTML = "";
-      if (card.zone === zone) {
-        sfx.correct();
-        state.routineSort[id] = zone;
-        S.save();
-        renderBoard();
-        fbArea.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Correct — that routine belongs in the " + zone + " zone." }));
-        const remaining = ROUTINE_CARDS.filter(function (c) { return !state.routineSort[c.id]; }).length;
-        if (remaining === 0) { afterSorting(); }
-      } else {
-        sfx.wrong();
-        renderBoard();
-        const node = poolList.querySelector("[data-id='" + id + "']");
-        if (node) { node.classList.add("rc-wrong"); }
-        const hint = card.zone === "start" ? "Think: does this happen when you first arrive?" :
-          card.zone === "work" ? "Think: is this something you do while working?" :
-          "Think: does this happen when you are leaving?";
-        fbArea.appendChild(el("div", { class: "feedback feedback-try", text: "Not that zone — try again. " + hint }));
-      }
-    }
-
-    const qArea = el("div");
-
-    function afterSorting() {
-      toast("All routines sorted!", "⚙️");
-      renderQuestions();
-      qArea.scrollIntoView({ behavior: state.settings.reducedMotion ? "auto" : "smooth" });
-    }
-
-    function questionsAnswered() {
-      return ROUTINE_QUESTIONS.every(function (q) { return !!state.answers["routine_" + q.id]; });
-    }
-
-    function renderQuestions() {
-      qArea.innerHTML = "";
-      const card = el("div", { class: "card" });
-      card.appendChild(el("h2", { text: "Quick thinking — three questions" }));
-      ROUTINE_QUESTIONS.forEach(function (q, i) {
-        const doneAns = state.answers["routine_" + q.id];
-        const row = el("div", { style: "margin-bottom:0.8rem;" });
-        row.appendChild(el("p", { html: "<strong>" + (i + 1) + ". " + esc(q.q) + "</strong> " + (doneAns ? "✔" : "") }));
-        if (!doneAns) {
-          const b = el("button", { type: "button", class: "btn btn-secondary", text: "Answer this question" });
-          b.addEventListener("click", function () {
-            function record(res) {
-              state.answers["routine_" + q.id] = { question: q.q, answer: res.chosen, correct: res.correct, attempts: res.attempts };
-              addChips(1);
-              S.save();
-              renderQuestions();
-              if (questionsAnswered()) { finishRoutines(); }
-            }
-            if (typingSupport()) {
-              askMCQ({ title: "Lab Operating System", question: q.q, options: q.mcq.options, correct: q.mcq.correct, feedback: q.mcq.feedback, hint: q.mcq.hint }, record);
-            } else {
-              askOpen({ title: "Lab Operating System", prompt: q.q, starter: q.open.starter, wordbank: q.open.wordbank, keywords: q.open.keywords, minGroups: q.open.minGroups, hint: q.mcq.hint, model: q.open.model }, record);
-            }
-          });
-          row.appendChild(b);
-        } else {
-          row.appendChild(el("p", { class: "sentence-starter", text: "Your answer: " + doneAns.answer }));
-        }
-        card.appendChild(row);
-      });
-      qArea.appendChild(card);
-    }
-
-    function finishRoutines() {
-      if (!isDone("routines")) {
-        awardBadge("routine");
-        completeStage("routines");
-      }
-      const doneCard = el("div", { class: "card" });
-      doneCard.appendChild(el("p", { html: "<strong>✔ The Lab Operating System is back online!</strong>" }));
-      const nb = el("button", { type: "button", class: "btn", text: "Continue to the File Management Centre ▶" });
-      nb.addEventListener("click", function () { go("files"); });
-      doneCard.appendChild(nb);
-      qArea.appendChild(doneCard);
-    }
-
-    wrap.appendChild(board);
-    wrap.appendChild(fbArea);
-    wrap.appendChild(qArea);
-    main.appendChild(wrap);
-
-    renderBoard();
-    const sorted = ROUTINE_CARDS.every(function (c) { return !!state.routineSort[c.id]; });
-    if (sorted) {
-      renderQuestions();
-      if (questionsAnswered()) { finishRoutines(); }
-    }
-  }
-
-  /* ---------- Main 2A: File Management Simulator ---------- */
-
-  const TARGET_FOLDER_1 = "Year 6 Computing";
-  const TARGET_FOLDER_2 = "Term 1 - Digital Independence";
-  const TARGET_FILENAME = "Y6_T1W01_ScratchBaseline_v1";
-
-  function normName(s) {
-    return String(s).trim().toLowerCase().replace(/[–—]/g, "-").replace(/\s+/g, " ");
-  }
-
-  /* The third folder is the student's own name. Accept the full name or at
-     least their first name (3+ letters) so nobody is blocked by spelling
-     out middle names etc. */
-  function matchesStudentName(input) {
-    const full = normName(state.student.name || "");
-    const typed = normName(input);
-    if (!typed) { return false; }
-    if (typed === full) { return true; }
-    const first = full.split(" ")[0] || "";
-    return first.length >= 3 && typed.indexOf(first) !== -1;
-  }
-
-  function folderSVG() {
-    return '<svg viewBox="0 0 56 46" aria-hidden="true"><path d="M4 10 q0-4 4-4 h14 l5 6 h21 q4 0 4 4 v22 q0 4-4 4 H8 q-4 0-4-4 Z" fill="#f6c453" stroke="#d9a53a" stroke-width="2"/></svg>';
-  }
-  function fileSVG() {
-    return '<svg viewBox="0 0 56 46" aria-hidden="true"><rect x="14" y="2" width="28" height="42" rx="4" fill="#eef3fa" stroke="#8fa8cf" stroke-width="2"/><path d="M20 12 h16 M20 19 h16 M20 26 h10" stroke="#5b7bb0" stroke-width="2"/><circle cx="36" cy="32" r="7" fill="#f5a623"/><circle cx="36" cy="32" r="3.4" fill="#fff"/></svg>';
-  }
-
-  function renderFiles() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Main mission 2A" }),
-      el("span", { class: "time-pill", text: "⏱ about 7 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "📁 File Management Centre" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "Pretend this is your school computer. Make the folder “Year 6 Computing”. Open it. Make the folder “Term 1 - Digital Independence”. Open it. Make a folder with YOUR name. Open it. Save your project as Y6_T1W01_ScratchBaseline_v1. Then find your saved file."
-      : "You have completed a Scratch project. Organise and save it so that you can find it again next lesson — including a folder with your own name, so everyone's work stays separate. This is a practice desktop — it cannot touch the real files on this computer."));
-
-    const goal = el("div", { class: "card" });
-    goal.appendChild(el("h2", { text: "Your goal" }));
-    goal.appendChild(el("pre", { style: "font-family: monospace; font-size: 1rem; background: #0d1836; padding: 0.8rem 1rem; border-radius: 10px; overflow:auto;", text:
-      "Year 6 Computing\n└── Term 1 - Digital Independence\n        └── " + (state.student.name || "Your Name") + "\n                └── " + TARGET_FILENAME + ".sb3" }));
-    wrap.appendChild(goal);
-
-    // simulated FS state
-    if (!state.fileSim.tree) {
-      state.fileSim.tree = { name: "Documents", folders: [], files: [] };
-    }
-    let cwdPath = state.fileSim.cwdPath || [];
-
-    function getNode(path) {
-      let node = state.fileSim.tree;
-      for (const p of path) {
-        const next = node.folders.find(function (f) { return f.name === p; });
-        if (!next) { return state.fileSim.tree; }
-        node = next;
-      }
-      return node;
-    }
-
-    const desktop = el("div", { class: "sim-desktop" });
-    const win = el("div", { class: "sim-window" });
-    desktop.appendChild(win);
-    wrap.appendChild(desktop);
-
-    const statusMsg = el("div", { class: "sim-statusbar", "aria-live": "polite" });
-    const hintArea = el("div", { "aria-live": "polite" });
-    let hintLevel = 0;
-
-    const HINTS = [
-      "Hint 1: Use the “New Folder” button to create “Year 6 Computing” first.",
-      "Hint 2: Click a folder to open it. Check the folder path bar to see where you are.",
-      "Hint 3: Inside “Term 1 - Digital Independence”, create a folder with YOUR name (" + (state.student.name || "your name") + ") and open it.",
-      "Hint 4: Inside your name folder, press “Save Project Here” and type the agreed filename exactly: " + TARGET_FILENAME,
-      "Hint 5: The filename pattern is Year_TermWeek_Project_version → Y6_T1W01_ScratchBaseline_v1"
-    ];
-
-    function renderWindow() {
-      state.fileSim.cwdPath = cwdPath;
-      S.save();
-      win.innerHTML = "";
-      const title = el("div", { class: "sim-titlebar" }, [
-        el("span", { class: "sim-dots" }, [el("span"), el("span"), el("span")]),
-        el("span", { text: "School Files — practice explorer" })
+      const saveNote=el("p",{class:"teacher-note",html:"<strong>Saving:</strong> Follow your school’s usual Scratch sign-in method, or choose <strong>File → Save to your computer</strong> and move the downloaded .sb3 file into your lesson folder. Do not create a personal account during the lesson."});
+      card.appendChild(taskColumns([visual("image-05-prediction-code-v2.png","Scratch reference script for moving right","Keep this visual open while you build."),open],[buildChecks,saveNote]));
+      return function(){return allChecked("build_",4) || "Build and check all four items before continuing.";};
+    },
+    function (card) {
+      cardTop(card,"4 of 6","Test like a programmer","Press the right arrow three times and watch both outputs. Compare the result with your prediction; if something differs, inspect one relevant block at a time.","main2","main2_4");
+      const testDefs=el("div",{class:"concept-pair"},[
+        el("div",{class:"mini-definition"},[el("strong",{text:"Test"}),el("span",{text:"Run the program and compare the result with what you expected."})]),
+        el("div",{class:"mini-definition"},[el("strong",{text:"Debug"}),el("span",{text:"Use evidence from an unexpected result to find and fix its cause."})])
       ]);
-      win.appendChild(title);
-
-      const toolbar = el("div", { class: "sim-toolbar" });
-      const bNew = el("button", { type: "button", class: "btn btn-secondary", text: "＋ New Folder" });
-      const bRename = el("button", { type: "button", class: "btn btn-secondary", text: "✏️ Rename" });
-      const bSave = el("button", { type: "button", class: "btn", text: "💾 Save Project Here" });
-      const bReset = el("button", { type: "button", class: "btn btn-ghost", text: "↺ Reset this task" });
-      const bHint = el("button", { type: "button", class: "btn btn-ghost", text: "💡 Hint" });
-      toolbar.appendChild(bNew); toolbar.appendChild(bRename); toolbar.appendChild(bSave); toolbar.appendChild(bHint); toolbar.appendChild(bReset);
-      win.appendChild(toolbar);
-
-      const crumb = el("div", { class: "sim-breadcrumb", "aria-label": "Folder path" });
-      crumb.appendChild(el("span", { text: "📍" }));
-      const rootBtn = el("button", { type: "button", text: "Documents" });
-      rootBtn.addEventListener("click", function () { cwdPath = []; renderWindow(); });
-      crumb.appendChild(rootBtn);
-      cwdPath.forEach(function (p, i) {
-        crumb.appendChild(el("span", { text: "›" }));
-        const b = el("button", { type: "button", text: p });
-        b.addEventListener("click", function () { cwdPath = cwdPath.slice(0, i + 1); renderWindow(); });
-        crumb.appendChild(b);
-      });
-      win.appendChild(crumb);
-
-      const node = getNode(cwdPath);
-      const filesArea = el("div", { class: "sim-files" });
-      let selected = null;
-      if (!node.folders.length && !node.files.length) {
-        filesArea.appendChild(el("p", { class: "sim-empty", text: "This folder is empty. Use “New Folder” to start organising." }));
-      }
-      node.folders.forEach(function (f) {
-        const item = el("button", { type: "button", class: "sim-item" });
-        item.innerHTML = folderSVG() + '<span class="sim-label">' + esc(f.name) + "</span>";
-        item.addEventListener("click", function () {
-          if (selected === f) { cwdPath = cwdPath.concat([f.name]); renderWindow(); }
-          else {
-            selected = f;
-            filesArea.querySelectorAll(".sim-item").forEach(function (x) { x.style.background = ""; });
-            item.style.background = "#dbe7fb";
-            statusMsg.textContent = "Selected “" + f.name + "”. Click again to open, or press Rename.";
-          }
-        });
-        item.addEventListener("dblclick", function () { cwdPath = cwdPath.concat([f.name]); renderWindow(); });
-        filesArea.appendChild(item);
-      });
-      node.files.forEach(function (f) {
-        const item = el("button", { type: "button", class: "sim-item" });
-        item.innerHTML = fileSVG() + '<span class="sim-label">' + esc(f.name) + ".sb3</span>";
-        item.addEventListener("click", function () {
-          if (state.fileSim.saved && !state.fileSim.done) { confirmFound(); }
-          else { statusMsg.textContent = "This is your saved project file."; }
-        });
-        filesArea.appendChild(item);
-      });
-      win.appendChild(filesArea);
-      win.appendChild(statusMsg);
-
-      bNew.addEventListener("click", function () {
-        namePrompt("New folder", "Type a name for the new folder:", "", function (name, errEl) {
-          const clean = name.trim();
-          if (!clean) { errEl.textContent = "Please type a folder name."; return false; }
-          if (node.folders.some(function (f) { return normName(f.name) === normName(clean); })) {
-            errEl.textContent = "A folder with that name already exists here."; return false;
-          }
-          node.folders.push({ name: clean, folders: [], files: [] });
-          S.save();
-          checkFolderProgress(clean);
-          renderWindow();
-          return true;
-        });
-      });
-
-      bRename.addEventListener("click", function () {
-        if (!selected) { statusMsg.textContent = "First click a folder once to select it, then press Rename."; return; }
-        namePrompt("Rename folder", "Type the new name:", selected.name, function (name, errEl) {
-          const clean = name.trim();
-          if (!clean) { errEl.textContent = "Please type a folder name."; return false; }
-          selected.name = clean;
-          S.save();
-          checkFolderProgress(clean);
-          renderWindow();
-          return true;
-        });
-      });
-
-      bSave.addEventListener("click", function () {
-        const inTarget = cwdPath.length === 3 &&
-          normName(cwdPath[0]) === normName(TARGET_FOLDER_1) &&
-          normName(cwdPath[1]) === normName(TARGET_FOLDER_2) &&
-          matchesStudentName(cwdPath[2]);
-        if (!inTarget) {
-          hintArea.innerHTML = "";
-          hintArea.appendChild(el("div", { class: "feedback feedback-try", text: "You are not in the right folder yet. Check the folder path: it should read Documents › Year 6 Computing › Term 1 - Digital Independence › " + (state.student.name || "your name") + "." }));
-          return;
-        }
-        namePrompt("Save project", "Type the agreed filename for your Scratch project:", "", function (name, errEl) {
-          const clean = name.trim();
-          if (!clean) { errEl.textContent = "Please type the filename."; return false; }
-          if (normName(clean).replace(/ /g, "") !== normName(TARGET_FILENAME).replace(/ /g, "")) {
-            errEl.textContent = "Not quite. Remember the agreed pattern: Year_TermWeek_Project_version. Try: " + TARGET_FILENAME;
-            return false;
-          }
-          node.files.push({ name: TARGET_FILENAME });
-          state.fileSim.saved = true;
-          S.save();
-          renderWindow();
-          hintArea.innerHTML = "";
-          hintArea.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Project saved with the agreed filename! Final step: click your saved file to prove you can find it again." }));
-          return true;
-        });
-      });
-
-      bReset.addEventListener("click", function () {
-        confirmDialog("Reset this task? Your folders in the practice explorer and your folder screenshot will be cleared. Your other mission progress is safe.", function () {
-          state.fileSim = { step: 0, done: false, tree: { name: "Documents", folders: [], files: [] }, saved: false };
-          cwdPath = [];
-          S.save();
-          S.deleteScreenshot("folder");
-          renderWindow();
-          renderRealTask();
-          hintArea.innerHTML = "";
-        });
-      });
-
-      bHint.addEventListener("click", function () {
-        hintArea.innerHTML = "";
-        hintArea.appendChild(el("div", { class: "hint-box", text: HINTS[Math.min(hintLevel, HINTS.length - 1)] }));
-        hintLevel++;
-      });
-    }
-
-    function checkFolderProgress(name) {
-      if (normName(name) === normName(TARGET_FOLDER_1)) {
-        hintArea.innerHTML = "";
-        hintArea.appendChild(el("div", { class: "feedback feedback-good", text: "✔ “Year 6 Computing” created. Now open it and create the term folder inside." }));
-      } else if (normName(name) === normName(TARGET_FOLDER_2)) {
-        hintArea.innerHTML = "";
-        hintArea.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Term folder created. Open it, then create a folder with YOUR name inside it." }));
-      } else if (matchesStudentName(name)) {
-        hintArea.innerHTML = "";
-        hintArea.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Your name folder is ready. Open it, then press “Save Project Here”." }));
-      }
-    }
-
-    function confirmFound() {
-      openModal(function (m) {
-        m.appendChild(el("h2", { text: "You found your project!" }));
-        m.appendChild(el("div", { class: "success-burst" }, [el("span", { class: "burst-emoji", text: "🎉" })]));
-        m.appendChild(el("p", { text: "Your project is saved in the correct folders — including your own name folder — with the agreed filename, and you just proved you can find it again. That is exactly what good digital organisation looks like." }));
-        m.appendChild(el("p", { html: "<strong>One more step:</strong> now do it for real on the school computer you are using, and upload a screenshot as evidence." }));
-        const b = el("button", { type: "button", class: "btn", text: "Continue to the real-computer task ▶" });
-        b.addEventListener("click", function () {
-          state.fileSim.done = true;
-          S.save();
-          closeModal();
-          go("files");
-        });
-        m.appendChild(el("div", { class: "modal-actions" }, [b]));
-      });
-    }
-
-    function namePrompt(title, label, initial, onSubmit) {
-      openModal(function (m) {
-        m.appendChild(el("h2", { text: title }));
-        m.appendChild(el("p", { text: label }));
-        const dlg = el("div", { class: "sim-dialog" });
-        const inp = el("input", { type: "text", value: initial, maxlength: "80", "aria-label": label });
-        dlg.appendChild(inp);
-        const err = el("div", { class: "sim-msg-error", "aria-live": "polite" });
-        dlg.appendChild(err);
-        m.appendChild(dlg);
-        const okB = el("button", { type: "button", class: "btn", text: "OK" });
-        const cancelB = el("button", { type: "button", class: "btn btn-secondary", text: "Cancel" });
-        m.appendChild(el("div", { class: "modal-actions" }, [okB, cancelB]));
-        function submit() { if (onSubmit(inp.value, err)) { closeModal(); } }
-        okB.addEventListener("click", submit);
-        inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { submit(); } });
-        cancelB.addEventListener("click", closeModal);
-        inp.focus();
-      }, { dismissable: true });
-    }
-
-    wrap.appendChild(hintArea);
-
-    /* ---- Phase 2: create the folders for real + evidence ---- */
-
-    const realArea = el("div");
-    wrap.appendChild(realArea);
-
-    function finishFilesStage() {
-      if (!isDone("files")) {
-        awardBadge("file");
-        addChips(2);
-        completeStage("files");
-      }
-      toast("File Management Centre complete!", "📁");
-      go("map");
-    }
-
-    function renderRealTask() {
-      realArea.innerHTML = "";
-      if (!state.fileSim.done) { return; }
-
-      /* Students who finished this stage before the real-folder task existed
-         still get to complete it — the stage stays complete either way. */
-      const realTaskOutstanding = !state.fileSim.realDone && !state.fileSim.realSkipped;
-
-      if (isDone("files") && !realTaskOutstanding) {
-        const doneCard = el("div", { class: "card" });
-        doneCard.appendChild(el("p", { html: "<strong>✔ File Management Centre complete.</strong>" }));
-        const nb = el("button", { type: "button", class: "btn", text: "Continue to the Scratch Laboratory ▶" });
-        nb.addEventListener("click", function () { go("investigate"); });
-        doneCard.appendChild(nb);
-        realArea.appendChild(doneCard);
-        return;
-      }
-
-      const card = el("div", { class: "card" });
-      card.appendChild(el("h2", { text: "🖥️ Now for real: build your folders on this school computer" }));
-      card.appendChild(instructionRow(langSupport()
-        ? "Do the same thing for real on the computer you are using. Then take a screenshot of your folders and upload it here."
-        : "The practice run is complete — now create the same folder structure for real on the school computer you are using, so your Scratch work has a proper home this year."));
-      const ol = el("ol");
-      ["Open your Documents folder (or the location your teacher tells you).",
-       "Create a folder called “" + TARGET_FOLDER_1 + "”.",
-       "Inside it, create “" + TARGET_FOLDER_2 + "”.",
-       "Inside that, create a folder with your name: “" + (state.student.name || "Your Name") + "”.",
-       "Take a screenshot showing your folders (the open folder path is perfect evidence).",
-       "Come back and upload the screenshot below."].forEach(function (s) { ol.appendChild(el("li", { text: s })); });
-      card.appendChild(ol);
-      card.appendChild(el("div", { class: "hint-box", html:
-        "<strong>Screenshot shortcuts:</strong> Windows: <strong>Win + Shift + S</strong> · Chromebook: <strong>Ctrl + Show Windows</strong> · Mac: <strong>Cmd + Shift + 4</strong>. Only capture your folders — no personal information or other students' names." }));
-
-      const drop = el("div", { class: "drop-area", tabindex: "0", role: "button", "aria-label": "Upload folder screenshot: click, drop an image here, or paste" });
-      drop.appendChild(el("p", { html: "🖼️ <strong>Drag and drop</strong> your folder screenshot here,<br>paste it (Ctrl + V / Cmd + V), or" }));
-      const fInput = el("input", { type: "file", accept: "image/png,image/jpeg,image/webp", class: "visually-hidden", "aria-hidden": "true", tabindex: "-1" });
-      const pickB = el("button", { type: "button", class: "btn", text: "📤 Upload Screenshot" });
-      pickB.addEventListener("click", function () { fInput.click(); });
-      drop.appendChild(pickB);
-      drop.appendChild(fInput);
-      card.appendChild(drop);
-      const upErr = el("div", { class: "field-error", "aria-live": "polite" });
-      card.appendChild(upErr);
-      const pv = el("div");
-      card.appendChild(pv);
-
-      function acceptRealFile(file) {
-        upErr.textContent = "";
-        if (!file) { return; }
-        if (["image/png", "image/jpeg", "image/webp"].indexOf(file.type) === -1) {
-          upErr.textContent = "That file type is not supported. Please use PNG, JPG, JPEG or WEBP.";
-          return;
-        }
-        if (file.size > 10 * 1024 * 1024) {
-          upErr.textContent = "That image is larger than 10 MB. Try capturing a smaller area of the screen.";
-          return;
-        }
-        S.putScreenshot("folder", file).then(function () {
-          state.fileSim.realDone = true;
-          S.save();
-          toast("Folder evidence saved on this computer.", "📁");
-          renderRealTask();
-        }).catch(function () {
-          upErr.textContent = "This browser could not store the image. Show your folders to your teacher instead, then use the button below.";
-        });
-      }
-      fInput.addEventListener("change", function () { acceptRealFile(fInput.files[0]); });
-      ["dragover", "dragenter"].forEach(function (evt) {
-        drop.addEventListener(evt, function (e) { e.preventDefault(); drop.classList.add("drag-over"); });
-      });
-      ["dragleave", "drop"].forEach(function (evt) {
-        drop.addEventListener(evt, function (e) { e.preventDefault(); drop.classList.remove("drag-over"); });
-      });
-      drop.addEventListener("drop", function (e) {
-        if (e.dataTransfer.files && e.dataTransfer.files.length) { acceptRealFile(e.dataTransfer.files[0]); }
-      });
-      document.addEventListener("paste", function (e) {
-        if (currentScreen !== "files" || isDone("files")) { return; }
-        const items = (e.clipboardData || {}).items || [];
-        for (const it of items) {
-          if (it.type && it.type.indexOf("image/") === 0) {
-            acceptRealFile(it.getAsFile());
-            e.preventDefault();
-            return;
-          }
-        }
-      });
-
-      function renderRealPreview() {
-        pv.innerHTML = "";
-        if (!state.fileSim.realDone) { return; }
-        S.getScreenshot("folder").then(function (blob) {
-          if (!blob) { return; }
-          const url = URL.createObjectURL(blob);
-          pv.appendChild(el("img", { class: "evidence-preview", alt: "Your real folder screenshot", src: url }));
-          const tools = el("div", { class: "evidence-tools" });
-          const rep = el("button", { type: "button", class: "btn btn-secondary", text: "🔁 Replace" });
-          rep.addEventListener("click", function () { fInput.click(); });
-          const delB = el("button", { type: "button", class: "btn btn-danger", text: "🗑 Delete" });
-          delB.addEventListener("click", function () {
-            confirmDialog("Delete this folder screenshot? You can upload a new one afterwards.", function () {
-              S.deleteScreenshot("folder").then(function () {
-                state.fileSim.realDone = false;
-                S.save();
-                renderRealTask();
-              });
-            });
-          });
-          tools.appendChild(rep); tools.appendChild(delB);
-          pv.appendChild(tools);
-        });
-      }
-      renderRealPreview();
-
-      const finErr = el("div", { class: "field-error", "aria-live": "polite" });
-      const finB = el("button", { type: "button", class: "btn", text: isDone("files") ? "Save my folder evidence ▶" : "Collect the File Finder badge ▶" });
-      finB.addEventListener("click", function () {
-        if (!state.fileSim.realDone && !state.fileSim.realSkipped) {
-          finErr.textContent = "Upload your folder screenshot first — or ask your teacher if you cannot take one on this device.";
-          return;
-        }
-        finishFilesStage();
-      });
-      const skipB = el("button", { type: "button", class: "btn btn-ghost", text: "My teacher says I can continue without a screenshot" });
-      skipB.addEventListener("click", function () {
-        state.fileSim.realSkipped = true;
-        S.save();
-        finErr.textContent = "";
-        toast("Noted — your teacher will check your folders directly.", "🧑‍🏫");
-        finishFilesStage();
-      });
-      card.appendChild(finErr);
-      card.appendChild(el("div", { class: "modal-actions" }, [finB, skipB]));
-      realArea.appendChild(card);
-    }
-
-    main.appendChild(wrap);
-    renderWindow();
-    renderRealTask();
-  }
-
-  function confirmDialog(msg, onYes) {
-    openModal(function (m) {
-      m.appendChild(el("h2", { text: "Are you sure?" }));
-      m.appendChild(el("p", { text: msg }));
-      const yes = el("button", { type: "button", class: "btn btn-danger", text: "Yes, do it" });
-      const no = el("button", { type: "button", class: "btn btn-secondary", text: "Cancel" });
-      yes.addEventListener("click", function () { closeModal(); onYes(); });
-      no.addEventListener("click", closeModal);
-      m.appendChild(el("div", { class: "modal-actions" }, [yes, no]));
-    }, { dismissable: true });
-  }
-
-  /* ---------- Main 2B: Scratch Investigation ---------- */
-
-  const INVESTIGATE_QS = [
-    {
-      id: "inv1", q: "What starts the program?",
-      options: ["Clicking the green flag", "Turning the volume up", "Closing the browser tab"],
-      correct: 0, frame: "The program starts when __________.",
-      wordbank: ["green flag", "clicked", "key press", "event"]
+      const testChecks=checkList("test_",["I pressed the right arrow at least three times.","I watched both the movement and the message.","I compared the real output with my prediction."]);
+      const testQ=mcq("main2_test","The sprite says the message but does not move. What should you inspect first?",[
+        "The change x block is connected and has 40 in it",
+        "The browser wallpaper",
+        "The project filename"
+      ],0,"The missing output is movement, so inspect the Motion block that produces it.");
+      card.appendChild(taskColumns([visual("image-08-testing-debugging-cycle-v2.png","A clean prediction, run, compare, debug, test-again cycle","Testing is a cycle: a first result gives you information for the next improvement."),testDefs],[testChecks,testQ]));
+      return function(){return allChecked("test_",3) && correct("main2_test") || "Complete the three tests and solve the debugging question.";};
     },
-    {
-      id: "inv2", q: "What do you predict the sprite will do?",
-      options: null, frame: "I predict the sprite will __________.",
-      wordbank: ["move", "speak", "make a sound", "change", "repeat", "when I press"]
+    function (card) {
+      cardTop(card,"5 of 6","Make one purposeful change","Create a second script for the left arrow. Change the input, x value and message so that all three describe the same left-moving action.","main2","main2_5");
+      const purposeDef=el("div",{class:"mini-definition"},[el("strong",{text:"Purposeful change"}),el("span",{text:"A planned change made for a clear reason. Here, every edited block must help produce left movement."})]);
+      const axes=el("div",{class:"axis-grid"},[
+        el("div",{class:"axis-card",html:"<strong>+x</strong><br>moves right"}),el("div",{class:"axis-card",html:"<strong>−x</strong><br>moves left"}),
+        el("div",{class:"axis-card",html:"<strong>+y</strong><br>moves up"}),el("div",{class:"axis-card",html:"<strong>−y</strong><br>moves down"})
+      ]);
+      const modifyChecks=checkList("modify_",["I duplicated or rebuilt the script.","I changed the event to the left arrow.","I changed x to −40.","I changed the message to ‘Moving left!’.","I tested both directions and saved."]);
+      const changeText=textAnswer("main2_change","How did your changes make the new input produce the correct output?",{rows:2,frame:"I changed the input to… and the x value to… so the sprite…",words:["left arrow","change x","−40","moves left","matching message"],min:18});
+      card.appendChild(taskColumns([visual("image-07-before-after-modification.png","Before and after Scratch scripts changing right-arrow positive x to left-arrow negative x","A purposeful change updates the key, direction and message so the program still makes sense."),purposeDef,axes],[modifyChecks,changeText]));
+      return function(){return allChecked("modify_",5) && state.answers.main2_change && state.answers.main2_change.answer.length>=18 || "Complete and test the left-arrow script, then connect your input, code and output in the explanation.";};
     },
-    {
-      id: "inv3", q: "What is the input?",
-      options: ["A key press, mouse click or the green flag", "The sprite's costume", "The stage background"],
-      correct: 0, frame: "The input is __________.",
-      wordbank: ["key press", "mouse click", "green flag", "keyboard", "input"]
-    },
-    {
-      id: "inv4", q: "What output should the user see or hear?",
-      options: ["Movement, a message or a sound", "A new computer", "Nothing at all"],
-      correct: 0, frame: "The output is __________.",
-      wordbank: ["movement", "message", "sound", "speech bubble", "output", "see", "hear"]
+    function (card) {
+      cardTop(card,"6 of 6","Capture useful evidence","Add one screenshot that clearly shows both scripts without private information. Then explain one complete input–code–output relationship.","main2","main2_6");
+      const evidenceWidget=screenshotWidget("main","scratch","Scratch code evidence");
+      const evidenceText=textAnswer("main2_explain","Explain how one input causes an output in your program.",{rows:2,frame:"When I press…, the program…, so the sprite…",words:["when","right arrow","left arrow","change x","moves","says"],min:15});
+      card.appendChild(taskColumns([visual("image-09-model-evidence-screenshot.png","Model Scratch evidence showing code and stage clearly","Strong evidence shows the relevant code, the stage and no private information.")],[evidenceWidget,evidenceText]));
+      return function(){return (state.evidence.scratch || state.evidence.scratchSkipped) && state.answers.main2_explain && state.answers.main2_explain.answer.length>=15 || "Add evidence (or choose teacher check) and explain one input–output relationship.";};
     }
   ];
+  function renderMain2() { renderStepper("main2","Main Activity 2: Predict, build, test, modify","Main task 2 · about 25 minutes",MAIN2_STEPS,"extension"); }
 
-  function renderInvestigate() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Main mission 2B" }),
-      el("span", { class: "time-pill", text: "⏱ about 6 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "🔬 Scratch Laboratory" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "First: predict. Answer the four questions below. Then open the Scratch project in a new tab and run it. Come back and say if your prediction was right."
-      : "A good computer scientist predicts before testing. Answer the four prediction questions below, then open the Scratch project in a new tab, run it, and return here to compare the program's real behaviour with your prediction."));
-
-    const btnRow = el("div", { class: "card", style: "display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center;" });
-    const openB = el("a", { class: "btn", href: scratchUrl(), target: "_blank", rel: "noopener noreferrer", text: "🚀 Open Scratch Project (new tab)" });
-    btnRow.appendChild(openB);
-    btnRow.appendChild(el("span", { text: "The Scratch project opens in a new tab — this mission stays open here." }));
-    const backB = el("button", { type: "button", class: "btn btn-secondary", text: "↩ Return to Mission" });
-    backB.addEventListener("click", function () { go("map"); });
-    btnRow.appendChild(backB);
-    wrap.appendChild(btnRow);
-    wrap.appendChild(el("div", { class: "hint-box", html: "<strong>If Scratch will not load</strong> (no internet or the site is blocked): tell your teacher. You can still answer the prediction questions using the class demonstration, and continue the mission." }));
-
-    const card = el("div", { class: "card" });
-    card.appendChild(el("h2", { text: "Before you run it — predict!" }));
-    const inputs = {};
-    INVESTIGATE_QS.forEach(function (q, i) {
-      const block = el("div", { class: "form-field" });
-      const row = el("div", { class: "instruction-row" });
-      const sb = speakBtn(q.q);
-      if (sb) { row.appendChild(sb); }
-      row.appendChild(el("p", { html: "<strong>" + (i + 1) + ". " + esc(q.q) + "</strong>" }));
-      block.appendChild(row);
-      const saved = state.answers["investigate_" + q.id];
-      if (typingSupport() && q.options) {
-        const sel = el("select", { "aria-label": q.q });
-        sel.appendChild(el("option", { value: "", text: "— choose —" }));
-        q.options.forEach(function (o) {
-          const opt = el("option", { value: o, text: o });
-          if (saved && saved.answer === o) { opt.selected = true; }
-          sel.appendChild(opt);
-        });
-        block.appendChild(sel);
-        inputs[q.id] = { get: function () { return sel.value; }, type: "choice", q: q };
-      } else {
-        if (langSupport()) {
-          block.appendChild(el("p", { class: "sentence-starter", text: "Frame: " + q.frame }));
-          const wb = el("div", { class: "word-bank" });
-          q.wordbank.forEach(function (w) {
-            const wbtn = el("button", { type: "button", class: "wb-word", text: w });
-            wb.appendChild(wbtn);
-          });
-          block.appendChild(wb);
-          setTimeout(function () {
-            wb.querySelectorAll(".wb-word").forEach(function (wbtn) {
-              wbtn.addEventListener("click", function () {
-                ta.value = (ta.value ? ta.value.replace(/\s+$/, "") + " " : "") + wbtn.textContent;
-                ta.focus();
-              });
-            });
-          }, 0);
-        }
-        const ta = el("textarea", { class: "plain-input", rows: "2", "aria-label": q.q });
-        if (saved) { ta.value = saved.answer; }
-        block.appendChild(ta);
-        inputs[q.id] = { get: function () { return ta.value.trim(); }, type: "text", q: q };
-      }
-      card.appendChild(block);
-    });
-    const err1 = el("div", { class: "field-error", "aria-live": "polite" });
-    const savePred = el("button", { type: "button", class: "btn", text: "Save my predictions" });
-    savePred.addEventListener("click", function () {
-      let ok = true;
-      INVESTIGATE_QS.forEach(function (q) {
-        const v = inputs[q.id].get();
-        if (!v || v.length < 2) { ok = false; }
-      });
-      if (!ok) { err1.textContent = "Please answer all four prediction questions first."; return; }
-      err1.textContent = "";
-      INVESTIGATE_QS.forEach(function (q) {
-        state.answers["investigate_" + q.id] = { question: q.q, answer: inputs[q.id].get() };
-      });
-      state.answers.investigate_predictionsSaved = { question: "Predictions saved", answer: "yes" };
-      addChips(2);
-      S.save();
-      toast("Predictions locked in — now run the program!", "🔬");
-      renderAfterRun();
-    });
-    card.appendChild(err1);
-    card.appendChild(el("div", { class: "modal-actions" }, [savePred]));
-    wrap.appendChild(card);
-
-    const afterArea = el("div");
-    wrap.appendChild(afterArea);
-
-    function renderAfterRun() {
-      afterArea.innerHTML = "";
-      const c2 = el("div", { class: "card" });
-      c2.appendChild(el("h2", { text: "After you run the program" }));
-      c2.appendChild(instructionRow("Did the program behave as you predicted?"));
-      const opts = [
-        { v: "match", t: "✅ Yes, it matched my prediction." },
-        { v: "partly", t: "🟡 Partly, but something was different." },
-        { v: "no", t: "🔄 No, I need to revise my prediction." }
-      ];
-      const saved = state.answers.investigate_outcome;
-      let chosen = saved ? saved.value : null;
-      const grp = el("div", { class: "support-options" });
-      opts.forEach(function (o) {
-        const b = el("button", { type: "button", class: "support-option", "aria-pressed": String(chosen === o.v) }, [el("span", { text: o.t })]);
-        b.addEventListener("click", function () {
-          chosen = o.v;
-          grp.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-          b.setAttribute("aria-pressed", "true");
-        });
-        grp.appendChild(b);
-      });
-      c2.appendChild(grp);
-
-      let refGet;
-      if (typingSupport()) {
-        c2.appendChild(el("p", { html: "<strong>What surprised you, or what did you notice?</strong> (choose one)" }));
-        const sel = el("select", { "aria-label": "What did you notice?" });
-        ["The sprite moved as expected", "The output was different from my prediction", "The input worked differently than I thought", "I noticed the order of the blocks matters"].forEach(function (o) {
-          sel.appendChild(el("option", { value: o, text: o }));
-        });
-        c2.appendChild(sel);
-        refGet = function () { return sel.value; };
-      } else {
-        c2.appendChild(el("p", { html: "<strong>Short reflection:</strong> what did you notice when the program ran?" }));
-        const ta = el("textarea", { class: "plain-input", rows: "2", "aria-label": "Reflection" });
-        c2.appendChild(ta);
-        refGet = function () { return ta.value.trim(); };
-      }
-      const err2 = el("div", { class: "field-error", "aria-live": "polite" });
-      const fin = el("button", { type: "button", class: "btn", text: "Finish the investigation ▶" });
-      fin.addEventListener("click", function () {
-        if (!chosen) { err2.textContent = "Please choose whether the program matched your prediction."; return; }
-        const ref = refGet();
-        if (!ref || ref.length < 2) { err2.textContent = "Please add your reflection."; return; }
-        state.answers.investigate_outcome = { question: "Did the program behave as predicted?", value: chosen, answer: opts.find(function (o) { return o.v === chosen; }).t, reflection: ref };
-        S.save();
-        if (!isDone("investigate")) {
-          addChips(2);
-          completeStage("investigate");
-        }
-        toast("Investigation complete!", "🔬");
-        go("modify");
-      });
-      c2.appendChild(err2);
-      c2.appendChild(el("div", { class: "modal-actions" }, [fin]));
-      afterArea.appendChild(c2);
+  const EXTENSIONS = [
+    {
+      id:"o1", title:"Routine Rescue", strand:"Organisation", level:"1",
+      render:function(card){
+        cardTop(card,"O1","Routine Rescue","Read three classroom problems. For each one, choose the action that solves the problem and matches the purpose of the routine.","main1","ext_o1");
+        card.appendChild(mcq("ext_o1a","A pupil opens YouTube before the teacher gives the task. Which correction is best?",["Log out immediately","Close it and wait for instructions","Hide the tab"],1,"Waiting for instructions belongs in Start."));
+        card.appendChild(mcq("ext_o1b","A warning says the project may not be saved. What should happen first?",["Ignore it","Save and check the location","Sign out"],1,"Protect the work before closing or signing out."));
+        card.appendChild(mcq("ext_o1c","Why sign out at the end?",["To protect the account","To delete the project","To make Scratch move faster"],0,"Signing out prevents the next user accessing the account."));
+      }, validate:function(){return requireKeys(["ext_o1a","ext_o1b","ext_o1c"]);}, summary:"Solved three Start–Work–Finish routine problems."
+    },
+    {
+      id:"o2", title:"Folder Detective", strand:"Organisation", level:"2",
+      render:function(card){
+        cardTop(card,"O2","Folder Detective","Use the hierarchy to decide where Aisha’s file belongs and what could sit beside a Term 1 folder.","main1","ext_o2");
+        const o2a=mcq("ext_o2a","Where should the student’s Scratch file be saved?",["Beside Year 6 Computing","Inside the student-name folder","Inside the Recycle Bin"],1,"The most specific pupil folder contains that pupil’s file.");
+        const o2b=mcq("ext_o2b","Which folder would best sit beside ‘Term 1 - Digital Independence’?",["Term 2 - Programming","random","final.sb3"],0,"Folders at the same level should use a consistent structure; a .sb3 item is a file.");
+        card.appendChild(taskColumns([visual("image-02-folder-hierarchy.png","Folder hierarchy for Year 6 Computing","Read from the broad subject folder to the pupil folder.")],[o2a,o2b]));
+      }, validate:function(){return requireKeys(["ext_o2a","ext_o2b"]);}, summary:"Used a folder hierarchy to locate and classify digital work."
+    },
+    {
+      id:"o3", title:"Filename Editor", strand:"Organisation", level:"3",
+      render:function(card){
+        cardTop(card,"O3","Filename Editor","Help Aisha replace vague filenames with names that communicate the task and version without becoming needlessly long.","main1","ext_o3");
+        const o3a=mcq("ext_o3a","Which is the best name for a second improved version?",["finalfinal.sb3","Y6_T1W01_ScratchBaseline_v2.sb3","new one copy.sb3"],1,"v2 clearly follows v1 and keeps the agreed pattern.");
+        const o3b=mcq("ext_o3b","What does v2 communicate?",["The file has two sprites","It is version 2","It belongs to Year 2"],1,"Version numbers make development history clear.");
+        const o3text=textAnswer("ext_o3text","Write one rule for a useful filename.",{frame:"A useful filename should…",words:["describe the work","use an agreed pattern","include a version","avoid vague words"],min:8});
+        card.appendChild(taskColumns([visual("image-03-filename-comparison.png","Weak and useful filename comparison","A strong filename identifies the work and version.")],[o3a,o3b,o3text]));
+      }, validate:function(){return requireKeys(["ext_o3a","ext_o3b"]) && state.answers.ext_o3text && state.answers.ext_o3text.answer.length>=8;}, summary:"Edited filenames and explained a naming rule."
+    },
+    {
+      id:"p1", title:"Two-Way Controls", strand:"Programming", level:"1",
+      render:function(card){
+        cardTop(card,"P1","Two-Way Controls","Build and test two scripts. Make the arrow key, sign of x and message agree with the direction of movement.","main2","ext_p1");
+        const p1q=mcq("ext_p1a","Which pair correctly makes two-way movement?",["right:+40 and left:−40","right:+40 and left:+40","right changes y and left changes x"],0,"Opposite horizontal directions use opposite signs on the x axis.");
+        const p1checks=checkList("ext_p1_",["Both scripts are connected.","Both directions work more than once.","Both messages match the movement."]);
+        card.appendChild(taskColumns([visual("image-10-extension-two-way-controls-v2.png","Two Scratch scripts for left and right movement","Right uses positive x; left uses negative x. Each message matches its direction.")],[p1q,p1checks]));
+      }, validate:function(){return correct("ext_p1a") && allChecked("ext_p1_",3);}, summary:"Built and tested two-way horizontal controls."
+    },
+    {
+      id:"p2", title:"Four-Way Controls", strand:"Programming", level:"2",
+      render:function(card){
+        cardTop(card,"P2","Four-Way Controls","Add up and down controls. Use y—not x—and choose the correct sign for each vertical direction.","main2","ext_p2");
+        const p2a=mcq("ext_p2a","Which block should the up arrow run?",["change x by 40","change y by 40","change y by −40"],1,"Positive y moves the sprite up.");
+        const p2b=mcq("ext_p2b","Which block should the down arrow run?",["change y by −40","change x by −40","change y by 40"],0,"Negative y moves the sprite down.");
+        const p2checks=checkList("ext_p2_",["I added up and down scripts.","I tested all four arrow keys.","I fixed any axis or sign mistake and saved."]);
+        card.appendChild(taskColumns([visual("image-11-extension-four-way-controls.png","Four Scratch arrow-key scripts using positive and negative x and y","Horizontal movement changes x; vertical movement changes y.")],[p2a,p2b,p2checks]));
+      }, validate:function(){return requireKeys(["ext_p2a","ext_p2b"]) && allChecked("ext_p2_",3);}, summary:"Built and tested four-way coordinate controls."
+    },
+    {
+      id:"p3", title:"Coordinate Mission", strand:"Programming", level:"3",
+      render:function(card){
+        cardTop(card,"P3","Coordinate Mission","Start at (0, 0). Find a shortest route to (80, 40) when every key press changes only one coordinate by 40, then compare two valid routes.","main2","ext_p3");
+        const p3a=mcq("ext_p3a","Which is a shortest route?",["right, right, up","right, up, left, right, right","up, up, right"],0,"Two right presses make x = 80 and one up press makes y = 40: three presses.");
+        const p3b=mcq("ext_p3b","Could ‘up, right, right’ also work?",["Yes; the order changes the route but not the final coordinate","No; up must happen last","No; x must change before y"],0,"Both algorithms add the same coordinate changes in a different order.");
+        card.appendChild(taskColumns([visual("image-12-extension-coordinate-mission.png","Coordinate grid from start zero zero to target eighty forty","Each right press adds 40 to x. Each up press adds 40 to y.")],[p3a,p3b]));
+      }, validate:function(){return requireKeys(["ext_p3a","ext_p3b"]);}, summary:"Found and justified a shortest coordinate route."
+    },
+    {
+      id:"p4", title:"Debug Detective", strand:"Programming", level:"4",
+      render:function(card){
+        cardTop(card,"P4","Debug Detective","Treat each incorrect movement as evidence. Identify the most likely faulty block, then choose the smallest change that tests your diagnosis.","main2","ext_p4");
+        const p4a=mcq("ext_p4a","The up arrow moves the sprite right. What is the likely bug?",["The script changes x instead of y","The sprite is too small","The project needs a longer filename"],0,"Moving right is evidence that x changed.");
+        const p4b=mcq("ext_p4b","The left arrow moves right. What is the likely fix?",["Change +40 to −40","Change x to y","Delete the event block"],0,"The axis is correct but the sign is wrong.");
+        const p4c=mcq("ext_p4c","Why test after changing one block?",["To check whether that change fixed the cause","To earn a random result","To avoid saving"],0,"One change at a time helps connect cause and effect.");
+        card.appendChild(taskColumns([visual("image-08-testing-debugging-cycle-v2.png","Testing and debugging cycle","Use evidence from the output; do not change several blocks at once.")],[p4a,p4b,p4c]));
+      }, validate:function(){return requireKeys(["ext_p4a","ext_p4b","ext_p4c"]);}, summary:"Diagnosed axis, sign and testing bugs from evidence."
+    },
+    {
+      id:"p5", title:"Design a Mission", strand:"Programming", level:"5",
+      render:function(card){
+        cardTop(card,"P5","Design a Coordinate Mission","Choose a reachable target, write a route that actually reaches it in the fewest key presses, and explain how another pupil can verify it.","main2","ext_p5");
+        card.appendChild(el("p",{class:"code-fact",text:"Rule: choose x and y values between −120 and 120. Each must be a multiple of 40."}));
+        card.appendChild(textAnswer("ext_p5target","Write your target coordinate as (x, y).",{placeholder:"for example (−80, 120)",min:5}));
+        card.appendChild(textAnswer("ext_p5route","Write a shortest arrow-key route to your target.",{rows:2,frame:"My route is… because…",words:["left","right","up","down","presses","x","y"],min:12}));
+        card.appendChild(textAnswer("ext_p5check","Explain how another pupil could check your route without guessing.",{rows:2,frame:"They could check by…",words:["start at (0, 0)","add 40","subtract 40","track x and y","compare the target"],min:15}));
+      }, validate:function(){
+        const rawTarget=state.answers.ext_p5target&&state.answers.ext_p5target.answer;
+        const target=rawTarget&&rawTarget.replace(/[−–—]/g,"-");
+        const match=target&&target.match(/^\(?\s*(-?\d+)\s*,\s*(-?\d+)\s*\)?$/);
+        if(!match)return "Write the target as a coordinate pair, for example (−80, 120).";
+        const x=+match[1],y=+match[2];
+        if(Math.abs(x)>120||Math.abs(y)>120||x%40!==0||y%40!==0)return "Choose x and y between −120 and 120, using multiples of 40.";
+        const routeText=state.answers.ext_p5route&&state.answers.ext_p5route.answer.toLowerCase();
+        const moves=routeText&&routeText.match(/left|right|up|down/g);
+        if(!moves||!moves.length)return "Write the route using the words left, right, up and down.";
+        let routeX=0,routeY=0;moves.forEach(function(move){if(move==="left")routeX-=40;if(move==="right")routeX+=40;if(move==="up")routeY+=40;if(move==="down")routeY-=40;});
+        if(routeX!==x||routeY!==y)return "That route finishes at ("+routeX+", "+routeY+"), not ("+x+", "+y+"). Revise the directions.";
+        const shortest=Math.abs(x/40)+Math.abs(y/40);
+        if(moves.length!==shortest)return "Your route reaches the target in "+moves.length+" presses, but a shortest route needs "+shortest+". Remove unnecessary moves.";
+        if(!state.answers.ext_p5check||state.answers.ext_p5check.answer.length<15)return "Explain how another pupil can track x and y to check your route.";
+        return true;
+      }, summary:function(){return "Designed target "+state.answers.ext_p5target.answer+" and explained a shortest route.";}
     }
-
-    if (state.answers.investigate_predictionsSaved) { renderAfterRun(); }
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Main 2C: Modification Mission ---------- */
-
-  const MOD_CHECKLIST = [
-    "I opened the correct Scratch project.",
-    "I saved or remixed my own copy.",
-    "I made one purposeful change.",
-    "I ran the program.",
-    "I checked what happened.",
-    "I corrected a problem when needed.",
-    "I saved the improved version.",
-    "I can explain what I changed."
   ];
-
-  function renderModify() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Main mission 2C" }),
-      el("span", { class: "time-pill", text: "⏱ about 10 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "🧩 Scratch Modification Mission" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "Go to your Scratch project. Make one purposeful change. Test it. Then tick the checklist below."
-      : "Now improve the program — in Scratch itself, not here. Choose at least one purposeful modification, make it, test it, and debug it if something breaks. Then complete your self-checklist below."));
-
-    const c1 = el("div", { class: "card" });
-    c1.appendChild(el("h2", { text: "Choose at least one purposeful change" }));
-    const ul = el("ul");
-    ["Change the key or event that starts an action.",
-     "Change how far or where the sprite moves.",
-     "Change the message produced by an input.",
-     "Add an appropriate sound output.",
-     "Change the order of two blocks and describe the effect."].forEach(function (t) {
-      ul.appendChild(el("li", { text: t }));
-    });
-    c1.appendChild(ul);
-    c1.appendChild(el("div", { class: "hint-box", html: "<strong>Remember:</strong> changing only a sprite's colour, costume or background does <strong>not</strong> count as a purposeful change — unless it supports the program's purpose." }));
-    const openB = el("a", { class: "btn", href: scratchUrl(), target: "_blank", rel: "noopener noreferrer", text: "🚀 Open Scratch Project (new tab)" });
-    c1.appendChild(el("div", { class: "modal-actions" }, [openB]));
-    wrap.appendChild(c1);
-
-    const c2 = el("div", { class: "card" });
-    c2.appendChild(el("h2", { text: "My self-checklist" }));
-    c2.appendChild(el("p", { html: "<em>This is a self-check — the app cannot see inside Scratch. Tick each step honestly. Your teacher may look at your Scratch project or your screenshot to review your work.</em>" }));
-    const list = el("ul", { class: "self-checklist" });
-    const boxes = [];
-    MOD_CHECKLIST.forEach(function (item, i) {
-      const cb = el("input", { type: "checkbox" });
-      cb.checked = !!state.checklist["m" + i];
-      cb.addEventListener("change", function () {
-        state.checklist["m" + i] = cb.checked;
-        S.save();
-        updateBtn();
-      });
-      boxes.push(cb);
-      list.appendChild(el("li", {}, [el("label", {}, [cb, el("span", { text: item })])]));
-    });
-    c2.appendChild(list);
-    c2.appendChild(el("p", { class: "sentence-starter", text: "Your ticks save automatically." }));
-    const err = el("div", { class: "field-error", "aria-live": "polite" });
-    const cont = el("button", { type: "button", class: "btn", text: "Continue to the Evidence Station ▶" });
-    function updateBtn() {
-      const done = boxes.filter(function (b) { return b.checked; }).length;
-      cont.disabled = done < MOD_CHECKLIST.length;
-      err.textContent = cont.disabled ? "Tick every step you have completed (" + done + " of " + MOD_CHECKLIST.length + ")." : "";
-    }
-    updateBtn();
-    cont.addEventListener("click", function () {
-      if (!isDone("modify")) {
-        addChips(2);
-        completeStage("modify");
-      }
-      go("evidence");
-    });
-    c2.appendChild(err);
-    c2.appendChild(el("div", { class: "modal-actions" }, [cont]));
-    wrap.appendChild(c2);
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Main 2D: Evidence Capture ---------- */
-
-  const EVIDENCE_PROMPTS = [
-    { id: "ev1", label: "The input in my program is…", frame: "The input is __________.", wordbank: ["the green flag", "pressing a key", "clicking the sprite", "the space key", "an arrow key"] },
-    { id: "ev2", label: "The program processes the input by…", frame: "The program processes the input by __________.", wordbank: ["following the blocks in order", "checking which key was pressed", "running the sequence", "repeating the blocks"] },
-    { id: "ev3", label: "The output is…", frame: "The output is __________.", wordbank: ["movement", "a message", "a sound", "a speech bubble"] },
-    { id: "ev4", label: "I changed…", frame: "I changed __________.", wordbank: ["the key that starts the action", "how far the sprite moves", "the message", "the sound", "the order of two blocks"] },
-    { id: "ev5", label: "I tested my change by…", frame: "I tested it by __________.", wordbank: ["running the program", "pressing the key", "clicking the green flag", "watching what happened"] },
-    { id: "ev6", label: "One problem I fixed or improvement I made was…", frame: "One problem I fixed was __________.", wordbank: ["the wrong key", "the sprite moved too far", "the wrong order", "no sound played", "I made it clearer"] }
-  ];
-
-  const OS_INSTRUCTIONS = {
-    windows: { name: "Windows", steps: [
-      "Open the Scratch project.",
-      "Press Windows + Shift + S.",
-      "Drag around the code and stage you want to capture.",
-      "Return to this page.",
-      "Paste the image (Ctrl + V) or save and upload it."
-    ]},
-    chromebook: { name: "Chromebook", steps: [
-      "Press Ctrl + Show Windows.",
-      "Select the part of the screen to capture.",
-      "Return to the Evidence Station.",
-      "Upload the screenshot."
-    ]},
-    mac: { name: "Mac", steps: [
-      "Press Command + Shift + 4.",
-      "Drag around the Scratch code and stage.",
-      "Return to the Evidence Station.",
-      "Upload the screenshot."
-    ]}
-  };
-
-  function renderEvidence() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Main mission 2D" }),
-      el("span", { class: "time-pill", text: "⏱ about 7 minutes" })
-    ]));
-    wrap.appendChild(el("h1", { text: "📸 Evidence Station" }));
-    wrap.appendChild(instructionRow(langSupport()
-      ? "Take a screenshot of your Scratch project. Upload it here. Then answer the sentences below."
-      : "Capture a screenshot showing your modified Scratch code and stage, upload it here, then explain your program's input, process and output. Your screenshot stays on this computer only."));
-
-    // OS instructions
-    const insCard = el("div", { class: "card" });
-    insCard.appendChild(el("h2", { text: "How to take a screenshot" }));
-    const tabs = el("div", { class: "os-tabs", role: "tablist" });
-    const stepsArea = el("div");
-    let currentOS = "windows";
-    function renderSteps() {
-      stepsArea.innerHTML = "";
-      const ol = el("ol");
-      OS_INSTRUCTIONS[currentOS].steps.forEach(function (s) { ol.appendChild(el("li", { text: s })); });
-      stepsArea.appendChild(ol);
-      tabs.querySelectorAll("button").forEach(function (b) {
-        b.setAttribute("aria-selected", String(b.dataset.os === currentOS));
-      });
-    }
-    Object.keys(OS_INSTRUCTIONS).forEach(function (k) {
-      const b = el("button", { type: "button", class: "os-tab", role: "tab", "data-os": k, text: OS_INSTRUCTIONS[k].name });
-      b.addEventListener("click", function () { currentOS = k; renderSteps(); });
-      tabs.appendChild(b);
-    });
-    insCard.appendChild(tabs);
-    insCard.appendChild(stepsArea);
-    renderSteps();
-    insCard.appendChild(el("div", { class: "hint-box", html:
-      "<strong>A useful screenshot shows:</strong> the important Scratch blocks · the sprite or stage · enough to see your modification · <strong>no</strong> unnecessary personal information · <strong>no</strong> other students' names, messages or accounts." }));
-    wrap.appendChild(insCard);
-
-    // Upload area
-    const upCard = el("div", { class: "card" });
-    upCard.appendChild(el("h2", { text: "Upload your screenshot" }));
-    upCard.appendChild(el("p", { text: "Accepted: PNG, JPG, JPEG or WEBP, up to about 10 MB. You can also paste a copied screenshot straight onto this page (Ctrl + V / Cmd + V). It is stored only in this browser on this computer." }));
-    const drop = el("div", { class: "drop-area", tabindex: "0", role: "button", "aria-label": "Upload screenshot: click, drop an image here, or paste" });
-    drop.appendChild(el("p", { html: "🖼️ <strong>Drag and drop</strong> your screenshot here,<br>paste it, or" }));
-    const fileInput = el("input", { type: "file", accept: "image/png,image/jpeg,image/webp", class: "visually-hidden", "aria-hidden": "true", tabindex: "-1" });
-    const pick = el("button", { type: "button", class: "btn", text: "📤 Upload Screenshot" });
-    pick.addEventListener("click", function () { fileInput.click(); });
-    drop.appendChild(pick);
-    drop.appendChild(fileInput);
-    upCard.appendChild(drop);
-    const upErr = el("div", { class: "field-error", "aria-live": "polite" });
-    upCard.appendChild(upErr);
-    const previewArea = el("div");
-    upCard.appendChild(previewArea);
-    wrap.appendChild(upCard);
-
-    function acceptFile(file) {
-      upErr.textContent = "";
-      if (!file) { return; }
-      if (["image/png", "image/jpeg", "image/webp"].indexOf(file.type) === -1) {
-        upErr.textContent = "That file type is not supported. Please use PNG, JPG, JPEG or WEBP.";
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        upErr.textContent = "That image is larger than 10 MB. Try capturing a smaller area of the screen.";
-        return;
-      }
-      S.putScreenshot("main", file).then(function () {
-        state.evidence.hasImage = true;
-        state.evidence.rotation = 0;
-        S.save();
-        toast("Screenshot saved on this computer.", "📸");
-        renderPreview();
-        renderPromptsIfReady();
-      }).catch(function () {
-        upErr.textContent = "This browser could not store the image. You can still continue — your teacher can check your Scratch project directly.";
-        state.evidence.hasImage = false;
-        state.evidence.unavailable = true;
-        S.save();
-        renderPromptsIfReady();
-      });
-    }
-
-    fileInput.addEventListener("change", function () { acceptFile(fileInput.files[0]); });
-    ["dragover", "dragenter"].forEach(function (evt) {
-      drop.addEventListener(evt, function (e) { e.preventDefault(); drop.classList.add("drag-over"); });
-    });
-    ["dragleave", "drop"].forEach(function (evt) {
-      drop.addEventListener(evt, function (e) { e.preventDefault(); drop.classList.remove("drag-over"); });
-    });
-    drop.addEventListener("drop", function (e) {
-      if (e.dataTransfer.files && e.dataTransfer.files.length) { acceptFile(e.dataTransfer.files[0]); }
-    });
-    const pasteHandler = function (e) {
-      if (currentScreen !== "evidence") { return; }
-      const items = (e.clipboardData || {}).items || [];
-      for (const it of items) {
-        if (it.type && it.type.indexOf("image/") === 0) {
-          acceptFile(it.getAsFile());
-          e.preventDefault();
-          return;
-        }
-      }
-    };
-    document.addEventListener("paste", pasteHandler);
-
-    function rotateImage() {
-      S.getScreenshot("main").then(function (blob) {
-        if (!blob) { return; }
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-        img.onload = function () {
-          const cv = document.createElement("canvas");
-          cv.width = img.height; cv.height = img.width;
-          const cx = cv.getContext("2d");
-          cx.translate(cv.width / 2, cv.height / 2);
-          cx.rotate(Math.PI / 2);
-          cx.drawImage(img, -img.width / 2, -img.height / 2);
-          URL.revokeObjectURL(url);
-          cv.toBlob(function (out) {
-            if (out) { S.putScreenshot("main", out).then(renderPreview); }
-          }, "image/png");
-        };
-        img.src = url;
-      });
-    }
-
-    function renderPreview() {
-      previewArea.innerHTML = "";
-      if (!state.evidence.hasImage) { return; }
-      S.getScreenshot("main").then(function (blob) {
-        if (!blob) { return; }
-        const url = URL.createObjectURL(blob);
-        const img = el("img", { class: "evidence-preview", alt: "Your uploaded Scratch screenshot", src: url });
-        previewArea.appendChild(img);
-        const tools = el("div", { class: "evidence-tools" });
-        const rep = el("button", { type: "button", class: "btn btn-secondary", text: "🔁 Replace" });
-        rep.addEventListener("click", function () { fileInput.click(); });
-        const rot = el("button", { type: "button", class: "btn btn-secondary", text: "🔄 Rotate" });
-        rot.addEventListener("click", rotateImage);
-        const delB = el("button", { type: "button", class: "btn btn-danger", text: "🗑 Delete" });
-        delB.addEventListener("click", function () {
-          confirmDialog("Delete this screenshot? You can upload a new one afterwards.", function () {
-            S.deleteScreenshot("main").then(function () {
-              state.evidence.hasImage = false;
-              S.save();
-              renderPreview();
-            });
-          });
-        });
-        tools.appendChild(rep); tools.appendChild(rot); tools.appendChild(delB);
-        previewArea.appendChild(tools);
-      });
-    }
-
-    // Explanation prompts
-    const promptsArea = el("div");
-    wrap.appendChild(promptsArea);
-
-    function renderPromptsIfReady() {
-      promptsArea.innerHTML = "";
-      const card = el("div", { class: "card" });
-      card.appendChild(el("h2", { text: "Explain your program" }));
-      if (!state.evidence.hasImage && !state.evidence.unavailable) {
-        card.appendChild(el("p", { html: "<em>Upload your screenshot above first. If you cannot take a screenshot on this device, ask your teacher — then you can continue with the explanations below.</em>" }));
-        const skipB = el("button", { type: "button", class: "btn btn-ghost", text: "My teacher says I can continue without a screenshot" });
-        skipB.addEventListener("click", function () {
-          state.evidence.unavailable = true;
-          S.save();
-          renderPromptsIfReady();
-        });
-        card.appendChild(skipB);
-        promptsArea.appendChild(card);
-        return;
-      }
-      const getters = {};
-      EVIDENCE_PROMPTS.forEach(function (p, i) {
-        const block = el("div", { class: "form-field" });
-        block.appendChild(el("label", { text: (i + 1) + ". " + p.label }));
-        if (langSupport() || typingSupport()) {
-          block.appendChild(el("p", { class: "sentence-starter", text: "Frame: " + p.frame }));
-          const wb = el("div", { class: "word-bank" });
-          const inp = el("input", { type: "text", class: "plain-input", maxlength: "200", "aria-label": p.label });
-          p.wordbank.forEach(function (w) {
-            const wbtn = el("button", { type: "button", class: "wb-word", text: w });
-            wbtn.addEventListener("click", function () {
-              inp.value = (inp.value ? inp.value.replace(/\s+$/, "") + " " : "") + w;
-              inp.focus();
-            });
-            wb.appendChild(wbtn);
-          });
-          block.appendChild(wb);
-          const saved = state.answers["evidence_" + p.id];
-          if (saved) { inp.value = saved.answer; }
-          block.appendChild(inp);
-          getters[p.id] = function () { return inp.value.trim(); };
-        } else {
-          const ta = el("textarea", { class: "plain-input", rows: "2", "aria-label": p.label });
-          const saved = state.answers["evidence_" + p.id];
-          if (saved) { ta.value = saved.answer; }
-          block.appendChild(ta);
-          getters[p.id] = function () { return ta.value.trim(); };
-        }
-        card.appendChild(block);
-      });
-      const err = el("div", { class: "field-error", "aria-live": "polite" });
-      const fin = el("button", { type: "button", class: "btn", text: "Complete the Evidence Station ▶" });
-      fin.addEventListener("click", function () {
-        const minLen = (langSupport() || typingSupport()) ? 3 : 10;
-        let ok = true;
-        EVIDENCE_PROMPTS.forEach(function (p) {
-          if (getters[p.id]().length < minLen) { ok = false; }
-        });
-        if (!ok) { err.textContent = "Please complete every sentence — short answers are fine, empty ones are not."; return; }
-        EVIDENCE_PROMPTS.forEach(function (p) {
-          state.answers["evidence_" + p.id] = { question: p.label, answer: getters[p.id]() };
-        });
-        S.save();
-        if (!isDone("evidence")) {
-          awardBadge("detective");
-          awardBadge("improver");
-          awardBadge("evidence");
-          completeStage("evidence");
-        }
-        toast("Evidence secured!", "📸");
-        go("map");
-      });
-      card.appendChild(err);
-      card.appendChild(el("div", { class: "modal-actions" }, [fin]));
-      promptsArea.appendChild(card);
-    }
-
-    if (state.evidence.hasImage) { renderPreview(); }
-    renderPromptsIfReady();
-
-    if (isDone("evidence")) {
-      const doneCard = el("div", { class: "card" });
-      doneCard.appendChild(el("p", { html: "<strong>✔ Evidence Station complete.</strong> Next: try the optional Extension Vault, or go straight to the Exit Terminal." }));
-      const extB = el("button", { type: "button", class: "btn btn-secondary", text: "🗝️ Extension Vault (optional)" });
-      extB.addEventListener("click", function () { go("extension"); });
-      const plB = el("button", { type: "button", class: "btn", text: "🖥️ Exit Terminal (required) ▶" });
-      plB.addEventListener("click", function () { go("plenary"); });
-      doneCard.appendChild(el("div", { class: "modal-actions" }, [extB, plB]));
-      wrap.appendChild(doneCard);
-    }
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Extension Vault ---------- */
 
   function renderExtension() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("p", { class: "stage-eyebrow", text: "Optional missions" }));
-    wrap.appendChild(el("h1", { text: "🗝️ Extension Vault" }));
-    wrap.appendChild(instructionRow("These challenges are optional extras for explorers who have time. You can leave the vault and go to the Exit Terminal whenever you like."));
-
-    const leaveTop = el("button", { type: "button", class: "btn", text: "🖥️ Continue to the Exit Terminal ▶" });
-    leaveTop.addEventListener("click", function () { markExtDone(); go("plenary"); });
-    wrap.appendChild(el("div", { class: "modal-actions" }, [leaveTop]));
-
-    function markExtDone() {
-      if (!isDone("extension") && state.extensionDone.length) {
-        completeStage("extension");
-      } else {
-        unlock("plenary");
-        S.save();
-      }
-    }
-
-    /* Extension 1 */
-    const e1 = el("div", { class: "card ext-card" });
-    e1.appendChild(el("h2", { text: "Extension 1 · Another Input" }));
-    e1.appendChild(el("p", { text: "Add a second input that creates a different output. Example: the right arrow moves the sprite right, and the left arrow moves it left." }));
-    const e1cb = el("input", { type: "checkbox" });
-    e1cb.checked = !!state.extChecklist.e1done;
-    const e1lab = el("label", { class: "check-option" }, [e1cb, el("span", { text: "I added a second input with a different output in Scratch." })]);
-    e1.appendChild(e1lab);
-    e1.appendChild(el("p", { html: "<strong>One-sentence explanation:</strong>" }));
-    const e1ta = el("input", { type: "text", class: "plain-input", maxlength: "220", "aria-label": "Extension 1 explanation", placeholder: "My second input is … and its output is …" });
-    if (state.answers.ext1) { e1ta.value = state.answers.ext1.answer; }
-    e1.appendChild(e1ta);
-    e1.appendChild(el("p", { class: "sentence-starter", text: "Optional: add a second screenshot showing your new input at the Evidence Station (replace is fine — or show your teacher in Scratch)." }));
-    const e1save = el("button", { type: "button", class: "btn btn-secondary", text: "Save Extension 1" });
-    const e1fb = el("div", { "aria-live": "polite" });
-    e1save.addEventListener("click", function () {
-      if (!e1cb.checked || e1ta.value.trim().length < 5) {
-        e1fb.innerHTML = "";
-        e1fb.appendChild(el("div", { class: "feedback feedback-try", text: "Tick the checklist and write one sentence to save this extension." }));
-        return;
-      }
-      state.extChecklist.e1done = true;
-      state.answers.ext1 = { question: "Extension 1: second input explanation", answer: e1ta.value.trim() };
-      if (state.extensionDone.indexOf("ext1") === -1) { state.extensionDone.push("ext1"); addChips(2); }
-      S.save();
-      e1fb.innerHTML = "";
-      e1fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Extension 1 saved. Excellent extra input!" }));
-    });
-    e1.appendChild(e1fb);
-    e1.appendChild(el("div", { class: "modal-actions" }, [e1save]));
-    wrap.appendChild(e1);
-
-    /* Extension 2 */
-    const e2 = el("div", { class: "card ext-card" });
-    e2.appendChild(el("h2", { text: "Extension 2 · Smarter Control" }));
-    e2.appendChild(el("p", { text: "Add either a repeat block or an if condition to your program in Scratch." }));
-    const e2cb = el("input", { type: "checkbox" });
-    e2cb.checked = !!state.extChecklist.e2done;
-    e2.appendChild(el("label", { class: "check-option" }, [e2cb, el("span", { text: "I added a repeat block or an if condition." })]));
-    e2.appendChild(el("p", { html: "<strong>Why is this block useful in your program?</strong>" }));
-    const e2ta = el("input", { type: "text", class: "plain-input", maxlength: "220", "aria-label": "Extension 2 explanation", placeholder: "This block is useful because …" });
-    if (state.answers.ext2) { e2ta.value = state.answers.ext2.answer; }
-    e2.appendChild(e2ta);
-    const e2save = el("button", { type: "button", class: "btn btn-secondary", text: "Save Extension 2" });
-    const e2fb = el("div", { "aria-live": "polite" });
-    e2save.addEventListener("click", function () {
-      if (!e2cb.checked || e2ta.value.trim().length < 5) {
-        e2fb.innerHTML = "";
-        e2fb.appendChild(el("div", { class: "feedback feedback-try", text: "Tick the checklist and answer the question to save this extension." }));
-        return;
-      }
-      state.extChecklist.e2done = true;
-      state.answers.ext2 = { question: "Extension 2: why is the repeat/if block useful?", answer: e2ta.value.trim() };
-      if (state.extensionDone.indexOf("ext2") === -1) { state.extensionDone.push("ext2"); addChips(2); }
-      S.save();
-      e2fb.innerHTML = "";
-      e2fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Extension 2 saved. Smarter control unlocked!" }));
-    });
-    e2.appendChild(e2fb);
-    e2.appendChild(el("div", { class: "modal-actions" }, [e2save]));
-    wrap.appendChild(e2);
-
-    /* Extension 3 */
-    const e3 = el("div", { class: "card ext-card" });
-    e3.appendChild(el("h2", { text: "Extension 3 · Algorithm Translator" }));
-    e3.appendChild(el("p", { text: "Write a five-step algorithm explaining how your program works, in order." }));
-    const stepsList = el("ol", { class: "algo-steps" });
-    const stepInputs = [];
-    for (let i = 0; i < 5; i++) {
-      const inp = el("input", { type: "text", maxlength: "160", "aria-label": "Algorithm step " + (i + 1) });
-      if (state.answers.ext3 && state.answers.ext3.steps && state.answers.ext3.steps[i]) { inp.value = state.answers.ext3.steps[i]; }
-      stepInputs.push(inp);
-      stepsList.appendChild(el("li", {}, [inp]));
-    }
-    e3.appendChild(stepsList);
-    e3.appendChild(el("p", { html: "<strong>Review checklist</strong> — check your own algorithm:" }));
-    const revList = el("ul", { class: "self-checklist" });
-    const revBoxes = [];
-    ["Are the steps in the correct order?", "Is the input included?", "Is the processing described?", "Is the output included?", "Could another student follow the algorithm?"].forEach(function (t, i) {
-      const cb = el("input", { type: "checkbox" });
-      cb.checked = !!state.extChecklist["rev" + i];
-      cb.addEventListener("change", function () { state.extChecklist["rev" + i] = cb.checked; S.save(); });
-      revBoxes.push(cb);
-      revList.appendChild(el("li", {}, [el("label", {}, [cb, el("span", { text: t })])]));
-    });
-    e3.appendChild(revList);
-    const e3save = el("button", { type: "button", class: "btn btn-secondary", text: "Save Extension 3" });
-    const e3fb = el("div", { "aria-live": "polite" });
-    e3save.addEventListener("click", function () {
-      const steps = stepInputs.map(function (inp) { return inp.value.trim(); });
-      if (steps.some(function (s) { return s.length < 3; })) {
-        e3fb.innerHTML = "";
-        e3fb.appendChild(el("div", { class: "feedback feedback-try", text: "Fill in all five steps of your algorithm to save it." }));
-        return;
-      }
-      state.answers.ext3 = { question: "Extension 3: five-step algorithm", steps: steps, answer: steps.map(function (s, i) { return (i + 1) + ". " + s; }).join(" ") };
-      if (state.extensionDone.indexOf("ext3") === -1) { state.extensionDone.push("ext3"); addChips(2); }
-      S.save();
-      e3fb.innerHTML = "";
-      e3fb.appendChild(el("div", { class: "feedback feedback-good", text: "✔ Algorithm saved. Now use the review checklist to double-check it." }));
-    });
-    e3.appendChild(e3fb);
-    e3.appendChild(el("div", { class: "modal-actions" }, [e3save]));
-    wrap.appendChild(e3);
-
-    const leave = el("button", { type: "button", class: "btn btn-big", text: "🖥️ Leave the vault — go to the Exit Terminal ▶" });
-    leave.addEventListener("click", function () { markExtDone(); go("plenary"); });
-    wrap.appendChild(el("div", { style: "text-align:center; margin-top:0.5rem;" }, [leave]));
-    main.appendChild(wrap);
-  }
-
-  /* ---------- Plenary: Exit Terminal ---------- */
-
-  const PLENARY_QS = [
-    { id: "p1", label: "One Computing Lab routine I must remember is…", frame: "One routine I must remember is __________.", wordbank: ["wait for instructions", "report damage", "save in the agreed folder", "use a clear filename", "sign out", "leave the workstation ready"] },
-    { id: "p2", label: "This routine matters because…", frame: "This routine matters because __________.", wordbank: ["it keeps us safe", "it protects my work", "it helps the next class", "it keeps my account private"] },
-    { id: "p3", label: "The input in my Scratch program was…", frame: "The input was __________.", wordbank: ["the green flag", "a key press", "a mouse click"] },
-    { id: "p4", label: "The output was…", frame: "The output was __________.", wordbank: ["movement", "a message", "a sound"] },
-    { id: "p5", label: "One change I made was…", frame: "One change I made was __________.", wordbank: ["the start key", "the distance moved", "the message", "a new sound", "the block order"] },
-    { id: "p6", label: "One thing I would like help with this year is…", frame: "I would like help with __________.", wordbank: ["typing", "debugging", "saving my work", "Scratch blocks", "reading instructions", "nothing yet"] }
-  ];
-
-  function renderPlenary() {
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("div", { class: "stage-head" }, [
-      el("span", { class: "stage-eyebrow", text: "Compulsory plenary" }),
-      el("span", { class: "time-pill", text: "⏱ 8–10 minutes" })
+    const main=clearMain(); const screen=el("section",{class:"screen activity-shell"}); if(teacherMode)screen.appendChild(teacherPanel());
+    screen.appendChild(el("p",{class:"eyebrow",text:"Fast Finisher Hub · optional challenge"})); screen.appendChild(el("h1",{html:"Choose a <span class='title-rule'>meaningful challenge</span>"}));
+    screen.appendChild(el("div",{class:"extension-summary"},[
+      el("div",{html:"<strong>Challenge target: complete at least 3 levels.</strong><br><span>This is a fast-finisher target; it does not replace Main 1 or Main 2.</span>"}),
+      el("strong",{text:(state.extensionDone||[]).length+" / 3"})
     ]));
-    wrap.appendChild(el("h1", { text: "🖥️ Exit Terminal" }));
-
-    const chk = el("div", { class: "card" });
-    chk.appendChild(el("h2", { text: "Real-life finishing checklist — do these at your real computer" }));
-    const ol = el("ul", { class: "self-checklist" });
-    ["Save your Scratch project.", "Check the filename.", "Close any unnecessary browser tabs.", "Sign out when the teacher instructs you.", "Leave the workstation ready for the next class."].forEach(function (t, i) {
-      const cb = el("input", { type: "checkbox" });
-      cb.checked = !!state.plenary["chk" + i];
-      cb.addEventListener("change", function () { state.plenary["chk" + i] = cb.checked; S.save(); });
-      ol.appendChild(el("li", {}, [el("label", {}, [cb, el("span", { text: t })])]));
-    });
-    chk.appendChild(ol);
-    wrap.appendChild(chk);
-
-    const card = el("div", { class: "card" });
-    card.appendChild(el("h2", { text: "Exit questions" }));
-    const getters = {};
-    PLENARY_QS.forEach(function (p, i) {
-      const block = el("div", { class: "form-field" });
-      const row = el("div", { class: "instruction-row" });
-      const sb = speakBtn(p.label);
-      if (sb) { row.appendChild(sb); }
-      row.appendChild(el("p", { html: "<strong>" + (i + 1) + ". " + esc(p.label) + "</strong>" }));
-      block.appendChild(row);
-      if (langSupport() || typingSupport()) {
-        block.appendChild(el("p", { class: "sentence-starter", text: "Frame: " + p.frame }));
-        const wb = el("div", { class: "word-bank" });
-        const inp = el("input", { type: "text", class: "plain-input", maxlength: "220", "aria-label": p.label });
-        p.wordbank.forEach(function (w) {
-          const wbtn = el("button", { type: "button", class: "wb-word", text: w });
-          wbtn.addEventListener("click", function () {
-            inp.value = (inp.value ? inp.value.replace(/\s+$/, "") + " " : "") + w;
-            inp.focus();
-          });
-          wb.appendChild(wbtn);
-        });
-        block.appendChild(wb);
-        if (state.answers["plenary_" + p.id]) { inp.value = state.answers["plenary_" + p.id].answer; }
-        block.appendChild(inp);
-        getters[p.id] = function () { return inp.value.trim(); };
-      } else {
-        const ta = el("textarea", { class: "plain-input", rows: "2", "aria-label": p.label });
-        if (state.answers["plenary_" + p.id]) { ta.value = state.answers["plenary_" + p.id].answer; }
-        block.appendChild(ta);
-        getters[p.id] = function () { return ta.value.trim(); };
-      }
-      card.appendChild(block);
-    });
-    wrap.appendChild(card);
-
-    const conf = el("div", { class: "card" });
-    conf.appendChild(el("h2", { text: "How confident do you feel after today's lesson?" }));
-    conf.appendChild(el("p", { text: "Be honest — every answer is a good answer. It simply tells your teacher how best to help you this year." }));
-    const confRow = el("div", { class: "confidence-row", role: "group", "aria-label": "Confidence choice" });
-    const confOpts = [
-      { v: "green", cls: "conf-green", emoji: "🟢", t: "Green — I can work independently." },
-      { v: "amber", cls: "conf-amber", emoji: "🟠", t: "Amber — I remember some things but still need reminders." },
-      { v: "red", cls: "conf-red", emoji: "🔴", t: "Red — I need help getting started. That's a great thing to know!" }
-    ];
-    confOpts.forEach(function (o) {
-      const b = el("button", { type: "button", class: "confidence-opt " + o.cls, "aria-pressed": String(state.confidence === o.v) }, [
-        el("span", { class: "c-emoji", "aria-hidden": "true", text: o.emoji }),
-        el("span", { text: o.t })
-      ]);
-      b.addEventListener("click", function () {
-        state.confidence = o.v;
-        confRow.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
-        b.setAttribute("aria-pressed", "true");
-        S.save();
-      });
-      confRow.appendChild(b);
-    });
-    conf.appendChild(confRow);
-    wrap.appendChild(conf);
-
-    const err = el("div", { class: "field-error", "aria-live": "polite" });
-    const fin = el("button", { type: "button", class: "btn btn-big", text: "🚀 Complete the mission ▶" });
-    fin.addEventListener("click", function () {
-      const minLen = (langSupport() || typingSupport()) ? 3 : 8;
-      let missing = 0;
-      PLENARY_QS.forEach(function (p) { if (getters[p.id]().length < minLen) { missing++; } });
-      if (missing > 0) { err.textContent = "Please answer all six exit questions (" + missing + " still to go)."; return; }
-      if (!state.confidence) { err.textContent = "Please choose a confidence colour — every colour is a good answer."; return; }
-      err.textContent = "";
-      PLENARY_QS.forEach(function (p) {
-        state.answers["plenary_" + p.id] = { question: p.label, answer: getters[p.id]() };
-      });
-      state.finishedAt = new Date().toISOString();
-      S.save();
-      if (!isDone("plenary")) {
-        awardBadge("ready");
-        addChips(2);
-        completeStage("plenary");
-      }
-      go("report");
-    });
-    wrap.appendChild(err);
-    wrap.appendChild(el("div", { style: "text-align:center;" }, [fin]));
-    main.appendChild(wrap);
+    const leave=el("button",{type:"button",class:"btn",text:"Go to compulsory plenary →"}); leave.addEventListener("click",function(){go("plenary");}); screen.appendChild(el("div",{class:"button-row end"},[leave]));
+    const grid=el("div",{class:"level-grid"}); EXTENSIONS.forEach(function(level,i){
+      const done=state.extensionDone.indexOf(level.id)>=0; const b=el("button",{type:"button",class:"level-card "+(done?"done ":"")+(state.steps.extension===i?"active":"")});
+      b.appendChild(el("span",{class:"level-badge",text:level.strand+" · L"+level.level})); b.appendChild(el("h3",{text:(done?"✓ ":"")+level.title})); b.appendChild(el("small",{text:done?"Completed — you can revisit it.":"Open challenge"})); b.addEventListener("click",function(){setStep("extension",i);});grid.appendChild(b);
+    }); screen.appendChild(grid);
+    const level=EXTENSIONS[state.steps.extension]||EXTENSIONS[0]; const task=el("article",{class:"lesson-card extension-task"}); level.render(task); const err=el("div",{class:"field-error","aria-live":"polite"});task.appendChild(err);
+    const saveBtn=el("button",{type:"button",class:"btn",text:state.extensionDone.indexOf(level.id)>=0?"Update this level":"Complete this level"});
+    saveBtn.addEventListener("click",function(){const result=level.validate();if(result!==true){err.textContent=typeof result==="string"?result:"Complete every part correctly before saving this level.";return;}err.textContent="";if(state.extensionDone.indexOf(level.id)<0)state.extensionDone.push(level.id);if(state.extensionDone.length>=3)complete("extension");const summary=typeof level.summary==="function"?level.summary():level.summary;state.answers["extension_"+level.id]={question:level.title,answer:summary,correct:true};save();toast("Level completed. Choose another challenge or continue to the plenary.");go("extension",true);});
+    task.appendChild(el("div",{class:"button-row end"},[saveBtn])); screen.appendChild(task); main.appendChild(screen);
   }
 
-  /* ---------- Report ---------- */
-
-  function renderReport() {
-    if (!isDone("plenary") && !teacherMode) {
-      go("plenary");
-      return;
+  const PLENARY_STEPS = [
+    function(card){
+      cardTop(card,"1 of 2","Show what you now understand","Use today’s learning to answer two short questions, then explain one input–code–output relationship from your own program.","plenary","plenary1");
+      const plenaryOne=mcq("plenary_q1","Which statement best explains why digital organisation matters?",[
+        "It helps work remain findable, understandable and ready to continue",
+        "It changes the Scratch sprite’s costume",
+        "It means we never need to save"
+      ],0,"Organisation supports independence and protects progress.");
+      const plenaryTwo=mcq("plenary_q2","A sprite changes y by −40. What output should you predict?",["Move right","Move down","Move up"],1,"Negative y moves down.");
+      const plenaryExplain=textAnswer("plenary_q3","Explain one input and its output from your Scratch project.",{rows:2,frame:"When I press…, the program…, so…",words:["right arrow","left arrow","input","change x","output","moves","message"],min:15});
+      card.appendChild(taskColumns([plenaryOne,plenaryTwo],[plenaryExplain]));
+      return function(){return requireKeys(["plenary_q1","plenary_q2"])&&state.answers.plenary_q3&&state.answers.plenary_q3.answer.length>=15||"Answer both questions correctly and explain one input–output relationship.";};
+    },
+    function(card){
+      cardTop(card,"2 of 2","Choose your next step","Choose the statement that honestly describes the support you need, then tell your teacher one specific thing to practise or remember.","plenary","plenary2");
+      const conf=el("div",{class:"choice-row",role:"group","aria-label":"Confidence"});
+      [["Green — I can do this independently","green"],["Amber — I can do this with a reminder","amber"],["Red — I need a worked example","red"]].forEach(function(o){const b=el("button",{type:"button",class:"option "+(state.confidence===o[1]?"selected":""),text:o[0]});b.addEventListener("click",function(){state.confidence=o[1];save();conf.querySelectorAll("button").forEach(function(x){x.classList.remove("selected");});b.classList.add("selected");});conf.appendChild(b);}); card.appendChild(conf);
+      card.appendChild(textAnswer("plenary_next","What should you practise or remember next time?",{rows:2,frame:"Next time I will…",words:["save regularly","check the filename","use x and y","predict before testing","debug one block at a time"],min:10}));
+      card.appendChild(el("div",{class:"feedback info",text:"An honest Amber or Red answer is useful evidence. It tells your teacher what support to prepare next."}));
+      return function(){return state.confidence&&state.answers.plenary_next&&state.answers.plenary_next.answer.length>=10||"Choose a confidence colour and write one useful next step.";};
     }
-    const main = clearMain();
-    const wrap = el("div", { class: "screen" });
-    wrap.appendChild(el("p", { class: "stage-eyebrow", text: "Mission complete" }));
-    wrap.appendChild(el("h1", { text: "📄 Your Completion Report" }));
-    wrap.appendChild(instructionRow("Well done — the lab is fully restored! Here is your report. You can print it or save it as a PDF."));
+  ];
+  function renderPlenary(){renderStepper("plenary","Plenary: Explain and reflect","Compulsory · about 6 minutes",PLENARY_STEPS,"report");}
 
-    const actions = el("div", { class: "report-actions" });
-    const printB = el("button", { type: "button", class: "btn btn-big", text: "🖨 Print / Save as PDF" });
-    printB.addEventListener("click", function () { window.print(); });
-    const mapB = el("button", { type: "button", class: "btn btn-secondary", text: "🗺️ Return to Mission Map" });
-    mapB.addEventListener("click", function () { go("map"); });
-    const restartB = el("button", { type: "button", class: "btn btn-ghost", text: "↺ Start Again (clears everything)" });
-    restartB.addEventListener("click", function () {
-      confirmDialog("Start the whole lesson again? This deletes ALL saved answers, badges and the screenshot on this computer.", function () {
-        const p = S.resetAll();
-        if (p && p.then) { p.then(function () { location.reload(); }); }
-        else { location.reload(); }
-      });
-    });
-    actions.appendChild(printB); actions.appendChild(mapB); actions.appendChild(restartB);
-    wrap.appendChild(actions);
-
-    const holder = el("div");
-    wrap.appendChild(holder);
-    main.appendChild(wrap);
-
-    window.LabReport.build(state, { BADGES: BADGES, STAGES: STAGES, CFG: CFG, esc: esc, getScreenshot: S.getScreenshot }).then(function (node) {
-      // on-screen preview
-      holder.appendChild(node);
-      // print copy
-      window.LabReport.build(state, { BADGES: BADGES, STAGES: STAGES, CFG: CFG, esc: esc, getScreenshot: S.getScreenshot }).then(function (printNode) {
-        const rr = $("#reportRoot");
-        rr.innerHTML = "";
-        rr.appendChild(printNode);
-      });
-    });
+  function renderReport(){
+    const main=clearMain(); const screen=el("section",{class:"screen"}); if(teacherMode)screen.appendChild(teacherPanel());
+    if(!teacherMode&&!unlocked("report")){go("plenary");return;}
+    if(state.completed.indexOf("plenary")>=0&&!state.finishedAt){state.finishedAt=new Date().toISOString();save();}
+    screen.appendChild(el("p",{class:"eyebrow",text:"Lesson complete"})); screen.appendChild(el("h1",{html:"Export your <span class='title-rule'>learning evidence</span>"}));
+    screen.appendChild(el("p",{class:"screen-lead",text:"Your report includes your answers, extension progress and any screenshots you chose to attach."}));
+    const steps=el("div",{class:"teams-steps"}); steps.appendChild(el("h2",{text:"Save and submit"})); steps.appendChild(el("ol",{html:"<li>Select <strong>Print / Save as PDF</strong>.</li><li>Choose <strong>Save as PDF</strong> as the printer.</li><li>Name it <strong>"+esc((state.student.name||"Name").replace(/\s+/g,"_"))+"_Y6_Computing_Week1.pdf</strong>.</li><li>Open the correct assignment in <strong>Microsoft Teams</strong>.</li><li>Attach the PDF, wait for it to finish uploading, then select <strong>Turn in</strong>.</li></ol>"})); screen.appendChild(steps);
+    const print=el("button",{type:"button",class:"btn",text:"Print / Save as PDF"});print.addEventListener("click",function(){window.print();});
+    const back=el("button",{type:"button",class:"btn secondary",text:"Review my work"});back.addEventListener("click",function(){go("main2");});screen.appendChild(el("div",{class:"button-row"},[back,print]));
+    const holder=el("div");screen.appendChild(holder);main.appendChild(screen);
+    window.LabReport.build(state,{CFG:CFG,getScreenshot:S.getScreenshot}).then(function(node){holder.appendChild(node);return window.LabReport.build(state,{CFG:CFG,getScreenshot:S.getScreenshot});}).then(function(printNode){const root=$("#reportRoot");root.innerHTML="";root.appendChild(printNode);});
   }
 
-  /* ---------- Teacher mode ---------- */
-
-  function teacherBar() {
-    const bar = el("div", { class: "teacher-bar" });
-    bar.appendChild(el("h2", { text: "🧑‍🏫 Teacher mode (hidden from students)" }));
-    const grid = el("div", { class: "teacher-grid" });
-
-    function tb(label, fn) {
-      const b = el("button", { type: "button", class: "btn btn-secondary", text: label });
-      b.addEventListener("click", fn);
-      grid.appendChild(b);
-    }
-    tb("🔓 Unlock all stages", function () {
-      state.teacherUnlockedAll = true;
-      STAGES.forEach(function (s) { unlock(s.id); });
-      S.save();
-      toast("All stages unlocked.", "🔓");
-      go("map");
-    });
-    STAGES.forEach(function (s) {
-      if (["landing", "support", "briefing"].indexOf(s.id) !== -1) { return; }
-      tb("→ " + s.name, function () { unlock(s.id); go(s.id); });
-    });
-    tb("📖 View sample answers", function () {
-      openModal(function (m) {
-        m.appendChild(el("h2", { text: "Sample / model answers" }));
-        STARTER.forEach(function (s) {
-          m.appendChild(el("p", { html: "<strong>" + esc(s.label) + ":</strong> " + esc(s.open.model) }));
-        });
-        ROUTINE_QUESTIONS.forEach(function (q) {
-          m.appendChild(el("p", { html: "<strong>" + esc(q.q) + "</strong> " + esc(q.open.model) }));
-        });
-        m.appendChild(el("p", { html: "<strong>Agreed filename:</strong> " + esc(TARGET_FILENAME) }));
-        m.appendChild(el("p", { html: "<strong>Folder structure:</strong> Year 6 Computing › Term 1 - Digital Independence › (student's own name). Students then recreate this for real on their school computer and upload a screenshot as evidence." }));
-        const c = el("button", { type: "button", class: "btn", text: "Close" });
-        c.addEventListener("click", closeModal);
-        m.appendChild(el("div", { class: "modal-actions" }, [c]));
-      }, { dismissable: true });
-    });
-    tb("🔗 Change Scratch URL", function () {
-      openModal(function (m) {
-        m.appendChild(el("h2", { text: "Scratch project URL" }));
-        m.appendChild(el("p", { text: "This overrides config.js on this computer only." }));
-        const inp = el("input", { type: "text", class: "plain-input", value: scratchUrl() });
-        m.appendChild(inp);
-        const saveB = el("button", { type: "button", class: "btn", text: "Save" });
-        saveB.addEventListener("click", function () {
-          overrides.scratchUrl = inp.value.trim();
-          localStorage.setItem("labLaunch_teacherOverrides", JSON.stringify(overrides));
-          closeModal();
-          toast("Scratch URL updated.", "🔗");
-        });
-        m.appendChild(el("div", { class: "modal-actions" }, [saveB]));
-      }, { dismissable: true });
-    });
-    tb("🏷 Change class list", function () {
-      openModal(function (m) {
-        m.appendChild(el("h2", { text: "Class options" }));
-        m.appendChild(el("p", { text: "One class per line. Leave empty for a free-text class field. Overrides config.js on this computer only." }));
-        const ta = el("textarea", { class: "plain-input", rows: "4" });
-        ta.value = classOptions().join("\n");
-        m.appendChild(ta);
-        const saveB = el("button", { type: "button", class: "btn", text: "Save" });
-        saveB.addEventListener("click", function () {
-          const list = ta.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
-          overrides.classOptions = list.length ? list : undefined;
-          localStorage.setItem("labLaunch_teacherOverrides", JSON.stringify(overrides));
-          closeModal();
-          toast("Class list updated.", "🏷");
-        });
-        m.appendChild(el("div", { class: "modal-actions" }, [saveB]));
-      }, { dismissable: true });
-    });
-    tb((overrides.sound === false ? "🔊 Enable sounds" : "🔇 Disable sounds"), function () {
-      overrides.sound = overrides.sound === false ? undefined : false;
-      localStorage.setItem("labLaunch_teacherOverrides", JSON.stringify(overrides));
-      go("map");
-    });
-    tb("🎬 Demonstration mode (fill sample data)", function () {
-      confirmDialog("Fill the app with sample demonstration data? This overwrites current progress on this computer.", function () {
-        fillDemoData();
-        go("map");
-      });
-    });
-    tb("♻ Reset current student", function () {
-      confirmDialog("Reset this student's progress and answers?", function () {
-        const p = S.resetAll();
-        if (p && p.then) { p.then(function () { location.href = location.pathname + "?teacher=1"; }); }
-        else { location.href = location.pathname + "?teacher=1"; }
-      });
-    });
-    tb("🗑 Clear ALL local data", function () {
-      confirmDialog("Clear all Lab Launch data stored in this browser, including teacher overrides?", function () {
-        try { localStorage.removeItem("labLaunch_teacherOverrides"); } catch (e) {}
-        const p = S.resetAll();
-        if (p && p.then) { p.then(function () { location.href = location.pathname; }); }
-        else { location.href = location.pathname; }
-      });
-    });
-    bar.appendChild(grid);
-    return bar;
+  function wire(){
+    $("#btnLearning").addEventListener("click",function(){const p=$("#learningPanel");p.hidden=!p.hidden;this.setAttribute("aria-expanded",String(!p.hidden));});
+    $("#closeLearning").addEventListener("click",function(){$("#learningPanel").hidden=true;$("#btnLearning").setAttribute("aria-expanded","false");$("#btnLearning").focus();});
+    $("#btnSupport").addEventListener("click",function(){state.returnTo=state.current;save();go("support");});
+    $("#btnSound").addEventListener("click",function(){state.settings.muted=!state.settings.muted;save();toast(state.settings.muted?"Sound is off.":"Sound is on.");});
   }
-
-  function fillDemoData() {
-    state.student = { name: "Sample Student", className: "6A", avatar: "aqua" };
-    state.profile = { lang: "full", typing: "full" };
-    state.startedAt = new Date().toISOString();
-    STAGES.forEach(function (s) { unlock(s.id); if (s.id !== "report") { state.completed.push(s.id); } });
-    state.completed = Array.from(new Set(state.completed));
-    Object.keys(BADGES).forEach(function (k) { if (state.badges.indexOf(k) === -1) { state.badges.push(k); } });
-    state.chips = 24;
-    state.answers = {
-      starter_adam: { label: "Room 1: Adam", question: STARTER[0].open.prompt, answer: "Adam should stop the game and listen so he knows the task.", correct: true, attempts: 1 },
-      starter_mei: { label: "Room 2: Mei", question: STARTER[1].open.prompt, answer: "She did not touch the unsafe cable and told the teacher.", correct: true, attempts: 1 },
-      starter_rohan: { label: "Room 3: Rohan", question: STARTER[2].open.prompt, answer: "The name is confusing; better: Y6_T1W01_ScratchBaseline_v1.", correct: true, attempts: 1 },
-      starter_hana: { label: "Room 4: Hana", question: STARTER[3].open.prompt, answer: "She saved, checked, closed, signed out and tidied.", correct: true, attempts: 1 },
-      routine_rq1: { question: ROUTINE_QUESTIONS[0].q, answer: "So it is fixed safely and nobody is wrongly blamed.", correct: true, attempts: 1 },
-      routine_rq2: { question: ROUTINE_QUESTIONS[1].q, answer: "Because you need the agreed folder and filename to find it.", correct: true, attempts: 1 },
-      routine_rq3: { question: ROUTINE_QUESTIONS[2].q, answer: "To keep the account and personal information safe.", correct: true, attempts: 1 },
-      investigate_inv1: { question: INVESTIGATE_QS[0].q, answer: "Clicking the green flag" },
-      investigate_inv2: { question: INVESTIGATE_QS[1].q, answer: "The sprite will move and say a message." },
-      investigate_inv3: { question: INVESTIGATE_QS[2].q, answer: "A key press, mouse click or the green flag" },
-      investigate_inv4: { question: INVESTIGATE_QS[3].q, answer: "Movement, a message or a sound" },
-      investigate_predictionsSaved: { question: "Predictions saved", answer: "yes" },
-      investigate_outcome: { question: "Did the program behave as predicted?", value: "match", answer: "✅ Yes, it matched my prediction.", reflection: "The sprite moved exactly as I predicted." },
-      evidence_ev1: { question: EVIDENCE_PROMPTS[0].label, answer: "pressing the space key" },
-      evidence_ev2: { question: EVIDENCE_PROMPTS[1].label, answer: "running the movement blocks in order" },
-      evidence_ev3: { question: EVIDENCE_PROMPTS[2].label, answer: "the sprite moves and says Hello" },
-      evidence_ev4: { question: EVIDENCE_PROMPTS[3].label, answer: "the key that starts the action" },
-      evidence_ev5: { question: EVIDENCE_PROMPTS[4].label, answer: "running the program and pressing the key" },
-      evidence_ev6: { question: EVIDENCE_PROMPTS[5].label, answer: "the sprite moved too far so I reduced the steps" },
-      plenary_p1: { question: PLENARY_QS[0].label, answer: "Save in the agreed folder with a clear filename." },
-      plenary_p2: { question: PLENARY_QS[1].label, answer: "It protects my work so I can find it next lesson." },
-      plenary_p3: { question: PLENARY_QS[2].label, answer: "Pressing the space key." },
-      plenary_p4: { question: PLENARY_QS[3].label, answer: "The sprite moved and said a message." },
-      plenary_p5: { question: PLENARY_QS[4].label, answer: "I changed the key that starts the action." },
-      plenary_p6: { question: PLENARY_QS[5].label, answer: "Debugging when something unexpected happens." }
-    };
-    ROUTINE_CARDS.forEach(function (c) { state.routineSort[c.id] = c.zone; });
-    for (let i = 0; i < MOD_CHECKLIST.length; i++) { state.checklist["m" + i] = true; }
-    state.fileSim = { step: 8, done: true, saved: true, realSkipped: true, tree: { name: "Documents", folders: [{ name: TARGET_FOLDER_1, files: [], folders: [{ name: TARGET_FOLDER_2, files: [], folders: [{ name: "Sample Student", folders: [], files: [{ name: TARGET_FILENAME }] }] }] }], files: [] } };
-    state.confidence = "green";
-    state.finishedAt = new Date().toISOString();
-    S.save();
-  }
-
-  /* ======================= HEADER WIRING ======================= */
-
-  function wireChrome() {
-    $("#btnLearningPanel").addEventListener("click", function () {
-      const p = $("#learningPanel");
-      const open = !p.hidden;
-      p.hidden = open;
-      this.setAttribute("aria-expanded", String(!open));
-      if (!open) { $("#closeLearningPanel").focus(); }
-    });
-    $("#closeLearningPanel").addEventListener("click", function () {
-      $("#learningPanel").hidden = true;
-      $("#btnLearningPanel").setAttribute("aria-expanded", "false");
-      $("#btnLearningPanel").focus();
-    });
-    $("#btnMap").addEventListener("click", function () { go("map"); });
-    $("#btnSupport").addEventListener("click", function () { go("support"); });
-    $("#btnMute").addEventListener("click", function () {
-      state.settings.muted = !state.settings.muted;
-      S.save();
-      updateChrome();
-      toast(state.settings.muted ? "Sound off." : "Sound on.", state.settings.muted ? "🔇" : "🔊");
-    });
-  }
-
-  /* ======================= BOOT ======================= */
-
-  function boot() {
-    document.body.classList.toggle("reduced-motion", !!state.settings.reducedMotion);
-    wireChrome();
-
-    // teacher mode entry
-    const params = new URLSearchParams(location.search);
-    if (params.get("teacher") === "1" && CFG.ENABLE_TEACHER_MODE) {
-      if (sessionStorage.getItem("labLaunch_teacher") === "1") {
-        teacherMode = true;
-      } else {
-        openModal(function (m) {
-          m.appendChild(el("h2", { text: "Teacher access" }));
-          m.appendChild(el("p", { text: "Enter the teacher passcode from config.js." }));
-          const inp = el("input", { type: "password", class: "plain-input", "aria-label": "Teacher passcode" });
-          m.appendChild(inp);
-          const err = el("div", { class: "field-error", "aria-live": "polite" });
-          m.appendChild(err);
-          const okB = el("button", { type: "button", class: "btn", text: "Enter" });
-          const cancelB = el("button", { type: "button", class: "btn btn-secondary", text: "Cancel" });
-          function tryPass() {
-            if (inp.value === (CFG.TEACHER_PASSCODE || "")) {
-              sessionStorage.setItem("labLaunch_teacher", "1");
-              teacherMode = true;
-              closeModal();
-              if (state.student.name) { go("map"); } else { state.student = { name: "Teacher Preview", className: "STAFF", avatar: "viola" }; state.profile = { lang: "full", typing: "full" }; S.save(); go("map"); }
-            } else {
-              err.textContent = "Incorrect passcode.";
-            }
-          }
-          okB.addEventListener("click", tryPass);
-          inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryPass(); } });
-          cancelB.addEventListener("click", function () { closeModal(); startNormally(); });
-          m.appendChild(el("div", { class: "modal-actions" }, [okB, cancelB]));
-        });
-        return;
-      }
-    }
-    startNormally();
-  }
-
-  function startNormally() {
-    if (teacherMode) { go("map"); return; }
-    if (!state.student.name) { go("landing"); return; }
-    if (!state.profile.lang || !state.profile.typing) { go("support"); return; }
-    // recover after refresh: return to the mission map with progress intact
-    go("map");
-    if (state.completed.length > 2 && !isDone("plenary")) {
-      toast("Welcome back, " + state.student.name.split(" ")[0] + " — your progress was saved.", "💾");
+  function boot(){
+    try {
+      wire();
+      if(teacherMode&&!state.student.name){state.student={name:"Teacher",className:"Preview"};save();}
+      if(!state.student.name){go("welcome");return;}
+      go(state.current&&state.current!=="welcome"?state.current:"overview");
+    } catch (e) {
+      showStartupFailure();
     }
   }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();

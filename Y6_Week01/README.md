@@ -1,118 +1,59 @@
-# Lab Launch: Year 6 Computing Quest
+# Year 6 Computing Launch
 
-An interactive, self-contained Year 6 (KS2) Computing lesson web app for the first lesson of the year. Students restore a futuristic Computing Lab through a gentle platform game, a routine-sorting activity, a simulated file-management task, a real Scratch investigation and modification, evidence capture, and a compulsory plenary — finishing with a printable completion report.
+A static, browser-based 60-minute KS2 lesson about digital organisation and Scratch input/output/coordinates. No server, database, package installation or build process is required.
 
-Everything runs in the browser. **No server, database, npm install or build step is required, and no student data ever leaves the computer.**
+See `LEARNING_EXPERIENCE_AUDIT.md` for the criteria used to review every learner-facing screen and the remaining teacher checks.
 
----
+## Lesson flow
 
-## 1. How to open the app locally
+1. Learning briefing — 3 minutes
+2. Do Now: Start–Work–Finish — 6 minutes
+3. Main Activity 1: Organise digital work — 15 minutes
+4. Main Activity 2: Predict, build, test and modify — 25 minutes
+5. Fast Finisher Hub — optional; eight levels across organisation and programming
+6. Compulsory plenary — 6 minutes
+7. PDF report and Microsoft Teams submission instructions
 
-Double-click `index.html`, or right-click it and choose *Open with → Chrome / Edge*. That's it.
+Each core activity appears one card at a time. The Previous/Next controls change the card without forcing the browser to the top of the page. Students cannot skip core activities; the Fast Finisher Hub opens only after both main activities.
 
-If your school network blocks Google Fonts, the app automatically falls back to system fonts — nothing breaks.
+## Open or host
 
-## 2. How to host it on a static web host
+- Open `index.html` in a current Chrome or Edge browser, or serve the whole folder from GitHub Pages or another static host.
+- Preserve the `css`, `js` and `assets` folder structure.
+- The Scratch button opens the URL configured in `js/config.js`.
 
-Upload the whole folder (keeping the folder structure) to any static host: a school web server, SharePoint static site, GitHub Pages, Netlify, etc. The app uses only relative paths, so it works in a subfolder such as `https://school.example/computing/lab-launch/`.
+## Student and teacher entry
 
-## 3. How to change the Scratch project link
+- Students type their name and class. Classes are free text rather than a fixed menu.
+- Type `teacher` in the name field to open Teacher Preview. Teacher Preview can jump to any section. It is a classroom preview feature, not a security boundary.
 
-Open `js/config.js` in any text editor and change:
+## Accessibility and language support
 
-```js
-SCRATCH_PROJECT_URL: "https://scratch.mit.edu/projects/123456789/",
-```
+- Students choose English, Bahasa Melayu or Simplified Chinese support.
+- Core directions and the keyword bridge are shown in the selected support language while the Computing terminology remains visible in English.
+- Students can choose visual/short-answer scaffolds or independent explanations. Both routes assess the same concepts.
+- Images have descriptive alternative text, enlarge on selection and are never the only way information is conveyed.
+- Keyboard focus, contrast, target sizes, reduced-motion preferences and browser read-aloud are supported.
 
-Save and refresh. The link opens in a new tab so the lesson app stays open. (You can also override it temporarily on one machine from teacher mode.)
+## Evidence and privacy
 
-## 4. How to change class options
+Answers are saved in the browser's local storage. Optional folder and Scratch screenshots are stored in IndexedDB. Nothing is transmitted by this app. Students may instead choose teacher checking when screenshots are inappropriate or unavailable.
 
-In `js/config.js`:
+The final screen creates a print-friendly report. Students choose **Print / Save as PDF**, use the suggested filename, then attach the PDF to the correct Microsoft Teams assignment.
 
-```js
-CLASS_OPTIONS: ["6A", "6B", "6C"],
-```
+## Teacher configuration
 
-Leave it as `[]` to give students a free-text class box instead. Also editable per-machine in teacher mode.
+Edit `js/config.js` to change:
 
-## 5. How to activate teacher mode
+- app title;
+- school or teacher name on the report;
+- Scratch project URL;
+- read-aloud and sound availability;
+- teacher entry word.
 
-1. Open the app with `?teacher=1` added to the address, e.g. `index.html?teacher=1`.
-2. Enter the passcode set in `js/config.js` (`TEACHER_PASSCODE` — **change the default before using with a class**).
+## Image map
 
-Teacher mode lets you: unlock/jump to any stage, view model answers, change the Scratch URL and class list, disable sounds, fill the app with demonstration data, reset the current student, and clear all local data. Set `ENABLE_TEACHER_MODE: false` to disable the entrance entirely. Teacher access lasts for the browser session only.
-
-## 6. How student data is stored
-
-Everything is stored **locally in the browser on that computer**:
-
-- Progress, answers, badges and settings → `localStorage`
-- The uploaded screenshot → `IndexedDB` (browser image storage)
-
-Nothing is transmitted anywhere. There are no cookies, no analytics and no accounts. Note this means a student who moves to a different computer will not see their earlier progress.
-
-## 7. How to clear saved data
-
-- **One student:** teacher mode → *Reset current student*, or the *Start Again* button on the completion report.
-- **Everything (including teacher overrides):** teacher mode → *Clear ALL local data*.
-- Clearing the browser's site data for the page also removes everything.
-
-## 8. How students upload screenshots
-
-The Evidence Station shows step-by-step screenshot instructions for **Windows** (Win+Shift+S), **Chromebook** (Ctrl+Show Windows) and **Mac** (Cmd+Shift+4). Students can then:
-
-- click **Upload Screenshot** and choose the file,
-- drag-and-drop the image onto the upload area, or
-- simply **paste** (Ctrl+V / Cmd+V) a copied screenshot onto the page.
-
-Accepted formats: PNG, JPG, JPEG, WEBP (up to ~10 MB). Preview, replace, rotate and delete buttons are provided. If a device cannot take screenshots, the teacher can allow the student to continue without one — the essential explanations are still required.
-
-Students upload **two** screenshots during the lesson:
-
-1. **File Management Centre** — after completing the practice simulation (which includes creating a folder with their own name), students are prompted to create the same folder structure *for real* on the school computer they are using, and upload a screenshot of their real folders as evidence.
-2. **Evidence Station** — a screenshot of their modified Scratch project.
-
-Both appear on the printed completion report.
-
-## 9. How to print or save the report as PDF
-
-On the completion report screen, click **Print / Save as PDF**, then choose *Save as PDF* as the printer destination. A print stylesheet removes all game visuals, navigation and backgrounds, leaving a clean document containing the student's name, class, date, support preferences, all responses, badges, the screenshot and the confidence rating.
-
-## 10. Known browser limitations
-
-- Tested for current **Chrome and Edge**; also usable on **iPad Safari** (touch controls and Guided Movement Mode are provided).
-- **Read-aloud** uses the browser's built-in Web Speech API; voice quality varies and some locked-down browsers disable it (the speaker buttons simply do nothing harmful if unsupported).
-- **Private/incognito windows** may block localStorage/IndexedDB — progress and screenshots then cannot be saved between refreshes.
-- Screenshot **paste** requires the browser tab to be focused; Chromebook file upload works normally.
-- If the canvas game cannot start on a device, the app automatically falls back to **Guided Movement Mode**, so all learning content remains accessible.
-
-## 11. How the app protects student privacy
-
-- No data (name, class, answers, screenshots) is ever sent to a server — everything stays in the local browser.
-- No cookies, no analytics, no tracking, no accounts, no leaderboard.
-- Support-profile choices are private to the student and shown to nobody else.
-- Screenshot guidance explicitly tells students not to capture personal information or other students' names/accounts.
-- All student-entered text is sanitised before being displayed anywhere in the app or report.
-
----
-
-## File structure
-
-```
-index.html        app shell
-css/styles.css    all styling, including the print stylesheet
-js/config.js      ← everything the teacher edits
-js/app.js         lesson logic, activities, differentiation, teacher mode
-js/game.js        the original 2D platformer engine (canvas, no assets)
-js/storage.js     localStorage + IndexedDB layer
-js/report.js      completion-report builder
-README.md         this file
-assets/           (empty — all artwork is generated SVG/canvas code)
-```
-
-## Lesson flow (one 60-minute lesson)
-
-Landing → Support selection → Mission briefing → **Safety Corridor** (7 min starter) → **Lab Operating System** routine sort (10 min) → **File Management Centre** (7 min: practice simulator including a personal name folder, then creating the folders for real with screenshot evidence) → **Scratch Laboratory** investigation (6 min) → **Modification Mission** in real Scratch (10 min) → **Evidence Station** (7 min) → optional **Extension Vault** → compulsory **Exit Terminal** plenary (8–10 min) → printable **Completion Report**.
-
-Core stages unlock in order; the plenary cannot be skipped; the Extension Vault never blocks the plenary.
+- Image 1: Start–Work–Finish (Do Now and Main 1)
+- Images 2–3: folder hierarchy and filenames (Main 1)
+- Images 4–9: Scratch interface, prediction, outcomes, modification, debugging cycle and evidence (Main 2)
+- Images 10–12: two-way controls, four-way controls and coordinate mission (Fast Finisher levels)
