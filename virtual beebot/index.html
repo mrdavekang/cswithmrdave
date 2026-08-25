@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#143f46">
+  <meta name="description" content="A micro:bit-controlled virtual gripper robot challenge for Micro:bit Inventors CCA.">
+  <title>Virtual BEETLE:BIT Challenge</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div><p class="eyebrow">MICRO:BIT INVENTORS CCA</p><h1>Virtual BEETLE:BIT Challenge</h1></div>
+      </div>
+      <div class="header-actions">
+        <a class="text-button" href="microbit-controller.js" download>Controller code</a>
+        <button class="connect-button" id="connectButton"><span class="status-dot" id="statusDot"></span><span id="connectText">Connect micro:bit</span></button>
+      </div>
+    </header>
+
+    <section class="mission-strip" aria-live="polite">
+      <div class="mission-copy"><span>MISSION 01</span><strong id="message">Connect a micro:bit or use the keyboard.</strong></div>
+      <div class="scoreboard"><div><small>TIME</small><b id="time">60</b></div><div><small>SCORE</small><b id="score">0</b></div><div><small>BEST</small><b id="best">0</b></div></div>
+    </section>
+
+    <section class="play-layout">
+      <div class="arena-card">
+        <div class="arena-topline"><span class="live-label"><i></i> TRAINING ARENA</span><span class="phase-pill" id="phase">READY</span></div>
+        <div class="canvas-wrap">
+          <canvas id="arena" width="1000" height="620" aria-label="Top-down virtual robot training arena"></canvas>
+          <div class="result-card" id="result" hidden><span id="resultLabel">MISSION COMPLETE</span><strong id="resultScore">0 POINTS</strong><p id="resultText">The energy cube reached the delivery zone.</p><button id="newRound">Start a new round</button></div>
+        </div>
+      </div>
+
+      <aside class="control-panel">
+        <div class="panel-heading"><span>CONTROL DECK <i class="easy-badge">EASY</i></span><button id="resetButton">↻ Reset</button></div>
+        <div class="microbit-card">
+          <div class="microbit-face" aria-hidden="true"><div class="microbit-logo">micro:bit</div><div class="led-grid" id="ledGrid"></div><span class="button-a">A</span><span class="button-b">B</span></div>
+          <p id="controllerStatus">Keyboard demo mode</p>
+        </div>
+        <div class="meters">
+          <label><span>DRIVE <b id="driveValue">0</b></span><i><em id="driveMeter"></em></i></label>
+          <label><span>STEER <b id="steerValue">0</b></span><i><em id="steerMeter"></em></i></label>
+        </div>
+        <div class="control-guide">
+          <div><kbd>↕</kbd><span><b>Tilt forward/back</b><small>Drive gently</small></span></div>
+          <div><kbd>↔</kbd><span><b>Tilt left/right</b><small>Steer gently</small></span></div>
+          <div><kbd>A</kbd><span><b>Open / close</b><small>Control the gripper</small></span></div>
+          <div><kbd>B</kbd><span><b>Restart</b><small>Reset the mission</small></span></div>
+        </div>
+        <div class="touch-controls">
+          <button data-control="left">←</button>
+          <div><button data-control="forward">↑</button><button id="gripButton">GRIP</button><button data-control="reverse">↓</button></div>
+          <button data-control="right">→</button>
+        </div>
+        <p class="calibration-note"><span>A+B</span> Hold the micro:bit level and press together to calibrate.</p>
+      </aside>
+    </section>
+
+    <footer><span>School learning prototype</span><span>Keyboard: arrows / WASD · Space = grip · R = reset · B = boost</span><span>Not official Cytron software</span></footer>
+  </main>
+</body>
+</html>
