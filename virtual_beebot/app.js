@@ -1,18 +1,17 @@
 'use strict'
 
 const WORLD = { width: 1000, height: 620 }
-const ROUND_SECONDS = 60
-const obstacles = [
-  { x: 270, y: 405, w: 160, h: 76 },
-  { x: 605, y: 110, w: 82, h: 180 }
-]
+const LEVELS = {
+  1: { seconds: 60, title: 'ENERGY CUBE DELIVERY', crates: [{ x: 500, y: 332 }], obstacles: [{ x: 270, y: 405, w: 160, h: 76 }, { x: 605, y: 110, w: 82, h: 180 }] },
+  2: { seconds: 90, title: 'DOUBLE DELIVERY', crates: [{ x: 442, y: 175 }, { x: 520, y: 475 }], obstacles: [{ x: 285, y: 115, w: 84, h: 190 }, { x: 300, y: 420, w: 145, h: 70 }, { x: 625, y: 250, w: 165, h: 76 }] }
+}
 
 const el = id => document.getElementById(id)
 const canvas = el('arena')
 const ctx = canvas.getContext('2d')
 
 const controls = { drive: 0, steer: 0, keyboardDrive: 0, keyboardSteer: 0 }
-let robot, crate, phase, startedAt, lastFrame, lastCollision, score, reader
+let robot, crate, phase, startedAt, lastFrame, lastCollision, score, reader, level = 1, deliveries = 0
 
 function newRobot() {
   return { x: 110, y: 316, angle: 0, speed: 0, carrying: false, gripClosed: false, collisions: 0, boostUntil: 0 }
@@ -42,15 +41,27 @@ function setPhase(next) {
 
 function resetGame() {
   robot = newRobot()
-  crate = { x: 500, y: 332 }
+  crate = { ...LEVELS[level].crates[0] }
+  deliveries = 0
+  lastCollision = 0
   Object.assign(controls, { drive: 0, steer: 0, keyboardDrive: 0, keyboardSteer: 0 })
   startedAt = 0
   score = 0
-  el('time').textContent = ROUND_SECONDS
+  el('time').textContent = LEVELS[level].seconds
+  el('loads').textContent = `0/${LEVELS[level].crates.length}`
   el('score').textContent = '0'
   el('result').hidden = true
-  setMessage('Collect the cube and deliver it to the green zone.')
+  setMessage(level === 1 ? 'Collect the cube and deliver it to the green zone.' : 'Double Delivery: deliver two cubes one at a time.')
   setPhase('ready')
+}
+
+function selectLevel(next) {
+  level = next
+  document.querySelectorAll('[data-level]').forEach(button => button.classList.toggle('active', Number(button.dataset.level) === level))
+  el('missionLabel').textContent = `MISSION 0${level}`
+  el('levelTitle').innerHTML = `<i></i> ${LEVELS[level].title}`
+  el('best').textContent = localStorage.getItem(`virtual-beetlebit-best-${level}`) || '0'
+  resetGame()
 }
 
 function startIfNeeded() {
@@ -65,23 +76,26 @@ function finish(success) {
   robot.speed = 0
   el('result').hidden = false
   if (success) {
-    const remaining = Math.max(0, ROUND_SECONDS - (performance.now() - startedAt) / 1000)
-    score = Math.max(0, 100 + Math.round(remaining * 2) - robot.collisions * 5)
-    const previous = Number(localStorage.getItem('virtual-beetlebit-best') || 0)
+    const remaining = Math.max(0, LEVELS[level].seconds - (performance.now() - startedAt) / 1000)
+    score = Math.max(0, level * 100 + Math.round(remaining * 2) - robot.collisions * 5)
+    const bestKey = `virtual-beetlebit-best-${level}`
+    const previous = Number(localStorage.getItem(bestKey) || 0)
     if (score > previous) {
-      localStorage.setItem('virtual-beetlebit-best', String(score))
+      localStorage.setItem(bestKey, String(score))
       el('best').textContent = score
     }
     el('score').textContent = score
-    el('resultLabel').textContent = 'MISSION COMPLETE'
+    el('resultLabel').textContent = `LEVEL ${level} COMPLETE`
     el('resultScore').textContent = `${score} POINTS`
-    el('resultText').textContent = 'The energy cube reached the delivery zone.'
-    setMessage('Mission complete — brilliant robot control!')
+    el('resultText').textContent = level === 1 ? 'Energy cube delivered. Ready for Double Delivery?' : 'Both energy cubes reached the delivery zone!'
+    el('newRound').textContent = level === 1 ? 'Start Level 2' : 'Start a new round'
+    setMessage(level === 1 ? 'Level 1 complete — Level 2 is ready!' : 'Level 2 complete — double delivery mastered!')
     setPhase('success')
   } else {
     el('resultLabel').textContent = 'ROUND ENDED'
     el('resultScore').textContent = 'TRY AGAIN'
     el('resultText').textContent = 'Use a smoother route and watch the barriers.'
+    el('newRound').textContent = 'Start a new round'
     setMessage('Time is up. Reset and try a quicker route!')
     setPhase('timeout')
   }
@@ -103,8 +117,15 @@ function toggleGrip() {
     }
   } else if (!robot.gripClosed && robot.carrying) {
     robot.carrying = false
-    if (crate.x > 830 && crate.y > 75 && crate.y < 555) finish(true)
-    else setMessage('Cube released. Pick it up again when ready.')
+    if (crate.x > 830 && crate.y > 75 && crate.y < 555) {
+      deliveries += 1
+      el('loads').textContent = `${deliveries}/${LEVELS[level].crates.length}`
+      if (deliveries < LEVELS[level].crates.length) {
+        crate = { ...LEVELS[level].crates[deliveries] }
+        robot.gripClosed = false
+        setMessage(`Delivery ${deliveries}/2 complete! Find the second cube.`)
+      } else finish(true)
+    } else setMessage('Cube released. Pick it up again when ready.')
   }
 }
 
@@ -216,9 +237,10 @@ function drawArena(now) {
   ctx.fillStyle='#f9fbf5';roundedRect(42,44,916,532,34);ctx.fill();ctx.strokeStyle='#2a5960';ctx.lineWidth=8;ctx.setLineDash([16,12]);ctx.stroke();ctx.setLineDash([])
   ctx.fillStyle='#e8f1ed';roundedRect(62,92,150,448,24);ctx.fill();ctx.fillStyle='#315f65';ctx.font='700 18px system-ui';ctx.textAlign='center';ctx.fillText('START BAY',137,125)
   const pulse=phase==='success'?.5+Math.sin(now/120)*.2:.16;ctx.fillStyle=`rgba(29,151,113,${pulse})`;roundedRect(842,92,100,448,24);ctx.fill();ctx.strokeStyle='#15966f';ctx.lineWidth=4;ctx.stroke();ctx.fillStyle='#0b6d50';ctx.font='800 17px system-ui';ctx.save();ctx.translate(892,316);ctx.rotate(-Math.PI/2);ctx.fillText('DELIVERY ZONE',0,6);ctx.restore()
-  obstacles.forEach((item,index)=>{ctx.fillStyle=index%2?'#dbe3dd':'#e4e9e3';roundedRect(item.x,item.y,item.w,item.h,15);ctx.fill();ctx.strokeStyle='#aab7ae';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#6f8176';ctx.font='800 15px system-ui';ctx.fillText('BARRIER',item.x+item.w/2,item.y+item.h/2+5)})
+  LEVELS[level].obstacles.forEach((item,index)=>{ctx.fillStyle=index%2?'#dbe3dd':'#e4e9e3';roundedRect(item.x,item.y,item.w,item.h,15);ctx.fill();ctx.strokeStyle='#aab7ae';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#6f8176';ctx.font='800 15px system-ui';ctx.fillText('BARRIER',item.x+item.w/2,item.y+item.h/2+5)})
   if(!robot.carrying)drawCrate();drawRobot(now);if(robot.carrying)drawCrate()
-  if(phase==='ready'){ctx.fillStyle='rgba(10,35,38,.72)';roundedRect(330,252,340,116,22);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 25px system-ui';ctx.fillText('TILT OR PRESS ↑ TO START',500,301);ctx.font='500 16px system-ui';ctx.fillText('Collect the energy cube. Deliver it to the green zone.',500,334)}
+  if(phase==='ready'){ctx.fillStyle='rgba(10,35,38,.72)';roundedRect(330,252,340,116,22);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 25px system-ui';ctx.fillText('TILT OR PRESS ↑ TO START',500,301);ctx.font='500 16px system-ui';ctx.fillText(level===1?'Collect the cube and deliver it.':'Deliver two cubes, one at a time.',500,334)}
+  if(level===2){ctx.fillStyle='#143f46';roundedRect(442,56,116,34,9);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 14px system-ui';ctx.fillText(`DELIVERED ${deliveries}/2`,500,78)}
 }
 
 function updateMeters(drive, steer) {
@@ -242,15 +264,15 @@ function frame(now) {
     const oldX = robot.x, oldY = robot.y
     robot.x = clamp(robot.x + Math.cos(robot.angle) * robot.speed * dt, 82, 918)
     robot.y = clamp(robot.y + Math.sin(robot.angle) * robot.speed * dt, 82, 538)
-    const hit = obstacles.some(item => Math.hypot(robot.x-clamp(robot.x,item.x,item.x+item.w),robot.y-clamp(robot.y,item.y,item.y+item.h)) < 39)
+    const hit = LEVELS[level].obstacles.some(item => Math.hypot(robot.x-clamp(robot.x,item.x,item.x+item.w),robot.y-clamp(robot.y,item.y,item.y+item.h)) < 39)
     if (hit) {
       robot.x=oldX; robot.y=oldY; robot.speed*=-.22
       if(now-lastCollision>700){robot.collisions++;lastCollision=now;setMessage('Barrier touched: −5 points. Reverse and try another route.')}
     }
     if(robot.carrying){crate.x=robot.x+Math.cos(robot.angle)*78;crate.y=robot.y+Math.sin(robot.angle)*78}
-    const remaining=Math.max(0,ROUND_SECONDS-(now-startedAt)/1000)
+    const remaining=Math.max(0,LEVELS[level].seconds-(now-startedAt)/1000)
     el('time').textContent=Math.ceil(remaining)
-    el('score').textContent=Math.max(0,30-robot.collisions*5)
+    el('score').textContent=Math.max(0,level*30+deliveries*50-robot.collisions*5)
     if(remaining<=0)finish(false)
   } else robot.speed*=.85
   updateMeters(drive,steer);drawArena(now);requestAnimationFrame(frame)
@@ -268,8 +290,9 @@ document.addEventListener('keydown',event=>{const key=event.key.toLowerCase();if
 document.addEventListener('keyup',event=>setKey(event.key.toLowerCase(),false))
 el('connectButton').addEventListener('click',connectMicrobit)
 el('resetButton').addEventListener('click',resetGame)
-el('newRound').addEventListener('click',resetGame)
+el('newRound').addEventListener('click',()=>phase==='success'&&level===1?selectLevel(2):resetGame())
 el('gripButton').addEventListener('click',toggleGrip)
+document.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>selectLevel(Number(button.dataset.level))))
 
 document.querySelectorAll('[data-control]').forEach(button=>{
   const start=()=>{const action=button.dataset.control;if(action==='left')controls.keyboardSteer=-100;if(action==='right')controls.keyboardSteer=100;if(action==='forward')controls.keyboardDrive=100;if(action==='reverse')controls.keyboardDrive=-70;startIfNeeded()}
@@ -279,6 +302,6 @@ document.querySelectorAll('[data-control]').forEach(button=>{
 
 const lit = [7,8,11,13,17,18]
 for(let i=0;i<25;i++){const dot=document.createElement('i');if(lit.includes(i))dot.className='lit';el('ledGrid').appendChild(dot)}
-el('best').textContent=localStorage.getItem('virtual-beetlebit-best')||'0'
+el('best').textContent=localStorage.getItem('virtual-beetlebit-best-1')||localStorage.getItem('virtual-beetlebit-best')||'0'
 if(!navigator.serial){el('statusDot').className='status-dot unsupported';el('connectText').textContent='Use Chrome or Edge'}
 resetGame();requestAnimationFrame(frame)

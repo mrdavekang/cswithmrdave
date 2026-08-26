@@ -23,13 +23,13 @@
     </header>
 
     <section class="mission-strip" aria-live="polite">
-      <div class="mission-copy"><span>MISSION 01</span><strong id="message">Connect a micro:bit or use the keyboard.</strong></div>
-      <div class="scoreboard"><div><small>TIME</small><b id="time">60</b></div><div><small>SCORE</small><b id="score">0</b></div><div><small>BEST</small><b id="best">0</b></div></div>
+      <div class="mission-copy"><span id="missionLabel">MISSION 01</span><strong id="message">Connect a micro:bit or use the keyboard.</strong></div>
+      <div class="scoreboard"><div><small>TIME</small><b id="time">60</b></div><div><small>LOADS</small><b id="loads">0/1</b></div><div><small>SCORE</small><b id="score">0</b></div><div><small>BEST</small><b id="best">0</b></div></div>
     </section>
 
     <section class="play-layout">
       <div class="arena-card">
-        <div class="arena-topline"><span class="live-label"><i></i> TRAINING ARENA</span><span class="phase-pill" id="phase">READY</span></div>
+        <div class="arena-topline"><span class="live-label" id="levelTitle"><i></i> ENERGY CUBE DELIVERY</span><div class="level-tabs"><button class="active" data-level="1">LEVEL 1</button><button data-level="2">LEVEL 2</button></div><span class="phase-pill" id="phase">READY</span></div>
         <div class="canvas-wrap">
           <canvas id="arena" width="1000" height="620" aria-label="Top-down virtual robot training arena"></canvas>
           <div class="result-card" id="result" hidden><span id="resultLabel">MISSION COMPLETE</span><strong id="resultScore">0 POINTS</strong><p id="resultText">The energy cube reached the delivery zone.</p><button id="newRound">Start a new round</button></div>

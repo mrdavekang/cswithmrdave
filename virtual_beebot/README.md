@@ -2,6 +2,11 @@
 
 This folder is a completely static website. It needs no server-side code, database, login or build step.
 
+It includes two missions:
+
+- **Level 1 — Energy Cube Delivery:** collect and deliver one cube in 60 seconds.
+- **Level 2 — Double Delivery:** collect and deliver two cubes, one at a time, in 90 seconds through a new obstacle layout.
+
 ## Publish with GitHub Pages
 
 1. Create a new public GitHub repository.
