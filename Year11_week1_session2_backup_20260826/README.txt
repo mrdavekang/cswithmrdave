@@ -16,12 +16,11 @@ QUICK GITHUB PAGES SETUP
 
 USING THE LESSON
 ----------------
-- Students enter their name and class, then complete the lesson in sequence.
+- Students choose Student, enter their name and class, and complete the lesson.
 - Work saves only in that browser on that device.
 - Students can leave and return using the same name and class.
 - The Finish & export page creates a PDF containing their answers, original
-  past-paper responses, self-marks, improvements and learning status.
-- Progress distinguishes Attempted, Checked and self-marked Secure work.
+  past-paper responses, self-marks, improvements and completion status.
 - Students upload the downloaded PDF to the relevant Microsoft Teams assignment.
 - The student landing page does not display a teacher option.
 
@@ -50,11 +49,9 @@ FILES THAT MUST STAY TOGETHER
 - index.html
 - styles.css
 - app.js
-- assets/ (three lesson images, the original November 2024 question and mark-
-  scheme images, and the Raleway font)
+- assets/ (three lesson images and the Raleway font)
 - vendor/ (the local PDF-export library)
 
 Lesson focus: OxfordAQA International GCSE Computer Science 9210
 Topic: Embedded computer systems
-Core past-paper practice: November 2024 Paper 2, Question 04 (AO1, 4 marks)
-Optional extension: teacher-created Paper 1 controller trace and correction task
+Past-paper extension: November 2024 Paper 2, Question 04

@@ -1,76 +1,98 @@
 (() => {
   "use strict";
 
-  const pageOrder = ["overview", "starter", "main1", "main2", "extension", "plenary", "finish"];
-  const coreSections = ["starter", "main1", "main2", "plenary"];
-  const trackedSections = ["starter", "main1", "main2", "extension", "plenary"];
+  const pageOrder = ["overview", "starter", "main1", "main2", "exam", "extension", "plenary", "finish"];
+  const coreSections = ["starter", "main1", "main2", "exam", "plenary"];
+  const trackedSections = ["starter", "main1", "main2", "exam", "extension", "plenary"];
   const sectionNames = {
     starter: "Starter",
     main1: "Main Activity 1",
     main2: "Main Activity 2",
-    extension: "Extension (optional)",
+    exam: "November 2024 exam practice",
+    extension: "Paper 1 extension (optional)",
     plenary: "Plenary",
   };
+  const guideForSection = {
+    starter: "starter-guide",
+    main1: "main1-guide",
+    main2: "main2-guide",
+    exam: "exam-guide",
+    extension: "extension-guide",
+    plenary: "plenary-guide",
+  };
+  const correctCharacteristics = [
+    "Built into a larger device",
+    "Dedicated or limited purpose",
+    "Limited or fixed input and output devices",
+  ];
 
   const reportFields = [
     {
-      title: "Starter · Observe and predict",
+      title: "Starter - Prior knowledge",
       completed: "starter",
       fields: [
-        ["Four objects that may contain computer systems", "starter_objects"],
-        ["What one computer may control", "starter_control"],
-        ["General-purpose computer identified", "starter_general_purpose"],
-        ["Initial washing-machine and laptop comparison", "starter_difference"],
+        ["Embedded examples", "starter_embedded", true],
+        ["General-purpose choice", "starter_general", true],
+        ["Initial comparison", "starter_compare", true],
+        ["Self-mark", "mark_starter"],
+        ["Corrected answer", "starter_improvement"],
       ],
     },
     {
-      title: "Main Activity 1 · AO1 to AO2",
+      title: "Main Activity 1 - AO1",
       completed: "main1",
       fields: [
-        ["Revised starter comparison", "main1_starter_revisit"],
-        ["Definition of an embedded system", "main1_definition"],
-        ["Washing-machine inputs", "main1_inputs"],
-        ["Controller processing", "main1_process"],
-        ["Washing-machine outputs", "main1_outputs"],
-        ["Selected characteristics", "main1_characteristics"],
-        ["Central-heating explanation", "main1_heating"],
-        ["Improved response", "main1_improvement"],
+        ["Original definition", "main1_definition", true],
+        ["Input", "main1_input", true],
+        ["Processing", "main1_process", true],
+        ["Output", "main1_output", true],
+        ["Characteristics selected", "main1_characteristics", true],
+        ["Self-mark", "mark_main1"],
+        ["Corrected response", "main1_improvement"],
       ],
     },
     {
-      title: "Main Activity 2 · AO2 to AO3",
+      title: "Main Activity 2 - AO2",
       completed: "main2",
       fields: [
-        ["Digital-camera classification", "main2_camera_class"],
-        ["Digital-camera justification", "main2_camera_reason"],
-        ["Laptop classification", "main2_laptop_class"],
-        ["Laptop justification", "main2_laptop_reason"],
-        ["Smart TV: evidence supporting the claim", "main2_smarttv_for"],
-        ["Smart TV: evidence challenging the claim", "main2_smarttv_against"],
-        ["Smart TV: justified conclusion", "main2_smarttv_conclusion"],
-        ["Reclaimed-mark improvement", "main2_improvement"],
+        ["Original classification", "main2_class", true],
+        ["Original scenario evidence", "main2_evidence", true],
+        ["Original paired comparisons", "main2_comparisons", true],
+        ["Self-mark", "mark_main2"],
+        ["Improved comparison", "main2_improvement"],
       ],
     },
     {
-      title: "Past-paper extension · AO1 and AO2",
+      title: "November 2024 Paper 2 Question 04 - AO1",
+      completed: "exam",
+      fields: [
+        ["04.1 original answer", "exam_q1", true],
+        ["04.2 original difference 1", "exam_diff1", true],
+        ["04.2 original difference 2", "exam_diff2", true],
+        ["04.2 original difference 3", "exam_diff3", true],
+        ["04.1 self-mark", "mark_exam_q1"],
+        ["04.2 self-mark", "mark_exam_q2"],
+        ["Improved answer", "exam_improvement"],
+      ],
+    },
+    {
+      title: "Optional Paper 1 controller bridge - AO3",
       completed: "extension",
       fields: [
-        ["04.1 Original response", "ext_q1", true],
-        ["04.1 Current response", "ext_q1"],
-        ["04.2 Original response", "ext_q2", true],
-        ["04.2 Current response", "ext_q2"],
-        ["04.1 Self-mark", "mark_ext_q1"],
-        ["04.2 Self-mark", "mark_ext_q2"],
-        ["Improved answer", "extension_improvement"],
+        ["Trace at 21 C", "ext_trace21", true],
+        ["Trace at 22 C", "ext_trace22", true],
+        ["Trace at 23 C", "ext_trace23", true],
+        ["Corrected condition", "ext_fix", true],
+        ["Boundary test explanation", "ext_test", true],
+        ["Correction after feedback", "extension_improvement"],
       ],
     },
     {
-      title: "Plenary · AO2 to AO3",
+      title: "Plenary - AO2 transfer",
       completed: "plenary",
       fields: [
-        ["Original exit-ticket response", "plenary_response", true],
-        ["Current exit-ticket response", "plenary_response"],
-        ["Success points achieved", "mark_plenary"],
+        ["Original exit-ticket answer", "plenary_response", true],
+        ["Self-mark", "mark_plenary"],
         ["Final improved response", "plenary_improvement"],
       ],
     },
@@ -102,28 +124,27 @@
   }
 
   function makeStorageKey(profile) {
-    return `year11-embedded-v2:${safePart(profile.role)}:${safePart(profile.name)}:${safePart(profile.className)}`;
+    return `year11-embedded-redesign-v3:${safePart(profile.role)}:${safePart(profile.name)}:${safePart(profile.className)}`;
   }
 
   function showToast(message) {
     toast.textContent = message;
     toast.classList.add("show");
     window.clearTimeout(toast._timer);
-    toast._timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+    toast._timer = window.setTimeout(() => toast.classList.remove("show"), 3000);
   }
 
   function saveState() {
     if (!storageKey || state.profile.role === "teacher") return;
     state.updatedAt = new Date().toISOString();
     localStorage.setItem(storageKey, JSON.stringify(state));
-    localStorage.setItem("year11-embedded-last-profile", JSON.stringify(state.profile));
-    const status = $("#autosave-status");
-    status.textContent = "Saved";
+    localStorage.setItem("year11-embedded-redesign-last-profile", JSON.stringify(state.profile));
+    $("#autosave-status").textContent = "Saved";
   }
 
   function scheduleSave() {
     if (state.profile.role === "teacher") return;
-    $("#autosave-status").textContent = "Saving…";
+    $("#autosave-status").textContent = "Saving...";
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(saveState, 280);
   }
@@ -134,50 +155,28 @@
       const stored = JSON.parse(localStorage.getItem(storageKey));
       if (stored && stored.profile) return { ...blankState(), ...stored, profile };
     } catch (_) {
-      // Start a clean record if local data is unreadable.
+      // A damaged local record should not prevent the lesson from opening.
     }
     return { ...blankState(), profile };
   }
 
-  function fieldValue(key) {
-    const value = state.answers[key];
-    if (Array.isArray(value)) return value.join(", ");
-    return value == null || value === "" ? "Not answered" : String(value);
-  }
-
-  function refreshAnswerPreviews() {
-    $$('[data-answer-preview]').forEach((preview) => {
-      const value = state.answers[preview.dataset.answerPreview];
-      preview.textContent = String(value || "").trim() || "No starter idea recorded yet.";
-    });
-  }
-
   function setFieldValue(key, source) {
     if (source.type === "checkbox") {
-      const values = $$(`[data-save="${CSS.escape(key)}"]`)
-        .filter((box) => box.checked)
-        .map((box) => box.value);
-      state.answers[key] = values;
+      state.answers[key] = $$(`[data-save="${CSS.escape(key)}"]`).filter((box) => box.checked).map((box) => box.value);
     } else {
       state.answers[key] = source.value;
     }
-    refreshAnswerPreviews();
     scheduleSave();
+    updateProgress();
   }
 
   function hydrateFields() {
     $$('[data-save]').forEach((field) => {
-      const key = field.dataset.save;
-      const value = state.answers[key];
+      const value = state.answers[field.dataset.save];
       if (field.type === "checkbox") field.checked = Array.isArray(value) && value.includes(field.value);
       else field.value = value == null ? "" : value;
     });
-    refreshAnswerPreviews();
-    $$('.mark-guide').forEach((guide) => (guide.hidden = true));
-    Object.keys(state.revealed || {}).forEach((id) => {
-      const guide = document.getElementById(id);
-      if (guide && state.revealed[id]) guide.hidden = false;
-    });
+    $$('.mark-guide').forEach((guide) => (guide.hidden = !state.revealed?.[guide.id]));
   }
 
   function startLesson(profile) {
@@ -200,6 +199,7 @@
       $$('#lesson-nav button').forEach((button) => (button.disabled = false));
       $("#progress-percent").textContent = "ALL";
       $("#progress-bar").style.width = "100%";
+      $("#secure-count").textContent = "5";
       $("#autosave-status").textContent = "Review mode";
     } else {
       $("#return-home").textContent = "← Return to sign-in";
@@ -213,18 +213,27 @@
     if (state.profile.role === "teacher" || page === "overview" || page === "starter" || page === "finish") return true;
     if (page === "main1") return Boolean(state.completed.starter);
     if (page === "main2") return Boolean(state.completed.main1);
-    if (page === "extension" || page === "plenary") return Boolean(state.completed.main2);
+    if (page === "exam") return Boolean(state.completed.main2);
+    if (page === "extension" || page === "plenary") return Boolean(state.completed.exam);
     return false;
+  }
+
+  function closeMobileMenu(returnFocus = false) {
+    const sidebar = $(".sidebar");
+    const menuButton = $("#mobile-menu");
+    sidebar.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+    $("#nav-overlay").hidden = true;
+    if (returnFocus) menuButton.focus();
   }
 
   function showPage(page, persist = true) {
     if (state.profile.role === "teacher") {
-      const target = $(`[data-page="${page}"]`);
-      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      $(`[data-page="${page}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     if (!isUnlocked(page)) {
-      showToast("Complete the previous activity first.");
+      showToast("Complete and check the previous core stage first.");
       return;
     }
     $$('.lesson-page').forEach((item) => (item.hidden = item.dataset.page !== page));
@@ -232,61 +241,114 @@
     state.activePage = page;
     if (persist) saveState();
     document.querySelector(".workspace")?.scrollIntoView({ block: "start" });
-    $(".sidebar").classList.remove("open");
+    closeMobileMenu(false);
     if (page === "finish") updateFinishPage();
+  }
+
+  function parseScore(value) {
+    const match = String(value || "").match(/^(\d+)/);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function sameSet(left, right) {
+    const a = [...(left || [])].sort();
+    const b = [...right].sort();
+    return a.length === b.length && a.every((value, index) => value === b[index]);
+  }
+
+  function isSecure(section) {
+    if (!state.completed[section]) return false;
+    if (section === "starter") return state.answers.starter_general === "Laptop" && parseScore(state.answers.mark_starter) >= 3;
+    if (section === "main1") return sameSet(state.answers.main1_characteristics, correctCharacteristics) && parseScore(state.answers.mark_main1) >= 4;
+    if (section === "main2") return state.answers.main2_class === "Embedded system" && parseScore(state.answers.mark_main2) >= 5;
+    if (section === "exam") return parseScore(state.answers.mark_exam_q1) + parseScore(state.answers.mark_exam_q2) >= 3;
+    if (section === "extension") {
+      const traces = [state.answers.ext_trace21, state.answers.ext_trace22, state.answers.ext_trace23].map((value) => String(value || "").trim().toUpperCase());
+      const fix = String(state.answers.ext_fix || "").replace(/\s+/g, " ").toLowerCase();
+      return traces[0] === "TRUE" && traces[1] === "TRUE" && traces[2] === "FALSE" && fix.includes("temperature < target");
+    }
+    if (section === "plenary") return parseScore(state.answers.mark_plenary) >= 3;
+    return false;
+  }
+
+  function hasStarted(section) {
+    const page = $(`[data-page="${section}"]`);
+    return $$('[data-save]', page).some((field) => {
+      const value = state.answers[field.dataset.save];
+      return Array.isArray(value) ? value.length > 0 : String(value || "").trim() !== "";
+    });
+  }
+
+  function sectionStatus(section) {
+    if (isSecure(section)) return "Secure";
+    if (state.completed[section]) return "Checked";
+    if (hasStarted(section)) return "Attempted";
+    return "Not started";
   }
 
   function completionPercent() {
     return Math.round((coreSections.filter((key) => state.completed[key]).length / coreSections.length) * 100);
   }
 
+  function secureCount() {
+    return coreSections.filter(isSecure).length;
+  }
+
   function updateProgress() {
     const percent = state.profile.role === "teacher" ? 100 : completionPercent();
     $("#progress-percent").textContent = state.profile.role === "teacher" ? "ALL" : `${percent}%`;
     $("#progress-bar").style.width = `${percent}%`;
+    $("#secure-count").textContent = state.profile.role === "teacher" ? "5" : String(secureCount());
     $$('#lesson-nav button').forEach((button) => {
       const page = button.dataset.nav;
       button.disabled = !isUnlocked(page);
       button.classList.toggle("completed", Boolean(state.completed[page]));
+      button.classList.toggle("secure", isSecure(page));
     });
     updateFinishPage();
   }
 
   function firstIncompleteRequired(page) {
-    const required = $$('[data-required]', page);
-    for (const field of required) {
+    for (const field of $$('[data-required]', page)) {
       if (field.disabled) continue;
       if (String(field.value || "").trim() === "") return field;
     }
-    const groups = $$('[data-required-group]', page);
-    for (const group of groups) {
+    for (const group of $$('[data-required-group]', page)) {
       const checked = $$('input[type="checkbox"]', group).filter((box) => box.checked).length;
-      const exact = Number(group.dataset.min || 1);
+      const exact = Number(group.dataset.count || 1);
       if (checked !== exact) return group;
     }
     return null;
   }
 
+  function nextPageAfter(section) {
+    if (section === "starter") return "main1";
+    if (section === "main1") return "main2";
+    if (section === "main2") return "exam";
+    if (section === "exam" || section === "extension") return "plenary";
+    return "finish";
+  }
+
   function completeSection(section) {
     const page = $(`[data-page="${section}"]`);
+    const guideId = guideForSection[section];
+    if (guideId && !state.revealed[guideId] && state.profile.role !== "teacher") {
+      showToast("Attempt the questions, then open the feedback before completing this stage.");
+      $(`[data-reveal="${guideId}"]`)?.focus();
+      return;
+    }
     const incomplete = firstIncompleteRequired(page);
     if (incomplete) {
-      const hiddenGuide = incomplete.closest?.('.mark-guide[hidden]');
-      if (hiddenGuide) {
-        hiddenGuide.hidden = false;
-        state.revealed[hiddenGuide.id] = true;
-      }
       incomplete.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (incomplete.focus) incomplete.focus({ preventScroll: true });
-      showToast(incomplete.dataset?.requiredGroup ? "Select exactly three characteristics." : "Complete every response and self-mark before moving on.");
+      incomplete.focus?.({ preventScroll: true });
+      showToast(incomplete.dataset?.requiredGroup ? "Select exactly three characteristics." : "Complete every response, self-mark and improvement first.");
       return;
     }
     state.completed[section] = true;
     saveState();
     updateProgress();
-    showToast(`${sectionNames[section]} saved as complete.`);
-    const next = section === "starter" ? "main1" : section === "main1" ? "main2" : section === "main2" ? "extension" : section === "extension" ? "plenary" : "finish";
-    window.setTimeout(() => showPage(next), 260);
+    showToast(`${sectionNames[section]} saved as ${isSecure(section) ? "self-marked secure" : "checked"}.`);
+    window.setTimeout(() => showPage(nextPageAfter(section)), 260);
   }
 
   function preserveOriginal(keys) {
@@ -314,18 +376,23 @@
     target.hidden = false;
     state.revealed[target.id] = true;
     saveState();
+    if (target.id === "starter-guide") showToast(state.answers.starter_general === "Laptop" ? "General-purpose choice correct. Now check the written comparison." : "Recheck the general-purpose choice using the guidance.");
+    if (target.id === "main1-guide") showToast(sameSet(state.answers.main1_characteristics, correctCharacteristics) ? "Objective characteristics correct." : "At least one characteristic needs correction.");
+    if (target.id === "main2-guide") showToast(state.answers.main2_class === "Embedded system" ? "Classification correct. Now mark the comparisons." : "Recheck the classification using the scenario evidence.");
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function updateFinishPage() {
+    if (!$("#finish-percent")) return;
     const percent = completionPercent();
+    const secure = secureCount();
     $("#finish-percent").textContent = `${percent}%`;
-    $("#finish-message").textContent = percent === 100
-      ? "Your core learning record is complete."
-      : "Complete each core activity to build your full report.";
+    $("#finish-message").textContent = percent === 100 ? "Every core stage has been attempted and checked." : "Complete and check each core stage.";
+    $("#finish-secure-message").textContent = `${secure} of 5 core stages are self-marked secure.`;
     $("#completion-list").innerHTML = trackedSections.map((key) => {
-      const done = Boolean(state.completed[key]);
-      return `<div class="completion-item ${done ? "done" : ""}"><span>${key === "extension" ? "Optional" : "Core"}</span><strong>${sectionNames[key]} · ${done ? "Complete" : "Not complete"}</strong></div>`;
+      const status = sectionStatus(key);
+      const optional = key === "extension" ? "Optional" : "Core";
+      return `<div class="completion-item status-${safePart(status)}"><span>${optional}</span><strong>${sectionNames[key]}</strong><em>${status}</em></div>`;
     }).join("");
     const exportButton = $("#export-pdf");
     if (state.profile.role === "teacher") {
@@ -355,7 +422,7 @@
     const textWidth = width - margin * 2;
     let y = margin;
 
-    const pageHeader = (label = "YEAR 11 COMPUTER SCIENCE · EMBEDDED SYSTEMS") => {
+    const pageHeader = (label = "YEAR 11 COMPUTER SCIENCE - EMBEDDED SYSTEMS") => {
       doc.setDrawColor(0);
       doc.setTextColor(0);
       doc.setFont("helvetica", "bold");
@@ -365,18 +432,18 @@
       y = 23;
     };
     const newPage = (label) => { doc.addPage(); pageHeader(label); };
-    const ensure = (needed, label) => { if (y + needed > height - 18) newPage(label); };
+    const ensure = (needed, label = "LEARNING RECORD - CONTINUED") => { if (y + needed > height - 18) newPage(label); };
     const wrapped = (text, size = 9, style = "normal", indent = 0) => {
       doc.setFont("helvetica", style);
       doc.setFontSize(size);
       const lines = doc.splitTextToSize(String(text), textWidth - indent);
       const lineHeight = size * 0.43;
-      ensure(lines.length * lineHeight + 3, "LEARNING RECORD · CONTINUED");
+      ensure(lines.length * lineHeight + 3);
       doc.text(lines, margin + indent, y);
       y += lines.length * lineHeight + 3;
     };
     const response = (label, value) => {
-      ensure(16, "LEARNING RECORD · CONTINUED");
+      ensure(16);
       wrapped(label.toUpperCase(), 7.2, "bold");
       wrapped(pdfText(value), 9.2, "normal", 2);
       y += 1;
@@ -384,31 +451,35 @@
 
     pageHeader();
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(26);
+    doc.setFontSize(25);
     doc.text("Embedded Systems", margin, 38);
-    doc.setFontSize(17);
-    doc.text("Student learning report", margin, 48);
+    doc.setFontSize(15);
+    doc.text("Paper 2 learning and examination report", margin, 48);
     doc.setLineWidth(0.6);
     doc.line(margin, 55, width - margin, 55);
     y = 68;
     response("Student", state.profile.name);
     response("Class", state.profile.className);
     response("Generated", new Date().toLocaleString());
-    response("WAGBA", "Identifying embedded systems and explaining how they differ from general-purpose computers.");
-    response("Core lesson progress", `${completionPercent()}% complete`);
-    wrapped("ASSESSMENT-OBJECTIVE JOURNEY", 8, "bold");
-    wrapped("AO1: recall and describe definitions and characteristics. AO2: apply understanding to familiar and unfamiliar devices. AO3: analyse evidence, challenge a claim and reach a justified conclusion.", 9.2);
-    y += 3;
-    wrapped("Completion summary", 12, "bold");
-    trackedSections.forEach((key) => wrapped(`${state.completed[key] ? "COMPLETE" : "NOT COMPLETE"}  ·  ${sectionNames[key]}`, 9));
+    response("Specification", "OxfordAQA 9210 Paper 2 - 3.4.4 Embedded systems");
+    response("WAGBA", "Explaining how embedded systems differ from non-embedded computers.");
+    response("Core stages checked", `${completionPercent()}%`);
+    response("Core stages self-marked secure", `${secureCount()} of 5`);
+    wrapped("STATUS KEY", 8, "bold");
+    wrapped("Attempted: a response was started. Checked: feedback was used and the stage was completed. Secure: objective checks and the stated self-mark threshold were met. Secure is a student self-assessment, not a teacher-awarded grade.", 9.2);
+    y += 4;
+    wrapped("ASSESSMENT FOCUS", 8, "bold");
+    wrapped("Core lesson: Paper 2 AO1 and AO2. Optional programming bridge: Paper 1 AO3. November 2024 Question 04 is AO1 for all four marks.", 9.2);
+    y += 4;
+    trackedSections.forEach((key) => wrapped(`${sectionNames[key]} - ${sectionStatus(key)}`, 9, "bold"));
 
     reportFields.forEach((section) => {
       newPage(section.title.toUpperCase());
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(18);
+      doc.setFontSize(17);
       doc.text(section.title, margin, y);
-      y += 11;
-      wrapped(`Status: ${state.completed[section.completed] ? "Complete" : "In progress / not completed"}`, 8.5, "bold");
+      y += 10;
+      wrapped(`Status: ${sectionStatus(section.completed)}`, 8.5, "bold");
       y += 2;
       section.fields.forEach(([label, key, original]) => {
         const value = original ? state.original[key] : state.answers[key];
@@ -424,15 +495,12 @@
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
       doc.setTextColor(80);
-      doc.text(`${state.profile.name} · ${state.profile.className}`, margin, height - 8);
+      doc.text(`${state.profile.name} - ${state.profile.className}`, margin, height - 8);
       doc.text(`Page ${page} of ${pageCount}`, width - margin, height - 8, { align: "right" });
     }
-
     const filename = `${safePart(state.profile.name)}_${safePart(state.profile.className)}_embedded-systems-learning-report.pdf`;
     doc.save(filename);
-    state.exportedAt = new Date().toISOString();
-    saveState();
-    showToast("PDF downloaded. Upload this file to your Teams assignment.");
+    showToast("PDF learning report downloaded.");
   }
 
   $("#student-entry").addEventListener("submit", (event) => {
@@ -443,59 +511,58 @@
     startLesson({ name, className, role: "student" });
   });
 
-  document.addEventListener("input", (event) => {
-    const field = event.target.closest?.('[data-save]');
-    if (field) setFieldValue(field.dataset.save, field);
-  });
-  document.addEventListener("change", (event) => {
-    const field = event.target.closest?.('[data-save]');
-    if (field) setFieldValue(field.dataset.save, field);
+  $$('[data-save]').forEach((field) => {
+    const eventName = field.tagName === "SELECT" || field.type === "checkbox" ? "change" : "input";
+    field.addEventListener(eventName, () => setFieldValue(field.dataset.save, field));
   });
 
-  $$('#lesson-nav button').forEach((button) => button.addEventListener("click", () => showPage(button.dataset.nav)));
+  $$('[data-nav]').forEach((button) => button.addEventListener("click", () => showPage(button.dataset.nav)));
   $$('[data-next]').forEach((button) => button.addEventListener("click", () => showPage(button.dataset.next)));
-  $$('[data-reveal]').forEach((button) => button.addEventListener("click", () => revealGuide(button)));
   $$('[data-complete]').forEach((button) => button.addEventListener("click", () => completeSection(button.dataset.complete)));
+  $$('[data-reveal]').forEach((button) => button.addEventListener("click", () => revealGuide(button)));
 
-  $("#mobile-menu").addEventListener("click", () => $(".sidebar").classList.toggle("open"));
+  $("#mobile-menu").addEventListener("click", () => {
+    const sidebar = $(".sidebar");
+    const opening = !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", opening);
+    $("#mobile-menu").setAttribute("aria-expanded", String(opening));
+    $("#nav-overlay").hidden = !opening;
+    if (opening) $$('#lesson-nav button:not([disabled])')[0]?.focus();
+  });
+  $("#nav-overlay").addEventListener("click", () => closeMobileMenu(true));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $(".sidebar").classList.contains("open")) closeMobileMenu(true);
+  });
+
   $("#return-home").addEventListener("click", () => {
-    const leavingTeacher = state.profile.role === "teacher";
-    saveState();
+    if (state.profile.role !== "teacher") saveState();
     lessonApp.hidden = true;
     landing.hidden = false;
     document.body.classList.remove("teacher-mode");
-    $(".sidebar").classList.remove("open");
-    if (leavingTeacher) window.history.replaceState({}, "", window.location.pathname);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    closeMobileMenu(false);
+    window.scrollTo({ top: 0 });
   });
   $("#export-pdf").addEventListener("click", exportPdf);
   $("#clear-work").addEventListener("click", () => {
-    if (!window.confirm("Clear all saved responses for this name and class? This cannot be undone.")) return;
+    if (!window.confirm("Clear this saved learning record from this browser? Download the PDF first if you need to keep it.")) return;
     localStorage.removeItem(storageKey);
-    const profile = { ...state.profile };
-    state = { ...blankState(), profile };
-    $$('[data-save]').forEach((field) => {
-      if (field.type === "checkbox") field.checked = false;
-      else field.value = "";
-    });
-    $$('.mark-guide').forEach((guide) => (guide.hidden = true));
+    localStorage.removeItem("year11-embedded-redesign-last-profile");
+    state = { ...blankState(), profile: { ...state.profile } };
+    hydrateFields();
     updateProgress();
     showPage("overview");
-    showToast("Learning record cleared.");
+    showToast("Learning record cleared from this browser.");
   });
 
-  try {
-    const last = JSON.parse(localStorage.getItem("year11-embedded-last-profile"));
-    if (last?.role === "student") {
-      $("#student-name").value = last.name || "";
-      $("#student-class").value = last.className || "";
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("mode") === "teacher-review") startLesson({ name: "Teacher", className: "All pages open", role: "teacher" });
+  else {
+    try {
+      const lastProfile = JSON.parse(localStorage.getItem("year11-embedded-redesign-last-profile"));
+      if (lastProfile?.name) $("#student-name").value = lastProfile.name;
+      if (lastProfile?.className) $("#student-class").value = lastProfile.className;
+    } catch (_) {
+      // Ignore damaged convenience data.
     }
-  } catch (_) {
-    // Ignore unavailable profile history.
-  }
-
-  const teacherReviewRequested = new URLSearchParams(window.location.search).get("mode") === "teacher-review";
-  if (teacherReviewRequested) {
-    startLesson({ name: "Teacher", className: "All pages open", role: "teacher" });
   }
 })();
