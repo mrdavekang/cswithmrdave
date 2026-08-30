@@ -368,6 +368,7 @@ th { background: var(--ink); color: #fff; }
 .quality-checklist { display:flex; flex-wrap:wrap; gap:.45rem; margin:.7rem 0; padding:.7rem; border:1px solid var(--line); border-radius:8px; background:#f7f8f9; }
 .quality-checklist strong { width:100%; }
 .quality-checklist span { padding:.25rem .5rem; border-radius:999px; background:#fff; border:1px solid var(--line); font-size:.82rem; font-weight:800; }
+.own-words-note { margin:.7rem 0; padding:.7rem .85rem; border-left:4px solid var(--blue); border-radius:0 8px 8px 0; background:#eef4ff; color:#24324a; font-size:.92rem; line-height:1.45; }
 .answer-correct { outline:3px solid #2d9b61; outline-offset:3px; }
 .answer-review { outline:3px solid #d97706; outline-offset:3px; }
 .field-feedback { display:block; margin-top:.45rem; padding:.42rem .55rem; border-radius:6px; font-size:.82rem; font-weight:800; line-height:1.35; }

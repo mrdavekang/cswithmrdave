@@ -194,6 +194,17 @@ print("Welcome", name)
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[c]));
   const normalise = (value) => String(value ?? "").trim().toLowerCase();
   const hasText = (value, length = 1) => String(value ?? "").trim().length >= length;
+  const hasMeaningfulResponse = (value, { minWords = 4, minChars = 14 } = {}) => {
+    const text = String(value ?? "").trim().replace(/\s+/g, " ");
+    if (text.length < minChars) return false;
+    const tokens = text.match(/[\p{L}\p{M}\p{N}]+/gu) || [];
+    const usesUnspacedScript = /[\u3400-\u9fff\u3040-\u30ff]/u.test(text);
+    if (usesUnspacedScript) {
+      const meaningfulCharacters = (text.match(/[\p{L}\p{N}]/gu) || []).length;
+      return meaningfulCharacters >= Math.max(8, minWords * 2);
+    }
+    return tokens.length >= minWords;
+  };
   const safeFilePart = (value) => String(value || "Unknown").trim().replace(/[^a-z0-9_-]+/gi, "_").replace(/^_+|_+$/g, "") || "Unknown";
   const storageKey = () => teacherMode ? TEACHER_KEY : STUDENT_KEY;
 
@@ -222,14 +233,14 @@ print("Welcome", name)
     $$(".field-feedback", section).forEach((node) => node.remove());
   }
 
-  function markField(id, correct, message) {
+  function markField(id, correct, message, acceptedMessage = "Correct — keep this evidence.") {
     const control = $(`#${id}`) || $(`[name="${id}"]`);
     if (!control) return correct;
     const holder = control.closest("label, fieldset, .two-column-fields, .structured-response-grid") || control.parentElement;
     holder.classList.add(correct ? "answer-correct" : "answer-review");
     const note = document.createElement("small");
     note.className = `field-feedback ${correct ? "correct" : "review"}`;
-    note.textContent = correct ? "Correct — keep this evidence." : message;
+    note.textContent = correct ? acceptedMessage : message;
     holder.appendChild(note);
     return correct;
   }
@@ -238,15 +249,10 @@ print("Welcome", name)
     clearFieldChecks(sectionKey);
     state.diagnostics ||= {};
     state.diagnostics[sectionKey] ||= {};
-    return checks.map(({ id, correct, hint }) => {
+    return checks.map(({ id, correct, hint, acceptedMessage }) => {
       if (!correct) state.diagnostics[sectionKey][id] = (state.diagnostics[sectionKey][id] || 0) + 1;
-      return markField(id, Boolean(correct), hint);
+      return markField(id, Boolean(correct), hint, acceptedMessage);
     });
-  }
-
-  function containsAny(value, words) {
-    const text = normalise(value);
-    return words.some((word) => text.includes(normalise(word)));
   }
 
   function scheduleSave() {
@@ -478,16 +484,15 @@ print("Welcome", name)
     const scenario = response("starter-reflection-scenario");
     const evidence = response("starter-evidence");
     const steps = response("starter-steps");
-    const evidenceSpecific = scenario === "2"
-      ? containsAny(evidence, ["18", "12", "expected", "actual", "total", "triple"])
-      : scenario === "4" && containsAny(evidence, ["input", "output", "name", "welcome", "line", "source"]);
-    const stepsUseful = hasText(steps, 24) && containsAny(steps, ["trace", "compare", "test", "read", "explain", "identify", "show", "discover", "whether"]);
+    const evidenceSpecific = hasMeaningfulResponse(evidence, { minWords: 3, minChars: 10 });
+    const stepsUseful = hasMeaningfulResponse(steps, { minWords: 5, minChars: 18 });
+    const writingAccepted = "Response recorded — your own wording is accepted for teacher review.";
     const checks = [
       { id: "scenario-2", correct: response("scenario-2") === "trace", hint: "Choose the move that compares the rule, expected result and changing values." },
       { id: "scenario-4", correct: response("scenario-4") === "test", hint: "Choose the move that helps you understand the input, output and each line before use." },
       { id: "starter-reflection-scenario", correct: scenario === "2" || scenario === "4", hint: "Choose one of the two independent scenarios to explain." },
-      { id: "starter-evidence", correct: evidenceSpecific, hint: scenario === "2" ? "Name evidence from this case, such as expected 18, actual 12 or the calculation line." : "Name evidence from this case, such as its input, output or a specific line." },
-      { id: "starter-steps", correct: stepsUseful, hint: "State a precise action and what new information it would reveal." },
+      { id: "starter-evidence", correct: evidenceSpecific, hint: "Write a short but complete idea about the evidence you would inspect. Use your own words; no exact keyword is required.", acceptedMessage: writingAccepted },
+      { id: "starter-steps", correct: stepsUseful, hint: "Explain what you would do and what you hope to learn from it. Use your own words; no exact keyword is required.", acceptedMessage: writingAccepted },
     ];
     const results = checkFields("starter", checks);
     const score = results.filter(Boolean).length;
@@ -513,7 +518,7 @@ print("Welcome", name)
     checks.push({ id: "cycle-improve-line", correct: normalise(response("cycle-improve-line")).replace(/\s+/g, "") === "total=points+bonus", hint: "Change only the calculation so it adds the named variables." });
     checks.push({ id: "cycle-stage", correct: response("cycle-stage") === "check", hint: "Which stage compares expected 25 with actual 15 and then locates the difference?" });
     const cycleEvidence = response("cycle-evidence");
-    checks.push({ id: "cycle-evidence", correct: hasText(cycleEvidence, 25) && containsAny(cycleEvidence, ["25"]) && containsAny(cycleEvidence, ["15"]) && containsAny(cycleEvidence, ["operator", "minus", "subtract", "calculation", "line", "+", "-"]), hint: "Use all three pieces: expected 25, actual 15, and the faulty operator or calculation line." });
+    checks.push({ id: "cycle-evidence", correct: hasMeaningfulResponse(cycleEvidence, { minWords: 5, minChars: 18 }), hint: "Explain why your chosen stage helped to find the fault. Use your own words; no exact keyword is required.", acceptedMessage: "Explanation recorded — your teacher can review your reasoning." });
     const results = checkFields("concepts", checks);
     const score = results.filter(Boolean).length;
     recordAttempt("concepts", score, checks.length);
@@ -534,7 +539,7 @@ print("Welcome", name)
     };
     const checks = Object.entries(coreAnswers).map(([id, answer]) => ({ id, correct: normalise(response(id)) === answer, hint: `Re-read the named line and record the newest value before moving on.` }));
     checks.push({ id: "trace-final-output", correct: /level up/i.test(response("trace-final-output")), hint: "Use the message assigned inside the true branch." });
-    checks.push({ id: "trace-explanation", correct: /(9|nine)/i.test(response("trace-explanation")) && /(true|greater|at least|condition|>=|8)/i.test(response("trace-explanation")), hint: "State the final score, compare it with 8, say whether the condition is true, then name the selected message." });
+    checks.push({ id: "trace-explanation", correct: hasMeaningfulResponse(response("trace-explanation"), { minWords: 5, minChars: 18 }), hint: "Explain in a complete thought why the program follows that branch. Use your own words; the score and condition are checked separately above.", acceptedMessage: "Explanation recorded — your own wording is accepted for teacher review." });
     const results = checkFields("trace", checks);
     let score = results.filter(Boolean).length;
     let maximum = checks.length;
@@ -574,9 +579,9 @@ print("Welcome", name)
     const checks = Object.entries(answers).map(([id, answer]) => ({ id, correct: response(id) === answer, hint: hints[id] }));
     checks.push({ id: "debug-logic-fix", correct: normalise(response("debug-logic-fix")).replace(/\s+/g, "") === "final=price-discount", hint: "Write the full assignment using subtraction: final = …" });
     const evidence = response("debug-test-evidence");
-    checks.push({ id: "debug-test-evidence", correct: hasText(evidence, 25) && containsAny(evidence, ["colon", "line 5", "else:"]) && containsAny(evidence, ["noor", "same", "stayed"]) && containsAny(evidence, ["welcome", "runs", "result"]), hint: "Name the one colon change, what stayed the same (including Noor), and the observed result." });
+    checks.push({ id: "debug-test-evidence", correct: hasMeaningfulResponse(evidence, { minWords: 6, minChars: 22 }), hint: "Describe what changed, what stayed the same and what happened. Use your own words; no exact keyword is required.", acceptedMessage: "Test record accepted — your teacher can review the detail in your report." });
     const explanation = response("debug-explanation");
-    checks.push({ id: "debug-explanation", correct: hasText(explanation, 25) && containsAny(explanation, ["colon", "one", "only", "line 5"]) && containsAny(explanation, ["cause", "caused", "conclude", "evidence", "fixed", "syntax"]), hint: "Conclude what the controlled result says about the original syntax error." });
+    checks.push({ id: "debug-explanation", correct: hasMeaningfulResponse(explanation, { minWords: 5, minChars: 18 }), hint: "Write a complete conclusion about what the test result suggests. Use your own words; no exact keyword is required.", acceptedMessage: "Conclusion recorded — your own wording is accepted for teacher review." });
     const results = checkFields("debug", checks);
     const score = results.filter(Boolean).length;
     recordAttempt("debug", score, checks.length);
@@ -696,7 +701,7 @@ print("Welcome", name)
     const checks = Object.entries(answers).map(([id, answer]) => ({ id, correct: response(id) === answer, hint: hints[id] }));
     checks.push({ id: "next-target", correct: hasText(response("next-target")), hint: "Choose the skill that most needs your next practice." });
     const action = response("target-action");
-    checks.push({ id: "target-action", correct: hasText(action, 18) && containsAny(action, ["will", "when", "before", "each", "one", "record", "read", "trace", "test", "explain"]), hint: "Write a specific action that says when or how you will practise—not only ‘try harder’." });
+    checks.push({ id: "target-action", correct: hasMeaningfulResponse(action, { minWords: 4, minChars: 14 }), hint: "Write one complete action you could realistically try next lesson. Use your own words; no exact keyword is required.", acceptedMessage: "Personal target recorded — your teacher can review it in the report." });
     const results = checkFields("plenary", checks);
     const score = results.filter(Boolean).length;
     recordAttempt("plenary", score, checks.length);
