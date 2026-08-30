@@ -1,24 +1,29 @@
 (function () {
   "use strict";
-  const KEY = "y6ComputingLaunch_v2";
-  const LEGACY_KEY = "labLaunch_v1";
+  const KEY = "y6ComputingLaunch_v3";
+  const LEGACY_KEY = "y6ComputingLaunch_v2";
   const DB_NAME = "labLaunchDB";
   const DB_STORE = "screenshots";
 
   function defaults() {
     return {
-      version: 2,
+      version: 3,
       student: { name: "", className: "" },
       profile: { language: "en", responseMode: "guided", readAloud: true },
       settings: { muted: false },
       current: "welcome",
-      steps: { starter: 0, main1: 0, main2: 0, extension: 0, plenary: 0 },
+      steps: { starter: 0, learningTypes: 0, main1: 0, main2: 0, extension: 0, plenary: 0, reflection: 0 },
       completed: [],
       answers: {},
       checks: {},
       extensionDone: [],
       evidence: { folder: false, folderSkipped: false, scratch: false, scratchSkipped: false },
-      confidence: "",
+      learningTypes: [],
+      learningStrategy: "",
+      pitstopPhase: "",
+      pitstopNeed: "",
+      exitLearningType: "",
+      exitStrategy: "",
       startedAt: null,
       finishedAt: null
     };
@@ -32,6 +37,7 @@
     });
     out.completed = Array.isArray(out.completed) ? out.completed : [];
     out.extensionDone = Array.isArray(out.extensionDone) ? out.extensionDone : [];
+    out.learningTypes = Array.isArray(out.learningTypes) ? out.learningTypes : [];
     return out;
   }
 

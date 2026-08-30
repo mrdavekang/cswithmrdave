@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111111">
   <title>Year 7 Week 1 Theory | Thinking Like a Computer Scientist</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260830b">
 </head>
 <body>
   <noscript><div class="noscript">This lesson needs JavaScript enabled.</div></noscript>
@@ -86,6 +86,7 @@
           <div class="language-help" data-support-key="overview"></div>
           <button class="read-aloud ghost small" type="button">Read this card aloud</button>
           <label class="acknowledge-row"><input id="overviewAcknowledge" type="checkbox"><span>I have read the WAGBA and understand what I need to produce.</span></label>
+          <p id="overviewReadyMessage" class="ready-message" aria-live="polite">Tick the box when you are ready. The Starter button will then be highlighted.</p>
           <div class="next-row"><button class="primary next-section" data-next="starter" type="button">Begin the Starter</button></div>
         </div></article>
       </section>
@@ -213,9 +214,10 @@
     </main>
   </div>
 
+  <div id="completionNotice" class="completion-notice" role="status" aria-live="assertive" hidden></div>
   <dialog id="glossaryDialog" class="modal-dialog"><div class="dialog-heading"><div><p class="eyebrow">OPTIONAL SUPPORT</p><h2>Vocabulary</h2></div><button class="icon-btn" data-close-dialog="glossaryDialog" type="button" aria-label="Close vocabulary">×</button></div><p id="glossaryLanguageNote"></p><div id="glossaryContent" class="glossary-grid"></div></dialog>
   <dialog id="languageDialog" class="modal-dialog small-dialog"><div class="dialog-heading"><div><p class="eyebrow">OPTIONAL SUPPORT</p><h2>Language help</h2></div><button class="icon-btn" data-close-dialog="languageDialog" type="button" aria-label="Close language help">×</button></div><p>English remains visible because it is the lesson language. Support adds short translations for important ideas and vocabulary.</p><label>Support mode<select id="settingsSupportMode"><option value="english">English only</option><option value="supported">English + language support</option></select></label><label>Support language<select id="settingsSupportLanguage"><option value="ms">Bahasa Melayu</option><option value="zh-CN">简体中文</option><option value="ko">한국어</option><option value="ar">العربية</option></select></label><p class="device-translate-note">On some iPads and iPhones, you can also select English text and choose <strong>Translate</strong> if your school settings allow it.</p><button id="saveLanguageSettings" class="primary wide" type="button">Save language settings</button></dialog>
   <dialog id="imageDialog" class="image-dialog"><button class="image-close" data-close-dialog="imageDialog" type="button" aria-label="Close enlarged image">×</button><img id="dialogImage" src="" alt=""></dialog>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260830b"></script>
 </body>
 </html>

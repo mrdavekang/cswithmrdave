@@ -537,46 +537,185 @@
     state.starter.checked = answered === STARTER_ITEMS.length; state.starter.score = score;
     $('#starterFeedback').textContent = state.starter.checked ? `Score: ${score}/4. You may change an answer and check again.` : 'Choose an answer for all four images.';
     saveState('Starter checked', `${score}/4`);
+    if (!state.starter.checked) focusFirstIssue('starter');
+    else showCompletionNotice('Your four classifications are checked. Use Next card, then write your explanation.', true);
   }
   function checkScratch() {
     const answers = { scratchShape: 'A square', scratchInput: 'Clicking the green flag', scratchOutput: 'A shape is drawn on the stage', scratchRepeat: 'repeat 4' };
     const completed = Object.keys(answers).every(key => state.main2[key]);
-    if (!completed) { $('#scratchFeedback').textContent = 'Answer questions 1–4 first.'; return; }
+    if (!completed) { $('#scratchFeedback').textContent = 'Answer questions 1–4 first.'; focusFirstIssue('main2', 1); return; }
     const score = Object.entries(answers).filter(([key, value]) => state.main2[key] === value).length;
     state.main2.scratchChecked = true; state.main2.scratchScore = score;
     $('#scratchFeedback').textContent = score === 4 ? '4/4. Your prediction and code reading are accurate.' : `${score}/4. Re-read each block, revise an answer, then check again.`;
     saveState('Scratch check', `${score}/4`);
+    showCompletionNotice('Questions 1–4 are checked. Now complete question 5 before moving on.', true);
   }
   function checkIpo() {
     const answers = { ipoPress: 'Input', ipoCapture: 'Process', ipoPhoto: 'Output' };
     const completed = Object.keys(answers).every(key => state.main2[key]);
-    if (!completed) { $('#ipoFeedback').textContent = 'Choose a label for all three camera steps.'; return; }
+    if (!completed) { $('#ipoFeedback').textContent = 'Choose a label for all three camera steps.'; focusFirstIssue('main2', 2); return; }
     const score = Object.entries(answers).filter(([key, value]) => state.main2[key] === value).length;
     state.main2.ipoChecked = true; state.main2.ipoScore = score;
     $('#ipoFeedback').textContent = score === 3 ? '3/3. You applied the IPO model accurately.' : `${score}/3. Compare the camera with the printer worked example and try again.`;
     saveState('IPO check', `${score}/3`);
+    showCompletionNotice('The three camera labels are checked. Now write your own IPO example.', true);
   }
   function checkSafety() {
-    if (!state.main2.safety1 || !state.main2.safety2) { $('#safetyFeedback').textContent = 'Choose one response for each situation.'; return; }
+    if (!state.main2.safety1 || !state.main2.safety2) { $('#safetyFeedback').textContent = 'Choose one response for each situation.'; focusFirstIssue('main2', 3); return; }
     const score = Number(state.main2.safety1 === 'Block or report the account and tell a trusted adult') + Number(state.main2.safety2 === 'Leave it unchanged and tell the teacher');
     state.main2.safetyChecked = true; state.main2.safetyScore = score;
     $('#safetyFeedback').textContent = score === 2 ? '2/2. These choices protect personal information and other people’s work.' : `${score}/2. Re-read what private information and permission mean, then revise your choice.`;
     saveState('Safety check', `${score}/2`);
+    showCompletionNotice('Both safety choices are checked. Now explain why one choice is safe or responsible.', true);
+  }
+
+  function hasResponse(value, minimum = 1) { return String(value || '').trim().length >= minimum; }
+
+  function getSectionIssues(section) {
+    const issues = [];
+    const add = (message, card = null, selector = '') => issues.push({ message, card, selector });
+    if (section === 'overview') {
+      if (!state.overview.acknowledged) add('Tick “I have read the WAGBA…” before beginning the Starter.', null, '#overviewAcknowledge');
+      return issues;
+    }
+    if (section === 'starter') {
+      const missingStarter = STARTER_ITEMS.find(item => !state.starter.answers[item.id]);
+      if (missingStarter) add(`Choose a classification for “${missingStarter.title}”.`, 1, `input[name="starter-${missingStarter.id}"]`);
+      else if (!state.starter.checked) add('Press “Check my classifications” after choosing all four answers.', 1, '#checkStarterBtn');
+      if (!hasResponse(state.starter.challenge, 5)) add('Write your explanation about how sequence can change the output.', 2, '#starterChallenge');
+      return issues;
+    }
+    if (section === 'main1') {
+      if (!state.main1.tested) add('Build an algorithm and press “Test algorithm”.', 3, '#testAlgorithmBtn');
+      else if (!state.main1.success) add('Debug and test again until the robot reaches the star, picks it up and stops.', 3, '#robotFeedback');
+      if (!hasResponse(state.main1.reflection, 5)) add('Explain what happened when you tested and what you changed.', 4, '#main1Reflection');
+      return issues;
+    }
+    if (section === 'main2') {
+      const missingSequence = SEQUENCE_ITEMS.find(item => !state.main2.sequence[item.id]);
+      const sequenceValues = Object.values(state.main2.sequence).filter(Boolean);
+      if (missingSequence) add(`Choose a position for “${missingSequence.text}”.`, 0, `#sequenceOrderTask select[data-order-id="${missingSequence.id}"]`);
+      else if (new Set(sequenceValues).size !== SEQUENCE_ITEMS.length) add('Use each sequence number once. One or more numbers are repeated.', 0, '#sequenceOrderTask');
+      if (!hasResponse(state.main2.sequenceSwap, 4)) add('Explain why cutting the sandwich too early causes a problem.', 0, '#sequenceSwapAnswer');
+
+      const scratchFields = [
+        ['scratchShape', '#scratchShape', 'Choose the shape the Scratch program draws.'],
+        ['scratchInput', '#scratchInput', 'Choose the input that starts the Scratch program.'],
+        ['scratchOutput', '#scratchOutput', 'Choose the output produced by the Scratch program.'],
+        ['scratchRepeat', '#scratchRepeat', 'Choose the block that repeats the movement.']
+      ];
+      const missingScratch = scratchFields.find(([key]) => !hasResponse(state.main2[key]));
+      if (missingScratch) add(missingScratch[2], 1, missingScratch[1]);
+      else if (!state.main2.scratchChecked) add('Press “Check questions 1–4” after choosing all four Scratch answers.', 1, '#checkScratchBtn');
+      if (!hasResponse(state.main2.scratchImprovement)) add('Suggest one Scratch change and predict its effect.', 1, '#scratchImprovement');
+
+      const ipoFields = [
+        ['ipoPress', '#ipoPress', 'Choose the IPO label for pressing the shutter button.'],
+        ['ipoCapture', '#ipoCapture', 'Choose the IPO label for capturing and saving the image.'],
+        ['ipoPhoto', '#ipoPhoto', 'Choose the IPO label for the photograph on screen.']
+      ];
+      const missingIpo = ipoFields.find(([key]) => !hasResponse(state.main2[key]));
+      if (missingIpo) add(missingIpo[2], 2, missingIpo[1]);
+      else if (!state.main2.ipoChecked) add('Press “Check camera labels” after choosing all three labels.', 2, '#checkIpoBtn');
+      if (!hasResponse(state.main2.ipoExample)) add('Write one different digital-system IPO example.', 2, '#ipoExample');
+
+      if (!state.main2.safety1) add('Choose a response for digital-safety situation 1.', 3, 'input[name="safety1"]');
+      if (!state.main2.safety2) add('Choose a response for digital-safety situation 2.', 3, 'input[name="safety2"]');
+      if (state.main2.safety1 && state.main2.safety2 && !state.main2.safetyChecked) add('Press “Check my choices” after answering both safety situations.', 3, '#checkSafetyBtn');
+      if (!hasResponse(state.main2.safetyReason, 4)) add('Explain why one of your safety choices is responsible.', 3, '#safetyReason');
+      if (!hasResponse(state.main2.challenge, 4)) add('Complete the final diagnostic reflection.', 4, '#main2Challenge');
+      return issues;
+    }
+    if (section === 'plenary') {
+      const fields = [
+        ['algorithm', '#plenaryAlgorithm', 'Answer question 1: What is an algorithm?'],
+        ['sequence', '#plenarySequence', 'Answer question 2: Why does sequence matter?'],
+        ['expectation', '#plenaryExpectation', 'Answer question 3 about a classroom expectation.'],
+        ['improve', '#plenaryImprove', 'Answer question 4 about what you will improve.'],
+        ['confidence', '#plenaryConfidence', 'Choose your confidence rating for question 5.']
+      ];
+      fields.forEach(([key, selector, message]) => { if (!hasResponse(state.plenary[key])) add(message, null, selector); });
+      return issues;
+    }
+    return issues;
+  }
+
+  function cardIssues(deckName, cardIndex) { return getSectionIssues(deckName).filter(issue => issue.card === cardIndex); }
+
+  function clearAttention() {
+    $$('.needs-attention').forEach(element => element.classList.remove('needs-attention'));
+    $$('.card-needs-attention').forEach(element => element.classList.remove('card-needs-attention'));
+  }
+
+  function showCompletionNotice(message, success = false) {
+    const notice = $('#completionNotice');
+    notice.textContent = message;
+    notice.classList.toggle('success', success);
+    notice.hidden = false;
+    clearTimeout(showCompletionNotice.timer);
+    showCompletionNotice.timer = setTimeout(() => { notice.hidden = true; }, 5200);
+  }
+
+  function focusIssue(section, issue) {
+    if (!issue) return;
+    clearAttention();
+    if (state.activeSection !== section) showSection(section, true);
+    if (issue.card !== null && issue.card !== undefined) setDeck(section, issue.card, false);
+    requestAnimationFrame(() => {
+      const sectionElement = $(`#section-${section}`);
+      const target = issue.selector ? $(issue.selector, sectionElement) : sectionElement;
+      const highlight = target?.matches('input[type="radio"], input[type="checkbox"]') ? (target.closest('label') || target) : target;
+      highlight?.classList.add('needs-attention');
+      target?.closest('.lesson-card')?.classList.add('card-needs-attention');
+      (highlight || sectionElement)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+    });
+    showCompletionNotice(`Before you continue: ${issue.message}`);
+    renderCompletionGuide(section);
+  }
+
+  function focusFirstIssue(section, card = null) {
+    const issues = getSectionIssues(section);
+    const issue = card === null ? issues[0] : (issues.find(item => item.card === card) || issues[0]);
+    focusIssue(section, issue);
+  }
+
+  function renderCompletionGuide(section) {
+    const sectionElement = $(`#section-${section}`);
+    if (!sectionElement || section === 'extension' || section === 'export') return;
+    let guide = $('.completion-guide', sectionElement);
+    if (!guide) {
+      guide = document.createElement('div');
+      guide.className = 'completion-guide';
+      guide.setAttribute('aria-live', 'polite');
+      sectionElement.appendChild(guide);
+    }
+    const issues = getSectionIssues(section);
+    guide.classList.toggle('complete', issues.length === 0);
+    if (!issues.length) {
+      guide.innerHTML = '<strong>✓ This section is complete.</strong><span>You are ready to use the Continue button.</span>';
+      return;
+    }
+    guide.innerHTML = `<strong>${issues.length} item${issues.length === 1 ? '' : 's'} still to complete</strong><span>First: ${escapeHtml(issues[0].message)}</span><button class="ghost review-missing" type="button">Show me what I missed</button>`;
+    $('.review-missing', guide).addEventListener('click', () => focusIssue(section, getSectionIssues(section)[0]));
+  }
+
+  function updateContinueButtons() {
+    $$('.next-section').forEach(button => {
+      const section = button.closest('.lesson-section')?.dataset.section;
+      const ready = section && getSectionIssues(section).length === 0;
+      button.classList.toggle('ready-to-continue', Boolean(ready));
+      if (section === 'overview') {
+        button.textContent = ready ? 'Ready — Begin the Starter →' : 'Begin the Starter';
+        $('#overviewReadyMessage').textContent = ready ? '✓ Ready. Select the highlighted Starter button.' : 'Tick the box when you are ready. The Starter button will then be highlighted.';
+        $('#overviewReadyMessage').classList.toggle('ready', Boolean(ready));
+      }
+    });
   }
 
   function sectionComplete(section) {
-    if (section === 'overview') return state.overview.acknowledged;
-    if (section === 'starter') return STARTER_ITEMS.every(item => state.starter.answers[item.id]) && state.starter.checked && state.starter.challenge.trim().length >= 5;
-    if (section === 'main1') return state.main1.tested && state.main1.success && state.main1.reflection.trim().length >= 5;
-    if (section === 'main2') {
-      const sequenceDone = SEQUENCE_ITEMS.every(item => state.main2.sequence[item.id]) && new Set(Object.values(state.main2.sequence).filter(Boolean)).size === SEQUENCE_ITEMS.length && state.main2.sequenceSwap.trim().length >= 4;
-      const scratchDone = ['scratchShape', 'scratchInput', 'scratchOutput', 'scratchRepeat', 'scratchImprovement'].every(key => String(state.main2[key]).trim()) && state.main2.scratchChecked;
-      const ipoDone = ['ipoPress', 'ipoCapture', 'ipoPhoto', 'ipoExample'].every(key => String(state.main2[key]).trim()) && state.main2.ipoChecked;
-      const safetyDone = state.main2.safety1 && state.main2.safety2 && state.main2.safetyReason.trim().length >= 4 && state.main2.safetyChecked;
-      return Boolean(sequenceDone && scratchDone && ipoDone && safetyDone && state.main2.challenge.trim().length >= 4);
-    }
+    if (['overview', 'starter', 'main1', 'main2', 'plenary'].includes(section)) return getSectionIssues(section).length === 0;
     if (section === 'extension') return extensionAttempted();
-    if (section === 'plenary') return ['algorithm', 'sequence', 'expectation', 'improve', 'confidence'].every(key => String(state.plenary[key]).trim());
     if (section === 'export') return coreComplete();
     return false;
   }
@@ -596,23 +735,22 @@
     const index = SECTION_ORDER.indexOf(section); return index <= 0 || sectionComplete(SECTION_ORDER[index - 1]);
   }
 
-  function validationMessage(section) {
-    if (section === 'overview' && !sectionComplete(section)) return 'Tick the box to confirm that you understand today’s learning and evidence.';
-    if (section === 'starter' && !sectionComplete(section)) return 'Classify and check all four images, then complete the explanation card.';
-    if (section === 'main1' && !sectionComplete(section)) return 'Keep testing and debugging until the robot reaches the star, picks it up and stops. Then explain what you changed.';
-    if (section === 'main2' && !sectionComplete(section)) return 'Complete and check every diagnostic card. Use each sequence number once.';
-    if (section === 'plenary' && !sectionComplete(section)) return 'Answer all four questions and choose a confidence rating.';
-    return '';
-  }
-
   function showSection(section, force = false) {
-    if (!force && !isUnlocked(section)) { alert('Complete the previous core section before opening this one.'); return; }
+    if (!force && !isUnlocked(section)) {
+      const targetIndex = SECTION_ORDER.indexOf(section);
+      const prerequisite = [...CORE_SECTIONS].reverse().find(item => SECTION_ORDER.indexOf(item) < targetIndex && !sectionComplete(item));
+      const redirect = prerequisite || state.activeSection;
+      showSection(redirect, true);
+      focusFirstIssue(redirect);
+      return;
+    }
     state.activeSection = section;
     $$('.lesson-section').forEach(element => element.classList.toggle('active', element.dataset.section === section));
     renderNavigation();
     if (currentStorageKey) localStorage.setItem(currentStorageKey, JSON.stringify(state));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (section === 'export') renderExportSection();
+    else renderCompletionGuide(section);
   }
   function renderNavigation() {
     $('#lessonNav').innerHTML = SECTION_ORDER.map(section => `<button type="button" class="nav-btn ${sectionComplete(section) ? 'complete' : ''} ${!isUnlocked(section) ? 'locked' : ''} ${state.activeSection === section ? 'active' : ''}" data-section="${section}" ${!isUnlocked(section) ? 'aria-disabled="true"' : ''}>${SECTION_LABELS[section]}</button>`).join('');
@@ -623,12 +761,13 @@
     SECTION_ORDER.forEach(section => {
       const pill = $(`[data-status-for="${section}"]`); if (!pill) return;
       if (section === 'extension') { const count = extensionCompletionCount(); pill.textContent = extensionAttempted() ? `${count} completed · ${extensionAttemptCount()} attempts` : 'Optional'; pill.classList.toggle('done', count > 0); }
-      else { const complete = sectionComplete(section); pill.textContent = complete ? 'Complete' : 'Not complete'; pill.classList.toggle('done', complete); }
+      else { const complete = sectionComplete(section); const left = getSectionIssues(section).length; pill.textContent = complete ? 'Complete' : `${left} item${left === 1 ? '' : 's'} left`; pill.classList.toggle('done', complete); }
     });
   }
   function refreshUI() {
     $('#learnerName').textContent = state.profile.name || 'Not signed in'; $('#learnerClass').textContent = state.profile.teacherMode ? 'Teacher review' : state.profile.className || 'Class';
-    renderNavigation(); updateProgress(); updateStatuses(); renderExportSection(); renderExtensionChoiceBoard();
+    renderNavigation(); updateProgress(); updateStatuses(); renderExportSection(); renderExtensionChoiceBoard(); renderCompletionGuide(state.activeSection); updateContinueButtons();
+    Object.keys(state.decks).forEach(renderDeckControls);
   }
 
   function setDeck(deckName, index, log = true) {
@@ -641,7 +780,7 @@
   function renderDeckControls(deckName) {
     const deck = $(`[data-deck="${deckName}"]`); const controls = $(`[data-controls-for="${deckName}"]`); if (!deck || !controls) return;
     const cards = $$('.deck-card', deck); const index = Number(state.decks[deckName] || 0);
-    controls.innerHTML = `<button class="ghost deck-prev" type="button" ${index === 0 ? 'disabled' : ''}>← Previous card</button><div><span class="deck-progress">Card ${index + 1} of ${cards.length}</span><div class="deck-dots">${cards.map((_, dot) => `<button class="deck-dot ${dot === index ? 'active' : ''}" type="button" data-dot="${dot}" aria-label="Open card ${dot + 1}"></button>`).join('')}</div></div><button class="primary deck-next" type="button" ${index === cards.length - 1 ? 'disabled' : ''}>Next card →</button>`;
+    controls.innerHTML = `<button class="ghost deck-prev" type="button" ${index === 0 ? 'disabled' : ''}>← Previous card</button><div><span class="deck-progress">Card ${index + 1} of ${cards.length}</span><div class="deck-dots">${cards.map((_, dot) => { const issues = cardIssues(deckName, dot); const complete = issues.length === 0; return `<button class="deck-dot ${dot === index ? 'active' : ''} ${complete ? 'complete' : ''} ${issues.length && dot < index ? 'attention' : ''}" type="button" data-dot="${dot}" aria-label="Open card ${dot + 1}${complete ? ', complete' : `, ${issues.length} items left`}"></button>`; }).join('')}</div></div><button class="primary deck-next" type="button" ${index === cards.length - 1 ? 'disabled' : ''}>Next card →</button>`;
     $('.deck-prev', controls)?.addEventListener('click', () => setDeck(deckName, index - 1));
     $('.deck-next', controls)?.addEventListener('click', () => setDeck(deckName, index + 1));
     $$('.deck-dot', controls).forEach(button => button.addEventListener('click', () => setDeck(deckName, Number(button.dataset.dot))));
@@ -657,12 +796,28 @@
     ];
     bindings.forEach(([selector, section, key]) => {
       const element = $(selector); const event = element.tagName === 'SELECT' ? 'change' : 'input';
-      element.addEventListener(event, () => { state[section][key] = element.value; if (section === 'main2' && key.startsWith('scratch')) state.main2.scratchChecked = false; if (section === 'main2' && key.startsWith('ipo')) state.main2.ipoChecked = false; if (section === 'extension') state.extension.sequenceCompleted = false; saveState(); });
+      element.addEventListener(event, () => {
+        state[section][key] = element.value;
+        if (section === 'main2' && ['scratchShape', 'scratchInput', 'scratchOutput', 'scratchRepeat'].includes(key)) state.main2.scratchChecked = false;
+        if (section === 'main2' && ['ipoPress', 'ipoCapture', 'ipoPhoto'].includes(key)) state.main2.ipoChecked = false;
+        if (section === 'extension') state.extension.sequenceCompleted = false;
+        element.classList.remove('needs-attention');
+        element.closest('.lesson-card')?.classList.remove('card-needs-attention');
+        saveState();
+      });
       if (event === 'input') element.addEventListener('change', () => saveState('Written response updated', `${section}.${key}`));
     });
     $$('input[name="safety1"]').forEach(input => input.addEventListener('change', () => { state.main2.safety1 = input.value; state.main2.safetyChecked = false; saveState('Safety choice changed', 'Situation 1'); }));
     $$('input[name="safety2"]').forEach(input => input.addEventListener('change', () => { state.main2.safety2 = input.value; state.main2.safetyChecked = false; saveState('Safety choice changed', 'Situation 2'); }));
-    $('#overviewAcknowledge').addEventListener('change', () => { state.overview.acknowledged = $('#overviewAcknowledge').checked; saveState('Welcome acknowledgement', state.overview.acknowledged ? 'Checked' : 'Unchecked'); });
+    $('#overviewAcknowledge').addEventListener('change', () => {
+      state.overview.acknowledged = $('#overviewAcknowledge').checked;
+      $('#overviewAcknowledge').closest('label')?.classList.remove('needs-attention');
+      saveState('Welcome acknowledgement', state.overview.acknowledged ? 'Checked' : 'Unchecked');
+      if (state.overview.acknowledged) {
+        showCompletionNotice('Welcome complete. Select the highlighted “Begin the Starter” button.', true);
+        $('.next-section', $('#section-overview'))?.focus();
+      }
+    });
     $('#flashcardPaper').addEventListener('change', () => { state.extension.flashcards.requestedPaper = $('#flashcardPaper').checked; state.extension.flashcards.completed = false; saveState('Flashcard paper confirmation', $('#flashcardPaper').checked ? 'Checked' : 'Unchecked'); });
     $('#flashcardPartner').addEventListener('change', () => { state.extension.flashcards.partnerPractice = $('#flashcardPartner').checked; state.extension.flashcards.completed = false; saveState('Flashcard partner confirmation', $('#flashcardPartner').checked ? 'Checked' : 'Unchecked'); });
     $('#flashcardReflection').addEventListener('input', () => { state.extension.flashcards.reflection = $('#flashcardReflection').value; state.extension.flashcards.completed = false; saveState(); });
@@ -822,7 +977,26 @@
     $$('.image-zoom').forEach(button => button.addEventListener('click', () => { $('#dialogImage').src = button.dataset.image; $('#dialogImage').alt = button.dataset.alt || ''; openDialog($('#imageDialog')); }));
     $$('img').forEach(image => image.addEventListener('error', () => { const fallback = document.createElement('div'); fallback.className = 'missing-image'; fallback.textContent = `Image unavailable: ${image.alt || 'lesson visual'}`; image.replaceWith(fallback); }));
     $$('.read-aloud').forEach(button => button.addEventListener('click', () => { if (!('speechSynthesis' in window)) { alert('Read-aloud is not available in this browser.'); return; } speechSynthesis.cancel(); const card = button.closest('.lesson-card').cloneNode(true); $$('button, input, textarea, select, .language-help', card).forEach(element => element.remove()); const utterance = new SpeechSynthesisUtterance(card.textContent.replace(/\s+/g, ' ').trim()); utterance.lang = 'en-GB'; utterance.rate = .92; speechSynthesis.speak(utterance); }));
-    $$('.next-section').forEach(button => button.addEventListener('click', () => { const current = button.closest('.lesson-section').dataset.section; const message = validationMessage(current); if (message && !state.profile.teacherMode && !state.unlockedAll) { alert(message); return; } showSection(button.dataset.next, true); }));
+    $$('.next-section').forEach(button => button.addEventListener('click', () => {
+      const current = button.closest('.lesson-section').dataset.section;
+      const issues = getSectionIssues(current);
+      if (issues.length && !state.profile.teacherMode && !state.unlockedAll) { focusIssue(current, issues[0]); return; }
+      showCompletionNotice(`${SECTION_LABELS[current]} complete. Moving to ${SECTION_LABELS[button.dataset.next]}.`, true);
+      showSection(button.dataset.next, true);
+    }));
+    document.addEventListener('input', event => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      target.classList.remove('needs-attention');
+      target.closest('.lesson-card')?.classList.remove('card-needs-attention');
+    });
+    document.addEventListener('change', event => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      target.classList.remove('needs-attention');
+      target.closest('label')?.classList.remove('needs-attention');
+      target.closest('.lesson-card')?.classList.remove('card-needs-attention');
+    });
   }
 
   function bindActivityControls() {

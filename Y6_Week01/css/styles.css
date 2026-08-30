@@ -93,6 +93,30 @@ a { color: #115fae; }
 .vocab-strip { display: flex; flex-wrap: wrap; gap: .45rem; margin: 1rem 0; }
 .vocab-strip button,.vocab { border: 2px solid #111; background: #fff; border-radius: 999px; padding: .3rem .65rem; font-weight: 800; }
 
+.metacog-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: .8rem; margin: 1rem 0; }
+.metacog-card { min-height: 150px; text-align: left; border: 3px solid #111; border-radius: 15px; padding: 1rem; background: #fff; color: #111; cursor: pointer; }
+.metacog-card h3 { margin: .35rem 0; }
+.metacog-card p { margin: .35rem 0 .7rem; }
+.metacog-card:hover { transform: translateY(-2px); box-shadow: 5px 5px 0 #111; }
+.metacog-card.selected { box-shadow: 7px 7px 0 #111; transform: translateY(-2px); }
+.metacog-card.selected::after { content: "✓ Selected"; display: inline-block; margin-top: .6rem; padding: .16rem .5rem; border-radius: 999px; background: #111; color: #fff; font-weight: 900; font-size: .78rem; }
+.metacog-kicker { display: inline-block; padding: .16rem .5rem; border-radius: 999px; background: #111; color: #fff; font-size: .74rem; font-weight: 900; letter-spacing: .06em; }
+.metacog-help { display: block; border-top: 2px solid #111; padding-top: .6rem; font-size: .9rem; }
+.metacog-card.knowledge { border-top: 10px solid #6d4bd2; background: #f5f0ff; }
+.metacog-card.skills { border-top: 10px solid #e48b17; background: #fff7df; }
+.metacog-card.understanding { border-top: 10px solid #17834f; background: #eaf8f0; }
+.metacog-card.support { border-top: 10px solid #2f78d0; background: #eef6ff; }
+.strategy-banner { margin: 1rem 0; padding: .85rem 1rem; border-left: 7px solid var(--blue); background: #eef6ff; }
+.section-question { margin-top: 1.6rem; font-size: 1.3rem; }
+
+.pitstop-check,.pitstop-advice { margin: 1rem 0; padding: 1rem; border: 3px solid #111; border-radius: 16px; background: #fff; }
+.pitstop-check h2,.pitstop-advice h2 { margin-top: 0; }
+.metacog-card.phase-new { border-top: 10px solid #6d37d5; background: #f2ecff; }
+.metacog-card.phase-consolidating { border-top: 10px solid #138043; background: #eaf8ef; }
+.metacog-card.phase-challenge { border-top: 10px solid #df2d71; background: #fff0f6; }
+.metacog-card.phase-help { border-top: 10px solid #174b91; background: #eef5ff; }
+.help-now { margin-top: 1rem; padding: 1rem; border: 3px solid #174b91; border-radius: 12px; background: #eef5ff; }
+
 .activity-shell { max-width: 980px; margin: 0 auto; }
 .activity-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: .8rem; }
 .step-dots { display: flex; align-items: center; gap: .35rem; margin: .8rem 0 1rem; }
@@ -180,6 +204,7 @@ a { color: #115fae; }
 
 .extension-summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 2px solid #111; background: #fff; border-radius: 12px; }
 .level-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: .7rem; margin: 1rem 0; }
+.level-grid.five-levels { grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); }
 .level-card { text-align: left; border: 2px solid #111; border-radius: 12px; padding: .8rem; background: #fff; cursor: pointer; }
 .level-card:hover { box-shadow: 4px 4px 0 #111; }
 .level-card.done { border-color: var(--good); background: #e8f7ef; }
@@ -220,7 +245,7 @@ a { color: #115fae; }
 }
 @media (max-width: 700px) {
   html { font-size: 16px; }
-  .welcome-hero,.form-grid,.overview-grid,.routine-grid,.axis-grid,.story-grid,.filename-key,.concept-pair,.starter-story-layout,.visual-pair,.task-columns { grid-template-columns: 1fr; }
+  .welcome-hero,.form-grid,.overview-grid,.routine-grid,.axis-grid,.story-grid,.filename-key,.concept-pair,.starter-story-layout,.visual-pair,.task-columns,.metacog-grid { grid-template-columns: 1fr; }
   .hero-art { min-height: 150px; }
   .lesson-card { min-height: 0; box-shadow: 5px 5px 0 #111; }
   .activity-heading { align-items: flex-start; flex-direction: column; }

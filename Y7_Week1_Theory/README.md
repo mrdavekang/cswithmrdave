@@ -44,6 +44,14 @@ The query route `?teacher=1` is also retained for convenient testing. Teacher st
 
 Long sections use short lesson cards. Students can use Previous/Next card controls without losing their work.
 
+### Completion guidance
+
+- Each core section shows how many required items remain.
+- Green card dots indicate completed cards; red dots identify earlier cards that still need attention.
+- If a student selects **Continue** too early, the app opens the first incomplete card, outlines the exact field in red and gives a plain-language instruction.
+- Checked Scratch and IPO questions remain checked when students subsequently write the related open response.
+- A completed section turns the Continue button green.
+
 ### Extension choice board
 
 Early completers can choose one or more activities and reopen them to improve:

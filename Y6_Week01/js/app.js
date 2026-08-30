@@ -24,14 +24,16 @@
   let teacherMode = sessionGet("y6_teacher") === "1";
   let speech = null;
 
-  const CORE = ["overview","starter","main1","main2","plenary","report"];
+  const CORE = ["starter","learningTypes","main1","main2","pitstop","plenary","reflection"];
   const PATH = [
-    { id:"overview", label:"Learning" }, { id:"starter", label:"Do Now" },
-    { id:"main1", label:"Main 1" }, { id:"main2", label:"Main 2" },
-    { id:"extension", label:"Fast Finishers" }, { id:"plenary", label:"Plenary" },
-    { id:"report", label:"PDF" }
+    { id:"starter", label:"Do Now" },
+    { id:"learningTypes", label:"How I Learn" },
+    { id:"main1", label:"Main Task" },
+    { id:"pitstop", label:"Pitstop" },
+    { id:"plenary", label:"Plenary" },
+    { id:"reflection", label:"Reflection" }
   ];
-  const STEP_COUNTS = { starter:3, main1:5, main2:6, extension:8, plenary:2 };
+  const STEP_COUNTS = { starter:3, learningTypes:2, main1:3, main2:6, extension:8, plenary:1, reflection:1 };
   const IMG = "assets/learning/";
 
   const SUPPORT = {
@@ -40,9 +42,12 @@
       locale:"ms-MY",
       overview:"Hari ini kita akan menyusun kerja digital dan menerangkan bagaimana input menghasilkan output.",
       starter:"Lihat gambar. Pilih jawapan yang menunjukkan rutin Mula–Kerja–Tamat yang betul.",
+      learningTypes:"Fikir tentang cara anda belajar: mengingat pengetahuan, mempraktikkan kemahiran dan menerangkan pemahaman.",
       main1:"Ikut setiap langkah untuk membina struktur folder dan nama fail yang mudah dicari.",
       main2:"Ramalkan dahulu, bina kod, uji, kemudian ubah satu perkara dan terangkan kesannya.",
+      pitstop:"Berhenti seketika. Pilih keadaan pembelajaran anda dengan jujur supaya langkah seterusnya sesuai.",
       plenary:"Gunakan apa yang anda pelajari untuk menjawab soalan akhir.",
+      reflection:"Fikir tentang cara anda bertambah baik dan pilih satu langkah untuk pelajaran seterusnya.",
       words:"algoritma = algorithm · input = input · output = output · fail = file · folder = folder · uji = test · nyahpepijat = debug"
     },
     zh: {
@@ -50,9 +55,12 @@
       locale:"zh-CN",
       overview:"今天我们要整理电子作品，并解释输入如何让程序产生输出。",
       starter:"观察图片。选择能正确表示“开始—工作—结束”流程的答案。",
+      learningTypes:"思考你的学习方式：记忆知识、练习技能，以及解释自己的理解。",
       main1:"按步骤建立容易寻找的文件夹结构和文件名。",
       main2:"先预测，再搭建代码并测试；然后修改一个地方并解释结果。",
+      pitstop:"暂停一下。诚实选择你现在的学习状态，以便获得合适的下一步。",
       plenary:"运用今天所学完成最后的问题。",
+      reflection:"思考你是怎样进步的，并为下一节课选择一个行动。",
       words:"算法 = algorithm · 输入 = input · 输出 = output · 文件 = file · 文件夹 = folder · 测试 = test · 调试 = debug"
     }
   };
@@ -60,6 +68,8 @@
     starter1:{ms:"Baca tiga bahagian pelajaran Aisha. Perhatikan apa yang dia lakukan dan mengapa setiap tindakan penting.",zh:"阅读 Aisha 课堂中的三个阶段。注意她做了什么，以及每个行动为什么重要。"},
     starter2:{ms:"Baca situasi. Gunakan tujuan tindakan untuk memilih Mula, Kerja atau Tamat.",zh:"阅读情境。根据行动的目的选择“开始、工作或结束”。"},
     starter3:{ms:"Pilih urutan penutup yang melindungi kerja, akaun dan murid seterusnya.",zh:"选择能保护作品、账户和下一位同学的结束顺序。"},
+    learning1:{ms:"Pilih semua jenis pembelajaran yang anda gunakan dalam aktiviti awal. Anda boleh memilih lebih daripada satu.",zh:"选择你在开始活动中使用的所有学习类型。你可以选择多项。"},
+    learning2:{ms:"Pilih satu strategi yang akan membantu anda dalam tugasan utama hari ini.",zh:"选择一种能帮助你完成今天主要任务的学习策略。"},
     main1_1:{ms:"Baca masalah Aisha. Tentukan bila dia perlu bertindak dan terangkan sebabnya.",zh:"阅读 Aisha 遇到的问题。判断她何时应该行动，并解释原因。"},
     main1_2:{ms:"Pelajari perbezaan antara fail dan folder, kemudian pilih laluan yang paling mudah dicari.",zh:"先学习文件与文件夹的区别，再选择最容易寻找的路径。"},
     main1_3:{ms:"Cipta laluan tiga folder pada komputer sekolah. Tambah tangkap layar atau minta guru menyemaknya.",zh:"在学校电脑上建立三级文件夹路径。添加截图，或请老师直接检查。"},
@@ -71,6 +81,7 @@
     main2_4:{ms:"Tekan anak panah kanan tiga kali. Bandingkan hasil dengan ramalan dan periksa satu blok pada satu masa.",zh:"按右方向键三次。把结果与预测比较，并一次检查一块积木。"},
     main2_5:{ms:"Tambah skrip anak panah kiri. Pastikan kekunci, nilai x dan mesej semuanya sepadan.",zh:"添加左方向键脚本。确保按键、x 数值和信息互相一致。"},
     main2_6:{ms:"Tambah bukti yang menunjukkan kedua-dua skrip, kemudian terangkan bagaimana satu input menghasilkan output.",zh:"添加能清楚显示两个脚本的证据，再解释一个输入如何产生输出。"},
+    pitstop:{ms:"Pilih keadaan pembelajaran anda sekarang. Pilihan anda akan menunjukkan langkah bantuan atau cabaran yang sesuai.",zh:"选择你现在的学习状态。你的选择会显示合适的帮助或挑战。"},
     ext_o1:{ms:"Selesaikan tiga masalah rutin makmal dan gunakan tujuan tindakan untuk memilih jawapan.",zh:"解决三个电脑室常规问题，并根据行动目的选择答案。"},
     ext_o2:{ms:"Gunakan hierarki untuk menentukan lokasi fail dan folder yang betul.",zh:"运用层级结构判断文件和文件夹的正确位置。"},
     ext_o3:{ms:"Baiki nama fail yang kabur dan terangkan satu peraturan penamaan yang berguna.",zh:"改进含糊的文件名，并解释一条有用的命名规则。"},
@@ -80,7 +91,7 @@
     ext_p4:{ms:"Gunakan output yang salah sebagai bukti untuk mencari dan membaiki pepijat.",zh:"把错误输出当作证据，找出并修复程序错误。"},
     ext_p5:{ms:"Cipta sasaran yang boleh dicapai, tulis laluan terpendek dan terangkan cara menyemaknya.",zh:"设计一个可到达的目标，写出最短路线，并说明检查方法。"},
     plenary1:{ms:"Gunakan apa yang anda pelajari untuk menjawab dua soalan dan menerangkan satu hubungan input-output.",zh:"运用今天所学回答两个问题，并解释一个输入—输出关系。"},
-    plenary2:{ms:"Pilih tahap keyakinan dengan jujur dan tulis satu langkah seterusnya yang berguna.",zh:"诚实选择信心水平，并写下一项有用的学习行动。"}
+    reflection:{ms:"Pilih jenis pembelajaran dan strategi yang paling membantu, kemudian tulis satu langkah seterusnya.",zh:"选择最有帮助的学习类型和策略，然后写下一个下一步。"}
   };
   const GLOSSARY = {
     algorithm:"A precise set of ordered steps.", sequence:"The order in which instructions happen.",
@@ -113,11 +124,14 @@
   function unlocked(id) {
     if (teacherMode || id === "welcome" || id === "support" || id === "overview") return true;
     if (id === "starter") return state.completed.indexOf("overview") >= 0;
-    if (id === "main1") return state.completed.indexOf("starter") >= 0;
+    if (id === "learningTypes") return state.completed.indexOf("starter") >= 0;
+    if (id === "main1") return state.completed.indexOf("learningTypes") >= 0;
     if (id === "main2") return state.completed.indexOf("main1") >= 0;
     if (id === "extension") return state.completed.indexOf("main2") >= 0;
-    if (id === "plenary") return state.completed.indexOf("main2") >= 0;
-    if (id === "report") return state.completed.indexOf("plenary") >= 0;
+    if (id === "pitstop") return state.completed.indexOf("main2") >= 0;
+    if (id === "plenary") return state.completed.indexOf("pitstop") >= 0;
+    if (id === "reflection") return state.completed.indexOf("plenary") >= 0;
+    if (id === "report") return state.completed.indexOf("reflection") >= 0;
     return false;
   }
   function toast(message) {
@@ -130,7 +144,7 @@
     if (!unlocked(id)) { toast("Finish the activity before this one first."); return; }
     state.current = id; save();
     const y = window.scrollY;
-    const routes = { welcome:renderWelcome, support:renderSupport, overview:renderOverview, starter:renderStarter, main1:renderMain1, main2:renderMain2, extension:renderExtension, plenary:renderPlenary, report:renderReport };
+    const routes = { welcome:renderWelcome, support:renderSupport, overview:renderOverview, starter:renderStarter, learningTypes:renderLearningTypes, main1:renderMain1, main2:renderMain2, extension:renderExtension, pitstop:renderPitstop, plenary:renderPlenary, reflection:renderReflection, report:renderReport };
     (routes[id] || renderWelcome)(); updateChrome();
     requestAnimationFrame(function () { if (preserve) window.scrollTo(0,y); else { window.scrollTo(0,0); $("#main").focus({preventScroll:true}); } });
   }
@@ -196,11 +210,14 @@
     $("#headerStudent").textContent = (teacherMode ? "Teacher preview" : state.student.name + " · " + state.student.className);
     const nav = $("#lessonPath"); nav.innerHTML = "";
     PATH.forEach(function (p) {
-      const b = el("button", { type:"button", class:"path-item" + (state.current === p.id ? " current" : "") + (state.completed.indexOf(p.id) >= 0 ? " done" : "") + (teacherMode ? " teacher" : ""), text:p.label });
+      const isMain = p.id === "main1";
+      const isCurrent = isMain ? (state.current === "main1" || state.current === "main2" || state.current === "extension") : state.current === p.id;
+      const isDone = isMain ? (state.completed.indexOf("main1") >= 0 && state.completed.indexOf("main2") >= 0) : state.completed.indexOf(p.id) >= 0;
+      const b = el("button", { type:"button", class:"path-item" + (isCurrent ? " current" : "") + (isDone ? " done" : "") + (teacherMode ? " teacher" : ""), text:p.label });
       b.disabled = !teacherMode; if (teacherMode) b.addEventListener("click", function () { go(p.id); }); nav.appendChild(b);
     });
-    const done = ["starter","main1","main2","plenary"].filter(function (x) { return state.completed.indexOf(x) >= 0; }).length;
-    const pct = Math.round(done / 4 * 100); $("#progressFill").style.width = pct + "%"; $("#progressBar").setAttribute("aria-valuenow", String(pct));
+    const done = ["starter","learningTypes","main1","main2","pitstop","plenary","reflection"].filter(function (x) { return state.completed.indexOf(x) >= 0; }).length;
+    const pct = Math.round(done / 7 * 100); $("#progressFill").style.width = pct + "%"; $("#progressBar").setAttribute("aria-valuenow", String(pct));
     $("#btnSound").textContent = state.settings.muted ? "Sound off" : "Sound on"; $("#btnSound").setAttribute("aria-pressed", String(state.settings.muted));
   }
 
@@ -266,16 +283,17 @@
   function teacherPanel() {
     const panel = el("div", { class:"teacher-panel" }); panel.appendChild(el("h2", { text:"Teacher preview" })); panel.appendChild(el("p", { text:"Open any section to review it. Student sequencing remains locked." }));
     const grid = el("div", { class:"teacher-grid" }); PATH.forEach(function (p) { const b=el("button",{type:"button",class:"btn secondary",text:p.label}); b.addEventListener("click",function(){go(p.id);});grid.appendChild(b); });
+    const report = el("button", { type:"button", class:"btn secondary", text:"Finish / PDF" }); report.addEventListener("click",function(){go("report");}); grid.appendChild(report);
     const reset = el("button", { type:"button", class:"btn danger", text:"Reset student data" }); reset.addEventListener("click",function(){ if(confirm("Clear this browser's saved lesson and screenshots?")) S.resetAll().then(function(){sessionRemove("y6_teacher");location.reload();}); }); grid.appendChild(reset); panel.appendChild(grid); return panel;
   }
 
   function renderOverview() {
     const main = clearMain(); const screen = el("section", { class:"screen" }); if (teacherMode) screen.appendChild(teacherPanel());
-    screen.appendChild(el("p", { class:"eyebrow", text:"Lesson briefing · 3 minutes" })); screen.appendChild(el("h1", { html:"Your <span class='title-rule'>learning path</span>" }));
-    screen.appendChild(el("p", { class:"screen-lead", text:"You will first organise digital work, then predict, build, test and improve a short Scratch program." }));
+    screen.appendChild(el("p", { class:"eyebrow", text:"Lesson briefing · before the timer starts" })); screen.appendChild(el("h1", { html:"Your <span class='title-rule'>learning journey</span>" }));
+    screen.appendChild(el("p", { class:"screen-lead", text:"You will remember a routine, notice how you learn, organise your work, program in Scratch and reflect on your progress." }));
     if (supportText("overview")) screen.appendChild(supportText("overview"));
     const grid = el("div", { class:"overview-grid" });
-    [["1","Do Now","Recall Start–Work–Finish."],["2","Main 1","Organise folders and filenames."],["3","Main 2","Predict, build, test and modify Scratch code."]].forEach(function (x) { grid.appendChild(el("article", { class:"overview-card" }, [el("span",{class:"number",text:x[0]}),el("h3",{text:x[1]}),el("p",{text:x[2]})])); }); screen.appendChild(grid);
+    [["1","Do Now","Remember Start–Work–Finish."],["2","How I Learn","Choose strategies that help you improve."],["3","Main Task","Organise, predict, build, test and modify."],["4","Pitstop","Pause and choose the support or challenge you need."],["5","Plenary","Show what you now understand."],["6","Reflection","Explain how you improved and what comes next."]].forEach(function (x) { grid.appendChild(el("article", { class:"overview-card" }, [el("span",{class:"number",text:x[0]}),el("h3",{text:x[1]}),el("p",{text:x[2]})])); }); screen.appendChild(grid);
     const wagba = el("div", { class:"card" }); wagba.appendChild(el("h2", { text:"WAGBA" })); wagba.appendChild(el("p", { text:"We are getting better at organising digital work and explaining how an input makes a program produce an output." }));
     wagba.appendChild(el("p", { html:"<strong>Knowledge:</strong> programs follow ordered instructions; x changes left/right and y changes down/up." }));
     wagba.appendChild(el("p", { html:"<strong>Skills:</strong> organise, predict, build, test, debug and explain." }));
@@ -331,6 +349,26 @@
     (leftItems||[]).forEach(function(item){if(item)left.appendChild(item);});
     (rightItems||[]).forEach(function(item){if(item)right.appendChild(item);});
     grid.appendChild(left); grid.appendChild(right); return grid;
+  }
+  function selectionCards(field, label, options, multi, onChange) {
+    const group=el("div",{class:"metacog-grid",role:"group","aria-label":label});
+    options.forEach(function(option){
+      const selected=multi ? (state[field]||[]).indexOf(option.value)>=0 : state[field]===option.value;
+      const b=el("button",{type:"button",class:"metacog-card "+(option.tone||"")+(selected?" selected":""),"aria-pressed":String(selected)});
+      if(option.kicker)b.appendChild(el("span",{class:"metacog-kicker",text:option.kicker}));
+      b.appendChild(el("h3",{text:option.title})); b.appendChild(el("p",{text:option.text}));
+      if(option.help)b.appendChild(el("strong",{class:"metacog-help",text:option.help}));
+      b.addEventListener("click",function(){
+        if(multi){
+          const values=state[field]||[]; const at=values.indexOf(option.value); if(at>=0)values.splice(at,1);else values.push(option.value); state[field]=values;
+        }else state[field]=option.value;
+        save();
+        if(onChange){onChange(option.value);return;}
+        const now=multi?(state[field]||[]).indexOf(option.value)>=0:state[field]===option.value;
+        b.classList.toggle("selected",now);b.setAttribute("aria-pressed",String(now));
+        if(!multi)group.querySelectorAll(".metacog-card").forEach(function(x){if(x!==b){x.classList.remove("selected");x.setAttribute("aria-pressed","false");}});
+      }); group.appendChild(b);
+    }); return group;
   }
   function cardTop(card, number, heading, instructionText, section, supportKey) {
     card.appendChild(el("span", { class:"card-number", text:"Step " + number })); card.appendChild(el("h2", { text:heading })); card.appendChild(instruction(instructionText, section, supportKey));
@@ -396,18 +434,36 @@
       return function(){return correct("starter_q3") || "Choose the correct finishing sequence before continuing.";};
     }
   ];
-  function renderStarter() { renderStepper("starter","Do Now: Start–Work–Finish","Starter · about 6 minutes",STARTER_STEPS,"main1"); }
+  function renderStarter() { renderStepper("starter","Do Now: Start–Work–Finish","Stage 1 · about 6 minutes",STARTER_STEPS,"learningTypes"); }
+
+  const LEARNING_STEPS = [
+    function(card){
+      cardTop(card,"1 of 2","How were you learning?","Think back to the Do Now. Choose every type of learning you used. It is normal to use more than one.","learningTypes","learning1");
+      card.appendChild(selectionCards("learningTypes","Types of learning used in the Do Now",[
+        {value:"knowledge",title:"Knowledge — remember",text:"I remembered facts, words or routines.",help:"Get better: recall it without looking, then check.",tone:"knowledge",kicker:"REMEMBER"},
+        {value:"skills",title:"Skills — practise",text:"I practised how to do something in the right order.",help:"Get better: practise, use feedback and try again.",tone:"skills",kicker:"PRACTISE"},
+        {value:"understanding",title:"Understanding — explain and apply",text:"I explained why an action mattered or used it in a situation.",help:"Get better: connect ideas, explain why and apply them.",tone:"understanding",kicker:"EXPLAIN + APPLY"}
+      ],true));
+      card.appendChild(el("div",{class:"feedback info",text:"The Do Now used knowledge to remember the routine and understanding to explain why the order matters. You may also have practised the sequencing skill."}));
+      return function(){return state.learningTypes.length>0||"Choose at least one type of learning you used.";};
+    },
+    function(card){
+      cardTop(card,"2 of 2","Choose a strategy for the Main Task","Choose one action that will help you keep learning when the work becomes difficult.","learningTypes","learning2");
+      card.appendChild(selectionCards("learningStrategy","Learning strategy for the Main Task",[
+        {value:"example",title:"Use a worked example",text:"Look carefully at the model, then copy one accurate step at a time.",tone:"knowledge"},
+        {value:"practise",title:"Practise the steps",text:"Repeat the important action and check whether it becomes easier.",tone:"skills"},
+        {value:"explain",title:"Explain my thinking",text:"Say or write what each step does and why it is needed.",tone:"understanding"},
+        {value:"smaller-step",title:"Ask for a smaller step",text:"Show where you are stuck and ask for one manageable next action.",tone:"support"}
+      ],false));
+      card.appendChild(el("div",{class:"strategy-banner",html:"<strong>Your strategy is not a test answer.</strong> It is a tool you can use during the Main Task."}));
+      return function(){return !!state.learningStrategy||"Choose one strategy to use during the Main Task.";};
+    }
+  ];
+  function renderLearningTypes(){renderStepper("learningTypes","How am I learning?","Stage 2 · about 4 minutes",LEARNING_STEPS,"main1");}
 
   const MAIN1_STEPS = [
     function (card) {
-      cardTop(card,"1 of 5","Routine rescue","Aisha notices a loose cable before she logs in. Decide when she should act, then explain why reporting it matters.","main1","main1_1");
-      card.appendChild(el("div",{class:"story-intro",html:"<strong>The situation:</strong> The cable behind Aisha’s computer looks loose. She has not touched it or logged in."}));
-      card.appendChild(mcq("main1_routine","Where does ‘do not touch it; tell the teacher’ belong?",["Start, because the safety check happens before work begins","Work, because every problem belongs in Work","Finish, because cables are only checked at the end"],0,"It is a Start safety check. Aisha prevents risk before beginning."));
-      card.appendChild(textAnswer("main1_explain","Why should a problem be reported rather than secretly ignored?",{frame:"It should be reported because…",words:["keeps people safe","protects the equipment","helps the teacher fix it"],min:8}));
-      return function(){return correct("main1_routine") && state.answers.main1_explain && state.answers.main1_explain.answer.length>=8 || "Choose the correct routine and explain why reporting matters.";};
-    },
-    function (card) {
-      cardTop(card,"2 of 5","File or folder?","Learn the difference between a file and a folder. Then help Aisha choose a path she can still understand next week.","main1","main1_2");
+      cardTop(card,"1 of 3","File, folder and path","Learn the difference between a file and a folder. Then help Aisha choose a path she can still understand next week.","main1","main1_2");
       const fileDef=el("div",{class:"mini-definition"},[el("strong",{text:"File"}),el("span",{text:"A saved piece of work, such as a Scratch project, image or document."})]);
       const folderDef=el("div",{class:"mini-definition"},[el("strong",{text:"Folder"}),el("span",{text:"A container that organises files and can contain more folders."})]);
       const folderQ=mcq("main1_folder","Which path makes the project easiest to find next week?",[
@@ -419,7 +475,7 @@
       return function(){return correct("main1_folder") || "Choose the folder path that would still make sense next week.";};
     },
     function (card) {
-      cardTop(card,"3 of 5","Build it for real","Create the three-folder path on your school computer. Check each folder is inside the previous one, then add evidence or choose teacher checking.","main1","main1_3");
+      cardTop(card,"2 of 3","Build it for real","Create the three-folder path on your school computer. Check each folder is inside the previous one, then add evidence or choose teacher checking.","main1","main1_3");
       card.appendChild(el("div",{class:"folder-path"},[
         el("span",{text:"Year 6 Computing"}),document.createTextNode("›"),el("span",{text:"Term 1 - Digital Independence"}),document.createTextNode("›"),el("span",{text:state.student.name || "Your Name"})
       ]));
@@ -428,26 +484,21 @@
       return function(){return state.evidence.folder || state.evidence.folderSkipped || "Add a folder screenshot, or tick that your teacher will check it directly.";};
     },
     function (card) {
-      cardTop(card,"4 of 5","Choose a useful filename","Imagine Aisha returns next week and sees several Scratch files. Compare the names and choose the one that tells her exactly what the file is.","main1","main1_4");
+      cardTop(card,"3 of 3","Choose and explain a useful filename","Imagine Aisha returns next week and sees several Scratch files. Choose the clearest name, then explain how folders and filenames solve different parts of the same problem.","main1","main1_4");
       const filenameStory=el("div",{class:"story-intro",html:"<strong>The problem:</strong> Names such as <em>project</em> and <em>final FINAL 2</em> may make sense today, but they are difficult to recognise later."});
       const filenameKey=el("div",{class:"filename-key",html:"<span><strong>Y6</strong> year group</span><span><strong>T1W01</strong> term and week</span><span><strong>ScratchBaseline</strong> task</span><span><strong>v1</strong> version</span>"});
       const filenameQ=mcq("main1_filename","Which filename is most useful?",["final FINAL 2.sb3","project.sb3","Y6_T1W01_ScratchBaseline_v1.sb3"],2,"It identifies year group, term/week, task and version without vague words.");
       const filenameText=textAnswer("main1_own_filename","Type the agreed filename without the .sb3 ending.",{placeholder:"Y6_T1W01_ScratchBaseline_v1",min:10});
-      card.appendChild(taskColumns([filenameStory,visual("image-03-filename-comparison.png","Comparison of weak and useful Scratch project filenames","The useful name records the class context, lesson, task and version."),filenameKey],[filenameQ,filenameText]));
-      return function(){return correct("main1_filename") && state.answers.main1_own_filename && /^Y6_T1W01_ScratchBaseline_v1$/i.test(state.answers.main1_own_filename.answer) || "Choose the best filename and type Y6_T1W01_ScratchBaseline_v1 exactly.";};
-    },
-    function (card) {
-      cardTop(card,"5 of 5","Explain the organisation","Use the final check to explain how the folder path and filename solve different parts of the same problem.","main1","main1_5");
-      card.appendChild(mcq("main1_check","Why do folders and filenames both matter?",[
+      const organisationQ=mcq("main1_check","Why do folders and filenames both matter?",[
         "Folders group related work; filenames identify the exact file",
         "They make the computer run faster",
         "A filename replaces the need for folders"
-      ],0,"Folder structure and filenames solve different parts of the same finding problem."));
-      card.appendChild(el("div",{class:"feedback info",text:"Core idea: organised work is easier to find, continue and prove. It is not just about making the screen look tidy."}));
-      return function(){return correct("main1_check") || "Complete the organisation check before moving into Scratch.";};
+      ],0,"Folder structure and filenames solve different parts of the same finding problem.");
+      card.appendChild(taskColumns([filenameStory,visual("image-03-filename-comparison.png","Comparison of weak and useful Scratch project filenames","The useful name records the class context, lesson, task and version."),filenameKey],[filenameQ,filenameText,organisationQ]));
+      return function(){return correct("main1_filename")&&correct("main1_check")&&state.answers.main1_own_filename&&/^Y6_T1W01_ScratchBaseline_v1$/i.test(state.answers.main1_own_filename.answer)||"Choose both correct answers and type Y6_T1W01_ScratchBaseline_v1 exactly.";};
     }
   ];
-  function renderMain1() { renderStepper("main1","Main Activity 1: Organise digital work","Main task 1 · about 15 minutes",MAIN1_STEPS,"main2"); }
+  function renderMain1() { renderStepper("main1","Main Task: Part A — Organise your work","Stage 3 · Part A · about 10 minutes",MAIN1_STEPS,"main2"); }
 
   const MAIN2_STEPS = [
     function (card) {
@@ -524,7 +575,63 @@
       return function(){return (state.evidence.scratch || state.evidence.scratchSkipped) && state.answers.main2_explain && state.answers.main2_explain.answer.length>=15 || "Add evidence (or choose teacher check) and explain one input–output relationship.";};
     }
   ];
-  function renderMain2() { renderStepper("main2","Main Activity 2: Predict, build, test, modify","Main task 2 · about 25 minutes",MAIN2_STEPS,"extension"); }
+  function renderMain2() { renderStepper("main2","Main Task: Part B — Predict, build, test, modify","Stage 3 · Part B · about 25 minutes",MAIN2_STEPS,"pitstop"); }
+
+  function renderPitstop(){
+    const main=clearMain(); const screen=el("section",{class:"screen activity-shell"}); if(teacherMode)screen.appendChild(teacherPanel());
+    screen.appendChild(el("p",{class:"eyebrow",text:"Stage 4 · about 4 minutes"}));
+    screen.appendChild(el("h1",{html:"Learning <span class='title-rule'>Pitstop</span>"}));
+    screen.appendChild(instruction("Pause and check what you can do now. Then choose the statement that best describes your learning—not your ability.","pitstop","pitstop"));
+    const check=el("div",{class:"pitstop-check"}); check.appendChild(el("h2",{text:"What can you do now?"})); check.appendChild(el("p",{text:"Tick what is true. Leave anything else unticked so your teacher knows what to revisit."}));
+    check.appendChild(checkList("pitstop_",[
+      "I can create and recognise a useful folder path and filename.",
+      "I can identify an input and the outputs in a short Scratch script.",
+      "I can make, test and explain one purposeful change."
+    ])); screen.appendChild(check);
+    screen.appendChild(el("h2",{text:"Where are you in your learning?"}));
+    screen.appendChild(selectionCards("pitstopPhase","Current phase of learning",[
+      {value:"new",kicker:"NEW LEARNING",title:"I am learning something new",text:"Some struggle is normal. I can keep going with the model and one step at a time.",tone:"phase-new"},
+      {value:"consolidating",kicker:"CONSOLIDATING",title:"I am getting more confident",text:"I can use what I know and explain more of it without the model.",tone:"phase-consolidating"},
+      {value:"challenge",kicker:"TREADING WATER",title:"I am ready for more challenge",text:"The core task feels too easy. I need something that stretches my thinking.",tone:"phase-challenge"},
+      {value:"help",kicker:"I NEED SUPPORT NOW",title:"I am stuck and need help",text:"I need an example, a smaller step or help from my teacher to move forward.",tone:"phase-help"}
+    ],false,function(value){if(value!=="help")state.pitstopNeed="";save();go("pitstop",true);}));
+    if(state.pitstopPhase){
+      const advice=el("div",{class:"pitstop-advice"});
+      if(state.pitstopPhase==="new")advice.innerHTML="<h2>Your next action</h2><p>Keep the worked example visible. Point to the event, the Motion block and the message before you change anything.</p>";
+      if(state.pitstopPhase==="consolidating")advice.innerHTML="<h2>Your next action</h2><p>Cover the model and explain one complete input → code → output relationship from memory.</p>";
+      if(state.pitstopPhase==="challenge"){
+        advice.innerHTML="<h2>Your next action</h2><p>Move into the challenge hub. Start with Two-Way Controls and complete at least three progressively harder levels.</p>";
+        const challenge=el("button",{type:"button",class:"btn",text:"Open challenge hub →"}); challenge.addEventListener("click",function(){complete("pitstop");go("extension");}); advice.appendChild(challenge);
+      }
+      if(state.pitstopPhase==="help"){
+        advice.appendChild(el("h2",{text:"What do you need help with?"}));
+        advice.appendChild(selectionCards("pitstopNeed","Area where help is needed",[
+          {value:"folders",title:"Folders and filenames",text:"Show me the correct path and naming pattern."},
+          {value:"scratch",title:"Finding or joining blocks",text:"Show me the event, Motion and Looks blocks."},
+          {value:"coordinates",title:"x, y and directions",text:"Show me which axis and sign to use."},
+          {value:"saving",title:"Saving or adding evidence",text:"Show me the saving and screenshot steps."}
+        ],false,function(){go("pitstop",true);}));
+        if(state.pitstopNeed){
+          const helpText={
+            folders:"Open Main Task Part A. Copy the three-folder path first, then check one folder is inside the previous folder.",
+            scratch:"Build only three blocks: the key event, change x, and say. Join them before testing.",
+            coordinates:"Remember: x is left/right and y is down/up. A minus sign moves left or down.",
+            saving:"Choose File → Save to your computer, use the agreed filename, then place the .sb3 file in your lesson folder."
+          };
+          advice.appendChild(el("div",{class:"help-now",html:"<strong>Try this smaller step:</strong> "+helpText[state.pitstopNeed]+"<br><strong>If you are still stuck, show this card to your teacher.</strong>"}));
+        }
+      }
+      screen.appendChild(advice);
+    }
+    const err=el("div",{class:"field-error","aria-live":"polite"}); screen.appendChild(err);
+    const back=el("button",{type:"button",class:"btn secondary",text:"← Review Main Task"}); back.addEventListener("click",function(){go("main2");});
+    const next=el("button",{type:"button",class:"btn",text:"Continue to plenary →"}); next.addEventListener("click",function(){
+      if(!state.pitstopPhase){err.textContent="Choose the statement that best describes your learning.";return;}
+      if(state.pitstopPhase==="help"&&!state.pitstopNeed){err.textContent="Choose what you need help with so the app can show a smaller step.";return;}
+      if(state.pitstopPhase==="challenge"&&(state.extensionDone||[]).filter(function(id){return id.charAt(0)==="p";}).length<3){err.textContent="Open the challenge hub and complete at least three levels before continuing.";return;}
+      complete("pitstop");go("plenary");
+    }); screen.appendChild(el("div",{class:"button-row"},[back,next])); main.appendChild(screen);
+  }
 
   const EXTENSIONS = [
     {
@@ -623,25 +730,29 @@
 
   function renderExtension() {
     const main=clearMain(); const screen=el("section",{class:"screen activity-shell"}); if(teacherMode)screen.appendChild(teacherPanel());
-    screen.appendChild(el("p",{class:"eyebrow",text:"Fast Finisher Hub · optional challenge"})); screen.appendChild(el("h1",{html:"Choose a <span class='title-rule'>meaningful challenge</span>"}));
+    const challengeLevels=EXTENSIONS.map(function(level,index){return {level:level,index:index};}).filter(function(item){return item.level.id.charAt(0)==="p";});
+    const challengeDone=(state.extensionDone||[]).filter(function(id){return id.charAt(0)==="p";});
+    if(state.steps.extension<3)state.steps.extension=3;
+    screen.appendChild(el("p",{class:"eyebrow",text:"Main Task · progressive challenge path"})); screen.appendChild(el("h1",{html:"Stretch your <span class='title-rule'>Scratch thinking</span>"}));
     screen.appendChild(el("div",{class:"extension-summary"},[
-      el("div",{html:"<strong>Challenge target: complete at least 3 levels.</strong><br><span>This is a fast-finisher target; it does not replace Main 1 or Main 2.</span>"}),
-      el("strong",{text:(state.extensionDone||[]).length+" / 3"})
+      el("div",{html:"<strong>Challenge target: complete at least 3 of the 5 levels.</strong><br><span>Begin with Two-Way Controls and move towards designing your own mission.</span>"}),
+      el("strong",{text:challengeDone.length+" / 3"})
     ]));
-    const leave=el("button",{type:"button",class:"btn",text:"Go to compulsory plenary →"}); leave.addEventListener("click",function(){go("plenary");}); screen.appendChild(el("div",{class:"button-row end"},[leave]));
-    const grid=el("div",{class:"level-grid"}); EXTENSIONS.forEach(function(level,i){
-      const done=state.extensionDone.indexOf(level.id)>=0; const b=el("button",{type:"button",class:"level-card "+(done?"done ":"")+(state.steps.extension===i?"active":"")});
+    const remaining=Math.max(0,3-challengeDone.length);
+    const leave=el("button",{type:"button",class:"btn",text:remaining?"Complete "+remaining+" more level"+(remaining===1?"":"s")+" to continue":"Go to compulsory plenary →"}); leave.disabled=!teacherMode&&remaining>0; leave.addEventListener("click",function(){go("plenary");}); screen.appendChild(el("div",{class:"button-row end"},[leave]));
+    const grid=el("div",{class:"level-grid five-levels"}); challengeLevels.forEach(function(item){
+      const level=item.level; const i=item.index; const done=state.extensionDone.indexOf(level.id)>=0; const b=el("button",{type:"button",class:"level-card "+(done?"done ":"")+(state.steps.extension===i?"active":"")});
       b.appendChild(el("span",{class:"level-badge",text:level.strand+" · L"+level.level})); b.appendChild(el("h3",{text:(done?"✓ ":"")+level.title})); b.appendChild(el("small",{text:done?"Completed — you can revisit it.":"Open challenge"})); b.addEventListener("click",function(){setStep("extension",i);});grid.appendChild(b);
     }); screen.appendChild(grid);
-    const level=EXTENSIONS[state.steps.extension]||EXTENSIONS[0]; const task=el("article",{class:"lesson-card extension-task"}); level.render(task); const err=el("div",{class:"field-error","aria-live":"polite"});task.appendChild(err);
+    const level=EXTENSIONS[state.steps.extension]||EXTENSIONS[3]; const task=el("article",{class:"lesson-card extension-task"}); level.render(task); const err=el("div",{class:"field-error","aria-live":"polite"});task.appendChild(err);
     const saveBtn=el("button",{type:"button",class:"btn",text:state.extensionDone.indexOf(level.id)>=0?"Update this level":"Complete this level"});
-    saveBtn.addEventListener("click",function(){const result=level.validate();if(result!==true){err.textContent=typeof result==="string"?result:"Complete every part correctly before saving this level.";return;}err.textContent="";if(state.extensionDone.indexOf(level.id)<0)state.extensionDone.push(level.id);if(state.extensionDone.length>=3)complete("extension");const summary=typeof level.summary==="function"?level.summary():level.summary;state.answers["extension_"+level.id]={question:level.title,answer:summary,correct:true};save();toast("Level completed. Choose another challenge or continue to the plenary.");go("extension",true);});
+    saveBtn.addEventListener("click",function(){const result=level.validate();if(result!==true){err.textContent=typeof result==="string"?result:"Complete every part correctly before saving this level.";return;}err.textContent="";if(state.extensionDone.indexOf(level.id)<0)state.extensionDone.push(level.id);const completedProgramming=state.extensionDone.filter(function(id){return id.charAt(0)==="p";}).length;if(completedProgramming>=3)complete("extension");const summary=typeof level.summary==="function"?level.summary():level.summary;state.answers["extension_"+level.id]={question:level.title,answer:summary,correct:true};save();toast("Level completed. Choose the next challenge or continue to the plenary.");go("extension",true);});
     task.appendChild(el("div",{class:"button-row end"},[saveBtn])); screen.appendChild(task); main.appendChild(screen);
   }
 
   const PLENARY_STEPS = [
     function(card){
-      cardTop(card,"1 of 2","Show what you now understand","Use today’s learning to answer two short questions, then explain one input–code–output relationship from your own program.","plenary","plenary1");
+      cardTop(card,"1 of 1","Show what you now understand","Use today’s learning to answer two short questions, then explain one input–code–output relationship from your own program.","plenary","plenary1");
       const plenaryOne=mcq("plenary_q1","Which statement best explains why digital organisation matters?",[
         "It helps work remain findable, understandable and ready to continue",
         "It changes the Scratch sprite’s costume",
@@ -651,27 +762,46 @@
       const plenaryExplain=textAnswer("plenary_q3","Explain one input and its output from your Scratch project.",{rows:2,frame:"When I press…, the program…, so…",words:["right arrow","left arrow","input","change x","output","moves","message"],min:15});
       card.appendChild(taskColumns([plenaryOne,plenaryTwo],[plenaryExplain]));
       return function(){return requireKeys(["plenary_q1","plenary_q2"])&&state.answers.plenary_q3&&state.answers.plenary_q3.answer.length>=15||"Answer both questions correctly and explain one input–output relationship.";};
-    },
-    function(card){
-      cardTop(card,"2 of 2","Choose your next step","Choose the statement that honestly describes the support you need, then tell your teacher one specific thing to practise or remember.","plenary","plenary2");
-      const conf=el("div",{class:"choice-row",role:"group","aria-label":"Confidence"});
-      [["Green — I can do this independently","green"],["Amber — I can do this with a reminder","amber"],["Red — I need a worked example","red"]].forEach(function(o){const b=el("button",{type:"button",class:"option "+(state.confidence===o[1]?"selected":""),text:o[0]});b.addEventListener("click",function(){state.confidence=o[1];save();conf.querySelectorAll("button").forEach(function(x){x.classList.remove("selected");});b.classList.add("selected");});conf.appendChild(b);}); card.appendChild(conf);
-      card.appendChild(textAnswer("plenary_next","What should you practise or remember next time?",{rows:2,frame:"Next time I will…",words:["save regularly","check the filename","use x and y","predict before testing","debug one block at a time"],min:10}));
-      card.appendChild(el("div",{class:"feedback info",text:"An honest Amber or Red answer is useful evidence. It tells your teacher what support to prepare next."}));
-      return function(){return state.confidence&&state.answers.plenary_next&&state.answers.plenary_next.answer.length>=10||"Choose a confidence colour and write one useful next step.";};
     }
   ];
-  function renderPlenary(){renderStepper("plenary","Plenary: Explain and reflect","Compulsory · about 6 minutes",PLENARY_STEPS,"report");}
+  function renderPlenary(){renderStepper("plenary","Plenary: Show what you learned","Stage 5 · about 7 minutes",PLENARY_STEPS,"reflection");}
+
+  const REFLECTION_STEPS = [
+    function(card){
+      cardTop(card,"1 of 1","Exit reflection","Think about how you improved today. Choose the learning and strategy that helped most, then record one success and one next step.","reflection","reflection");
+      card.appendChild(el("h2",{class:"section-question",text:"Which type of learning helped you most?"}));
+      card.appendChild(selectionCards("exitLearningType","Type of learning that helped most",[
+        {value:"knowledge",title:"Knowledge",text:"Remembering facts, words and routines.",tone:"knowledge"},
+        {value:"skills",title:"Skills",text:"Practising until an action became more accurate.",tone:"skills"},
+        {value:"understanding",title:"Understanding",text:"Explaining why and applying the idea.",tone:"understanding"}
+      ],false));
+      card.appendChild(el("h2",{class:"section-question",text:"Which strategy helped you improve?"}));
+      card.appendChild(selectionCards("exitStrategy","Strategy that helped most",[
+        {value:"example",title:"Worked example",text:"I used the model carefully."},
+        {value:"practise",title:"Practice",text:"I repeated and checked the steps."},
+        {value:"explain",title:"Explain",text:"I said or wrote why it worked."},
+        {value:"help",title:"Smaller step or help",text:"I asked for the support I needed."}
+      ],false));
+      card.appendChild(taskColumns([
+        textAnswer("exit_can","What can you now do independently?",{rows:2,frame:"I can now…",words:["organise my files","choose a useful filename","identify an input","predict an output","test and debug","change x and y"],min:10})
+      ],[
+        textAnswer("exit_next","What is one useful next step?",{rows:2,frame:"Next lesson, I will…",words:["save regularly","check my folder path","predict before testing","debug one block at a time","explain using because"],min:10})
+      ]));
+      card.appendChild(el("div",{class:"feedback info",text:"An honest reflection is useful evidence. It helps your teacher prepare the right support and challenge for the next lesson."}));
+      return function(){return state.exitLearningType&&state.exitStrategy&&state.answers.exit_can&&state.answers.exit_can.answer.length>=10&&state.answers.exit_next&&state.answers.exit_next.answer.length>=10||"Choose both cards and complete your success and next step.";};
+    }
+  ];
+  function renderReflection(){renderStepper("reflection","Exit Reflection","Stage 6 · about 4 minutes",REFLECTION_STEPS,"report");}
 
   function renderReport(){
     const main=clearMain(); const screen=el("section",{class:"screen"}); if(teacherMode)screen.appendChild(teacherPanel());
-    if(!teacherMode&&!unlocked("report")){go("plenary");return;}
-    if(state.completed.indexOf("plenary")>=0&&!state.finishedAt){state.finishedAt=new Date().toISOString();save();}
+    if(!teacherMode&&!unlocked("report")){go("reflection");return;}
+    if(state.completed.indexOf("reflection")>=0&&!state.finishedAt){state.finishedAt=new Date().toISOString();save();}
     screen.appendChild(el("p",{class:"eyebrow",text:"Lesson complete"})); screen.appendChild(el("h1",{html:"Export your <span class='title-rule'>learning evidence</span>"}));
     screen.appendChild(el("p",{class:"screen-lead",text:"Your report includes your answers, extension progress and any screenshots you chose to attach."}));
     const steps=el("div",{class:"teams-steps"}); steps.appendChild(el("h2",{text:"Save and submit"})); steps.appendChild(el("ol",{html:"<li>Select <strong>Print / Save as PDF</strong>.</li><li>Choose <strong>Save as PDF</strong> as the printer.</li><li>Name it <strong>"+esc((state.student.name||"Name").replace(/\s+/g,"_"))+"_Y6_Computing_Week1.pdf</strong>.</li><li>Open the correct assignment in <strong>Microsoft Teams</strong>.</li><li>Attach the PDF, wait for it to finish uploading, then select <strong>Turn in</strong>.</li></ol>"})); screen.appendChild(steps);
     const print=el("button",{type:"button",class:"btn",text:"Print / Save as PDF"});print.addEventListener("click",function(){window.print();});
-    const back=el("button",{type:"button",class:"btn secondary",text:"Review my work"});back.addEventListener("click",function(){go("main2");});screen.appendChild(el("div",{class:"button-row"},[back,print]));
+    const back=el("button",{type:"button",class:"btn secondary",text:"Review my reflection"});back.addEventListener("click",function(){go("reflection");});screen.appendChild(el("div",{class:"button-row"},[back,print]));
     const holder=el("div");screen.appendChild(holder);main.appendChild(screen);
     window.LabReport.build(state,{CFG:CFG,getScreenshot:S.getScreenshot}).then(function(node){holder.appendChild(node);return window.LabReport.build(state,{CFG:CFG,getScreenshot:S.getScreenshot});}).then(function(printNode){const root=$("#reportRoot");root.innerHTML="";root.appendChild(printNode);});
   }
