@@ -170,7 +170,7 @@
      ========================================================= */
   const state = {
     key: null,
-    student: { name: '', className: '', isTeacher: false },
+    student: { name: '', className: '', isTeacher: false, supportMode: 'english', supportLanguage: 'ms' },
     responses: {},
     ide: {},
     completionCache: {},
@@ -181,6 +181,7 @@
 
   const ides = {};       /* id -> PythonIDE instance */
   const sketchPads = {};
+  const deckControllers = {};
 
   function recordKey(name, className, isTeacher) {
     if (isTeacher) return 'y7w1:' + CFG.LESSON_ID + ':__teacher__';
@@ -265,7 +266,7 @@
      ========================================================= */
   const MIN = CFG.MIN_ANSWER_LENGTH;
 
-  function answered(id) { return String(resp(id) || '').trim().length >= MIN; }
+  function answered(id, min) { return String(resp(id) || '').trim().length >= (min || MIN); }
   function shortAnswered(id, min) { return String(resp(id) || '').trim().length >= (min || 4); }
   function submitted(id) { return resp(id + '__sub') === true; }
   function ticked(id) { return resp(id) === true; }
@@ -273,7 +274,8 @@
   /* Written answer */
   function fieldWritten(q) {
     const id = q.id;
-    const wrap = h('div', { class: 'q' });
+    const requiredLength = q.min || MIN;
+    const wrap = h('div', { class: 'q', id: 'req-' + id, 'data-required-id': id });
     const lab = h('label', { class: 'q-prompt', for: 'f-' + id, text: q.prompt });
     wrap.appendChild(lab);
     if (q.hint) wrap.appendChild(h('p', { class: 'q-hint', id: 'hint-' + id, text: q.hint }));
@@ -287,8 +289,8 @@
     function upd() {
       const len = String(ta.value || '').trim().length;
       status.textContent = len === 0 ? 'Not answered yet.'
-        : (len < MIN ? 'Add a little more detail (' + len + ' of ' + MIN + ' characters).' : 'Answer saved.');
-      status.style.color = len >= MIN ? 'var(--ok)' : 'var(--grey-mid)';
+        : (len < requiredLength ? 'Add one clear idea (' + len + ' of ' + requiredLength + ' characters).' : 'Answer saved.');
+      status.style.color = len >= requiredLength ? 'var(--ok)' : 'var(--grey-mid)';
     }
     ta.addEventListener('input', function () { setResponse(id, ta.value); upd(); });
     upd();
@@ -299,7 +301,7 @@
 
   /* Short text input (used in tables) */
   function fieldText(id, placeholder, label) {
-    const inp = h('input', { type: 'text', placeholder: placeholder || '', 'aria-label': label || placeholder || id });
+    const inp = h('input', { type: 'text', id: 'f-' + id, placeholder: placeholder || '', 'aria-label': label || placeholder || id });
     inp.value = resp(id);
     inp.addEventListener('input', function () { setResponse(id, inp.value); });
     return inp;
@@ -308,7 +310,7 @@
   /* Multiple choice, optionally graded. Feedback only after submitting. */
   function fieldChoice(q) {
     const id = q.id;
-    const wrap = h('div', { class: 'q' });
+    const wrap = h('div', { class: 'q', id: 'req-' + id, 'data-required-id': id });
     const fs = h('fieldset', { style: 'border:0;padding:0;margin:0;' });
     fs.appendChild(h('legend', { class: 'q-prompt', text: q.prompt }));
     const opts = h('div', { class: 'options' });
@@ -339,7 +341,7 @@
 
     function clearMarks() { inputs.forEach(function (o) { o.lab.classList.remove('correct', 'incorrect'); }); }
 
-    function showFeedback() {
+    function showFeedback(countAttempt) {
       const chosen = resp(id);
       if (chosen === '' || chosen === undefined) {
         fb.hidden = false;
@@ -347,6 +349,7 @@
         fb.textContent = 'Choose an answer first.';
         return;
       }
+      if (countAttempt !== false) setResponse(id + '__attempts', Number(resp(id + '__attempts', 0)) + 1);
       setResponse(id + '__sub', true);
       clearMarks();
       fb.hidden = false;
@@ -364,11 +367,11 @@
       announce(correct ? 'Correct answer' : 'Not quite — feedback shown');
     }
 
-    btn.addEventListener('click', showFeedback);
+    btn.addEventListener('click', function () { showFeedback(true); });
     wrap.appendChild(fs);
     wrap.appendChild(btn);
     wrap.appendChild(fb);
-    if (submitted(id)) showFeedback();
+    if (submitted(id)) showFeedback(false);
     return wrap;
   }
 
@@ -380,7 +383,7 @@
       const cid = 'c-' + item.id;
       const inp = h('input', { type: 'checkbox', id: cid });
       inp.checked = ticked(item.id);
-      const lab = h('label', { class: 'check' + (inp.checked ? ' done' : ''), for: cid },
+      const lab = h('label', { class: 'check' + (inp.checked ? ' done' : ''), for: cid, id: 'req-' + item.id, 'data-required-id': item.id },
         [inp, h('span', { text: item.label })]);
       inp.addEventListener('change', function () {
         setResponse(item.id, inp.checked);
@@ -396,7 +399,7 @@
     const cid = 'c-' + id;
     const inp = h('input', { type: 'checkbox', id: cid });
     inp.checked = ticked(id);
-    const lab = h('label', { class: 'check' + (inp.checked ? ' done' : ''), for: cid },
+    const lab = h('label', { class: 'check' + (inp.checked ? ' done' : ''), for: cid, id: 'req-' + id, 'data-required-id': id },
       [inp, h('span', { text: label })]);
     inp.addEventListener('change', function () {
       setResponse(id, inp.checked);
@@ -430,10 +433,120 @@
     return pre;
   }
 
+  function supportEnabled() { return state.student.supportMode === 'supported'; }
+
+  function supportSummary(key) {
+    if (!supportEnabled()) return null;
+    const lang = state.student.supportLanguage || 'ms';
+    const text = D.SUPPORT_COPY[lang] && D.SUPPORT_COPY[lang][key];
+    if (!text) return null;
+    const box = h('div', { class: 'support-summary', lang: lang, dir: lang === 'ar' ? 'rtl' : 'ltr' });
+    box.appendChild(h('strong', { text: (D.LANGUAGE_NAMES[lang] || 'Language') + ' support' }));
+    box.appendChild(h('span', { text: text }));
+    return box;
+  }
+
+  function fieldSelect(id, label, options, placeholder) {
+    const wrap = h('div', { class: 'field', id: 'req-' + id, 'data-required-id': id });
+    wrap.appendChild(h('label', { for: 'f-' + id, text: label }));
+    const sel = h('select', { id: 'f-' + id });
+    sel.appendChild(h('option', { value: '', text: placeholder || 'Choose…' }));
+    options.forEach(function (o) {
+      const value = typeof o === 'string' ? o : o.value;
+      const text = typeof o === 'string' ? o : o.label;
+      const opt = h('option', { value: value, text: text });
+      if (String(resp(id)) === String(value)) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () { setResponse(id, sel.value); });
+    wrap.appendChild(sel);
+    return wrap;
+  }
+
+  function reflectionChoice(id, items, multiple, phaseMode) {
+    const wrap = h('div', {
+      class: 'reflection-grid' + (phaseMode ? ' phase-grid' : ''),
+      id: 'req-' + id, 'data-required-id': id
+    });
+    items.forEach(function (item) {
+      const inputId = 'reflect-' + id + '-' + item.id;
+      const inp = h('input', {
+        type: multiple ? 'checkbox' : 'radio',
+        name: multiple ? inputId : 'reflect-' + id,
+        id: inputId,
+        value: item.id
+      });
+      const current = resp(id, multiple ? [] : '');
+      inp.checked = multiple ? Array.isArray(current) && current.indexOf(item.id) >= 0 : current === item.id;
+      inp.addEventListener('change', function () {
+        if (multiple) {
+          const values = items.filter(function (x) {
+            const el = document.getElementById('reflect-' + id + '-' + x.id);
+            return el && el.checked;
+          }).map(function (x) { return x.id; });
+          setResponse(id, values);
+        } else setResponse(id, item.id);
+      });
+      const lab = h('label', {
+        class: 'reflection-card' + (phaseMode ? ' phase-' + item.id : ''), for: inputId
+      });
+      lab.appendChild(inp);
+      lab.appendChild(h('h3', { text: item.title }));
+      if (item.label) lab.appendChild(h('p', { html: '<strong>' + item.label + '</strong>' }));
+      lab.appendChild(h('p', { text: item.summary || item.description || '' }));
+      lab.appendChild(h('p', { class: 'q-hint', text: multiple ? 'Select if this describes your starter learning.' :
+        (id === 'm2_path' ? 'Choose this if it gives you the right amount of support.' : 'Select this phase if it best describes you now.') }));
+      wrap.appendChild(lab);
+    });
+    return wrap;
+  }
+
+  function createDeck(id, cards) {
+    const deck = h('div', { class: 'lesson-deck', 'data-deck-id': id });
+    let current = Math.max(0, Math.min(cards.length - 1, Number(resp(id + '_card', 0)) || 0));
+    const prog = h('div', { class: 'deck-progress' });
+    const dots = h('div', { class: 'deck-dots', 'aria-hidden': 'true' });
+    const label = h('p', { class: 'deck-label' });
+    prog.appendChild(dots); prog.appendChild(label); deck.appendChild(prog);
+    const holders = [];
+    const dotEls = [];
+    cards.forEach(function (card, i) {
+      const holder = h('div', { class: 'deck-card', 'data-deck-index': i });
+      if (i !== current) holder.hidden = true;
+      holder.appendChild(card);
+      holders.push(holder); deck.appendChild(holder);
+      const dot = h('span', { class: 'deck-dot' + (i === current ? ' active' : '') });
+      dots.appendChild(dot); dotEls.push(dot);
+    });
+    const nav = h('div', { class: 'deck-nav' });
+    const back = h('button', { type: 'button', class: 'btn', text: '← Previous card' });
+    const next = h('button', { type: 'button', class: 'btn btn-primary', text: 'Next card →' });
+    nav.appendChild(back); nav.appendChild(next); deck.appendChild(nav);
+    function show(index) {
+      current = Math.max(0, Math.min(cards.length - 1, index));
+      holders.forEach(function (el, i) { el.hidden = i !== current; });
+      dotEls.forEach(function (el, i) { el.classList.toggle('active', i === current); });
+      label.textContent = 'Card ' + (current + 1) + ' of ' + cards.length;
+      back.disabled = current === 0;
+      next.hidden = current === cards.length - 1;
+      setResponse(id + '_card', current);
+      deck.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      /* CodeMirror cannot measure itself while its lesson card is hidden. */
+      setTimeout(function () {
+        Object.keys(ides).forEach(function (key) { if (ides[key] && ides[key].refresh) ides[key].refresh(); });
+      }, 60);
+    }
+    back.addEventListener('click', function () { show(current - 1); });
+    next.addEventListener('click', function () { show(current + 1); });
+    deckControllers[id] = { show: show, holders: holders };
+    show(current);
+    return deck;
+  }
+
   /* Evidence slot: upload / paste / preview / replace / delete */
   function evidenceSlot(slot, opts) {
     opts = opts || {};
-    const wrap = h('div', { class: 'card card-quiet' });
+    const wrap = h('div', { class: 'card card-quiet', id: 'req-' + slot, 'data-required-id': slot });
     wrap.appendChild(h('h4', { text: opts.title || 'Evidence' }));
     if (opts.help) wrap.appendChild(h('p', { class: 'q-hint', text: opts.help }));
 
@@ -579,7 +692,7 @@
      5. Python IDE mounting
      ========================================================= */
   function mountIDE(cfg) {
-    const holder = h('div');
+    const holder = h('div', { id: 'req-' + cfg.id + '_run', 'data-required-id': cfg.id + '_run' });
     const saved = state.ide[cfg.id] || {};
     const ide = new window.PythonIDE({
       id: cfg.id,
@@ -676,53 +789,46 @@
      7. Completion rules
      ========================================================= */
   function ideRan(id) { const s = state.ide[id]; return !!(s && s.runs > 0); }
+  function ideRuns(id, count) { const s = state.ide[id]; return !!(s && (s.runs || 0) >= count); }
   function ideOutput(id) { return hasImage(id + '_canvas'); }
   function allTicked(list) { return list.every(function (i) { return ticked(i.id); }); }
   function allSubmitted(list) {
-    return list.every(function (q) { return q.type === 'written' ? answered(q.id) : submitted(q.id); });
+    return list.every(function (q) { return q.type === 'written' ? answered(q.id, q.min) : submitted(q.id); });
   }
 
   const RULES = {
-    welcome: function () {
-      return ticked('welcome_folders_created') && allTicked(D.SETUP_CHECKLIST);
-    },
-    starter: function () {
-      return allSubmitted(D.STARTER_QUESTIONS);
+    welcome: function () { return ticked('welcome_ready'); },
+    starter: function () { return allSubmitted(D.STARTER_QUESTIONS); },
+    pit1: function () {
+      return Array.isArray(resp('pit1_types')) && resp('pit1_types').length > 0 &&
+        !!resp('pit1_evidence') && !!resp('pit1_action');
     },
     main1: function () {
-      return allTicked(D.MAIN1_SETUP_CHECKLIST) &&
-        allSubmitted(D.SCRATCH_PREDICTIONS) &&
+      return allSubmitted(D.SCRATCH_PREDICTIONS) &&
         hasImage('ev_scratch') &&
-        submitted('m1_ref_prediction') &&
-        answered('m1_ref_changed') && answered('m1_ref_happened') && answered('m1_ref_why') &&
+        answered('m1_scratch_change', 8) &&
         ticked('m1_sb3_downloaded') &&
         allSubmitted(D.PYTHON_PREDICTIONS) &&
-        ideRan('m1py') && ideOutput('m1py') &&
-        answered('m1_py_explain') &&
+        ideRuns('m1py', 2) && ideOutput('m1py') &&
+        answered('m1_py_explain', 8) &&
         hasImage('ev_python') &&
-        answered('m1_compare');
+        answered('m1_compare', 8);
     },
     main2: function () {
-      const plan = D.PLANNING_QUESTIONS.every(function (q) { return answered(q.id); });
-      const sketch = hasImage('ev_sketch') || answered('m2_plan_describe');
-      const tests = ['1', '2'].every(function (n) {
-        return shortAnswered('m2_test' + n + '_expected') &&
-               shortAnswered('m2_test' + n + '_happened') &&
-               shortAnswered('m2_test' + n + '_change');
-      });
-      const expl = D.EXPLANATION_QUESTIONS.every(function (q) { return answered(q.id); });
-      return plan && sketch && tests && expl &&
-        ideRan('m2') && ideOutput('m2') && hasImage('ev_wayfinding') &&
-        allTicked(D.SUCCESS_CRITERIA);
+      return !!resp('m2_path') && answered('m2_plan_user', 5) && answered('m2_plan_symbol', 5) &&
+        ideRuns('m2', 2) && ideOutput('m2') && hasImage('ev_wayfinding') &&
+        shortAnswered('m2_test_expected') && shortAnswered('m2_test_happened') &&
+        shortAnswered('m2_test_change') && answered('m2_improvement', 8) &&
+        submitted('m2_check_source') && answered('m2_feedback', 6);
     },
     extension: function () {
       return !!resp('ext_choice') && ideRan('ext');
     },
-    plenary: function () {
-      return D.EXIT_TICKET.every(function (q) { return answered(q.id); });
+    pit2: function () {
+      return !!resp('pit2_phase') && !!resp('pit2_evidence') && !!resp('pit2_action');
     },
-    review: function () { return ticked('review_confirmed'); },
-    export: function () { return allTicked(D.SUBMISSION_CHECKLIST); }
+    plenary: function () { return D.EXIT_TICKET.every(function (q) { return answered(q.id, q.min); }); },
+    export: function () { return resp('pdf_exported') === true; }
   };
 
   function isComplete(id) {
@@ -744,52 +850,58 @@
   /* Human-readable list of what is still missing in a section. */
   function missingItems(id) {
     const out = [];
-    const need = function (cond, text) { if (!cond) out.push(text); };
+    const need = function (cond, message, target) { if (!cond) out.push({ message: message, target: target }); };
     if (id === 'welcome') {
-      need(ticked('welcome_folders_created'), 'Confirm that you created the project folder.');
-      need(allTicked(D.SETUP_CHECKLIST), 'Tick every item on the project routine checklist.');
+      need(ticked('welcome_ready'), 'Read the project, file and privacy information, then tick the readiness box.', 'welcome_ready');
     }
     if (id === 'starter') {
       D.STARTER_QUESTIONS.forEach(function (q) {
-        need(q.type === 'written' ? answered(q.id) : submitted(q.id),
-          q.type === 'written' ? 'Write an answer to: ' + q.prompt : 'Submit an answer to: ' + q.prompt);
+        need(q.type === 'written' ? answered(q.id, q.min) : submitted(q.id),
+          q.type === 'written' ? 'Write an answer to: ' + q.prompt : 'Choose and check an answer to: ' + q.prompt, q.id);
       });
     }
+    if (id === 'pit1') {
+      need(Array.isArray(resp('pit1_types')) && resp('pit1_types').length > 0,
+        'Choose at least one type of learning you used in the starter.', 'pit1_types');
+      need(!!resp('pit1_evidence'), 'Choose one piece of evidence from your starter.', 'pit1_evidence');
+      need(!!resp('pit1_action'), 'Choose one action that will help you improve.', 'pit1_action');
+    }
     if (id === 'main1') {
-      need(allTicked(D.MAIN1_SETUP_CHECKLIST), 'Complete the Step 1 file setup checklist.');
-      need(allSubmitted(D.SCRATCH_PREDICTIONS), 'Submit all five Scratch predictions.');
-      need(hasImage('ev_scratch'), 'Add your Scratch screenshot.');
-      need(submitted('m1_ref_prediction') && answered('m1_ref_changed') && answered('m1_ref_happened') && answered('m1_ref_why'),
-        'Answer the four Scratch reflection questions.');
-      need(ticked('m1_sb3_downloaded'), 'Confirm that you downloaded your .sb3 file.');
-      need(allSubmitted(D.PYTHON_PREDICTIONS), 'Submit all five Python predictions.');
-      need(ideRan('m1py') && ideOutput('m1py'), 'Run the Python Turtle square so that a drawing appears.');
-      need(answered('m1_py_explain'), 'Explain how the Python output changed after your edit.');
-      need(hasImage('ev_python'), 'Capture your Python evidence.');
-      need(answered('m1_compare'), 'Answer the language comparison question.');
+      D.SCRATCH_PREDICTIONS.forEach(function (q) { need(submitted(q.id), 'Choose and check: ' + q.prompt, q.id); });
+      need(hasImage('ev_scratch'), 'Add one Scratch screenshot showing both the blocks and the stage.', 'ev_scratch');
+      need(answered('m1_scratch_change', 8), 'Explain what changed when 100 became 60.', 'm1_scratch_change');
+      need(ticked('m1_sb3_downloaded'), 'Confirm that you downloaded your Scratch .sb3 file.', 'm1_sb3_downloaded');
+      D.PYTHON_PREDICTIONS.forEach(function (q) { need(submitted(q.id), 'Choose and check: ' + q.prompt, q.id); });
+      need(ideRuns('m1py', 2) && ideOutput('m1py'), 'Run the Python square, change 100 to 60, then run it again.', 'm1py_run');
+      need(answered('m1_py_explain', 8), 'Explain what the Python value change did.', 'm1_py_explain');
+      need(hasImage('ev_python'), 'Use Capture Evidence in the Python editor.', 'm1py_run');
+      need(answered('m1_compare', 8), 'Explain what stayed the same in Scratch and Python.', 'm1_compare');
     }
     if (id === 'main2') {
-      D.PLANNING_QUESTIONS.forEach(function (q) { need(answered(q.id), 'Answer the planning question: ' + q.prompt); });
-      need(hasImage('ev_sketch') || answered('m2_plan_describe'), 'Save a planning sketch or write a description of your symbol.');
-      need(ideRan('m2'), 'Run your wayfinding tile program.');
-      need(ideOutput('m2'), 'Make sure your program produces a Turtle drawing.');
-      need(hasImage('ev_wayfinding'), 'Capture your Python evidence for the tile.');
-      D.EXPLANATION_QUESTIONS.forEach(function (q) { need(answered(q.id), 'Answer: ' + q.prompt); });
-      need(['1', '2'].every(function (n) {
-        return shortAnswered('m2_test' + n + '_expected') && shortAnswered('m2_test' + n + '_happened') &&
-               shortAnswered('m2_test' + n + '_change');
-      }), 'Complete both rows of the testing record.');
-      need(allTicked(D.SUCCESS_CRITERIA), 'Tick every success criterion once it is true.');
+      need(!!resp('m2_path'), 'Choose Guided, Core or Independent pathway.', 'm2_path');
+      need(answered('m2_plan_user', 5), 'Name the person who will use your sign.', 'm2_plan_user');
+      need(answered('m2_plan_symbol', 5), 'Describe the symbol and direction you will draw.', 'm2_plan_symbol');
+      need(ideRuns('m2', 2) && ideOutput('m2'), 'Run your sign at least twice so that you can test an improvement.', 'm2_run');
+      need(hasImage('ev_wayfinding'), 'Capture your final Python evidence.', 'm2_run');
+      need(shortAnswered('m2_test_expected') && shortAnswered('m2_test_happened') && shortAnswered('m2_test_change'),
+        'Complete the one clear Predict → Run → Improve test record.', 'm2_test_expected');
+      need(answered('m2_improvement', 8), 'Explain your purposeful improvement.', 'm2_improvement');
+      need(submitted('m2_check_source'), 'Choose self-check or partner-check, then save the answer.', 'm2_check_source');
+      need(answered('m2_feedback', 6), 'Record the feedback or check you used.', 'm2_feedback');
     }
     if (id === 'extension') {
-      need(!!resp('ext_choice'), 'Choose an extension challenge (optional).');
-      need(ideRan('ext'), 'Run your extension program (optional).');
+      need(!!resp('ext_choice'), 'Choose an extension challenge (optional).', 'ext_choice');
+      need(ideRan('ext'), 'Run your extension program (optional).', 'ext_run');
+    }
+    if (id === 'pit2') {
+      need(!!resp('pit2_phase'), 'Choose the phase that best describes your learning now.', 'pit2_phase');
+      need(!!resp('pit2_evidence'), 'Choose evidence for that phase.', 'pit2_evidence');
+      need(!!resp('pit2_action'), 'Choose your next action.', 'pit2_action');
     }
     if (id === 'plenary') {
-      D.EXIT_TICKET.forEach(function (q) { need(answered(q.id), 'Complete the exit ticket: ' + q.prompt); });
+      D.EXIT_TICKET.forEach(function (q) { need(answered(q.id, q.min), 'Complete the exit ticket: ' + q.prompt, q.id); });
     }
-    if (id === 'review') need(ticked('review_confirmed'), 'Confirm that you have checked your evidence.');
-    if (id === 'export') need(allTicked(D.SUBMISSION_CHECKLIST), 'Tick all four submission confirmations.');
+    if (id === 'export') need(resp('pdf_exported') === true, 'Download or print your PDF evidence report.', 'pdf-export-area');
     return out;
   }
 
@@ -876,6 +988,25 @@
     announce('Opened section: ' + D.SECTIONS.find(function (s) { return s.id === id; }).title);
   }
 
+  function focusMissing(item) {
+    closeModal();
+    const el = document.getElementById('req-' + item.target) || document.getElementById(item.target);
+    if (!el) return;
+    const card = el.closest('.deck-card');
+    const deck = el.closest('.lesson-deck');
+    if (card && deck) {
+      const controller = deckControllers[deck.dataset.deckId];
+      if (controller) controller.show(Number(card.dataset.deckIndex || 0));
+    }
+    setTimeout(function () {
+      el.classList.add('required-missing');
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      const focusable = el.matches('input,textarea,select,button') ? el : el.querySelector('input,textarea,select,button');
+      if (focusable) focusable.focus();
+      setTimeout(function () { el.classList.remove('required-missing'); }, 3500);
+    }, 80);
+  }
+
   function nextSection() {
     const idx = D.SECTIONS.findIndex(function (s) { return s.id === state.current; });
     const sec = D.SECTIONS[idx];
@@ -888,16 +1019,23 @@
       proceed();
       return;
     }
-    openModal('Some tasks are not finished', function (body, foot) {
-      body.appendChild(h('p', { text: 'You can move on, but these tasks are still incomplete. Incomplete work will be missing from your PDF report:' }));
-      const ul = h('ul');
-      missing.forEach(function (m) { ul.appendChild(h('li', { text: m })); });
-      body.appendChild(ul);
-      const stay = h('button', { type: 'button', class: 'btn btn-primary', text: 'Stay and finish' });
-      const go = h('button', { type: 'button', class: 'btn', text: 'Continue anyway' });
+    openModal('Finish these ' + missing.length + ' task' + (missing.length === 1 ? '' : 's'), function (body, foot) {
+      body.appendChild(h('p', { text: 'Nothing is lost. Choose a task below and the page will take you directly to it.' }));
+      const list = h('div', { class: 'missing-banner' });
+      missing.forEach(function (m, i) {
+        const row = h('div', { class: 'btn-row' });
+        row.appendChild(h('span', { text: (i + 1) + '. ' + m.message }));
+        const go = h('button', { type: 'button', class: 'btn btn-small', text: 'Go to task' });
+        go.addEventListener('click', function () { focusMissing(m); });
+        row.appendChild(go);
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+      const first = h('button', { type: 'button', class: 'btn btn-primary', text: 'Take me to the first missing task' });
+      first.addEventListener('click', function () { focusMissing(missing[0]); });
+      const stay = h('button', { type: 'button', class: 'btn', text: 'Close' });
       stay.addEventListener('click', closeModal);
-      go.addEventListener('click', function () { closeModal(); proceed(); });
-      foot.appendChild(go); foot.appendChild(stay);
+      foot.appendChild(stay); foot.appendChild(first);
     });
   }
 
@@ -954,45 +1092,34 @@
 
   /* ---------- Welcome ---------- */
   RENDER.welcome = function (root) {
-    const c1 = h('div', { class: 'card' });
-    c1.appendChild(h('h3', { text: 'Your project journey' }));
-    c1.appendChild(h('p', { text: L.projectDescription }));
-    c1.appendChild(h('p', { html: '<strong>Predict → Build → Run → Observe → Modify → Create → Test → Explain → Export</strong>' }));
-    root.appendChild(c1);
+    const overview = h('div', { class: 'card' });
+    overview.appendChild(h('h3', { text: 'What are you making today?' }));
+    overview.appendChild(h('p', { text: L.projectDescription }));
+    overview.appendChild(h('p', { html: '<strong>Predict → Build → Run → Change → Create → Test → Explain → Export</strong>' }));
+    const sup = supportSummary('overview'); if (sup) overview.appendChild(sup);
+    root.appendChild(overview);
 
-    const c2 = h('div', { class: 'card' });
-    c2.appendChild(h('h3', { text: 'Step 1 — Create your project folder' }));
-    c2.appendChild(h('p', { text: 'Before you write any code, create this folder structure in your school documents area:' }));
-    c2.appendChild(h('pre', { class: 'folder-tree', tabindex: '0', 'aria-label': 'Required folder structure', text: L.folderStructure }));
-    c2.appendChild(singleCheck('welcome_folders_created', 'I have created the folder T1.1 Computational Thinking and Turtle inside Computing ▸ Year 7 ▸ Term 1.'));
-    root.appendChild(c2);
-
-    const c3 = h('div', { class: 'card' });
-    c3.appendChild(h('h3', { text: 'Step 2 — Your filenames for this lesson' }));
-    c3.appendChild(h('p', { text: 'Use these filenames when you save your work. They include your class and name so your teacher can find them.' }));
+    const setup = h('div', { class: 'card' });
+    setup.appendChild(h('h3', { text: 'Where will your files go?' }));
+    setup.appendChild(h('p', { text: 'Create this folder in your school documents area. Keep all three lesson files together.' }));
+    setup.appendChild(h('pre', { class: 'folder-tree', tabindex: '0', 'aria-label': 'Required folder structure', text: L.folderStructure }));
     const list = h('ul', { class: 'filename-list' });
-    [
-      { f: FILENAMES.scratch(), d: 'Scratch project' },
-      { f: FILENAMES.turtle(), d: 'Python Turtle square' },
-      { f: FILENAMES.tile(), d: 'Wayfinding tile' },
-      { f: FILENAMES.tileV2(), d: 'Improved version (extension)' }
-    ].forEach(function (x) {
-      const li = h('li', null, [h('span', { text: x.f }), h('span', { class: 'q-hint', text: x.d })]);
-      list.appendChild(li);
+    [FILENAMES.scratch(), FILENAMES.turtle(), FILENAMES.tile()].forEach(function (f) {
+      list.appendChild(h('li', null, h('span', { text: f })));
     });
-    c3.appendChild(list);
-    c3.appendChild(h('p', { class: 'q-hint', text: 'v01 means version 1. When you make a big change, save a new version such as v02 instead of overwriting your work.' }));
-    root.appendChild(c3);
+    setup.appendChild(list);
+    root.appendChild(setup);
 
-    const c4 = h('div', { class: 'card' });
-    c4.appendChild(h('h3', { text: 'Step 3 — Project routine checklist' }));
-    c4.appendChild(h('p', { class: 'q-hint', text: 'Tick each statement once it is true. These answers are saved as evidence.' }));
-    c4.appendChild(fieldChecklist(D.SETUP_CHECKLIST));
-    root.appendChild(c4);
-
-    const c5 = h('div', { class: 'card' });
-    c5.appendChild(teamsCallout());
-    root.appendChild(c5);
+    const safe = h('div', { class: 'card' });
+    safe.appendChild(h('h3', { text: 'Your work and your evidence' }));
+    safe.appendChild(h('p', { text: 'This app saves answers only in this browser. Your teacher receives them only when you upload the PDF to Teams.' }));
+    safe.appendChild(h('ul', null, [
+      h('li', { text: 'Use your own code and explanations.' }),
+      h('li', { text: 'Screenshots should show your work—not faces, chats, passwords or another student’s name.' }),
+      h('li', { text: 'Save the Scratch .sb3 file and Python .py file as well as the PDF.' })
+    ]));
+    safe.appendChild(singleCheck('welcome_ready', 'I have read the WAGBA, know what I am making, and know where to save my three files.'));
+    root.appendChild(safe);
   };
 
   /* ---------- Starter ---------- */
@@ -1000,6 +1127,7 @@
     const intro = h('div', { class: 'card' });
     intro.appendChild(h('h3', { text: 'Same route, different language' }));
     intro.appendChild(h('p', { text: 'These two programs are written in different languages. Read both carefully before you answer. Do not guess quickly — predicting is a real programming skill.' }));
+    const sup = supportSummary('starter'); if (sup) intro.appendChild(sup);
     const grid = h('div', { class: 'two-col' });
 
     const left = h('div');
@@ -1022,117 +1150,92 @@
     root.appendChild(q);
   };
 
+  /* ---------- Learning Pit Stop 1 ---------- */
+  RENDER.pit1 = function (root) {
+    const intro = h('div', { class: 'card' });
+    intro.appendChild(h('h3', { text: 'What kind of learning did you just use?' }));
+    intro.appendChild(h('p', { text: 'The starter used more than one kind of learning. Choose every type you genuinely used, then identify evidence and a next action.' }));
+    intro.appendChild(h('img', { class: 'lesson-visual', src: 'assets/images/learning-types-how-to-improve.png', alt: 'School learning guide comparing Knowledge, Skills and Understanding.' }));
+    const sup = supportSummary('pit1'); if (sup) intro.appendChild(sup);
+    root.appendChild(intro);
+    root.appendChild(reflectionChoice('pit1_types', D.LEARNING_TYPES, true, false));
+    const evidences = [];
+    const actions = [];
+    D.LEARNING_TYPES.forEach(function (t) {
+      t.evidence.forEach(function (x) { evidences.push({ value: t.id + ': ' + x, label: t.title + ' — ' + x }); });
+      t.actions.forEach(function (x) { actions.push({ value: t.id + ': ' + x, label: t.title + ' — ' + x }); });
+    });
+    root.appendChild(fieldSelect('pit1_evidence', 'Which starter evidence best proves your choice?', evidences, 'Choose one piece of evidence…'));
+    root.appendChild(fieldSelect('pit1_action', 'What will you do in Main Activity 1 to get better?', actions, 'Choose one next action…'));
+  };
+
   /* ---------- Main Activity 1 ---------- */
   RENDER.main1 = function (root) {
-    /* Step 1 */
-    const s1 = h('div', { class: 'card' });
-    s1.appendChild(h('span', { class: 'step-label', text: 'Step 1 — File setup' }));
-    s1.appendChild(h('h3', { text: 'Check your project files' }));
-    s1.appendChild(h('pre', { class: 'folder-tree', tabindex: '0', 'aria-label': 'Required folder structure', text: L.folderStructure }));
-    const fl = h('ul', { class: 'filename-list' });
-    [FILENAMES.scratch(), FILENAMES.turtle(), FILENAMES.tile()].forEach(function (f) {
-      fl.appendChild(h('li', null, h('span', { text: f })));
-    });
-    s1.appendChild(fl);
-    s1.appendChild(fieldChecklist(D.MAIN1_SETUP_CHECKLIST));
-    root.appendChild(s1);
+    const sup = supportSummary('main1'); if (sup) root.appendChild(sup);
+    const cards = [];
 
-    /* Step 2 — Scratch */
-    const s2 = h('div', { class: 'card' });
-    s2.appendChild(h('span', { class: 'step-label', text: 'Step 2 — Scratch square route' }));
-    s2.appendChild(h('h3', { text: 'Build this program in Scratch' }));
-    s2.appendChild(h('p', { text: 'You must add the Pen extension first. Do not use a repeat block — we have not learned repetition yet, so every command is written out.' }));
-    s2.appendChild(blockList(D.SCRATCH_SQUARE_BLOCKS));
+    const a = h('div', { class: 'card' });
+    a.appendChild(h('span', { class: 'step-label', text: 'Scratch · Read and predict' }));
+    a.appendChild(h('h3', { text: 'What will this Scratch program do?' }));
+    a.appendChild(h('p', { text: 'The Pen extension lets the sprite leave a line as it moves. Four equal moves and four right-angle turns should make a closed shape.' }));
+    a.appendChild(blockList(D.SCRATCH_SQUARE_BLOCKS));
+    D.SCRATCH_PREDICTIONS.forEach(function (q) { a.appendChild(fieldChoice(q)); });
+    cards.push(a);
 
-    s2.appendChild(h('h4', { text: 'Predict before you open Scratch' }));
-    D.SCRATCH_PREDICTIONS.forEach(function (item) {
-      s2.appendChild(item.type === 'written' ? fieldWritten(item) : fieldChoice(item));
-    });
-
-    s2.appendChild(h('hr', { class: 'divider' }));
-    s2.appendChild(h('h4', { text: 'Your Scratch task' }));
-    const ol = h('ol');
-    D.SCRATCH_TASK_STEPS.forEach(function (t) { ol.appendChild(h('li', { text: t })); });
-    s2.appendChild(ol);
-
-    const openBtn = h('a', {
-      class: 'btn btn-primary', href: CFG.SCRATCH_EDITOR_URL, target: '_blank', rel: 'noopener noreferrer',
-      text: 'Open Scratch Editor ↗'
-    });
-    s2.appendChild(h('div', { class: 'btn-row' }, [openBtn,
-      h('span', { class: 'q-hint', text: 'Opens in a new tab. Come back to this tab afterwards — your work here is saved.' })]));
-
-    const exampleShot = h('details', { class: 'card card-quiet' });
-    exampleShot.appendChild(h('summary', { text: 'What should my screenshot show?' }));
-    exampleShot.appendChild(h('img', {
-      src: 'assets/evidence-placeholders/scratch-screenshot-example.svg',
-      alt: 'Example layout of a good Scratch screenshot: the block script on the left and the stage showing the drawn square on the right.',
-      style: 'max-width:100%;border:1px solid var(--grey-line);margin-top:.5rem;'
+    const b = h('div', { class: 'card' });
+    b.appendChild(h('span', { class: 'step-label', text: 'Scratch · Build, change and save' }));
+    b.appendChild(h('h3', { text: 'Build the square in Scratch' }));
+    const steps = [
+      'Open Scratch in a new tab and add the Pen extension.',
+      'Build the blocks shown on the previous card.',
+      'Run the program and check your prediction.',
+      'Change every move 100 steps block to move 60 steps, then run again.',
+      'Take one screenshot showing both your blocks and the stage.',
+      'Choose File → Save to your computer and use the filename shown below.'
+    ];
+    const ol = h('ol'); steps.forEach(function (x) { ol.appendChild(h('li', { text: x })); }); b.appendChild(ol);
+    b.appendChild(h('p', { html: '<strong>Save as:</strong> <code>' + FILENAMES.scratch() + '</code>' }));
+    b.appendChild(h('a', { class: 'btn btn-primary', href: CFG.SCRATCH_EDITOR_URL, target: '_blank', rel: 'noopener noreferrer', text: 'Open Scratch Editor ↗' }));
+    b.appendChild(evidenceSlot('ev_scratch', {
+      title: 'Scratch evidence', help: 'Upload or paste one screenshot showing both the blocks and the square on the stage. Do not include faces, chats or passwords.',
+      alt: 'Student Scratch blocks and the square output on the stage'
     }));
-    s2.appendChild(exampleShot);
+    b.appendChild(fieldWritten({ id: 'm1_scratch_change', min: 8, prompt: 'What changed when every move value changed from 100 to 60?', hint: 'Sentence frame: The square became… because…' }));
+    b.appendChild(singleCheck('m1_sb3_downloaded', 'I downloaded the .sb3 file and saved it in my T1.1 folder.'));
+    cards.push(b);
 
-    s2.appendChild(evidenceSlot('ev_scratch', {
-      title: 'Scratch screenshot',
-      help: 'Upload or paste one screenshot that shows BOTH your completed blocks AND the square on the Scratch stage. Use the Print Screen key, or Windows key + Shift + S.',
-      alt: 'Screenshot of the student\'s Scratch blocks and stage'
-    }));
+    const c = h('div', { class: 'card' });
+    c.appendChild(h('span', { class: 'step-label', text: 'Python · Read and predict' }));
+    c.appendChild(h('h3', { text: 'The same square in Python Turtle' }));
+    c.appendChild(h('p', { text: 'Python Turtle is a small drawing tool controlled by text commands. forward(distance) moves; right(angle) turns.' }));
+    c.appendChild(codePanel(D.PYTHON_SQUARE_CODE, 'Python Turtle square code'));
+    D.PYTHON_PREDICTIONS.forEach(function (q) { c.appendChild(fieldChoice(q)); });
+    cards.push(c);
 
-    s2.appendChild(h('h4', { text: 'Record what happened' }));
-    D.SCRATCH_REFLECTION.forEach(function (item) {
-      s2.appendChild(item.type === 'written' ? fieldWritten(item) : fieldChoice(item));
-    });
+    const d = h('div', { class: 'card' });
+    d.appendChild(h('span', { class: 'step-label', text: 'Python · Run, change and capture' }));
+    d.appendChild(h('h3', { text: 'Run the square twice' }));
+    d.appendChild(h('ol', null, [
+      h('li', { text: 'Run the ready-made code once.' }),
+      h('li', { text: 'Change all four forward(100) commands to forward(60).' }),
+      h('li', { text: 'Run it again and compare the two outputs.' }),
+      h('li', { text: 'Use Capture Evidence, then download the .py file.' })
+    ]));
+    d.appendChild(mountIDE({ id: 'm1py', label: 'Python Turtle square', starterCode: D.PYTHON_SQUARE_CODE, filename: FILENAMES.turtle(), evidenceSlot: 'ev_python' }));
+    d.appendChild(fieldWritten({ id: 'm1_py_explain', min: 8, prompt: 'How did changing 100 to 60 affect the Python output?', hint: 'Name the value, the distance and the change in size.' }));
+    cards.push(d);
 
-    const warn = h('div', { class: 'callout warn' });
-    warn.appendChild(h('p', { html: '<strong>Download your Scratch project as an .sb3 file.</strong> You will submit it with your PDF and Python file. In Scratch: File ▸ Save to your computer. Save it as <code>' + FILENAMES.scratch() + '</code> inside your T1.1 folder.' }));
-    warn.appendChild(h('p', { class: 'q-hint', text: 'This website cannot check your download for you, so please confirm below.' }));
-    warn.appendChild(singleCheck('m1_sb3_downloaded', 'I have downloaded my Scratch .sb3 file and saved it in my T1.1 folder.'));
-    s2.appendChild(warn);
-    root.appendChild(s2);
-
-    /* Step 3 — Python */
-    const s3 = h('div', { class: 'card' });
-    s3.appendChild(h('span', { class: 'step-label', text: 'Step 3 — Python Turtle square route' }));
-    s3.appendChild(h('h3', { text: 'The same square, written in Python' }));
-    s3.appendChild(h('p', { text: 'This step happens entirely inside this website. Read the code, predict what it will do, then run it.' }));
-
-    s3.appendChild(h('h4', { text: 'Predict before you run' }));
-    D.PYTHON_PREDICTIONS.forEach(function (item) { s3.appendChild(fieldChoice(item)); });
-
-    s3.appendChild(h('h4', { text: 'Python editor' }));
-    s3.appendChild(mountIDE({
-      id: 'm1py', label: 'Python Turtle square',
-      starterCode: D.PYTHON_SQUARE_CODE,
-      filename: FILENAMES.turtle(),
-      evidenceSlot: 'ev_python'
-    }));
-
-    const taskOl = h('ol');
-    D.PYTHON_TASK_STEPS.forEach(function (t) { taskOl.appendChild(h('li', { text: t })); });
-    s3.appendChild(h('h4', { text: 'Your Python task' }));
-    s3.appendChild(taskOl);
-
-    s3.appendChild(fieldWritten({
-      id: 'm1_py_explain',
-      prompt: 'How did the output change when you changed 100 to 60?',
-      hint: 'Describe the size of the square before and after, and say which number caused the change.'
-    }));
-
-    s3.appendChild(h('hr', { class: 'divider' }));
-    s3.appendChild(h('h4', { text: 'Comparison task' }));
+    const e = h('div', { class: 'card' });
+    e.appendChild(h('span', { class: 'step-label', text: 'Compare' }));
+    e.appendChild(h('h3', { text: 'One algorithm, two languages' }));
     const tbl = h('table', { class: 'tbl' });
-    const thead = h('thead', null, h('tr', null, [h('th', { text: 'Scratch' }), h('th', { text: 'Python Turtle' })]));
-    const tb = h('tbody');
-    D.COMPARISON_ROWS.forEach(function (r) {
-      tb.appendChild(h('tr', null, [h('td', { class: 'mono', text: r.scratch }), h('td', { class: 'mono', text: r.python })]));
-    });
-    tbl.appendChild(thead); tbl.appendChild(tb);
-    s3.appendChild(tbl);
-    s3.appendChild(fieldWritten({
-      id: 'm1_compare',
-      prompt: 'What stayed the same even though the programming language changed?',
-      hint: 'Think about the algorithm: the order of the instructions, the distances and the angles.'
-    }));
-    root.appendChild(s3);
+    tbl.appendChild(h('thead', null, h('tr', null, [h('th', { text: 'Scratch' }), h('th', { text: 'Python Turtle' })])));
+    const tb = h('tbody'); D.COMPARISON_ROWS.forEach(function (r) { tb.appendChild(h('tr', null, [h('td', { class: 'mono', text: r.scratch }), h('td', { class: 'mono', text: r.python })])); });
+    tbl.appendChild(tb); e.appendChild(tbl);
+    e.appendChild(fieldWritten({ id: 'm1_compare', min: 8, prompt: 'What stayed the same even though the language changed?', hint: 'Think about sequence, distance, angle and output.' }));
+    cards.push(e);
+
+    root.appendChild(createDeck('main1', cards));
   };
 
   /* Copy text to the clipboard with a fallback for older browsers. */
@@ -1232,77 +1335,88 @@
 
   /* ---------- Main Activity 2 ---------- */
   RENDER.main2 = function (root) {
+    const sup = supportSummary('main2'); if (sup) root.appendChild(sup);
+    const cards = [];
+
     const brief = h('div', { class: 'card' });
-    brief.appendChild(h('h3', { text: 'Project brief' }));
+    brief.appendChild(h('span', { class: 'step-label', text: 'Project brief' }));
+    brief.appendChild(h('h3', { text: 'Make one clear corridor sign' }));
     brief.appendChild(h('p', { text: D.PROJECT_BRIEF }));
-    brief.appendChild(h('p', { class: 'q-hint', text: 'Possible designs:' }));
-    const ul = h('ul');
-    D.DESIGN_IDEAS.forEach(function (i) { ul.appendChild(h('li', { text: i })); });
-    brief.appendChild(ul);
-    brief.appendChild(h('img', {
-      src: 'assets/images/wayfinding-examples.svg',
-      alt: 'Four example wayfinding symbols: a straight arrow, a turning arrow, a doorway symbol and a destination flag. These are ideas only, not solutions.',
-      style: 'max-width:100%;border:1px solid var(--grey-line);border-radius:6px;margin:.4rem 0 .8rem;'
-    }));
-    brief.appendChild(h('p', { class: 'q-hint', text: 'These are ideas, not solutions. You must work out the commands, distances and angles yourself.' }));
-    brief.appendChild(h('p', { html: '<strong>Challenge:</strong> ' + L.challenge }));
-    root.appendChild(brief);
+    brief.appendChild(h('img', { class: 'lesson-visual', src: 'assets/images/wayfinding-examples.svg', alt: 'Examples of simple direction signs: straight arrow, turning arrow, doorway and destination flag.' }));
+    brief.appendChild(h('div', { class: 'callout' }, h('p', { html: '<strong>Your product:</strong> one Python Turtle drawing, saved as a .py file. It is a sign, not a whole map or navigation app.' })));
+    cards.push(brief);
+
+    const choose = h('div', { class: 'card' });
+    choose.appendChild(h('span', { class: 'step-label', text: 'Choose your support' }));
+    choose.appendChild(h('h3', { text: 'Which pathway will help you learn?' }));
+    choose.appendChild(h('p', { text: 'All three pathways meet the WAGBA. Choose the one that gives you useful—not overwhelming—challenge.' }));
+    choose.appendChild(reflectionChoice('m2_path', D.PATHWAYS, false, false));
+    cards.push(choose);
 
     const plan = h('div', { class: 'card' });
     plan.appendChild(h('span', { class: 'step-label', text: 'Plan' }));
-    plan.appendChild(h('h3', { text: 'Plan your tile before you code' }));
-    plan.appendChild(sketchPad('ev_sketch', 'm2_plan_describe'));
-    D.PLANNING_QUESTIONS.forEach(function (q) { plan.appendChild(fieldWritten(q)); });
-    root.appendChild(plan);
-
-    root.appendChild(codeHelpersCard());
+    plan.appendChild(h('h3', { text: 'Decide who the sign is for and what it shows' }));
+    plan.appendChild(fieldWritten({ id: 'm2_plan_user', min: 5, rows: 2, prompt: 'Who will use your sign?', hint: 'For example: a new Year 7 student in the science corridor.' }));
+    plan.appendChild(fieldWritten({ id: 'm2_plan_symbol', min: 5, rows: 2, prompt: 'What symbol will you draw, and which direction will it point?', hint: 'For example: a right-pointing arrow with a long shaft and two shorter head lines.' }));
+    cards.push(plan);
 
     const build = h('div', { class: 'card' });
     build.appendChild(h('span', { class: 'step-label', text: 'Build and test' }));
-    build.appendChild(h('h3', { text: 'Create your wayfinding tile' }));
-    const cols = h('div', { style: 'display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1.2rem;align-items:start;' });
-    const ideCol = h('div');
-    ideCol.appendChild(mountIDE({
-      id: 'm2', label: 'Wayfinding tile',
-      starterCode: D.WAYFINDING_STARTER_CODE,
-      filename: FILENAMES.tile(),
-      evidenceSlot: 'ev_wayfinding'
-    }));
-    const critCol = h('div', { class: 'card card-quiet' });
-    critCol.appendChild(h('h4', { text: 'Success criteria' }));
-    critCol.appendChild(h('p', { class: 'q-hint', text: 'Tick each one when it is true. Your section is only complete when you have run your code, produced a drawing, captured evidence and written your explanation.' }));
-    critCol.appendChild(fieldChecklist(D.SUCCESS_CRITERIA));
-    cols.appendChild(ideCol); cols.appendChild(critCol);
-    build.appendChild(cols);
-    root.appendChild(build);
+    build.appendChild(h('h3', { text: 'Load your pathway and adapt it' }));
+    build.appendChild(h('p', { text: 'Use the buttons below to load the pathway you chose. If you already wrote code, the app will ask before replacing it.' }));
+    const loadRow = h('div', { class: 'btn-row' });
+    D.PATHWAYS.forEach(function (p) {
+      const btn = h('button', { type: 'button', class: 'btn btn-small', text: 'Load ' + p.title });
+      btn.addEventListener('click', function () {
+        setResponse('m2_path', p.id);
+        const ide = ides.m2;
+        if (!ide) return;
+        const go = function () { ide.loadCode(p.code, p.title + ' loaded. Change the code so the sign becomes your own.'); };
+        if (!ide.getCode().trim() || ide.getCode().trim() === D.PATHWAYS[0].code.trim()) go();
+        else confirmDialog('Replace the code in the editor?', 'This loads the selected pathway and replaces the code currently shown.', go);
+      });
+      loadRow.appendChild(btn);
+    });
+    build.appendChild(loadRow);
+    const helpers = h('details', { class: 'card card-quiet' });
+    helpers.appendChild(h('summary', { text: 'Open the four-command help card' }));
+    D.CODE_HELPERS.forEach(function (s) { helpers.appendChild(h('p', { html: '<strong>' + s.title + ':</strong> <code>' + s.code + '</code> — ' + s.desc })); });
+    build.appendChild(helpers);
+    build.appendChild(h('ol', null, [
+      h('li', { text: 'Run the loaded code once.' }),
+      h('li', { text: 'Change at least two values or complete the missing arrow head.' }),
+      h('li', { text: 'Run again. Check that the sign is clear.' }),
+      h('li', { text: 'Capture evidence and download the .py file.' })
+    ]));
+    build.appendChild(mountIDE({ id: 'm2', label: 'Wayfinding sign', starterCode: D.PATHWAYS[0].code, filename: FILENAMES.tile(), evidenceSlot: 'ev_wayfinding' }));
+    cards.push(build);
 
     const test = h('div', { class: 'card' });
-    test.appendChild(h('span', { class: 'step-label', text: 'Test' }));
-    test.appendChild(h('h3', { text: 'Testing record' }));
-    test.appendChild(h('p', { text: 'Record at least two tests. A test is a run where you checked something specific.' }));
-    const tt = h('table', { class: 'tbl' });
-    tt.appendChild(h('thead', null, h('tr', null, [
-      h('th', { text: 'Test', scope: 'col' }), h('th', { text: 'What I expected', scope: 'col' }),
-      h('th', { text: 'What happened', scope: 'col' }), h('th', { text: 'Change made', scope: 'col' })
-    ])));
-    const tbody = h('tbody');
-    ['1', '2'].forEach(function (n) {
-      tbody.appendChild(h('tr', null, [
-        h('th', { scope: 'row', text: n }),
-        h('td', null, fieldText('m2_test' + n + '_expected', 'I expected…', 'Test ' + n + ': what I expected')),
-        h('td', null, fieldText('m2_test' + n + '_happened', 'What happened…', 'Test ' + n + ': what happened')),
-        h('td', null, fieldText('m2_test' + n + '_change', 'I changed…', 'Test ' + n + ': change made'))
-      ]));
+    test.appendChild(h('span', { class: 'step-label', text: 'Predict → Run → Improve' }));
+    test.appendChild(h('h3', { text: 'Record one purposeful test' }));
+    test.appendChild(h('p', { text: 'A test checks one specific change. Record what you expected, what actually happened and what you changed next.' }));
+    const tgrid = h('div', { class: 'three-col' });
+    [
+      ['m2_test_expected', 'Before I ran it, I expected…'],
+      ['m2_test_happened', 'When I ran it, what happened was…'],
+      ['m2_test_change', 'So I changed…']
+    ].forEach(function (x) {
+      const w = h('div', { id: 'req-' + x[0], 'data-required-id': x[0] });
+      w.appendChild(fieldText(x[0], x[1], x[1])); tgrid.appendChild(w);
     });
-    tt.appendChild(tbody);
-    test.appendChild(tt);
-    root.appendChild(test);
+    test.appendChild(tgrid);
+    test.appendChild(fieldWritten({ id: 'm2_improvement', min: 8, prompt: 'Why was your final change an improvement?', hint: 'Explain how it made the direction clearer, more accurate or easier to recognise.' }));
+    cards.push(test);
 
-    const exp = h('div', { class: 'card' });
-    exp.appendChild(h('span', { class: 'step-label', text: 'Explain' }));
-    exp.appendChild(h('h3', { text: 'Explain your design' }));
-    D.EXPLANATION_QUESTIONS.forEach(function (q) { exp.appendChild(fieldWritten(q)); });
-    root.appendChild(exp);
+    const check = h('div', { class: 'card' });
+    check.appendChild(h('span', { class: 'step-label', text: 'Check and explain' }));
+    check.appendChild(h('h3', { text: 'Check your sign yourself or with a partner' }));
+    check.appendChild(fieldChoice({ id: 'm2_check_source', prompt: 'Who checked the final sign?', options: ['I completed a careful self-check', 'A partner checked it with me'], answer: null }));
+    check.appendChild(h('div', { class: 'callout' }, h('p', { text: 'Check: Can someone recognise the direction? Does the code run? Did you change the example? Can you point to the command that controls the angle?' })));
+    check.appendChild(fieldWritten({ id: 'm2_feedback', min: 6, prompt: 'What did the check confirm or help you improve?', hint: 'Sentence frame: The check showed that… so I…' }));
+    cards.push(check);
+
+    root.appendChild(createDeck('main2', cards));
   };
 
   /* ---------- Extension ---------- */
@@ -1331,18 +1445,36 @@
     root.appendChild(c);
   };
 
+  /* ---------- Learning Pit Stop 2 ---------- */
+  RENDER.pit2 = function (root) {
+    const intro = h('div', { class: 'card' });
+    intro.appendChild(h('h3', { text: 'Where is your learning now?' }));
+    intro.appendChild(h('p', { text: 'Choose honestly. This is not a grade. Your choice should lead to a useful next action.' }));
+    intro.appendChild(h('img', { class: 'lesson-visual', src: 'assets/images/learning-pitstop-phases.png', alt: 'School Learning Pit Stop guide: New Learning, Consolidating, Treading Water and Drowning.' }));
+    const sup = supportSummary('pit2'); if (sup) intro.appendChild(sup);
+    root.appendChild(intro);
+    root.appendChild(reflectionChoice('pit2_phase', D.LEARNING_PHASES, false, true));
+    const evidences = [];
+    const actions = [];
+    D.LEARNING_PHASES.forEach(function (p) {
+      p.evidence.forEach(function (x) { evidences.push({ value: p.id + ': ' + x, label: p.title + ' — ' + x }); });
+      p.actions.forEach(function (x) { actions.push({ value: p.id + ': ' + x, label: p.title + ' — ' + x }); });
+    });
+    root.appendChild(fieldSelect('pit2_evidence', 'Which evidence best matches your phase?', evidences, 'Choose one piece of evidence…'));
+    root.appendChild(fieldSelect('pit2_action', 'What is your next action?', actions, 'Choose one action…'));
+    const msg = h('div', { class: 'callout warn' });
+    msg.appendChild(h('p', { html: '<strong>If you selected “Drowning — I need help now”:</strong> show this page to your teacher. Return to the guided pathway and the working square. Asking for help is the correct next step.' }));
+    root.appendChild(msg);
+  };
+
   /* ---------- Plenary ---------- */
   RENDER.plenary = function (root) {
-    const c1 = h('div', { class: 'card' });
-    c1.appendChild(h('h3', { text: 'Self-check or partner-check' }));
-    c1.appendChild(h('p', { class: 'q-hint', text: 'Tick only the statements that are true. Being honest here helps your teacher support you.' }));
-    c1.appendChild(fieldChecklist(D.SELF_CHECK));
-    root.appendChild(c1);
-
-    const c2 = h('div', { class: 'card' });
-    c2.appendChild(h('h3', { text: 'Exit ticket' }));
-    D.EXIT_TICKET.forEach(function (q) { c2.appendChild(fieldWritten({ id: q.id, prompt: q.prompt, hint: q.hint, rows: 2 })); });
-    root.appendChild(c2);
+    const c = h('div', { class: 'card' });
+    c.appendChild(h('h3', { text: 'Two final explanations' }));
+    c.appendChild(h('p', { text: 'Use evidence from what you ran today. Short and precise is better than long and vague.' }));
+    const sup = supportSummary('plenary'); if (sup) c.appendChild(sup);
+    D.EXIT_TICKET.forEach(function (q) { c.appendChild(fieldWritten({ id: q.id, min: q.min, prompt: q.prompt, hint: q.hint, rows: 2 })); });
+    root.appendChild(c);
   };
 
   /* ---------- Evidence review ---------- */
@@ -1478,6 +1610,88 @@
     return R;
   }
 
+  /* Report model for the redesigned, reduced-load lesson. */
+  function collectReviewV2() {
+    const groups = [];
+    const add = function (title, items) { groups.push({ title: title, items: items }); };
+    const selectedText = function (id, source) {
+      const value = resp(id);
+      const found = source.find(function (x) { return x.id === value; });
+      return found ? found.title + ' — ' + (found.summary || found.description || '') : '';
+    };
+    const choiceEvidence = function (q) {
+      const chosen = choiceText(q);
+      const tries = Number(resp(q.id + '__attempts', 0)) || 0;
+      const result = q.answer === null || q.answer === undefined ? 'saved' : (resp(q.id + '__correct') ? 'correct' : 'not correct yet');
+      return chosen + (submitted(q.id) ? '\nChecks: ' + tries + ' · Final result: ' + result : '');
+    };
+
+    add('Student and lesson', [
+      { q: 'Name', a: state.student.name }, { q: 'Class', a: state.student.className },
+      { q: 'Lesson', a: L.title }, { q: 'Date', a: todayString() },
+      { q: 'Language support selected', a: supportEnabled() ? (D.LANGUAGE_NAMES[state.student.supportLanguage] || state.student.supportLanguage) : 'English' }
+    ]);
+    add('Learning goals', [
+      { q: 'WAGBA', a: L.wagba },
+      { q: 'Knowledge', a: L.knowledge.map(function (x) { return '• ' + x; }).join('\n') },
+      { q: 'Skills', a: L.skills.map(function (x) { return '• ' + x; }).join('\n') },
+      { q: 'Understanding', a: L.understanding.map(function (x) { return '• ' + x; }).join('\n') }
+    ]);
+    add('Starter', D.STARTER_QUESTIONS.map(function (q) {
+      return { q: q.prompt, a: q.type === 'written' ? resp(q.id) : choiceEvidence(q) };
+    }));
+    add('Learning Pit Stop 1', [
+      { q: 'Learning types selected', a: (resp('pit1_types', []) || []).join(', ') },
+      { q: 'Evidence selected', a: resp('pit1_evidence') }, { q: 'Action selected', a: resp('pit1_action') }
+    ]);
+    add('Main Activity 1 — Scratch', D.SCRATCH_PREDICTIONS.map(function (q) {
+      return { q: q.prompt, a: choiceEvidence(q) };
+    }).concat([
+      { q: 'What changed when 100 became 60?', a: resp('m1_scratch_change') },
+      { q: 'Scratch screenshot', a: state.images.ev_scratch, image: true, alt: 'Scratch blocks and square output' },
+      { q: 'Scratch file downloaded', a: ticked('m1_sb3_downloaded') ? 'Confirmed' : 'Not confirmed' }
+    ]));
+    add('Main Activity 1 — Python square', D.PYTHON_PREDICTIONS.map(function (q) {
+      return { q: q.prompt, a: choiceEvidence(q) };
+    }).concat([
+      { q: 'Final code', a: (state.ide.m1py && state.ide.m1py.code) || '', mono: true },
+      { q: 'Runs', a: String((state.ide.m1py && state.ide.m1py.runs) || 0) },
+      { q: 'Explanation of value change', a: resp('m1_py_explain') },
+      { q: 'Python evidence', a: state.images.ev_python, image: true, alt: 'Python square code and output' },
+      { q: 'What stayed the same?', a: resp('m1_compare') }
+    ]));
+    add('Main Activity 2 — Wayfinding sign', [
+      { q: 'Pathway', a: selectedText('m2_path', D.PATHWAYS) },
+      { q: 'Intended user', a: resp('m2_plan_user') }, { q: 'Planned sign', a: resp('m2_plan_symbol') },
+      { q: 'Final code', a: (state.ide.m2 && state.ide.m2.code) || '', mono: true },
+      { q: 'Runs', a: String((state.ide.m2 && state.ide.m2.runs) || 0) },
+      { q: 'Final Python evidence', a: state.images.ev_wayfinding, image: true, alt: 'Final wayfinding sign code and output' },
+      { q: 'Expected', a: resp('m2_test_expected') }, { q: 'What happened', a: resp('m2_test_happened') },
+      { q: 'Change made', a: resp('m2_test_change') }, { q: 'Why it improved the sign', a: resp('m2_improvement') },
+      { q: 'Check method', a: resp('m2_check_source') === '1' ? 'Partner-check' : (resp('m2_check_source') === '0' ? 'Self-check' : '') },
+      { q: 'Feedback/check result', a: resp('m2_feedback') }
+    ]);
+    add('Learning Pit Stop 2', [
+      { q: 'Current phase', a: selectedText('pit2_phase', D.LEARNING_PHASES) },
+      { q: 'Evidence selected', a: resp('pit2_evidence') }, { q: 'Next action', a: resp('pit2_action') }
+    ]);
+    add('Plenary', D.EXIT_TICKET.map(function (q) { return { q: q.prompt, a: resp(q.id) }; }));
+    if (resp('ext_choice') !== '' && resp('ext_choice') !== undefined) {
+      add('Optional extension', [
+        { q: 'Challenge', a: D.EXTENSION_OPTIONS[resp('ext_choice')] || '' },
+        { q: 'Code', a: (state.ide.ext && state.ide.ext.code) || '', mono: true },
+        { q: 'Explanation', a: resp('ext_explain') }
+      ]);
+    }
+    add('Submission', [
+      { q: 'Teams assignment', a: CFG.TEAMS_ASSIGNMENT_NAME },
+      { q: 'Files required', a: L.submissionFiles.map(function (x) { return '• ' + x; }).join('\n') }
+    ].concat(D.SUBMISSION_CHECKLIST.map(function (item) {
+      return { q: item.label, a: ticked(item.id) ? 'Confirmed' : 'Not confirmed at the time of export' };
+    })));
+    return groups;
+  }
+
   RENDER.review = function (root) {
     const head = h('div', { class: 'card' });
     head.appendChild(h('h3', { text: 'Check your evidence before exporting' }));
@@ -1515,7 +1729,7 @@
 
   /* ---------- Export ---------- */
   RENDER.export = function (root) {
-    const c = h('div', { class: 'card' });
+    const c = h('div', { class: 'card', id: 'req-pdf-export-area', 'data-required-id': 'pdf-export-area' });
     c.appendChild(h('h3', { text: 'Export your PDF evidence report' }));
     c.appendChild(h('p', { html: 'Your report will be saved as <code>' + FILENAMES.pdf() + '</code>.' }));
     const row = h('div', { class: 'btn-row' });
@@ -1590,7 +1804,7 @@
     const dlRow = h('div', { class: 'btn-row' });
     const dlPy = h('button', { type: 'button', class: 'btn btn-small', text: 'Download my wayfinding tile .py again' });
     dlPy.addEventListener('click', function () {
-      const code = (state.ide.m2 && state.ide.m2.code) || D.WAYFINDING_STARTER_CODE;
+      const code = (state.ide.m2 && state.ide.m2.code) || D.PATHWAYS[0].code;
       const blob = new Blob([code], { type: 'text/x-python;charset=utf-8' });
       const a = h('a', { href: URL.createObjectURL(blob), download: FILENAMES.tile() });
       document.body.appendChild(a); a.click();
@@ -1612,7 +1826,7 @@
       config: CFG,
       student: state.student,
       date: todayString(),
-      groups: collectReview(),
+      groups: collectReviewV2(),
       filename: FILENAMES.pdf()
     };
   }
@@ -1674,17 +1888,20 @@
     }
   }
 
-  function startSession(name, className, resume) {
+  function startSession(name, className, resume, supportMode, supportLanguage) {
     const isTeacher = name.trim().toLowerCase() === 'teacher';
     state.student = {
       name: isTeacher ? 'Teacher' : name.trim(),
       className: isTeacher ? (className.trim() || 'Staff') : className.trim(),
-      isTeacher: isTeacher
+      isTeacher: isTeacher,
+      supportMode: isTeacher ? 'english' : (supportMode || 'english'),
+      supportLanguage: supportLanguage || 'ms'
     };
     state.key = recordKey(state.student.name, state.student.className, isTeacher);
 
     const saved = Store.read(state.key);
     if (resume && saved) {
+      state.student = Object.assign(state.student, saved.student || {});
       state.responses = saved.responses || {};
       state.ide = saved.ide || {};
       state.current = saved.current || 'welcome';
@@ -1717,6 +1934,47 @@
     saveNow();
   }
 
+  function showVocabulary() {
+    openModal('Vocabulary guide', function (body, foot) {
+      const lang = state.student.supportLanguage || 'ms';
+      body.appendChild(h('p', { text: 'English Computer Science words remain the words you should learn. Translation support is shown only when you selected it.' }));
+      D.VOCABULARY.forEach(function (v) {
+        const card = h('div', { class: 'card card-quiet' });
+        card.appendChild(h('h3', { text: v.term }));
+        card.appendChild(h('p', { text: v.definition }));
+        if (supportEnabled() && v[lang]) {
+          card.appendChild(h('p', { class: 'support-summary', lang: lang, dir: lang === 'ar' ? 'rtl' : 'ltr', text: v[lang][0] + ' — ' + v[lang][1] }));
+        }
+        body.appendChild(card);
+      });
+      const close = h('button', { type: 'button', class: 'btn btn-primary', text: 'Return to lesson' });
+      close.addEventListener('click', closeModal); foot.appendChild(close);
+    });
+  }
+
+  function showLanguageSettings() {
+    openModal('Language help', function (body, foot) {
+      body.appendChild(h('p', { text: 'English always remains visible. Short translated summaries and vocabulary can support your reading.' }));
+      const mode = h('select', { id: 'modal-support-mode' });
+      mode.appendChild(h('option', { value: 'english', text: 'English only' }));
+      mode.appendChild(h('option', { value: 'supported', text: 'English + language support' }));
+      mode.value = state.student.supportMode || 'english';
+      const lang = h('select', { id: 'modal-support-language' });
+      Object.keys(D.LANGUAGE_NAMES).forEach(function (key) { lang.appendChild(h('option', { value: key, text: D.LANGUAGE_NAMES[key] })); });
+      lang.value = state.student.supportLanguage || 'ms';
+      const f1 = h('div', { class: 'field' }); f1.appendChild(h('label', { for: 'modal-support-mode', text: 'Reading mode' })); f1.appendChild(mode);
+      const f2 = h('div', { class: 'field' }); f2.appendChild(h('label', { for: 'modal-support-language', text: 'Support language' })); f2.appendChild(lang);
+      body.appendChild(f1); body.appendChild(f2);
+      const save = h('button', { type: 'button', class: 'btn btn-primary', text: 'Save and return' });
+      save.addEventListener('click', function () {
+        state.student.supportMode = mode.value;
+        state.student.supportLanguage = lang.value;
+        saveNow(); closeModal(); renderSection(state.current); buildLearningPanel();
+      });
+      foot.appendChild(save);
+    });
+  }
+
   /* =========================================================
      13. Wiring
      ========================================================= */
@@ -1726,6 +1984,18 @@
     const form = $('#start-form');
     const nameEl = $('#student-name');
     const classEl = $('#student-class');
+    const supportField = $('#support-language-field');
+    const supportSelect = $('#support-language');
+    const supportRadios = Array.prototype.slice.call(document.querySelectorAll('input[name="support-mode"]'));
+
+    function updateSupportChoice() {
+      const selected = document.querySelector('input[name="support-mode"]:checked');
+      const enabled = selected && selected.value === 'supported';
+      supportField.hidden = !enabled;
+      supportSelect.disabled = !enabled;
+    }
+    supportRadios.forEach(function (r) { r.addEventListener('change', updateSupportChoice); });
+    updateSupportChoice();
 
     nameEl.addEventListener('input', function () {
       const isTeacher = nameEl.value.trim().toLowerCase() === 'teacher';
@@ -1751,17 +2021,21 @@
         confirmDialog('Saved work found',
           'There is saved work on this computer for ' + (saved.student.name || name) +
           '. Choose "Yes, continue" to start again from the beginning, or close this window and use Resume Previous Work.',
-          function () { startSession(name, className, false); });
+          function () {
+            const mode = (document.querySelector('input[name="support-mode"]:checked') || {}).value || 'english';
+            startSession(name, className, false, mode, supportSelect.value);
+          });
         return;
       }
-      startSession(name, className, false);
+      const mode = (document.querySelector('input[name="support-mode"]:checked') || {}).value || 'english';
+      startSession(name, className, false, mode, supportSelect.value);
     });
 
     $('#btn-resume').addEventListener('click', function () {
       const name = nameEl.value.trim();
       const className = classEl.value.trim();
       if (!name) { $('#student-name-err').hidden = false; nameEl.focus(); return; }
-      startSession(name, className, true);
+      startSession(name, className, true, 'english', supportSelect.value);
     });
 
     $('#btn-back').addEventListener('click', function () {
@@ -1769,6 +2043,8 @@
       if (idx > 0) gotoSection(D.SECTIONS[idx - 1].id, true);
     });
     $('#btn-next').addEventListener('click', nextSection);
+    $('#btn-vocabulary').addEventListener('click', showVocabulary);
+    $('#btn-language').addEventListener('click', showLanguageSettings);
 
     $('#btn-exit').addEventListener('click', function () {
       confirmDialog('Change student?',
@@ -1814,7 +2090,7 @@
   /* Expose a small API for testing and for the report module. */
   window.LessonApp = {
     state: state, RULES: RULES, isComplete: isComplete, isUnlocked: isUnlocked,
-    FILENAMES: FILENAMES, collectReview: collectReview, gotoSection: gotoSection,
+    FILENAMES: FILENAMES, collectReview: collectReviewV2, gotoSection: gotoSection,
     setResponse: setResponse, startSession: startSession, recordKey: recordKey,
     setImage: setImage, clearImage: clearImage, saveNow: saveNow,
     missingItems: missingItems, ides: ides, reportPayload: reportPayload
