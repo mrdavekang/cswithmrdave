@@ -25,16 +25,16 @@
 
   /** Lesson identity — used to validate imported backup files. */
   var LESSON_ID      = 'y8-t1w1-microbit-onboarding';
-  var SCHEMA_VERSION = 1;
+  var SCHEMA_VERSION = 2;
   var LESSON_TITLE   = 'Mission 0 — Meet the Micro:bit';
   var LESSON_META    = 'Year 8 · Term 1, Week 1 · Project Lesson';
   var SCHOOL_HEADING = 'Computer Science Department';   // change to your school name
   var TEAMS_ASSIGNMENT = 'Week 1 Project';
 
   /** Storage keys — student and teacher work are kept completely separate. */
-  var KEY_STUDENT = 'y8t1w1.progress.v1';
-  var KEY_TEACHER = 'y8t1w1.teacher.v1';
-  var IDB_NAME    = 'y8t1w1-evidence';
+  var KEY_STUDENT = 'y8t1w1.progress.v2';
+  var KEY_TEACHER = 'y8t1w1.teacher.v2';
+  var IDB_NAME    = 'y8t1w1-evidence-v2';
   var IDB_STORE   = 'images';
 
   /** Image handling. */
@@ -55,13 +55,15 @@
      =========================================================================== */
 
   var SECTIONS = [
-    { id: 'prep',      num: 1, name: 'Student preparation', time: '4 min',  optional: false },
-    { id: 'starter',   num: 2, name: 'Starter',             time: '8 min',  optional: false },
-    { id: 'ma1',       num: 3, name: 'Main Activity 1',     time: '17 min', optional: false },
-    { id: 'ma2',       num: 4, name: 'Main Activity 2',     time: '25 min', optional: false },
-    { id: 'challenge', num: 5, name: 'Optional challenge',  time: 'extra',  optional: true  },
-    { id: 'plenary',   num: 6, name: 'Plenary',             time: '8 min',  optional: false },
-    { id: 'review',    num: 7, name: 'Review & export',     time: '3 min',  optional: false }
+    { id: 'prep',      num: 1, name: 'Student preparation', tab: 'Prepare', time: '4 min',  optional: false },
+    { id: 'starter',   num: 2, name: 'Starter',             tab: 'Starter', time: '6 min',  optional: false },
+    { id: 'pit1',      num: 3, name: 'Learning checkpoint', tab: 'Learn',   time: '3 min',  optional: false },
+    { id: 'ma1',       num: 4, name: 'Main Activity 1',     tab: 'Onboard', time: '14 min', optional: false },
+    { id: 'ma2',       num: 5, name: 'Main Activity 2',     tab: 'Build',   time: '20 min', optional: false },
+    { id: 'pit2',      num: 6, name: 'Learning pitstop',    tab: 'Reflect', time: '4 min',  optional: false },
+    { id: 'challenge', num: 7, name: 'Extension pathway',   tab: 'Extend',  time: '5–15 min', optional: true },
+    { id: 'plenary',   num: 8, name: 'Plenary',             tab: 'Plenary', time: '6 min',  optional: false },
+    { id: 'review',    num: 9, name: 'Review & export',     tab: 'Review',  time: '3 min',  optional: false }
   ];
 
   var CHECKLISTS = {
@@ -91,8 +93,7 @@
         { id: 'm2', text: 'I connected the micro:bit safely.' },
         { id: 'm3', text: 'I opened an editor.' },
         { id: 'm4', text: 'I named my project correctly.' },
-        { id: 'm5', text: 'I uploaded evidence.' },
-        { id: 'm6', text: 'I explained one successful check or problem encountered.' }
+        { id: 'm5', text: 'I recorded one successful check or problem encountered.' }
       ]
     },
     ma2: {
@@ -101,11 +102,11 @@
         { id: 'w1', text: 'My program displays an icon.' },
         { id: 'w2', text: 'My program displays initials or a short message.' },
         { id: 'w3', text: 'I tested it in the simulator.' },
-        { id: 'w4', text: 'I transferred it to the physical micro:bit.' },
-        { id: 'w5', text: 'I checked the real output.' },
+        { id: 'w4', text: 'I transferred it, or recorded a teacher-approved hardware problem.' },
+        { id: 'w5', text: 'I checked the real output, or completed the simulator contingency.' },
         { id: 'w6', text: 'I compared expected and actual results.' },
         { id: 'w7', text: 'I uploaded my code evidence.' },
-        { id: 'w8', text: 'I uploaded physical-device evidence.' },
+        { id: 'w8', text: 'I uploaded physical-device evidence or recorded the approved contingency.' },
         { id: 'w9', text: 'I recorded a test, correction or successful result.' }
       ]
     }
@@ -148,13 +149,11 @@
     { id: 'p_board', text: 'The small programmable circuit board that stores and runs your program.' }
   ];
   var PART_TERMS = [
-    { id: 't_board', term: 'micro:bit',         answer: 'p_board' },
     { id: 't_cable', term: 'USB cable',         answer: 'p_cable' },
     { id: 't_led',   term: 'LED matrix',        answer: 'p_led'   },
     { id: 't_btna',  term: 'Button A',          answer: 'p_btna'  },
     { id: 't_btnb',  term: 'Button B',          answer: 'p_btnb'  },
-    { id: 't_usb',   term: 'micro USB port',    answer: 'p_usb'   },
-    { id: 't_edge',  term: 'Edge connector pins', answer: 'p_edge' }
+    { id: 't_usb',   term: 'micro USB port',    answer: 'p_usb'   }
   ];
 
   /* Main Activity 1 Step 1 — retrieval questions */
@@ -201,6 +200,40 @@
   var READINESS = ['Ready independently', 'Ready with a reminder',
     'Need more connection practice', 'Need more transfer practice'];
 
+  var LANGUAGE_NAMES = { en: 'English', bm: 'English + Bahasa Melayu', zh: 'English + Simplified Chinese', ko: 'English + Korean' };
+  var SUPPORT = {
+    bm: {
+      starter: 'Susun langkah daripada mencipta program hingga memeriksa output sebenar. Tentukan tindakan yang selamat atau tidak selamat.',
+      pit1: 'Pilih jenis pembelajaran yang paling banyak anda gunakan: Pengetahuan, Kemahiran atau Pemahaman. Kemudian pilih cara untuk menjadi lebih baik.',
+      ma1: 'Kenal pasti bahagian micro:bit, sambungkan kabel dengan selamat dan buka satu editor. Jangan paksa penyambung.',
+      ma2: 'Bina ikon dan mesej ringkas. Ramal, uji dalam simulator, pindahkan dan bandingkan output sebenar.',
+      pit2: 'Pilih fasa pembelajaran anda sekarang dan beri bukti. Ini menerangkan keadaan tugasan, bukan kebolehan anda.',
+      challenge: 'Teruskan mengikut tahap: Butang A, Butang B, kemudian jadual ujian dan penambahbaikan.',
+      plenary: 'Terangkan apa yang anda faham menggunakan istilah input, output, simulator, pindah dan uji.',
+      safety: 'BERHENTI dan beritahu guru jika papan panas, rosak, basah atau penyambung bengkok.'
+    },
+    zh: {
+      starter: '把步骤从“创建程序”排列到“检查真实输出”，并判断每个操作是否安全。',
+      pit1: '选择你刚才主要运用的学习类型：知识、技能或理解，然后选择改进方法。',
+      ma1: '辨认 micro:bit 的部件，安全连接数据线，并打开一个编辑器。不要强行插入接头。',
+      ma2: '制作图标和简短信息。先预测，在模拟器测试，再传输并比较真实输出。',
+      pit2: '选择你目前的学习阶段并提供证据。这描述的是当前任务感受，不是你的能力。',
+      challenge: '按顺序继续：按钮 A、按钮 B，然后完成测试表并改进设计。',
+      plenary: '使用 input、output、simulator、transfer 和 test 等词解释你的理解。',
+      safety: '如果电路板发热、损坏、沾水或接口弯曲，请立即停止并告诉老师。'
+    },
+    ko: {
+      starter: '프로그램 만들기부터 실제 출력 확인까지의 순서를 배열하고, 각 행동이 안전한지 판단하세요.',
+      pit1: '방금 가장 많이 사용한 학습 유형(지식, 기능, 이해)을 고르고 더 나아질 방법을 선택하세요.',
+      ma1: 'micro:bit 부품을 확인하고 케이블을 안전하게 연결한 뒤 편집기를 여세요. 커넥터를 억지로 밀지 마세요.',
+      ma2: '아이콘과 짧은 메시지를 만드세요. 예측하고 시뮬레이터에서 시험한 뒤 전송하고 실제 출력을 비교하세요.',
+      pit2: '현재 학습 단계를 선택하고 근거를 적으세요. 이것은 현재 과제의 상태이지 여러분의 능력이 아닙니다.',
+      challenge: 'A 버튼, B 버튼, 테스트 표와 개선의 순서로 계속 도전하세요.',
+      plenary: 'input, output, simulator, transfer, test 용어를 사용해 이해한 내용을 설명하세요.',
+      safety: '보드가 뜨겁거나 젖었거나 손상되었거나 포트가 휘었으면 즉시 멈추고 선생님께 알리세요.'
+    }
+  };
+
   var FIGURES = {
     1: { file: '1.png', title: 'Figure 1 \u2014 Collect and identify parts',
          alt: 'Instructional diagram headed "Main Activity 1: collect and identify parts". A micro:bit board is drawn from the front. Labels point to the LED matrix in the centre, Button A on the left of it, Button B on the right of it, and the board itself. Along the bottom edge is the gold connector strip marked 0, 1, 2, 3V and GND. Beside the board is a USB cable with the large flat USB-A plug at one end and the small micro USB plug at the other.',
@@ -222,7 +255,13 @@
          cap: 'Download, save the .hex file, drag it onto the MICROBIT drive, then wait.' },
     7: { file: '7.png', title: 'Figure 7 \u2014 Check the real output on the device',
          alt: 'Four-panel instructional diagram headed "Check the real output on the device \u2014 compare the micro:bit display with what you expected". Panel 1: a hand holding the micro:bit by its edges with a face icon lit on the LED matrix. Panel 2: a laptop showing the simulator beside a box labelled "expected result", so the two can be compared. Panel 3: a large tick in a box with the word MATCH. Panel 4: the editor open with show icon, pause and show icon blocks, captioned "change something, then test again". Tips at the bottom say to check the display carefully, wait a few seconds for the program to finish loading, and test again making small improvements if it does not match.',
-         cap: 'Compare the real LED output with the simulator and with what you predicted.' }
+         cap: 'Compare the real LED output with the simulator and with what you predicted.' },
+    8: { file: 'types-of-learning.png', title: 'Types of learning — Knowledge, Skills and Understanding',
+         alt: 'School learning diagram explaining Knowledge as facts and information to remember, Skills as practical performance that improves through practice, and Understanding as connected learning that can be explained and transferred.',
+         cap: 'Use this visual to help identify the kind of learning you have just used.' },
+    9: { file: 'learning-pitstop.png', title: 'Learning Pitstop — current phase of learning',
+         alt: 'School reflection diagram with four phases: New Learning, Consolidating, Treading Water and Drowning. Each phase describes how learning currently feels and whether challenge or help is needed.',
+         cap: 'Your phase can change. It describes this task now, not your ability.' }
   };
 
   /* ===========================================================================
@@ -316,7 +355,7 @@
       schemaVersion: SCHEMA_VERSION,
       lessonTitle: LESSON_TITLE,
       teacherMode: false,
-      student: { fullName: '', className: '' },
+      student: { fullName: '', className: '', languageSupport: 'en' },
       currentSection: 'prep',
       startedAt: nowISO(),
       updatedAt: nowISO(),
@@ -324,14 +363,18 @@
       lastBackupAt: null,
       lastPdfAt: null,
       data: {
-        prep:      { deviceNumber: '', cableNumber: '', workMode: '', partnerName: '', projectFileName: '', ready: false },
+        prep:      { deviceNumber: '', cableNumber: '', workMode: '', partnerName: '', projectFileName: '', ready: false, safetyStop: false, photoSafe: false },
+        pit1:      { learningType: '', evidence: '', strategy: '', commitment: '' },
         ma1:       { editorChoice: '', projectName: '', evidenceCaption: '', problemSolved: '' },
         ma2:       { icon: '', iconOther: '', message: '', prediction: '', reason: '',
                      simMatched: '', simChange: '', transferMethod: '',
                      cmpExpected: '', cmpSimulator: '', cmpPhysical: '',
-                     allMatched: '', improvement: '',
+                     allMatched: '', improvement: '', hardwareOutcome: '', contingencyNote: '',
                      capCode: '', capDevice: '', capExtra: '' },
-        challenge: { attempted: false, buttonPlan: '', changeMade: '', worked: '', caption: '' },
+        pit2:      { phase: '', wagbaArea: '', evidence: '', nextAction: '', blocker: '' },
+        challenge: { attempted: false, level1Plan: '', level1Change: '', level1Worked: '',
+                     level2A: '', level2B: '', level2Prediction: '', level2Result: '',
+                     level3Tests: '', level3Improvement: '', level3Reflection: '', caption: '' },
         plenary:   { q1: '', q2: '', q3: '', q4: '', q5: '', readiness: '' }
       },
       checks: {},                 // "group.id" -> boolean
@@ -523,9 +566,9 @@
      =========================================================================== */
 
   var EVIDENCE_SLOTS = [
-    { slot: 'ma1_main',   section: 'ma1',       required: true,
+    { slot: 'ma1_main',   section: 'ma1',       required: false,
       title: 'Main Activity 1 evidence', stage: 'Main Activity 1 — onboarding',
-      desc: 'Upload ONE of: a screenshot showing the correctly named project, a photo showing the connected micro:bit, or a screenshot showing the editor open.',
+      desc: 'Optional: a screenshot showing the named project or a photo showing the connected micro:bit.',
       captionPath: 'ma1.evidenceCaption' },
     { slot: 'ma2_code',   section: 'ma2',       required: true,
       title: 'Code evidence', stage: 'Main Activity 2 — program',
@@ -540,8 +583,8 @@
       desc: 'Optional: simulator output, the MICROBIT drive, or debugging evidence.',
       captionPath: 'ma2.capExtra' },
     { slot: 'challenge',  section: 'challenge', required: false,
-      title: 'Challenge evidence (optional)', stage: 'Optional challenge',
-      desc: 'Optional: a screenshot or photo of your Button A behaviour working.',
+      title: 'Extension evidence (optional)', stage: 'Extension pathway',
+      desc: 'Optional: a screenshot or photo showing the highest extension level you reached.',
       captionPath: 'challenge.caption' }
   ];
 
@@ -605,13 +648,17 @@
       var d = state.data.prep;
       if (!filled(d.deviceNumber) || !filled(d.cableNumber) || !filled(d.workMode)) return false;
       if (d.workMode === 'With a partner' && !filled(d.partnerName, 2)) return false;
-      return !!d.ready;
+      return !!d.ready && !!d.safetyStop && !!d.photoSafe;
     },
     starter: function () {
       var a = state.activity;
       return a.sequence.checked && seqCorrect() &&
              a.safety.checked && safetyAllAnswered() &&
              groupComplete('starter');
+    },
+    pit1: function () {
+      var d = state.data.pit1;
+      return filled(d.learningType) && filled(d.evidence) && filled(d.strategy) && filled(d.commitment, MIN_TEXT);
     },
     ma1: function () {
       var d = state.data.ma1;
@@ -620,7 +667,6 @@
              groupComplete('connect') &&
              filled(d.editorChoice) &&
              validateProjectName(d.projectName).ok &&
-             hasEvidence('ma1_main') &&
              filled(d.problemSolved, MIN_TEXT) &&
              groupComplete('ma1');
     },
@@ -629,15 +675,21 @@
       return filled(d.icon) && filled(d.message) &&
              filled(d.prediction, MIN_SHORT) && filled(d.reason, MIN_SHORT) &&
              filled(d.simMatched) && filled(d.simChange, MIN_SHORT) &&
-             filled(d.transferMethod) &&
-             filled(d.cmpExpected, MIN_SHORT) && filled(d.cmpSimulator, MIN_SHORT) && filled(d.cmpPhysical, MIN_SHORT) &&
+             filled(d.transferMethod) && filled(d.hardwareOutcome) &&
+             filled(d.cmpExpected, MIN_SHORT) && filled(d.cmpSimulator, MIN_SHORT) &&
+             (d.hardwareOutcome === 'Physical device succeeded' ? filled(d.cmpPhysical, MIN_SHORT) && hasEvidence('ma2_device') : filled(d.contingencyNote, MIN_TEXT)) &&
              filled(d.allMatched) &&
-             hasEvidence('ma2_code') && hasEvidence('ma2_device') &&
+             hasEvidence('ma2_code') &&
              groupComplete('ma2');
+    },
+    pit2: function () {
+      var d = state.data.pit2;
+      return filled(d.phase) && filled(d.wagbaArea) && filled(d.evidence, MIN_TEXT) && filled(d.nextAction) &&
+             (d.phase !== 'Drowning' || filled(d.blocker));
     },
     challenge: function () {
       var d = state.data.challenge;
-      return filled(d.buttonPlan, MIN_SHORT) && filled(d.changeMade, MIN_SHORT) && filled(d.worked);
+      return filled(d.level1Plan, MIN_SHORT) && filled(d.level1Change, MIN_SHORT) && filled(d.level1Worked);
     },
     plenary: function () {
       var d = state.data.plenary;
@@ -659,8 +711,9 @@
     SECTIONS.forEach(function (s) {
       if (s.id === 'challenge') {
         state.data.challenge.attempted =
-          filled(state.data.challenge.buttonPlan) || filled(state.data.challenge.changeMade) ||
-          filled(state.data.challenge.worked) || hasEvidence('challenge');
+          filled(state.data.challenge.level1Plan) || filled(state.data.challenge.level1Change) ||
+          filled(state.data.challenge.level1Worked) || filled(state.data.challenge.level2A) ||
+          filled(state.data.challenge.level3Tests) || hasEvidence('challenge');
       }
       state.sectionsComplete[s.id] = !!RULES[s.id]();
     });
@@ -675,10 +728,12 @@
     switch (id) {
       case 'prep':      return true;
       case 'starter':   return isComplete('prep');
-      case 'ma1':       return isComplete('starter');
+      case 'pit1':      return isComplete('starter');
+      case 'ma1':       return isComplete('pit1');
       case 'ma2':       return isComplete('ma1');
-      case 'challenge': return isComplete('ma2');   // optional, never a gate
-      case 'plenary':   return isComplete('ma2');   // NOT gated by the challenge
+      case 'pit2':      return isComplete('ma2');
+      case 'challenge': return isComplete('pit2');  // optional, never a gate
+      case 'plenary':   return isComplete('pit2');  // NOT gated by the challenge
       case 'review':    return isComplete('plenary');
       default:          return false;
     }
@@ -687,10 +742,12 @@
   function unlockMessage(id) {
     switch (id) {
       case 'starter':   return 'Finish the Student preparation section first.';
-      case 'ma1':       return 'Finish the Starter section first.';
+      case 'pit1':      return 'Finish the Starter section first.';
+      case 'ma1':       return 'Finish the Learning checkpoint first.';
       case 'ma2':       return 'Finish Main Activity 1 first.';
-      case 'challenge': return 'The optional challenge opens once Main Activity 2 is complete.';
-      case 'plenary':   return 'Finish Main Activity 2 first. The optional challenge is not required.';
+      case 'pit2':      return 'Finish Main Activity 2 first.';
+      case 'challenge': return 'The extension pathway opens after the Learning pitstop.';
+      case 'plenary':   return 'Finish the Learning pitstop first. The extension pathway is not required.';
       case 'review':    return 'Answer the plenary questions first.';
       default:          return 'This section is not available yet.';
     }
@@ -705,17 +762,23 @@
       if (!filled(d.prep.workMode)) m.push('independent or with a partner');
       if (d.prep.workMode === 'With a partner' && !filled(d.prep.partnerName, 2)) m.push('partner name');
       if (!d.prep.ready) m.push('the equipment confirmation');
+      if (!d.prep.safetyStop) m.push('the stop-and-report safety agreement');
+      if (!d.prep.photoSafe) m.push('the safe-photo agreement');
     } else if (id === 'starter') {
       if (!state.activity.sequence.checked || !seqCorrect()) m.push('the correct workflow order (check your answer)');
       if (!safetyAllAnswered() || !state.activity.safety.checked) m.push('all six safe/unsafe answers (check your answers)');
       if (!groupComplete('starter')) m.push('the starter checklist');
+    } else if (id === 'pit1') {
+      if (!filled(d.pit1.learningType)) m.push('your main learning type');
+      if (!filled(d.pit1.evidence)) m.push('one example from the starter');
+      if (!filled(d.pit1.strategy)) m.push('an improvement strategy');
+      if (!filled(d.pit1.commitment, MIN_TEXT)) m.push('your improvement commitment');
     } else if (id === 'ma1') {
       if (!partsAllAnswered() || !state.activity.parts.checked) m.push('the parts matching check');
       if (!retrievalAllAnswered() || !state.activity.retrieval.checked) m.push('the two retrieval questions');
       if (!groupComplete('connect')) m.push('the connection checklist');
       if (!filled(d.ma1.editorChoice)) m.push('which editor you opened');
       if (!validateProjectName(d.ma1.projectName).ok) m.push('a project name that matches the convention');
-      if (!hasEvidence('ma1_main')) m.push('one piece of evidence');
       if (!filled(d.ma1.problemSolved, MIN_TEXT)) m.push('your successful check or problem (at least ' + MIN_TEXT + ' characters)');
       if (!groupComplete('ma1')) m.push('the Main Activity 1 checklist');
     } else if (id === 'ma2') {
@@ -724,16 +787,24 @@
       if (!filled(d.ma2.prediction, MIN_SHORT) || !filled(d.ma2.reason, MIN_SHORT)) m.push('your prediction and reason');
       if (!filled(d.ma2.simMatched) || !filled(d.ma2.simChange, MIN_SHORT)) m.push('your simulator test result');
       if (!filled(d.ma2.transferMethod)) m.push('your transfer method');
-      if (!filled(d.ma2.cmpExpected, MIN_SHORT) || !filled(d.ma2.cmpSimulator, MIN_SHORT) || !filled(d.ma2.cmpPhysical, MIN_SHORT))
-        m.push('all three comparison columns');
+      if (!filled(d.ma2.hardwareOutcome)) m.push('your physical-device outcome');
+      if (!filled(d.ma2.cmpExpected, MIN_SHORT) || !filled(d.ma2.cmpSimulator, MIN_SHORT)) m.push('the expected and simulator comparison');
+      if (d.ma2.hardwareOutcome === 'Physical device succeeded' && !filled(d.ma2.cmpPhysical, MIN_SHORT)) m.push('the physical-device comparison');
+      if (d.ma2.hardwareOutcome === 'Teacher-approved hardware contingency' && !filled(d.ma2.contingencyNote, MIN_TEXT)) m.push('the hardware contingency explanation');
       if (!filled(d.ma2.allMatched)) m.push('whether all three matched');
       if (!hasEvidence('ma2_code')) m.push('code evidence');
-      if (!hasEvidence('ma2_device')) m.push('physical device evidence');
+      if (d.ma2.hardwareOutcome === 'Physical device succeeded' && !hasEvidence('ma2_device')) m.push('physical device evidence');
       if (!groupComplete('ma2')) m.push('the Main Activity 2 checklist');
+    } else if (id === 'pit2') {
+      if (!filled(d.pit2.phase)) m.push('your current learning phase');
+      if (!filled(d.pit2.wagbaArea)) m.push('the WAGBA area you improved');
+      if (!filled(d.pit2.evidence, MIN_TEXT)) m.push('evidence for your phase');
+      if (!filled(d.pit2.nextAction)) m.push('your next action');
+      if (d.pit2.phase === 'Drowning' && !filled(d.pit2.blocker)) m.push('the point where you need help');
     } else if (id === 'challenge') {
-      if (!filled(d.challenge.buttonPlan, MIN_SHORT)) m.push('what Button A should do');
-      if (!filled(d.challenge.changeMade, MIN_SHORT)) m.push('the change you made');
-      if (!filled(d.challenge.worked)) m.push('whether it worked');
+      if (!filled(d.challenge.level1Plan, MIN_SHORT)) m.push('the Level 1 Button A plan');
+      if (!filled(d.challenge.level1Change, MIN_SHORT)) m.push('the Level 1 change');
+      if (!filled(d.challenge.level1Worked)) m.push('the Level 1 result');
     } else if (id === 'plenary') {
       var missingQ = PLENARY_QS.filter(function (q) { return !filled(d.plenary[q.id], MIN_TEXT); });
       if (missingQ.length) m.push(missingQ.length + ' plenary answer' + (missingQ.length > 1 ? 's' : '') +
@@ -821,9 +892,10 @@
       '<div class="ev-actions">' +
         '<input type="file" accept="image/*" class="visually-hidden-file" id="file_' + slot + '" data-file-input>' +
         '<button type="button" class="btn btn-secondary btn-sm" data-act="pick">Upload image</button>' +
+        '<button type="button" class="btn btn-secondary btn-sm" data-act="paste">Paste screenshot</button>' +
         '<button type="button" class="btn btn-secondary btn-sm" data-act="replace" hidden>Replace</button>' +
         '<button type="button" class="btn btn-danger btn-sm" data-act="delete" hidden>Delete</button>' +
-      '</div>' +
+      '</div><div class="paste-zone" tabindex="0" data-paste-zone>Or click here and press Ctrl+V / Cmd+V to paste a screenshot.</div>' +
     '</div>';
   }
 
@@ -845,8 +917,17 @@
       '</div>' + body + '</section>';
   }
 
+  function languageSupportHTML(stage) {
+    var code = state.student.languageSupport || 'en';
+    if (code === 'en' || !SUPPORT[code] || !SUPPORT[code][stage]) return '';
+    return '<details class="language-support" open><summary>Language support — ' +
+      esc(LANGUAGE_NAMES[code]) + '</summary><p>' + esc(SUPPORT[code][stage]) + '</p>' +
+      '<p class="support-note">Keep these computing words in English: micro:bit, input, output, editor, simulator, transfer, test, debug.</p></details>';
+  }
+
   function buildPrep() {
     var body =
+    languageSupportHTML('safety') +
     '<div class="card">' +
       '<h3>What you need on your desk</h3>' +
       '<ul>' +
@@ -857,7 +938,9 @@
         '<li>Access to the official micro:bit editor</li>' +
       '</ul>' +
       '<div class="note note-warn"><strong>Before you touch anything</strong>' +
-      'No drinks on the desk. Hold the micro:bit by its edges. Do not pull cables out by the wire.</div>' +
+      'No drinks on the desk. Hold the micro:bit by its edges. Do not pull cables out by the wire. ' +
+      'Keep the board flat while connecting it.</div>' +
+      '<div class="stop-card"><strong>STOP and tell your teacher</strong><span>If the board becomes hot, wet or damaged, or if a connector looks bent, put it down and do not reconnect it.</span></div>' +
     '</div>' +
 
     '<div class="card">' +
@@ -887,15 +970,20 @@
       '<ul class="checklist"><li><label class="check">' +
         '<input type="checkbox" data-flag="prep.ready">' +
         '<span class="check-text">I have my micro:bit, my cable and a computer, and my desk is clear of drinks.</span>' +
+      '</label></li><li><label class="check"><input type="checkbox" data-flag="prep.safetyStop">' +
+        '<span class="check-text">I will stop and tell the teacher if equipment is hot, wet, damaged or bent.</span>' +
+      '</label></li><li><label class="check"><input type="checkbox" data-flag="prep.photoSafe">' +
+        '<span class="check-text">My evidence photos will show the device or screen, not faces or personal information.</span>' +
       '</label></li></ul>' +
     '</div>';
 
-    return sectionShell('prep', 'Section 1 of 7', 'Student preparation', '4 min', false,
+    return sectionShell('prep', 'Section 1 of 9', 'Student preparation', '4 min', false,
       'Collect your equipment and record your numbers before you start.', body);
   }
 
   function buildStarter() {
     var body =
+    languageSupportHTML('starter') +
     '<div class="card">' +
       '<div class="card-head"><span class="step-tag">Activity A</span><h3>Sequence the workflow</h3></div>' +
       '<p>A program does not travel from your screen to a physical device by itself. Put these four stages ' +
@@ -918,12 +1006,48 @@
 
     '<div class="card">' + checklistHTML('starter') + '</div>';
 
-    return sectionShell('starter', 'Section 2 of 7', 'Starter — From Code to a Physical Device', '8 min', false,
+    return sectionShell('starter', 'Section 2 of 9', 'Starter — From Code to a Physical Device', '6 min', false,
       'Before the equipment is handed out, get the workflow and the handling rules straight.', body);
+  }
+
+  function buildPit1() {
+    var body = languageSupportHTML('pit1') +
+    '<div class="card reflection-card"><div class="split"><div>' +
+      '<h3>Look back at the starter</h3>' +
+      '<p>You sequenced a programming workflow and judged safe and unsafe actions. Now identify how you were learning—not only whether you were correct.</p>' +
+      '<div class="learning-type-grid">' +
+        '<label class="choice-card"><input type="radio" name="learningType" value="Knowledge" data-bind="pit1.learningType"><span><strong>Knowledge</strong>Remembering component names, safety rules and the workflow.</span></label>' +
+        '<label class="choice-card"><input type="radio" name="learningType" value="Skills" data-bind="pit1.learningType"><span><strong>Skills</strong>Practising accurate sequencing, checking and safe routines.</span></label>' +
+        '<label class="choice-card"><input type="radio" name="learningType" value="Understanding" data-bind="pit1.learningType"><span><strong>Understanding</strong>Explaining why simulator testing and safe handling matter.</span></label>' +
+      '</div>' +
+    '</div>' + figureHTML(8) + '</div>' +
+      '<div class="field"><label id="lblPit1Evidence">Which starter action best supports your choice?</label>' +
+        radiosHTML('pit1Evidence', 'pit1.evidence', [
+          'I recalled a safety rule or keyword',
+          'I put the workflow into a logical order',
+          'I explained why an action was safe or unsafe',
+          'I corrected an answer after feedback'
+        ], true) + '</div>' +
+      '<div class="field"><label id="lblPit1Strategy">How will you get better during Main Activity 1?</label>' +
+        radiosHTML('pit1Strategy', 'pit1.strategy', [
+          'Recall the steps without looking',
+          'Use the component names accurately',
+          'Follow the connection sequence slowly and practise it',
+          'Explain why each safety step matters',
+          'Ask my partner a question instead of giving the answer'
+        ], true) + '</div>' +
+      taHTML('pit1Commitment', 'pit1.commitment', 'Complete: During Main Activity 1, I will get better by… because…',
+        'Example structure: I will get better by following each connection step slowly because forcing the port could damage it.', 3) +
+      '<div class="note note-info"><strong>Thirty-second partner discussion</strong>Tell your partner your learning type and improvement strategy. Your choices may be different.</div>' +
+    '</div>';
+    return sectionShell('pit1', 'Section 3 of 9', 'Learning checkpoint — How am I learning?', '3 min', false,
+      'Connect Knowledge, Skills and Understanding to what you have just done.', body);
   }
 
   function buildMA1() {
     var body =
+    languageSupportHTML('ma1') +
+    '<div class="card role-card"><h3>Pair roles</h3><div class="role-grid"><div><strong>Device Handler</strong><p>Handles the cable, board, mouse and keyboard.</p></div><div><strong>Safety and Instructions Checker</strong><p>Reads each step, watches for safe handling and asks checking questions.</p></div></div><p class="hint">Swap roles after the first successful simulator test.</p></div>' +
     /* ---- Step 1 ---- */
     '<div class="card">' +
       '<div class="card-head"><span class="step-tag">Step 1</span><h3>Collect and identify the parts</h3></div>' +
@@ -1011,7 +1135,7 @@
     /* ---- Evidence ---- */
     '<div class="card">' +
       '<h3>Evidence</h3>' +
-      '<p class="card-sub">Upload one image. It is stored in this browser only — nothing is sent anywhere.</p>' +
+      '<p class="card-sub">This onboarding image is optional. Your two final project evidence images are collected in Main Activity 2.</p>' +
       '<div class="ev-grid">' + evidenceHTML('ma1_main') + '</div>' +
       taHTML('ma1Problem', 'ma1.problemSolved',
         'Record one successful check, or one connection problem and how you solved it',
@@ -1020,12 +1144,13 @@
 
     '<div class="card">' + checklistHTML('ma1') + '</div>';
 
-    return sectionShell('ma1', 'Section 3 of 7', 'Main Activity 1 — Micro:bit Onboarding', '17 min', false,
+    return sectionShell('ma1', 'Section 4 of 9', 'Main Activity 1 — Micro:bit Onboarding', '14 min', false,
       'Identify the parts, connect the device safely, and create a correctly named project.', body);
   }
 
   function buildMA2() {
     var body =
+    languageSupportHTML('ma2') +
     '<div class="card">' +
       '<h3>The brief</h3>' +
       '<div class="note note-info"><strong>Scenario</strong>' +
@@ -1115,6 +1240,12 @@
       '</div>' + figureHTML(6) + '</div>' +
       '<div class="field"><label id="lblTransfer">Which transfer method did you use?</label>' +
         radiosHTML('transferMethod', 'ma2.transferMethod', TRANSFER_METHODS, true) + '</div>' +
+      '<div class="field"><label id="lblHardwareOutcome">What happened with the physical device?</label>' +
+        radiosHTML('hardwareOutcome', 'ma2.hardwareOutcome', ['Physical device succeeded', 'Teacher-approved hardware contingency'], true) + '</div>' +
+      '<div class="field" data-contingency-wrap hidden>' +
+        taHTML('contingencyNote', 'ma2.contingencyNote', 'Explain the hardware problem and what you completed in the simulator instead',
+          'Only use this after showing the problem to your teacher. Record the cable/device checks you tried.', 3) +
+      '</div>' +
     '</div>' +
 
     /* ---- Step 7 ---- */
@@ -1136,49 +1267,99 @@
           '<textarea id="cmpP" data-bind="ma2.cmpPhysical"></textarea></div>' +
       '</div>' +
       '<div class="field"><label id="lblAllMatch">Did all three match?</label>' +
-        radiosHTML('allMatched', 'ma2.allMatched', ['Yes, all three matched', 'Two of the three matched', 'No, they were different']) + '</div>' +
+        radiosHTML('allMatched', 'ma2.allMatched', ['Yes, all three matched', 'Two of the three matched', 'No, they were different', 'Physical device not tested — contingency used']) + '</div>' +
       taHTML('ma2Improve', 'ma2.improvement', 'Any improvement you made after checking the real device (optional)', null, 2) +
     '</div>' +
 
     /* ---- Evidence ---- */
     '<div class="card">' +
       '<h3>Evidence</h3>' +
-      '<p class="card-sub">Two images are required. A third is optional.</p>' +
+      '<p class="card-sub">A code screenshot is required. A physical-device photo is required unless your teacher approved the hardware contingency. You may upload a file or paste a screenshot.</p>' +
+      '<div class="note note-warn"><strong>Safe evidence</strong>Show the micro:bit or the program—not faces, messages, passwords or another student’s personal information.</div>' +
       '<div class="ev-grid">' + evidenceHTML('ma2_code') + evidenceHTML('ma2_device') + evidenceHTML('ma2_extra') + '</div>' +
     '</div>' +
 
     '<div class="card">' + checklistHTML('ma2') + '</div>';
 
-    return sectionShell('ma2', 'Section 4 of 7', 'Main Activity 2 — Welcome Signal', '25 min', false,
+    return sectionShell('ma2', 'Section 5 of 9', 'Main Activity 2 — Welcome Signal', '20 min', false,
       'Build it, test it in the simulator, transfer it, then compare the real output with what you expected.', body);
   }
 
+  function buildPit2() {
+    var body = languageSupportHTML('pit2') +
+    '<div class="card reflection-card"><div class="split"><div>' +
+      '<h3>Choose your current phase</h3>' +
+      '<p>This is private reflection for your teacher. It describes how <strong>this task feels now</strong>, not how clever or capable you are. Your phase can change after one useful action.</p>' +
+      '<div class="phase-grid">' +
+        '<label class="choice-card phase-new"><input type="radio" name="pitPhase" value="New Learning" data-bind="pit2.phase"><span><strong>New Learning</strong>This was new. I experienced a productive struggle and made progress.</span></label>' +
+        '<label class="choice-card phase-consolidating"><input type="radio" name="pitPhase" value="Consolidating" data-bind="pit2.phase"><span><strong>Consolidating</strong>I had met this before and became more accurate or independent.</span></label>' +
+        '<label class="choice-card phase-water"><input type="radio" name="pitPhase" value="Treading Water" data-bind="pit2.phase"><span><strong>Treading Water</strong>I completed it easily and now need a deeper challenge.</span></label>' +
+        '<label class="choice-card phase-drowning"><input type="radio" name="pitPhase" value="Drowning" data-bind="pit2.phase"><span><strong>Drowning</strong>I cannot move forward yet and need targeted help.</span></label>' +
+      '</div>' +
+      '<div class="phase-guidance" data-phase-guidance hidden role="status" aria-live="polite"></div>' +
+    '</div>' + figureHTML(9) + '</div>' +
+      '<div class="field"><label id="lblWagbaArea">Which part of today’s WAGBA did you improve most?</label>' +
+        radiosHTML('wagbaArea', 'pit2.wagbaArea', ['Setting up safely', 'Creating the program', 'Transferring the program', 'Testing the LED output'], true) + '</div>' +
+      taHTML('pitEvidence', 'pit2.evidence', 'Give one piece of evidence for your phase',
+        'Example: I transferred the program without help, but I needed the diagram to connect the cable safely.', 3) +
+      '<div class="field"><label id="lblNextAction">Choose your next useful action</label>' +
+        radiosHTML('pitNext', 'pit2.nextAction', [
+          'Repeat one step without instructions and explain why it matters',
+          'Ask my partner checking questions and complete the process with less help',
+          'Begin Extension Level 1 and keep progressing',
+          'Use the troubleshooting route and ask the teacher for targeted help'
+        ], true) + '</div>' +
+      '<div class="field" data-blocker-wrap hidden><label id="lblBlocker">Where exactly do you need help?</label>' +
+        radiosHTML('pitBlocker', 'pit2.blocker', ['Connecting the micro:bit', 'Opening or using the editor', 'Building the program', 'Simulator testing', 'Downloading or transferring', 'Understanding the output', 'Saving evidence'], true) + '</div>' +
+      '<div class="rescue-panel" data-rescue hidden><strong>Your rescue route</strong><ol><li>Stop changing several things at once.</li><li>Return to the diagram for the step where you are stuck.</li><li>Try one check and observe what changes.</li><li>Show your teacher the exact step and describe what you already tried.</li></ol></div>' +
+    '</div>';
+    return sectionShell('pit2', 'Section 6 of 9', 'Learning pitstop — Where am I now?', '4 min', false,
+      'Use evidence to judge your phase and choose the next action that will help.', body);
+  }
+
   function buildChallenge() {
-    var body =
+    var body = languageSupportHTML('challenge') +
     '<div class="card">' +
       '<div class="note note-info" style="margin-top:0"><strong>This section is optional</strong>' +
       'It is not required to reach the plenary or to complete the lesson. Attempt it only if your ' +
       'welcome signal is already working on the physical device.</div>' +
-      '<h3>The challenge</h3>' +
-      '<p>Add a <strong>Button A</strong> behaviour that displays a second symbol or short message ' +
-      '<strong>without removing the original welcome output</strong>.</p>' +
+      '<h3>How the pathway works</h3>' +
+      '<p>Start at Level 1. When it works, continue to Level 2, then Level 3. The plenary remains available at any time.</p>' +
+    '</div>' +
+    '<div class="card extension-level"><div class="card-head"><span class="step-tag">Level 1 · about 5 min</span><h3>Interactive Badge</h3></div>' +
+      '<p>Add a <strong>Button A</strong> input that displays a second symbol or short message without removing the original welcome output.</p>' +
       '<div class="note note-tip"><strong>Think about this first</strong>' +
       'Your welcome output currently runs once when the program starts. A button press is an ' +
       '<strong>input</strong> that happens later. What kind of block or function reacts to an event ' +
       'rather than running at the start?</div>' +
-      taHTML('chPlan', 'challenge.buttonPlan', 'What should Button A do?', null, 2) +
-      taHTML('chChange', 'challenge.changeMade', 'What change did you make to your program?', null, 3) +
+      taHTML('chPlan', 'challenge.level1Plan', 'What should Button A do?', null, 2) +
+      taHTML('chChange', 'challenge.level1Change', 'What change did you make to your program?', null, 3) +
       '<div class="field"><label id="lblChWorked">Did it work?</label>' +
-        radiosHTML('chWorked', 'challenge.worked', ['Yes, it worked', 'Partly — it needs more work', 'No, not yet']) + '</div>' +
+        radiosHTML('chWorked', 'challenge.level1Worked', ['Yes, it worked', 'Partly — it needs more work', 'No, not yet']) + '</div>' +
+    '</div>' +
+    '<div class="card extension-level"><div class="card-head"><span class="step-tag">Level 2 · about 8–10 min</span><h3>Two-Button Badge</h3></div>' +
+      '<p>Make Button A and Button B produce <strong>different purposeful outputs</strong>. Preserve the original start-up welcome.</p>' +
+      taHTML('chL2A', 'challenge.level2A', 'What input and output will Button A use?', 'Example structure: Input — Button A pressed. Output — …', 2) +
+      taHTML('chL2B', 'challenge.level2B', 'What input and output will Button B use?', 'Make this different from Button A.', 2) +
+      taHTML('chL2Pred', 'challenge.level2Prediction', 'Predict what will happen when you press A, then B', null, 2) +
+      taHTML('chL2Result', 'challenge.level2Result', 'Test both buttons. What happened and what did you change?', null, 3) +
+    '</div>' +
+    '<div class="card extension-level"><div class="card-head"><span class="step-tag">Level 3 · about 10–15 min</span><h3>Test Engineer</h3></div>' +
+      '<p>Run three different tests: start-up, Button A and Button B. Record each input, expected output, actual output and result.</p>' +
+      taHTML('chL3Tests', 'challenge.level3Tests', 'Write your three-test table as three clear lines',
+        'Test 1 — Input/action: … | Expected: … | Actual: … | Result: …', 6) +
+      taHTML('chL3Improve', 'challenge.level3Improvement', 'Choose and make one improvement',
+        'You could improve timing, message clarity, icon meaning, accessibility or output order.', 3) +
+      taHTML('chL3Reflect', 'challenge.level3Reflection', 'Why is the improved badge more useful for its intended user?', null, 3) +
       '<div class="ev-grid">' + evidenceHTML('challenge') + '</div>' +
     '</div>';
 
-    return sectionShell('challenge', 'Section 5 of 7', 'Optional challenge — Button A', 'extra', true,
-      'An extension for pairs who have finished the welcome signal.', body);
+    return sectionShell('challenge', 'Section 7 of 9', 'Extension pathway — Keep progressing', '5–15 min', true,
+      'Three connected levels for students who finish the core project early.', body);
   }
 
   function buildPlenary() {
-    var body =
+    var body = languageSupportHTML('plenary') +
     '<div class="card">' +
       '<h3>Show what you understand</h3>' +
       '<p class="card-sub">Write in full sentences. Your answers are saved as written — they are read by your teacher, ' +
@@ -1197,7 +1378,7 @@
       'Saying you need more practice tells your teacher exactly where to start next week.</div>' +
     '</div>';
 
-    return sectionShell('plenary', 'Section 6 of 7', 'Plenary — Ready for the Smart Badge Project', '8 min', false,
+    return sectionShell('plenary', 'Section 8 of 9', 'Plenary — Ready for the Smart Badge Project', '6 min', false,
       'Six questions to close the lesson.', body);
   }
 
@@ -1235,7 +1416,7 @@
     '<div class="card"><h3>Your written responses</h3><div id="rvResponses"></div></div>' +
     '<div class="card"><h3>Your evidence</h3><div class="rv-thumbs" id="rvThumbs"></div></div>';
 
-    return sectionShell('review', 'Section 7 of 7', 'Review and export', '3 min', false,
+    return sectionShell('review', 'Section 9 of 9', 'Review and export', '3 min', false,
       'Check everything is there, then export your PDF for Teams.', body);
   }
 
@@ -1245,7 +1426,7 @@
 
   function renderAll() {
     $('#sections').innerHTML =
-      buildPrep() + buildStarter() + buildMA1() + buildMA2() + buildChallenge() + buildPlenary() + buildReview();
+      buildPrep() + buildStarter() + buildPit1() + buildMA1() + buildMA2() + buildPit2() + buildChallenge() + buildPlenary() + buildReview();
     renderSequence();
     renderSafety();
     renderParts();
@@ -1355,6 +1536,23 @@
     if (pw) pw.hidden = state.data.prep.workMode !== 'With a partner';
     var io = $('[data-icon-other]');
     if (io) io.hidden = state.data.ma2.icon !== 'Other';
+    var cw = $('[data-contingency-wrap]');
+    if (cw) cw.hidden = state.data.ma2.hardwareOutcome !== 'Teacher-approved hardware contingency';
+    var bw = $('[data-blocker-wrap]');
+    if (bw) bw.hidden = state.data.pit2.phase !== 'Drowning';
+    var rp = $('[data-rescue]');
+    if (rp) rp.hidden = state.data.pit2.phase !== 'Drowning';
+    var pg = $('[data-phase-guidance]');
+    if (pg) {
+      var guides = {
+        'New Learning': '<strong>Recommended next move:</strong> repeat one important step without the diagram, then explain why it matters.',
+        'Consolidating': '<strong>Recommended next move:</strong> complete the process with less support and ask your partner checking questions.',
+        'Treading Water': '<strong>Recommended next move:</strong> begin Extension Level 1 and continue through the levels while time remains.',
+        'Drowning': '<strong>Recommended next move:</strong> name the exact blocker below, use one troubleshooting check, then show your teacher what you tried.'
+      };
+      pg.hidden = !guides[state.data.pit2.phase];
+      pg.innerHTML = guides[state.data.pit2.phase] || '';
+    }
   }
 
   /* ---- write state into the DOM ---- */
@@ -1603,6 +1801,7 @@
     var slot  = root.getAttribute('data-slot');
     var input = $('[data-file-input]', root);
     var status = $('[data-status]', root);
+    var pasteZone = $('[data-paste-zone]', root);
 
     function setStatus(msg, tone) { status.textContent = msg || ''; status.setAttribute('data-tone', tone || ''); }
 
@@ -1610,6 +1809,30 @@
       b.addEventListener('click', function () {
         var act = b.getAttribute('data-act');
         if (act === 'pick' || act === 'replace') { input.value = ''; input.click(); }
+        else if (act === 'paste') {
+          if (navigator.clipboard && navigator.clipboard.read) {
+            setStatus('Reading the clipboard…', 'work');
+            navigator.clipboard.read().then(function (items) {
+              for (var i = 0; i < items.length; i++) {
+                for (var j = 0; j < items[i].types.length; j++) {
+                  if (items[i].types[j].indexOf('image/') === 0) {
+                    return items[i].getType(items[i].types[j]).then(function (blob) {
+                      var file = new File([blob], 'pasted-screenshot.png', { type: blob.type || 'image/png' });
+                      processFile(file);
+                    });
+                  }
+                }
+              }
+              throw new Error('No image was found on the clipboard.');
+            }).catch(function () {
+              setStatus('Clipboard access was blocked. Click the dotted paste area, then press Ctrl+V or Cmd+V.', 'bad');
+              pasteZone.focus();
+            });
+          } else {
+            setStatus('Click the dotted paste area, then press Ctrl+V or Cmd+V.', 'work');
+            pasteZone.focus();
+          }
+        }
         else if (act === 'delete') {
           confirmDialog('Delete this image?', 'The uploaded image for "' + slotDef(slot).title + '" will be removed. This cannot be undone.',
             function () {
@@ -1624,8 +1847,7 @@
       });
     });
 
-    input.addEventListener('change', function () {
-      var file = input.files && input.files[0];
+    function processFile(file) {
       if (!file) return;
       if (!/^image\//.test(file.type)) { setStatus('That is not an image file. Use a photo or a screenshot (JPG or PNG).', 'bad'); return; }
       if (file.size > MAX_UPLOAD_BYTES) {
@@ -1655,6 +1877,24 @@
         setStatus('Could not save that image. ' + (err && err.message ? err.message : '') +
           ' Try a different file, or check that your browser allows storage.', 'bad');
       });
+    }
+
+    input.addEventListener('change', function () {
+      processFile(input.files && input.files[0]);
+    });
+
+    pasteZone.addEventListener('paste', function (e) {
+      var items = e.clipboardData && e.clipboardData.items;
+      if (!items) return;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image/') === 0) {
+          e.preventDefault();
+          var blob = items[i].getAsFile();
+          processFile(new File([blob], 'pasted-screenshot.png', { type: blob.type || 'image/png' }));
+          return;
+        }
+      }
+      setStatus('The clipboard did not contain an image. Copy a screenshot, then try again.', 'bad');
     });
   }
 
@@ -1713,7 +1953,7 @@
   }
   function closeImageModal() {
     $('#imgModal').hidden = true;
-    $('#imgModalImg').src = '';
+    $('#imgModalImg').removeAttribute('src');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
@@ -1764,7 +2004,7 @@
         (open ? '' : ' aria-disabled="true"') + (cur ? ' aria-current="step"' : '') +
         ' title="' + esc(open ? s.name : unlockMessage(s.id)) + '">' +
         '<span class="st-ico" aria-hidden="true">' + ico + '</span>' +
-        '<span>' + s.num + '. ' + esc(s.name) + '</span>' +
+        '<span>' + s.num + '. ' + esc(s.tab || s.name) + '</span>' +
         (s.optional ? '<span class="st-opt">opt</span>' : '') +
         '<span class="sr-only">' + (done ? ' — completed' : open ? ' — not yet completed' : ' — locked') + '</span>' +
         '</button></li>';
@@ -1828,6 +2068,8 @@
 
     $('#hdrName').textContent  = state.student.fullName || '—';
     $('#hdrClass').textContent = state.student.className || '—';
+    $('#hdrLanguage').textContent = LANGUAGE_NAMES[state.student.languageSupport || 'en'];
+    $('#lpLanguage').textContent = LANGUAGE_NAMES[state.student.languageSupport || 'en'];
     var em = $('#exportMeta');
     if (em) {
       em.textContent = 'Last saved: ' + prettyDate(state.updatedAt) +
@@ -1856,6 +2098,10 @@
           ? SAFETY_ITEMS.filter(function (it) { return (state.activity.safety.answers[it.id] === 'safe') === it.safe && state.activity.safety.answers[it.id]; }).length +
             ' out of ' + SAFETY_ITEMS.length + ' correct (' + state.activity.safety.attempts + ' attempt' +
             (state.activity.safety.attempts === 1 ? '' : 's') + ')' : '' },
+      { g: 'Learning checkpoint', q: 'Main learning type', a: d.pit1.learningType },
+      { g: 'Learning checkpoint', q: 'Evidence from the starter', a: d.pit1.evidence },
+      { g: 'Learning checkpoint', q: 'Improvement strategy', a: d.pit1.strategy },
+      { g: 'Learning checkpoint', q: 'Improvement commitment', a: d.pit1.commitment },
       { g: 'Main Activity 1', q: 'Parts matching', a: state.activity.parts.checked
           ? PART_TERMS.filter(function (t) { return state.activity.parts.answers[t.id] === t.answer; }).length +
             ' out of ' + PART_TERMS.length + ' correct (' + state.activity.parts.attempts + ' attempt' +
@@ -1874,6 +2120,8 @@
       { g: 'Main Activity 2', q: 'Simulator matched the prediction?', a: d.ma2.simMatched },
       { g: 'Main Activity 2', q: 'Change made after simulator testing', a: d.ma2.simChange },
       { g: 'Main Activity 2', q: 'Transfer method used', a: d.ma2.transferMethod },
+      { g: 'Main Activity 2', q: 'Hardware outcome', a: d.ma2.hardwareOutcome },
+      { g: 'Main Activity 2', q: 'Hardware contingency note', a: d.ma2.contingencyNote },
       { g: 'Main Activity 2', q: 'Expected output',  a: d.ma2.cmpExpected },
       { g: 'Main Activity 2', q: 'Simulator output', a: d.ma2.cmpSimulator },
       { g: 'Main Activity 2', q: 'Physical device output', a: d.ma2.cmpPhysical },
@@ -1882,10 +2130,22 @@
       { g: 'Main Activity 2', q: 'Code evidence caption', a: d.ma2.capCode },
       { g: 'Main Activity 2', q: 'Device evidence caption', a: d.ma2.capDevice },
       { g: 'Main Activity 2', q: 'Extra evidence caption', a: d.ma2.capExtra },
-      { g: 'Optional challenge', q: 'What Button A should do', a: d.challenge.buttonPlan, optional: true },
-      { g: 'Optional challenge', q: 'Change made', a: d.challenge.changeMade, optional: true },
-      { g: 'Optional challenge', q: 'Did it work?', a: d.challenge.worked, optional: true },
-      { g: 'Optional challenge', q: 'Evidence caption', a: d.challenge.caption, optional: true },
+      { g: 'Learning pitstop', q: 'Current phase', a: d.pit2.phase },
+      { g: 'Learning pitstop', q: 'WAGBA area improved', a: d.pit2.wagbaArea },
+      { g: 'Learning pitstop', q: 'Evidence for the phase', a: d.pit2.evidence },
+      { g: 'Learning pitstop', q: 'Next useful action', a: d.pit2.nextAction },
+      { g: 'Learning pitstop', q: 'Targeted help needed', a: d.pit2.blocker },
+      { g: 'Extension pathway', q: 'Level 1 — Button A plan', a: d.challenge.level1Plan, optional: true },
+      { g: 'Extension pathway', q: 'Level 1 — change made', a: d.challenge.level1Change, optional: true },
+      { g: 'Extension pathway', q: 'Level 1 — result', a: d.challenge.level1Worked, optional: true },
+      { g: 'Extension pathway', q: 'Level 2 — Button A input/output', a: d.challenge.level2A, optional: true },
+      { g: 'Extension pathway', q: 'Level 2 — Button B input/output', a: d.challenge.level2B, optional: true },
+      { g: 'Extension pathway', q: 'Level 2 — prediction', a: d.challenge.level2Prediction, optional: true },
+      { g: 'Extension pathway', q: 'Level 2 — test result', a: d.challenge.level2Result, optional: true },
+      { g: 'Extension pathway', q: 'Level 3 — three tests', a: d.challenge.level3Tests, optional: true },
+      { g: 'Extension pathway', q: 'Level 3 — improvement', a: d.challenge.level3Improvement, optional: true },
+      { g: 'Extension pathway', q: 'Level 3 — usefulness reflection', a: d.challenge.level3Reflection, optional: true },
+      { g: 'Extension pathway', q: 'Evidence caption', a: d.challenge.caption, optional: true },
       { g: 'Plenary', q: PLENARY_QS[0].text, a: d.plenary.q1 },
       { g: 'Plenary', q: PLENARY_QS[1].text, a: d.plenary.q2 },
       { g: 'Plenary', q: PLENARY_QS[2].text, a: d.plenary.q3 },
@@ -1900,6 +2160,7 @@
     $('#rvDetails').innerHTML = [
       ['Name', state.student.fullName],
       ['Class', state.student.className],
+      ['Language support', LANGUAGE_NAMES[state.student.languageSupport || 'en']],
       ['Device number', d.prep.deviceNumber],
       ['Cable number', d.prep.cableNumber],
       ['Working', d.prep.workMode + (d.prep.workMode === 'With a partner' && d.prep.partnerName ? ' — ' + d.prep.partnerName : '')],
@@ -2121,6 +2382,14 @@
   }
 
   function exportPDF(isFinal) {
+    /* Inspect student-entered data only. Generated labels contain arrows and
+       symbols that are safely normalised later and must not trigger this. */
+    var hasNonLatinResponse = /[^\u0000-\u00FF\u2010-\u2026]/.test(JSON.stringify(state.data));
+    if (hasNonLatinResponse) {
+      toast('Your answers include characters that need the browser’s Unicode print system. Choose Save as PDF in the print window.', 'warn', 7000);
+      printFallback();
+      return Promise.resolve(false);
+    }
     if (!window.jspdf || !window.jspdf.jsPDF) {
       toast('The PDF library did not load. Use the Print / Save as PDF button instead.', 'bad', 6000);
       return Promise.resolve(false);
@@ -2165,6 +2434,7 @@
 
     W.kv('Student name', state.student.fullName);
     W.kv('Class', state.student.className);
+    W.kv('Language support used', LANGUAGE_NAMES[state.student.languageSupport || 'en']);
     W.kv('Year group', 'Year 8');
     W.kv('Term and week', 'Term 1, Week 1');
     W.kv('Lesson', LESSON_TITLE);
@@ -2207,7 +2477,7 @@
     W.h3('Keywords');
     W.p('micro:bit, LED matrix, Button A, Button B, input, output, USB, micro USB, editor, simulator, program, download, transfer, flash, test, debug');
     W.h3('Challenge');
-    W.p('Add a Button A behaviour that displays a second symbol or short message without removing the original welcome output.');
+    W.p('Complete the extension pathway: add Button A, add a different Button B output, then test and improve the badge systematically.');
 
     /* ---- completion summary ---- */
     W.h2('Completion summary');
@@ -2252,6 +2522,12 @@
 
     W.h3(CHECKLISTS.starter.title);
     CHECKLISTS.starter.items.forEach(function (it) { W.tick(checkOn('starter', it.id), it.text); });
+
+    W.h2('Learning checkpoint — Knowledge, Skills and Understanding');
+    W.kv('Main learning type', d.pit1.learningType);
+    W.kv('Evidence from the starter', d.pit1.evidence);
+    W.kv('Improvement strategy', d.pit1.strategy);
+    W.qa('Improvement commitment:', d.pit1.commitment);
 
     /* ---- MA1 ---- */
     doc.addPage(); W.y = W.M;
@@ -2309,6 +2585,10 @@
 
     W.h3('Step 6: download and transfer');
     W.kv('Transfer method', d.ma2.transferMethod);
+    W.kv('Hardware outcome', d.ma2.hardwareOutcome);
+    if (d.ma2.hardwareOutcome === 'Teacher-approved hardware contingency') {
+      W.qa('Hardware contingency:', d.ma2.contingencyNote);
+    }
 
     W.h3('Step 7: expected / simulator / physical comparison');
     W.qa('What the student expected:', d.ma2.cmpExpected);
@@ -2334,15 +2614,30 @@
     W.h3(CHECKLISTS.ma2.title);
     CHECKLISTS.ma2.items.forEach(function (it) { W.tick(checkOn('ma2', it.id), it.text); });
 
+    W.h2('Learning pitstop — Current learning phase');
+    W.kv('Current phase', d.pit2.phase);
+    W.kv('WAGBA area improved', d.pit2.wagbaArea);
+    W.qa('Evidence for the phase:', d.pit2.evidence);
+    W.kv('Next useful action', d.pit2.nextAction);
+    if (d.pit2.phase === 'Drowning') W.kv('Targeted help needed', d.pit2.blocker);
+
     /* ---- challenge ---- */
     if (d.challenge.attempted) {
       doc.addPage(); W.y = W.M;
-      W.h1('Optional challenge — Button A');
-      W.p('Add a Button A behaviour that displays a second symbol or short message without removing the original welcome output.',
-        { style: 'italic' });
-      W.qa('What should Button A do?', d.challenge.buttonPlan);
-      W.qa('What change was made?', d.challenge.changeMade);
-      W.kv('Did it work?', d.challenge.worked);
+      W.h1('Extension pathway');
+      W.h3('Level 1 — Interactive Badge');
+      W.qa('What should Button A do?', d.challenge.level1Plan);
+      W.qa('What change was made?', d.challenge.level1Change);
+      W.kv('Did it work?', d.challenge.level1Worked);
+      W.h3('Level 2 — Two-Button Badge');
+      W.qa('Button A input/output:', d.challenge.level2A);
+      W.qa('Button B input/output:', d.challenge.level2B);
+      W.qa('Prediction:', d.challenge.level2Prediction);
+      W.qa('Test result and change:', d.challenge.level2Result);
+      W.h3('Level 3 — Test Engineer');
+      W.qa('Three tests:', d.challenge.level3Tests);
+      W.qa('Improvement:', d.challenge.level3Improvement);
+      W.qa('Why the improved badge is more useful:', d.challenge.level3Reflection);
       if (imgBySlot.challenge) {
         W.img(imgBySlot.challenge.img.dataUrl, imgBySlot.challenge.img.w, imgBySlot.challenge.img.h,
           'Challenge evidence — ' + (d.challenge.caption || 'no caption'));
@@ -2600,6 +2895,12 @@
     d.prep.workMode     = 'Independently';
     d.prep.projectFileName = 'Y8_8T_Pair01_SmartBadge_W1';
     d.prep.ready = true;
+    d.prep.safetyStop = true;
+    d.prep.photoSafe = true;
+    d.pit1.learningType = 'Understanding';
+    d.pit1.evidence = 'I explained why an action was safe or unsafe';
+    d.pit1.strategy = 'Explain why each safety step matters';
+    d.pit1.commitment = 'During Main Activity 1, I will explain why each connection step matters so I can work safely without guessing.';
     d.ma1.editorChoice = 'Blocks (MakeCode)';
     d.ma1.projectName  = 'Y8_8T_Pair01_SmartBadge_W1';
     d.ma1.evidenceCaption = 'Teacher test caption';
@@ -2610,12 +2911,17 @@
     d.ma2.simMatched = 'Yes, it matched';
     d.ma2.simChange = 'No correction was required on the first run.';
     d.ma2.transferMethod = TRANSFER_METHODS[2];
+    d.ma2.hardwareOutcome = 'Physical device succeeded';
     d.ma2.cmpExpected  = 'Heart, short pause, then READY scrolling.';
     d.ma2.cmpSimulator = 'Heart, then READY scrolled once.';
     d.ma2.cmpPhysical  = 'Heart, then READY scrolled once on the real LEDs.';
     d.ma2.allMatched = 'Yes, all three matched';
     d.ma2.improvement = 'Increased the pause from 500 to 800 milliseconds.';
     d.ma2.capCode = 'Blocks screenshot'; d.ma2.capDevice = 'Photo of the device';
+    d.pit2.phase = 'Consolidating';
+    d.pit2.wagbaArea = 'Testing the LED output';
+    d.pit2.evidence = 'I compared the expected, simulator and physical output and improved the pause timing.';
+    d.pit2.nextAction = 'Ask my partner checking questions and complete the process with less help';
     d.plenary.q1 = 'You must download the program and copy the hex file onto the MICROBIT drive.';
     d.plenary.q2 = 'It is an output because it displays information produced by the program.';
     d.plenary.q3 = 'Always insert the micro USB connector straight and never force it.';
@@ -2633,9 +2939,16 @@
     state.activity.parts.checked = true; state.activity.parts.attempts = 1;
     RETRIEVAL.forEach(function (q) { state.activity.retrieval.answers[q.id] = q.answer; });
     state.activity.retrieval.checked = true; state.activity.retrieval.attempts = 1;
-    state.data.challenge.buttonPlan = 'Show a star when Button A is pressed.';
-    state.data.challenge.changeMade = 'Added an on button A pressed block with show icon star.';
-    state.data.challenge.worked = 'Yes, it worked';
+    state.data.challenge.level1Plan = 'Show a star when Button A is pressed.';
+    state.data.challenge.level1Change = 'Added an on button A pressed block with show icon star.';
+    state.data.challenge.level1Worked = 'Yes, it worked';
+    state.data.challenge.level2A = 'Button A shows a star.';
+    state.data.challenge.level2B = 'Button B shows READY.';
+    state.data.challenge.level2Prediction = 'A will show a star and B will scroll READY.';
+    state.data.challenge.level2Result = 'Both buttons worked after moving each output into its own event block.';
+    state.data.challenge.level3Tests = 'Start — welcome expected and shown. A — star expected and shown. B — READY expected and shown.';
+    state.data.challenge.level3Improvement = 'Shortened the Button B message so it is quicker to read.';
+    state.data.challenge.level3Reflection = 'The outputs are clearer and the user can understand the badge more quickly.';
   }
 
   function startLesson() {
@@ -2654,7 +2967,7 @@
 
   function handleEntry(e) {
     e.preventDefault();
-    var nameEl = $('#entryName'), classEl = $('#entryClass');
+    var nameEl = $('#entryName'), classEl = $('#entryClass'), languageEl = $('#entryLanguage');
     var name = nameEl.value.trim(), cls = classEl.value.trim();
     var isTeacher = name.toLowerCase() === TEACHER_TRIGGER;
     var ok = true;
@@ -2692,7 +3005,8 @@
 
     state.teacherMode = isTeacher;
     state.student.fullName  = isTeacher ? 'Teacher (test mode)' : name;
-    state.student.className = isTeacher ? (cls || 'TEST') : cls;
+    state.student.className = isTeacher ? 'TEST' : cls;
+    state.student.languageSupport = languageEl.value || 'en';
     if (isTeacher && !filled(state.data.ma1.projectName)) teacherSeed();
 
     saveNow();
@@ -2730,6 +3044,7 @@
     var done = core.filter(function (s) { return existing.sectionsComplete[s.id]; }).length;
     $('#entryName').value  = existing.student.fullName;
     $('#entryClass').value = existing.student.className;
+    $('#entryLanguage').value = existing.student.languageSupport || 'en';
     r.hidden = false;
     $('#entryResumeText').textContent = 'Saved work found on this computer for ' + existing.student.fullName +
       ' (Class ' + existing.student.className + ') — ' + done + ' of ' + core.length +
@@ -2855,7 +3170,7 @@
     getState: function () { return state; },
     exportPDF: exportPDF,
     exportBackup: exportBackup,
-    version: '1.0.0'
+    version: '2.0.0'
   };
 
 })();

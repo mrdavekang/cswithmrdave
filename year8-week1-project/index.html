@@ -40,6 +40,16 @@
                aria-describedby="entryClassErr" placeholder="e.g. 8T">
         <p class="err" id="entryClassErr" role="alert"></p>
       </div>
+      <div class="field">
+        <label for="entryLanguage">Language support</label>
+        <select id="entryLanguage" name="entryLanguage" aria-describedby="entryLanguageHelp">
+          <option value="en">English</option>
+          <option value="bm">English + Bahasa Melayu</option>
+          <option value="zh">English + Simplified Chinese</option>
+          <option value="ko">English + Korean</option>
+        </select>
+        <p class="field-help" id="entryLanguageHelp">English remains the main computing language. Important instructions, safety messages and keywords will also appear in your chosen language.</p>
+      </div>
       <button type="submit" class="btn btn-primary btn-lg" id="entryStart">Start the lesson</button>
       <p class="entry-note">Your work saves automatically in this browser on this computer.
         Nothing is uploaded anywhere. Export a PDF at the end for your Teams assignment.</p>
@@ -69,6 +79,7 @@
         <h1 class="appbar-title">Mission 0 — Meet the Micro:bit</h1>
         <p class="appbar-student"><span id="hdrName">—</span> <span class="sep" aria-hidden="true">|</span>
           Class <span id="hdrClass">—</span>
+          <span class="sep" aria-hidden="true">|</span> <span id="hdrLanguage">English</span>
           <span id="teacherBadge" class="teacher-badge" hidden>TEACHER TEST MODE</span></p>
       </div>
       <div class="appbar-tools">
@@ -165,8 +176,14 @@
 
         <details class="lp-block lp-challenge">
           <summary>Challenge</summary>
-          <p>Add a Button A behaviour that displays a second symbol or short message without removing
-            the original welcome output.</p>
+          <p>Complete the three-stage extension pathway: add Button A, add a different Button B output,
+            then test and improve the badge systematically.</p>
+        </details>
+
+        <details class="lp-block">
+          <summary>Language support</summary>
+          <p id="lpLanguage">English</p>
+          <p class="lp-lead">Computing words, code, filenames and editor labels remain in English. Short support appears inside each activity.</p>
         </details>
       </div>
     </aside>
@@ -183,7 +200,7 @@
       <h2 id="imgModalTitle" class="modal-title">Diagram</h2>
       <button type="button" class="modal-close" id="imgModalClose" aria-label="Close diagram">&times;</button>
     </div>
-    <div class="modal-body"><img id="imgModalImg" src="" alt=""></div>
+    <div class="modal-body"><img id="imgModalImg" alt=""></div>
     <p class="modal-cap" id="imgModalCap"></p>
   </div>
 </div>
