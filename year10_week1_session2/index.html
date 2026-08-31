@@ -571,6 +571,302 @@
 
     .hint-panel.visible { display: block; }
 
+    .feedback-panel {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid #b8d8c4;
+      border-radius: 12px;
+      background: var(--green-soft);
+      color: #064d27;
+    }
+
+    .feedback-panel.visible { display: block; }
+    .feedback-panel h3 { margin: 0 0 8px; }
+    .feedback-panel p { margin: 6px 0; }
+
+    .inline-message {
+      min-height: 1.4em;
+      margin: 8px 0 0;
+      color: var(--danger);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .learning-grid,
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .phase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .learning-option,
+    .phase-option {
+      position: relative;
+      display: block;
+      min-height: 100%;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+    }
+
+    .learning-option:hover,
+    .phase-option:hover { border-color: #9aa29d; transform: translateY(-1px); }
+
+    .learning-option:has(input:checked),
+    .phase-option:has(input:checked) {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0, 132, 61, 0.10);
+    }
+
+    .learning-option input,
+    .phase-option input {
+      width: 18px;
+      height: 18px;
+      margin: 0 8px 0 0;
+      accent-color: var(--green);
+      vertical-align: -3px;
+    }
+
+    .learning-option h2,
+    .phase-option h2 {
+      display: inline;
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .learning-option p,
+    .phase-option p { margin: 10px 0 0; font-size: 0.9rem; }
+
+    .learning-option ul,
+    .phase-option ul { margin: 10px 0 0; padding-left: 19px; font-size: 0.86rem; }
+
+    .option-tag {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .next-action {
+      margin-top: 16px;
+      padding: 16px;
+      border-left: 4px solid var(--green);
+      border-radius: 0 12px 12px 0;
+      background: var(--green-soft);
+    }
+
+    .next-action[data-tone="challenge"] { border-left-color: var(--amber); background: var(--amber-soft); }
+    .next-action[data-tone="support"] { border-left-color: var(--blue); background: var(--blue-soft); }
+
+    .school-reference {
+      margin: 18px 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .school-reference summary {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .school-reference img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .operator-focus {
+      margin: 14px 0 0;
+      padding: 14px 16px;
+      border-left: 4px solid var(--green);
+      border-radius: 0 12px 12px 0;
+      background: var(--green-soft);
+      color: #064d27;
+    }
+
+    .challenge-sequence {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .challenge-exercise {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .challenge-exercise[open] {
+      border-color: #aeb7b1;
+      box-shadow: 0 8px 24px rgba(17, 17, 17, 0.045);
+    }
+
+    .challenge-exercise summary {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .challenge-exercise summary small {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .challenge-body {
+      padding: 0 18px 20px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .challenge-body > p:first-child { margin-top: 16px; }
+
+    .sample-run {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--soft);
+    }
+
+    .sample-run strong { display: block; margin-bottom: 6px; }
+
+    .sample-run pre {
+      padding: 0;
+      background: transparent;
+      color: var(--ink);
+      white-space: pre-wrap;
+    }
+
+    .challenge-test {
+      margin: 12px 0;
+      color: #15365f;
+      font-weight: 700;
+    }
+
+    .concept-visual {
+      display: grid;
+      grid-template-columns: repeat(6, auto);
+      align-items: center;
+      justify-content: start;
+      gap: 7px;
+      margin: 16px 0;
+      padding: 18px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .code-token {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--soft);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .code-token.variable { background: #eef4ff; color: #123f82; }
+    .code-token.function { background: #eaf6ef; color: #064d27; }
+    .code-token.string { background: #fff4e8; color: #6c3900; }
+
+    .syntax-key {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 0;
+      font-size: 0.84rem;
+    }
+
+    .syntax-key div { padding: 10px; border-radius: 10px; background: var(--soft); }
+
+    .ipo-visual {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .ipo-stage {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #ffffff;
+      text-align: center;
+    }
+
+    .ipo-stage strong { display: block; margin-bottom: 5px; color: var(--green); }
+    .ipo-arrow { align-self: center; color: var(--muted); font-weight: 800; }
+
+    .path-choice {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .path-choice a,
+    .path-choice button {
+      display: block;
+      width: 100%;
+      min-height: 54px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .path-choice .recommended { border-color: var(--green); background: var(--green-soft); color: #064d27; }
+
+    dialog.support-dialog {
+      width: min(680px, calc(100% - 30px));
+      max-height: 86vh;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+    }
+
+    dialog.support-dialog::backdrop { background: rgba(0, 0, 0, 0.52); }
+    .dialog-content { padding: 24px; }
+    .dialog-content h2 { margin-top: 0; }
+    .dialog-links { display: grid; gap: 8px; margin: 15px 0; }
+    .dialog-links a { color: var(--blue); font-weight: 700; }
+
+    .focus-reminder {
+      margin: 0 0 18px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
     .evidence-zone {
       margin-top: 14px;
       padding: 22px;
@@ -769,8 +1065,12 @@
       .landing-form { padding: 30px 26px; }
       .topbar { padding: 10px 14px; }
       .top-actions .ghost { display: none; }
+      .top-actions #helpButton { display: inline-flex; align-items: center; }
       .main-content { padding: 28px 17px 44px; }
       .question-grid { grid-template-columns: 1fr; }
+      .learning-grid, .phase-grid, .syntax-key, .path-choice { grid-template-columns: 1fr; }
+      .ipo-visual { grid-template-columns: 1fr; }
+      .ipo-arrow { transform: rotate(90deg); justify-self: center; }
       .test-table, .test-table tbody, .test-table tr, .test-table td { display: block; width: 100%; }
       .test-table thead { display: none; }
       .test-table tr { margin: 0 0 16px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; }
@@ -780,9 +1080,14 @@
       .step-footer button { width: 100%; }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
     @media print {
       @page { size: A4 portrait; margin: 12mm; }
-      body { background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 9.5pt; }
+      body { background: #ffffff; color: #000000; font-family: "Raleway", Arial, sans-serif; font-size: 9.5pt; }
       #landing, #app { display: none !important; }
       #printReport { display: block !important; }
       a { color: #000000; text-decoration: none; }
@@ -799,7 +1104,7 @@
         <div class="lesson-pills" aria-label="Lesson features">
           <span>60 minutes</span>
           <span>Device autosave</span>
-          <span>Evidence upload</span>
+          <span>Two learning pitstops</span>
           <span>Complete PDF report</span>
         </div>
       </div>
@@ -824,7 +1129,7 @@
         <div id="savedProfile" class="saved-profile hidden"></div>
 
         <div class="teacher-note">
-          <strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be left blank. Teacher mode allows free navigation and sample-answer testing.
+          <strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be left blank. Teacher mode includes sample responses and support-pathway testing.
         </div>
       </form>
     </div>
@@ -842,11 +1147,12 @@
           <span id="stepIndicator">Starter · Step 1 of 5</span>
           <span id="progressText">0% complete</span>
         </div>
-        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="progressTrack" class="progress-track" role="progressbar" aria-label="Core lesson evidence completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar" class="progress-bar"></div></div>
       </div>
 
       <div class="top-actions">
         <span id="saveState" class="save-state" aria-live="polite">Saved on this device</span>
+        <button id="helpButton" class="ghost" type="button">I need help</button>
         <button id="quickExport" class="ghost" type="button">Export current work</button>
         <button id="exitButton" class="secondary" type="button">Exit</button>
       </div>
@@ -884,31 +1190,36 @@
 
         <nav id="stepNav" class="step-nav" aria-label="Lesson sections">
           <button class="step-button active" type="button" data-step="0">
-            <span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span>
+            <span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">7 min</span>
           </button>
           <button class="step-button" type="button" data-step="1">
-            <span class="step-number">2</span><span class="step-name">Main activity 1</span><span class="step-time">17 min</span>
+            <span class="step-number">2</span><span class="step-name">Learning Pitstop</span><span class="step-time">3 min</span>
           </button>
           <button class="step-button" type="button" data-step="2">
-            <span class="step-number">3</span><span class="step-name">Main activity 2</span><span class="step-time">22 min</span>
+            <span class="step-number">3</span><span class="step-name">Main activity 1</span><span class="step-time">15 min</span>
           </button>
           <button class="step-button" type="button" data-step="3">
-            <span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Optional</span>
+            <span class="step-number">4</span><span class="step-name">Main activity 2</span><span class="step-time">20 min</span>
           </button>
           <button class="step-button" type="button" data-step="4">
-            <span class="step-number">5</span><span class="step-name">Plenary & PDF</span><span class="step-time">13 min</span>
+            <span class="step-number">5</span><span class="step-name">Learning Check</span><span class="step-time">4 min</span>
+          </button>
+          <button class="step-button" type="button" data-step="5">
+            <span class="step-number">6</span><span class="step-name">Extension</span><span class="step-time">Optional</span>
+          </button>
+          <button class="step-button" type="button" data-step="6">
+            <span class="step-number">7</span><span class="step-name">Plenary & PDF</span><span class="step-time">11 min</span>
           </button>
         </nav>
       </aside>
 
       <main class="main-content">
-        <details class="mobile-ksu side-card">
-          <summary>Show WAGBA and K/S/U</summary>
+        <div class="mobile-ksu side-card" aria-label="WAGBA and Knowledge Skills Understanding">
           <p><strong>WAGBA:</strong> We are getting better at reading, modifying and creating simple Python programs using input, output, variables and arithmetic.</p>
           <p><strong>K:</strong> Input, output, assignment and variables.</p>
           <p><strong>S:</strong> Create, run, save, modify and test.</p>
           <p><strong>U:</strong> Explain input → process → output.</p>
-        </details>
+        </div>
 
         <section class="activity-step active" data-step="0" data-section="starter">
           <p class="section-kicker">Starter · Predict before you run</p>
@@ -944,10 +1255,24 @@ print("Hello", name)</code></pre>
                 <input id="starterAisha" type="text" data-field="starter_aisha" placeholder="Write the final output">
               </div>
             </div>
-            <div class="question">
-              <label class="question-label" for="starterLabels">5. Identify the input, storage and output lines.</label>
-              <textarea id="starterLabels" data-field="starter_labels" placeholder="Input: ...&#10;Storage: ...&#10;Output: ..."></textarea>
+            <button id="checkStarter" class="secondary" type="button">Check my predictions</button>
+            <p id="starterCheckMessage" class="inline-message" aria-live="polite"></p>
+            <div id="starterFeedback" class="feedback-panel" aria-live="polite">
+              <h3>Compare and improve</h3>
+              <p><strong>First output:</strong> <code>Welcome to Computer Science</code></p>
+              <p><strong>Line that waits:</strong> <code>name = input("Enter your name: ")</code></p>
+              <p><strong>Variable:</strong> <code>name</code></p>
+              <p><strong>If Aisha is entered:</strong> <code>Hello Aisha</code></p>
+              <p>Correct anything that does not match. Your first prediction is still valuable—it shows what you thought before running the code.</p>
             </div>
+
+            <details class="school-reference">
+              <summary>Optional deeper thinking: input, storage and output</summary>
+              <div style="padding: 0 16px 16px;">
+                <label class="question-label" for="starterLabels">Identify how the program receives, stores and displays information.</label>
+                <textarea id="starterLabels" data-field="starter_labels" placeholder="Input: ...&#10;Storage: ...&#10;Output: ..."></textarea>
+              </div>
+            </details>
           </div>
 
           <div class="task-card">
@@ -975,14 +1300,97 @@ print("Hello", name)</code></pre>
 
           <div class="step-footer">
             <span></span>
+            <button class="primary next-step" type="button">Continue to Learning Pitstop</button>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="1" data-section="pitstop1">
+          <p class="section-kicker">Learning Pitstop · Pause and notice</p>
+          <h1>What kind of learning did you use?</h1>
+          <p class="section-lead">The Starter asked you to remember Python vocabulary, practise a programming routine and explain how the code behaves. Choose the type of learning that was most important for you. This is a reflection, not a grade.</p>
+
+          <details class="school-reference">
+            <summary>View our school guide: Types of Learning and how to get better</summary>
+            <img src="assets/types-of-learning.jpg" alt="School Types of Learning guide explaining Knowledge, Skills and Understanding and how each develops">
+          </details>
+
+          <div class="learning-grid" role="radiogroup" aria-label="Choose the main type of learning used in the Starter">
+            <label class="learning-option">
+              <input type="radio" name="learningType" value="Knowledge" data-field="pit1_type">
+              <h2>Knowledge</h2>
+              <p>I recalled facts and vocabulary such as <code>print()</code>, <code>input()</code>, variable and assignment.</p>
+              <ul><li>Get better by recalling definitions.</li><li>Label parts of a Python statement.</li><li>Use precise vocabulary.</li></ul>
+              <span class="option-tag">Remember · identify · define</span>
+            </label>
+
+            <label class="learning-option">
+              <input type="radio" name="learningType" value="Skills" data-field="pit1_type">
+              <h2>Skills</h2>
+              <p>I practised reading, predicting, running and checking Python code accurately in my IDE.</p>
+              <ul><li>Get better through repetition.</li><li>Make one change at a time.</li><li>Run and check after each change.</li></ul>
+              <span class="option-tag">Practise · perform · improve</span>
+            </label>
+
+            <label class="learning-option">
+              <input type="radio" name="learningType" value="Understanding" data-field="pit1_type">
+              <h2>Understanding</h2>
+              <p>I explained why the program waits, stores the name and then displays personalised output.</p>
+              <ul><li>Get better by explaining why.</li><li>Trace a value through the program.</li><li>Predict what a change will do.</li></ul>
+              <span class="option-tag">Connect · explain · transfer</span>
+            </label>
+          </div>
+
+          <div class="task-card">
+            <div class="question">
+              <label class="question-label" for="pit1Evidence">My evidence: I used this type of learning when I…</label>
+              <textarea id="pit1Evidence" data-field="pit1_evidence" placeholder="For example: I used Skills when I predicted the output, ran the program and checked the result."></textarea>
+            </div>
+            <div class="question">
+              <label class="question-label" for="pit1Action">To get better during Main Activity 1, I will…</label>
+              <select id="pit1Action" data-field="pit1_action">
+                <option value="">Choose one next action</option>
+                <option>Use the correct Python vocabulary</option>
+                <option>Make one change and test it before making another</option>
+                <option>Explain what each changed line does</option>
+                <option>Ask for help with a specific piece of syntax</option>
+                <option>Work with less support because I am ready</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="callout green">
+            <strong>WAGBA connection</strong>
+            In the Starter you mainly improved at <strong>reading</strong> Python. Main Activity 1 will help you improve at <strong>modifying</strong> it.
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Starter</button>
             <button class="primary next-step" type="button">Continue to Main activity 1</button>
           </div>
         </section>
 
-        <section class="activity-step" data-step="1" data-section="main1">
+        <section class="activity-step" data-step="2" data-section="main1">
           <p class="section-kicker">Main activity 1 · Modify existing code</p>
           <h1>Personalise a working program.</h1>
           <p class="section-lead">Paper 1 requires you to understand and modify existing code. Start with a program that works, then make controlled changes.</p>
+
+          <div class="task-card">
+            <h2>Read one Python line carefully</h2>
+            <p>This line performs two connected actions: it receives text and assigns that text to a variable.</p>
+            <div class="concept-visual" aria-label="The variable name is assigned the result returned by the input function">
+              <span class="code-token variable">name</span>
+              <span>=</span>
+              <span class="code-token function">input</span>
+              <span>(</span>
+              <span class="code-token string">"Enter your name: "</span>
+              <span>)</span>
+            </div>
+            <div class="syntax-key">
+              <div><strong>Variable</strong><br><code>name</code> stores the value.</div>
+              <div><strong>Assignment</strong><br><code>=</code> gives the variable a value.</div>
+              <div><strong>Input</strong><br><code>input(...)</code> waits for the user.</div>
+            </div>
+          </div>
 
           <div class="task-card">
             <h2>Starter program</h2>
@@ -1011,14 +1419,6 @@ print("Hello", name)</code></pre>
 
             <div class="question-grid">
               <div class="question">
-                <label class="question-label" for="m1Output">Give one output statement.</label>
-                <input id="m1Output" type="text" data-field="m1_output" placeholder="For example, print(...)">
-              </div>
-              <div class="question">
-                <label class="question-label" for="m1Input">Give one input statement.</label>
-                <input id="m1Input" type="text" data-field="m1_input" placeholder="For example, name = input(...)">
-              </div>
-              <div class="question">
                 <label class="question-label" for="m1Variables">List your variable names.</label>
                 <input id="m1Variables" type="text" data-field="m1_variables" placeholder="Separate names with commas">
               </div>
@@ -1030,8 +1430,8 @@ print("Hello", name)</code></pre>
           </div>
 
           <div class="task-card">
-            <h2>Evidence</h2>
-            <p>Upload, drag or paste a clear screenshot showing your code or program output.</p>
+            <h2>Optional supporting screenshot</h2>
+            <p>Your pasted code is the main evidence. Add a screenshot only if it helps show a successful run or an error you want to discuss.</p>
             <div class="evidence-zone" data-evidence-zone="main1" tabindex="0">
               <strong>Add Main activity 1 evidence</strong>
               <p>PNG, JPG or screenshot from the clipboard. Images are resized for reliable PDF export.</p>
@@ -1042,15 +1442,45 @@ print("Hello", name)</code></pre>
           </div>
 
           <div class="step-footer">
-            <button class="secondary previous-step" type="button">Back to Starter</button>
+            <button class="secondary previous-step" type="button">Back to Learning Pitstop</button>
             <button class="primary next-step" type="button">Continue to Main activity 2</button>
           </div>
         </section>
 
-        <section class="activity-step" data-step="2" data-section="main2">
+        <section class="activity-step" data-step="3" data-section="main2">
           <p class="section-kicker">Main activity 2 · Baseline programming task</p>
           <h1>Build a course points calculator.</h1>
           <p class="section-lead">This is a starting-point task, not a graded test. Try independently first, then reveal a hint when it genuinely helps.</p>
+          <p class="focus-reminder"><strong>Focus routine:</strong> Read one requirement → write or change one line → run the program → check what happened.</p>
+
+          <div class="task-card">
+            <h2>Quick guide: Python arithmetic operators</h2>
+            <p>Python uses symbols to tell the computer which calculation to perform. The symbols are similar to mathematics, but multiplication uses <code>*</code> rather than <strong>×</strong>.</p>
+            <table class="test-table" aria-label="Core Python arithmetic operators">
+              <thead><tr><th>Python operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Operator"><code>+</code></td><td data-label="Meaning">addition</td><td data-label="Example"><code>7 + 3</code></td><td data-label="Result">10</td></tr>
+                <tr><td data-label="Operator"><code>-</code></td><td data-label="Meaning">subtraction</td><td data-label="Example"><code>7 - 3</code></td><td data-label="Result">4</td></tr>
+                <tr><td data-label="Operator"><code>*</code></td><td data-label="Meaning">multiplication</td><td data-label="Example"><code>7 * 3</code></td><td data-label="Result">21</td></tr>
+                <tr><td data-label="Operator"><code>/</code></td><td data-label="Meaning">division</td><td data-label="Example"><code>7 / 2</code></td><td data-label="Result">3.5</td></tr>
+              </tbody>
+            </table>
+            <div class="operator-focus">
+              <strong>Operator needed today</strong>
+              The calculator awards 5 points for every correct answer, so it uses multiplication: <code>correct_answers * points_per_answer</code>.
+            </div>
+            <div class="question">
+              <label class="question-label" for="m2OperatorChoice">Complete the calculation: <code>total_points = correct_answers ___ points_per_answer</code></label>
+              <select id="m2OperatorChoice" data-field="m2_operator_choice">
+                <option value="">Choose the Python operator</option>
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+              </select>
+              <small>Choose before looking at the program frame below.</small>
+            </div>
+          </div>
 
           <div class="task-card">
             <h2>Program requirements</h2>
@@ -1061,6 +1491,23 @@ print("Hello", name)</code></pre>
               <li>Calculate the total.</li>
               <li>Display a personalised result.</li>
             </ol>
+
+            <div class="ipo-visual" aria-label="Input process output example for four correct answers">
+              <div class="ipo-stage"><strong>Input</strong>4 correct answers</div>
+              <div class="ipo-arrow">→</div>
+              <div class="ipo-stage"><strong>Process</strong>4 × 5</div>
+              <div class="ipo-arrow">→</div>
+              <div class="ipo-stage"><strong>Output</strong>20 points</div>
+            </div>
+
+            <table class="test-table" aria-label="Trace table for four correct answers">
+              <thead><tr><th>Variable</th><th>Value during the example</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Variable"><code>correct_answers</code></td><td data-label="Value">4</td></tr>
+                <tr><td data-label="Variable"><code>points_per_answer</code></td><td data-label="Value">5</td></tr>
+                <tr><td data-label="Variable"><code>total_points</code></td><td data-label="Value">20</td></tr>
+              </tbody>
+            </table>
 
             <div class="code-wrap">
               <button class="copy-button" type="button" data-copy-target="mainTwoFrame">Copy frame</button>
@@ -1075,10 +1522,12 @@ total_points = ______________________________
 print(_______________________________________)</code></pre>
             </div>
 
-            <button class="secondary hint-button" type="button" data-hint="hint1">Reveal hint 1</button>
-            <div id="hint1" class="hint-panel">Multiply <code>correct_answers</code> by <code>points_per_answer</code>.</div>
-            <button class="secondary hint-button" type="button" data-hint="hint2">Reveal hint 2</button>
-            <div id="hint2" class="hint-panel">Use <code>print(name, "scored", total_points, "points")</code> for the final output.</div>
+            <button class="secondary hint-button" type="button" data-hint="hint1">Reveal hint 1: identify the values</button>
+            <div id="hint1" class="hint-panel">The calculation uses the values stored in <code>correct_answers</code> and <code>points_per_answer</code>.</div>
+            <button class="secondary hint-button" type="button" data-hint="hint2">Reveal hint 2: calculation</button>
+            <div id="hint2" class="hint-panel">Multiply <code>correct_answers</code> by <code>points_per_answer</code> and assign the result to <code>total_points</code>.</div>
+            <button class="secondary hint-button" type="button" data-hint="hint3">Reveal hint 3: final output</button>
+            <div id="hint3" class="hint-panel">Use <code>print(name, "scored", total_points, "points")</code> for the final output.</div>
           </div>
 
           <div class="callout amber">
@@ -1112,10 +1561,18 @@ print(_______________________________________)</code></pre>
                 </tr>
               </tbody>
             </table>
+            <button id="checkTests" class="secondary" type="button">Check the expected results</button>
+            <div id="testFeedback" class="feedback-panel" aria-live="polite">
+              <h3>Testing feedback</h3>
+              <p><strong>0 correct answers:</strong> the calculated score should be <strong>0 points</strong>.</p>
+              <p><strong>4 correct answers:</strong> the calculated score should be <strong>20 points</strong>.</p>
+              <p>If your actual result differs, check the multiplication line first, then check the variable name used in <code>print()</code>.</p>
+            </div>
           </div>
 
           <div class="task-card">
-            <h2>Evidence</h2>
+            <h2>Core practical evidence</h2>
+            <p>Add one clear screenshot showing your calculator code, a test result, or both. This is the main Paper 1-style evidence for today.</p>
             <div class="evidence-zone" data-evidence-zone="main2" tabindex="0">
               <strong>Add calculator evidence</strong>
               <p>Show the code, one test run, or both.</p>
@@ -1125,60 +1582,261 @@ print(_______________________________________)</code></pre>
             </div>
           </div>
 
+          <div class="callout green">
+            <strong>AO3 and Paper 1 connection</strong>
+            You interpreted requirements, developed a programmed solution and tested it with different inputs. These are early AO3 programming habits.
+          </div>
+
           <div class="step-footer">
             <button class="secondary previous-step" type="button">Back to Main activity 1</button>
-            <button class="primary next-step" type="button">Continue to Extension</button>
+            <button class="primary next-step" type="button">Continue to Learning Check</button>
           </div>
         </section>
 
-        <section class="activity-step" data-step="3" data-section="extension">
-          <p class="section-kicker">Extension · Early finishers</p>
-          <h1>Add bonus points.</h1>
-          <p class="section-lead">Only begin this after Main activity 2 is complete. This is a small extension using the same ideas, not a new topic.</p>
+        <section class="activity-step" data-step="4" data-section="pitstop2">
+          <p class="section-kicker">Learning Pitstop · Check your current phase</p>
+          <h1>Where are you in your learning?</h1>
+          <p class="section-lead">Choose the description that best matches your experience after building the calculator. This describes your relationship with today’s task—not your intelligence or your ability in Computer Science.</p>
 
-          <div class="task-card">
-            <label class="check-row"><input type="checkbox" data-check="ext_attempted"><span>I attempted the extension.</span></label>
-            <h2>Requirements</h2>
-            <p>Ask how many bonus tasks were completed. Each bonus task is worth two points. Add the bonus points to the existing total and display the final score.</p>
+          <details class="school-reference">
+            <summary>View our school Learning Pitstop guide</summary>
+            <img src="assets/learning-pitstop.jpg" alt="School Learning Pitstop guide showing New Learning, Consolidating, Treading Water and Drowning">
+          </details>
 
-            <div class="code-wrap">
-              <button class="copy-button" type="button" data-copy-target="extensionCode">Copy example</button>
-              <pre id="extensionCode"><code>bonus_tasks = int(input("How many bonus tasks did you complete? "))
-
-bonus_points = bonus_tasks * 2
-
-final_score = total_points + bonus_points
-
-print(name, "scored", final_score, "points altogether")</code></pre>
-            </div>
-
-            <div class="question">
-              <label class="question-label" for="extensionFinal">Paste your extended program</label>
-              <textarea id="extensionFinal" class="code-entry" data-field="ext_code" spellcheck="false" placeholder="Paste your extension code here, if attempted."></textarea>
-            </div>
+          <div class="phase-grid" role="radiogroup" aria-label="Choose your current phase of learning">
+            <label class="phase-option">
+              <input type="radio" name="learningPhase" value="New Learning" data-field="pit2_phase">
+              <h2>New Learning</h2>
+              <p>Some ideas were new, such as <code>int()</code>, arithmetic in a program or structured testing. I experienced a productive struggle and learned something new.</p>
+              <span class="option-tag">Next: explain one new idea</span>
+            </label>
+            <label class="phase-option">
+              <input type="radio" name="learningPhase" value="Consolidating" data-field="pit2_phase">
+              <h2>Consolidating</h2>
+              <p>I used input, output or variables that I had met before, but I used them more accurately, independently or in a more complex program.</p>
+              <span class="option-tag">Next: explain a connection</span>
+            </label>
+            <label class="phase-option">
+              <input type="radio" name="learningPhase" value="Treading Water" data-field="pit2_phase">
+              <h2>Treading Water</h2>
+              <p>The task felt easy and did not stretch my thinking. I am ready to remove some support or solve a more demanding version.</p>
+              <span class="option-tag">Next: choose a challenge</span>
+            </label>
+            <label class="phase-option">
+              <input type="radio" name="learningPhase" value="Drowning" data-field="pit2_phase">
+              <h2>Drowning</h2>
+              <p>Several parts are unclear at the same time and I need specific support before I can continue confidently.</p>
+              <span class="option-tag">Next: identify the barrier</span>
+            </label>
           </div>
 
           <div class="task-card">
-            <h2>Extension test</h2>
-            <p>Use 4 correct answers and 2 bonus tasks.</p>
-            <div class="question-grid">
-              <div class="question">
-                <label class="question-label" for="extensionExpected">Expected final score</label>
-                <input id="extensionExpected" type="text" data-field="ext_expected" value="24 points">
-              </div>
-              <div class="question">
-                <label class="question-label" for="extensionActual">Actual final score</label>
-                <input id="extensionActual" type="text" data-field="ext_actual" placeholder="What appeared?">
-              </div>
+            <div class="question">
+              <label class="question-label" for="pit2Reason">Why did you choose this phase?</label>
+              <textarea id="pit2Reason" data-field="pit2_reason" placeholder="Name the Python idea, action or difficulty that influenced your choice."></textarea>
             </div>
             <div class="question">
-              <label class="question-label" for="extensionResult">Test result</label>
-              <select id="extensionResult" data-field="ext_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select>
+              <label class="question-label" for="pit2Need">What do you need next?</label>
+              <select id="pit2Need" data-field="pit2_need">
+                <option value="">Choose the most useful next step</option>
+                <option>Explain one new statement before I continue</option>
+                <option>Practise one more similar example</option>
+                <option>Complete the plenary independently</option>
+                <option>Try the extension without the provided frame</option>
+                <option>Help with my Python IDE</option>
+                <option>Help with speech marks or brackets</option>
+                <option>Help understanding input or variables</option>
+                <option>Help understanding int() or the calculation</option>
+                <option>Help fixing an error message</option>
+              </select>
             </div>
-            <div class="question">
-              <label class="question-label" for="extensionIPO">Identify the input, processing and output in your extension.</label>
-              <textarea id="extensionIPO" data-field="ext_ipo" placeholder="Input: ...&#10;Processing: ...&#10;Output: ..."></textarea>
+            <div id="phaseResponse" class="next-action" aria-live="polite">
+              Choose a phase and next step. The page will suggest what to do next.
             </div>
+          </div>
+
+          <div class="callout green">
+            <strong>WAGBA connection</strong>
+            You have now practised <strong>reading</strong>, <strong>modifying</strong> and <strong>creating</strong> Python. Your phase tells you whether you need explanation, practice, support or challenge next.
+          </div>
+
+          <div class="path-choice">
+            <button id="goPlenary" class="recommended" type="button">Core lesson complete — go to Plenary</button>
+            <button id="goExtension" type="button">I am ready for the optional Extension</button>
+          </div>
+
+          <div class="step-footer">
+            <button class="secondary previous-step" type="button">Back to Main activity 2</button>
+            <span></span>
+          </div>
+        </section>
+
+        <section class="activity-step" data-step="5" data-section="extension">
+          <p class="section-kicker">Extension · Early finishers</p>
+          <h1>Ten arithmetic programming challenges.</h1>
+          <p class="section-lead">Only begin after Main activity 2 is complete. Work from Challenge 1 onwards and complete as many as time allows. Each program stays within today’s learning: input, output, variables, integers, assignment and arithmetic.</p>
+
+          <div class="task-card">
+            <label class="check-row"><input type="checkbox" data-check="ext_attempted"><span>I attempted the extension.</span></label>
+            <h2>How to work</h2>
+            <ol>
+              <li>Read one challenge and study its example run.</li>
+              <li>Create the program in your own Python IDE.</li>
+              <li>Run the stated test and correct any errors.</li>
+              <li>Paste your final code and record the outcome.</li>
+            </ol>
+            <p><strong>Important:</strong> your program should work for other sensible inputs, not only the example shown.</p>
+            <div class="code-wrap">
+              <pre><code>value = int(input("Enter a whole number: "))
+result = value * 3
+print(result)</code></pre>
+            </div>
+            <p>This shared pattern shows how a whole-number input can be converted, stored, processed and printed. Adapt it rather than copying it unchanged.</p>
+
+            <h3>Stretch operators used near the end</h3>
+            <table class="test-table" aria-label="Extension Python arithmetic operators">
+              <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Operator"><code>//</code></td><td data-label="Meaning">whole-number division</td><td data-label="Example"><code>23 // 4</code></td><td data-label="Result">5</td></tr>
+                <tr><td data-label="Operator"><code>%</code></td><td data-label="Meaning">remainder</td><td data-label="Example"><code>23 % 4</code></td><td data-label="Result">3</td></tr>
+                <tr><td data-label="Operator"><code>**</code></td><td data-label="Meaning">power</td><td data-label="Example"><code>7 ** 2</code></td><td data-label="Result">49</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="challenge-sequence" aria-label="Ten optional Python arithmetic challenges">
+            <details class="challenge-exercise" open>
+              <summary><span>Challenge 1 · Bonus points upgrade</span><small>Use + and *</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Extend the course-points calculator. Ask how many bonus tasks were completed. Each bonus task is worth 2 points. Add the bonus points to the original score and print the final score.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Correct answers: 4
+Bonus tasks: 2
+Final score: 24 points</pre></div>
+                <p class="challenge-test">Test to try: 3 correct answers and 4 bonus tasks should produce 23 points.</p>
+                <div class="question"><label class="question-label" for="extCh01Code">Paste your program</label><textarea id="extCh01Code" class="code-entry" data-field="ext_ch01_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh01Result">Test outcome</label><select id="extCh01Result" data-field="ext_ch01_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 2 · Times three</span><small>Use *</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask the user for one whole number. Print the number multiplied by 3 in a complete sentence.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Enter a number: 7
+7 times 3 is 21</pre></div>
+                <p class="challenge-test">Tests to try: 0 should give 0; 9 should give 27.</p>
+                <div class="question"><label class="question-label" for="extCh02Code">Paste your program</label><textarea id="extCh02Code" class="code-entry" data-field="ext_ch02_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh02Result">Test outcome</label><select id="extCh02Result" data-field="ext_ch02_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 3 · Add two scores</span><small>Use +</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for two whole-number scores. Calculate and print their total. Use meaningful variable names.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>First score: 12
+Second score: 8
+Total score: 20</pre></div>
+                <p class="challenge-test">Test to try: 25 and 17 should produce 42.</p>
+                <div class="question"><label class="question-label" for="extCh03Code">Paste your program</label><textarea id="extCh03Code" class="code-entry" data-field="ext_ch03_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh03Result">Test outcome</label><select id="extCh03Result" data-field="ext_ch03_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 4 · Points remaining</span><small>Use -</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for a target number of points and the points already earned. Print how many points are still needed.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Target points: 20
+Points earned: 13
+Points remaining: 7</pre></div>
+                <p class="challenge-test">Test to try: target 50 and earned 32 should produce 18.</p>
+                <div class="question"><label class="question-label" for="extCh04Code">Paste your program</label><textarea id="extCh04Code" class="code-entry" data-field="ext_ch04_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh04Result">Test outcome</label><select id="extCh04Result" data-field="ext_ch04_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 5 · Study minutes</span><small>Use *</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask how many minutes a student studies each school day. Calculate the total for 5 school days.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Minutes per day: 25
+Minutes in five days: 125</pre></div>
+                <p class="challenge-test">Test to try: 40 minutes per day should produce 200 minutes.</p>
+                <div class="question"><label class="question-label" for="extCh05Code">Paste your program</label><textarea id="extCh05Code" class="code-entry" data-field="ext_ch05_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh05Result">Test outcome</label><select id="extCh05Result" data-field="ext_ch05_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 6 · Seconds in a lesson</span><small>Use *</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for a lesson length in minutes. Calculate and print the equivalent number of seconds.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Lesson length in minutes: 60
+Seconds in the lesson: 3600</pre></div>
+                <p class="challenge-test">Test to try: 45 minutes should produce 2700 seconds.</p>
+                <div class="question"><label class="question-label" for="extCh06Code">Paste your program</label><textarea id="extCh06Code" class="code-entry" data-field="ext_ch06_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh06Result">Test outcome</label><select id="extCh06Result" data-field="ext_ch06_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 7 · Total shop cost</span><small>Use *</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for the whole-number price of one notebook and the number of notebooks. Print the total cost.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Price of one notebook: 6
+Number of notebooks: 4
+Total cost: 24</pre></div>
+                <p class="challenge-test">Test to try: price 9 and quantity 7 should produce 63.</p>
+                <div class="question"><label class="question-label" for="extCh07Code">Paste your program</label><textarea id="extCh07Code" class="code-entry" data-field="ext_ch07_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh07Result">Test outcome</label><select id="extCh07Result" data-field="ext_ch07_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 8 · Mean of two scores</span><small>Use +, / and brackets</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for two whole-number scores. Add them first, divide the total by 2 and print the mean. Use brackets so the addition happens before the division.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>First score: 14
+Second score: 18
+Mean score: 16.0</pre></div>
+                <p class="challenge-test">Test to try: 9 and 15 should produce 12.0.</p>
+                <div class="question"><label class="question-label" for="extCh08Code">Paste your program</label><textarea id="extCh08Code" class="code-entry" data-field="ext_ch08_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh08Result">Test outcome</label><select id="extCh08Result" data-field="ext_ch08_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 9 · Complete teams and leftovers</span><small>Use // and %</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for the number of students and the size of each team. Print the number of complete teams and the number of students left over. Do not use selection or loops.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Number of students: 23
+Students per team: 4
+Complete teams: 5
+Students left over: 3</pre></div>
+                <p class="challenge-test">Test to try: 31 students in teams of 6 should produce 5 complete teams and 1 left over.</p>
+                <div class="question"><label class="question-label" for="extCh09Code">Paste your program</label><textarea id="extCh09Code" class="code-entry" data-field="ext_ch09_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh09Result">Test outcome</label><select id="extCh09Result" data-field="ext_ch09_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+
+            <details class="challenge-exercise">
+              <summary><span>Challenge 10 · Square a number</span><small>Use **</small></summary>
+              <div class="challenge-body">
+                <p><strong>Your task:</strong> Ask for one whole number. Calculate the number squared and print a complete sentence containing the input and result.</p>
+                <div class="sample-run"><strong>Example run</strong><pre>Enter a number: 7
+7 squared is 49</pre></div>
+                <p class="challenge-test">Tests to try: 0 should produce 0; 12 should produce 144.</p>
+                <div class="question"><label class="question-label" for="extCh10Code">Paste your program</label><textarea id="extCh10Code" class="code-entry" data-field="ext_ch10_code" spellcheck="false"></textarea></div>
+                <div class="question"><label class="question-label" for="extCh10Result">Test outcome</label><select id="extCh10Result" data-field="ext_ch10_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
+              </div>
+            </details>
+          </div>
+
+          <div class="callout green">
+            <strong>Practice design</strong>
+            These are short, testable programs in the style of the University of Helsinki Python Programming MOOC. They are original tasks written for today’s OxfordAQA lesson and do not require conditionals, loops or lists.
+            <a href="https://programming-26.mooc.fi/part-1/4-arithmetic-operations/" target="_blank" rel="noopener noreferrer">Open the University of Helsinki arithmetic reference</a>.
           </div>
 
           <div class="task-card">
@@ -1193,97 +1851,76 @@ print(name, "scored", final_score, "points altogether")</code></pre>
           </div>
 
           <div class="step-footer">
-            <button class="secondary previous-step" type="button">Back to Main activity 2</button>
+            <button class="secondary previous-step" type="button">Back to Learning Check</button>
             <button class="primary next-step" type="button">Continue to Plenary</button>
           </div>
         </section>
 
-        <section class="activity-step" data-step="4" data-section="plenary">
+        <section class="activity-step" data-step="6" data-section="plenary">
           <p class="section-kicker">Plenary · Explain and submit</p>
           <h1>Show what you now understand.</h1>
-          <p class="section-lead">Complete the exit ticket, check your evidence and export one complete PDF containing every section.</p>
+          <p class="section-lead">Complete one short Paper 2-style checkpoint, identify your WAGBA next step and export your evidence. This is a final check, not another main activity.</p>
 
           <div class="task-card">
-            <h2>Read this final program</h2>
+            <h2>Paper 2-style checkpoint · 3 marks</h2>
             <div class="code-wrap">
               <button class="copy-button" type="button" data-copy-target="plenaryCode">Copy code</button>
-              <pre id="plenaryCode"><code>correct_answers = 3
+              <pre id="plenaryCode"><code>correct_answers = int(input("How many answers were correct? "))
 points_per_answer = 5
 total_points = correct_answers * points_per_answer
 
 print(total_points)</code></pre>
             </div>
 
-            <div class="question-grid">
-              <div class="question">
-                <label class="question-label" for="plenaryOutput">1. What is the output?</label>
-                <input id="plenaryOutput" type="text" data-field="p_output" placeholder="Predict the value">
-              </div>
-              <div class="question">
-                <label class="question-label" for="plenaryProcess">2. Which line performs the processing?</label>
-                <input id="plenaryProcess" type="text" data-field="p_process" placeholder="Copy or describe the line">
-              </div>
-              <div class="question">
-                <label class="question-label" for="plenaryValue">3. What is stored in total_points?</label>
-                <input id="plenaryValue" type="text" data-field="p_value" placeholder="Stored value">
-              </div>
-              <div class="question">
-                <label class="question-label" for="plenaryPurpose">4. What is the purpose of the program?</label>
-                <input id="plenaryPurpose" type="text" data-field="p_purpose" placeholder="Explain in one sentence">
-              </div>
+            <div class="question">
+              <label class="question-label" for="plenaryOutput"><strong>AO2 · 1 mark:</strong> What value is displayed if the user enters <code>3</code>?</label>
+              <input id="plenaryOutput" type="text" data-field="p_output" placeholder="Write the value">
+            </div>
+            <div class="question">
+              <label class="question-label" for="plenaryConversion"><strong>AO1/AO2 · 2 marks:</strong> Explain why <code>int()</code> is needed around the input statement.</label>
+              <textarea id="plenaryConversion" data-field="p_conversion" placeholder="Explain what type of data input normally returns and why conversion is needed here."></textarea>
+            </div>
+            <button id="checkPlenary" class="secondary" type="button">Reveal the marking points</button>
+            <p id="plenaryCheckMessage" class="inline-message" aria-live="polite"></p>
+            <div id="plenaryFeedback" class="feedback-panel" aria-live="polite">
+              <h3>Marking points</h3>
+              <p><strong>AO2:</strong> The displayed value is <strong>15</strong>. [1]</p>
+              <p><strong>AO1/AO2:</strong> Keyboard input is initially received as text [1], and <code>int()</code> converts it to an integer so multiplication can be performed [1].</p>
+              <p>Improve your response if one of these points is missing.</p>
             </div>
           </div>
 
           <div class="task-card">
-            <h2>K/S/U exit ticket</h2>
+            <h2>Final WAGBA reflection</h2>
             <div class="question">
-              <label class="question-label" for="pKnowledge">Knowledge: A variable is…</label>
-              <textarea id="pKnowledge" data-field="p_knowledge" placeholder="Complete the sentence."></textarea>
+              <label class="question-label" for="pSkill">Which part of the WAGBA can you now demonstrate most confidently?</label>
+              <select id="pSkill" data-field="p_skill">
+                <option value="">Choose one</option>
+                <option>Reading Python code</option>
+                <option>Modifying Python code</option>
+                <option>Creating Python code</option>
+                <option>Using input and output</option>
+                <option>Using variables and arithmetic</option>
+                <option>Testing a program</option>
+              </select>
             </div>
             <div class="question">
-              <label class="question-label" for="pSkill">Skill: Today I successfully created, ran and saved…</label>
-              <textarea id="pSkill" data-field="p_skill" placeholder="Describe what you completed."></textarea>
+              <label class="question-label" for="pUnderstanding">Understanding: explain how the calculator follows input → process → output.</label>
+              <textarea id="pUnderstanding" data-field="p_understanding" placeholder="Input is… The processing is… The output is…"></textarea>
             </div>
             <div class="question">
-              <label class="question-label" for="pUnderstanding">Understanding: The points calculator follows input → process → output because…</label>
-              <textarea id="pUnderstanding" data-field="p_understanding" placeholder="Explain each stage."></textarea>
-            </div>
-
-            <div class="question-grid">
-              <div class="question">
-                <label class="question-label" for="ratingK">My knowledge</label>
-                <select id="ratingK" data-field="rating_k"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
-              </div>
-              <div class="question">
-                <label class="question-label" for="ratingS">My skill</label>
-                <select id="ratingS" data-field="rating_s"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
-              </div>
-              <div class="question">
-                <label class="question-label" for="ratingU">My understanding</label>
-                <select id="ratingU" data-field="rating_u"><option value="">Choose</option><option>Independent</option><option>Completed with a hint</option><option>Not yet secure</option></select>
-              </div>
-              <div class="question">
-                <label class="question-label" for="confidence">Overall support level</label>
-                <select id="confidence" data-field="confidence"><option value="">Choose</option><option>I completed the tasks independently</option><option>I completed them using a hint</option><option>I completed part of the lesson</option><option>I need help with setup or syntax</option></select>
-              </div>
-            </div>
-          </div>
-
-          <div class="task-card">
-            <h2>Paper connection</h2>
-            <div class="question">
-              <label class="question-label" for="paperOneReflection">Which part of today felt most like Paper 1 practical programming?</label>
-              <textarea id="paperOneReflection" data-field="p_paper1" placeholder="Choose an activity and explain why."></textarea>
+              <label class="question-label" for="confidence">What best describes the support you used?</label>
+              <select id="confidence" data-field="confidence"><option value="">Choose one</option><option>I completed the core tasks independently</option><option>I completed them using a hint or example</option><option>I completed part of the core lesson</option><option>I need follow-up help with setup, syntax or understanding</option></select>
             </div>
             <div class="question">
-              <label class="question-label" for="paperTwoReflection">Which question required you to explain your understanding in writing?</label>
-              <textarea id="paperTwoReflection" data-field="p_paper2" placeholder="Choose a question and explain what it tested."></textarea>
+              <label class="question-label" for="pNext">My next step towards the WAGBA is…</label>
+              <select id="pNext" data-field="p_next"><option value="">Choose one</option><option>Recall the keywords without notes</option><option>Practise accurate Python syntax</option><option>Explain why each line is needed</option><option>Create another input–process–output program</option><option>Ask for targeted support before the next lesson</option><option>Attempt a less-scaffolded challenge</option></select>
             </div>
           </div>
 
           <div class="export-card">
             <h2>Export and submit your complete work</h2>
-            <p>The report includes your responses, checklists, pasted Python code, tests, K/S/U reflection and every uploaded evidence image—even if you export before finishing.</p>
+            <p>The report includes your responses, both Learning Pitstops, pasted Python code, tests, WAGBA reflection and every uploaded evidence image—even if you export before finishing.</p>
             <ol>
               <li>Select <strong>Export complete PDF</strong>.</li>
               <li>In the print window, choose <strong>Save as PDF</strong>.</li>
@@ -1304,25 +1941,50 @@ print(total_points)</code></pre>
     </div>
   </div>
 
+  <dialog id="supportDialog" class="support-dialog" aria-labelledby="supportTitle">
+    <div class="dialog-content">
+      <h2 id="supportTitle">Pause and get targeted help</h2>
+      <p>Being stuck is information. Identify the smallest obstacle so that you or your teacher can respond to it.</p>
+      <ol>
+        <li>Return to the last line that worked.</li>
+        <li>Compare speech marks, brackets and variable names carefully.</li>
+        <li>Record what you tried, expected and observed.</li>
+        <li>Show your teacher the exact line or error message.</li>
+      </ol>
+      <div class="dialog-links">
+        <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">Python from python.org</a>
+        <a href="https://code.visualstudio.com/docs/python/python-tutorial" target="_blank" rel="noopener noreferrer">Python in Visual Studio Code</a>
+        <a href="https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html" target="_blank" rel="noopener noreferrer">Python in PyCharm</a>
+      </div>
+      <p class="callout amber"><strong>Important</strong>If software installation is blocked on your device, stop and ask your teacher which school-approved option to use.</p>
+      <div class="step-footer">
+        <button id="clearStudentWork" class="danger-button" type="button">Clear my saved work</button>
+        <button id="closeSupport" class="primary" type="button">Return to the lesson</button>
+      </div>
+    </div>
+  </dialog>
+
   <article id="printReport" class="print-report" aria-label="Complete student lesson report"></article>
 
   <script>
     (() => {
       "use strict";
 
-      const APP_VERSION = "w01s02-v1";
+      const APP_VERSION = "w01s02-v2";
       const LAST_PROFILE_KEY = `${APP_VERSION}:last-profile`;
       const DB_NAME = "OxfordAQA9210LessonEvidence";
       const DB_STORE = "evidence";
 
-      const stepNames = ["Starter", "Main activity 1", "Main activity 2", "Extension", "Plenary & PDF"];
-      const sectionKeys = ["starter", "main1", "main2", "extension", "plenary"];
+      const stepNames = ["Starter", "Learning Pitstop", "Main activity 1", "Main activity 2", "Learning Check", "Extension", "Plenary & PDF"];
+      const sectionKeys = ["main1", "main2", "extension"];
       const requiredByStep = [
         ["starter_first", "starter_wait", "starter_variable", "starter_aisha", "setup_status"],
-        ["m1_code", "m1_output", "m1_input", "m1_variables", "m1_meaningful"],
-        ["m2_code", "m2_test1_actual", "m2_test1_result", "m2_test2_actual", "m2_test2_result"],
+        ["pit1_type", "pit1_evidence", "pit1_action"],
+        ["m1_code", "m1_variables", "m1_meaningful"],
+        ["m2_operator_choice", "m2_code", "m2_test1_actual", "m2_test1_result", "m2_test2_actual", "m2_test2_result"],
+        ["pit2_phase", "pit2_reason", "pit2_need"],
         [],
-        ["p_output", "p_process", "p_value", "p_purpose", "p_knowledge", "p_skill", "p_understanding", "rating_k", "rating_s", "rating_u", "confidence"]
+        ["p_output", "p_conversion", "p_skill", "p_understanding", "confidence", "p_next"]
       ];
 
       const reportSchema = [
@@ -1340,7 +2002,17 @@ print(total_points)</code></pre>
           ]
         },
         {
+          key: "pitstop1",
+          title: "Learning Pitstop 1 - Type of learning",
+          entries: [
+            ["Primary learning type", "pit1_type"],
+            ["Evidence from the Starter", "pit1_evidence"],
+            ["Chosen improvement action", "pit1_action"]
+          ]
+        },
+        {
           key: "main1",
+          evidenceKey: "main1",
           title: "Main activity 1 - Modify a working program",
           checks: [
             ["Ran the original program", "m1_run_original"],
@@ -1352,16 +2024,16 @@ print(total_points)</code></pre>
           ],
           entries: [
             ["Completed Python code", "m1_code", "code"],
-            ["Example output statement", "m1_output"],
-            ["Example input statement", "m1_input"],
             ["Variable names", "m1_variables"],
             ["Why name is better than x", "m1_meaningful"]
           ]
         },
         {
           key: "main2",
+          evidenceKey: "main2",
           title: "Main activity 2 - Course points calculator",
           entries: [
+            ["Multiplication operator check", "m2_operator_choice"],
             ["Completed Python code", "m2_code", "code"],
             ["Test 1 expected result", "m2_test1_expected"],
             ["Test 1 actual result", "m2_test1_actual"],
@@ -1373,34 +2045,52 @@ print(total_points)</code></pre>
           ]
         },
         {
+          key: "pitstop2",
+          title: "Learning Pitstop 2 - Current phase",
+          entries: [
+            ["Current learning phase", "pit2_phase"],
+            ["Reason for the phase", "pit2_reason"],
+            ["Requested support or challenge", "pit2_need"]
+          ]
+        },
+        {
           key: "extension",
-          title: "Extension - Bonus points",
+          evidenceKey: "extension",
+          title: "Extension - Ten arithmetic programming challenges",
           checks: [["Attempted the extension", "ext_attempted"]],
           entries: [
-            ["Extended Python code", "ext_code", "code"],
-            ["Expected final score", "ext_expected"],
-            ["Actual final score", "ext_actual"],
-            ["Extension test outcome", "ext_result"],
-            ["Input, processing and output", "ext_ipo"]
+            ["Challenge 1 - Bonus points code", "ext_ch01_code", "code"],
+            ["Challenge 1 test outcome", "ext_ch01_result"],
+            ["Challenge 2 - Times three code", "ext_ch02_code", "code"],
+            ["Challenge 2 test outcome", "ext_ch02_result"],
+            ["Challenge 3 - Add two scores code", "ext_ch03_code", "code"],
+            ["Challenge 3 test outcome", "ext_ch03_result"],
+            ["Challenge 4 - Points remaining code", "ext_ch04_code", "code"],
+            ["Challenge 4 test outcome", "ext_ch04_result"],
+            ["Challenge 5 - Study minutes code", "ext_ch05_code", "code"],
+            ["Challenge 5 test outcome", "ext_ch05_result"],
+            ["Challenge 6 - Seconds in a lesson code", "ext_ch06_code", "code"],
+            ["Challenge 6 test outcome", "ext_ch06_result"],
+            ["Challenge 7 - Total shop cost code", "ext_ch07_code", "code"],
+            ["Challenge 7 test outcome", "ext_ch07_result"],
+            ["Challenge 8 - Mean of two scores code", "ext_ch08_code", "code"],
+            ["Challenge 8 test outcome", "ext_ch08_result"],
+            ["Challenge 9 - Teams and leftovers code", "ext_ch09_code", "code"],
+            ["Challenge 9 test outcome", "ext_ch09_result"],
+            ["Challenge 10 - Square a number code", "ext_ch10_code", "code"],
+            ["Challenge 10 test outcome", "ext_ch10_result"]
           ]
         },
         {
           key: "plenary",
           title: "Plenary - Explain and submit",
           entries: [
-            ["Predicted output", "p_output"],
-            ["Processing line", "p_process"],
-            ["Value stored in total_points", "p_value"],
-            ["Purpose of the program", "p_purpose"],
-            ["Knowledge reflection", "p_knowledge"],
-            ["Skill reflection", "p_skill"],
-            ["Understanding reflection", "p_understanding"],
-            ["Knowledge rating", "rating_k"],
-            ["Skill rating", "rating_s"],
-            ["Understanding rating", "rating_u"],
+            ["AO2 output response", "p_output"],
+            ["AO1/AO2 int() explanation", "p_conversion"],
+            ["Strongest WAGBA area", "p_skill"],
+            ["Input-process-output explanation", "p_understanding"],
             ["Overall support level", "confidence"],
-            ["Paper 1 connection", "p_paper1"],
-            ["Written explanation connection", "p_paper2"]
+            ["Next step towards the WAGBA", "p_next"]
           ]
         }
       ];
@@ -1444,7 +2134,7 @@ print(total_points)</code></pre>
       function saveState() {
         if (!state.owner) return;
         localStorage.setItem(stateKey(state.owner), JSON.stringify(state));
-        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify({ owner: state.owner, profile: state.profile }));
+        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify({ saved: true }));
         const saveStateLabel = $("#saveState");
         if (saveStateLabel) {
           saveStateLabel.textContent = "Saved on this device";
@@ -1477,14 +2167,9 @@ print(total_points)</code></pre>
         const container = $("#savedProfile");
         try {
           const saved = JSON.parse(localStorage.getItem(LAST_PROFILE_KEY) || "null");
-          if (!saved?.profile?.name || saved.profile.teacher) return;
+          if (!saved?.saved) return;
           container.classList.remove("hidden");
-          container.innerHTML = `<strong>Continue saved work</strong><br>${escapeHtml(saved.profile.name)} · ${escapeHtml(saved.profile.className)}<br><button type="button" id="continueSaved">Continue this lesson</button>`;
-          $("#continueSaved").addEventListener("click", () => {
-            $("#studentName").value = saved.profile.name;
-            $("#studentClass").value = saved.profile.className;
-            startLesson(saved.profile.name, saved.profile.className);
-          });
+          container.innerHTML = "<strong>Saved work may be available on this device.</strong><br>Enter the same name and class used previously to continue. Student details are not shown here on shared devices.";
         } catch (error) {
           container.classList.add("hidden");
         }
@@ -1502,6 +2187,10 @@ print(total_points)</code></pre>
       function applyStateToForm() {
         $$('[data-field]').forEach((element) => {
           const key = element.dataset.field;
+          if (element.type === "radio") {
+            element.checked = state.fields[key] === element.value;
+            return;
+          }
           if (Object.prototype.hasOwnProperty.call(state.fields, key)) {
             element.value = state.fields[key];
           } else if (element.value) {
@@ -1517,6 +2206,7 @@ print(total_points)</code></pre>
           const panel = document.getElementById(hintId);
           if (panel) panel.classList.add("visible");
         });
+        updatePhaseResponse();
       }
 
       function startLesson(name, className) {
@@ -1556,25 +2246,58 @@ print(total_points)</code></pre>
         return safeText(state.fields[key]).trim().length > 0;
       }
 
+      function updatePhaseResponse() {
+        const panel = $("#phaseResponse");
+        if (!panel) return;
+        const phase = state.fields.pit2_phase || "";
+        const need = state.fields.pit2_need || "";
+        const messages = {
+          "New Learning": "New learning is a productive struggle. Revisit the annotated example, then explain one new statement in your own words before the Plenary.",
+          "Consolidating": "You are strengthening an existing idea. Complete the Plenary independently and explain one connection between the Starter and the calculator.",
+          "Treading Water": "You need greater challenge. Choose the optional Extension or rebuild the calculator without the provided frame.",
+          "Drowning": "Pause before continuing. Open ‘I need help’, identify the exact line or concept blocking you, and show it to your teacher."
+        };
+        panel.textContent = messages[phase] || "Choose a phase and next step. The page will suggest what to do next.";
+        if (need) panel.textContent += ` Your selected next step is: ${need}.`;
+        panel.dataset.tone = phase === "Treading Water" ? "challenge" : phase === "Drowning" ? "support" : "standard";
+      }
+
       function stepCompletion(index) {
-        if (index === 3) {
+        if (index === 5) {
           if (!state.checks.ext_attempted) return { complete: false, optional: true, ratio: 0 };
-          const keys = ["ext_code", "ext_actual", "ext_result"];
+          const keys = [];
+          for (let challenge = 1; challenge <= 10; challenge += 1) {
+            const number = String(challenge).padStart(2, "0");
+            keys.push(`ext_ch${number}_code`, `ext_ch${number}_result`);
+          }
           const done = keys.filter(fieldComplete).length;
-          return { complete: done === keys.length, optional: true, ratio: done / keys.length };
+          const completedChallenges = Array.from({ length: 10 }, (_, index) => String(index + 1).padStart(2, "0"))
+            .filter((number) => fieldComplete(`ext_ch${number}_code`) && fieldComplete(`ext_ch${number}_result`)).length;
+          return { complete: completedChallenges > 0, optional: true, ratio: done / keys.length };
         }
         const keys = requiredByStep[index];
-        const done = keys.filter(fieldComplete).length;
-        return { complete: keys.length > 0 && done === keys.length, optional: false, ratio: keys.length ? done / keys.length : 0 };
+        let done = keys.filter(fieldComplete).length;
+        let total = keys.length;
+        if (index === 2) {
+          const mainOneChecks = ["m1_run_original", "m1_saved", "m1_changed", "m1_class_input", "m1_final_output", "m1_rerun"];
+          done += mainOneChecks.filter((key) => state.checks[key]).length;
+          total += mainOneChecks.length;
+        }
+        return { complete: total > 0 && done === total, optional: false, ratio: total ? done / total : 0 };
       }
 
       function updateProgress() {
-        const coreSteps = [0, 1, 2, 4];
-        const total = coreSteps.reduce((sum, index) => sum + requiredByStep[index].length, 0);
-        const done = coreSteps.reduce((sum, index) => sum + requiredByStep[index].filter(fieldComplete).length, 0);
+        const coreSteps = [0, 1, 2, 3, 4, 6];
+        let total = coreSteps.reduce((sum, index) => sum + requiredByStep[index].length, 0);
+        let done = coreSteps.reduce((sum, index) => sum + requiredByStep[index].filter(fieldComplete).length, 0);
+        const mainOneChecks = ["m1_run_original", "m1_saved", "m1_changed", "m1_class_input", "m1_final_output", "m1_rerun"];
+        total += mainOneChecks.length;
+        done += mainOneChecks.filter((key) => state.checks[key]).length;
         const percent = Math.round((done / total) * 100);
         $("#progressBar").style.width = `${percent}%`;
-        $("#progressText").textContent = `${percent}% complete`;
+        $("#progressText").textContent = `${done} of ${total} core checks`;
+        $("#progressTrack").setAttribute("aria-valuenow", String(percent));
+        $("#progressTrack").setAttribute("aria-valuetext", `${done} of ${total} core evidence checks completed`);
 
         $$('.step-button').forEach((button, index) => {
           const completion = stepCompletion(index);
@@ -1587,9 +2310,11 @@ print(total_points)</code></pre>
       function bindFormPersistence() {
         $$('[data-field]').forEach((element) => {
           const save = () => {
+            if (element.type === "radio" && !element.checked) return;
             state.fields[element.dataset.field] = element.value;
             saveState();
             updateProgress();
+            if (element.dataset.field === "pit2_phase" || element.dataset.field === "pit2_need") updatePhaseResponse();
           };
           element.addEventListener("input", save);
           element.addEventListener("change", save);
@@ -1782,6 +2507,13 @@ print(total_points)</code></pre>
 
         $$('[data-evidence-zone]').forEach((zone) => {
           const section = zone.dataset.evidenceZone;
+          const input = zone.querySelector('[data-evidence-input]');
+          zone.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              input?.click();
+            }
+          });
           ["dragenter", "dragover"].forEach((eventName) => zone.addEventListener(eventName, (event) => {
             event.preventDefault();
             zone.classList.add("dragging");
@@ -1864,10 +2596,10 @@ print(total_points)</code></pre>
             section.appendChild(makeReportEntry(label, entryValue(key), type));
           });
 
-          const images = evidence[schema.key] || [];
-          if (!images.length) {
+          const images = schema.evidenceKey ? (evidence[schema.evidenceKey] || []) : [];
+          if (schema.evidenceKey && !images.length) {
             section.appendChild(makeReportEntry("Evidence images", "No image submitted for this section"));
-          } else {
+          } else if (schema.evidenceKey) {
             const evidenceHeading = document.createElement("h3");
             evidenceHeading.textContent = "Evidence images";
             section.appendChild(evidenceHeading);
@@ -1934,11 +2666,13 @@ print(total_points)</code></pre>
           starter_labels: "Input: input(...)\nStorage: name\nOutput: both print(...) lines",
           setup_status: "My Python IDE is ready",
           setup_issue: "No issue - teacher sample.",
+          pit1_type: "Skills",
+          pit1_evidence: "I used Skills when I predicted the output, ran the program and checked the result.",
+          pit1_action: "Make one change and test it before making another",
           m1_code: 'print("Welcome to OxfordAQA Computer Science 9210")\nname = input("Enter your name: ")\nstudent_class = input("Enter your class: ")\nprint("Hello", name)\nprint("You are in", student_class)',
-          m1_output: 'print("Hello", name)',
-          m1_input: 'name = input("Enter your name: ")',
           m1_variables: "name, student_class",
           m1_meaningful: "The name describes the value stored in the variable.",
+          m2_operator_choice: "*",
           m2_code: 'name = input("Enter your name: ")\ncorrect_answers = int(input("How many answers were correct? "))\npoints_per_answer = 5\ntotal_points = correct_answers * points_per_answer\nprint(name, "scored", total_points, "points")',
           m2_test1_expected: "0 points",
           m2_test1_actual: "0 points",
@@ -1946,27 +2680,38 @@ print(total_points)</code></pre>
           m2_test2_expected: "20 points",
           m2_test2_actual: "20 points",
           m2_test2_result: "Pass",
-          ext_code: "",
-          ext_expected: "24 points",
-          ext_actual: "",
-          ext_result: "Not attempted",
-          ext_ipo: "",
+          pit2_phase: "Consolidating",
+          pit2_reason: "I had used variables before, but today I combined input, variables and arithmetic in one program.",
+          pit2_need: "Complete the plenary independently",
+          ext_ch01_code: 'bonus_tasks = int(input("Bonus tasks: "))\nbonus_points = bonus_tasks * 2\nfinal_score = total_points + bonus_points\nprint("Final score:", final_score)',
+          ext_ch01_result: "Pass",
+          ext_ch02_code: "",
+          ext_ch02_result: "Not attempted",
+          ext_ch03_code: "",
+          ext_ch03_result: "Not attempted",
+          ext_ch04_code: "",
+          ext_ch04_result: "Not attempted",
+          ext_ch05_code: "",
+          ext_ch05_result: "Not attempted",
+          ext_ch06_code: "",
+          ext_ch06_result: "Not attempted",
+          ext_ch07_code: "",
+          ext_ch07_result: "Not attempted",
+          ext_ch08_code: "",
+          ext_ch08_result: "Not attempted",
+          ext_ch09_code: "",
+          ext_ch09_result: "Not attempted",
+          ext_ch10_code: "",
+          ext_ch10_result: "Not attempted",
           p_output: "15",
-          p_process: "total_points = correct_answers * points_per_answer",
-          p_value: "15",
-          p_purpose: "It calculates the number of points awarded for three correct answers.",
-          p_knowledge: "A named storage location for a value that can change.",
-          p_skill: "a Python program that receives input and calculates a score.",
+          p_conversion: "input() returns text, so int() converts it to an integer that can be multiplied.",
+          p_skill: "Using variables and arithmetic",
           p_understanding: "the user enters data, multiplication processes it, and print displays the result.",
-          rating_k: "Independent",
-          rating_s: "Independent",
-          rating_u: "Independent",
-          confidence: "I completed the tasks independently",
-          p_paper1: "Modifying and testing the welcome program.",
-          p_paper2: "Explaining input, processing and output in the plenary."
+          confidence: "I completed the core tasks independently",
+          p_next: "Create another input–process–output program"
         };
         state.fields = { ...state.fields, ...samples };
-        ["m1_run_original", "m1_saved", "m1_changed", "m1_class_input", "m1_final_output", "m1_rerun"].forEach((key) => { state.checks[key] = true; });
+        ["m1_run_original", "m1_saved", "m1_changed", "m1_class_input", "m1_final_output", "m1_rerun", "ext_attempted"].forEach((key) => { state.checks[key] = true; });
         applyStateToForm();
         saveState();
         updateProgress();
@@ -1976,11 +2721,15 @@ print(total_points)</code></pre>
         const confirmed = window.confirm("Clear all saved responses and evidence for this profile?");
         if (!confirmed) return;
         localStorage.removeItem(stateKey(state.owner));
+        localStorage.removeItem(LAST_PROFILE_KEY);
         await clearOwnerEvidence();
         const profile = state.profile;
         const owner = state.owner;
         state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
-        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; });
+        $$('[data-field]').forEach((element) => {
+          if (element.type === "radio") element.checked = false;
+          else element.value = element.defaultValue || "";
+        });
         $$('[data-check]').forEach((element) => { element.checked = false; });
         $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
         applyStateToForm();
@@ -1996,6 +2745,17 @@ print(total_points)</code></pre>
         $("#studentName").value = state.profile.teacher ? "" : state.profile.name;
         $("#studentClass").value = state.profile.teacher ? "" : state.profile.className;
         showSavedProfile();
+      }
+
+      function revealAfterAttempt(fieldKeys, panelSelector, messageSelector) {
+        const missing = fieldKeys.filter((key) => !fieldComplete(key));
+        const message = messageSelector ? $(messageSelector) : null;
+        if (missing.length && !state.profile.teacher) {
+          if (message) message.textContent = "Make a genuine attempt at each question before revealing the feedback.";
+          return;
+        }
+        if (message) message.textContent = "";
+        $(panelSelector)?.classList.add("visible");
       }
 
       function bindEvents() {
@@ -2016,11 +2776,30 @@ print(total_points)</code></pre>
         $$('.next-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep + 1)));
         $$('.previous-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep - 1)));
         $("#returnToStarter").addEventListener("click", () => goToStep(0));
+        $("#goPlenary").addEventListener("click", () => goToStep(6));
+        $("#goExtension").addEventListener("click", () => goToStep(5));
         $("#exitButton").addEventListener("click", exitToLanding);
         $("#quickExport").addEventListener("click", exportPdf);
         $("#finalExport").addEventListener("click", exportPdf);
         $("#fillSamples").addEventListener("click", fillTeacherSamples);
         $("#clearPreview").addEventListener("click", clearCurrentProfile);
+        $("#helpButton").addEventListener("click", () => $("#supportDialog").showModal());
+        $("#closeSupport").addEventListener("click", () => $("#supportDialog").close());
+        $("#clearStudentWork").addEventListener("click", async () => {
+          $("#supportDialog").close();
+          await clearCurrentProfile();
+        });
+        $("#checkStarter").addEventListener("click", () => revealAfterAttempt(
+          ["starter_first", "starter_wait", "starter_variable", "starter_aisha"],
+          "#starterFeedback",
+          "#starterCheckMessage"
+        ));
+        $("#checkTests").addEventListener("click", () => $("#testFeedback").classList.add("visible"));
+        $("#checkPlenary").addEventListener("click", () => revealAfterAttempt(
+          ["p_output", "p_conversion"],
+          "#plenaryFeedback",
+          "#plenaryCheckMessage"
+        ));
 
         $$('.copy-button').forEach((button) => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
         $$('.hint-button').forEach((button) => button.addEventListener("click", () => {
