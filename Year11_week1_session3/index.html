@@ -3,18 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#111111" />
     <title>November 2024 Paper 1 Skills Lab | Year 11 Computer Science</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <main id="landing" class="landing">
       <section class="landing-visual" aria-labelledby="landing-title">
         <p class="eyebrow light">Year 11 Computer Science · Week 1 Session 3</p>
-        <h1 id="landing-title">Understand it.<br />Change it.<br />Prove it.</h1>
-        <p class="landing-copy">Work through authentic November 2024 Paper 1 questions using the original preliminary material, skeleton program and test files.</p>
-        <div class="paper-strip"><span>SECTION A · ANALYSE</span><span>SECTION B · MODIFY</span><span>AO3 · EVIDENCE</span></div>
+        <h1 id="landing-title">Read it.<br />Trace it.<br />Change it.<br />Prove it.</h1>
+        <p class="landing-copy">A focused November 2024 Paper 1 lesson using the original question wording, skeleton program and prescribed test files.</p>
+        <div class="paper-strip"><span>SECTION A · TRACE</span><span>SECTION B · MODIFY</span><span>AO3 · TEST &amp; EVIDENCE</span></div>
       </section>
       <section class="entry-panel" aria-labelledby="entry-title">
         <div class="entry-inner">
@@ -23,185 +24,204 @@
           <p class="muted">Your answers and evidence save on this device. At the end, download one PDF and submit it to Teams.</p>
           <form id="student-entry" class="entry-form" novalidate>
             <label>Your full name<input id="student-name" type="text" autocomplete="name" placeholder="e.g. Alex Tan" /></label>
-            <label>Class<input id="student-class" type="text" placeholder="e.g. 11CS1" /></label>
+            <label>Class<input id="student-class" type="text" placeholder="e.g. 11T" /></label>
             <button class="primary-button wide" type="submit">Begin lesson <span aria-hidden="true">→</span></button>
           </form>
           <p class="privacy-note">No account required · No data leaves this browser</p>
         </div>
       </section>
     </main>
+
     <div id="lesson-app" class="app-shell" hidden>
       <aside class="sidebar">
         <div class="brand-block"><span class="brand-mark">P1</span><div><strong>November 2024</strong><small>Paper 1 Skills Lab</small></div></div>
         <div class="profile-card"><span id="profile-role" class="profile-role">Student</span><strong id="profile-name">Student</strong><span id="profile-class">Class</span></div>
-        <div class="progress-block"><div class="progress-label"><span>Core progress</span><strong id="progress-percent">0%</strong></div><div class="progress-track"><span id="progress-bar"></span></div></div>
+        <div class="progress-block"><div class="progress-label"><span>Core evidence</span><strong id="progress-percent">0%</strong></div><div class="progress-track"><span id="progress-bar"></span></div><small>Progress records submitted work, not correctness.</small></div>
         <nav id="lesson-nav" class="lesson-nav" aria-label="Lesson sections">
           <button type="button" data-nav="overview"><span>00</span>Lesson map</button>
           <button type="button" data-nav="resources"><span>01</span>Resources</button>
           <button type="button" data-nav="starter"><span>02</span>Starter</button>
-          <button type="button" data-nav="skill1"><span>03</span>Skill Clinic 1</button>
-          <button type="button" data-nav="main1"><span>04</span>Main Activity 1</button>
-          <button type="button" data-nav="skill2"><span>05</span>Skill Clinic 2</button>
-          <button type="button" data-nav="main2"><span>06</span>Main Activity 2</button>
-          <button type="button" data-nav="extension"><span>07</span>Extension</button>
-          <button type="button" data-nav="plenary"><span>08</span>Plenary</button>
-          <button type="button" data-nav="finish"><span>09</span>Finish &amp; export</button>
+          <button type="button" data-nav="pitstop1"><span>03</span>Learning Pit Stop 1</button>
+          <button type="button" data-nav="skill1"><span>04</span>Trace clinic</button>
+          <button type="button" data-nav="main1"><span>05</span>Main Activity 1</button>
+          <button type="button" data-nav="skill2"><span>06</span>Requirements clinic</button>
+          <button type="button" data-nav="main2"><span>07</span>Main Activity 2</button>
+          <button type="button" data-nav="pitstop2"><span>08</span>Learning Pit Stop 2</button>
+          <button type="button" data-nav="extension"><span>09</span>Extension routes</button>
+          <button type="button" data-nav="plenary"><span>10</span>Plenary</button>
+          <button type="button" data-nav="finish"><span>11</span>Finish &amp; export</button>
         </nav>
         <button id="return-home" class="text-button" type="button">← Return to sign-in</button>
       </aside>
+
       <section class="workspace">
         <header class="workspace-header">
           <button id="mobile-menu" class="mobile-menu" type="button" aria-label="Open lesson menu">☰</button>
-          <div><span class="eyebrow">What are we getting better at?</span><strong>Turning written requirements into correct, tested and evidenced changes to an existing program.</strong></div>
+          <div><span class="eyebrow">WAGBA · What are we getting better at?</span><strong>Reading and tracing an existing program, then turning precise requirements into a correct, tested and evidenced modification.</strong></div>
           <span id="autosave-status" class="save-status">Saved</span>
         </header>
-        <div id="pages" class="pages">
+
+        <main id="lesson-content" class="pages">
           <article class="lesson-page" data-page="overview">
-            <div class="page-heading"><div><span class="section-number">00</span><p class="eyebrow">Lesson map</p><h2>Paper 1 Skills Lab</h2></div><span class="time-chip">60 minutes</span></div>
-            <section class="notice-card original-notice"><strong>Original-question safeguard</strong><p>Every official question is displayed as an image captured directly from the supplied November 2024 question paper. Guidance appears separately and does not replace, shorten or rewrite the official wording.</p></section>
+            <div class="page-heading"><div><span class="section-number">00</span><p class="eyebrow">Lesson map</p><h2>One program. One connected journey.</h2></div><span class="time-chip">60 minutes</span></div>
+            <section class="notice-card original-notice"><strong>Original-question safeguard</strong><p>Every official question is displayed as an image captured directly from the supplied November 2024 question paper. Teacher-created guidance and extension material are labelled separately.</p></section>
             <div class="objective-grid">
-              <section class="objective-card key-card"><span>Lesson objective</span><h3>Analyse and trace the November 2024 skeleton program, then implement, test and evidence a required modification.</h3></section>
-              <section class="objective-card"><span>Knowledge</span><p>Parameters, local variables, selection, iteration, indexing, accumulators and run-length encoding.</p></section>
-              <section class="objective-card"><span>Skills</span><p>Navigate code, trace state, explain behaviour, modify a subroutine and provide valid evidence.</p></section>
-              <section class="objective-card"><span>Understanding</span><p>Recognise where a program event occurs, why the final run needs separate processing and how evidence earns marks.</p></section>
+              <section class="objective-card key-card"><span>Lesson objective</span><h3>Trace the existing <code>rleImage</code> subroutine, then implement, test and evidence the storage-summary modification in Question 08.</h3></section>
+              <section class="objective-card"><span>Knowledge</span><p>Parameters, local variables, indexing, selection, iteration, accumulators, RLE pairs and bytes.</p></section>
+              <section class="objective-card"><span>Skills</span><p>Navigate code, trace state, decompose requirements, modify a subroutine, test and capture evidence.</p></section>
+              <section class="objective-card"><span>Understanding</span><p>Explain when a run finishes, why the final run is handled after the loop and how a prescribed test proves correctness.</p></section>
             </div>
-            <section class="journey-line"><div><b>01</b><span>Navigate</span></div><i>→</i><div><b>02</b><span>Trace</span></div><i>→</i><div><b>03</b><span>Modify</span></div><i>→</i><div><b>04</b><span>Test</span></div><i>→</i><div><b>05</b><span>Evidence</span></div></section>
-            <div class="resource-shortcuts"><a href="resources/Nov24-Paper1-Preliminary-Material.pdf" target="_blank">Open preliminary material</a><a href="resources/Paper_1_November_2024_Skeleton.py" download>Download skeleton program</a><a href="resources/Nov24-Paper1-Question-Paper.pdf" target="_blank">Open full question paper</a></div>
-            <aside class="teacher-note"><strong>Teacher review</strong><p>The student sequence is visible in full. Official question images have no editable overlay and the mark scheme is not included anywhere in the package.</p></aside>
-            <div class="page-actions"><p>Review and download the examination resources before beginning.</p><button class="primary-button" type="button" data-next="resources">Review Resources →</button></div>
+            <section class="journey-line"><div><b>01</b><span>Navigate</span></div><i>→</i><div><b>02</b><span>Reflect</span></div><i>→</i><div><b>03</b><span>Trace</span></div><i>→</i><div><b>04</b><span>Modify</span></div><i>→</i><div><b>05</b><span>Test</span></div><i>→</i><div><b>06</b><span>Prove</span></div></section>
+            <section class="timing-grid" aria-label="Lesson timings"><div><strong>4</strong><span>Setup</span></div><div><strong>5</strong><span>Starter</span></div><div><strong>3</strong><span>Pit Stop 1</span></div><div><strong>5</strong><span>Trace clinic</span></div><div><strong>12</strong><span>Main 1</span></div><div><strong>9</strong><span>Requirements</span></div><div><strong>17</strong><span>Main 2</span></div><div><strong>5</strong><span>Pit Stop + plenary</span></div></section>
+            <aside class="teacher-note"><strong>Teacher review</strong><p>The complete sequence is visible. The official mark scheme is not included anywhere in the student package.</p></aside>
+            <div class="page-actions"><p>Begin by preparing the complete examination package.</p><button class="primary-button" type="button" data-next="resources">Review Resources →</button></div>
           </article>
+
           <article class="lesson-page" data-page="resources">
-            <div class="page-heading"><div><span class="section-number">01</span><p class="eyebrow">Before you begin</p><h2>November 2024 resources</h2></div><span class="ao-badge">No mark scheme</span></div>
-            <section class="notice-card"><strong>Know the examination package</strong><p>Open the preliminary material and question paper, then download the skeleton program and three image-data files before starting. The mark scheme is deliberately not included.</p></section>
+            <div class="page-heading"><div><span class="section-number">01</span><p class="eyebrow">Before you begin · 4 minutes</p><h2>Build a reliable workspace</h2></div><span class="ao-badge">Examination setup</span></div>
+            <section class="notice-card"><strong>Keep one untouched backup</strong><p>Download the files into one folder. Keep the original Skeleton Program unchanged and make a fresh working copy for each Section B task.</p></section>
             <div class="resource-grid">
               <a href="resources/Nov24-Paper1-Preliminary-Material.pdf" target="_blank"><b>PDF</b><strong>Preliminary Material</strong><span>Open in a new tab</span></a>
               <a href="resources/Nov24-Paper1-Question-Paper.pdf" target="_blank"><b>PDF</b><strong>Question Paper</strong><span>Open in a new tab</span></a>
               <a href="resources/Paper_1_November_2024_Skeleton.py" download><b>PY</b><strong>Skeleton Program</strong><span>Download</span></a>
               <a href="resources/pattern.txt" download><b>TXT</b><strong>pattern.txt</strong><span>Download</span></a>
-              <a href="resources/0.txt" download><b>TXT</b><strong>0.txt</strong><span>Download</span></a>
-              <a href="resources/1.txt" download><b>TXT</b><strong>1.txt</strong><span>Download</span></a>
+              <a href="resources/zero.txt" download><b>TXT</b><strong>zero.txt</strong><span>Required for Question 08</span></a>
+              <a href="resources/one.txt" download><b>TXT</b><strong>one.txt</strong><span>Required for Question 04</span></a>
             </div>
-            <section class="data-files" aria-labelledby="data-file-title">
-              <div class="data-files-heading"><span class="eyebrow">Included inside the website</span><h3 id="data-file-title">Image-data file contents</h3><p>The first two lines store the width and height. Each following line stores one row of pixel values.</p></div>
-              <div class="data-file-grid">
-                <article><div><strong>pattern.txt</strong><a href="resources/pattern.txt" download>Download</a></div><pre>5
-9
-22222
-33233
-32223
-12321
-43234
-00000
-32123
-32123
-22122</pre></article>
-                <article><div><strong>0.txt</strong><a href="resources/0.txt" download>Download</a></div><pre>5
-5
-44444
-40004
-40004
-40004
-44444</pre><small>This is also supplied as <a href="resources/zero.txt" download>zero.txt</a> for the official Question 08 test.</small></article>
-                <article><div><strong>1.txt</strong><a href="resources/1.txt" download>Download</a></div><pre>5
-5
-00400
-04400
-00400
-00400
-44444</pre><small>This is also supplied as <a href="resources/one.txt" download>one.txt</a> for the official Question 04 test.</small></article>
+            <section class="setup-check"><h3>Workspace check</h3><label><input type="checkbox" data-save="setup_backup" value="yes" /> I have kept an untouched copy of the Skeleton Program.</label><label><input type="checkbox" data-save="setup_files" value="yes" /> The Python file and text files are in the same folder.</label><label><input type="checkbox" data-save="setup_editor" value="yes" /> The Skeleton Program opens in my Python editor.</label></section>
+            <details class="reference-details"><summary>View the supplied image-data files</summary><div class="data-file-grid"><article><strong>pattern.txt</strong><pre>5\n9\n22222\n33233\n32223\n12321\n43234\n00000\n32123\n32123\n22122</pre></article><article><strong>zero.txt</strong><pre>5\n5\n44444\n40004\n40004\n40004\n44444</pre></article><article><strong>one.txt</strong><pre>5\n5\n00400\n04400\n00400\n00400\n44444</pre></article></div></details>
+            <div class="page-actions"><p>Section A uses the unchanged Skeleton Program.</p><button class="primary-button" type="button" data-next="starter">Continue to Starter →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="starter">
+            <div class="page-heading"><div><span class="section-number">02</span><p class="eyebrow">Starter · 5 minutes</p><h2>Find it fast</h2></div><span class="ao-badge">AO3 · 3 marks</span></div>
+            <div class="instruction-bar"><strong>Use the unchanged Skeleton Program.</strong> Answer the three original questions. For this navigation exercise, do not run the program until you have recorded your answers and evidence lines.</div>
+            <div class="exam-workbench starter-workbench"><figure class="official-question"><figcaption>Original November 2024 · Questions 01.1–01.3</figcaption><img src="assets/starter-q01-1-3.png" alt="Original November 2024 Paper 1 Questions 01.1 to 01.3" /></figure><div class="workbench-responses"><label class="response-box"><span>01.1 Answer</span><input data-save="q01_1" data-required type="text" /><small>Evidence line number</small><input data-save="q01_1_line" data-required type="text" inputmode="numeric" /></label><label class="response-box"><span>01.2 Answer</span><input data-save="q01_2" data-required type="text" /><small>Evidence line number</small><input data-save="q01_2_line" data-required type="text" inputmode="numeric" /></label><label class="response-box"><span>01.3 Answer</span><textarea data-save="q01_3" data-required rows="4"></textarea></label></div></div>
+            <div class="page-actions"><p>Save your evidence before identifying the type of learning you used.</p><button class="primary-button complete-button" type="button" data-complete="starter">Save Starter →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="pitstop1">
+            <div class="page-heading"><div><span class="section-number">03</span><p class="eyebrow">Learning Pit Stop 1 · 3 minutes</p><h2>What type of learning did you use?</h2></div><span class="ao-badge">Reflect with evidence</span></div>
+            <div class="pitstop-layout"><figure class="school-reference"><img src="assets/learning-types.png" loading="lazy" alt="School guide explaining knowledge, skills and understanding as types of learning" /><figcaption>School learning framework · use this to support the class discussion.</figcaption></figure><section><p class="lead-copy">The Starter used all three types. Choose the one that was most important in your own work and prove your choice using a question or line of code.</p><div class="choice-grid learning-type-grid" role="radiogroup" aria-label="Primary type of learning"><label class="choice-card"><input type="radio" name="pit1_type" data-save="pit1_type" data-required value="Knowledge" /><span><strong>Knowledge</strong><small>I recalled accurate terms: subroutine, parameter, local variable or concatenation.</small></span></label><label class="choice-card"><input type="radio" name="pit1_type" data-save="pit1_type" data-required value="Skills" /><span><strong>Skills</strong><small>I navigated the program efficiently and located evidence using names and line numbers.</small></span></label><label class="choice-card"><input type="radio" name="pit1_type" data-save="pit1_type" data-required value="Understanding" /><span><strong>Understanding</strong><small>I explained how a statement works and connected it to program behaviour.</small></span></label></div><label class="response-box"><span>My evidence from the Starter</span><textarea data-save="pit1_evidence" data-required rows="4" placeholder="In Question…, I demonstrated… because…"></textarea></label><label class="response-box"><span>How I will get better during Main Activity 1</span><textarea data-save="pit1_action" data-required rows="3" placeholder="I will get better by…"></textarea></label><div id="pit1-guidance" class="adaptive-guidance" aria-live="polite"><strong>Choose a learning type</strong><p>Your next-step guidance will appear here.</p></div></section></div>
+            <div class="page-actions"><p>This reflection will reappear in your final PDF.</p><button class="primary-button complete-button" type="button" data-complete="pitstop1">Save Pit Stop 1 →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="skill1">
+            <div class="page-heading"><div><span class="section-number">04</span><p class="eyebrow">Trace clinic · 5 minutes</p><h2>Follow events, not guesses</h2></div><span class="ao-badge">Predict · Investigate · Explain</span></div>
+            <section class="reading-card"><div class="reading-header"><span>Read first</span><strong>Trace the state at meaningful events</strong></div><ol><li>Record the starting values before the loop.</li><li>Follow one position at a time.</li><li>Evaluate <code>item != current</code> before changing anything.</li><li>Record output only when a <code>print</code> statement executes.</li><li>After the loop, account for the final run.</li></ol></section>
+            <section class="practice-card"><div class="practice-heading"><div><span class="eyebrow">Teacher-created micro-example</span><h3>Predict the output before checking</h3></div><span class="status-chip">Runnable example</span></div><div class="python-window" aria-label="Python code example"><div class="python-titlebar"><span class="python-file"><b>PY</b> trace_rle.py</span><span>Python 3</span></div><pre class="python-ide"><code><span class="code-row"><span class="line-no" aria-hidden="true">1</span><span class="code-text">image = [1, 1, 2]</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">2</span><span class="code-text">current = image[0]</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">3</span><span class="code-text">count = 1</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">4</span><span class="code-text"><span class="py-keyword">for</span> position <span class="py-keyword">in</span> <span class="py-builtin">range</span>(1, <span class="py-builtin">len</span>(image)):</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">5</span><span class="code-text">    item = image[position]</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">6</span><span class="code-text">    <span class="py-keyword">if</span> item != current:</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">7</span><span class="code-text">        <span class="py-builtin">print</span>(<span class="py-string">f"({count},{current})"</span>, end=<span class="py-string">""</span>)</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">8</span><span class="code-text">        current = item</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">9</span><span class="code-text">        count = 1</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">10</span><span class="code-text">    <span class="py-keyword">else</span>:</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">11</span><span class="code-text">        count += 1</span></span>
+<span class="code-row"><span class="line-no" aria-hidden="true">12</span><span class="code-text"><span class="py-builtin">print</span>(<span class="py-string">f"({count},{current})"</span>)</span></span></code></pre></div><div class="table-wrap"><table class="practice-table"><thead><tr><th>Event</th><th>position</th><th>item</th><th>current</th><th>count</th><th>OUTPUT</th></tr></thead><tbody><tr><td>Start</td><td>–</td><td>–</td><td>1</td><td>1</td><td>–</td></tr><tr><td>Loop 1</td><td><input data-save="skill1_pos1" data-required /></td><td><input data-save="skill1_item1" data-required /></td><td><input data-save="skill1_current1" data-required /></td><td><input data-save="skill1_count1" data-required /></td><td><input data-save="skill1_output1" data-required /></td></tr><tr><td>Loop 2</td><td><input data-save="skill1_pos2" data-required /></td><td><input data-save="skill1_item2" data-required /></td><td><input data-save="skill1_current2" data-required /></td><td><input data-save="skill1_count2" data-required /></td><td><input data-save="skill1_output2" data-required /></td></tr><tr><td>After loop</td><td>–</td><td>–</td><td><input data-save="skill1_current3" data-required /></td><td><input data-save="skill1_count3" data-required /></td><td><input data-save="skill1_output3" data-required /></td></tr></tbody></table></div><label class="response-box"><span>Why is the final <code>print</code> outside the loop?</span><textarea data-save="skill1_explain" data-required rows="3"></textarea></label><button class="secondary-button reveal-button" type="button" data-reveal="skill1-feedback" data-preserve="skill1_pos1,skill1_item1,skill1_current1,skill1_count1,skill1_output1,skill1_pos2,skill1_item2,skill1_current2,skill1_count2,skill1_output2,skill1_current3,skill1_count3,skill1_output3,skill1_explain">Check the micro-example</button><div id="skill1-feedback" class="feedback-card" hidden><strong>Check your event sequence</strong><p>At position 1, the second 1 extends the run to count 2 and produces no output. At position 2, the value changes to 2, so <code>(2,1)</code> is output and the new run begins. After the loop, <code>(1,2)</code> is output because no later change can trigger it.</p></div></section>
+            <div class="page-actions"><p>Now transfer this method to the original trace-table question.</p><button class="primary-button complete-button" type="button" data-complete="skill1">Save Trace Clinic →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="main1">
+            <div class="page-heading"><div><span class="section-number">05</span><p class="eyebrow">Main Activity 1 · 12 minutes</p><h2>Trace the real subroutine</h2></div><span class="ao-badge">AO3 · 7 marks</span></div>
+            <div class="instruction-bar"><strong>Original Section A task.</strong> Do not change the Skeleton Program. Complete the official trace using the event method from the clinic.</div>
+            <div class="exam-workbench trace-workbench"><figure class="official-question"><figcaption>Original November 2024 · Questions 03.1–03.2</figcaption><img src="assets/main1-q03.png" alt="Original November 2024 Paper 1 Question 03 and trace table" /></figure><div class="workbench-responses"><section class="trace-section" data-trace-required><div class="trace-heading"><div><span class="eyebrow">03.1 Electronic trace table</span><h3>Record each meaningful event</h3><p>Add rows if required. Leave a cell blank when the variable or output is not recorded at that event.</p></div><div class="trace-actions"><button id="add-trace-row" class="secondary-button" type="button">+ Add row</button><button id="remove-trace-row" class="text-button dark" type="button">Remove last row</button></div></div><div class="table-wrap"><table class="trace-table"><thead><tr><th>current</th><th>count</th><th>position</th><th>item</th><th>OUTPUT</th></tr></thead><tbody id="trace-body"></tbody></table></div></section><label class="response-box"><span>03.2 Answer</span><textarea data-save="q03_2" data-required rows="4"></textarea></label><section class="quality-check"><strong>Before saving</strong><label><input type="checkbox" data-save="trace_check_start" data-required value="yes" /> I recorded the starting values.</label><label><input type="checkbox" data-save="trace_check_changes" data-required value="yes" /> I recorded every run change and its output.</label><label><input type="checkbox" data-save="trace_check_final" data-required value="yes" /> I accounted for the final statement after the loop.</label></section></div></div>
+            <div class="page-actions split"><button class="secondary-button" type="button" data-next="skill2">Mark for return and continue</button><button class="primary-button complete-button" type="button" data-complete="main1">Save Main Activity 1 →</button></div>
+          </article>
+
+          <article class="lesson-page" data-page="skill2">
+            <div class="page-heading"><div><span class="section-number">06</span><p class="eyebrow">Requirements clinic · 9 minutes</p><h2>Learn how to plan a program change</h2></div><span class="ao-badge">Read · model · practise · plan</span></div>
+
+            <section class="notice-card planning-purpose"><strong>What are you planning?</strong><p>You are not writing the finished Python yet. You are making a short map that tells you <b>where</b> to work in <code>rleImage</code>, <b>what state or calculation</b> must change, and <b>what output</b> will prove that the change works.</p></section>
+
+            <section class="reading-card concept-reading">
+              <div class="reading-header"><span>Read first</span><strong>The four ideas Question 08 depends on</strong></div>
+              <div class="reading-body">
+                <p>The subroutine receives <code>width</code>, <code>height</code> and a one-dimensional list called <code>image</code>. The existing loop already recognises the boundary between one run and the next. Your modification must reuse those facts rather than create a separate compression algorithm.</p>
+                <div class="concept-grid">
+                  <article><span>01</span><h3>Original storage</h3><p>The original image contains <code>width × height</code> pixels. At one byte per pixel, the number of pixels is also the number of bytes.</p></article>
+                  <article><span>02</span><h3>RLE storage</h3><p>Each displayed pair contains a run length and a pixel value. If each value needs one byte, every completed pair adds two bytes.</p></article>
+                  <article><span>03</span><h3>Run boundary</h3><p>Inside the loop, <code>item != current</code> means the previous run has finished. This is where its pair is printed and where its storage can be counted.</p></article>
+                  <article><span>04</span><h3>Final run</h3><p>The last run has no later pixel to trigger <code>item != current</code>. Its pair is printed after the loop, so its storage must also be counted there.</p></article>
+                </div>
+                <aside class="accumulator-note"><strong>Programming pattern: accumulator</strong><p>An accumulator stores a running total. Initialise it before processing begins, update it whenever the counted event occurs, and use it after processing ends.</p><pre><code>total = 0&#10;# when the event occurs&#10;total = total + amount&#10;# after processing&#10;display total</code></pre></aside>
               </div>
             </section>
-            <div class="page-actions"><p>Keep these files together in the same working folder.</p><button class="primary-button" type="button" data-next="starter">Continue to Starter →</button></div>
-          </article>
-          <article class="lesson-page" data-page="starter">
-            <div class="page-heading"><div><span class="section-number">02</span><p class="eyebrow">Starter · 5 minutes</p><h2>Find it fast</h2></div><span class="ao-badge">AO3 · Navigate</span></div>
-            <div class="instruction-bar"><strong>Use the skeleton program.</strong> Do not run it. Answer Questions 01.1–01.3 in order and record the line number where you found evidence for 01.1 and 01.2.</div>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 01.1–01.3</figcaption><img src="assets/starter-q01-1-3.png" alt="Original November 2024 Paper 1 Questions 01.1 to 01.3" /></figure>
-            <div class="answer-grid two-col">
-              <label><span>01.1 Answer</span><input data-save="q01_1" data-required type="text" /><small>Evidence line number</small><input data-save="q01_1_line" type="text" inputmode="numeric" /></label>
-              <label><span>01.2 Answer</span><input data-save="q01_2" data-required type="text" /><small>Evidence line number</small><input data-save="q01_2_line" type="text" inputmode="numeric" /></label>
-            </div>
-            <label class="response-box"><span>01.3 Answer</span><textarea data-save="q01_3" data-required rows="4"></textarea></label>
-            <div class="page-actions"><p>Save your answers before learning the tracing method.</p><button class="primary-button complete-button" type="button" data-complete="starter">Save Starter →</button></div>
-          </article>
-          <article class="lesson-page" data-page="skill1">
-            <div class="page-heading"><div><span class="section-number">03</span><p class="eyebrow">Skill Clinic 1 · 5 minutes</p><h2>Trace without guessing</h2></div><span class="ao-badge">Prepare</span></div>
-            <section class="reading-card"><div class="reading-header"><span>Read first</span><strong>A method for accurate tracing</strong></div><ol><li>Record all starting values.</li><li>Follow one iteration at a time.</li><li>Evaluate the selection condition before changing a value.</li><li>Record only the variables affected by the statement.</li><li>Record output exactly when an output statement executes.</li></ol></section>
-            <section class="practice-card"><h3>Small practice</h3><pre><code>image = [0, 2, 4]
 
-for position in range(len(image)):
-    image[position] = max(image[position] - 1, 0)</code></pre>
-              <div class="table-wrap"><table class="practice-table"><thead><tr><th>position</th><th>Value before</th><th>Calculation</th><th>Value after</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>max(0 - 1, 0)</td><td>0</td></tr><tr><td>1</td><td><input data-save="skill1_before1" data-required /></td><td><input data-save="skill1_calc1" data-required /></td><td><input data-save="skill1_after1" data-required /></td></tr><tr><td>2</td><td><input data-save="skill1_before2" data-required /></td><td><input data-save="skill1_calc2" data-required /></td><td><input data-save="skill1_after2" data-required /></td></tr></tbody></table></div>
-              <label class="response-box"><span>State the final contents of <code>image</code>.</span><input data-save="skill1_final" data-required type="text" /></label>
-              <label class="response-box"><span>Explain why <code>max()</code> is used.</span><textarea data-save="skill1_explain" data-required rows="3"></textarea></label>
-              <button class="secondary-button reveal-button" type="button" data-reveal="skill1-feedback" data-preserve="skill1_before1,skill1_calc1,skill1_after1,skill1_before2,skill1_calc2,skill1_after2,skill1_final,skill1_explain">Check the small practice</button>
-              <div id="skill1-feedback" class="feedback-card" hidden><strong>Check</strong><p>The final list is <code>[0, 1, 3]</code>. The limiting function prevents a pixel value from falling below the permitted minimum of 0.</p></div>
+            <section class="practice-card worked-model">
+              <div class="practice-heading"><div><span class="eyebrow">Worked example · a different problem</span><h3>See what a useful plan looks like</h3></div><span class="status-chip">Do not write full code yet</span></div>
+              <p class="lead-copy">Requirement: “Display how many negative readings occur in a list.” A useful plan names the program location, the state change and the evidence—not just “use a loop”.</p>
+              <div class="method-model" aria-label="Worked programming plan example">
+                <article><span>Requirement</span><p>Count negative readings.</p></article><i aria-hidden="true">→</i>
+                <article><span>Location</span><p>Before and inside the loop that visits each reading.</p></article><i aria-hidden="true">→</i>
+                <article><span>Operation</span><p>Start a counter at 0; add 1 whenever <code>reading &lt; 0</code>.</p></article><i aria-hidden="true">→</i>
+                <article><span>Evidence</span><p>Test <code>[4, -2, 7, -1]</code>; the program must display 2.</p></article>
+              </div>
             </section>
-            <div class="page-actions"><p>Now apply the method to the official Section A questions.</p><button class="primary-button complete-button" type="button" data-complete="skill1">Save Skill Clinic →</button></div>
-          </article>
-          <article class="lesson-page" data-page="main1">
-            <div class="page-heading"><div><span class="section-number">04</span><p class="eyebrow">Main Activity 1 · 20 minutes</p><h2>Analyse the skeleton</h2></div><span class="ao-badge">AO3 · 20 marks</span></div>
-            <section class="exam-conditions"><strong>Section A conditions</strong><span>Use the preliminary material and unmodified skeleton program.</span><span>Do not run or change the program.</span><span>Do not use previous holiday answers.</span></section>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 01.4–01.5</figcaption><img src="assets/main1-q01-4-5.png" alt="Original November 2024 Paper 1 Questions 01.4 and 01.5" /></figure>
-            <label class="response-box"><span>01.4 Answer</span><textarea data-save="q01_4" data-required rows="5"></textarea></label>
-            <label class="response-box"><span>01.5 Answer</span><textarea data-save="q01_5" data-required rows="4"></textarea></label>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 02.1–02.4</figcaption><img src="assets/main1-q02.png" alt="Original November 2024 Paper 1 Question 02" /></figure>
-            <label class="response-box"><span>02.1 Answer</span><textarea data-save="q02_1" data-required rows="3"></textarea></label>
-            <label class="response-box"><span>02.2 Answer</span><textarea data-save="q02_2" data-required rows="3"></textarea></label>
-            <label class="response-box"><span>02.3 Answer</span><textarea data-save="q02_3" data-required rows="6" placeholder="Describe every necessary change or write equivalent pseudocode."></textarea></label>
-            <label class="response-box"><span>02.4 Answer</span><textarea data-save="q02_4" data-required rows="3"></textarea></label>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 03.1–03.2</figcaption><img src="assets/main1-q03.png" alt="Original November 2024 Paper 1 Question 03 and trace table" /></figure>
-            <section class="trace-section" data-trace-required>
-              <div class="trace-heading"><div><span class="eyebrow">03.1 Electronic trace table</span><h3>Type directly into each cell</h3><p>Add rows when needed. Blank cells are allowed where the original trace table would remain unshaded.</p></div><div class="trace-actions"><button id="add-trace-row" class="secondary-button" type="button">+ Add row</button><button id="remove-trace-row" class="text-button dark" type="button">Remove last row</button></div></div>
-              <div class="table-wrap"><table class="trace-table"><thead><tr><th>current</th><th>count</th><th>position</th><th>item</th><th>OUTPUT</th></tr></thead><tbody id="trace-body"></tbody></table></div>
+
+            <section class="practice-card guided-check">
+              <div class="practice-heading"><div><span class="eyebrow">Guided skill check</span><h3>Prove that you understand the storage logic</h3></div><span class="status-chip">image = [4, 4, 1, 1, 1]</span></div>
+              <p>Assume the original uses one byte per pixel and each RLE value uses one byte.</p>
+              <div class="micro-check-grid">
+                <label><span>Original image storage</span><input data-save="skill2_check_original" data-required inputmode="numeric" placeholder="… bytes" /></label>
+                <label><span>Number of completed runs</span><input data-save="skill2_check_runs" data-required inputmode="numeric" placeholder="… runs" /></label>
+                <label><span>RLE image storage</span><input data-save="skill2_check_rle" data-required inputmode="numeric" placeholder="… bytes" /></label>
+              </div>
+              <label class="response-box"><span>Why must one storage update happen after the loop?</span><textarea data-save="skill2_check_final" data-required rows="3" placeholder="The final run…"></textarea></label>
+              <button class="secondary-button reveal-button" type="button" data-reveal="skill2-concept-feedback" data-preserve="skill2_check_original,skill2_check_runs,skill2_check_rle,skill2_check_final">Check the guided example</button>
+              <div id="skill2-concept-feedback" class="feedback-card" hidden><strong>Guided-check feedback</strong><p>The original uses <strong>5 bytes</strong>. There are <strong>2 runs</strong>: two 4s and three 1s. Two RLE pairs use <strong>4 bytes</strong>. The second pair must be counted after the loop because the list ends before another value can trigger the selection.</p></div>
             </section>
-            <label class="response-box"><span>03.2 Answer</span><textarea data-save="q03_2" data-required rows="4"></textarea></label>
-            <section class="repair-card"><strong>Before moving on</strong><p>Check indexing, the moment a run changes, and when output occurs. The mark scheme is not available in this app.</p></section>
-            <div class="page-actions"><p>Your Section A responses and trace table will be included in the final PDF.</p><button class="primary-button complete-button" type="button" data-complete="main1">Save Main Activity 1 →</button></div>
-          </article>
-          <article class="lesson-page" data-page="skill2">
-            <div class="page-heading"><div><span class="section-number">05</span><p class="eyebrow">Skill Clinic 2 · 4 minutes</p><h2>Count events, not iterations</h2></div><span class="ao-badge">Prepare</span></div>
-            <section class="reading-card"><div class="reading-header"><span>Read first</span><strong>Accumulator and final-event logic</strong></div><p>An accumulator starts with a known value and is updated whenever a relevant event occurs. In RLE, the event is the completion of a run—not every loop iteration. The final run may not trigger a “value changed” condition, so it may need separate processing after the loop.</p></section>
-            <section class="practice-card"><h3>Small practice</h3><p class="sequence">2, 2, 2, 4, 4, 1</p>
-              <div class="answer-grid two-col"><label><span>How many runs?</span><input data-save="skill2_runs" data-required /></label><label><span>Write the RLE pairs.</span><input data-save="skill2_pairs" data-required /></label><label><span>Bytes at two bytes per pair</span><input data-save="skill2_bytes" data-required /></label><label><span>Which final run could be missed?</span><input data-save="skill2_missed" data-required /></label></div>
-              <label class="response-box"><span>Where should that final run be processed, and why?</span><textarea data-save="skill2_where" data-required rows="3"></textarea></label>
-              <button class="secondary-button reveal-button" type="button" data-reveal="skill2-feedback" data-preserve="skill2_runs,skill2_pairs,skill2_bytes,skill2_missed,skill2_where">Check the small practice</button>
-              <div id="skill2-feedback" class="feedback-card" hidden><strong>Check</strong><p>There are 3 runs: <code>(3,2)(2,4)(1,1)</code>, requiring 6 bytes. The final <code>(1,1)</code> run must be processed after the loop if output happens only when a value changes.</p></div>
+
+            <section class="practice-card planning-frame">
+              <div class="practice-heading"><div><span class="eyebrow">Now transfer the method</span><h3>Question 08 planning frame</h3></div><span class="status-chip">Use short, precise sentences</span></div>
+              <div class="planning-instruction"><strong>Every row must answer three things:</strong><span><b>Where?</b> Name the part of <code>rleImage</code>.</span><span><b>What?</b> State the calculation or update.</span><span><b>Proof?</b> State the required visible result.</span></div>
+              <div class="table-wrap"><table class="requirements-table"><thead><tr><th>Requirement</th><th>Your programming plan</th></tr></thead><tbody>
+                <tr><td>Original image storage<small>Use the parameters supplied to <code>rleImage</code>.</small></td><td><textarea data-save="skill2_original_plan" data-required rows="3" placeholder="Where will you calculate it? What calculation will you use? Which message will prove it?"></textarea></td></tr>
+                <tr><td>Each completed RLE run<small>Connect your plan to the event already detected by the selection.</small></td><td><textarea data-save="skill2_run_plan" data-required rows="3" placeholder="Where does a run finish? What will be added to the running total? Why?"></textarea></td></tr>
+                <tr><td>The final RLE run<small>Look at the final print statement after the loop.</small></td><td><textarea data-save="skill2_final_plan" data-required rows="3" placeholder="Where must the final update go? Why is an update inside the loop not enough?"></textarea></td></tr>
+                <tr><td>Required messages<small>Match the wording and position required by Question 08.</small></td><td><textarea data-save="skill2_message_plan" data-required rows="3" placeholder="What two messages must appear, and when should they be displayed?"></textarea></td></tr>
+              </tbody></table></div>
+              <div class="prediction-grid"><label><span>Predicted original size for zero.txt</span><input data-save="skill2_expected_original" data-required inputmode="numeric" placeholder="… bytes" /></label><label><span>Predicted RLE size for zero.txt</span><input data-save="skill2_expected_rle" data-required inputmode="numeric" placeholder="… bytes" /></label></div>
+              <button class="secondary-button reveal-button" type="button" data-reveal="skill2-feedback" data-preserve="skill2_original_plan,skill2_run_plan,skill2_final_plan,skill2_message_plan,skill2_expected_original,skill2_expected_rle">Check the Question 08 plan</button>
+              <div id="skill2-feedback" class="feedback-card" hidden><strong>Planning check</strong><p>Your plan should identify <code>width × height</code> for the original total, two bytes for each completed RLE pair, an update at the run-change event, a separate update for the final run, and both required messages after the encoded data. For <code>zero.txt</code>, the predicted totals are <strong>25 bytes</strong> and <strong>14 bytes</strong>.</p></div>
             </section>
-            <div class="page-actions"><p>Apply this idea without copying the example into the official task.</p><button class="primary-button complete-button" type="button" data-complete="skill2">Save Skill Clinic →</button></div>
+            <div class="page-actions"><p>Keep this plan visible while coding. Tick off each requirement only when your test evidence proves it.</p><button class="primary-button complete-button" type="button" data-complete="skill2">Save Requirements Clinic →</button></div>
           </article>
+
           <article class="lesson-page" data-page="main2">
-            <div class="page-heading"><div><span class="section-number">06</span><p class="eyebrow">Main Activity 2 · 16 minutes</p><h2>Modify, test and evidence</h2></div><span class="ao-badge">AO3 · 7 marks</span></div>
-            <div class="instruction-bar"><strong>Work from a fresh skeleton copy.</strong> The exact official question appears below. Use <code>zero.txt</code> for the requested test.</div>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 08.1–08.2</figcaption><img src="assets/main2-q08.png" alt="Original November 2024 Paper 1 Question 08" /></figure>
-            <section class="evidence-card"><div class="evidence-title"><span>08.1</span><div><h3>Complete amended source code</h3><p>Paste all the program source code for the amended <code>rleImage</code> subroutine.</p></div></div><textarea class="code-entry" data-save="q08_code" data-required rows="18" spellcheck="false" placeholder="Paste the complete amended subroutine here..."></textarea></section>
-            <section class="evidence-card" data-upload-required="q08_image1"><div class="evidence-title"><span>08.2</span><div><h3>Screen capture evidence</h3><p>One clear image may be sufficient. A second slot is provided if all required evidence does not fit in one screen capture.</p></div></div><div class="upload-grid"><div class="upload-slot" data-upload-slot="q08_image1" tabindex="0"><strong>Evidence image 1 · required</strong><p>Choose, drop or paste an image.</p><input type="file" accept="image/*" /><img alt="Question 08 evidence image 1 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div><div class="upload-slot" data-upload-slot="q08_image2" tabindex="0"><strong>Evidence image 2 · optional</strong><p>Use only if a second capture is needed.</p><input type="file" accept="image/*" /><img alt="Question 08 evidence image 2 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div></div></section>
-            <section class="submission-check"><h3>Evidence check</h3><label><input type="checkbox" data-save="q08_check_code" value="yes" /> My code box contains the entire amended subroutine.</label><label><input type="checkbox" data-save="q08_check_test" value="yes" /> My screenshot shows the requested test inputs and both storage messages.</label><label><input type="checkbox" data-save="q08_check_match" value="yes" /> My screenshot was produced by the code I pasted above.</label></section>
-            <div class="page-actions"><p>Save the complete code and at least one evidence image.</p><button class="primary-button complete-button" type="button" data-complete="main2">Save Main Activity 2 →</button></div>
+            <div class="page-heading"><div><span class="section-number">07</span><p class="eyebrow">Main Activity 2 · 17 minutes</p><h2>Modify, test and prove</h2></div><span class="ao-badge">AO3 · 7 marks</span></div>
+            <div class="instruction-bar"><strong>Work from a fresh Skeleton Program copy.</strong> Follow the original Question 08 wording exactly and use <code>zero.txt</code> for the prescribed test.</div>
+            <div class="exam-workbench code-workbench"><figure class="official-question"><figcaption>Original November 2024 · Questions 08.1–08.2</figcaption><img src="assets/main2-q08.png" alt="Original November 2024 Paper 1 Question 08" /></figure><div class="workbench-responses"><section class="evidence-card"><div class="evidence-title"><span>08.1</span><div><h3>Complete amended source code</h3><p>Paste all source code for the amended <code>rleImage</code> subroutine.</p></div></div><textarea class="code-entry" data-save="q08_code" data-required rows="20" spellcheck="false" placeholder="Paste the complete amended subroutine here..."></textarea></section><section class="test-record"><h3>Testing record</h3><div class="answer-grid two-col"><label><span>Actual original-image value</span><input data-save="q08_actual_original" data-required placeholder="… bytes" /></label><label><span>Actual RLE value</span><input data-save="q08_actual_rle" data-required placeholder="… bytes" /></label></div><label class="response-box"><span>One problem found and corrected, or one check that confirmed the code</span><textarea data-save="q08_debug" data-required rows="3"></textarea></label><details class="debug-details"><summary>Open a debugging prompt only if you are stuck</summary><ul><li>Two bytes too few: check whether the final run is counted.</li><li>Total too large: check whether two bytes are added per run rather than per pixel.</li><li>Original total incorrect: connect width, height and the number of pixels.</li><li>Correct values but missing mark: compare your message wording and screenshot with the question.</li></ul></details></section><section class="evidence-card" data-upload-required="q08_image1"><div class="evidence-title"><span>08.2</span><div><h3>Screen-capture evidence</h3><p>One clear image may be sufficient. Use the second slot only when required evidence does not fit in one capture.</p></div></div><div class="upload-grid"><div class="upload-slot" data-upload-slot="q08_image1" tabindex="0"><strong>Evidence image 1 · required</strong><p>Choose, drop or paste an image.</p><input type="file" accept="image/*" /><img alt="Question 08 evidence image 1 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div><div class="upload-slot" data-upload-slot="q08_image2" tabindex="0"><strong>Evidence image 2 · optional</strong><p>Use only if a second capture is needed.</p><input type="file" accept="image/*" /><img alt="Question 08 evidence image 2 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div></div></section><section class="submission-check"><h3>Evidence check</h3><label><input type="checkbox" data-save="q08_check_code" data-required value="yes" /> My code box contains the entire amended subroutine.</label><label><input type="checkbox" data-save="q08_check_test" data-required value="yes" /> My screenshot shows the prescribed inputs and the 25-byte and 14-byte messages.</label><label><input type="checkbox" data-save="q08_check_match" data-required value="yes" /> My screenshot was produced by the code pasted above.</label></section></div></div>
+            <div class="page-actions split"><button class="secondary-button" type="button" data-next="pitstop2">Mark for return and reflect</button><button class="primary-button complete-button" type="button" data-complete="main2">Save Main Activity 2 →</button></div>
           </article>
+
+          <article class="lesson-page" data-page="pitstop2">
+            <div class="page-heading"><div><span class="section-number">08</span><p class="eyebrow">Learning Pit Stop 2 · 3 minutes</p><h2>What is your current phase?</h2></div><span class="ao-badge">Diagnose · act</span></div>
+            <section class="goal-return"><span>Earlier commitment</span><p id="pit1-return">Complete Pit Stop 1 to see your earlier action here.</p></section>
+            <div class="pitstop-layout"><figure class="school-reference"><img src="assets/learning-pitstop-phases.png" loading="lazy" alt="School Learning Pit Stop guide showing new learning, consolidating, treading water and drowning" /><figcaption>School learning framework · choose from evidence, not speed or confidence alone.</figcaption></figure><section><p class="lead-copy">Review your trace table, source code, test results and screenshot. Choose the phase that best describes today’s WAGBA and support it with evidence.</p><div class="choice-grid phase-grid" role="radiogroup" aria-label="Current phase of learning"><label class="choice-card"><input type="radio" name="pit2_phase" data-save="pit2_phase" data-required value="New learning" /><span><strong>New learning</strong><small>The accumulator, final-run logic or evidence process was new and involved productive struggle.</small></span></label><label class="choice-card"><input type="radio" name="pit2_phase" data-save="pit2_phase" data-required value="Consolidating" /><span><strong>Consolidating</strong><small>I used existing knowledge more accurately and can identify what still needs practice.</small></span></label><label class="choice-card"><input type="radio" name="pit2_phase" data-save="pit2_phase" data-required value="Treading water" /><span><strong>Treading water</strong><small>I can explain and complete the task independently, but I now need a harder variation.</small></span></label><label class="choice-card"><input type="radio" name="pit2_phase" data-save="pit2_phase" data-required value="Drowning" /><span><strong>Drowning</strong><small>I cannot yet progress because there is a specific blocker that needs targeted support.</small></span></label></div><div id="blocker-wrap" class="blocker-wrap" hidden><label><span>Where exactly are you stuck?</span><select data-save="pit2_blocker"><option value="">Choose the most precise blocker</option><option>Understanding the written requirements</option><option>Locating the correct part of rleImage</option><option>Recognising when a run ends</option><option>Creating or updating the accumulator</option><option>Processing the final run</option><option>Calculating original image storage</option><option>Running the prescribed test</option><option>Capturing valid evidence</option><option>Fixing a syntax or runtime error</option></select></label></div><label class="response-box"><span>Evidence for my phase</span><textarea data-save="pit2_evidence" data-required rows="4" placeholder="My trace, code or test shows…"></textarea></label><label class="response-box"><span>My immediate next action</span><textarea data-save="pit2_action" data-required rows="3" placeholder="I will now…"></textarea></label><div id="pit2-guidance" class="adaptive-guidance" aria-live="polite"><strong>Choose a phase</strong><p>Your targeted next step will appear here.</p></div></section></div>
+            <div class="page-actions"><p>The phase is not a grade. It selects the right next action.</p><button class="primary-button complete-button" type="button" data-complete="pitstop2">Save Pit Stop 2 →</button></div>
+          </article>
+
           <article class="lesson-page" data-page="extension">
-            <div class="page-heading"><div><span class="section-number">07</span><p class="eyebrow">Extension · if you finish early</p><h2>One precise change</h2></div><span class="ao-badge">AO3 · 4 marks</span></div>
-            <div class="instruction-bar"><strong>Optional authentic task.</strong> Use another fresh skeleton copy and <code>one.txt</code>.</div>
-            <figure class="official-question"><figcaption>Original November 2024 question paper · Question 04.1–04.2</figcaption><img src="assets/extension-q04.png" alt="Original November 2024 Paper 1 Question 04" /></figure>
-            <section class="evidence-card"><div class="evidence-title"><span>04.1</span><div><h3>Complete amended source code</h3><p>Paste all the program source code for the amended <code>rleImage</code> subroutine.</p></div></div><textarea class="code-entry" data-save="q04_code" rows="18" spellcheck="false" placeholder="Paste the complete amended subroutine here..."></textarea></section>
-            <section class="evidence-card"><div class="evidence-title"><span>04.2</span><div><h3>Screen capture evidence</h3><p>Use one or two images as needed.</p></div></div><div class="upload-grid"><div class="upload-slot" data-upload-slot="q04_image1" tabindex="0"><strong>Evidence image 1</strong><p>Choose, drop or paste an image.</p><input type="file" accept="image/*" /><img alt="Question 04 evidence image 1 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div><div class="upload-slot" data-upload-slot="q04_image2" tabindex="0"><strong>Evidence image 2 · optional</strong><p>Use only if needed.</p><input type="file" accept="image/*" /><img alt="Question 04 evidence image 2 preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div></div></section>
-            <div class="page-actions split"><button class="secondary-button" type="button" data-next="plenary">Skip optional extension</button><button class="primary-button" type="button" data-complete="extension">Save Extension →</button></div>
+            <div class="page-heading"><div><span class="section-number">09</span><p class="eyebrow">Extension routes · optional</p><h2>Choose the challenge you need</h2></div><span class="ao-badge">AO3 · confidence or stretch</span></div>
+            <p class="lead-copy">Select one route. Consolidation uses an unchanged November 2024 task. Deep challenge continues the same RLE scenario with a precise teacher-created requirement.</p>
+            <div class="choice-grid extension-choice" role="radiogroup" aria-label="Extension route"><label class="choice-card"><input type="radio" name="extension_route" data-save="extension_route" value="consolidation" /><span><strong>Route A · Consolidation</strong><small>Original Question 04: practise a precise, smaller modification and valid evidence.</small></span></label><label class="choice-card"><input type="radio" name="extension_route" data-save="extension_route" value="challenge" /><span><strong>Route B · Deep challenge</strong><small>Compare the two storage totals and communicate whether RLE saves or uses additional storage.</small></span></label></div>
+            <section id="extension-consolidation" class="extension-panel" hidden><div class="instruction-bar"><strong>Original November 2024 task.</strong> Use a fresh Skeleton Program copy and <code>one.txt</code>.</div><figure class="official-question compact-question"><figcaption>Original November 2024 · Questions 04.1–04.2</figcaption><img src="assets/extension-q04.png" alt="Original November 2024 Paper 1 Question 04" /></figure><section class="evidence-card"><h3>04.1 Complete amended <code>rleImage</code> source code</h3><textarea class="code-entry" data-save="q04_code" rows="18" spellcheck="false"></textarea></section><section class="evidence-card"><h3>04.2 Screen-capture evidence</h3><div class="upload-grid"><div class="upload-slot" data-upload-slot="q04_image1" tabindex="0"><strong>Evidence image 1</strong><p>Choose, drop or paste an image.</p><input type="file" accept="image/*" /><img alt="Question 04 evidence preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div><div class="upload-slot" data-upload-slot="q04_image2" tabindex="0"><strong>Evidence image 2 · optional</strong><p>Use only if needed.</p><input type="file" accept="image/*" /><img alt="Question 04 second evidence preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div></div></section></section>
+            <section id="extension-challenge" class="extension-panel teacher-created-question" hidden><span class="teacher-created-label">Teacher-created AQA-style continuation · not an original past-paper question</span><h3>Storage comparison extension</h3><p>The modified <code>rleImage</code> subroutine already displays the storage needed for the original image and the RLE image. Extend the subroutine so that it also compares those totals.</p><div class="requirements-list"><strong>Your program must:</strong><ul><li>calculate the positive difference between the two storage totals</li><li>display <code>RLE saves X bytes</code> when RLE uses less storage</li><li>display <code>RLE uses X extra bytes</code> when RLE uses more storage</li><li>display <code>Both formats need the same storage</code> when the totals are equal</li><li>display the comparison after the two existing storage messages.</li></ul></div><div class="prescribed-tests"><article><strong>Test A · zero.txt</strong><p>Expected comparison: <code>RLE saves 11 bytes</code>.</p></article><article><strong>Test B · alternating.txt</strong><p>Download <a href="resources/alternating.txt" download>alternating.txt</a>. Expected comparison: <code>RLE uses 5 extra bytes</code>.</p></article></div><section class="evidence-card"><h3>Complete amended <code>rleImage</code> source code</h3><textarea class="code-entry" data-save="ext_code" rows="20" spellcheck="false"></textarea></section><section class="evidence-card"><h3>Evidence from both prescribed tests</h3><div class="upload-grid"><div class="upload-slot" data-upload-slot="ext_image1" tabindex="0"><strong>Evidence image 1</strong><p>Both tests may appear in one clear capture.</p><input type="file" accept="image/*" /><img alt="Challenge evidence preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div><div class="upload-slot" data-upload-slot="ext_image2" tabindex="0"><strong>Evidence image 2 · optional</strong><p>Use if the tests do not fit in one capture.</p><input type="file" accept="image/*" /><img alt="Challenge second evidence preview" hidden /><button class="remove-upload" type="button" hidden>Remove image</button></div></div></section></section>
+            <div class="page-actions split"><button class="secondary-button" type="button" data-next="plenary">Skip optional extension</button><button class="primary-button" type="button" data-complete="extension">Save Selected Extension →</button></div>
           </article>
+
           <article class="lesson-page" data-page="plenary">
-            <div class="page-heading"><div><span class="section-number">08</span><p class="eyebrow">Plenary · 5 minutes</p><h2>One context, two computers</h2></div><span class="ao-badge">Embedded systems · 4 marks</span></div>
-            <section class="plenary-card"><p>The November 2024 image-processing program is running on a laptop.</p><p>A security camera contains a processor that automatically analyses images.</p><h3>Explain why the computer inside the security camera is an embedded system, whereas the laptop is a general-purpose computer. <span>[4 marks]</span></h3></section>
-            <div class="keyword-strip"><span>part of a larger device</span><span>dedicated purpose</span><span>limited functions</span><span>user-selected software</span><span>general-purpose</span></div>
-            <label class="response-box"><span>Your answer · make two developed comparisons</span><textarea data-save="plenary_answer" data-required rows="9"></textarea></label>
-            <div class="page-actions"><p>This teacher-created question connects the Paper 1 context to this week’s embedded-systems learning.</p><button class="primary-button complete-button" type="button" data-complete="plenary">Save Plenary →</button></div>
+            <div class="page-heading"><div><span class="section-number">10</span><p class="eyebrow">Plenary · 2 minutes</p><h2>Explain the two updates</h2></div><span class="ao-badge">AO3 · 4 marks</span></div>
+            <section class="plenary-card"><p>The RLE storage accumulator is updated when a value change is detected and again after the loop.</p><h3>Explain why both updates are necessary. Then state one feature of the prescribed test output that proves the storage calculation is correct. <span>[4 marks]</span></h3></section><div class="keyword-strip"><span>run finishes</span><span>selection</span><span>final run</span><span>after the loop</span><span>25 bytes</span><span>14 bytes</span></div><label class="response-box"><span>Your developed answer</span><textarea data-save="plenary_answer" data-required rows="8"></textarea></label><div class="page-actions"><p>Use cause-and-effect language and refer to the actual program events.</p><button class="primary-button complete-button" type="button" data-complete="plenary">Save Plenary →</button></div>
           </article>
+
           <article class="lesson-page" data-page="finish">
-            <div class="page-heading"><div><span class="section-number">09</span><p class="eyebrow">Learning record</p><h2>Export and submit</h2></div><span class="time-chip" id="finish-percent">0%</span></div>
-            <section class="finish-hero"><span id="finish-status-icon">↗</span><div><h3 id="finish-message">Complete each core activity.</h3><p>Your PDF includes Section A answers, the expandable trace table, source code, uploaded evidence images and the embedded-systems plenary.</p></div></section>
-            <div id="completion-list" class="completion-list"></div>
-            <section class="submission-card"><h3>Submit to Teams</h3><ol><li>Download your PDF learning record.</li><li>Open the assignment in Microsoft Teams.</li><li>Attach the downloaded PDF.</li><li>Check that the file opens and your evidence images are readable.</li><li>Select <strong>Turn in</strong>.</li></ol></section>
-            <div class="finish-actions"><button id="export-pdf" class="primary-button" type="button">Download progress PDF ↓</button><button id="clear-work" class="danger-button" type="button">Clear saved work</button></div>
+            <div class="page-heading"><div><span class="section-number">11</span><p class="eyebrow">Learning record</p><h2>Check, export and submit</h2></div><span class="time-chip" id="finish-percent">0%</span></div><section class="finish-hero"><span id="finish-status-icon">↗</span><div><h3 id="finish-message">Complete each core learning record.</h3><p>Your PDF includes both Learning Pit Stops, trace evidence, planning, source code, test results, uploaded evidence and the AO3 plenary.</p></div></section><div id="completion-list" class="completion-list"></div><section class="submission-card"><h3>Submit to Teams</h3><ol><li>Download your PDF learning record.</li><li>Open the assignment in Microsoft Teams.</li><li>Attach the downloaded PDF.</li><li>Check that the file opens and all evidence images are readable.</li><li>Select <strong>Turn in</strong>.</li></ol></section><div class="finish-actions"><button id="export-pdf" class="primary-button" type="button">Download progress PDF ↓</button><button id="clear-work" class="danger-button" type="button">Clear saved work</button></div>
           </article>
-        </div>
+        </main>
       </section>
     </div>
     <script src="vendor/jspdf.umd.min.js"></script>
