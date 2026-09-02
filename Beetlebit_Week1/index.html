@@ -1,2 +1,363 @@
-m«ëˆ§½©buªàºg§·õ,z»?µéÛË
-+“ğèréÛ?+G¹¿Ü³­†jİj÷¿ç­•æâµg“_â×±†Ù¥RÆ y¶¬{®vçºh¢ø¥zŠ.µø¥y¶ëy©­æ¤zw(uçhºÚn¶êbÚ%Šw¬¡ù^aéƒu×œ¡×yÊz)éºØazZ]ŠÊek+aŠÉ²Æ z(§¦ëb›­~)^uçÚº[_¢»-v)è¢ëiºÚ.¶›­~)^uçÚº[_¢»-v‹­
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A card-based, 90-minute Week 1 micro:bit lesson preparing KS2 and KS3 learners for BEETLE:BIT robotics.">
+  <meta property="og:title" content="BEETLE:BIT Week 1 â€” Mission Control">
+  <meta property="og:description" content="Learn how a micro:bit turns precise button events into safe, tested robot commands.">
+  <meta property="og:image" content="https://mrdavekang.github.io/cswithmrdave/Beetlebit_Week1/assets/beetlebit-microbit.png">
+  <title>BEETLE:BIT Week 1 â€” Mission Control</title>
+  <link rel="stylesheet" href="styles.css?v=20260902-5">
+</head>
+<body class="entry-pending">
+  <section id="landingScreen" class="landing-screen" aria-labelledby="landing-title">
+    <div class="landing-card">
+      <div class="landing-brand"><span aria-hidden="true">B:B</span><div><b>BEETLE:BIT Mission Control</b><small>Week 1 Â· Meet the micro:bit</small></div></div>
+      <span class="landing-kicker">MISSION CHECK-IN</span>
+      <h1 id="landing-title">Ready to join the rescue team?</h1>
+      <p>Enter your details so this device can keep your lesson progress separate.</p>
+      <form id="landingForm" novalidate>
+        <label for="studentName">Your name<input id="studentName" name="studentName" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="e.g. Aisha" required></label>
+        <label for="studentClass">Your class<input id="studentClass" name="studentClass" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="e.g. 7A"></label>
+        <div id="landingError" class="landing-error" role="alert" aria-live="polite"></div>
+        <button class="landing-start" type="submit">Enter Mission Control <span aria-hidden="true">â†’</span></button>
+      </form>
+      <p class="landing-privacy"><span aria-hidden="true">âœ“</span> Your name and class stay in this browser session and are not sent anywhere.</p>
+    </div>
+  </section>
+
+  <a class="skip-link" href="#lesson-card">Skip to lesson card</a>
+
+  <header class="learning-rail" aria-label="Learning focus">
+    <div class="brand-row">
+      <div class="brand-mark" aria-hidden="true">B:B</div>
+      <div>
+        <strong>BEETLE:BIT Mission Control</strong>
+        <span>Week 1 Â· Meet the micro:bit Â· 90 minutes</span>
+      </div>
+      <div id="participantLabel" class="participant-label" aria-live="polite"></div>
+      <button id="learningToggle" class="rail-toggle" type="button" aria-expanded="true" aria-controls="learningGrid">Learning focus</button>
+    </div>
+    <div id="learningGrid" class="learning-grid">
+      <div class="rail-item rail-wide"><b>WAGBA</b><span>Build, download and test button-controlled commands on a physical micro:bit.</span></div>
+      <div class="rail-item knowledge"><b>K Â· Knowledge</b><span>Buttons, LEDs, processor, pins, event, algorithm.</span></div>
+      <div class="rail-item skills"><b>S Â· Skills</b><span>Predict, build, download, test and debug in MakeCode.</span></div>
+      <div class="rail-item understanding"><b>U Â· Understanding</b><span>Explain how input â†’ program â†’ output controls a system.</span></div>
+    </div>
+  </header>
+
+  <div id="teacherReviewBar" class="teacher-review" hidden>
+    <div><b>Teacher review</b><span>All lesson and extension cards are unlocked.</span></div>
+    <label for="teacherCardSelect">Review card<select id="teacherCardSelect"></select></label>
+  </div>
+
+  <div class="app-shell">
+    <aside class="lesson-sidebar" aria-label="Lesson journey">
+      <div class="progress-copy"><span id="phaseLabel">Mission briefing</span><strong id="timeLabel">3 min</strong></div>
+      <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
+      <nav id="cardNav" class="card-nav" aria-label="Lesson cards"></nav>
+      <div class="privacy-note"><span aria-hidden="true">âœ“</span> Progress saves only on this device.</div>
+    </aside>
+
+    <main class="card-stage" id="lesson-card">
+      <div class="stage-topline">
+        <span id="stepCounter">Card 1 of 12</span>
+        <span id="groupLabel">Start</span>
+      </div>
+
+      <section class="lesson-card active" data-card="mission" aria-labelledby="mission-title">
+        <div class="mission-layout">
+          <div>
+            <span class="card-kicker">Mission briefing Â· 3 minutes</span>
+            <h1 id="mission-title">A battery has fallen into the no-touch zone.</h1>
+            <p class="lead">Your future BEETLE:BIT must collect it with its gripper. Before we connect wheels or motors, the engineering team must prove that its micro:bit can receive a precise command and show the correct action.</p>
+            <div class="mission-brief">
+              <b>Todayâ€™s engineering question</b>
+              <p>How can a tiny computer turn a button press into an action that a robot can follow safely?</p>
+            </div>
+            <label class="check-line"><input id="missionReady" type="checkbox"> <span>I understand that today we will test the <strong>control logic</strong> on the simulator and a physical micro:bitâ€”not drive the robot motors yet.</span></label>
+          </div>
+          <figure class="mission-image">
+            <img src="assets/beetlebit-microbit.png" alt="BEETLE:BIT gripper robot car fitted with a BBC micro:bit">
+            <figcaption>Future build: micro:bit + BEETLE:BIT motors + gripper</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="lesson-card" data-card="starter" aria-labelledby="starter-title">
+        <span class="card-kicker">Starter Â· 8 minutes Â· Think â†’ pair â†’ improve</span>
+        <h2 id="starter-title">Which instruction could a robot actually follow?</h2>
+        <div class="scenario-strip"><span>ğŸ¤– START</span><span>â¬œ</span><span>âš ï¸</span><span>ğŸ”‹ TARGET</span></div>
+        <p>The rover cannot guess what â€œthereâ€ means. Select the instruction that is precise enough to test.</p>
+        <div class="answer-grid" role="group" aria-label="Choose the precise instruction">
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="vague">Move over there and be careful.</button>
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="precise">Move forward 2 squares, turn right, move 1 square, then stop.</button>
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="unsafe">Keep moving until you reach the battery.</button>
+        </div>
+        <div id="starterFeedback" class="feedback" aria-live="polite">Choose one instruction, then explain why.</div>
+        <label class="response-label" for="starterImprove">Improve the vague instruction. Use a number, direction and stopping point.</label>
+        <textarea id="starterImprove" rows="3" placeholder="For example: Move forwardâ€¦"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="learning" aria-labelledby="learning-title">
+        <span class="card-kicker">Types of learning Â· 4 minutes</span>
+        <h2 id="learning-title">Knowledge, Skills and Understanding work together.</h2>
+        <div class="learning-type-layout">
+          <figure class="reference-figure"><img src="assets/types-of-learning.jpg" alt="School Types of Learning model: Knowledge is remembered factual information, Skills are practised performance, and Understanding is applied, connected and transferable learning"><figcaption>Your schoolâ€™s Types of Learning model</figcaption></figure>
+          <div class="ksu-stack">
+            <div class="ksu-panel knowledge"><b>Knowledge</b><span>Facts, vocabulary and information to remember.</span><small>Today: micro:bit, input, processor, output, event.</small></div>
+            <div class="ksu-panel skills"><b>Skills</b><span>Practical performance that improves through practice.</span><small>Today: predict, build, run, test and debug.</small></div>
+            <div class="ksu-panel understanding"><b>Understanding</b><span>Learning you can explain, connect and apply.</span><small>Today: explain why the same program idea can control LEDs now and motors later.</small></div>
+          </div>
+        </div>
+        <label class="check-line"><input id="learningReady" type="checkbox"> <span>I can see the difference between something I must <strong>know</strong>, something I must <strong>practise</strong>, and something I must <strong>explain and transfer</strong>.</span></label>
+      </section>
+
+      <section class="lesson-card" data-card="what" aria-labelledby="what-title">
+        <span class="card-kicker">Main Task 1 Â· Card 1 Â· 8 minutes</span>
+        <h2 id="what-title">What is a micro:bit?</h2>
+        <p class="lead">Choose the engineering description, not just the description of what it looks like.</p>
+        <div class="definition-options">
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="display"><span>ğŸŸ¥</span><b>A small red-light display</b><small>This describes only one output.</small></button>
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="computer"><span>ğŸ§ </span><b>A tiny programmable computer</b><small>It runs coded instructions and connects inputs to outputs.</small></button>
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="battery"><span>ğŸ”‹</span><b>A battery for the robot</b><small>The micro:bit needs power; it is not the battery.</small></button>
+        </div>
+        <div id="definitionFeedback" class="feedback" aria-live="polite">Select the most complete description.</div>
+        <div class="transfer-box"><b>In our mission</b><span>The micro:bit runs the instructions. The BEETLE:BIT board, motors and gripper are the physical robot parts it will later control.</span></div>
+      </section>
+
+      <section class="lesson-card" data-card="anatomy" aria-labelledby="anatomy-title">
+        <span class="card-kicker">Main Task 1 Â· Card 2 Â· 10 minutes</span>
+        <h2 id="anatomy-title">Find the parts our mission needs.</h2>
+        <div class="diagram-tabs" role="tablist" aria-label="Microbit front and back">
+          <button class="diagram-tab active" type="button" data-diagram="front" role="tab" aria-selected="true">Front of micro:bit V2</button>
+          <button class="diagram-tab" type="button" data-diagram="back" role="tab" aria-selected="false">Back of micro:bit V2</button>
+        </div>
+        <figure class="microbit-diagram"><img id="microbitDiagram" src="assets/microbit-v2-front.png" alt="Official labelled diagram of the front of a BBC micro:bit V2"><figcaption>Official BBC micro:bit V2 diagram Â· front shown</figcaption></figure>
+        <div class="match-grid">
+          <label><span>Operator presses a command</span><select id="matchInput"><option value="">Choose a partâ€¦</option><option>Buttons A and B</option><option>5Ã—5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Program instructions are carried out</span><select id="matchProcess"><option value="">Choose a partâ€¦</option><option>Buttons A and B</option><option>5Ã—5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Direction symbol is shown</span><select id="matchOutput"><option value="">Choose a partâ€¦</option><option>Buttons A and B</option><option>5Ã—5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Robot electronics connect later</span><select id="matchPins"><option value="">Choose a partâ€¦</option><option>Buttons A and B</option><option>5Ã—5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+        </div>
+        <button id="checkAnatomy" class="secondary-button" type="button">Check the four matches</button>
+        <div id="anatomyFeedback" class="feedback" aria-live="polite">Use the official diagram, then match each job to one part.</div>
+      </section>
+
+      <section class="lesson-card" data-card="ipo" aria-labelledby="ipo-title">
+        <span class="card-kicker">Main Task 1 Â· Card 3 Â· 8 minutes</span>
+        <h2 id="ipo-title">Trace one command through the system.</h2>
+        <div class="ipo-story">
+          <div class="ipo-step input"><b>INPUT</b><span>?</span><small>Something enters the system</small></div><span class="flow-arrow">â†’</span>
+          <div class="ipo-step process"><b>PROCESS</b><span>?</span><small>The program decides</small></div><span class="flow-arrow">â†’</span>
+          <div class="ipo-step output"><b>OUTPUT</b><span>?</span><small>Something happens</small></div>
+        </div>
+        <p>Complete the chain for: <strong>â€œThe operator presses A and the left arrow appears.â€</strong></p>
+        <div class="ipo-selects">
+          <label>Input<select id="ipoInput"><option value="">Chooseâ€¦</option><option value="a">Button A press</option><option value="program">The program</option><option value="led">Left arrow on LEDs</option></select></label>
+          <label>Process<select id="ipoProcess"><option value="">Chooseâ€¦</option><option value="a">Button A press</option><option value="program">Processor runs the event code</option><option value="led">Left arrow on LEDs</option></select></label>
+          <label>Output<select id="ipoOutput"><option value="">Chooseâ€¦</option><option value="a">Button A press</option><option value="program">The program</option><option value="led">Left arrow on LEDs</option></select></label>
+        </div>
+        <button id="checkIpo" class="secondary-button" type="button">Trace the command</button>
+        <div id="ipoFeedback" class="feedback" aria-live="polite">Follow the data from the operator to the display.</div>
+        <div class="transfer-box"><b>Transfer to BEETLE:BIT</b><span>Today the output is an LED symbol. Later, the output can include motor and gripper actions through the robotâ€™s control board.</span></div>
+      </section>
+
+      <section class="lesson-card" data-card="predict" aria-labelledby="predict-title">
+        <span class="card-kicker">Main Task 2 Â· Predict Â· 8 minutes</span>
+        <h2 id="predict-title">Read the events before you build.</h2>
+        <div class="block-reader" aria-label="How to read the real MakeCode blocks">
+          <figure class="makecode-shot"><img src="assets/makecode-controller.png" alt="MakeCode blocks for the Rescue Rover controller: stop on start, left on A, right on B and emergency stop on A plus B"><figcaption>Actual blocks rendered by the official MakeCode editor</figcaption></figure>
+          <div class="reader-rules">
+            <b>Read it as a sentence</b>
+            <ol><li><strong>WHEN:</strong> start with the coloured event block at the top.</li><li><strong>WHICH:</strong> read its dropdown to identify the input, such as A or B.</li><li><strong>DO:</strong> read the blue block nested inside to find the output.</li></ol>
+            <p class="read-aloud">â€œWhen Button A is pressed, then show a left arrow.â€</p>
+          </div>
+        </div>
+        <table class="prediction-table">
+          <thead><tr><th>Event</th><th>Your prediction</th></tr></thead>
+          <tbody>
+            <tr><td>Program starts</td><td><select data-predict="stop"><option value="">Chooseâ€¦</option><option value="stop">Stop square â– </option><option value="left">Left arrow â†</option><option value="right">Right arrow â†’</option></select></td></tr>
+            <tr><td>Button A</td><td><select data-predict="left"><option value="">Chooseâ€¦</option><option value="stop">Stop square â– </option><option value="left">Left arrow â†</option><option value="right">Right arrow â†’</option></select></td></tr>
+            <tr><td>Button B</td><td><select data-predict="right"><option value="">Chooseâ€¦</option><option value="stop">Stop square â– </option><option value="left">Left arrow â†</option><option value="right">Right arrow â†’</option></select></td></tr>
+            <tr><td>Buttons A+B</td><td><select data-predict="emergency"><option value="">Chooseâ€¦</option><option value="emergency">Emergency stop âœ•</option><option value="left">Left arrow â†</option><option value="right">Right arrow â†’</option></select></td></tr>
+          </tbody>
+        </table>
+        <button id="checkPredict" class="secondary-button" type="button">Check predictions</button>
+        <div id="predictFeedback" class="feedback" aria-live="polite">Predict all four events before opening MakeCode.</div>
+      </section>
+
+      <section class="lesson-card" data-card="build" aria-labelledby="build-title">
+        <span class="card-kicker">Main Task 2 Â· Build Â· 18 minutes</span>
+        <h2 id="build-title">Build the Rescue Rover status controller.</h2>
+        <p class="lead">Work in pairs: the <strong>Driver</strong> places blocks; the <strong>Navigator</strong> reads the requirement and checks the event. Swap after two events.</p>
+        <div class="block-toolbox-map">
+          <b>Finding and fitting the blocks</b>
+          <span><i class="toolbox-chip input-chip">INPUT</i> gives you the <strong>event container</strong>: <code>on button A pressed</code>.</span>
+          <span><i class="toolbox-chip basic-chip">BASIC</i> gives you the <strong>action block</strong>: <code>show arrow</code> or <code>show icon</code>.</span>
+          <span class="fit-rule">The action block fits <strong>inside</strong> the event because it tells the micro:bit what to do when that event happens.</span>
+        </div>
+        <figure class="makecode-shot wide"><img src="assets/makecode-controller.png" alt="Complete Rescue Rover controller made from four MakeCode event programs"><figcaption>Build this program, first in the simulator and then on your micro:bit.</figcaption></figure>
+        <div class="build-layout">
+          <ol class="build-steps">
+            <li><b>Open</b><span>Create a new micro:bit MakeCode project called <code>W1_Rescue_Controller</code>.</span></li>
+            <li><b>Start safe</b><span>In <code>on start</code>, show a square or S for STOP.</span></li>
+            <li><b>Add events</b><span>A shows LEFT; B shows RIGHT.</span></li>
+            <li><b>Add safety</b><span>A+B shows an X for emergency stop.</span></li>
+            <li><b>Simulate</b><span>Test all four events in the on-screen simulator before using hardware.</span></li>
+            <li><b>Connect</b><span>Use a data-capable USB cable. Your micro:bit should appear as a drive called <code>MICROBIT</code>.</span></li>
+            <li><b>Download</b><span>Click <strong>Download</strong>. In Chrome or Edge, pair the micro:bit if asked. Otherwise, drag the downloaded <code>.hex</code> file onto the <code>MICROBIT</code> drive.</span></li>
+            <li><b>Wait</b><span>Keep the cable connected while the yellow light on the back flashes. When it stops, the program is ready.</span></li>
+          </ol>
+          <div class="build-action">
+            <div class="safety-stamp">SAFE DEFAULT<br><strong>STOP</strong></div>
+            <a class="makecode-button" href="https://makecode.microbit.org/" target="_blank" rel="noreferrer">Open MakeCode <span aria-hidden="true">â†—</span></a>
+            <a class="transfer-link" href="https://microbit.org/get-started/user-guide/transfer-code-to-the-microbit/" target="_blank" rel="noreferrer">Official download guide â†—</a>
+            <p>Return after the code works both in the simulator and on your physical board.</p>
+          </div>
+        </div>
+        <fieldset class="evidence-checks"><legend>Build and load check</legend>
+          <label><input type="checkbox" data-build="start"> On start displays STOP.</label>
+          <label><input type="checkbox" data-build="a"> Button A displays LEFT.</label>
+          <label><input type="checkbox" data-build="b"> Button B displays RIGHT.</label>
+          <label><input type="checkbox" data-build="ab"> A+B displays EMERGENCY STOP.</label>
+          <label><input type="checkbox" data-build="usb"> My micro:bit connected by USB.</label>
+          <label><input type="checkbox" data-build="loaded"> The code downloaded and ran on the board.</label>
+        </fieldset>
+      </section>
+
+      <section class="lesson-card" data-card="test" aria-labelledby="test-title">
+        <span class="card-kicker">Main Task 2 Â· Test and debug Â· 8 minutes</span>
+        <h2 id="test-title">An engineer proves every command.</h2>
+        <p>Run each test on the <strong>physical micro:bit</strong>. If a test fails, change only one thing, download the new code and test again.</p>
+        <div class="bug-example">
+          <div><b>Worked bug example</b><div class="mini-event">on button B pressed <span>show arrow â†</span></div></div>
+          <p><strong>Read:</strong> â€œWhen B is pressed, show LEFT.â€ The event is correct, but the mission requires B to mean RIGHT. Change only the <strong>output action</strong> to <code>show arrow â†’</code>, then retest.</p>
+        </div>
+        <table class="test-table">
+          <thead><tr><th>Test</th><th>Expected</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>Press the reset button on the back</td><td>STOP â– </td><td><select data-test="restart"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed and reloaded</option></select></td></tr>
+            <tr><td>Press A</td><td>LEFT â†</td><td><select data-test="a"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed and reloaded</option></select></td></tr>
+            <tr><td>Press B</td><td>RIGHT â†’</td><td><select data-test="b"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed and reloaded</option></select></td></tr>
+            <tr><td>Press A+B</td><td>STOP âœ•</td><td><select data-test="ab"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed and reloaded</option></select></td></tr>
+          </tbody>
+        </table>
+        <label class="response-label" for="debugNote">Record one useful observation, bug or improvement.</label>
+        <textarea id="debugNote" rows="3" placeholder="On the physical micro:bit, when I pressedâ€¦ I noticedâ€¦ so I changed and reloadedâ€¦"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="pitstop" aria-labelledby="pitstop-title">
+        <span class="card-kicker">Learning Pit Stop Â· 7 minutes</span>
+        <h2 id="pitstop-title">Which learning phase describes you now?</h2>
+        <div class="pitstop-layout">
+          <figure class="reference-figure"><img src="assets/learning-pitstop.jpg" alt="School Learning Pitstop with four phases: New Learning, Consolidating, Treading Water and Drowning"><figcaption>Your schoolâ€™s Learning Pit Stop</figcaption></figure>
+          <div class="pitstop-choices" role="group" aria-label="Choose current learning phase">
+            <button type="button" data-field="pitstop" data-value="new"><b>New Learning</b><span>I am in a good struggle and learning something new.</span></button>
+            <button type="button" data-field="pitstop" data-value="consolidating"><b>Consolidating</b><span>I am getting better and using what I already know.</span></button>
+            <button type="button" data-field="pitstop" data-value="water"><b>Treading Water</b><span>This is easy and I am not really stretching myself.</span></button>
+            <button type="button" data-field="pitstop" data-value="drowning"><b>Drowning</b><span>This feels too hard and I need help to move forward.</span></button>
+          </div>
+        </div>
+        <label class="response-label" for="pitstopEvidence">What evidence from your code or test table supports your choice?</label>
+        <textarea id="pitstopEvidence" rows="3" placeholder="I choseâ€¦ because when I testedâ€¦"></textarea>
+        <div id="pitstopRoute" class="route-message">Choose a phase to receive the right next step.</div>
+      </section>
+
+      <section class="lesson-card" data-card="extension" aria-labelledby="extension-title">
+        <span class="card-kicker">Extension or support route Â· 5 minutes</span>
+        <h2 id="extension-title">Your next step should match your pit stop.</h2>
+        <div id="recommendedRoute" class="recommended-route">
+          <span class="route-icon" aria-hidden="true">ğŸ§­</span><div><b>Complete the Learning Pit Stop first.</b><p>Your recommended route will appear here.</p></div>
+        </div>
+        <div class="route-grid">
+          <article data-route-card="new"><b>Guided repair</b><p>Ask your partner to point to each event block while you say its input and output. Fix one mismatch and retest.</p></article>
+          <article data-route-card="consolidating"><b>Countdown protocol</b><p>Add READY, then 3â€“2â€“1, then STOP. Explain why sequence and timing matter to the operator.</p></article>
+          <article data-route-card="water"><b>Five-command state machine</b><p>Use A to cycle S/F/R/B/L and B to confirm. Keep A+B as emergency stop.</p></article>
+          <article data-route-card="drowning"><b>Worked-example support</b><p>Keep only on start and Button A. Make those two work, explain the IPO chain, then ask for the next block.</p></article>
+        </div>
+        <label class="response-label" for="extensionNote">Record the next step you completed or the help you requested.</label>
+        <textarea id="extensionNote" rows="3" placeholder="My next step wasâ€¦"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="plenary" aria-labelledby="plenary-title">
+        <span class="card-kicker">Plenary Â· 3 minutes</span>
+        <h2 id="plenary-title">Explain the control story.</h2>
+        <div class="plenary-prompt"><span>BUTTON A</span><span>â†’</span><span>PROGRAM</span><span>â†’</span><span>LEFT ARROW</span><span>â†’</span><span>FUTURE MOTOR ACTION</span></div>
+        <label class="response-label" for="plenaryExplain">A younger student asks: â€œHow can pressing a button eventually make the BEETLE:BIT turn?â€ Explain using <strong>input, process and output</strong>.</label>
+        <textarea id="plenaryExplain" rows="5" placeholder="The button press is the input. Nextâ€¦"></textarea>
+        <fieldset class="confidence-check"><legend>WAGBA self-check</legend>
+          <label><input type="radio" name="confidence" value="beginning"> Beginning â€” I can name one part.</label>
+          <label><input type="radio" name="confidence" value="developing"> Developing â€” I can trace input to output with support.</label>
+          <label><input type="radio" name="confidence" value="secure"> Secure â€” I can build, test and explain the controller.</label>
+          <label><input type="radio" name="confidence" value="transfer"> Transfer â€” I can apply the model to robot motors.</label>
+        </fieldset>
+      </section>
+
+      <section class="lesson-card" data-card="finish" aria-labelledby="finish-title">
+        <span class="card-kicker">Mission debrief</span>
+        <h2 id="finish-title">Control logic cleared for the next build.</h2>
+        <div class="finish-layout">
+          <div class="finish-badge">âœ“</div>
+          <div><p class="lead">You have identified the micro:bitâ€™s relevant parts, traced an inputâ€“processâ€“output chain, built event-driven code, loaded it onto hardware and tested a safe-stop command.</p><p>If lesson time remains, continue to the Extension Lab and turn your micro:bit into a playable game.</p></div>
+        </div>
+        <button id="resetLesson" class="text-button" type="button">Reset this lesson on this device</button>
+      </section>
+
+      <section class="lesson-card extension-card" data-card="dice" aria-labelledby="dice-title">
+        <span class="card-kicker optional-kicker">Extension Game 1 Â· Optional Â· after mission</span>
+        <h2 id="dice-title">Shake Dice</h2>
+        <p class="lead">Turn movement into a random number generator, then play a highest-score challenge with a partner.</p>
+        <div class="challenge-layout">
+          <figure class="makecode-shot"><img src="assets/makecode-dice.png" alt="MakeCode blocks: on shake show a random number from 1 to 6"><figcaption>Actual MakeCode blocks: <strong>Input</strong> + <strong>Basic</strong> + <strong>Math</strong></figcaption></figure>
+          <div class="challenge-brief"><h3>Build â†’ load â†’ play</h3><ol><li>Find <code>on shake</code> in <strong>Input</strong>.</li><li>Nest <code>show number</code> from <strong>Basic</strong>.</li><li>Place <code>pick random 1 to 6</code> from <strong>Math</strong> inside it.</li><li>Download to your micro:bit. Best of five shakes wins.</li></ol><p><strong>Programming challenge:</strong> Make 6 display a celebration icon before the next shake.</p></div>
+        </div>
+        <fieldset class="evidence-checks"><legend>Game evidence</legend><label><input type="checkbox" data-challenge="dice-build"> My blocks match the program idea.</label><label><input type="checkbox" data-challenge="dice-play"> I loaded and played the game on hardware.</label></fieldset>
+      </section>
+
+      <section class="lesson-card extension-card" data-card="rps" aria-labelledby="rps-title">
+        <span class="card-kicker optional-kicker">Extension Game 2 Â· Optional Â· after mission</span>
+        <h2 id="rps-title">Rock Â· Paper Â· Scissors</h2>
+        <p class="lead">Use a variable, randomness and selection so every shake chooses one of three hands.</p>
+        <div class="challenge-layout">
+          <figure class="makecode-shot"><img src="assets/makecode-rps.png" alt="MakeCode Rock Paper Scissors program using on shake, a random hand variable and if else selection"><figcaption>Actual MakeCode blocks: random value â†’ decision â†’ icon</figcaption></figure>
+          <div class="challenge-brief"><h3>Build â†’ load â†’ play</h3><ol><li>Create a variable named <code>hand</code>.</li><li>On shake, set it to a random number from 1 to 3.</li><li>Use <code>if / else if / else</code> to show three different hand icons.</li><li>Download. Shake at the same time as a partner and score five rounds.</li></ol><p><strong>Programming challenge:</strong> Add a countdown before the result appears.</p><a class="transfer-link" href="https://makecode.microbit.org/projects/rock-paper-scissors" target="_blank" rel="noreferrer">Official MakeCode tutorial â†—</a></div>
+        </div>
+        <fieldset class="evidence-checks"><legend>Game evidence</legend><label><input type="checkbox" data-challenge="rps-build"> My variable and decisions work.</label><label><input type="checkbox" data-challenge="rps-play"> I loaded and played the game on hardware.</label></fieldset>
+      </section>
+
+      <section class="lesson-card extension-card" data-card="reaction" aria-labelledby="reaction-title">
+        <span class="card-kicker optional-kicker">Extension Game 3 Â· Optional Â· after mission</span>
+        <h2 id="reaction-title">Reaction Racer</h2>
+        <p class="lead">Measure elapsed time: start with A, wait for GO, then hit B as quickly as possible.</p>
+        <div class="challenge-layout">
+          <figure class="makecode-shot"><img src="assets/makecode-reaction.png" alt="MakeCode Reaction Racer blocks using two button events, a random pause, running time and a startTime variable"><figcaption>Actual MakeCode blocks: events + timing + variable</figcaption></figure>
+          <div class="challenge-brief"><h3>Build â†’ load â†’ race</h3><ol><li>Create a number variable named <code>startTime</code>.</li><li>A shows WAIT, pauses for a random 2â€“5 seconds, shows GO, then stores the running time.</li><li>B subtracts <code>startTime</code> from the current running time and shows the result.</li><li>Download. Each player takes three attempts; lowest time wins.</li></ol><p><strong>Programming challenge:</strong> Prevent a false start, or store and display the best score.</p></div>
+        </div>
+        <fieldset class="evidence-checks"><legend>Game evidence</legend><label><input type="checkbox" data-challenge="reaction-build"> My timer produces a sensible score.</label><label><input type="checkbox" data-challenge="reaction-play"> I loaded and raced on hardware.</label></fieldset>
+      </section>
+
+      <div class="card-controls">
+        <button id="previousCard" class="nav-button secondary" type="button">â† Previous</button>
+        <div id="completionHint" class="completion-hint" aria-live="polite"></div>
+        <button id="nextCard" class="nav-button primary" type="button">Next card â†’</button>
+      </div>
+    </main>
+  </div>
+
+  <button id="helpButton" class="help-button" type="button" aria-expanded="false" aria-controls="helpPanel"><span aria-hidden="true">?</span> Iâ€™m stuck</button>
+  <aside id="helpPanel" class="help-panel" aria-hidden="true" aria-labelledby="help-title">
+    <div class="help-head"><h2 id="help-title">Take one small step</h2><button id="closeHelp" type="button" aria-label="Close help">Ã—</button></div>
+    <ol><li>Read only the sentence in bold.</li><li>Say the input and expected output to your partner.</li><li>Change or answer one thing, then test again.</li></ol>
+    <p><strong>Still stuck?</strong> Choose <em>Drowning</em> at the pit stop or show this panel to your teacher. Asking for help is a valid engineering action.</p>
+  </aside>
+  <div id="helpBackdrop" class="help-backdrop" hidden></div>
+
+  <footer class="source-note">
+    Lesson informed by the <a href="https://www.microbit.org/teach/lessons/first-lessons-with-makecode-and-the-microbit/" target="_blank" rel="noreferrer">Micro:bit Educational Foundation first lessons</a> and the <a href="https://beetlebit-hub.cytron.io/" target="_blank" rel="noreferrer">Cytron BEETLE:BIT Resource Hub</a>. Official micro:bit diagrams are CC BY-SA 4.0.
+  </footer>
+
+  <script src="app.js?v=20260902-5"></script>
+</body>
+</html>
