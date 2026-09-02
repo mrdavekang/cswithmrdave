@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A card-based, 90-minute Week 1 micro:bit lesson preparing KS2 and KS3 learners for BEETLE:BIT robotics.">
+  <meta property="og:title" content="BEETLE:BIT Week 1 — Mission Control">
+  <meta property="og:description" content="Learn how a micro:bit turns precise button events into safe, tested robot commands.">
+  <meta property="og:image" content="https://mrdavekang.github.io/cswithmrdave/Beetlebit_Week1/assets/beetlebit-microbit.png">
+  <title>BEETLE:BIT Week 1 — Mission Control</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#lesson-card">Skip to lesson card</a>
+
+  <header class="learning-rail" aria-label="Learning focus">
+    <div class="brand-row">
+      <div class="brand-mark" aria-hidden="true">B:B</div>
+      <div>
+        <strong>BEETLE:BIT Mission Control</strong>
+        <span>Week 1 · Meet the micro:bit · 90 minutes</span>
+      </div>
+      <button id="learningToggle" class="rail-toggle" type="button" aria-expanded="true" aria-controls="learningGrid">Learning focus</button>
+    </div>
+    <div id="learningGrid" class="learning-grid">
+      <div class="rail-item rail-wide"><b>WAGBA</b><span>Turn button events into clear, tested robot commands.</span></div>
+      <div class="rail-item"><b>WAGPA</b><span>Identify → trace → build → test → explain.</span></div>
+      <div class="rail-item knowledge"><b>K · Knowledge</b><span>Buttons, LEDs, processor, pins, event, algorithm.</span></div>
+      <div class="rail-item skills"><b>S · Skills</b><span>Predict, build, run, test and debug in MakeCode.</span></div>
+      <div class="rail-item understanding"><b>U · Understanding</b><span>Explain how input → program → output controls a system.</span></div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="lesson-sidebar" aria-label="Lesson journey">
+      <div class="progress-copy"><span id="phaseLabel">Mission briefing</span><strong id="timeLabel">3 min</strong></div>
+      <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
+      <nav id="cardNav" class="card-nav" aria-label="Lesson cards"></nav>
+      <div class="privacy-note"><span aria-hidden="true">✓</span> Progress saves only on this device.</div>
+    </aside>
+
+    <main class="card-stage" id="lesson-card">
+      <div class="stage-topline">
+        <span id="stepCounter">Card 1 of 12</span>
+        <span id="groupLabel">Start</span>
+      </div>
+
+      <section class="lesson-card active" data-card="mission" aria-labelledby="mission-title">
+        <div class="mission-layout">
+          <div>
+            <span class="card-kicker">Mission briefing · 3 minutes</span>
+            <h1 id="mission-title">A battery has fallen into the no-touch zone.</h1>
+            <p class="lead">Your future BEETLE:BIT must collect it with its gripper. Before we connect wheels or motors, the engineering team must prove that its micro:bit can receive a precise command and show the correct action.</p>
+            <div class="mission-brief">
+              <b>Today’s engineering question</b>
+              <p>How can a tiny computer turn a button press into an action that a robot can follow safely?</p>
+            </div>
+            <label class="check-line"><input id="missionReady" type="checkbox"> <span>I understand that today we are testing the <strong>control logic</strong> in a simulator—not driving the robot yet.</span></label>
+          </div>
+          <figure class="mission-image">
+            <img src="assets/beetlebit-microbit.png" alt="BEETLE:BIT gripper robot car fitted with a BBC micro:bit">
+            <figcaption>Future build: micro:bit + BEETLE:BIT motors + gripper</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="lesson-card" data-card="starter" aria-labelledby="starter-title">
+        <span class="card-kicker">Starter · 8 minutes · Think → pair → improve</span>
+        <h2 id="starter-title">Which instruction could a robot actually follow?</h2>
+        <div class="scenario-strip"><span>🤖 START</span><span>⬜</span><span>⚠️</span><span>🔋 TARGET</span></div>
+        <p>The rover cannot guess what “there” means. Select the instruction that is precise enough to test.</p>
+        <div class="answer-grid" role="group" aria-label="Choose the precise instruction">
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="vague">Move over there and be careful.</button>
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="precise">Move forward 2 squares, turn right, move 1 square, then stop.</button>
+          <button class="answer-choice" type="button" data-field="starterChoice" data-value="unsafe">Keep moving until you reach the battery.</button>
+        </div>
+        <div id="starterFeedback" class="feedback" aria-live="polite">Choose one instruction, then explain why.</div>
+        <label class="response-label" for="starterImprove">Improve the vague instruction. Use a number, direction and stopping point.</label>
+        <textarea id="starterImprove" rows="3" placeholder="For example: Move forward…"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="learning" aria-labelledby="learning-title">
+        <span class="card-kicker">Types of learning · 4 minutes</span>
+        <h2 id="learning-title">Knowledge, Skills and Understanding work together.</h2>
+        <div class="learning-type-layout">
+          <figure class="reference-figure"><img src="assets/types-of-learning.jpg" alt="School Types of Learning model: Knowledge is remembered factual information, Skills are practised performance, and Understanding is applied, connected and transferable learning"><figcaption>Your school’s Types of Learning model</figcaption></figure>
+          <div class="ksu-stack">
+            <div class="ksu-panel knowledge"><b>Knowledge</b><span>Facts, vocabulary and information to remember.</span><small>Today: micro:bit, input, processor, output, event.</small></div>
+            <div class="ksu-panel skills"><b>Skills</b><span>Practical performance that improves through practice.</span><small>Today: predict, build, run, test and debug.</small></div>
+            <div class="ksu-panel understanding"><b>Understanding</b><span>Learning you can explain, connect and apply.</span><small>Today: explain why the same program idea can control LEDs now and motors later.</small></div>
+          </div>
+        </div>
+        <label class="check-line"><input id="learningReady" type="checkbox"> <span>I can see the difference between something I must <strong>know</strong>, something I must <strong>practise</strong>, and something I must <strong>explain and transfer</strong>.</span></label>
+      </section>
+
+      <section class="lesson-card" data-card="what" aria-labelledby="what-title">
+        <span class="card-kicker">Main Task 1 · Card 1 · 8 minutes</span>
+        <h2 id="what-title">What is a micro:bit?</h2>
+        <p class="lead">Choose the engineering description, not just the description of what it looks like.</p>
+        <div class="definition-options">
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="display"><span>🟥</span><b>A small red-light display</b><small>This describes only one output.</small></button>
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="computer"><span>🧠</span><b>A tiny programmable computer</b><small>It runs coded instructions and connects inputs to outputs.</small></button>
+          <button class="definition-choice" type="button" data-field="microbitDefinition" data-value="battery"><span>🔋</span><b>A battery for the robot</b><small>The micro:bit needs power; it is not the battery.</small></button>
+        </div>
+        <div id="definitionFeedback" class="feedback" aria-live="polite">Select the most complete description.</div>
+        <div class="transfer-box"><b>In our mission</b><span>The micro:bit runs the instructions. The BEETLE:BIT board, motors and gripper are the physical robot parts it will later control.</span></div>
+      </section>
+
+      <section class="lesson-card" data-card="anatomy" aria-labelledby="anatomy-title">
+        <span class="card-kicker">Main Task 1 · Card 2 · 10 minutes</span>
+        <h2 id="anatomy-title">Find the parts our mission needs.</h2>
+        <div class="diagram-tabs" role="tablist" aria-label="Microbit front and back">
+          <button class="diagram-tab active" type="button" data-diagram="front" role="tab" aria-selected="true">Front of micro:bit V2</button>
+          <button class="diagram-tab" type="button" data-diagram="back" role="tab" aria-selected="false">Back of micro:bit V2</button>
+        </div>
+        <figure class="microbit-diagram"><img id="microbitDiagram" src="assets/microbit-v2-front.png" alt="Official labelled diagram of the front of a BBC micro:bit V2"><figcaption>Official BBC micro:bit V2 diagram · front shown</figcaption></figure>
+        <div class="match-grid">
+          <label><span>Operator presses a command</span><select id="matchInput"><option value="">Choose a part…</option><option>Buttons A and B</option><option>5×5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Program instructions are carried out</span><select id="matchProcess"><option value="">Choose a part…</option><option>Buttons A and B</option><option>5×5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Direction symbol is shown</span><select id="matchOutput"><option value="">Choose a part…</option><option>Buttons A and B</option><option>5×5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+          <label><span>Robot electronics connect later</span><select id="matchPins"><option value="">Choose a part…</option><option>Buttons A and B</option><option>5×5 LED display</option><option>Processor</option><option>Edge connector pins</option></select></label>
+        </div>
+        <button id="checkAnatomy" class="secondary-button" type="button">Check the four matches</button>
+        <div id="anatomyFeedback" class="feedback" aria-live="polite">Use the official diagram, then match each job to one part.</div>
+      </section>
+
+      <section class="lesson-card" data-card="ipo" aria-labelledby="ipo-title">
+        <span class="card-kicker">Main Task 1 · Card 3 · 8 minutes</span>
+        <h2 id="ipo-title">Trace one command through the system.</h2>
+        <div class="ipo-story">
+          <div class="ipo-step input"><b>INPUT</b><span>?</span><small>Something enters the system</small></div><span class="flow-arrow">→</span>
+          <div class="ipo-step process"><b>PROCESS</b><span>?</span><small>The program decides</small></div><span class="flow-arrow">→</span>
+          <div class="ipo-step output"><b>OUTPUT</b><span>?</span><small>Something happens</small></div>
+        </div>
+        <p>Complete the chain for: <strong>“The operator presses A and the left arrow appears.”</strong></p>
+        <div class="ipo-selects">
+          <label>Input<select id="ipoInput"><option value="">Choose…</option><option value="a">Button A press</option><option value="program">The program</option><option value="led">Left arrow on LEDs</option></select></label>
+          <label>Process<select id="ipoProcess"><option value="">Choose…</option><option value="a">Button A press</option><option value="program">Processor runs the event code</option><option value="led">Left arrow on LEDs</option></select></label>
+          <label>Output<select id="ipoOutput"><option value="">Choose…</option><option value="a">Button A press</option><option value="program">The program</option><option value="led">Left arrow on LEDs</option></select></label>
+        </div>
+        <button id="checkIpo" class="secondary-button" type="button">Trace the command</button>
+        <div id="ipoFeedback" class="feedback" aria-live="polite">Follow the data from the operator to the display.</div>
+        <div class="transfer-box"><b>Transfer to BEETLE:BIT</b><span>Today the output is an LED symbol. Later, the output can include motor and gripper actions through the robot’s control board.</span></div>
+      </section>
+
+      <section class="lesson-card" data-card="predict" aria-labelledby="predict-title">
+        <span class="card-kicker">Main Task 2 · Predict · 8 minutes</span>
+        <h2 id="predict-title">Read the events before you build.</h2>
+        <div class="block-program" aria-label="MakeCode program plan">
+          <div class="mc-block start">on start <span>show icon ■</span></div>
+          <div class="mc-block event">on button A pressed <span>show arrow ←</span></div>
+          <div class="mc-block event">on button B pressed <span>show arrow →</span></div>
+          <div class="mc-block event">on button A+B pressed <span>show icon ✕</span></div>
+        </div>
+        <table class="prediction-table">
+          <thead><tr><th>Event</th><th>Your prediction</th></tr></thead>
+          <tbody>
+            <tr><td>Program starts</td><td><select data-predict="stop"><option value="">Choose…</option><option value="stop">Stop square ■</option><option value="left">Left arrow ←</option><option value="right">Right arrow →</option></select></td></tr>
+            <tr><td>Button A</td><td><select data-predict="left"><option value="">Choose…</option><option value="stop">Stop square ■</option><option value="left">Left arrow ←</option><option value="right">Right arrow →</option></select></td></tr>
+            <tr><td>Button B</td><td><select data-predict="right"><option value="">Choose…</option><option value="stop">Stop square ■</option><option value="left">Left arrow ←</option><option value="right">Right arrow →</option></select></td></tr>
+            <tr><td>Buttons A+B</td><td><select data-predict="emergency"><option value="">Choose…</option><option value="emergency">Emergency stop ✕</option><option value="left">Left arrow ←</option><option value="right">Right arrow →</option></select></td></tr>
+          </tbody>
+        </table>
+        <button id="checkPredict" class="secondary-button" type="button">Check predictions</button>
+        <div id="predictFeedback" class="feedback" aria-live="polite">Predict all four events before opening MakeCode.</div>
+      </section>
+
+      <section class="lesson-card" data-card="build" aria-labelledby="build-title">
+        <span class="card-kicker">Main Task 2 · Build · 18 minutes</span>
+        <h2 id="build-title">Build the Rescue Rover status controller.</h2>
+        <p class="lead">Work in pairs: the <strong>Driver</strong> places blocks; the <strong>Navigator</strong> reads the requirement and checks the event. Swap after two events.</p>
+        <div class="build-layout">
+          <ol class="build-steps">
+            <li><b>Open</b><span>Create a new micro:bit MakeCode project called <code>W1_Rescue_Controller</code>.</span></li>
+            <li><b>Start safe</b><span>In <code>on start</code>, show a square or S for STOP.</span></li>
+            <li><b>Add events</b><span>A shows LEFT; B shows RIGHT.</span></li>
+            <li><b>Add safety</b><span>A+B shows an X for emergency stop.</span></li>
+            <li><b>Run</b><span>Use the on-screen simulator. No physical micro:bit is needed.</span></li>
+          </ol>
+          <div class="build-action">
+            <div class="safety-stamp">SAFE DEFAULT<br><strong>STOP</strong></div>
+            <a class="makecode-button" href="https://makecode.microbit.org/" target="_blank" rel="noreferrer">Open MakeCode <span aria-hidden="true">↗</span></a>
+            <p>Return to this card after the four events work in the simulator.</p>
+          </div>
+        </div>
+        <fieldset class="evidence-checks"><legend>Build check</legend>
+          <label><input type="checkbox" data-build="start"> On start displays STOP.</label>
+          <label><input type="checkbox" data-build="a"> Button A displays LEFT.</label>
+          <label><input type="checkbox" data-build="b"> Button B displays RIGHT.</label>
+          <label><input type="checkbox" data-build="ab"> A+B displays EMERGENCY STOP.</label>
+        </fieldset>
+      </section>
+
+      <section class="lesson-card" data-card="test" aria-labelledby="test-title">
+        <span class="card-kicker">Main Task 2 · Test and debug · 8 minutes</span>
+        <h2 id="test-title">An engineer proves every command.</h2>
+        <p>Run each test in the simulator. Record what happened. If a test fails, change only one thing and run it again.</p>
+        <table class="test-table">
+          <thead><tr><th>Test</th><th>Expected</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>Restart</td><td>STOP ■</td><td><select data-test="restart"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed, then passed</option></select></td></tr>
+            <tr><td>Press A</td><td>LEFT ←</td><td><select data-test="a"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed, then passed</option></select></td></tr>
+            <tr><td>Press B</td><td>RIGHT →</td><td><select data-test="b"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed, then passed</option></select></td></tr>
+            <tr><td>Press A+B</td><td>STOP ✕</td><td><select data-test="ab"><option value="">Not tested</option><option value="pass">Pass</option><option value="fix">Fixed, then passed</option></select></td></tr>
+          </tbody>
+        </table>
+        <label class="response-label" for="debugNote">Record one useful observation, bug or improvement.</label>
+        <textarea id="debugNote" rows="3" placeholder="When I pressed… I noticed… so I changed…"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="pitstop" aria-labelledby="pitstop-title">
+        <span class="card-kicker">Learning Pit Stop · 7 minutes</span>
+        <h2 id="pitstop-title">Which learning phase describes you now?</h2>
+        <div class="pitstop-layout">
+          <figure class="reference-figure"><img src="assets/learning-pitstop.jpg" alt="School Learning Pitstop with four phases: New Learning, Consolidating, Treading Water and Drowning"><figcaption>Your school’s Learning Pit Stop</figcaption></figure>
+          <div class="pitstop-choices" role="group" aria-label="Choose current learning phase">
+            <button type="button" data-field="pitstop" data-value="new"><b>New Learning</b><span>I am in a good struggle and learning something new.</span></button>
+            <button type="button" data-field="pitstop" data-value="consolidating"><b>Consolidating</b><span>I am getting better and using what I already know.</span></button>
+            <button type="button" data-field="pitstop" data-value="water"><b>Treading Water</b><span>This is easy and I am not really stretching myself.</span></button>
+            <button type="button" data-field="pitstop" data-value="drowning"><b>Drowning</b><span>This feels too hard and I need help to move forward.</span></button>
+          </div>
+        </div>
+        <label class="response-label" for="pitstopEvidence">What evidence from your code or test table supports your choice?</label>
+        <textarea id="pitstopEvidence" rows="3" placeholder="I chose… because when I tested…"></textarea>
+        <div id="pitstopRoute" class="route-message">Choose a phase to receive the right next step.</div>
+      </section>
+
+      <section class="lesson-card" data-card="extension" aria-labelledby="extension-title">
+        <span class="card-kicker">Extension or support route · 5 minutes</span>
+        <h2 id="extension-title">Your next step should match your pit stop.</h2>
+        <div id="recommendedRoute" class="recommended-route">
+          <span class="route-icon" aria-hidden="true">🧭</span><div><b>Complete the Learning Pit Stop first.</b><p>Your recommended route will appear here.</p></div>
+        </div>
+        <div class="route-grid">
+          <article data-route-card="new"><b>Guided repair</b><p>Ask your partner to point to each event block while you say its input and output. Fix one mismatch and retest.</p></article>
+          <article data-route-card="consolidating"><b>Countdown protocol</b><p>Add READY, then 3–2–1, then STOP. Explain why sequence and timing matter to the operator.</p></article>
+          <article data-route-card="water"><b>Five-command state machine</b><p>Use A to cycle S/F/R/B/L and B to confirm. Keep A+B as emergency stop.</p></article>
+          <article data-route-card="drowning"><b>Worked-example support</b><p>Keep only on start and Button A. Make those two work, explain the IPO chain, then ask for the next block.</p></article>
+        </div>
+        <label class="response-label" for="extensionNote">Record the next step you completed or the help you requested.</label>
+        <textarea id="extensionNote" rows="3" placeholder="My next step was…"></textarea>
+      </section>
+
+      <section class="lesson-card" data-card="plenary" aria-labelledby="plenary-title">
+        <span class="card-kicker">Plenary · 3 minutes</span>
+        <h2 id="plenary-title">Explain the control story.</h2>
+        <div class="plenary-prompt"><span>BUTTON A</span><span>→</span><span>PROGRAM</span><span>→</span><span>LEFT ARROW</span><span>→</span><span>FUTURE MOTOR ACTION</span></div>
+        <label class="response-label" for="plenaryExplain">A younger student asks: “How can pressing a button eventually make the BEETLE:BIT turn?” Explain using <strong>input, process and output</strong>.</label>
+        <textarea id="plenaryExplain" rows="5" placeholder="The button press is the input. Next…"></textarea>
+        <fieldset class="confidence-check"><legend>WAGBA self-check</legend>
+          <label><input type="radio" name="confidence" value="beginning"> Beginning — I can name one part.</label>
+          <label><input type="radio" name="confidence" value="developing"> Developing — I can trace input to output with support.</label>
+          <label><input type="radio" name="confidence" value="secure"> Secure — I can build, test and explain the controller.</label>
+          <label><input type="radio" name="confidence" value="transfer"> Transfer — I can apply the model to robot motors.</label>
+        </fieldset>
+      </section>
+
+      <section class="lesson-card" data-card="finish" aria-labelledby="finish-title">
+        <span class="card-kicker">Mission debrief</span>
+        <h2 id="finish-title">Control logic cleared for the next build.</h2>
+        <div class="finish-layout">
+          <div class="finish-badge">✓</div>
+          <div><p class="lead">You have identified the micro:bit’s relevant parts, traced an input–process–output chain, built event-driven code and tested a safe-stop command.</p><p>Next lesson, you will strengthen the control program before any motor or sensor work begins.</p></div>
+        </div>
+        <button id="resetLesson" class="text-button" type="button">Reset this lesson on this device</button>
+      </section>
+
+      <div class="card-controls">
+        <button id="previousCard" class="nav-button secondary" type="button">← Previous</button>
+        <div id="completionHint" class="completion-hint" aria-live="polite"></div>
+        <button id="nextCard" class="nav-button primary" type="button">Next card →</button>
+      </div>
+    </main>
+  </div>
+
+  <button id="helpButton" class="help-button" type="button" aria-expanded="false" aria-controls="helpPanel"><span aria-hidden="true">?</span> I’m stuck</button>
+  <aside id="helpPanel" class="help-panel" aria-hidden="true" aria-labelledby="help-title">
+    <div class="help-head"><h2 id="help-title">Take one small step</h2><button id="closeHelp" type="button" aria-label="Close help">×</button></div>
+    <ol><li>Read only the sentence in bold.</li><li>Say the input and expected output to your partner.</li><li>Change or answer one thing, then test again.</li></ol>
+    <p><strong>Still stuck?</strong> Choose <em>Drowning</em> at the pit stop or show this panel to your teacher. Asking for help is a valid engineering action.</p>
+  </aside>
+  <div id="helpBackdrop" class="help-backdrop" hidden></div>
+
+  <footer class="source-note">
+    Lesson informed by the <a href="https://www.microbit.org/teach/lessons/first-lessons-with-makecode-and-the-microbit/" target="_blank" rel="noreferrer">Micro:bit Educational Foundation first lessons</a> and the <a href="https://beetlebit-hub.cytron.io/" target="_blank" rel="noreferrer">Cytron BEETLE:BIT Resource Hub</a>. Official micro:bit diagrams are CC BY-SA 4.0.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
