@@ -178,7 +178,7 @@ tr:last-child td { border-bottom: 0; }
 .finish-badge { display: grid; place-items: center; width: 110px; height: 110px; border: 3px solid var(--ink); border-radius: 50%; background: var(--lime); color: var(--green-dark); font-size: 3rem; font-weight: 1000; box-shadow: 6px 6px 0 var(--ink); }
 .text-button { border-color: #a8b6a5; background: transparent; color: var(--muted); }
 
-.help-button { position: fixed; right: 20px; bottom: 18px; z-index: 120; display: flex; gap: 7px; align-items: center; border: 2px solid var(--ink); border-radius: 999px; background: var(--blue); padding: 10px 15px; color: #fff; font-weight: 950; box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
+.help-button { position: fixed; right: 24px; bottom: 84px; z-index: 120; display: flex; gap: 7px; align-items: center; border: 2px solid var(--ink); border-radius: 999px; background: var(--blue); padding: 10px 15px; color: #fff; font-weight: 950; box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
 .help-button span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: var(--blue); }
 .help-panel { position: fixed; right: -430px; top: 0; z-index: 201; width: min(410px, calc(100% - 28px)); height: 100vh; background: #fff; border-left: 3px solid var(--ink); padding: 24px; box-shadow: -15px 0 50px rgba(0,0,0,.18); transition: right .2s ease; }
 .help-panel.open { right: 0; }
@@ -222,7 +222,7 @@ tr:last-child td { border-bottom: 0; }
   .flow-arrow { transform: rotate(90deg); text-align: center; }
   .pitstop-choices { grid-template-columns: 1fr; }
   .build-steps li { grid-template-columns: 1fr; }
-  .help-button { right: 12px; bottom: 12px; }
+  .help-button { right: 14px; bottom: 96px; }
 }
 
 @media (max-width: 480px) {
