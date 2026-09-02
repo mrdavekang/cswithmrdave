@@ -24,6 +24,7 @@
     current: 0,
     responses: {},
     checks: {},
+    gameAnswers: {},
     anatomyCorrect: false,
     ipoCorrect: false,
     predictCorrect: false,
@@ -35,7 +36,7 @@
     try {
       const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       return parsed && typeof parsed === 'object'
-        ? { ...emptyState, ...parsed, responses: parsed.responses || {}, checks: parsed.checks || {} }
+        ? { ...emptyState, ...parsed, responses: parsed.responses || {}, checks: parsed.checks || {}, gameAnswers: parsed.gameAnswers || {} }
         : structuredClone(emptyState);
     } catch (_) {
       return structuredClone(emptyState);
@@ -56,6 +57,7 @@
   const previousButton = document.getElementById('previousCard');
   const nextButton = document.getElementById('nextCard');
   const completionHint = document.getElementById('completionHint');
+  const extensionButton = document.getElementById('extensionButton');
 
   function response(id) {
     return state.responses[id] || '';
@@ -151,6 +153,8 @@
     previousButton.disabled = state.current === 0;
     nextButton.hidden = state.current === cards.length - 1;
     nextButton.disabled = !isComplete(card.id);
+    extensionButton.disabled = !teacherMode && !isComplete(card.id);
+    extensionButton.title = extensionButton.disabled ? 'Complete this lesson card to unlock the optional games.' : 'Open three optional code games.';
     nextButton.textContent = state.current === cards.length - 2 ? 'Finish mission →' : 'Next card →';
     completionHint.textContent = isComplete(card.id) ? 'Card complete — you are ready to continue.' : missingMessage(card.id);
     renderNav();
@@ -375,19 +379,117 @@
   const helpButton = document.getElementById('helpButton');
   const helpBackdrop = document.getElementById('helpBackdrop');
   const closeHelp = document.getElementById('closeHelp');
+  const extensionPanel = document.getElementById('extensionPanel');
+  const extensionBackdrop = document.getElementById('extensionBackdrop');
+  const closeExtension = document.getElementById('closeExtension');
+  const previousGame = document.getElementById('previousGame');
+  const nextGame = document.getElementById('nextGame');
+  const gameCards = [...document.querySelectorAll('[data-game-card]')];
+  let extensionGameIndex = 0;
 
-  function setHelp(open) {
+  const gameCopy = {
+    decoder: {
+      success: 'Correct. A+B is the input event; the nested show-icon block is the output action.',
+      retry: 'Read the outside event first: nothing happens until A+B is pressed. Then read the action nested inside it.',
+    },
+    bug: {
+      success: 'Correct. Keep the correct Button B event and repair only the wrong LEFT output.',
+      retry: 'Use the test rule B = RIGHT. Keep the input that already matches and change the smallest incorrect part.',
+    },
+    route: {
+      success: 'Correct. Two squares up and two squares right avoids the centre hazard and finishes at the battery.',
+      retry: 'Trace one command at a time. Check for either entering the centre hazard or stopping one square too early.',
+    },
+  };
+
+  function updateExtensionGames() {
+    gameCards.forEach((card, index) => {
+      const active = index === extensionGameIndex;
+      card.classList.toggle('active', active);
+      card.setAttribute('aria-hidden', String(!active));
+    });
+    document.getElementById('gameStep').textContent = `Game ${extensionGameIndex + 1} of ${gameCards.length}`;
+    const solved = Object.values(state.gameAnswers).filter((answer) => answer.correct).length;
+    document.getElementById('gameScore').textContent = `${solved}/3 solved`;
+    previousGame.disabled = extensionGameIndex === 0;
+    nextGame.textContent = extensionGameIndex === gameCards.length - 1 ? 'Close arcade ✓' : 'Next game →';
+
+    document.querySelectorAll('[data-game-choice]').forEach((button) => {
+      const answer = state.gameAnswers[button.dataset.game];
+      const selected = answer && answer.value === button.dataset.value;
+      button.classList.toggle('selected', Boolean(selected));
+      button.classList.toggle('reveal-correct', Boolean(answer) && button.dataset.correct === 'true');
+      button.setAttribute('aria-pressed', String(Boolean(selected)));
+    });
+
+    Object.entries(gameCopy).forEach(([game, copy]) => {
+      const answer = state.gameAnswers[game];
+      const feedback = document.getElementById(`gameFeedback-${game}`);
+      if (!answer) return;
+      feedback.className = `game-feedback ${answer.correct ? 'success' : 'try-again'}`;
+      feedback.textContent = answer.correct ? copy.success : copy.retry;
+    });
+  }
+
+  function setHelp(open, returnFocus = true) {
+    if (open && extensionPanel.classList.contains('open')) setExtension(false, false);
     helpPanel.classList.toggle('open', open);
     helpPanel.setAttribute('aria-hidden', String(!open));
     helpButton.setAttribute('aria-expanded', String(open));
     helpBackdrop.hidden = !open;
-    if (open) closeHelp.focus(); else helpButton.focus();
+    if (open) closeHelp.focus(); else if (returnFocus) helpButton.focus();
   }
+
+  function setExtension(open, returnFocus = true) {
+    if (open && extensionButton.disabled) return;
+    if (open && helpPanel.classList.contains('open')) setHelp(false, false);
+    extensionPanel.classList.toggle('open', open);
+    extensionPanel.setAttribute('aria-hidden', String(!open));
+    extensionButton.setAttribute('aria-expanded', String(open));
+    extensionBackdrop.hidden = !open;
+    if (open) {
+      updateExtensionGames();
+      closeExtension.focus();
+    } else if (returnFocus) {
+      extensionButton.focus();
+    }
+  }
+
+  document.querySelectorAll('[data-game-choice]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.gameAnswers[button.dataset.game] = {
+        value: button.dataset.value,
+        correct: button.dataset.correct === 'true',
+      };
+      saveState();
+      updateExtensionGames();
+    });
+  });
+
+  previousGame.addEventListener('click', () => {
+    extensionGameIndex = Math.max(0, extensionGameIndex - 1);
+    updateExtensionGames();
+  });
+  nextGame.addEventListener('click', () => {
+    if (extensionGameIndex === gameCards.length - 1) {
+      setExtension(false);
+      return;
+    }
+    extensionGameIndex += 1;
+    updateExtensionGames();
+  });
 
   helpButton.addEventListener('click', () => setHelp(true));
   closeHelp.addEventListener('click', () => setHelp(false));
   helpBackdrop.addEventListener('click', () => setHelp(false));
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && helpPanel.classList.contains('open')) setHelp(false); });
+  extensionButton.addEventListener('click', () => setExtension(true));
+  closeExtension.addEventListener('click', () => setExtension(false));
+  extensionBackdrop.addEventListener('click', () => setExtension(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (extensionPanel.classList.contains('open')) setExtension(false);
+    else if (helpPanel.classList.contains('open')) setHelp(false);
+  });
 
   document.getElementById('resetLesson').addEventListener('click', () => {
     if (!window.confirm('Reset all locally saved responses for this Week 1 lesson?')) return;
