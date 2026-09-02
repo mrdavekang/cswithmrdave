@@ -8,7 +8,7 @@
   <meta property="og:description" content="Learn how a micro:bit turns precise button events into safe, tested robot commands.">
   <meta property="og:image" content="https://mrdavekang.github.io/cswithmrdave/Beetlebit_Week1/assets/beetlebit-microbit.png">
   <title>BEETLE:BIT Week 1 — Mission Control</title>
-  <link rel="stylesheet" href="styles.css?v=20260902-2">
+  <link rel="stylesheet" href="styles.css?v=20260902-3">
 </head>
 <body>
   <a class="skip-link" href="#lesson-card">Skip to lesson card</a>
@@ -36,6 +36,7 @@
       <div class="progress-copy"><span id="phaseLabel">Mission briefing</span><strong id="timeLabel">3 min</strong></div>
       <div class="progress-track" aria-hidden="true"><div id="progressFill"></div></div>
       <nav id="cardNav" class="card-nav" aria-label="Lesson cards"></nav>
+      <button id="extensionButton" class="extension-launch" type="button" aria-expanded="false" aria-controls="extensionPanel" disabled><span aria-hidden="true">⚡</span><span><b>Finished early?</b><small>Open the code arcade</small></span></button>
       <div class="privacy-note"><span aria-hidden="true">✓</span> Progress saves only on this device.</div>
     </aside>
 
@@ -146,6 +147,16 @@
       <section class="lesson-card" data-card="predict" aria-labelledby="predict-title">
         <span class="card-kicker">Main Task 2 · Predict · 8 minutes</span>
         <h2 id="predict-title">Read the events before you build.</h2>
+        <div class="block-reader" aria-label="How to read a MakeCode event block">
+          <div class="reader-example">
+            <div class="example-event"><span class="reader-number">1</span> on button <mark>A</mark> pressed<div class="example-action"><span class="reader-number">3</span> show arrow ←</div></div>
+          </div>
+          <div class="reader-rules">
+            <b>Read it as a sentence</b>
+            <ol><li><strong>WHEN:</strong> the event at the top waits for something to happen.</li><li><strong>WHICH:</strong> the dropdown word <mark>A</mark> identifies the input.</li><li><strong>DO:</strong> the block nested inside is the output action.</li></ol>
+            <p class="read-aloud">“When Button A is pressed, then show a left arrow.”</p>
+          </div>
+        </div>
         <div class="block-program" aria-label="MakeCode program plan">
           <div class="mc-block start">on start <span>show icon ■</span></div>
           <div class="mc-block event">on button A pressed <span>show arrow ←</span></div>
@@ -169,6 +180,12 @@
         <span class="card-kicker">Main Task 2 · Build · 18 minutes</span>
         <h2 id="build-title">Build the Rescue Rover status controller.</h2>
         <p class="lead">Work in pairs: the <strong>Driver</strong> places blocks; the <strong>Navigator</strong> reads the requirement and checks the event. Swap after two events.</p>
+        <div class="block-toolbox-map">
+          <b>Finding and fitting the blocks</b>
+          <span><i class="toolbox-chip input-chip">INPUT</i> gives you the <strong>event container</strong>: <code>on button A pressed</code>.</span>
+          <span><i class="toolbox-chip basic-chip">BASIC</i> gives you the <strong>action block</strong>: <code>show arrow</code> or <code>show icon</code>.</span>
+          <span class="fit-rule">The action block fits <strong>inside</strong> the event because it tells the micro:bit what to do when that event happens.</span>
+        </div>
         <div class="build-layout">
           <ol class="build-steps">
             <li><b>Open</b><span>Create a new micro:bit MakeCode project called <code>W1_Rescue_Controller</code>.</span></li>
@@ -195,6 +212,10 @@
         <span class="card-kicker">Main Task 2 · Test and debug · 8 minutes</span>
         <h2 id="test-title">An engineer proves every command.</h2>
         <p>Run each test in the simulator. Record what happened. If a test fails, change only one thing and run it again.</p>
+        <div class="bug-example">
+          <div><b>Worked bug example</b><div class="mini-event">on button B pressed <span>show arrow ←</span></div></div>
+          <p><strong>Read:</strong> “When B is pressed, show LEFT.” The event is correct, but the mission requires B to mean RIGHT. Change only the <strong>output action</strong> to <code>show arrow →</code>, then retest.</p>
+        </div>
         <table class="test-table">
           <thead><tr><th>Test</th><th>Expected</th><th>Result</th></tr></thead>
           <tbody>
@@ -281,10 +302,57 @@
   </aside>
   <div id="helpBackdrop" class="help-backdrop" hidden></div>
 
+  <aside id="extensionPanel" class="extension-panel" aria-hidden="true" aria-labelledby="extension-panel-title">
+    <div class="extension-head"><div><span>OPTIONAL CHALLENGE</span><h2 id="extension-panel-title">Early-finisher Code Arcade</h2></div><button id="closeExtension" type="button" aria-label="Close early-finisher games">×</button></div>
+    <div class="arcade-status"><span id="gameStep">Game 1 of 3</span><strong id="gameScore">0/3 solved</strong></div>
+
+    <section class="extension-game active" data-game-card="0" aria-labelledby="decoder-title">
+      <span class="game-badge">GAME 1 · CODE DECODER</span>
+      <h3 id="decoder-title">What will the operator see?</h3>
+      <div class="example-event compact">on button <mark>A+B</mark> pressed<div class="example-action">show icon ✕</div></div>
+      <p>Read the event from the outside block to the action inside it. Then choose the outcome.</p>
+      <div class="game-choices" role="group" aria-label="Choose the program outcome">
+        <button type="button" data-game-choice data-game="decoder" data-value="left">A left arrow appears.</button>
+        <button type="button" data-game-choice data-game="decoder" data-value="stop" data-correct="true">The emergency-stop X appears.</button>
+        <button type="button" data-game-choice data-game="decoder" data-value="forever">The X flashes forever without an input.</button>
+      </div>
+      <div id="gameFeedback-decoder" class="game-feedback" aria-live="polite">Choose an outcome.</div>
+    </section>
+
+    <section class="extension-game" data-game-card="1" aria-labelledby="bug-title">
+      <span class="game-badge">GAME 2 · BUG HUNT</span>
+      <h3 id="bug-title">Repair one wrong block.</h3>
+      <p>The rule is <strong>B = RIGHT</strong>, but this program shows LEFT:</p>
+      <div class="example-event compact">on button <mark>B</mark> pressed<div class="example-action">show arrow ←</div></div>
+      <div class="game-choices" role="group" aria-label="Choose the block to repair">
+        <button type="button" data-game-choice data-game="bug" data-value="event">Change the event to Button A.</button>
+        <button type="button" data-game-choice data-game="bug" data-value="output" data-correct="true">Change the output to a right arrow.</button>
+        <button type="button" data-game-choice data-game="bug" data-value="delete">Delete the whole event.</button>
+      </div>
+      <div id="gameFeedback-bug" class="game-feedback" aria-live="polite">Find the smallest safe repair.</div>
+    </section>
+
+    <section class="extension-game" data-game-card="2" aria-labelledby="route-title">
+      <span class="game-badge">GAME 3 · ROUTE PLANNER</span>
+      <h3 id="route-title">Reach the battery without entering the hazard.</h3>
+      <div class="route-board" aria-label="Three by three route grid. Robot starts at bottom left facing up, hazard is in the centre, battery is at top right."><span>⬜</span><span>⬜</span><span>🔋</span><span>⬜</span><span>⚠️</span><span>⬜</span><span>🤖↑</span><span>⬜</span><span>⬜</span></div>
+      <p>The robot starts at the bottom-left facing up. Which precise algorithm reaches the battery?</p>
+      <div class="game-choices route-choices" role="group" aria-label="Choose the safe route algorithm">
+        <button type="button" data-game-choice data-game="route" data-value="safe" data-correct="true">Forward 2 → turn right → forward 2 → stop</button>
+        <button type="button" data-game-choice data-game="route" data-value="hazard">Forward 1 → turn right → forward 1 → turn left → forward 1</button>
+        <button type="button" data-game-choice data-game="route" data-value="short">Forward 2 → turn right → forward 1 → stop</button>
+      </div>
+      <div id="gameFeedback-route" class="game-feedback" aria-live="polite">Trace each command one square at a time.</div>
+    </section>
+
+    <div class="arcade-controls"><button id="previousGame" class="nav-button secondary" type="button">← Previous game</button><button id="nextGame" class="nav-button primary" type="button">Next game →</button></div>
+  </aside>
+  <div id="extensionBackdrop" class="help-backdrop extension-backdrop" hidden></div>
+
   <footer class="source-note">
     Lesson informed by the <a href="https://www.microbit.org/teach/lessons/first-lessons-with-makecode-and-the-microbit/" target="_blank" rel="noreferrer">Micro:bit Educational Foundation first lessons</a> and the <a href="https://beetlebit-hub.cytron.io/" target="_blank" rel="noreferrer">Cytron BEETLE:BIT Resource Hub</a>. Official micro:bit diagrams are CC BY-SA 4.0.
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260902-3"></script>
 </body>
 </html>
