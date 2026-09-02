@@ -8,9 +8,25 @@
   <meta property="og:description" content="Learn how a micro:bit turns precise button events into safe, tested robot commands.">
   <meta property="og:image" content="https://mrdavekang.github.io/cswithmrdave/Beetlebit_Week1/assets/beetlebit-microbit.png">
   <title>BEETLE:BIT Week 1 — Mission Control</title>
-  <link rel="stylesheet" href="styles.css?v=20260902-3">
+  <link rel="stylesheet" href="styles.css?v=20260902-4">
 </head>
-<body>
+<body class="entry-pending">
+  <section id="landingScreen" class="landing-screen" aria-labelledby="landing-title">
+    <div class="landing-card">
+      <div class="landing-brand"><span aria-hidden="true">B:B</span><div><b>BEETLE:BIT Mission Control</b><small>Week 1 · Meet the micro:bit</small></div></div>
+      <span class="landing-kicker">MISSION CHECK-IN</span>
+      <h1 id="landing-title">Ready to join the rescue team?</h1>
+      <p>Enter your details so this device can keep your lesson progress separate.</p>
+      <form id="landingForm" novalidate>
+        <label for="studentName">Your name<input id="studentName" name="studentName" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="e.g. Aisha" required></label>
+        <label for="studentClass">Your class<input id="studentClass" name="studentClass" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="e.g. 7A"></label>
+        <div id="landingError" class="landing-error" role="alert" aria-live="polite"></div>
+        <button class="landing-start" type="submit">Enter Mission Control <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="landing-privacy"><span aria-hidden="true">✓</span> Your name and class stay in this browser session and are not sent anywhere.</p>
+    </div>
+  </section>
+
   <a class="skip-link" href="#lesson-card">Skip to lesson card</a>
 
   <header class="learning-rail" aria-label="Learning focus">
@@ -20,16 +36,21 @@
         <strong>BEETLE:BIT Mission Control</strong>
         <span>Week 1 · Meet the micro:bit · 90 minutes</span>
       </div>
+      <div id="participantLabel" class="participant-label" aria-live="polite"></div>
       <button id="learningToggle" class="rail-toggle" type="button" aria-expanded="true" aria-controls="learningGrid">Learning focus</button>
     </div>
     <div id="learningGrid" class="learning-grid">
       <div class="rail-item rail-wide"><b>WAGBA</b><span>Turn button events into clear, tested robot commands.</span></div>
-      <div class="rail-item"><b>WAGPA</b><span>Identify → trace → build → test → explain.</span></div>
       <div class="rail-item knowledge"><b>K · Knowledge</b><span>Buttons, LEDs, processor, pins, event, algorithm.</span></div>
       <div class="rail-item skills"><b>S · Skills</b><span>Predict, build, run, test and debug in MakeCode.</span></div>
       <div class="rail-item understanding"><b>U · Understanding</b><span>Explain how input → program → output controls a system.</span></div>
     </div>
   </header>
+
+  <div id="teacherReviewBar" class="teacher-review" hidden>
+    <div><b>Teacher review</b><span>All cards and optional games are unlocked.</span></div>
+    <label for="teacherCardSelect">Review card<select id="teacherCardSelect"></select></label>
+  </div>
 
   <div class="app-shell">
     <aside class="lesson-sidebar" aria-label="Lesson journey">
@@ -353,6 +374,6 @@
     Lesson informed by the <a href="https://www.microbit.org/teach/lessons/first-lessons-with-makecode-and-the-microbit/" target="_blank" rel="noreferrer">Micro:bit Educational Foundation first lessons</a> and the <a href="https://beetlebit-hub.cytron.io/" target="_blank" rel="noreferrer">Cytron BEETLE:BIT Resource Hub</a>. Official micro:bit diagrams are CC BY-SA 4.0.
   </footer>
 
-  <script src="app.js?v=20260902-3"></script>
+  <script src="app.js?v=20260902-4"></script>
 </body>
 </html>

@@ -15,13 +15,13 @@ A static, card-based 90-minute lesson for KS2 and KS3 learners. The lesson intro
 9. Follow a matched support or challenge route.
 10. Explain how the same control model transfers from LEDs to future robot actions.
 
-Only one lesson card is visible at a time. The WAGBA, WAGPA progression and Knowledge/Skills/Understanding statements remain visible throughout. Progress is saved locally in the browser; no student response is transmitted.
+Only one lesson card is visible at a time. The WAGBA and Knowledge/Skills/Understanding statements remain visible throughout. Students enter a name and class on a landing screen; those details stay in the browser session. Progress is saved locally under a separate anonymous device key, and no student response is transmitted.
 
 ## Hosting
 
 This folder is designed for GitHub Pages and requires no build process, server, database or account. Preserve the `assets` folder beside `index.html`, `styles.css` and `app.js`.
 
-Teacher preview can unlock all cards by appending `?teacher=1` to the URL.
+The landing screen includes a staff review path that unlocks every card without displaying teacher controls to students.
 
 ## Sources
 

@@ -1,8 +1,32 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'beetlebit-week1-mission-control-v2';
-  const teacherMode = new URLSearchParams(window.location.search).get('teacher') === '1';
+  const BASE_STORAGE_KEY = 'beetlebit-week1-mission-control-v3';
+  const PROFILE_KEY = 'beetlebit-week1-session-profile-v1';
+
+  function loadParticipant() {
+    try {
+      const parsed = JSON.parse(sessionStorage.getItem(PROFILE_KEY) || 'null');
+      return parsed && typeof parsed.name === 'string' ? parsed : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function profileHash(value) {
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index += 1) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  const participant = loadParticipant();
+  let teacherMode = Boolean(participant && participant.name.trim().toLowerCase() === 'teacher');
+  const STORAGE_KEY = participant
+    ? `${BASE_STORAGE_KEY}-${profileHash(`${participant.name.toLowerCase()}|${(participant.className || '').toLowerCase()}`)}`
+    : `${BASE_STORAGE_KEY}-pending`;
 
   const cards = [
     { id: 'mission', title: 'Mission briefing', group: 'Start', minutes: 3 },
@@ -58,6 +82,14 @@
   const nextButton = document.getElementById('nextCard');
   const completionHint = document.getElementById('completionHint');
   const extensionButton = document.getElementById('extensionButton');
+  const landingScreen = document.getElementById('landingScreen');
+  const landingForm = document.getElementById('landingForm');
+  const landingError = document.getElementById('landingError');
+  const studentName = document.getElementById('studentName');
+  const studentClass = document.getElementById('studentClass');
+  const participantLabel = document.getElementById('participantLabel');
+  const teacherReviewBar = document.getElementById('teacherReviewBar');
+  const teacherCardSelect = document.getElementById('teacherCardSelect');
 
   function response(id) {
     return state.responses[id] || '';
@@ -152,11 +184,14 @@
     progressFill.style.width = `${Math.round((Math.min(state.current, coreTotal) / coreTotal) * 100)}%`;
     previousButton.disabled = state.current === 0;
     nextButton.hidden = state.current === cards.length - 1;
-    nextButton.disabled = !isComplete(card.id);
+    nextButton.disabled = !teacherMode && !isComplete(card.id);
     extensionButton.disabled = !teacherMode && !isComplete(card.id);
     extensionButton.title = extensionButton.disabled ? 'Complete this lesson card to unlock the optional games.' : 'Open three optional code games.';
     nextButton.textContent = state.current === cards.length - 2 ? 'Finish mission →' : 'Next card →';
-    completionHint.textContent = isComplete(card.id) ? 'Card complete — you are ready to continue.' : missingMessage(card.id);
+    completionHint.textContent = teacherMode
+      ? 'Teacher review — completion checks are bypassed.'
+      : isComplete(card.id) ? 'Card complete — you are ready to continue.' : missingMessage(card.id);
+    if (teacherMode) teacherCardSelect.value = String(state.current);
     renderNav();
   }
 
@@ -368,7 +403,7 @@
   previousButton.addEventListener('click', () => showCard(state.current - 1));
   nextButton.addEventListener('click', () => {
     const id = cards[state.current].id;
-    if (!isComplete(id)) {
+    if (!teacherMode && !isComplete(id)) {
       completionHint.textContent = missingMessage(id);
       return;
     }
@@ -507,9 +542,43 @@
     });
   }
 
+  teacherCardSelect.innerHTML = cards.map((card, index) => `<option value="${index}">${index + 1}. ${card.group} — ${card.title}</option>`).join('');
+  teacherCardSelect.addEventListener('change', () => showCard(Number(teacherCardSelect.value)));
+
+  landingForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = studentName.value.trim().replace(/\s+/g, ' ');
+    const className = studentClass.value.trim().replace(/\s+/g, ' ');
+    const enteringAsTeacher = name.toLowerCase() === 'teacher';
+
+    if (!name) {
+      landingError.textContent = 'Enter your name to continue.';
+      studentName.focus();
+      return;
+    }
+    if (!enteringAsTeacher && !className) {
+      landingError.textContent = 'Enter your class to continue.';
+      studentClass.focus();
+      return;
+    }
+
+    sessionStorage.setItem(PROFILE_KEY, JSON.stringify({ name, className: className || 'Staff' }));
+    window.location.reload();
+  });
+
   restoreButtons();
   updateStarterFeedback();
   updateDefinitionFeedback();
   updatePitstopRoute();
-  showCard(Number.isInteger(state.current) ? state.current : 0);
+  if (participant) {
+    landingScreen.hidden = true;
+    document.body.classList.remove('entry-pending');
+    document.body.classList.toggle('teacher-mode', teacherMode);
+    participantLabel.textContent = teacherMode ? 'Teacher · Review' : `${participant.name} · ${participant.className || ''}`;
+    teacherReviewBar.hidden = !teacherMode;
+    showCard(Number.isInteger(state.current) ? state.current : 0);
+  } else {
+    landingScreen.hidden = false;
+    window.requestAnimationFrame(() => studentName.focus());
+  }
 })();

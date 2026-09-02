@@ -15,8 +15,11 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { color-scheme: light; }
 body { margin: 0; min-height: 100vh; background: var(--canvas); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body.entry-pending { overflow: hidden; }
+body.entry-pending .learning-rail, body.entry-pending .teacher-review, body.entry-pending .app-shell, body.entry-pending .help-button { visibility: hidden; }
 button, input, select, textarea { font: inherit; }
 button, select, input, textarea, a { outline-offset: 3px; }
 button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #2a73ff; }
@@ -24,14 +27,34 @@ button { color: inherit; }
 .skip-link { position: fixed; left: 12px; top: -70px; z-index: 300; background: #fff; border: 2px solid var(--ink); padding: 10px 14px; font-weight: 900; }
 .skip-link:focus { top: 12px; }
 
+.landing-screen { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow-y: auto; background: radial-gradient(circle at 15% 15%, #dff272 0 11%, transparent 11.5%), radial-gradient(circle at 85% 80%, #f6d34a 0 13%, transparent 13.5%), #eaf2e6; padding: 22px; }
+.landing-card { width: min(570px, 100%); border: 3px solid var(--ink); border-radius: 25px; background: var(--paper); padding: clamp(24px, 5vw, 46px); box-shadow: 10px 10px 0 var(--ink); }
+.landing-brand { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
+.landing-brand > span { display: grid; place-items: center; width: 45px; height: 45px; border: 2px solid var(--ink); border-radius: 12px; background: var(--yellow); font-size: .8rem; font-weight: 1000; box-shadow: 3px 3px 0 var(--ink); }
+.landing-brand b, .landing-brand small { display: block; }
+.landing-brand small { margin-top: 2px; color: var(--muted); }
+.landing-kicker { display: inline-flex; border-radius: 999px; background: #e5f1df; padding: 6px 10px; color: var(--green-dark); font-size: .7rem; font-weight: 950; letter-spacing: .07em; }
+.landing-card h1 { margin: 13px 0 8px; font-size: clamp(2rem, 7vw, 3.45rem); }
+.landing-card > p { color: #405548; }
+.landing-card form { display: grid; gap: 13px; margin-top: 23px; }
+.landing-card label { display: grid; gap: 6px; font-size: .82rem; font-weight: 900; }
+.landing-card input { width: 100%; min-height: 50px; border: 2px solid #aebdab; border-radius: 12px; background: #fff; padding: 10px 12px; color: var(--ink); font-size: 1rem; }
+.landing-card input:focus { border-color: var(--blue); }
+.landing-error { min-height: 20px; color: #9a2318; font-size: .78rem; font-weight: 850; }
+.landing-start { display: flex; justify-content: space-between; align-items: center; min-height: 52px; border: 2px solid var(--ink); border-radius: 12px; background: var(--yellow); padding: 10px 15px; font-weight: 950; box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
+.landing-start span { font-size: 1.35rem; }
+.landing-privacy { display: flex; gap: 7px; align-items: flex-start; margin: 18px 0 0; color: var(--muted) !important; font-size: .7rem; line-height: 1.4; }
+.landing-privacy span { color: var(--green); font-weight: 1000; }
+
 .learning-rail { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 3px solid var(--ink); box-shadow: 0 4px 18px rgba(19, 49, 29, .09); }
 .brand-row { display: flex; align-items: center; gap: 11px; min-height: 54px; max-width: 1600px; margin: 0 auto; padding: 8px 18px; }
 .brand-row strong, .brand-row span { display: block; }
 .brand-row strong { font-size: .96rem; }
 .brand-row span { color: var(--muted); font-size: .76rem; }
 .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border: 2px solid var(--ink); border-radius: 11px; background: var(--yellow); font-size: .76rem; font-weight: 1000; box-shadow: 3px 3px 0 var(--ink); }
+.participant-label { margin-left: auto; border: 1px solid var(--line); border-radius: 999px; background: #f3f7f1; padding: 6px 10px; color: var(--green-dark); font-size: .72rem; font-weight: 900; }
 .rail-toggle { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 8px 10px; font-weight: 900; }
-.learning-grid { display: grid; grid-template-columns: 1.45fr 1fr 1fr 1fr 1fr; gap: 7px; max-width: 1600px; margin: 0 auto; padding: 0 18px 10px; }
+.learning-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 7px; max-width: 1600px; margin: 0 auto; padding: 0 18px 10px; }
 .rail-item { min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: #f7faf6; padding: 7px 9px; }
 .rail-item b, .rail-item span { display: block; }
 .rail-item b { margin-bottom: 2px; color: var(--green-dark); font-size: .67rem; letter-spacing: .06em; text-transform: uppercase; }
@@ -39,6 +62,14 @@ button { color: inherit; }
 .rail-item.knowledge { border-top: 4px solid var(--yellow); }
 .rail-item.skills { border-top: 4px solid var(--blue); }
 .rail-item.understanding { border-top: 4px solid var(--purple); }
+
+.teacher-review { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 49px; border-bottom: 2px solid var(--ink); background: var(--ink); padding: 7px 20px; color: #fff; }
+.teacher-review > div b, .teacher-review > div span { display: block; }
+.teacher-review > div b { color: var(--lime); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+.teacher-review > div span { margin-top: 2px; font-size: .72rem; }
+.teacher-review label { display: flex; gap: 9px; align-items: center; font-size: .75rem; font-weight: 900; }
+.teacher-review select { min-height: 34px; min-width: 240px; border-color: #fff; padding-block: 4px; }
+body.teacher-mode .app-shell { height: calc(100vh - 175px); }
 
 .app-shell { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 18px; width: min(1520px, 100%); height: calc(100vh - 126px); min-height: 570px; margin: 0 auto; padding: 16px 18px 12px; overflow: hidden; }
 .lesson-sidebar { display: flex; min-height: 0; flex-direction: column; border: 2px solid var(--ink); border-radius: 18px; background: #fff; padding: 14px; box-shadow: 5px 5px 0 var(--ink); }
@@ -245,8 +276,9 @@ tr:last-child td { border-bottom: 0; }
 .source-note { display: none; }
 
 @media (max-width: 1000px) {
-  .learning-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+  .learning-grid { grid-template-columns: 1fr 1fr; }
   .app-shell { grid-template-columns: 210px minmax(0, 1fr); height: calc(100vh - 178px); }
+  body.teacher-mode .app-shell { height: calc(100vh - 227px); }
   .mission-layout, .learning-type-layout, .pitstop-layout, .build-layout { grid-template-columns: 1fr; }
   .mission-image { max-width: 440px; margin: 0 auto; }
   .reference-figure img { max-height: 300px; }
@@ -285,6 +317,10 @@ tr:last-child td { border-bottom: 0; }
 @media (max-width: 480px) {
   .brand-row { padding-inline: 10px; }
   .brand-row span { display: none; }
+  .participant-label { display: block; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .teacher-review { align-items: stretch; flex-direction: column; gap: 7px; }
+  .teacher-review label { justify-content: space-between; }
+  .teacher-review select { min-width: 0; width: 62%; }
   .learning-grid { padding-inline: 10px; }
   .learning-grid:not(.collapsed) { grid-template-columns: 1fr; max-height: 240px; }
   .rail-wide { grid-column: auto; }
@@ -297,7 +333,7 @@ tr:last-child td { border-bottom: 0; }
 }
 
 @media print {
-  .learning-rail, .lesson-sidebar, .card-controls, .help-button, .help-panel, .extension-panel { display: none !important; }
+  .landing-screen, .learning-rail, .teacher-review, .lesson-sidebar, .card-controls, .help-button, .help-panel, .extension-panel { display: none !important; }
   .app-shell, .card-stage { display: block; height: auto; border: 0; box-shadow: none; overflow: visible; }
   .lesson-card { display: block !important; break-after: page; overflow: visible; }
 }
