@@ -531,13 +531,42 @@
   }
 
   function checkStarterPrecision() {
-    const answer = String(getResponse("starter_improvement") || "");
-    const precise = answer.trim().length >= 15 && /display|show/i.test(answer) && /icon|initial|message|welcome|symbol/i.test(answer);
-    const typeCorrect = getResponse("starter_type") === "algorithm";
-    const messages = [];
-    if (!typeCorrect) messages.push("These ordered steps are still a plan. They have not yet been implemented in an executable programming language.");
-    if (!precise) messages.push("Your rewritten instruction should name a specific output and state the display action clearly. Avoid vague words such as “something” or “nice”.");
-    recordCheck("starterPrecision", typeCorrect && precise, "starterPrecisionFeedback", "Task 3 is secure", ["You recognised the plan as an algorithm and replaced the vague wording with a specific action."], messages);
+    // Read the visible controls at check time so a quick click cannot race the autosave state.
+    const selectedType = String(getTrackedValue("starter_type") || "");
+    const answer = String(getTrackedValue("starter_improvement") || "").trim();
+    state.responses.starter_type = selectedType;
+    state.responses.starter_improvement = answer;
+
+    // This is a formative starter. Accept any genuine rewrite instead of requiring
+    // a narrow list of keywords that may reject valid Year 8 responses.
+    const meaningfulRewrite = answer.length >= 8 && !/^display\s+something\s+nice[.!]?$/i.test(answer);
+    const typeCorrect = selectedType === "algorithm";
+
+    if (!meaningfulRewrite) {
+      return recordCheck(
+        "starterPrecision",
+        false,
+        "starterPrecisionFeedback",
+        "Add one precise instruction",
+        [],
+        ["Write at least one clear action that is different from “Display something nice”. For example, name what the LED matrix should show or when it should appear."]
+      );
+    }
+
+    const feedback = ["Your rewritten instruction is clear enough to continue."];
+    if (typeCorrect) {
+      feedback.push("You also recognised that the ordered plan is an algorithm.");
+    } else {
+      feedback.push("Learning note: the ordered steps are an algorithm because they are still a plan, not an executable program.");
+    }
+    recordCheck(
+      "starterPrecision",
+      true,
+      "starterPrecisionFeedback",
+      typeCorrect ? "Task 3 is secure" : "Task 3 complete — review the learning note",
+      feedback,
+      []
+    );
   }
 
   function completeStarter() {
