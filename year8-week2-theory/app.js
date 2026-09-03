@@ -359,6 +359,17 @@
     return String(getResponse(key) || "").trim().length >= min;
   }
 
+  function hasResponse(key) {
+    const value = getResponse(key);
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === "boolean") return true;
+    return value != null && String(value).trim().length > 0;
+  }
+
+  function checkWasMade(key) {
+    return Boolean(state.checks[key]?.checkedAt);
+  }
+
   function getTrackedValue(key) {
     const elements = $$(`[data-track="${CSS.escape(key)}"]`);
     if (!elements.length) return undefined;
@@ -512,7 +523,10 @@
 
   function recordCheck(key, passed, feedbackId, successTitle, successMessages, improvementMessages) {
     state.checks[key] = { passed, checkedAt: new Date().toISOString() };
-    showFeedback(feedbackId, passed ? "success" : "warning", passed ? successTitle : "Improve this answer", passed ? successMessages : improvementMessages);
+    const feedbackMessages = passed
+      ? successMessages
+      : [...improvementMessages, "Your response has been checked and saved. Review this guidance, then continue when the other required responses are complete."];
+    showFeedback(feedbackId, passed ? "success" : "warning", passed ? successTitle : "Checked — review this feedback", feedbackMessages);
     scheduleSave();
   }
 
@@ -571,13 +585,22 @@
 
   function completeStarter() {
     const required = ["starterSequence", "starterIpo", "starterPrecision"];
-    const missing = required.filter((key) => !state.checks[key]?.passed);
+    const missingChecks = required.filter((key) => !checkWasMade(key));
+    const missingResponses = [];
+    if (!hasResponse("starter_input")) missingResponses.push("Task 2: choose an input event.");
+    if (!hasResponse("starter_outputs")) missingResponses.push("Task 2: select at least one visible output.");
+    if (!hasResponse("starter_improvement")) missingResponses.push("Task 3: enter a rewritten instruction.");
+    const missing = [...missingChecks, ...missingResponses];
     state.checks.starter = { passed: missing.length === 0, checkedAt: new Date().toISOString() };
     if (missing.length && !state.teacherMode) {
       const names = { starterSequence: "Task 1: sequence", starterIpo: "Task 2: input and outputs", starterPrecision: "Task 3: precision" };
-      return showFeedback("starterCompletionFeedback", "warning", "Complete each starter check", missing.map((key) => `${names[key]} still needs a secure check. Return to its feedback directly above.`));
+      const messages = [
+        ...missingChecks.map((key) => `${names[key]} has not been checked yet.`),
+        ...missingResponses,
+      ];
+      return showFeedback("starterCompletionFeedback", "warning", "Finish the missing starter responses", messages);
     }
-    showFeedback("starterCompletionFeedback", "success", "Starter complete", ["All three task checks are secure. Continue to the theory reading and Smart Badge decomposition."]);
+    showFeedback("starterCompletionFeedback", "success", "Starter complete", ["All three tasks have been attempted and checked. Any improvements remain visible in your saved feedback."]);
     completeSection("starter", "activity1");
   }
 
@@ -639,12 +662,15 @@
     if (!getResponse("a1_read_algorithms")) issues.push("Open and study Reading 1: Algorithm and program.");
     if (!getResponse("a1_read_decomposition")) issues.push("Open and study Reading 2: Decomposition and IPO.");
     ["a1q1", "a1q2", "a1q3", "a1q4", "a1q5"].forEach((key, index) => {
-      if (!state.checks[key]?.passed) issues.push(`Question ${index + 1} needs a secure check. Read its feedback directly underneath the question.`);
+      if (!checkWasMade(key)) issues.push(`Check Question ${index + 1} once so its feedback is saved.`);
+    });
+    ["a1_definition", "a1_relationship", "a1_why_vague", "a1_precise_rewrite", "a1_decomposition", "a1_dryer_input", "a1_dryer_process", "a1_dryer_output"].forEach((key) => {
+      if (!hasResponse(key)) issues.push(`Add a response for “${RESPONSE_LABELS[key]}”.`);
     });
     ["decomp_start", "decomp_input", "decomp_process", "decomp_output", "decomp_testing"].forEach((key) => {
-      if (!textLongEnough(key, 12)) issues.push(`Add a meaningful response for ${RESPONSE_LABELS[key].replace("Smart Badge — ", "")}.`);
+      if (!hasResponse(key)) issues.push(`Add a response for ${RESPONSE_LABELS[key].replace("Smart Badge — ", "")}.`);
     });
-    if (!textLongEnough("decomp_why", 20)) issues.push("Explain how decomposition makes the project easier to plan, build, test or debug.");
+    if (!hasResponse("decomp_why")) issues.push("Add your explanation of how decomposition helps.");
     return issues;
   }
 
@@ -652,7 +678,7 @@
     const issues = validateActivity1();
     if (issues.length && !state.teacherMode) return showFeedback("activity1Feedback", "warning", "Main Activity 1 is not complete yet", issues);
     state.checks.activity1Theory = { passed: true, checkedAt: new Date().toISOString() };
-    showFeedback("activity1Feedback", "success", "Main Activity 1 complete", ["Both readings, the five individual checks and your Smart Badge decomposition have been saved."]);
+    showFeedback("activity1Feedback", "success", "Main Activity 1 complete", ["Both readings, all attempted answers and your Smart Badge decomposition have been saved. Incorrect checks remain visible for review but do not block progress."]);
     completeSection("activity1", "activity2");
   }
 
@@ -691,21 +717,24 @@
     const issues = [];
     if (!getResponse("a2_read")) issues.push("Confirm that you read the flowchart explanation and studied both examples.");
     ["a2q1", "a2q2", "a2q3", "a2q4", "a2q5"].forEach((key, index) => {
-      if (!state.checks[key]?.passed) issues.push(`Flowchart Question ${index + 1} needs a secure check. Read its feedback directly underneath.`);
+      if (!checkWasMade(key)) issues.push(`Check Flowchart Question ${index + 1} once so its feedback is saved.`);
+    });
+    ["a2_symbol_start", "a2_symbol_input", "a2_arrow_purpose", "a2_decision_labels", "a2_executable", "a2_executable_explain"].forEach((key) => {
+      if (!hasResponse(key)) issues.push(`Add a response for “${RESPONSE_LABELS[key]}”.`);
     });
     ["badge_input", "badge_process", "badge_output"].forEach((key) => {
-      if (!textLongEnough(key, 12)) issues.push(`Complete ${RESPONSE_LABELS[key]}.`);
+      if (!hasResponse(key)) issues.push(`Complete ${RESPONSE_LABELS[key]}.`);
     });
-    const stepCount = [1, 2, 3, 4, 5, 6].filter((number) => textLongEnough(`algorithm_step_${number}`, 8)).length;
-    if (stepCount < 5) issues.push("Write at least five meaningful algorithm steps.");
+    const stepCount = [1, 2, 3, 4, 5, 6].filter((number) => hasResponse(`algorithm_step_${number}`)).length;
+    if (stepCount < 5) issues.push("Add a response in at least five algorithm-step boxes.");
     ["flow_start", "flow_io", "flow_process", "flow_arrows", "flow_matches"].forEach((key) => {
       if (!getResponse(key)) issues.push(`Confirm: ${RESPONSE_LABELS[key].replace("Flowchart checklist — ", "")}.`);
     });
     if (!state.evidence.flowchart?.dataUrl) issues.push("Upload or paste a readable screenshot or photograph of your completed flowchart.");
-    if (!textLongEnough("flowchart_caption", 8)) issues.push("Add a short caption explaining what the flowchart image shows.");
-    if (!textLongEnough("tester_name", 2)) issues.push("Enter the tester’s name or write “self-check”.");
-    if (!textLongEnough("peer_feedback", 12)) issues.push("Record what the trace test identified.");
-    if (!textLongEnough("algorithm_improvement", 15)) issues.push("Explain the correction you made or justify why no correction was required.");
+    if (!hasResponse("flowchart_caption")) issues.push("Add a caption for the flowchart evidence.");
+    if (!hasResponse("tester_name")) issues.push("Enter the tester’s name or write “self-check”.");
+    if (!hasResponse("peer_feedback")) issues.push("Record what the trace test identified.");
+    if (!hasResponse("algorithm_improvement")) issues.push("Record the correction made or state that no correction was required.");
     return issues;
   }
 
@@ -713,7 +742,7 @@
     const issues = validateActivity2();
     if (issues.length && !state.teacherMode) return showFeedback("activity2Feedback", "warning", "Main Activity 2 is not complete yet", issues);
     state.checks.activity2Theory = { passed: true, checkedAt: new Date().toISOString() };
-    showFeedback("activity2Feedback", "success", "Main Activity 2 complete", ["Your five flowchart checks, IPO model, numbered algorithm, flowchart evidence and trace-test reflection have been saved."]);
+    showFeedback("activity2Feedback", "success", "Main Activity 2 complete", ["Your checked responses, IPO model, numbered algorithm, flowchart evidence and trace-test reflection have been saved. Feedback does not block progress."]);
     completeSection("activity2", "extension");
   }
 
@@ -733,7 +762,7 @@
     const issues = [];
     const requiredText = ["plenary_algorithm", "plenary_difference", "plenary_input", "plenary_process", "plenary_output", "plenary_improve", "plenary_decomposition", "plenary_led"];
     requiredText.forEach((key) => {
-      if (!textLongEnough(key, 12)) issues.push(`Add a fuller response for “${RESPONSE_LABELS[key]}”.`);
+      if (!hasResponse(key)) issues.push(`Add a response for “${RESPONSE_LABELS[key]}”.`);
     });
     if (!getResponse("plenary_readiness")) issues.push("Select your current readiness level.");
     return issues;
