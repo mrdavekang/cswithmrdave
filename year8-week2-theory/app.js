@@ -592,14 +592,27 @@
   }
 
   function checkA1Q3() {
-    const explanation = String(getResponse("a1_why_vague") || "");
-    const rewrite = String(getResponse("a1_precise_rewrite") || "");
-    const explanationReady = explanation.trim().length >= 15 && /missing|doesn.?t|not|which|what|when|colour|color|icon|text|message/i.test(explanation);
-    const rewriteReady = rewrite.trim().length >= 15 && /display|show|scroll/i.test(rewrite) && /icon|message|text|initial|symbol|word/i.test(rewrite);
+    // Use the visible responses immediately rather than waiting for autosave.
+    const explanation = String(getTrackedValue("a1_why_vague") || "").trim();
+    const rewrite = String(getTrackedValue("a1_precise_rewrite") || "").trim();
+    state.responses.a1_why_vague = explanation;
+    state.responses.a1_precise_rewrite = rewrite;
+
+    // These are teacher-reviewed open responses. Require a genuine attempt in
+    // both boxes, but do not reject valid ideas because they omit preset keywords.
+    const explanationReady = explanation.length >= 6;
+    const rewriteReady = rewrite.length >= 8 && !/^make\s+the\s+screen\s+look\s+better[.!]?$/i.test(rewrite);
     const messages = [];
-    if (!explanationReady) messages.push("Explain which details the computer has not been given, such as the exact content, appearance or timing.");
-    if (!rewriteReady) messages.push("Rewrite the instruction using a clear display action and a named piece of content. Your teacher will review the exact wording.");
-    recordCheck("a1q3", explanationReady && rewriteReady, "a1q3Feedback", "Question 3 meets the precision check", ["You identified missing information and produced a more specific instruction. Your wording is saved for teacher review."], messages);
+    if (!explanationReady) messages.push("In the first box, briefly state one detail the computer has not been told.");
+    if (!rewriteReady) messages.push("In the second box, write a new instruction of at least eight characters that is more specific than “Make the screen look better”.");
+    recordCheck(
+      "a1q3",
+      explanationReady && rewriteReady,
+      "a1q3Feedback",
+      "Question 3 complete",
+      ["Both responses are saved for your teacher to review. Continue to Question 4."],
+      messages
+    );
   }
 
   function checkA1Q4() {
