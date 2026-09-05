@@ -763,6 +763,14 @@
       font-weight: 700;
     }
 
+    .challenge-calculation {
+      margin: 14px 0;
+      padding: 12px 14px;
+      background: #f7f8fa;
+      border-left: 3px solid var(--green);
+      border-radius: 0 8px 8px 0;
+    }
+
     .concept-visual {
       display: grid;
       grid-template-columns: repeat(6, auto);
@@ -1708,11 +1716,13 @@ print(result)</code></pre>
             <details class="challenge-exercise" open>
               <summary><span>Challenge 1 · Bonus points upgrade</span><small>Use + and *</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Extend the course-points calculator. Ask how many bonus tasks were completed. Each bonus task is worth 2 points. Add the bonus points to the original score and print the final score.</p>
+                <p><strong>Your task:</strong> Your course-points calculator awards 5 points for every correct answer. Extend it so that it also awards 2 points for every bonus task completed.</p>
+                <p><strong>Your program must:</strong> ask for the number of correct answers and bonus tasks, calculate both sets of points, add them together and display the final score.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>final_score = (correct_answers * 5) + (bonus_tasks * 2)</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Correct answers: 4
 Bonus tasks: 2
 Final score: 24 points</pre></div>
-                <p class="challenge-test">Test to try: 3 correct answers and 4 bonus tasks should produce 23 points.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Before running it, predict the result for 3 correct answers and 4 bonus tasks. The program should display <code>Final score: 23 points</code>.</p>
                 <div class="question"><label class="question-label" for="extCh01Code">Paste your program</label><textarea id="extCh01Code" class="code-entry" data-field="ext_ch01_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh01Result">Test outcome</label><select id="extCh01Result" data-field="ext_ch01_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1721,10 +1731,12 @@ Final score: 24 points</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 2 · Times three</span><small>Use *</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask the user for one whole number. Print the number multiplied by 3 in a complete sentence.</p>
+                <p><strong>Your task:</strong> Create a program that asks the user for one whole number and calculates three times that number.</p>
+                <p><strong>Your program must:</strong> store the input as an integer, multiply it by 3 and display the original number and the result in a complete sentence.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>result = number * 3</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Enter a number: 7
 7 times 3 is 21</pre></div>
-                <p class="challenge-test">Tests to try: 0 should give 0; 9 should give 27.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Try <code>0</code> and then <code>9</code>. The results should be <code>0</code> and <code>27</code>.</p>
                 <div class="question"><label class="question-label" for="extCh02Code">Paste your program</label><textarea id="extCh02Code" class="code-entry" data-field="ext_ch02_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh02Result">Test outcome</label><select id="extCh02Result" data-field="ext_ch02_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1733,11 +1745,13 @@ Final score: 24 points</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 3 · Add two scores</span><small>Use +</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for two whole-number scores. Calculate and print their total. Use meaningful variable names.</p>
+                <p><strong>Your task:</strong> Create a score calculator that combines the points earned in two rounds of a competition.</p>
+                <p><strong>Your program must:</strong> ask for two whole-number scores, store them using meaningful variable names, add them together and display the total score.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>total_score = first_score + second_score</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>First score: 12
 Second score: 8
 Total score: 20</pre></div>
-                <p class="challenge-test">Test to try: 25 and 17 should produce 42.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Before running it, predict the total for scores of <code>25</code> and <code>17</code>. The program should display <code>Total score: 42</code>.</p>
                 <div class="question"><label class="question-label" for="extCh03Code">Paste your program</label><textarea id="extCh03Code" class="code-entry" data-field="ext_ch03_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh03Result">Test outcome</label><select id="extCh03Result" data-field="ext_ch03_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1746,11 +1760,13 @@ Total score: 20</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 4 · Points remaining</span><small>Use -</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for a target number of points and the points already earned. Print how many points are still needed.</p>
+                <p><strong>Your task:</strong> A student is working towards a points target. Create a program that tells the student how many more points are needed.</p>
+                <p><strong>Your program must:</strong> ask for the target and the points already earned, subtract the earned points from the target and display the points remaining.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>points_remaining = target_points - points_earned</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Target points: 20
 Points earned: 13
 Points remaining: 7</pre></div>
-                <p class="challenge-test">Test to try: target 50 and earned 32 should produce 18.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Use a target of <code>50</code> with <code>32</code> points already earned. The program should display <code>Points remaining: 18</code>.</p>
                 <div class="question"><label class="question-label" for="extCh04Code">Paste your program</label><textarea id="extCh04Code" class="code-entry" data-field="ext_ch04_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh04Result">Test outcome</label><select id="extCh04Result" data-field="ext_ch04_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1759,10 +1775,12 @@ Points remaining: 7</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 5 · Study minutes</span><small>Use *</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask how many minutes a student studies each school day. Calculate the total for 5 school days.</p>
+                <p><strong>Your task:</strong> A student studies for the same number of minutes on each of five school days. Create a program that calculates the weekly total.</p>
+                <p><strong>Your program must:</strong> ask for the minutes studied per day, multiply this value by 5 and display the total number of study minutes.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>weekly_minutes = minutes_per_day * 5</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Minutes per day: 25
 Minutes in five days: 125</pre></div>
-                <p class="challenge-test">Test to try: 40 minutes per day should produce 200 minutes.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Enter <code>40</code> minutes per day. The program should display <code>Minutes in five days: 200</code>.</p>
                 <div class="question"><label class="question-label" for="extCh05Code">Paste your program</label><textarea id="extCh05Code" class="code-entry" data-field="ext_ch05_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh05Result">Test outcome</label><select id="extCh05Result" data-field="ext_ch05_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1771,10 +1789,12 @@ Minutes in five days: 125</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 6 · Seconds in a lesson</span><small>Use *</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for a lesson length in minutes. Calculate and print the equivalent number of seconds.</p>
+                <p><strong>Your task:</strong> Create a time converter that changes the length of a lesson from minutes into seconds.</p>
+                <p><strong>Your program must:</strong> ask for the lesson length in whole minutes, multiply it by 60 and display the equivalent number of seconds.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>seconds = minutes * 60</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Lesson length in minutes: 60
 Seconds in the lesson: 3600</pre></div>
-                <p class="challenge-test">Test to try: 45 minutes should produce 2700 seconds.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Enter a lesson length of <code>45</code> minutes. The program should display <code>Seconds in the lesson: 2700</code>.</p>
                 <div class="question"><label class="question-label" for="extCh06Code">Paste your program</label><textarea id="extCh06Code" class="code-entry" data-field="ext_ch06_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh06Result">Test outcome</label><select id="extCh06Result" data-field="ext_ch06_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1783,11 +1803,13 @@ Seconds in the lesson: 3600</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 7 · Total shop cost</span><small>Use *</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for the whole-number price of one notebook and the number of notebooks. Print the total cost.</p>
+                <p><strong>Your task:</strong> A school shop sells notebooks at the same price. Create a program that calculates the total cost of several notebooks.</p>
+                <p><strong>Your program must:</strong> ask for the whole-number price of one notebook and the number being purchased, multiply the two values and display the total cost. Use whole-number prices for this exercise.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>total_cost = notebook_price * number_of_notebooks</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Price of one notebook: 6
 Number of notebooks: 4
 Total cost: 24</pre></div>
-                <p class="challenge-test">Test to try: price 9 and quantity 7 should produce 63.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Use a price of <code>9</code> and a quantity of <code>7</code>. The program should display <code>Total cost: 63</code>.</p>
                 <div class="question"><label class="question-label" for="extCh07Code">Paste your program</label><textarea id="extCh07Code" class="code-entry" data-field="ext_ch07_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh07Result">Test outcome</label><select id="extCh07Result" data-field="ext_ch07_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1796,11 +1818,13 @@ Total cost: 24</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 8 · Mean of two scores</span><small>Use +, / and brackets</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for two whole-number scores. Add them first, divide the total by 2 and print the mean. Use brackets so the addition happens before the division.</p>
+                <p><strong>Your task:</strong> Create a program that calculates the mean score from two rounds of an assessment.</p>
+                <p><strong>Your program must:</strong> ask for two whole-number scores, add them together, divide the total by 2 and display the mean. Use brackets so that Python completes the addition first.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>mean = (first_score + second_score) / 2</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>First score: 14
 Second score: 18
 Mean score: 16.0</pre></div>
-                <p class="challenge-test">Test to try: 9 and 15 should produce 12.0.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Use scores of <code>9</code> and <code>15</code>. The program should display <code>Mean score: 12.0</code>.</p>
                 <div class="question"><label class="question-label" for="extCh08Code">Paste your program</label><textarea id="extCh08Code" class="code-entry" data-field="ext_ch08_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh08Result">Test outcome</label><select id="extCh08Result" data-field="ext_ch08_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1809,12 +1833,14 @@ Mean score: 16.0</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 9 · Complete teams and leftovers</span><small>Use // and %</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for the number of students and the size of each team. Print the number of complete teams and the number of students left over. Do not use selection or loops.</p>
+                <p><strong>Your task:</strong> A teacher needs to divide a class into equal-sized teams. Create a program that reports the number of complete teams and the students left over.</p>
+                <p><strong>Your program must:</strong> ask for the total number of students and the number of students in each team. Use <code>//</code> to calculate the complete teams and <code>%</code> to calculate the remainder. Use a team size greater than zero. Do not use selection or loops.</p>
+                <p class="challenge-calculation"><strong>Python calculations to build:</strong> <code>complete_teams = students // team_size</code><br><code>students_left_over = students % team_size</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Number of students: 23
 Students per team: 4
 Complete teams: 5
 Students left over: 3</pre></div>
-                <p class="challenge-test">Test to try: 31 students in teams of 6 should produce 5 complete teams and 1 left over.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Enter <code>31</code> students with <code>6</code> students per team. The program should display <code>5</code> complete teams and <code>1</code> student left over.</p>
                 <div class="question"><label class="question-label" for="extCh09Code">Paste your program</label><textarea id="extCh09Code" class="code-entry" data-field="ext_ch09_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh09Result">Test outcome</label><select id="extCh09Result" data-field="ext_ch09_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
@@ -1823,10 +1849,12 @@ Students left over: 3</pre></div>
             <details class="challenge-exercise">
               <summary><span>Challenge 10 · Square a number</span><small>Use **</small></summary>
               <div class="challenge-body">
-                <p><strong>Your task:</strong> Ask for one whole number. Calculate the number squared and print a complete sentence containing the input and result.</p>
+                <p><strong>Your task:</strong> Create a program that calculates the square of a whole number. Squaring means multiplying a number by itself.</p>
+                <p><strong>Your program must:</strong> ask for one whole number, use the Python power operator <code>**</code> to square it and display the original number and result in a complete sentence.</p>
+                <p class="challenge-calculation"><strong>Python calculation to build:</strong> <code>result = number ** 2</code></p>
                 <div class="sample-run"><strong>Example run</strong><pre>Enter a number: 7
 7 squared is 49</pre></div>
-                <p class="challenge-test">Tests to try: 0 should produce 0; 12 should produce 144.</p>
+                <p class="challenge-test"><strong>Test your program:</strong> Try <code>0</code> and then <code>12</code>. The results should be <code>0</code> and <code>144</code>.</p>
                 <div class="question"><label class="question-label" for="extCh10Code">Paste your program</label><textarea id="extCh10Code" class="code-entry" data-field="ext_ch10_code" spellcheck="false"></textarea></div>
                 <div class="question"><label class="question-label" for="extCh10Result">Test outcome</label><select id="extCh10Result" data-field="ext_ch10_result"><option value="">Choose</option><option>Pass</option><option>Does not yet pass</option><option>Not attempted</option></select></div>
               </div>
