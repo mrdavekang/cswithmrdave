@@ -1,977 +1,189 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A self-paced Year 10 OxfordAQA 9210 lesson about algorithms, programs and introductory pseudocode.">
-  <title>Week 1 Session 3 | From Algorithms to Programs</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --ink: #111111;
-      --muted: #60656a;
-      --line: #dedede;
-      --soft: #f6f7f6;
-      --green: #00843d;
-      --green-soft: #eaf6ef;
-      --blue: #185abd;
-      --blue-soft: #eef4ff;
-      --amber: #a95500;
-      --amber-soft: #fff4e7;
-      --purple: #6842a5;
-      --purple-soft: #f3effa;
-      --danger: #b42318;
-      --radius: 18px;
-      --shadow: 0 14px 38px rgba(17, 17, 17, 0.07);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: #ffffff;
-      font-family: "Raleway", Arial, sans-serif;
-      line-height: 1.55;
-    }
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex="0"]:focus-visible {
-      outline: 3px solid rgba(24, 90, 189, 0.28);
-      outline-offset: 2px;
-    }
-    .hidden { display: none !important; }
-
-    .landing {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 32px 20px;
-      background:
-        radial-gradient(circle at 12% 10%, rgba(0, 132, 61, 0.11), transparent 30%),
-        radial-gradient(circle at 88% 84%, rgba(24, 90, 189, 0.08), transparent 30%),
-        #ffffff;
-    }
-    .landing-card {
-      width: min(1000px, 100%);
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: #ffffff;
-      box-shadow: var(--shadow);
-    }
-    .landing-intro { padding: clamp(36px, 6vw, 72px); background: #101412; color: #ffffff; }
-    .eyebrow {
-      margin: 0 0 16px;
-      color: #79d8a2;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-    .landing h1 { margin: 0; font-size: clamp(2.35rem, 5vw, 4.6rem); line-height: 0.98; letter-spacing: -0.055em; }
-    .landing-intro > p:not(.eyebrow) { margin: 24px 0 0; color: #d8dedb; font-size: 1.03rem; }
-    .lesson-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
-    .lesson-pills span { padding: 7px 11px; border: 1px solid #465149; border-radius: 999px; font-size: 0.76rem; font-weight: 700; }
-    .landing-form { padding: clamp(30px, 5vw, 58px); align-self: center; }
-    .landing-form h2 { margin: 0 0 6px; font-size: 1.55rem; }
-    .landing-form > p { margin: 0 0 25px; color: var(--muted); }
-
-    .field, .question { margin: 0 0 17px; }
-    .field label, .question-label { display: block; margin: 0 0 7px; font-weight: 700; }
-    .required::after { content: " *"; color: var(--danger); }
-    input[type="text"], input[type="number"], select, textarea {
-      width: 100%;
-      border: 1px solid #bdbdbd;
-      border-radius: 11px;
-      background: #ffffff;
-      color: var(--ink);
-      padding: 11px 12px;
-      transition: border-color 140ms ease, box-shadow 140ms ease;
-    }
-    textarea { min-height: 96px; resize: vertical; }
-    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24, 90, 189, 0.10); }
-    .code-entry { min-height: 210px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; }
-
-    .primary, .secondary, .ghost, .danger-button {
-      min-height: 44px;
-      border-radius: 11px;
-      padding: 10px 15px;
-      font-weight: 800;
-      transition: transform 120ms ease, background 120ms ease;
-    }
-    .primary { border: 1px solid var(--green); background: var(--green); color: #ffffff; }
-    .primary:hover { background: #006f34; transform: translateY(-1px); }
-    .secondary { border: 1px solid #202020; background: #ffffff; color: #111111; }
-    .secondary:hover, .ghost:hover { background: #f4f4f4; }
-    .ghost { border: 1px solid var(--line); background: #ffffff; color: #333333; }
-    .danger-button { border: 1px solid #f4c7c3; background: #fff7f6; color: var(--danger); }
-    .wide { width: 100%; }
-    .teacher-note, .saved-profile { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--soft); color: var(--muted); font-size: 0.86rem; }
-    .saved-profile button { margin-top: 8px; border: 0; background: transparent; color: var(--blue); font-weight: 800; padding: 0; }
-    .error-message { min-height: 1.4em; margin: 8px 0 0; color: var(--danger); font-size: 0.86rem; font-weight: 700; }
-
-    .app-shell { min-height: 100vh; background: #ffffff; }
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      display: grid;
-      grid-template-columns: minmax(190px, 0.8fr) minmax(240px, 1.2fr) auto;
-      gap: 18px;
-      align-items: center;
-      min-height: 72px;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(12px);
-    }
-    .brand { display: grid; }
-    .brand strong { font-size: 0.9rem; }
-    .brand span { color: var(--muted); font-size: 0.76rem; }
-    .progress-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 0.74rem; font-weight: 700; }
-    .progress-track { height: 7px; margin-top: 5px; overflow: hidden; border-radius: 999px; background: #eceeec; }
-    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: var(--green); transition: width 180ms ease; }
-    .top-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
-    .save-state { color: var(--green); font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
-    .review-banner { padding: 12px 20px; border-bottom: 1px solid #dccdf2; background: var(--purple-soft); color: #3c2760; font-size: 0.86rem; }
-    .review-banner button { min-height: 36px; margin-left: 8px; padding: 6px 10px; }
-
-    .app-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 72px); }
-    .sidebar {
-      position: sticky;
-      top: 72px;
-      align-self: start;
-      height: calc(100vh - 72px);
-      overflow-y: auto;
-      padding: 22px 18px 30px;
-      border-right: 1px solid var(--line);
-      background: #fbfbfb;
-    }
-    .side-card { margin-bottom: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #ffffff; }
-    .side-card h2, .side-card h3 { margin: 0 0 7px; font-size: 0.95rem; }
-    .side-card p { margin: 5px 0; color: #343434; font-size: 0.79rem; }
-    .ksu-list strong { color: var(--green); }
-
-    .ao-strip { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
-    .ao-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; }
-    .ao1 { background: var(--blue-soft); color: #17457c; }
-    .ao2 { background: var(--green-soft); color: #07522a; }
-    .ao3 { background: var(--purple-soft); color: #4f327b; }
-
-    .step-nav { display: grid; gap: 7px; margin-top: 16px; }
-    .step-button {
-      display: grid;
-      grid-template-columns: 28px 1fr auto;
-      gap: 8px;
-      align-items: center;
-      width: 100%;
-      border: 1px solid transparent;
-      border-radius: 11px;
-      background: transparent;
-      padding: 9px;
-      text-align: left;
-    }
-    .step-button:hover, .step-button.active { border-color: var(--line); background: #ffffff; }
-    .step-number { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #bdbdbd; border-radius: 50%; font-size: 0.72rem; font-weight: 800; }
-    .step-button.active .step-number { border-color: var(--green); background: var(--green); color: #ffffff; }
-    .step-button.done .step-number { border-color: var(--green); color: var(--green); }
-    .step-name { font-size: 0.84rem; font-weight: 800; }
-    .step-time { color: var(--muted); font-size: 0.68rem; }
-
-    .main-content { width: min(990px, 100%); margin: 0 auto; padding: 38px clamp(20px, 5vw, 64px) 64px; }
-    .activity-step { display: none; animation: enter 180ms ease; }
-    .activity-step.active { display: block; }
-    @keyframes enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    .section-kicker { margin: 0 0 7px; color: var(--green); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
-    .activity-step h1 { max-width: 780px; margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.03; letter-spacing: -0.05em; }
-    .section-lead { max-width: 760px; margin: 15px 0 24px; color: var(--muted); font-size: 1rem; }
-
-    .task-card, .reading-card { margin: 16px 0; padding: clamp(18px, 3vw, 28px); border: 1px solid var(--line); border-radius: var(--radius); background: #ffffff; box-shadow: 0 8px 24px rgba(17, 17, 17, 0.035); }
-    .task-card h2, .task-card h3, .reading-card h2, .reading-card h3 { margin: 0 0 10px; line-height: 1.2; }
-    .reading-card { border-left: 4px solid var(--blue); background: #fcfdff; }
-    .reading-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 14px; color: var(--muted); font-size: 0.76rem; font-weight: 700; }
-    .reading-meta span { padding: 4px 8px; border: 1px solid #d5e1ef; border-radius: 999px; background: #ffffff; }
-    .reading-card p { max-width: 780px; }
-    .reading-card ul { max-width: 760px; }
-    .comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .comparison-panel { padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: var(--soft); }
-    .comparison-panel h3 { margin: 0 0 9px; }
-    .mini-label { display: inline-block; margin-bottom: 8px; color: var(--green); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
-
-    .callout { margin: 18px 0; padding: 14px 16px; border-left: 4px solid var(--blue); border-radius: 0 12px 12px 0; background: var(--blue-soft); color: #15365f; }
-    .callout.green { border-left-color: var(--green); background: var(--green-soft); color: #064d27; }
-    .callout.amber { border-left-color: var(--amber); background: var(--amber-soft); color: #6c3900; }
-    .callout.purple { border-left-color: var(--purple); background: var(--purple-soft); color: #3f2763; }
-    .callout strong { display: block; margin-bottom: 3px; }
-
-    .code-wrap { position: relative; margin: 14px 0; overflow: hidden; border-radius: 14px; background: #121816; color: #edf7f0; }
-    pre { margin: 0; padding: 20px; overflow-x: auto; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88rem; line-height: 1.62; }
-    .copy-button { position: absolute; top: 10px; right: 10px; min-height: 32px; border: 1px solid #52605a; border-radius: 8px; background: #222c28; color: #ffffff; padding: 4px 9px; font-size: 0.74rem; font-weight: 800; }
-    .question-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .question { margin-top: 16px; }
-    .question small { display: block; margin-top: 5px; color: var(--muted); }
-    .hint-panel { display: none; margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: var(--amber-soft); color: #673700; }
-    .hint-panel.visible { display: block; }
-    .check-row { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 9px 0; border-bottom: 1px solid #efefef; }
-    .check-row:last-child { border-bottom: 0; }
-    .check-row input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--green); }
-
-    .evidence-zone { margin-top: 14px; padding: 22px; border: 1.5px dashed #a9ada9; border-radius: 14px; background: #fafcfa; text-align: center; transition: background 130ms ease, border-color 130ms ease; }
-    .evidence-zone.dragging { border-color: var(--green); background: var(--green-soft); }
-    .evidence-zone strong { display: block; margin-bottom: 5px; }
-    .evidence-zone p { margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
-    .evidence-zone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-    .evidence-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 14px; text-align: left; }
-    .evidence-item { overflow: hidden; border: 1px solid var(--line); border-radius: 11px; background: #ffffff; }
-    .evidence-item img { display: block; width: 100%; height: 118px; object-fit: contain; background: #f2f2f2; }
-    .evidence-caption { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px; font-size: 0.72rem; }
-    .evidence-caption span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .evidence-caption button { border: 0; background: transparent; color: var(--danger); font-weight: 800; }
-
-    .step-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
-    .export-card { margin-top: 24px; padding: clamp(22px, 4vw, 34px); border-radius: 20px; background: #101412; color: #ffffff; }
-    .export-card h2 { margin: 0 0 8px; }
-    .export-card p { color: #d4ddd7; }
-    .export-card ol { padding-left: 20px; }
-    .export-card .primary { margin-top: 8px; background: #39aa6d; border-color: #39aa6d; }
-    .filename { display: block; margin: 12px 0; padding: 11px 13px; border: 1px solid #48524c; border-radius: 10px; background: #1c2420; color: #ffffff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
-
-    .mobile-ksu, .print-report { display: none; }
-    .report-page-header h1 { margin: 0 0 5px; font-size: 24pt; }
-    .report-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin: 14px 0 18px; }
-    .report-ksu { margin: 16px 0; padding: 12px; border: 1px solid #bbbbbb; }
-    .report-ksu p { margin: 4px 0; }
-    .report-section { break-before: page; page-break-before: always; }
-    .report-section:first-of-type { break-before: auto; page-break-before: auto; }
-    .report-section h2 { margin: 0 0 12px; padding-bottom: 6px; border-bottom: 2px solid #111111; font-size: 18pt; }
-    .report-entry { margin: 0 0 13px; break-inside: avoid; page-break-inside: avoid; }
-    .report-entry h3 { margin: 0 0 4px; font-size: 10pt; }
-    .report-entry p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .report-code { margin: 4px 0 0; padding: 10px; border: 1px solid #bcbcbc; background: #f6f6f6; color: #111111; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 8.5pt; }
-    .report-evidence { margin: 15px 0 22px; break-inside: avoid; page-break-inside: avoid; }
-    .report-evidence img { display: block; max-width: 100%; max-height: 230mm; margin: 8px auto 2px; border: 1px solid #bcbcbc; object-fit: contain; }
-    .report-evidence figcaption { font-size: 8pt; color: #444444; text-align: center; }
-    .teams-report { break-before: page; page-break-before: always; padding: 14mm; border: 2px solid #111111; }
-
-    @media (max-width: 980px) {
-      .topbar { grid-template-columns: 1fr auto; }
-      .progress-wrap { grid-column: 1 / -1; grid-row: 2; }
-      .save-state { display: none; }
-      .app-layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; padding: 12px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
-      .sidebar .side-card { display: none; }
-      .step-nav { display: flex; overflow-x: auto; margin: 0; padding-bottom: 3px; }
-      .step-button { min-width: 170px; }
-      .mobile-ksu { display: block; margin: 0 0 18px; }
-      .mobile-ksu summary { cursor: pointer; font-weight: 800; }
-    }
-    @media (max-width: 760px) {
-      .landing-card, .comparison-grid, .question-grid { grid-template-columns: 1fr; }
-      .landing-intro { padding: 36px 28px; }
-      .landing-form { padding: 30px 26px; }
-      .topbar { padding: 10px 14px; }
-      .top-actions .ghost { display: none; }
-      .main-content { padding: 28px 17px 44px; }
-      .step-footer { flex-direction: column-reverse; }
-      .step-footer button { width: 100%; }
-    }
-    @media print {
-      @page { size: A4 portrait; margin: 12mm; }
-      body { background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 9.5pt; }
-      #landing, #app { display: none !important; }
-      #printReport { display: block !important; }
-      a { color: #000000; text-decoration: none; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Year 10 OxfordAQA 9210: a guided lesson on algorithms, pseudocode and Python, with local evidence saving and a printable report.">
+<title>Week 1 · Session 3 — From a plan to a program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#172027;--muted:#53616b;--line:#dce1e4;--paper:#fff;--soft:#f5f7f8;--accent:#24566b;--accent-soft:#eef5f7;--good:#206043;--warn:#785116;--radius:12px;font:16px/1.65 Raleway,Arial,sans-serif;color:var(--ink);background:var(--paper)}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button,a,input,select,textarea,summary{touch-action:manipulation}button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:.62rem .95rem;font-weight:700;cursor:pointer;line-height:1.4}button:hover{background:var(--soft);border-color:#8a9aa4}button:disabled{opacity:.5;cursor:default}.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.primary:hover{background:#34434c;color:#fff}.quiet{border-color:transparent;background:transparent}.small{font-size:.875rem}a{color:var(--accent);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}:focus-visible{outline:3px solid #327d9c;outline-offset:4px}h1,h2,h3,h4{line-height:1.25;letter-spacing:-.02em}h1{font-size:clamp(2rem,5vw,3.1rem);margin:.45rem 0 1rem}h2{font-size:2rem;margin:.4rem 0 .8rem}h3{font-size:1.35rem;margin:.3rem 0 .8rem}h4{font-size:1.05rem;margin:.4rem 0}p{margin:.65rem 0 1rem}ol,ul{padding-left:1.5rem}li{padding-left:.15rem;margin:.4rem 0}[hidden]{display:none!important}.eyebrow{font-size:.875rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}.muted{color:var(--muted)}.measure{max-width:70ch}.skip{position:fixed;left:1rem;top:-5rem;z-index:100;background:#fff;padding:.6rem}.skip:focus{top:1rem}.landing{max-width:760px;margin:7vh auto;padding:2rem}.landing form{max-width:480px;margin:2rem 0}.landing .goal{border-left:3px solid var(--accent);padding-left:1.3rem;margin:2rem 0}.landing label{display:block;font-weight:700;margin:1rem 0 .3rem}.landing input{width:100%}.landing .route{color:var(--muted);font-size:.95rem}.toolbar{display:flex;gap:.8rem;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:.7rem 1.5rem;background:#fff}.toolbar .actions{display:flex;gap:.4rem;flex-wrap:wrap}.identity strong{display:block;font-size:.95rem}.identity span{font-size:.85rem;color:var(--muted)}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);max-width:1400px;margin:auto}.sidebar{padding:1.5rem 1.25rem;align-self:start;position:sticky;top:0;max-height:100dvh;overflow:auto}.sidebar nav{display:grid;gap:.35rem;margin:1rem 0}.nav-button{display:flex;gap:.65rem;text-align:left;border:0;font-weight:600;background:transparent;padding:.6rem .7rem}.nav-button[aria-current="step"]{background:var(--accent-soft);color:var(--accent);font-weight:800}.nav-number{min-width:1.35rem;font-variant-numeric:tabular-nums}.sidebar .note{font-size:.85rem;color:var(--muted);padding-top:.6rem}.main{min-width:0;border-left:1px solid var(--line)}.compass{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.98);border-bottom:1px solid var(--line);padding:1rem 2.7rem}.compass p{margin:0;font-size:.94rem}.compass .ksu{display:flex;gap:.4rem 1rem;flex-wrap:wrap;font-size:.84rem;margin-top:.35rem;color:var(--muted)}.compass b{color:var(--ink)}.content{max-width:900px;padding:2rem 2.7rem 3rem}.section-head{margin-bottom:1.8rem}.section-head p{color:var(--muted)}.task{margin:2.1rem 0 2.6rem;padding-top:1.6rem;border-top:1px solid var(--line)}.task:first-of-type{margin-top:1.2rem}.task-label{font-size:.8rem;color:var(--accent);font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}.read{border-left:2px solid #a8bcc5;padding:.1rem 0 .1rem 1.2rem;margin:1.2rem 0}.read .source{font-size:.8rem;color:var(--muted)}.example{background:var(--soft);border-radius:var(--radius);padding:1.2rem 1.4rem;margin:1.2rem 0}.example p:last-child{margin-bottom:0}.callout{padding:.8rem 1.1rem;border-left:3px solid var(--accent);background:var(--accent-soft);margin:1rem 0}.endpoint{font-size:.95rem;color:var(--good);margin-top:1rem}.code-wrap{margin:1rem 0;background:#f4f6f7;border:1px solid #e6eaec;border-radius:10px;overflow:hidden}.code-top{display:flex;justify-content:space-between;align-items:center;gap:.7rem;padding:.35rem .8rem;border-bottom:1px solid var(--line);font-size:.8rem;font-weight:700}.code-top button{font-size:.8rem;padding:.3rem .65rem;background:transparent}pre,code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}code{font-size:.93em}pre{margin:0;padding:1rem;line-height:1.65;font-size:.96rem;overflow:auto;tab-size:4}.output{white-space:pre-wrap;overflow-wrap:anywhere}.field{margin:1.35rem 0}.field>label,.field>legend{font-weight:700;display:block;margin-bottom:.35rem}.field .hint-text{font-size:.9rem;color:var(--muted);margin:.25rem 0 .5rem}input[type=text],input[type=number],select,textarea{border:1px solid #9eaab1;border-radius:8px;padding:.65rem .8rem;color:var(--ink);background:#fff;width:100%;max-width:100%;line-height:1.55}textarea{min-height:95px;resize:vertical}textarea.code-answer{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.95rem;min-height:190px;tab-size:4}input.short{max-width:200px}fieldset{border:0;padding:0;margin:0;min-width:0}.choices{display:grid;gap:.5rem}.choice{display:flex;align-items:flex-start;gap:.65rem;border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;cursor:pointer}.choice:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}.choice input{margin-top:.38rem;flex-shrink:0}.check-row{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}.feedback{margin-top:.7rem;padding:.7rem 1rem;border-left:3px solid var(--warn);background:#fcf8f0}.feedback.good{border-color:var(--good);background:#f1f7f3}.feedback p{margin:0}.feedback small{display:block;margin-top:.25rem}.feedback.stale{border-color:#88979f;background:var(--soft)}details{margin:1rem 0;border-bottom:1px solid var(--line);padding-bottom:1rem}summary{font-weight:700;cursor:pointer;padding:.45rem .1rem;line-height:1.4}details[open]>summary{margin-bottom:.6rem}.hint-stack{border-left:2px solid var(--line);padding-left:1rem}.mapping{margin:1.2rem 0}.mapping-row{padding:1rem 0;border-bottom:1px solid var(--line)}.mapping-row:last-child{border-bottom:0}.mapping-row strong{display:block;color:var(--accent);font-size:.95rem}.mapping-row code{display:block;overflow-wrap:anywhere;margin:.2rem 0}.mapping-row .translation{font-size:.85rem;color:var(--muted)}.ipo-flow{display:flex;gap:1rem;align-items:stretch;margin:1.4rem 0}.ipo-flow>div{flex:1;border-top:3px solid #708d9b;padding-top:.6rem;min-width:0}.ipo-flow small{display:block;color:var(--muted)}.ipo-flow p{font-size:.95rem}.table-wrap{overflow:auto;margin:1rem 0}table{border-collapse:collapse;width:100%;font-size:.95rem}th,td{text-align:left;border-bottom:1px solid var(--line);padding:.65rem .7rem;vertical-align:top}th{font-weight:700;background:var(--soft)}.syntax{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;font-size:1.02rem;padding:1.2rem;background:var(--soft);border-radius:10px}.token{font-weight:700;background:#e4edf0;padding:.12rem .1rem}.subtle-link{font-size:.9rem}.evidence{margin:1rem 0 1.5rem;border:1px dashed #9bacb5;border-radius:10px;padding:1rem}.evidence p{font-size:.9rem;margin:.25rem 0 .8rem}.evidence input[type=file]{width:100%;font-size:.9rem}.evidence-list figure{margin:1rem 0}.evidence-list img{max-width:100%;max-height:320px;object-fit:contain;display:block}.evidence-list figcaption{overflow-wrap:anywhere;font-size:.85rem;margin-top:.4rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}.bank>details{padding:1rem 0}.bank>details>summary{font-size:1.13rem;display:list-item}.bank .badge{font-size:.75rem;margin-left:.5rem;color:var(--muted);font-weight:500}.pager{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:space-between;padding-top:1.5rem;border-top:1px solid var(--line);margin-top:2rem}.status-bar{font-size:.85rem;color:var(--muted);padding:.7rem 0}.banner{background:#f8f3e8;padding:.65rem 1.5rem;font-size:.9rem}.error-banner{background:#fff0e9;color:#792e13;padding:.8rem 1.5rem}.toast{position:fixed;bottom:1rem;right:1rem;z-index:80;max-width:min(440px,90vw);background:var(--ink);color:#fff;padding:.8rem 1.2rem;border-radius:10px;font-size:.95rem}.teacher-controls{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}.focus-controls{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin:1rem 0;color:var(--muted);font-size:.875rem}.focus-mode .task{margin-top:1rem}.focus-mode .task[data-focus-hidden]{display:none}dialog{border:1px solid var(--line);border-radius:16px;max-width:640px;width:calc(100% - 2rem);padding:1.8rem;color:var(--ink);max-height:88dvh;overflow:auto}dialog::backdrop{background:rgba(15,26,33,.45)}.dialog-header{display:flex;justify-content:space-between;gap:1rem;align-items:start}dialog h2{font-size:1.6rem}.filename{font-family:ui-monospace,monospace;overflow-wrap:anywhere;background:var(--soft);padding:.5rem .7rem;display:block}.report-view{max-width:900px;margin:1rem auto;padding:1.5rem}.report-controls{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:1rem;display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}.report-section{margin:2rem 0}.report-entry{margin:1rem 0}.report-entry h3{font-size:1rem;margin-bottom:.3rem}.report-answer{white-space:pre-wrap;overflow-wrap:anywhere;margin:.2rem 0;max-height:none}.report-code{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;border-left:2px solid #ccd6db;font-size:.85rem}.report-image{max-width:100%;height:auto;object-fit:contain;display:block;margin:.7rem auto}.report-evidence figcaption{overflow-wrap:anywhere}.report-meta{font-size:.9rem;color:var(--muted)}.report-section h2{font-size:1.5rem}.report-question-context{font-size:.9rem;color:var(--muted)}
+.toolbar{position:sticky;top:0;z-index:10}.compass{top:var(--toolbar-height,74px)}.sidebar{top:var(--toolbar-height,74px);max-height:calc(100dvh - var(--toolbar-height,74px))}
+@media(min-width:1200px){.content{margin-left:1rem}}
+@media(max-width:900px){.layout{display:block}.sidebar{position:static;max-height:none;padding:.7rem 1rem;border-bottom:1px solid var(--line)}.sidebar nav{display:flex;overflow-x:auto;margin:0;gap:.2rem;padding-bottom:.4rem}.nav-button{white-space:nowrap;font-size:.86rem}.sidebar>.eyebrow,.sidebar>.note{display:none}.main{border-left:0}.compass{padding:.8rem 1.3rem}.content{padding:1.5rem 1.3rem}.toolbar{padding:.7rem 1rem}.toolbar .identity{max-width:40%}.toolbar .actions button{font-size:.8rem;padding:.5rem .6rem}.compass .ksu{font-size:.8rem;gap:.15rem .7rem}.compass p{font-size:.87rem}}
+@media(max-width:520px){.landing{padding:1.4rem;margin:2vh auto}.toolbar{align-items:flex-start;gap:.3rem}.toolbar .actions{justify-content:flex-end}.toolbar .identity strong{font-size:.8rem}.toolbar .identity span{font-size:.75rem}.content{padding:1.1rem}.compass{padding:.65rem 1rem}.compass .ksu{display:grid;gap:.03rem;font-size:.77rem;line-height:1.45}.compass p{font-size:.84rem;line-height:1.5}.ipo-flow{display:block}.ipo-flow>div{margin:.8rem 0}.example{padding:1rem}.section-head h2{font-size:1.7rem}pre{font-size:.85rem;padding:.8rem}.code-top{padding:.35rem .55rem}.pager>button{flex:1}.task{margin-bottom:2rem}.toolbar .actions{gap:.1rem}}
+.report-question-context{white-space:pre-wrap;overflow-wrap:anywhere}input,textarea,select,summary{scroll-margin-top:calc(var(--toolbar-height,74px) + 170px)}
+@media(max-width:520px){.toolbar{display:block}.toolbar .identity{max-width:none;display:flex;justify-content:space-between;gap:1rem;margin-bottom:.45rem}.toolbar .identity strong{font-size:.875rem}.toolbar .identity span{font-size:.8rem}.toolbar .actions{justify-content:flex-start;gap:.25rem}.toolbar .actions button{font-size:.8rem;padding:.5rem}.compass .ksu{font-size:.875rem}.compass p{font-size:.875rem}pre{white-space:pre-wrap;overflow-wrap:anywhere}.code-top span{max-width:75%}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media print{@page{size:A4;margin:16mm 15mm 18mm}html,body{background:#fff;font:10.5pt/1.5 Raleway,Arial,sans-serif;color:#000}#landing,#app,.skip,.toast,dialog,.report-controls{display:none!important}#reportScreen,#printReport{display:block!important}.report-view{max-width:none;margin:0;padding:0}.report-section{break-before:page;margin:0}.report-section h2{font-size:17pt;margin-top:0}.report-section:first-of-type{break-before:auto}.report-entry{margin:12pt 0;break-inside:auto}.report-entry h3{font-size:11pt;break-after:avoid}.report-answer{widows:3;orphans:3}.report-code{font-size:9pt;line-height:1.5;overflow:visible;white-space:pre-wrap;word-break:break-word;padding:6pt 9pt;break-inside:auto}.report-evidence{break-inside:avoid;margin:14pt 0;page-break-inside:avoid}.report-image{max-height:222mm;max-width:100%;width:auto;height:auto}.report-evidence figcaption{font-size:9pt}.report-meta,.report-question-context{font-size:9pt;color:#333}a{color:#000;text-decoration:none}h1{font-size:24pt}h2,h3{break-after:avoid}table{font-size:9pt}tr{break-inside:avoid}button{display:none!important}}
+</style>
 </head>
 <body>
-  <section id="landing" class="landing" aria-labelledby="landingTitle">
-    <div class="landing-card">
-      <div class="landing-intro">
-        <p class="eyebrow">OxfordAQA 9210 · Week 1 Session 3</p>
-        <h1 id="landingTitle">From algorithms to programs</h1>
-        <p>Read, interpret, trace and test a familiar input-process-output solution. Your written answers, code and evidence will be saved into one complete PDF.</p>
-        <div class="lesson-pills" aria-label="Lesson features">
-          <span>60 minutes</span><span>AO1 · AO2 · AO3</span><span>Device autosave</span><span>Evidence images</span><span>Complete PDF</span>
-        </div>
-      </div>
-
-      <form id="entryForm" class="landing-form" novalidate>
-        <h2>Enter the lesson</h2>
-        <p>Your work is saved only on this device.</p>
-        <div class="field">
-          <label class="required" for="studentName">Name</label>
-          <input id="studentName" name="studentName" type="text" autocomplete="name" placeholder="Enter your full name">
-        </div>
-        <div class="field">
-          <label class="required" for="studentClass">Class</label>
-          <input id="studentClass" name="studentClass" type="text" autocomplete="organization" placeholder="For example, 10A">
-        </div>
-        <button class="primary wide" type="submit">Start lesson</button>
-        <p id="entryError" class="error-message" role="alert"></p>
-        <div id="savedProfile" class="saved-profile hidden"></div>
-        <div class="teacher-note"><strong>Teacher preview:</strong> enter <strong>teacher</strong> as the name. Class may be blank. You can open every page and fill sample answers.</div>
-      </form>
-    </div>
-  </section>
-
-  <div id="app" class="app-shell hidden">
-    <header class="topbar">
-      <div class="brand"><strong>W01S03 · Algorithms and pseudocode</strong><span id="profileLabel">Student · Class</span></div>
-      <div class="progress-wrap" aria-label="Lesson progress">
-        <div class="progress-meta"><span id="stepIndicator">Starter · Step 1 of 5</span><span id="progressText">0% complete</span></div>
-        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-      </div>
-      <div class="top-actions">
-        <span id="saveState" class="save-state" aria-live="polite">Saved on this device</span>
-        <button id="quickExport" class="ghost" type="button">Export current work</button>
-        <button id="exitButton" class="secondary" type="button">Exit</button>
-      </div>
-    </header>
-
-    <div id="reviewBanner" class="review-banner hidden">
-      Teacher preview is active. All pages are available and preview data is stored separately.
-      <button id="fillSamples" class="secondary" type="button">Fill sample answers</button>
-      <button id="clearPreview" class="ghost" type="button">Clear preview</button>
-    </div>
-
-    <div class="app-layout">
-      <aside class="sidebar" aria-label="Lesson information and navigation">
-        <div class="side-card"><h2>Topic</h2><p>Algorithms, programs and introductory pseudocode</p></div>
-        <div class="side-card"><h3>WAGBA</h3><p>We are getting better at explaining how an algorithm becomes a program and tracing an input-process-output solution.</p></div>
-        <div class="side-card ksu-list">
-          <h3>Knowledge · Skills · Understanding</h3>
-          <p><strong>K</strong> Know algorithm, program, pseudocode, assignment, input and output.</p>
-          <p><strong>S</strong> Identify, compare, trace, translate and test.</p>
-          <p><strong>U</strong> Explain why pseudocode describes logic but cannot be executed.</p>
-        </div>
-        <div class="side-card">
-          <h3>Assessment objectives</h3>
-          <p><strong>AO1</strong> Knowledge and understanding</p>
-          <p><strong>AO2</strong> Apply knowledge</p>
-          <p><strong>AO3</strong> Analyse, develop and test</p>
-        </div>
-        <nav id="stepNav" class="step-nav" aria-label="Lesson sections">
-          <button class="step-button active" type="button" data-step="0"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span></button>
-          <button class="step-button" type="button" data-step="1"><span class="step-number">2</span><span class="step-name">Main activity 1</span><span class="step-time">17 min</span></button>
-          <button class="step-button" type="button" data-step="2"><span class="step-number">3</span><span class="step-name">Main activity 2</span><span class="step-time">25 min</span></button>
-          <button class="step-button" type="button" data-step="3"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Optional</span></button>
-          <button class="step-button" type="button" data-step="4"><span class="step-number">5</span><span class="step-name">Plenary & PDF</span><span class="step-time">10 min</span></button>
-        </nav>
-      </aside>
-
-      <main class="main-content">
-        <details class="mobile-ksu side-card">
-          <summary>Show WAGBA, K/S/U and AOs</summary>
-          <p><strong>WAGBA:</strong> Explain how an algorithm becomes a program and trace an input-process-output solution.</p>
-          <p><strong>K:</strong> Algorithm, program, pseudocode, assignment, input and output.</p>
-          <p><strong>S:</strong> Identify, compare, trace, translate and test.</p>
-          <p><strong>U:</strong> Explain why pseudocode describes logic but cannot be executed.</p>
-          <p><strong>AOs:</strong> AO1 know · AO2 apply · AO3 analyse, develop and test.</p>
-        </details>
-
-        <section class="activity-step active" data-step="0" data-section="starter">
-          <p class="section-kicker">Starter · Retrieve and diagnose</p>
-          <h1>Predict before you run.</h1>
-          <p class="section-lead">This is the familiar course-points calculator. Read it carefully and answer every question before using your Python IDE.</p>
-          <div class="ao-strip"><span class="ao-badge ao1">AO1 · identify</span><span class="ao-badge ao2">AO2 · apply</span></div>
-
-          <div class="code-wrap">
-            <button class="copy-button" type="button" data-copy-target="starterCode">Copy code</button>
-            <pre id="starterCode"><code>name = input("Enter your name: ")
-correct_answers = int(input("Correct answers: "))
-total = correct_answers * 5
-print(name, total)</code></pre>
-          </div>
-
-          <div class="task-card">
-            <h2>Your predictions</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="sInput">1. Which line obtains the first input?</label><input id="sInput" type="text" data-field="s_input" placeholder="Copy or describe the line"></div>
-              <div class="question"><label class="question-label" for="sProcess">2. Which line performs the processing?</label><input id="sProcess" type="text" data-field="s_process" placeholder="Copy the calculation"></div>
-              <div class="question"><label class="question-label" for="sOutput">3. Which line produces the output?</label><input id="sOutput" type="text" data-field="s_output" placeholder="Copy the output line"></div>
-              <div class="question"><label class="question-label" for="sPrediction">4. Predict the output for Aisha and 3 correct answers.</label><input id="sPrediction" type="text" data-field="s_prediction" placeholder="Write the output"></div>
-            </div>
-            <div class="question"><label class="question-label" for="sVariables">5. List the three variable names.</label><input id="sVariables" type="text" data-field="s_variables" placeholder="Separate the names with commas"></div>
-          </div>
-
-          <div class="task-card">
-            <h2>Run and review</h2>
-            <p>Now run the program in your own IDE and compare the actual result with your prediction.</p>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="sActual">What actually appeared?</label><input id="sActual" type="text" data-field="s_actual" placeholder="Record the output"></div>
-              <div class="question"><label class="question-label" for="sResult">Did your prediction match?</label><select id="sResult" data-field="s_result"><option value="">Choose one</option><option>Yes - it matched</option><option>No - I corrected my answer</option><option>I need help running the program</option></select></div>
-            </div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="sSecure">One thing I can already do confidently</label><textarea id="sSecure" data-field="s_secure" placeholder="For example: identify an input statement"></textarea></div>
-              <div class="question"><label class="question-label" for="sSupport">One thing I need to revisit</label><textarea id="sSupport" data-field="s_support" placeholder="Be specific so your teacher can support you"></textarea></div>
-            </div>
-          </div>
-
-          <div class="callout green"><strong>Paper connection</strong>Reading and running code develops Paper 1 habits. Identifying input, processing and output also supports Paper 2 explanations.</div>
-          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main activity 1</button></div>
-        </section>
-
-        <section class="activity-step" data-step="1" data-section="main1">
-          <p class="section-kicker">Main activity 1 · Read, compare and explain</p>
-          <h1>Algorithm or program?</h1>
-          <p class="section-lead">Read the short textbook-based extract, prove your AO1 knowledge, and then apply it to the calculator from the starter.</p>
-          <div class="ao-strip"><span class="ao-badge ao1">AO1 · know and explain</span><span class="ao-badge ao2">AO2 · compare and apply</span><span class="ao-badge ao3">AO3 · analyse</span></div>
-
-          <article class="reading-card">
-            <span class="mini-label">Read before attempting the questions</span>
-            <h2>Algorithms and programs</h2>
-            <div class="reading-meta"><span>Textbook: printed page 10</span><span>Digital PDF: page 14 of 317</span><span>Approx. 3 minutes</span></div>
-            <p>An <strong>algorithm</strong> is an ordered set of steps used to solve a problem or complete a task. In Computer Science, an algorithm describes the logical actions a program should perform. It can show what data is entered as input, how the data is processed, and what information is produced as output.</p>
-            <p>An algorithm describes a solution, but it is not a working computer program. It cannot be run directly because it is not written in a particular programming language.</p>
-            <p>A <strong>program</strong> is an implementation of an algorithm. It translates the planned steps into instructions written in a programming language such as Python. Programmers plan with algorithms so they can check their logic, find missing steps, communicate the solution and keep a record before coding.</p>
-            <p>The same clear algorithm could be implemented in Python, Java or another suitable language.</p>
-          </article>
-
-          <div class="task-card">
-            <h2>Reading check</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="m1Algorithm">1. Define an algorithm.</label><textarea id="m1Algorithm" data-field="m1_algorithm" placeholder="Use a complete sentence"></textarea></div>
-              <div class="question"><label class="question-label" for="m1Program">2. Define a computer program.</label><textarea id="m1Program" data-field="m1_program" placeholder="Use the word implementation"></textarea></div>
-              <div class="question"><label class="question-label" for="m1CannotRun">3. Why can an algorithm not be run directly?</label><textarea id="m1CannotRun" data-field="m1_cannot_run" placeholder="Explain the key reason"></textarea></div>
-              <div class="question"><label class="question-label" for="m1Reason">4. Give one reason programmers create algorithms first.</label><textarea id="m1Reason" data-field="m1_reason" placeholder="Choose one reason from the reading"></textarea></div>
-            </div>
-          </div>
-
-          <div class="task-card">
-            <h2>Compare the two representations</h2>
-            <div class="comparison-grid">
-              <div class="comparison-panel">
-                <span class="mini-label">Representation A</span>
-                <ol><li>Ask for the student’s name.</li><li>Ask how many answers were correct.</li><li>Multiply the number by five.</li><li>Display the name and total.</li></ol>
-              </div>
-              <div class="comparison-panel">
-                <span class="mini-label">Representation B</span>
-                <div class="code-wrap"><pre><code>name = input("Enter your name: ")
-correct_answers = int(input("Correct answers: "))
-total = correct_answers * 5
-print(name, total)</code></pre></div>
-              </div>
-            </div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="m1Identify">5. Identify A and B. Justify both choices.</label><textarea id="m1Identify" data-field="m1_identify" placeholder="A is... because... B is... because..."></textarea></div>
-              <div class="question"><label class="question-label" for="m1Match">6. Match each numbered step to a Python line.</label><textarea id="m1Match" data-field="m1_match" placeholder="Step 1 → ...&#10;Step 2 → ..."></textarea></div>
-              <div class="question"><label class="question-label" for="m1IPO">7. Identify the input, processing and output.</label><textarea id="m1IPO" data-field="m1_ipo" placeholder="Input: ...&#10;Processing: ...&#10;Output: ..."></textarea></div>
-              <div class="question"><label class="question-label" for="m1Language">8. Why could the same algorithm be coded in more than one language?</label><textarea id="m1Language" data-field="m1_language" placeholder="Analyse the relationship between logic and language"></textarea></div>
-            </div>
-          </div>
-
-          <div class="task-card">
-            <h2>Optional evidence</h2>
-            <div class="evidence-zone" data-evidence-zone="main1" tabindex="0">
-              <strong>Add Main Activity 1 evidence</strong><p>Upload, drag or paste an image of annotated work. Images are resized for reliable PDF export.</p>
-              <label class="secondary" for="evidenceMain1">Choose image</label><input id="evidenceMain1" type="file" accept="image/*" multiple data-evidence-input="main1"><div class="evidence-list" data-evidence-list="main1"></div>
-            </div>
-          </div>
-          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Starter</button><button class="primary next-step" type="button">Continue to Main activity 2</button></div>
-        </section>
-
-        <section class="activity-step" data-step="2" data-section="main2">
-          <p class="section-kicker">Main activity 2 · Interpret, trace, translate and test</p>
-          <h1>Your first pseudocode taster.</h1>
-          <p class="section-lead">Learn only the notation needed today, then apply it to a familiar calculation. You are not expected to memorise the full pseudocode guide.</p>
-          <div class="ao-strip"><span class="ao-badge ao1">AO1 · recognise notation</span><span class="ao-badge ao2">AO2 · trace and interpret</span><span class="ao-badge ao3">AO3 · translate and test</span></div>
-
-          <article class="reading-card">
-            <span class="mini-label">Read before attempting the questions</span>
-            <h2>Introduction to pseudocode</h2>
-            <div class="reading-meta"><span>Textbook: printed pages 12–13</span><span>Digital PDF: pages 16–17 of 317</span><span>Approx. 4 minutes</span></div>
-            <p><strong>Pseudocode</strong> represents an algorithm using structured, readable instructions. It looks similar to program code, but it is not written in a programming language and cannot be run on a computer. It helps programmers focus on the logic before writing the real program.</p>
-            <p>The assignment arrow points from a value towards the variable that will store it. For example, <code>Score ← 20</code> assigns the value 20 to <code>Score</code>. In Python, this would be written <code>score = 20</code>.</p>
-            <p><code>USERINPUT</code> represents data entered by the user. <code>Name ← USERINPUT</code> stores the user’s entry in <code>Name</code>. A processing statement such as <code>Total ← CorrectAnswers * 5</code> performs a calculation. The command <code>OUTPUT</code> displays a value or message.</p>
-          </article>
-
-          <div class="task-card">
-            <h2>Reading check</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="m2Run">1. Can pseudocode be run in a Python IDE? Explain.</label><textarea id="m2Run" data-field="m2_run" placeholder="Answer and explain"></textarea></div>
-              <div class="question"><label class="question-label" for="m2Arrow">2. What does the assignment arrow mean?</label><textarea id="m2Arrow" data-field="m2_arrow" placeholder="Explain what happens to the value"></textarea></div>
-              <div class="question"><label class="question-label" for="m2InputWord">3. Which word represents user input?</label><input id="m2InputWord" type="text" data-field="m2_input_word" placeholder="Command word"></div>
-              <div class="question"><label class="question-label" for="m2OutputWord">4. Which word displays information?</label><input id="m2OutputWord" type="text" data-field="m2_output_word" placeholder="Command word"></div>
-            </div>
-          </div>
-
-          <div class="task-card">
-            <h2>Interpret and trace the algorithm</h2>
-            <div class="code-wrap"><button class="copy-button" type="button" data-copy-target="pseudoCore">Copy pseudocode</button><pre id="pseudoCore"><code>Name ← USERINPUT
-CorrectAnswers ← USERINPUT
-Total ← CorrectAnswers * 5
-OUTPUT Name
-OUTPUT Total</code></pre></div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="m2Labels">5. Label every line as input, processing or output.</label><textarea id="m2Labels" data-field="m2_labels" placeholder="Line 1: ...&#10;Line 2: ..."></textarea></div>
-              <div class="question"><label class="question-label" for="m2Trace">6. Trace it for Name = Arun and CorrectAnswers = 4.</label><textarea id="m2Trace" data-field="m2_trace" placeholder="Name = ...&#10;CorrectAnswers = ...&#10;Total = ...&#10;Output = ..."></textarea></div>
-              <div class="question"><label class="question-label" for="m2Missing">7. Complete: Total ← __________</label><input id="m2Missing" type="text" data-field="m2_missing" placeholder="Write the expression only"></div>
-              <div class="question"><label class="question-label" for="m2Purpose">8. State the purpose of the algorithm.</label><textarea id="m2Purpose" data-field="m2_purpose" placeholder="It obtains... calculates... and outputs..."></textarea></div>
-            </div>
-          </div>
-
-          <div class="task-card">
-            <h2>Translate and test in Python</h2>
-            <p>Write a Python version in your own IDE. You may use the frame below. Do not try to run pseudocode.</p>
-            <div class="code-wrap"><button class="copy-button" type="button" data-copy-target="pythonFrame">Copy Python frame</button><pre id="pythonFrame"><code>name = input("Enter your name: ")
-correct_answers = int(input("Correct answers: "))
-
-total = ______________________________
-
-print(_______________________________)</code></pre></div>
-            <button class="secondary hint-button" type="button" data-hint="m2Hint">Reveal a hint</button>
-            <div id="m2Hint" class="hint-panel">Use <code>total = correct_answers * 5</code>. Your output can be <code>print(name, total)</code>.</div>
-            <div class="question"><label class="question-label" for="m2Python">9. Paste your completed Python program.</label><textarea id="m2Python" class="code-entry" data-field="m2_python" spellcheck="false" placeholder="Paste your final Python code here. It will not run on this website."></textarea></div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="m2Actual">10. Actual output for Arun and 4 correct answers</label><input id="m2Actual" type="text" data-field="m2_actual" placeholder="Record exactly what appeared"></div>
-              <div class="question"><label class="question-label" for="m2Test">11. Did the result match your trace?</label><select id="m2Test" data-field="m2_test"><option value="">Choose one</option><option>Pass - it matched</option><option>Not yet - I corrected the program</option><option>I need support</option></select></div>
-            </div>
-            <div class="question"><label class="question-label" for="m2Comparison">12. Explain one similarity and one difference between the pseudocode and Python.</label><textarea id="m2Comparison" data-field="m2_comparison" placeholder="Similarity: ...&#10;Difference: ..."></textarea></div>
-          </div>
-
-          <div class="task-card">
-            <h2>Evidence</h2>
-            <div class="evidence-zone" data-evidence-zone="main2" tabindex="0">
-              <strong>Add your Python test evidence</strong><p>Upload, drag or paste a screenshot showing the code, output or both.</p>
-              <label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" type="file" accept="image/*" multiple data-evidence-input="main2"><div class="evidence-list" data-evidence-list="main2"></div>
-            </div>
-          </div>
-          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Main activity 1</button><button class="primary next-step" type="button">Continue to Extension</button></div>
-        </section>
-
-        <section class="activity-step" data-step="3" data-section="extension">
-          <p class="section-kicker">Extension · Early finishers</p>
-          <h1>Add bonus tasks.</h1>
-          <p class="section-lead">Complete this only after Main Activity 2. It raises the challenge from interpreting an algorithm to designing and testing an adapted solution.</p>
-          <div class="ao-strip"><span class="ao-badge ao2">AO2 · apply</span><span class="ao-badge ao3">AO3 · design and test</span></div>
-
-          <div class="task-card">
-            <label class="check-row"><input type="checkbox" data-check="ext_attempted"><span>I attempted the extension.</span></label>
-            <p>Add a new input called <code>BonusTasks</code>. Each bonus task is worth two points. Add the bonus points to the existing total and output the final result.</p>
-            <div class="question"><label class="question-label" for="extPseudo">1. Write the complete adapted pseudocode.</label><textarea id="extPseudo" class="code-entry" data-field="ext_pseudocode" spellcheck="false" placeholder="Name ← USERINPUT&#10;..."></textarea></div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="extExpected">2. Expected total for 4 correct answers and 2 bonus tasks</label><input id="extExpected" type="text" data-field="ext_expected" placeholder="Calculate the expected result"></div>
-              <div class="question"><label class="question-label" for="extExplain">3. Why is your pseudocode still an algorithm rather than a program?</label><textarea id="extExplain" data-field="ext_explain" placeholder="Use precise terminology"></textarea></div>
-            </div>
-            <div class="question"><label class="question-label" for="extPython">4. Optional: translate it into Python and paste your tested program.</label><textarea id="extPython" class="code-entry" data-field="ext_python" spellcheck="false" placeholder="Paste your extension code here"></textarea></div>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="extActual">Actual result</label><input id="extActual" type="text" data-field="ext_actual" placeholder="Record the result"></div>
-              <div class="question"><label class="question-label" for="extResult">Test outcome</label><select id="extResult" data-field="ext_result"><option value="">Choose one</option><option>Pass - result was 24</option><option>Not yet - I am debugging</option><option>Pseudocode only completed</option></select></div>
-            </div>
-          </div>
-          <div class="task-card"><h2>Optional evidence</h2><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension evidence</strong><p>Upload, drag or paste an image if you tested the extension.</p><label class="secondary" for="evidenceExtension">Choose image</label><input id="evidenceExtension" type="file" accept="image/*" multiple data-evidence-input="extension"><div class="evidence-list" data-evidence-list="extension"></div></div></div>
-          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Main activity 2</button><button class="primary next-step" type="button">Continue to Plenary</button></div>
-        </section>
-
-        <section class="activity-step" data-step="4" data-section="plenary">
-          <p class="section-kicker">Plenary · Prove and submit</p>
-          <h1>Explain without running.</h1>
-          <p class="section-lead">Complete the exit ticket independently, review your AO evidence, and export one PDF containing every response and uploaded image.</p>
-          <div class="ao-strip"><span class="ao-badge ao1">AO1 · recall</span><span class="ao-badge ao2">AO2 · apply</span><span class="ao-badge ao3">AO3 · analyse</span></div>
-
-          <div class="task-card">
-            <h2>Exit ticket</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="pAlgorithm">1. What is an algorithm?</label><textarea id="pAlgorithm" data-field="p_algorithm" placeholder="Write one precise sentence"></textarea></div>
-              <div class="question"><label class="question-label" for="pProgram">2. How is a program related to an algorithm?</label><textarea id="pProgram" data-field="p_program" placeholder="Use the word implementation"></textarea></div>
-              <div class="question"><label class="question-label" for="pArrow">3. What does ← mean?</label><textarea id="pArrow" data-field="p_arrow" placeholder="Explain assignment"></textarea></div>
-              <div class="question"><label class="question-label" for="pClassify">4. Classify: Score ← CorrectAnswers * 5</label><select id="pClassify" data-field="p_classify"><option value="">Choose one</option><option>Input</option><option>Processing</option><option>Output</option></select></div>
-            </div>
-            <div class="question"><label class="question-label" for="pExplain">5. Explain why tracing before running can help a programmer.</label><textarea id="pExplain" data-field="p_explain" placeholder="Explain how prediction can reveal errors"></textarea></div>
-          </div>
-
-          <div class="task-card">
-            <h2>K/S/U reflection</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="pKnowledge">K: One fact I now know</label><textarea id="pKnowledge" data-field="p_knowledge"></textarea></div>
-              <div class="question"><label class="question-label" for="pSkill">S: One skill I demonstrated</label><textarea id="pSkill" data-field="p_skill"></textarea></div>
-            </div>
-            <div class="question"><label class="question-label" for="pUnderstanding">U: Explain why pseudocode cannot be run directly in Python.</label><textarea id="pUnderstanding" data-field="p_understanding"></textarea></div>
-          </div>
-
-          <div class="task-card">
-            <h2>AO1–AO3 self-review</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="ratingAo1">AO1: knowledge and understanding</label><select id="ratingAo1" data-field="rating_ao1"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
-              <div class="question"><label class="question-label" for="ratingAo2">AO2: applying knowledge</label><select id="ratingAo2" data-field="rating_ao2"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
-              <div class="question"><label class="question-label" for="ratingAo3">AO3: analysing, developing and testing</label><select id="ratingAo3" data-field="rating_ao3"><option value="">Choose</option><option>Independent</option><option>Nearly secure</option><option>I need support</option></select></div>
-              <div class="question"><label class="question-label" for="pSupport">What support or question should your teacher see?</label><textarea id="pSupport" data-field="p_support" placeholder="Write none if you do not need support"></textarea></div>
-            </div>
-          </div>
-
-          <div class="export-card">
-            <h2>Export and submit your evidence</h2>
-            <p>The report includes every response, pasted code and uploaded image—even if a section is unfinished.</p>
-            <ol>
-              <li>Check your name, class, answers and evidence.</li>
-              <li>Select <strong>Export complete PDF</strong>.</li>
-              <li>In the print window choose <strong>Save as PDF</strong>.</li>
-              <li>Use this filename:</li>
-            </ol>
-            <span id="filenamePreview" class="filename">W01S03_Firstname_Class.pdf</span>
-            <ol start="5">
-              <li>Open the saved PDF and check that the text and images are complete.</li>
-              <li>Open the correct assignment in Microsoft Teams.</li>
-              <li>Select <strong>Add work</strong>, upload the PDF and then select <strong>Turn in</strong>.</li>
-            </ol>
-            <button id="finalExport" class="primary" type="button">Export complete PDF</button>
-          </div>
-          <div class="callout amber"><strong>Before leaving</strong>Do not submit a browser screenshot. Submit the exported PDF and open it once to check it first.</div>
-          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Extension</button><button id="returnToStarter" class="ghost" type="button">Review from Starter</button></div>
-        </section>
-      </main>
-    </div>
-  </div>
-
-  <article id="printReport" class="print-report" aria-label="Complete student lesson report"></article>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const APP_VERSION = "w01s03-v1";
-      const LAST_PROFILE_KEY = `${APP_VERSION}:last-profile`;
-      const DB_NAME = "OxfordAQA9210W01S03Evidence";
-      const DB_STORE = "evidence";
-      const stepNames = ["Starter", "Main activity 1", "Main activity 2", "Extension", "Plenary & PDF"];
-      const sectionKeys = ["starter", "main1", "main2", "extension", "plenary"];
-      const requiredByStep = [
-        ["s_input", "s_process", "s_output", "s_prediction", "s_variables", "s_actual", "s_result", "s_secure", "s_support"],
-        ["m1_algorithm", "m1_program", "m1_cannot_run", "m1_reason", "m1_identify", "m1_match", "m1_ipo", "m1_language"],
-        ["m2_run", "m2_arrow", "m2_input_word", "m2_output_word", "m2_labels", "m2_trace", "m2_missing", "m2_purpose", "m2_python", "m2_actual", "m2_test", "m2_comparison"],
-        [],
-        ["p_algorithm", "p_program", "p_arrow", "p_classify", "p_explain", "p_knowledge", "p_skill", "p_understanding", "rating_ao1", "rating_ao2", "rating_ao3", "p_support"]
-      ];
-
-      const reportSchema = [
-        { key: "starter", title: "Starter - Predict before you run", entries: [
-          ["First input line", "s_input"], ["Processing line", "s_process"], ["Output line", "s_output"], ["Predicted output", "s_prediction"], ["Variable names", "s_variables"], ["Actual output", "s_actual"], ["Prediction check", "s_result"], ["Confident skill", "s_secure"], ["Revisit or support need", "s_support"]
-        ]},
-        { key: "main1", title: "Main activity 1 - Algorithm or program?", entries: [
-          ["Definition of algorithm", "m1_algorithm"], ["Definition of program", "m1_program"], ["Why an algorithm cannot run directly", "m1_cannot_run"], ["Reason for planning with algorithms", "m1_reason"], ["Identification and justification", "m1_identify"], ["Matched steps and Python lines", "m1_match"], ["Input, processing and output", "m1_ipo"], ["Why one algorithm can use different languages", "m1_language"]
-        ]},
-        { key: "main2", title: "Main activity 2 - Pseudocode taster", entries: [
-          ["Can pseudocode run?", "m2_run"], ["Meaning of assignment arrow", "m2_arrow"], ["Input command word", "m2_input_word"], ["Output command word", "m2_output_word"], ["Line classifications", "m2_labels"], ["Trace for Arun and 4", "m2_trace"], ["Missing processing expression", "m2_missing"], ["Purpose of algorithm", "m2_purpose"], ["Translated Python program", "m2_python", "code"], ["Actual Python output", "m2_actual"], ["Test outcome", "m2_test"], ["Pseudocode/Python comparison", "m2_comparison"], ["Hints opened", "__hints__"]
-        ]},
-        { key: "extension", title: "Extension - Bonus tasks", checks: [["Attempted the extension", "ext_attempted"]], entries: [
-          ["Adapted pseudocode", "ext_pseudocode", "code"], ["Expected result", "ext_expected"], ["Why it remains an algorithm", "ext_explain"], ["Optional Python translation", "ext_python", "code"], ["Actual result", "ext_actual"], ["Test outcome", "ext_result"]
-        ]},
-        { key: "plenary", title: "Plenary - Explain and submit", entries: [
-          ["Definition of algorithm", "p_algorithm"], ["Relationship between program and algorithm", "p_program"], ["Meaning of assignment arrow", "p_arrow"], ["Classification of Score statement", "p_classify"], ["Why tracing helps", "p_explain"], ["Knowledge reflection", "p_knowledge"], ["Skill reflection", "p_skill"], ["Understanding reflection", "p_understanding"], ["AO1 rating", "rating_ao1"], ["AO2 rating", "rating_ao2"], ["AO3 rating", "rating_ao3"], ["Support or question", "p_support"]
-        ]}
-      ];
-
-      let state = { owner: "", profile: { name: "", className: "", teacher: false }, currentStep: 0, fields: {}, checks: {}, hints: [] };
-      let dbPromise;
-      const $ = (selector, root = document) => root.querySelector(selector);
-      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-
-      function slug(value) { return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "student"; }
-      function safeText(value) { return String(value ?? ""); }
-      function escapeHtml(value) { return safeText(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
-      function stateKey(owner) { return `${APP_VERSION}:state:${owner}`; }
-      function suggestedFilename() {
-        const firstName = state.profile.teacher ? "TeacherPreview" : (state.profile.name.trim().split(/\s+/)[0] || "Name");
-        const className = state.profile.className || "Class";
-        const tidyName = slug(firstName).replace(/(^|-)([a-z])/g, (_, a, b) => b.toUpperCase());
-        return `W01S03_${tidyName}_${slug(className).toUpperCase()}.pdf`;
-      }
-
-      function saveState() {
-        if (!state.owner) return;
-        localStorage.setItem(stateKey(state.owner), JSON.stringify(state));
-        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify({ owner: state.owner, profile: state.profile }));
-        const label = $("#saveState");
-        if (label) {
-          label.textContent = "Saved on this device";
-          window.clearTimeout(label._timer);
-          label._timer = window.setTimeout(() => { label.textContent = "Saved"; }, 1300);
-        }
-      }
-
-      function loadState(owner, profile) {
-        try {
-          const saved = JSON.parse(localStorage.getItem(stateKey(owner)) || "null");
-          if (saved && saved.owner === owner) {
-            state = { owner, profile, currentStep: Number(saved.currentStep) || 0, fields: saved.fields || {}, checks: saved.checks || {}, hints: Array.isArray(saved.hints) ? saved.hints : [] };
-            return;
-          }
-        } catch (error) { console.warn("Saved lesson data could not be read.", error); }
-        state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
-      }
-
-      function showSavedProfile() {
-        const container = $("#savedProfile");
-        try {
-          const saved = JSON.parse(localStorage.getItem(LAST_PROFILE_KEY) || "null");
-          if (!saved?.profile?.name || saved.profile.teacher) return;
-          container.classList.remove("hidden");
-          container.innerHTML = `<strong>Continue saved work</strong><br>${escapeHtml(saved.profile.name)} · ${escapeHtml(saved.profile.className)}<br><button type="button" id="continueSaved">Continue this lesson</button>`;
-          $("#continueSaved").addEventListener("click", () => startLesson(saved.profile.name, saved.profile.className));
-        } catch (error) { container.classList.add("hidden"); }
-      }
-
-      function applyStateToForm() {
-        $$('[data-field]').forEach((element) => {
-          const key = element.dataset.field;
-          if (Object.prototype.hasOwnProperty.call(state.fields, key)) element.value = state.fields[key];
-          else if (element.value) state.fields[key] = element.value;
-        });
-        $$('[data-check]').forEach((element) => { element.checked = Boolean(state.checks[element.dataset.check]); });
-        state.hints.forEach((hintId) => { const panel = document.getElementById(hintId); if (panel) panel.classList.add("visible"); });
-      }
-
-      function startLesson(name, className) {
-        const cleanName = name.trim();
-        const teacher = cleanName.toLowerCase() === "teacher";
-        const profile = { name: teacher ? "Teacher preview" : cleanName, className: teacher ? "Review mode" : className.trim(), teacher };
-        const owner = teacher ? "teacher-preview" : `${slug(profile.name)}-${slug(profile.className)}`;
-        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; });
-        $$('[data-check]').forEach((element) => { element.checked = false; });
-        $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
-        loadState(owner, profile);
-        applyStateToForm();
-        $("#landing").classList.add("hidden");
-        $("#app").classList.remove("hidden");
-        $("#reviewBanner").classList.toggle("hidden", !teacher);
-        $("#profileLabel").textContent = `${profile.name} · ${profile.className}`;
-        $("#filenamePreview").textContent = suggestedFilename();
-        goToStep(state.currentStep, false);
-        refreshEvidenceLists();
-        updateProgress();
-        saveState();
-      }
-
-      function goToStep(step, shouldScroll = true) {
-        const next = Math.max(0, Math.min(stepNames.length - 1, Number(step)));
-        state.currentStep = next;
-        $$('.activity-step').forEach((section) => section.classList.toggle("active", Number(section.dataset.step) === next));
-        $$('.step-button').forEach((button) => button.classList.toggle("active", Number(button.dataset.step) === next));
-        $("#stepIndicator").textContent = `${stepNames[next]} · Step ${next + 1} of ${stepNames.length}`;
-        saveState(); updateProgress();
-        if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
-      function fieldComplete(key) { return safeText(state.fields[key]).trim().length > 0; }
-      function stepCompletion(index) {
-        if (index === 3) {
-          if (!state.checks.ext_attempted) return { complete: false, optional: true };
-          const keys = ["ext_pseudocode", "ext_expected", "ext_explain"];
-          return { complete: keys.every(fieldComplete), optional: true };
-        }
-        const keys = requiredByStep[index];
-        return { complete: keys.length > 0 && keys.every(fieldComplete), optional: false };
-      }
-      function updateProgress() {
-        const coreSteps = [0, 1, 2, 4];
-        const total = coreSteps.reduce((sum, index) => sum + requiredByStep[index].length, 0);
-        const done = coreSteps.reduce((sum, index) => sum + requiredByStep[index].filter(fieldComplete).length, 0);
-        const percent = Math.round((done / total) * 100);
-        $("#progressBar").style.width = `${percent}%`;
-        $("#progressText").textContent = `${percent}% complete`;
-        $$('.step-button').forEach((button, index) => {
-          const complete = stepCompletion(index).complete;
-          button.classList.toggle("done", complete);
-          $(".step-number", button).textContent = complete ? "✓" : String(index + 1);
-        });
-      }
-
-      function bindFormPersistence() {
-        $$('[data-field]').forEach((element) => {
-          const save = () => { state.fields[element.dataset.field] = element.value; saveState(); updateProgress(); };
-          element.addEventListener("input", save); element.addEventListener("change", save);
-        });
-        $$('[data-check]').forEach((element) => element.addEventListener("change", () => { state.checks[element.dataset.check] = element.checked; saveState(); updateProgress(); }));
-      }
-
-      async function copyCode(targetId, button) {
-        const text = document.getElementById(targetId)?.innerText || "";
-        try { await navigator.clipboard.writeText(text); }
-        catch (error) {
-          const helper = document.createElement("textarea"); helper.value = text; helper.style.position = "fixed"; helper.style.opacity = "0";
-          document.body.appendChild(helper); helper.select(); document.execCommand("copy"); helper.remove();
-        }
-        const previous = button.textContent; button.textContent = "Copied"; window.setTimeout(() => { button.textContent = previous; }, 1200);
-      }
-
-      function openDatabase() {
-        if (dbPromise) return dbPromise;
-        dbPromise = new Promise((resolve, reject) => {
-          const request = indexedDB.open(DB_NAME, 1);
-          request.onupgradeneeded = () => {
-            const db = request.result; const store = db.createObjectStore(DB_STORE, { keyPath: "id" });
-            store.createIndex("owner", "owner", { unique: false }); store.createIndex("ownerSection", ["owner", "section"], { unique: false });
-          };
-          request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
-        });
-        return dbPromise;
-      }
-      async function evidenceFor(section) {
-        const db = await openDatabase();
-        return new Promise((resolve, reject) => {
-          const transaction = db.transaction(DB_STORE, "readonly");
-          const request = transaction.objectStore(DB_STORE).index("ownerSection").getAll([state.owner, section]);
-          request.onsuccess = () => resolve(request.result.sort((a, b) => a.created - b.created)); request.onerror = () => reject(request.error);
-        });
-      }
-      async function allEvidence() { const result = {}; for (const section of sectionKeys) result[section] = await evidenceFor(section); return result; }
-      async function putEvidence(record) {
-        const db = await openDatabase();
-        return new Promise((resolve, reject) => { const t = db.transaction(DB_STORE, "readwrite"); t.objectStore(DB_STORE).put(record); t.oncomplete = resolve; t.onerror = () => reject(t.error); });
-      }
-      async function deleteEvidence(id) {
-        const db = await openDatabase();
-        return new Promise((resolve, reject) => { const t = db.transaction(DB_STORE, "readwrite"); t.objectStore(DB_STORE).delete(id); t.oncomplete = resolve; t.onerror = () => reject(t.error); });
-      }
-      async function clearOwnerEvidence(owner = state.owner) {
-        const db = await openDatabase();
-        const records = await new Promise((resolve, reject) => {
-          const t = db.transaction(DB_STORE, "readonly"); const request = t.objectStore(DB_STORE).index("owner").getAll(owner);
-          request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
-        });
-        const t = db.transaction(DB_STORE, "readwrite"); records.forEach((record) => t.objectStore(DB_STORE).delete(record.id));
-        return new Promise((resolve, reject) => { t.oncomplete = resolve; t.onerror = () => reject(t.error); });
-      }
-      function imageFromFile(file) {
-        return new Promise((resolve, reject) => {
-          const url = URL.createObjectURL(file); const image = new Image();
-          image.onload = () => { URL.revokeObjectURL(url); resolve(image); }; image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Image could not be opened.")); }; image.src = url;
-        });
-      }
-      async function compressImage(file) {
-        const image = await imageFromFile(file); const maxDimension = 1800; const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
-        const width = Math.max(1, Math.round(image.naturalWidth * scale)); const height = Math.max(1, Math.round(image.naturalHeight * scale));
-        const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height; const context = canvas.getContext("2d");
-        context.fillStyle = "#ffffff"; context.fillRect(0, 0, width, height); context.drawImage(image, 0, 0, width, height);
-        return canvas.toDataURL("image/jpeg", 0.9);
-      }
-      async function addEvidence(section, files) {
-        const images = [...files].filter((file) => file.type.startsWith("image/"));
-        for (const file of images) {
-          const dataUrl = await compressImage(file);
-          await putEvidence({ id: `${state.owner}:${section}:${Date.now()}:${Math.random().toString(36).slice(2)}`, owner: state.owner, section, name: file.name || "Pasted screenshot", dataUrl, created: Date.now() });
-        }
-        await renderEvidenceList(section);
-      }
-      async function renderEvidenceList(section) {
-        const list = document.querySelector(`[data-evidence-list="${section}"]`); if (!list) return;
-        const records = await evidenceFor(section); list.innerHTML = "";
-        records.forEach((record) => {
-          const item = document.createElement("div"); item.className = "evidence-item";
-          const image = document.createElement("img"); image.src = record.dataUrl; image.alt = `Evidence: ${record.name}`;
-          const caption = document.createElement("div"); caption.className = "evidence-caption";
-          const name = document.createElement("span"); name.textContent = record.name;
-          const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "Remove";
-          remove.addEventListener("click", async () => { await deleteEvidence(record.id); await renderEvidenceList(section); });
-          caption.append(name, remove); item.append(image, caption); list.appendChild(item);
-        });
-      }
-      async function refreshEvidenceLists() { for (const section of sectionKeys) await renderEvidenceList(section); }
-      function bindEvidenceZones() {
-        $$('[data-evidence-input]').forEach((input) => input.addEventListener("change", async () => { await addEvidence(input.dataset.evidenceInput, input.files); input.value = ""; }));
-        $$('[data-evidence-zone]').forEach((zone) => {
-          const section = zone.dataset.evidenceZone;
-          ["dragenter", "dragover"].forEach((name) => zone.addEventListener(name, (event) => { event.preventDefault(); zone.classList.add("dragging"); }));
-          ["dragleave", "drop"].forEach((name) => zone.addEventListener(name, (event) => { event.preventDefault(); zone.classList.remove("dragging"); }));
-          zone.addEventListener("drop", (event) => addEvidence(section, event.dataTransfer.files));
-          zone.addEventListener("paste", (event) => {
-            const files = [...event.clipboardData.items].filter((item) => item.kind === "file" && item.type.startsWith("image/")).map((item) => item.getAsFile()).filter(Boolean);
-            if (files.length) { event.preventDefault(); addEvidence(section, files); }
-          });
-        });
-      }
-
-      function entryValue(key) {
-        if (key === "__hints__") return state.hints.length ? state.hints.join(", ") : "No hints opened";
-        const value = safeText(state.fields[key]).trim(); return value || "Not completed";
-      }
-      function makeReportEntry(label, value, type) {
-        const wrapper = document.createElement("section"); wrapper.className = "report-entry";
-        const heading = document.createElement("h3"); heading.textContent = label;
-        const content = type === "code" ? document.createElement("pre") : document.createElement("p");
-        if (type === "code") content.className = "report-code"; content.textContent = value; wrapper.append(heading, content); return wrapper;
-      }
-      async function buildReport() {
-        saveState(); const evidence = await allEvidence(); const report = $("#printReport"); report.innerHTML = "";
-        const header = document.createElement("header"); header.className = "report-page-header";
-        header.innerHTML = `<p>OxfordAQA International GCSE Computer Science 9210</p><h1>Week 1 Session 3 - From Algorithms to Programs</h1>
-          <div class="report-meta"><p><strong>Student:</strong> ${escapeHtml(state.profile.name)}</p><p><strong>Class:</strong> ${escapeHtml(state.profile.className)}</p><p><strong>Generated:</strong> ${escapeHtml(new Date().toLocaleString())}</p><p><strong>Suggested filename:</strong> ${escapeHtml(suggestedFilename())}</p></div>
-          <div class="report-ksu"><p><strong>WAGBA:</strong> Explain how an algorithm becomes a program and trace an input-process-output solution.</p><p><strong>K:</strong> Algorithm, program, pseudocode, assignment, input and output.</p><p><strong>S:</strong> Identify, compare, trace, translate and test.</p><p><strong>U:</strong> Explain why pseudocode describes logic but cannot be executed.</p><p><strong>AOs:</strong> AO1 knowledge · AO2 application · AO3 analysis, development and testing.</p></div>`;
-        report.appendChild(header);
-        for (const schema of reportSchema) {
-          const section = document.createElement("section"); section.className = "report-section";
-          const title = document.createElement("h2"); title.textContent = schema.title; section.appendChild(title);
-          if (schema.checks) schema.checks.forEach(([label, key]) => section.appendChild(makeReportEntry(label, state.checks[key] ? "Completed" : "Not marked complete")));
-          schema.entries.forEach(([label, key, type]) => section.appendChild(makeReportEntry(label, entryValue(key), type)));
-          const images = evidence[schema.key] || [];
-          if (!images.length) section.appendChild(makeReportEntry("Evidence images", "No image submitted for this section"));
-          else {
-            const evidenceHeading = document.createElement("h3"); evidenceHeading.textContent = "Evidence images"; section.appendChild(evidenceHeading);
-            images.forEach((record, index) => {
-              const figure = document.createElement("figure"); figure.className = "report-evidence";
-              const image = document.createElement("img"); image.src = record.dataUrl; image.alt = `Evidence image ${index + 1} for ${schema.title}`;
-              const caption = document.createElement("figcaption"); caption.textContent = `${schema.title} - ${record.name}`; figure.append(image, caption); section.appendChild(figure);
-            });
-          }
-          report.appendChild(section);
-        }
-        const teams = document.createElement("section"); teams.className = "teams-report";
-        teams.innerHTML = `<h2>Microsoft Teams submission</h2><ol><li>In the print window select <strong>Save as PDF</strong>.</li><li>Save the file as <strong>${escapeHtml(suggestedFilename())}</strong>.</li><li>Open the PDF and check that your answers, code and evidence images are complete.</li><li>Open the correct assignment in Microsoft Teams.</li><li>Select <strong>Add work</strong>, upload this PDF and select <strong>Turn in</strong>.</li></ol><p>If anything is missing, cancel the submission, return to the relevant lesson page and export again.</p>`;
-        report.appendChild(teams);
-        await Promise.all($$("img", report).map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => { image.onload = resolve; image.onerror = resolve; })));
-      }
-      async function exportPdf() {
-        const button = document.activeElement;
-        if (button instanceof HTMLButtonElement) { button.disabled = true; button.dataset.previousText = button.textContent; button.textContent = "Preparing complete report…"; }
-        try { await buildReport(); await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))); window.print(); }
-        finally { if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = button.dataset.previousText || "Export complete PDF"; } }
-      }
-
-      function fillTeacherSamples() {
-        state.fields = { ...state.fields,
-          s_input: 'name = input("Enter your name: ")', s_process: "total = correct_answers * 5", s_output: "print(name, total)", s_prediction: "Aisha 15", s_variables: "name, correct_answers, total", s_actual: "Aisha 15", s_result: "Yes - it matched", s_secure: "I can identify input, processing and output.", s_support: "No support needed in this sample.",
-          m1_algorithm: "An ordered sequence of steps used to solve a problem or complete a task.", m1_program: "An implementation of an algorithm written in a programming language that a computer can execute.", m1_cannot_run: "It is not executable code written in a particular programming language.", m1_reason: "It allows the programmer to check the logic before coding.", m1_identify: "A is the algorithm because it describes the steps. B is the program because it is executable Python.", m1_match: "1 → name input\n2 → correct_answers input\n3 → total calculation\n4 → print output", m1_ipo: "Input: name and correct_answers\nProcessing: multiply by 5\nOutput: name and total", m1_language: "The logical steps are language independent, so the same solution can be translated into different programming languages.",
-          m2_run: "No. Pseudocode represents logic but is not executable Python.", m2_arrow: "Assign the value on the right to the variable on the left.", m2_input_word: "USERINPUT", m2_output_word: "OUTPUT", m2_labels: "Line 1 input\nLine 2 input\nLine 3 processing\nLines 4 and 5 output", m2_trace: "Name = Arun\nCorrectAnswers = 4\nTotal = 20\nOutput = Arun and 20", m2_missing: "CorrectAnswers * 5", m2_purpose: "It obtains a name and number of correct answers, calculates points and outputs the result.", m2_python: 'name = input("Enter your name: ")\ncorrect_answers = int(input("Correct answers: "))\ntotal = correct_answers * 5\nprint(name, total)', m2_actual: "Arun 20", m2_test: "Pass - it matched", m2_comparison: "Both follow the same logic. Python uses executable syntax while pseudocode uses language-independent notation.",
-          ext_pseudocode: "", ext_expected: "24", ext_explain: "", ext_python: "", ext_actual: "", ext_result: "",
-          p_algorithm: "An ordered sequence of steps used to solve a problem.", p_program: "A program is an executable implementation of an algorithm.", p_arrow: "It assigns the value on the right to the variable on the left.", p_classify: "Processing", p_explain: "Tracing predicts values step by step and can reveal logical errors before or during testing.", p_knowledge: "Pseudocode is not executable code.", p_skill: "I traced and translated a short algorithm.", p_understanding: "It uses a representation of logic rather than exact Python syntax.", rating_ao1: "Independent", rating_ao2: "Independent", rating_ao3: "Nearly secure", p_support: "No support needed in this sample."
-        };
-        applyStateToForm(); saveState(); updateProgress();
-      }
-      async function clearCurrentProfile() {
-        if (!window.confirm("Clear all saved responses and evidence for this profile?")) return;
-        localStorage.removeItem(stateKey(state.owner)); await clearOwnerEvidence();
-        const profile = state.profile; const owner = state.owner; state = { owner, profile, currentStep: 0, fields: {}, checks: {}, hints: [] };
-        $$('[data-field]').forEach((element) => { element.value = element.defaultValue || ""; }); $$('[data-check]').forEach((element) => { element.checked = false; }); $$('.hint-panel').forEach((panel) => panel.classList.remove("visible"));
-        applyStateToForm(); await refreshEvidenceLists(); goToStep(0); saveState();
-      }
-      function exitToLanding() {
-        saveState(); $("#app").classList.add("hidden"); $("#landing").classList.remove("hidden");
-        $("#studentName").value = state.profile.teacher ? "" : state.profile.name; $("#studentClass").value = state.profile.teacher ? "" : state.profile.className; showSavedProfile();
-      }
-      function bindEvents() {
-        $("#entryForm").addEventListener("submit", (event) => {
-          event.preventDefault(); const name = $("#studentName").value.trim(); const className = $("#studentClass").value.trim(); const teacher = name.toLowerCase() === "teacher";
-          if (!name || (!teacher && !className)) { $("#entryError").textContent = "Enter your name and class. Teacher preview only requires the name teacher."; return; }
-          $("#entryError").textContent = ""; startLesson(name, className);
-        });
-        $$('.step-button').forEach((button) => button.addEventListener("click", () => goToStep(button.dataset.step)));
-        $$('.next-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep + 1)));
-        $$('.previous-step').forEach((button) => button.addEventListener("click", () => goToStep(state.currentStep - 1)));
-        $("#returnToStarter").addEventListener("click", () => goToStep(0)); $("#exitButton").addEventListener("click", exitToLanding);
-        $("#quickExport").addEventListener("click", exportPdf); $("#finalExport").addEventListener("click", exportPdf); $("#fillSamples").addEventListener("click", fillTeacherSamples); $("#clearPreview").addEventListener("click", clearCurrentProfile);
-        $$('.copy-button').forEach((button) => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
-        $$('.hint-button').forEach((button) => button.addEventListener("click", () => { const hintId = button.dataset.hint; document.getElementById(hintId).classList.add("visible"); if (!state.hints.includes(hintId)) state.hints.push(hintId); saveState(); }));
-      }
-
-      bindFormPersistence(); bindEvidenceZones(); bindEvents(); showSavedProfile();
-      window.__lessonApp = { buildReport, startLesson, goToStep, getState: () => state };
-    })();
-  </script>
+<a class="skip" href="#lessonContent">Skip to activity</a>
+<section id="landing" class="landing">
+  <div class="eyebrow">Year 10 · OxfordAQA 9210 · Week 1, Session 3</div>
+  <h1>From a plan<br>to a program.</h1>
+  <p class="measure">Today you will plan a quiz-score calculator, follow its steps and turn those steps into Python. You will run your code in your own IDE, not on this website.</p>
+  <div class="goal"><strong>WAGBA — What are we getting better at?</strong><p>Explaining, tracing and turning a simple algorithm into a working Python program.</p><p class="small"><strong>Knowledge:</strong> I can describe an algorithm, a program and pseudocode.<br><strong>Skills:</strong> I can follow values, translate steps and test a program.<br><strong>Understanding:</strong> I can explain how different representations express the same solution.</p></div>
+  <form id="loginForm"><label for="studentName">Your name</label><input id="studentName" autocomplete="name" maxlength="90" required><label for="studentClass">Your class</label><input id="studentClass" autocomplete="off" maxlength="40"><p class="small muted">Teacher? Enter <strong>teacher</strong> as the name; leave class blank.</p><button type="submit" class="primary">Open my lesson</button><p id="loginError" role="alert" hidden></p></form>
+  <div id="resume"></div>
+  <p class="route">Starter → learning pitstop → main activity 1 → main activity 2 → learning pitstop → optional extension → plenary & PDF</p>
+  <p class="small muted">About 60 minutes. Your work saves in this browser on this device. This is not a school sign-in: on a shared device, only open your own work. Export your PDF before leaving; it is not sent to your teacher automatically.</p>
+</section>
+<div id="app" hidden>
+  <header class="toolbar"><div class="identity"><strong id="profileLabel"></strong><span id="saveStatus" role="status">Saved on this device</span></div><div class="actions"><button id="focusToggle" aria-pressed="false">One task at a time</button><button id="helpButton">Help / pause</button><button class="export-button primary">Export PDF</button><button id="switchProfile" class="quiet">Switch learner</button></div></header>
+  <div id="storageError" class="error-banner" role="alert" hidden></div>
+  <div id="teacherBanner" class="banner" hidden><div class="teacher-controls"><strong>Teacher preview</strong><span>All pages are open. Answers remain on this device.</span><button id="teacherSample" class="small">Fill blank fields with examples</button><button id="teacherNotes" class="small">Lesson notes & sources</button></div></div>
+  <div class="layout"><aside class="sidebar"><div class="eyebrow">Your lesson route</div><nav id="navigation" aria-label="Lesson sections"></nav><div id="progress" class="note"></div><p class="note">The timings are a guide, not a countdown. You may revisit any page. Extensions are optional.</p></aside>
+  <main class="main"><div class="compass" aria-label="WAGBA and knowledge, skills and understanding"><p><b>WAGBA</b> · Explain, trace and turn an algorithm into a working Python program.</p><div class="ksu"><span><b>K</b> · Describe algorithms, programs & pseudocode</span><span><b>S</b> · Trace, translate & test</span><span><b>U</b> · Explain the same solution in different forms</span></div></div><div id="lessonContent" class="content" tabindex="-1" aria-label="Lesson activities"></div></main></div>
+</div>
+<section id="reportScreen" hidden><div class="report-controls"><button id="backFromReport">Back to my lesson</button><button id="printButton" class="primary">Print / Save as PDF</button><span class="small">Choose A4 · Save as PDF · check every page before submitting.</span></div><article id="printReport" class="report-view" aria-label="Complete student lesson report"></article></section>
+<dialog id="helpDialog"><div class="dialog-header"><h2>What would help you now?</h2><button data-close="helpDialog" aria-label="Close help">Close</button></div><p>You do not need to solve everything at once. Choose a next step, or take an agreed pause and return to the same task.</p><div class="field"><label for="supportChoice">I would like help with…</label><select id="supportChoice"><option value="">Choose one</option><option>The quotation marks or brackets</option><option>Following the values in the trace</option><option>Finding the next step in the task</option><option>An error message in my IDE</option><option>I need a pause before continuing</option></select></div><p id="supportAdvice" class="callout">You can ask for a demonstration, point to a line, or show your teacher this screen.</p><p class="small muted">Selecting an option records it in your report. It does not send an alert. Raise your hand or use your agreed classroom signal if you need your teacher.</p><button id="pauseButton">Pause here</button><div id="pauseMessage" hidden class="example"><h3>You can pause here.</h3><p>Your current page stays open. When you are ready, close this window and do one small next step. If saving failed, export your work before closing the browser.</p></div></dialog>
+<dialog id="notesDialog"><div class="dialog-header"><h2>Lesson notes & sources</h2><button data-close="notesDialog">Close</button></div><div id="notesBody"></div></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<noscript><p>This lesson needs JavaScript enabled to save responses and build the PDF. Ask your teacher for an alternative worksheet if it cannot be enabled.</p></noscript>
+<script>
+(() => {
+'use strict';
+const APP_VERSION='w01s03-v1', REVISION='2026-09-redesign-1', DB_NAME='OxfordAQA9210W01S03Evidence';
+const steps=[['starter','Starter','6 min'],['learning','Learning types','3 min'],['main1','Main activity 1','14 min'],['main2','Main activity 2','23 min'],['phase','Learning phase','4 min'],['extension','Extension','Optional'],['plenary','Plenary & PDF','10 min']];
+const originalSections=['starter','main1','main2','extension','plenary'];
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const slug=v=>String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'student';
+let state={}, dbPromise, savingOK=true, allRecords=[], unsavedEvidence=[], fieldSchema={}, checks={}, currentSection='starter', toastTimer;
+const filled=v=>String(v??'').trim().length>0;
+const stateKey=owner=>`${APP_VERSION}:state:${owner}`;
+const code=(text,label='Python — run this in your own IDE')=>`<div class="code-wrap"><div class="code-top"><span>${label}</span><button type="button" data-copy>Copy code</button></div><pre><code>${esc(text)}</code></pre></div>`;
+const out=text=>`<div class="example"><strong>Example run</strong><pre class="output">${esc(text)}</pre></div>`;
+function field(id,label,{type='text',hint='',rows=3,options=[],optional=false,context='',section=currentSection}={}){
+  fieldSchema[id]={id,label,type,hint,options,optional,context,section};
+  const help=hint?`<p id="help-${id}" class="hint-text">${hint}</p>`:'';
+  const described=hint?` aria-describedby="help-${id}"`:'';
+  if(type==='choice')return `<fieldset class="field"><legend>${label}</legend>${help}<div class="choices">${options.map((o,i)=>`<label class="choice"><input type="radio" name="${id}" data-field="${id}" value="${esc(o)}"${described}><span>${esc(o)}</span></label>`).join('')}</div></fieldset>`;
+  const input=type==='select'?`<select id="${id}" data-field="${id}"${described}><option value="">Choose an answer</option>${options.map(o=>`<option>${esc(o)}</option>`).join('')}</select>`:type==='number'?`<input type="text" inputmode="decimal" class="short" id="${id}" data-field="${id}"${described}>`:`<textarea id="${id}" data-field="${id}" rows="${rows}"${described} class="${type==='code'?'code-answer':''}" spellcheck="${type==='code'?'false':'true'}"></textarea>`;
+  return `<div class="field"><label for="${id}">${label}${optional?' <span class="muted small">(optional)</span>':''}</label>${help}${input}</div>`;
+}
+function check(id,ids,correct,good,retry){checks[id]={ids,correct,good,retry,section:currentSection};return `<button type="button" data-check="${id}">Check my answer${ids.length>1?'s':''}</button><div id="feedback-${id}" class="feedback" role="status" hidden></div>`;}
+const hints=(id,list)=>`<div class="hint-stack">${list.map((text,i)=>`<details data-hint="${id}-${i+1}"><summary>${i===list.length-1?'Worked support':`Hint ${i+1}`}${i===0?' — a small nudge':''}</summary>${text}</details>`).join('')}</div>`;
+const task=(title,body,label='Your next step')=>`<section class="task"><div class="task-label">${label}</div><h3>${title}</h3>${body}</section>`;
+const evidence=section=>`<details><summary>Add screenshot evidence (optional)</summary><div class="evidence" data-evidence-zone="${section}" tabindex="0" aria-label="Paste or upload evidence for ${section}"><p>Paste an image here, or choose PNG, JPEG or WebP screenshots. Keep your code and output readable; avoid capturing other students’ information. Text answers and pasted code are exported too.</p><label class="small" for="upload-${section}">Choose evidence images</label><input id="upload-${section}" type="file" accept="image/png,image/jpeg,image/webp" multiple data-upload="${section}"><div class="evidence-list" data-evidence-list="${section}"></div></div></details>`;
+const quizPython='name = input("Enter your name: ")\ncorrect_answers = int(input("Correct answers: "))\ntotal = correct_answers * 5\nprint(name)\nprint(total)';
+const pseudo='Name ← USERINPUT\nCorrectAnswers ← USERINPUT\nTotal ← CorrectAnswers * 5\nOUTPUT Name\nOUTPUT Total';
+const resources=`<p>OxfordAQA 9210, section 3.1.1: algorithms, programs, input–processing–output, tracing and purpose. Pseudocode here follows the guide’s <code>←</code>, <code>USERINPUT</code> and <code>OUTPUT</code> notation.</p><ul><li><a href="https://www.oxfordaqa.com/wp-content/uploads/2025/02/oxfordaqa-international-gcse-computerscience-specification.pdf" target="_blank" rel="noopener">OxfordAQA specification</a></li><li><a href="https://www.oxfordaqa.com/oaqaresources/computer-science/9210-international-gcse-computer-science-teaching-guidance-v1.0.pdf" target="_blank" rel="noopener">OxfordAQA teaching guidance and pseudocode</a></li></ul><p>Optional textbook reading: supplied <em>OxfordAQA International GCSE Computer Science</em>, printed p. 10 (PDF page 14) and pp. 12–13 (PDF pages 16–17). Readings in this app are original summaries, not reproduced textbook extracts. No textbook download is required to complete the lesson.</p>`;
+function starter(){return `<div class="section-head"><div class="eyebrow">Starter · about 6 minutes</div><h2>Predict a quiz score.</h2><p>Read first. Make a prediction. Then run the program to check it.</p></div>`+task('Meet the quiz-score calculator',`<p>Your teacher runs a short quiz. Each correct answer earns <strong>5 points</strong>. A student enters their name and the number of answers they got right. The program displays their name and their total points.</p><p>For this lesson, assume the student types a whole number such as <strong>3</strong>, not the word “three”. You do not need to handle invalid inputs yet.</p>${code(quizPython)}<div class="ipo-flow" aria-label="Input, processing and output"><div><strong>1 · Input</strong><p>Get the student's name and number of correct answers.</p></div><div><strong>2 · Processing</strong><p>Multiply correct answers by 5.</p></div><div><strong>3 · Output</strong><p>Display the name and total points.</p></div></div>`,'Read the scenario')+task('Predict before pressing Run',`${field('r_s_total','Aisha enters 3 correct answers. What value will total hold?',{type:'number',context:'Quiz score: each correct answer earns 5 points. Aisha has 3 correct answers.'})}${check('s_total',['r_s_total'],f=>f.r_s_total.trim()==='15','Yes. 3 × 5 = 15. The value stored in total is 15.','Look at total = correct_answers * 5. Replace correct_answers with 3, then calculate 3 × 5.')}${field('r_s_process','Which line calculates the score?',{type:'choice',options:['correct_answers = int(input("Correct answers: "))','total = correct_answers * 5','print(total)'],context:quizPython})}${check('s_process',['r_s_process'],f=>f.r_s_process==='total = correct_answers * 5','Yes. This line processes the input. input(...) gets data; print(...) displays it.','Find the line containing multiplication (*). Getting a value and displaying a value are different from calculating with it.')}`,'Predict · AO2')+task('Run once and compare',`<ol><li>Open your Python IDE and create a file named <code>w1s3_quiz.py</code>.</li><li>Copy the five lines above into your file. Save and run.</li><li>Enter <strong>Aisha</strong>, then <strong>3</strong>. Look at the output.</li></ol>${out('Enter your name: Aisha\nCorrect answers: 3\nAisha\n15')}<p>The first two lines show prompts and what you typed. The last two lines are printed by the program.</p>${field('r_s_run','What happened when you ran it?',{type:'select',options:['It printed Aisha and 15 on separate lines.','It printed something different.','I have an error message.','I could not run it yet.']})}${field('r_s_note','A note or error message for your teacher',{optional:true,hint:'Only needed if your output differs or you need help. You can paste an error message.'})}${evidence('starter')}<p class="endpoint">Stop point: you have predicted a value, identified processing and checked one run. If running is blocked, use the worked output and ask for help; you can still continue.</p>`,'Run & compare');}
+function learning(){return `<div class="section-head"><div class="eyebrow">Learning pitstop · about 3 minutes</div><h2>How did you get better?</h2><p>Think about the starter you just completed. These are types of learning, not fixed types of learner.</p></div>`+task('Connect your learning to WAGBA',`<div class="mapping"><div class="mapping-row"><strong>Knowledge · remember</strong><p>I recalled that <code>*</code> means multiply and <code>print()</code> displays output. To get better: cover the example and recall one fact.</p></div><div class="mapping-row"><strong>Skills · practise</strong><p>I followed the value 3 through a calculation, then ran the program. To get better: repeat with a different input, such as 4.</p></div><div class="mapping-row"><strong>Understanding · explain and connect</strong><p>I connected the calculation to the rule “5 points per correct answer”. To get better: explain why changing 3 to 4 changes the score from 15 to 20.</p></div></div>${field('r_learning_type','Which type of learning can you give evidence for just now?',{type:'select',options:['Knowledge — I recalled a fact or symbol.','Skills — I followed values or ran the program.','Understanding — I explained how the rule and code connect.','I am not sure yet — I need a model.'],hint:'Several can apply. Choose one to discuss or write about.'})}${field('r_learning_action','My evidence and my next small step',{hint:'Complete: “I got better at ___ when I ___. Next I will ___.” You may discuss this with your teacher and record a short phrase.'})}<div class="callout">Our WAGBA is to <strong>explain, trace and turn an algorithm into a program</strong>. Recalling a symbol helps you read it; practising a trace helps you follow it; explaining the rule helps you design it.</div>`,'Reflect, then choose an action');}
+function main1(){return `<div class="section-head"><div class="eyebrow">Main activity 1 · about 14 minutes</div><h2>One solution. Different representations.</h2><p>Explain the plan before we look at its Python instructions.</p></div>`+task('Read: what makes an algorithm?',`<p>Imagine another teacher wants the same calculator, but uses a different programming language. We need a plan that explains <em>what to do</em>, without depending on Python punctuation.</p><div class="read"><p>An <strong>algorithm</strong> is a sequence of steps for completing a task. For our calculator, the task is to turn a number of correct answers into points.</p><p>A <strong>program</strong> implements an algorithm in a programming language. “Implements” means turns the plan into precise instructions that the language system can execute.</p><p>We can express an algorithm in ordinary language, a flowchart or pseudocode. Python code can implement those same steps. The solution is the same; its representation is different.</p><p class="source">Reading connection: textbook printed p. 10 · PDF page 14; OxfordAQA 9210 §3.1.1. Original summary.</p></div><h4>Our plan in ordinary language</h4><ol><li>Ask for the student's name.</li><li>Ask how many answers were correct.</li><li>Multiply that number by 5 to calculate the total.</li><li>Display the name.</li><li>Display the total.</li></ol><p>This plan explains the logic, but cannot be pasted into a Python IDE as working Python. We need to express it using Python’s rules.</p>`,'Read · AO1')+task('Study how the steps match',`<p>Read each plan step, then its matching Python line. Notice that the order stays the same.</p><div class="mapping"><div class="mapping-row"><strong>Get a name → input</strong><code>name = input("Enter your name: ")</code><span class="translation">input asks a question; name stores the reply.</span></div><div class="mapping-row"><strong>Get a whole-number count → input and conversion</strong><code>correct_answers = int(input("Correct answers: "))</code><span class="translation">int converts the typed text into a whole number so we can calculate with it.</span></div><div class="mapping-row"><strong>Calculate the points → processing</strong><code>total = correct_answers * 5</code><span class="translation">Calculate the expression on the right, then store its value in total.</span></div><div class="mapping-row"><strong>Display the results → output</strong><code>print(name)<br>print(total)</code><span class="translation">Two print calls produce two output lines.</span></div></div>${field('r_m1_match','The plan says “display the total”. Which Python line implements it?',{type:'choice',options:['print(total)','total = correct_answers * 5','name = input("Enter your name: ")']})}${check('m1_match',['r_m1_match'],f=>f.r_m1_match==='print(total)','Yes. print(total) displays the value already stored in total.','The total has already been calculated. Which instruction displays a stored value? Look for print.')}`,'Study → apply · AO2')+task('Explain the relationship',`${field('r_m1_misconception','Sam says: “If I use a different programming language, I must use a completely different algorithm.” What is the best response?',{type:'choice',options:['Agree: each language always needs a different solution.','Disagree: the same steps can be implemented using different language rules.','Agree: algorithms are only written in Python.']})}${check('m1_misconception',['r_m1_misconception'],f=>f.r_m1_misconception==='Disagree: the same steps can be implemented using different language rules.','Exactly. The language rules may change; the sequence and calculation can stay the same.','Separate the plan from its representation. “Multiply the correct answers by 5” can be implemented in more than one language.')}${field('r_m1_explain','Explain how our Python program implements the quiz-score algorithm.',{hint:'Use one specific step. Sentence starter: “The algorithm says ___. The Python line ___ implements this by ___.” Two sentences are enough.'})}${hints('m1-explain',[`<p>Choose just one part: input, processing or output. Point to the matching Python line above.</p>`,`<p>Worked example using a different program: “The algorithm says double the number of tickets. <code>cost = tickets * 2</code> implements this by multiplying the input by 2 and storing the result.” Now explain a step from our quiz.</p>`])}<p class="endpoint">Stop point: you can link one algorithm step to code and explain how a program implements a plan.</p>${evidence('main1')}`,'Explain · AO1 / AO2');}
+function main2(){return `<div class="section-head"><div class="eyebrow">Main activity 2 · about 23 minutes</div><h2>Trace it. Translate it. Test it.</h2><p>You have explained the plan. Now read a short pseudocode version, then build its Python implementation.</p></div>`+task('Read: a first look at pseudocode',`<p><strong>Pseudocode</strong> describes an algorithm using code-like statements. It lets us focus on steps without following all the syntax rules of a particular programming language. It is for people to read; the pseudocode below is not executable Python.</p><div class="read"><p>In the OxfordAQA notation used here, <code>USERINPUT</code> gets an input and <code>OUTPUT</code> displays a value. The arrow <code>←</code> means <strong>assignment</strong>: work out the right-hand side, then store that value in the variable on the left.</p><p class="source">Reading connection: textbook printed pp. 12–13 · PDF pages 16–17; OxfordAQA pseudocode guidance. Original summary. You only need these three notations today.</p></div>${code(pseudo,'Pseudocode — read and trace; do not run in the IDE')}<p><code>Name</code> and <code>name</code> serve the same role in these two examples. We chose different naming styles to make the representations clear. Python is case-sensitive, so keep each Python variable’s spelling consistent.</p><div class="mapping"><div class="mapping-row"><strong>Read a name</strong><code>Name ← USERINPUT</code><span class="translation">In Python:</span><code>name = input("Enter your name: ")</code></div><div class="mapping-row"><strong>Calculate, then store</strong><code>Total ← CorrectAnswers * 5</code><span class="translation">In Python:</span><code>total = correct_answers * 5</code></div><div class="mapping-row"><strong>Display a value</strong><code>OUTPUT Total</code><span class="translation">In Python:</span><code>print(total)</code></div></div>${field('r_m2_arrow','What does Total ← CorrectAnswers * 5 mean?',{type:'choice',options:['Multiply CorrectAnswers by 5 and store the result in Total.','Display CorrectAnswers without changing anything.','Store the word Total inside CorrectAnswers.']})}${check('m2_arrow',['r_m2_arrow'],f=>f.r_m2_arrow==='Multiply CorrectAnswers by 5 and store the result in Total.','Yes. Evaluate the right-hand expression first, then assign its result to Total.','Start to the right of ←. Calculate CorrectAnswers * 5. The arrow points to the variable that receives the result.')}`,'Read → check · AO1 / AO2')+task('Watch one worked trace, then try one',`<p>A <strong>trace</strong> follows the instructions in order and records what happens to values. Use Arun and 4 correct answers. Select “Next trace step” to follow the five lines; this is a worked demonstration, not a Python editor.</p><div class="example"><p id="traceLine" aria-live="polite"></p><div class="table-wrap"><table><caption class="small">Values after the highlighted instruction</caption><thead><tr><th>Name</th><th>CorrectAnswers</th><th>Total</th></tr></thead><tbody><tr><td id="traceName">—</td><td id="traceCorrect">—</td><td id="traceTotal">—</td></tr></tbody></table></div><strong>Output so far</strong><pre id="traceOutput" class="output">No output yet.</pre><div class="check-row"><button id="traceBack">Previous trace step</button><button id="traceNext">Next trace step</button><span id="tracePosition" class="small"></span></div></div>${field('r_m2_trace','Your turn: Mei enters 6 correct answers. Write the two output lines.',{hint:'Write exactly the name and calculated total, on separate lines. Do not include the input prompts.',context:pseudo+'\nTest inputs: Mei and 6.'})}${check('m2_trace',['r_m2_trace'],f=>f.r_m2_trace.trim().split(/\n/).map(s=>s.trim()).filter(Boolean).join('\n')==='Mei\n30','Correct: Mei, then 30 on the next line. The two OUTPUT statements determine the layout.','Trace the calculation with 6: 6 × 5 = 30. OUTPUT Name prints Mei; OUTPUT Total prints 30 on the next line. Put those two values on separate lines.')}`,'Worked example → independent trace · AO2')+task('Build the same solution in Python',`<p>Now transfer your thinking into your own IDE. The score rule is still <strong>5 points for every correct answer</strong>. Your program must ask for a name and a whole-number count, calculate the score and print the name and score on separate lines.</p><ol><li>Start a new file named <code>w1s3_translation.py</code>.</li><li>Use the pseudocode above as your plan. Write the matching Python instructions.</li><li>Save, then run. Test with <strong>Mei</strong> and <strong>6</strong>.</li><li>Paste your complete Python code below. You may use the scaffold if a blank file feels too big.</li></ol>${hints('translation',[`<p>Match one line at a time: USERINPUT → input(...), ← → =, OUTPUT → print(...). Convert the count to a whole number using int(...).</p>`,code('name = input("Enter your name: ")\ncorrect_answers = int(input("Correct answers: "))\ntotal = __________\nprint(__________)\nprint(__________)','Scaffold — replace all three gaps before running'),`<p>Compare this worked version with your attempt. Explain to yourself what each line does before you copy it.</p>${code(quizPython)}`])}<details data-hint="syntax-support"><summary>Syntax help: quotation marks, brackets and int()</summary><p>Look at one pair at a time. The brackets belong to function calls; the quotation marks surround text.</p><div class="syntax">name = input<span class="token">(</span><span class="token">"</span>Enter your name: <span class="token">"</span><span class="token">)</span></div><ol><li><code>"Enter your name: "</code> is the prompt text. Both quotation marks are needed.</li><li><code>input(...)</code> has an opening and closing bracket.</li><li><code>int(input(...))</code> has two pairs: input gets text; int converts it to a whole number.</li></ol><p>Use straight quotation marks <code>" "</code> or <code>' '</code>, not curly “smart” quotation marks. If a line errors, compare it character by character with the example. You can copy one correct line and change only the prompt.</p><p><strong>Math reminder:</strong> <code>*</code> multiplies; <code>+</code> adds; <code>-</code> subtracts; <code>/</code> divides. We only need multiplication in the main task.</p></details>${field('r_m2_code','My complete Python program',{type:'code',rows:7,hint:'Paste from your IDE. This space stores your work; it does not run or automatically mark your code.'})}`,'Translate · AO3')+task('Test two cases and explain the result',`<p>One successful run is a useful start. A second input helps you check the rule is general, rather than accidentally working for just one number.</p><div class="table-wrap"><table><thead><tr><th>Test</th><th>Inputs</th><th>Expected output lines</th></tr></thead><tbody><tr><td>1 · ordinary value</td><td>Mei, 6</td><td>Mei<br>30</td></tr><tr><td>2 · no correct answers</td><td>Dan, 0</td><td>Dan<br>0</td></tr></tbody></table></div><ol><li>Run your program once for each test.</li><li>Paste the actual output from each run below. Keep the test labels.</li><li>If it differs, reread the calculation and repair one thing. Record what changed.</li></ol>${field('r_m2_tests','My test results',{type:'code',rows:6,hint:'Use: Test 1 actual: … / matched or differed. Test 2 actual: … / matched or differed. If you could not run it, say where you were blocked.'})}${field('r_m2_compare','What do your tests show about your implementation?',{hint:'One or two sentences: “For ___ the expected score was ___ and the actual score was ___. I know / I still need to check ___.” If you fixed a mistake, mention it.'})}${evidence('main2')}<p class="endpoint">Stop point: save your program and record both tests, or record the specific help you need. Visit the learning pitstop next. Early finishers can then choose an extension; you do not need to complete the bank.</p>`,'Test & evaluate · AO3');}
+function phase(){return `<div class="section-head"><div class="eyebrow">Learning pitstop · about 4 minutes</div><h2>Where are you with this task?</h2><p>Judge how tracing and translating felt <em>today</em>. This is not a label about your ability. Different parts of a lesson can feel different.</p></div>`+task('Choose the description that fits now',`${field('r_phase','My current phase of learning',{type:'choice',options:['New learning — this is new, but I can take a next step with the example.','Consolidating — practice is making my tracing and translation more reliable.','Treading water — I can explain and do this already; I need more challenge.','Drowning / I need help — I cannot find a manageable next step yet.']})}<div id="phaseAdvice" class="callout" role="status">Choose a phase to see a topic-specific next step.</div>${field('r_phase_action','One piece of evidence and my next step',{hint:'For example: “I traced Mei’s score without the model. Next I will design my own two tests.” Or: “I need help with int(input(...)). Please show me one line.”'})}<p>Tell your teacher, show this page or use your agreed signal if you need support. Selecting “I need help” does not send a notification.</p><p class="endpoint">If you are ready for more, choose one extension. Otherwise revisit one worked step or go to the plenary when your teacher asks.</p>`,'Reflect → act');}
+const challenges=[
+ {title:'School-show tickets',kind:'Adapt · AO3',scenario:'The school sells show tickets for 7 points each. The organiser wants to enter the number of tickets and see the total cost. Use whole-number ticket counts.',instruction:'Write a short pseudocode plan. Implement it in Python: ask for the number of tickets, multiply by 7 and print the total cost. Use a clear prompt and label the output.',example:'Tickets: 3\nTotal cost: 21 points',test:'Try 5 tickets → 35 points, then 0 tickets → 0 points.',hint:'Use the quiz calculator’s input → calculation → output pattern. Change the variable names and the multiplication rate, not just the output text.',model:'Tickets ← USERINPUT\nCost ← Tickets * 7\nOUTPUT Cost',sample:'tickets = int(input("Tickets: "))\ncost = tickets * 7\nprint("Total cost:", cost, "points")'},
+ {title:'Minutes into seconds',kind:'Transfer · AO3',scenario:'A PE teacher is preparing timed activities. They enter a whole number of minutes; your program reports the equivalent number of seconds. There are 60 seconds in one minute.',instruction:'Plan and write the converter. Ask for minutes, calculate seconds and display the result. Explain which part of the quiz algorithm you reused.',example:'Minutes: 4\nSeconds: 240',test:'Try 2 minutes → 120 seconds, then 0 minutes → 0 seconds.',hint:'The problem changes, but the structure stays the same. Store minutes as an integer and multiply it by 60.',model:'Minutes ← USERINPUT\nSeconds ← Minutes * 60\nOUTPUT Seconds',sample:'minutes = int(input("Minutes: "))\nseconds = minutes * 60\nprint("Seconds:", seconds)'},
+ {title:'Quiz bonus points',kind:'Extend · AO3',scenario:'The quiz still awards 5 points for each correct answer. It now also awards 2 points for each completed bonus task. Both counts are entered by the student. The final score includes both types of points.',instruction:'Extend your plan and Python program to ask for correct answers and bonus tasks. Calculate each score, add them and print the final score.',example:'Correct answers: 4\nBonus tasks: 2\nFinal score: 24 points',test:'Try 3 correct answers and 4 bonus tasks → 23 points. Try 0 correct answers and 2 bonus tasks → 4 points.',hint:'Keep the two rates separate: correct_answers * 5 and bonus_tasks * 2. The final score is the sum, not the product, of those two results.',model:'CorrectAnswers ← USERINPUT\nBonusTasks ← USERINPUT\nFinalScore ← CorrectAnswers * 5 + BonusTasks * 2\nOUTPUT FinalScore',sample:'correct_answers = int(input("Correct answers: "))\nbonus_tasks = int(input("Bonus tasks: "))\nfinal_score = correct_answers * 5 + bonus_tasks * 2\nprint("Final score:", final_score, "points")'},
+ {title:'Trace a changing value',kind:'Trace & explain · AO2',scenario:'A student starts with some activity points. They earn 6 more points, then spend 4. The variable Points is updated after each event.',instruction:'Without running code, trace the value of Points after every assignment. Then translate the pseudocode into Python and test whether it agrees with your trace. Explain why the last value is not the original input.',given:'Points ← USERINPUT\nPoints ← Points + 6\nPoints ← Points - 4\nOUTPUT Points',example:'Starting points: 10\nPoints remaining: 12',test:'With input 10 the stored values are 10, 16, 12. With input 0 the final value should be 2.',hint:'An assignment uses the current value on the right and replaces the stored value on the left. Use a three-row trace table.',model:'For input 10: Points becomes 10, then 16, then 12. Each assignment replaces the previous stored value.',sample:'points = int(input("Starting points: "))\npoints = points + 6\npoints = points - 4\nprint("Points remaining:", points)'},
+ {title:'Repair the repeated digits',kind:'Debug · AO3',scenario:'A student writes a badge-cost calculator. Every badge costs 3 points. They enter 4 badges and see 444, but expected 12. The program runs, yet its result is wrong.',instruction:'Predict why the digits repeat. Copy the faulty program into your IDE, run it once, then repair the input line. Record the original result, your change and two results after the repair.',given:'badges = input("Badges: ")\ncost = badges * 3\nprint("Cost:", cost)',givenLanguage:'Python with a bug',example:'Badges: 4\nCost: 12',test:'After repair: 4 badges → 12; 2 badges → 6.',hint:'input returns text. In Python, text * 3 repeats the text three times. Convert the typed number using int before multiplying.',model:'Read a badge count as a whole number, multiply that number by 3, then display the cost.',sample:'badges = int(input("Badges: "))\ncost = badges * 3\nprint("Cost:", cost)'},
+ {title:'Put the instructions in order',kind:'Sequence · AO2 / AO3',scenario:'A teacher wants a calculator that says how many books remain after a class borrows some. The lines below are correct individually but have been mixed up. Assume the number borrowed is no greater than the stock.',instruction:'Record the correct line order using A–D. Then type the reordered program in your IDE and test it. Explain why the calculation cannot happen before the inputs.',given:'A  print("Books left:", remaining)\nB  borrowed = int(input("Books borrowed: "))\nC  stock = int(input("Books in stock: "))\nD  remaining = stock - borrowed',givenLanguage:'Mixed-up Python — remove the A–D labels when typing',example:'Books in stock: 12\nBooks borrowed: 5\nBooks left: 7',test:'Use the prompt order shown: 12 and 5 → 7; 8 and 8 → 0.',hint:'Ask for stock, then borrowed. Calculate using those two values. Display the result last. The A–D labels are not part of the Python code.',model:'Order: C, B, D, A. Both input values must exist before remaining can be calculated.',sample:'stock = int(input("Books in stock: "))\nborrowed = int(input("Books borrowed: "))\nremaining = stock - borrowed\nprint("Books left:", remaining)'},
+ {title:'A program that uses a value too soon',kind:'Diagnose & repair · AO3',scenario:'A new program should calculate the total number of seats in a hall from its rows and seats per row. The student places the multiplication first. In a fresh run, Python has not received either input at that point.',instruction:'Read the code and identify the ordering problem. Rewrite its pseudocode in a useful order, then fix and test the Python program. Record why your order is needed.',given:'total_seats = rows * seats_per_row\nrows = int(input("Rows: "))\nseats_per_row = int(input("Seats per row: "))\nprint("Total seats:", total_seats)',givenLanguage:'Python with an ordering bug',example:'Rows: 6\nSeats per row: 8\nTotal seats: 48',test:'Try 6 rows of 8 → 48 seats; 3 rows of 10 → 30 seats.',hint:'The multiplication depends on two values. Move it after both input lines, but before output.',model:'Rows ← USERINPUT\nSeatsPerRow ← USERINPUT\nTotalSeats ← Rows * SeatsPerRow\nOUTPUT TotalSeats',sample:'rows = int(input("Rows: "))\nseats_per_row = int(input("Seats per row: "))\ntotal_seats = rows * seats_per_row\nprint("Total seats:", total_seats)'},
+ {title:'Sponsored laps',kind:'Design a solution · AO3',scenario:'A charity run has one sponsor who gives 3 points for every completed lap. A second sponsor gives a fixed donation, regardless of how many laps are completed. The organiser enters the lap count and the fixed donation, both whole numbers.',instruction:'Write pseudocode and Python to calculate the total donation. Keep the fixed donation separate from the per-lap amount. Explain the difference between the two sponsorship rules.',example:'Completed laps: 5\nFixed donation: 10\nTotal donation: 25 points',test:'Try 2 laps and a fixed donation of 7 → 13 points; 0 laps and a fixed donation of 7 → 7 points.',hint:'Only one part depends on laps: laps * 3. Add the fixed donation after calculating that part.',model:'Laps ← USERINPUT\nFixedDonation ← USERINPUT\nTotal ← Laps * 3 + FixedDonation\nOUTPUT Total',sample:'laps = int(input("Completed laps: "))\nfixed_donation = int(input("Fixed donation: "))\ntotal = laps * 3 + fixed_donation\nprint("Total donation:", total, "points")'},
+ {title:'Do different programs follow the same rule?',kind:'Compare & test · AO2 / AO3',scenario:'Two students implement the rule “5 points for each correct answer”. One multiplies by 5. The other multiplies by 4 and adds the original count. They disagree about whether the programs solve the same problem.',instruction:'Trace both calculations for input 3 and input 0. Implement both in one program and print both results. Explain whether the expressions match for any whole-number count, not just your two tests.',given:'Version A: Total ← CorrectAnswers * 5\nVersion B: Total ← CorrectAnswers * 4 + CorrectAnswers',example:'Correct answers: 3\nVersion A: 15\nVersion B: 15',test:'For 0 both give 0; for 7 both give 35. Explain the repeated groups: four groups plus one group make five groups.',hint:'Let the count be n. Version A has five groups of n. Version B has four groups of n plus one more n. Tests provide examples; the explanation supports the general rule.',model:'Both implement the same scoring rule: n * 4 + n = n * 5. A finite set of tests alone does not prove this for every input.',sample:'correct_answers = int(input("Correct answers: "))\na = correct_answers * 5\nb = correct_answers * 4 + correct_answers\nprint("Version A:", a)\nprint("Version B:", b)'},
+ {title:'Design a club-points calculator',kind:'Independent design · AO3',scenario:'Your school club wants its own points system. Choose a club, two countable achievements and a fixed whole-number points rate for each achievement. For example, a reading club could award points for books finished and reviews written.',instruction:'State both scoring rules clearly. Write pseudocode, implement it in Python and print the total. Create three tests with expected results before you run: one ordinary case, one with both counts zero and one with only one achievement type. Record actual results and explain a design choice.',example:'Example rules: 4 points per book, 2 points per review.\nBooks finished: 3\nReviews written: 2\nTotal points: 16',test:'For the example rules: 3 books and 2 reviews → 16; 0 and 0 → 0; 0 and 5 → 10. If you choose other rules, calculate your own expected totals.',hint:'Use only sequence, input, variables, arithmetic and output. No if statements or loops are needed. Clearly label which counts your program asks for.',model:'Describe your own two rates. Read both counts, multiply each by its rate, add the two scores and display the total.',sample:'books = int(input("Books finished: "))\nreviews = int(input("Reviews written: "))\ntotal = books * 4 + reviews * 2\nprint("Total points:", total)'}
+];
+function extension(){return `<div class="section-head"><div class="eyebrow">Extension · choose one, not all ten</div><h2>Take the next useful challenge.</h2><p>Start with an adaptation if you want more practice, or choose debugging and design if you are ready to stretch. This bank can be revisited in a later lesson.</p></div><p>For your chosen challenge: read the scenario → make a plan or prediction → code in your IDE → test → record your evidence. Open hints only when useful. Nothing here needs loops or selection.</p><div class="bank">${challenges.map((c,i)=>{let id=`r_e${i+1}`;let context=`${c.title}. ${c.scenario} ${c.instruction} Example run: ${c.example}. Tests: ${c.test}`;return `<details data-challenge="${i+1}"><summary>${String(i+1).padStart(2,'0')} · ${c.title}<span class="badge">${c.kind}</span></summary><p>${c.scenario}</p><h4>Your task</h4><p>${c.instruction}</p>${c.given?code(c.given,c.givenLanguage||'Pseudocode — read, do not run'):''}${out(c.example)}<p class="callout"><strong>Tests to try:</strong> ${c.test}</p>${hints(`extension-${i+1}`,[`<p>${c.hint}</p>`,`<p>${esc(c.model).replace(/\n/g,'<br>')}</p><p>Use this to check your thinking, then explain a step in your own words.</p>`])}${field(`${id}_plan`,'My plan, trace or explanation',{type:'code',rows:4,optional:true,context})}${field(`${id}_code`,'My Python code',{type:'code',rows:6,optional:true,context})}${field(`${id}_tests`,'My expected and actual results; any repair I made',{rows:4,optional:true,context,hint:'Label each test. A prediction is not the same as a run: say if you could not run your program yet.'})}${field(`${id}_status`,'Where I got to',{type:'select',optional:true,options:['Started — I need more time.','Blocked — I have recorded my question.','Tested — my results matched the expected results.','Revised — I repaired a problem and tested again.']})}</details>`}).join('')}</div>${evidence('extension')}<p class="endpoint">When your teacher asks, go to the plenary even if your extension is unfinished. Its draft work will still appear in the PDF.</p>`;}
+function plenary(){return `<div class="section-head"><div class="eyebrow">Plenary & PDF · about 10 minutes</div><h2>Show what you can now explain.</h2><p>Try these without the reading first. If you are unsure, revisit an example and try again.</p></div>`+task('Three short exit checks',`${field('r_p_algorithm','Which statement best describes an algorithm?',{type:'choice',options:['A sequence of steps for completing a task.','Only a program written in Python.','The error message printed by a computer.']})}${check('p_algorithm',['r_p_algorithm'],f=>f.r_p_algorithm==='A sequence of steps for completing a task.','Correct. A program implements an algorithm in a programming language.','Think about the plan we wrote before the Python implementation. The algorithm describes the steps needed to complete the task.')}${field('r_p_trace','Trace this: Points ← 7, then Points ← Points + 3. What is displayed by OUTPUT Points?',{type:'number',context:'Points ← 7\nPoints ← Points + 3\nOUTPUT Points'})}${check('p_trace',['r_p_trace'],f=>f.r_p_trace.trim()==='10','Yes. Points changes from 7 to 10, then 10 is displayed.','The second assignment uses the current value 7. Calculate 7 + 3, then replace Points with the result.')}${field('r_p_order','The calculator prints total before calculating total. What should you change, and why?',{hint:'One or two sentences. Explain the order, not just the line number.'})}${hints('plenary-order',[`<p>Ask which values must exist before the output instruction can use them.</p>`,`<p>The inputs must be obtained and total calculated before print(total). Otherwise a fresh run tries to use a value that has not been assigned.</p>`])}`,'Recall, apply & explain')+task('Return to WAGBA',`${field('r_p_reflect','What got better, and what is your next step?',{hint:'Name one piece of evidence: a correct trace, a translated line, a test or a repair. Then identify one thing to practise or ask about.'})}<p>Useful starter: “I can now ___; my evidence is ___. Next I need to ___.” You may make a short note after discussing it with your teacher.</p>`,'Reflect on your progress')+task('Save your evidence and submit it',`<p>Your report includes every recorded response, check attempt, draft program and screenshot, including unfinished extensions. A PDF is evidence of your work, not an automatic grade.</p><ol><li>Select <strong>Export PDF</strong> below. Review the complete report.</li><li>Select <strong>Print / Save as PDF</strong>. Choose <strong>Save as PDF</strong> and A4 paper.</li><li>Save using the filename shown here:<span id="filenamePreview" class="filename"></span></li><li>Open the saved PDF. Check your name, class, all pages, code and screenshots.</li><li>Open your class in <strong>Microsoft Teams → Assignments</strong> and choose the correct lesson assignment.</li><li>Select <strong>Add work</strong> (or <strong>Attach</strong>), upload the PDF and select <strong>Turn in</strong>. Check that Teams confirms submission.</li></ol><button class="export-button primary">Export PDF</button><p class="small muted">You can also export unfinished work using the button at the top of any lesson page. Keep your .py file in your own folder; include it separately in Teams only if your teacher asks.</p>`,'Review → export → submit');}
+const legacyLabels={s_input:'First input line',s_process:'Processing line',s_output:'Output line',s_prediction:'Predicted output',s_variables:'Variable names',s_actual:'Actual output',s_result:'Prediction check',s_secure:'Confident skill',s_support:'Support need',m1_algorithm:'Definition of algorithm',m1_program:'Definition of program',m1_cannot_run:'Earlier prompt: why an algorithm cannot run directly',m1_reason:'Reason for planning',m1_identify:'Identification and justification',m1_match:'Matched steps and code',m1_ipo:'Input, processing and output',m1_language:'Different programming languages',m2_run:'Can pseudocode run?',m2_arrow:'Assignment arrow',m2_input_word:'Input keyword',m2_output_word:'Output keyword',m2_labels:'Line classifications',m2_trace:'Trace for Arun and 4',m2_missing:'Missing expression',m2_purpose:'Purpose',m2_python:'Python translation',m2_actual:'Actual output',m2_test:'Test outcome',m2_comparison:'Pseudocode / Python comparison',ext_pseudocode:'Bonus-task pseudocode',ext_expected:'Expected bonus result',ext_explain:'Algorithm explanation',ext_python:'Bonus Python code',ext_actual:'Bonus actual result',ext_result:'Bonus test result',p_algorithm:'Algorithm definition',p_program:'Program and algorithm',p_arrow:'Assignment arrow',p_classify:'Statement classification',p_explain:'Why tracing helps',p_knowledge:'Knowledge reflection',p_skill:'Skill reflection',p_understanding:'Understanding reflection',rating_ao1:'AO1 rating',rating_ao2:'AO2 rating',rating_ao3:'AO3 rating',p_support:'Support request'};
+function initialise(){
+ const functions=[starter,learning,main1,main2,phase,extension,plenary];
+ $('#navigation').innerHTML=steps.map(([key,title,time],i)=>`<button class="nav-button" data-go="${key}"><span class="nav-number">${i+1}</span><span>${title}</span></button>`).join('');
+ $('#lessonContent').innerHTML=steps.map(([key,title],i)=>{currentSection=key;return `<section class="lesson-page" data-page="${key}" hidden>${functions[i]()}<div class="focus-controls" data-focus-controls hidden><button data-task-back>Previous task</button><span class="focus-position"></span><button data-task-next>Next task</button></div><div class="pager">${i?`<button data-go="${steps[i-1][0]}">← ${steps[i-1][1]}</button>`:'<span></span>'}${i<steps.length-1?`<button class="primary" data-go="${steps[i+1][0]}">${steps[i+1][1]} →</button>`:'<button data-go="starter">Review from the start</button>'}</div></section>`}).join('');
+ fieldSchema.r_support={id:'r_support',label:'Latest help request',type:'text',optional:true,section:'phase'};
+ $('#notesBody').innerHTML=`<p><strong>60-minute route:</strong> starter 6; first pitstop 3; main 1 14; main 2 23; second pitstop 4; plenary and PDF 10. Early finishers use extensions within working time, not as an additional compulsory block.</p><p><strong>Success evidence:</strong> link a plan step to code; trace unfamiliar values; implement the five-step plan; compare expected and actual outputs. Text boxes record work, not correctness. Only constrained checks are automatically checked. Read students’ explanations, code and tests yourself.</p><p><strong>Support:</strong> model one line, allow processing time, offer copyable scaffolds and a quiet help signal. Use the school’s agreed individual support plans; do not assume every autistic student needs the same support. “Drowning” is paired with plain-language help and is not an ability label.</p><p><strong>Assessment:</strong> AO1 = knowledge and understanding; AO2 = applying them; AO3 = analysing problems and developing/testing solutions. Activity labels indicate opportunities, not official marks. There is no required partner talk, timer, leaderboard or enforced answer gate.</p>${resources}<h3>Design references</h3><ul><li><a href="https://static.raspberrypi.org/files/curriculum/Pedagogy/Pedagogy_Principles_Poster_2023.pdf" target="_blank" rel="noopener">Raspberry Pi computing pedagogy principles</a> — read code, model, scaffold and challenge misconceptions.</li><li><a href="https://www.raspberrypi.org/app/uploads/2022/08/Teaching_Programming_with_PRIMM-1.pdf" target="_blank" rel="noopener">PRIMM: Predict, Run, Investigate, Modify, Make</a></li><li><a href="https://educationendowmentfoundation.org.uk/education-evidence/guidance-reports/supporting-high-quality-teaching-for-pupils-with-send" target="_blank" rel="noopener">EEF: high-quality teaching for pupils with SEND</a></li><li><a href="https://www.autism.org.uk/learn/knowledge-hub/professional-practice/communication-pupils" target="_blank" rel="noopener">National Autistic Society: communication with pupils</a></li><li><a href="https://www.w3.org/WAI/WCAG2/supplemental/patterns/o4p07-step-instructions/" target="_blank" rel="noopener">W3C: clear step-by-step instructions</a></li></ul><p class="small">These principles inform the design; this app is not a clinically validated intervention. The ten original practice challenges use scenario → example run → tests, inspired by programming-exercise conventions, not copied Helsinki questions.</p>`;
+ bind(); resumeOffer();
+}
+function announce(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,4500);}
+function storageFailure(message){savingOK=false;$('#storageError').textContent=message;$('#storageError').hidden=false;$('#saveStatus').textContent='Not saved — export before leaving';}
+function save(){if(!state.owner)return;state.updatedAt=new Date().toISOString();try{localStorage.setItem(stateKey(state.owner),JSON.stringify(state));localStorage.setItem(`${APP_VERSION}:last-profile`,JSON.stringify({owner:state.owner,profile:state.profile}));savingOK=true;$('#storageError').hidden=true;$('#saveStatus').textContent='Saved on this device';}catch(e){storageFailure('This browser could not save your text. Keep this page open and export your report before leaving. Check browser storage settings with your teacher.');}}
+function resumeOffer(){try{const last=JSON.parse(localStorage.getItem(`${APP_VERSION}:last-profile`)||'null');if(last?.profile?.name&&!last.profile.teacher){$('#resume').innerHTML=`<p class="small">Saved on this device: ${esc(last.profile.name)} · ${esc(last.profile.className)}</p><button id="resumeButton">Continue my saved lesson</button>`;$('#resumeButton').onclick=()=>start(last.profile.name,last.profile.className);}}catch(e){$('#resume').textContent='Saved work could not be read. You may start a session and export it before leaving.';}}
+async function start(name,className){
+ const teacher=name.trim().toLowerCase()==='teacher',profile={name:teacher?'Teacher preview':name.trim(),className:teacher?'Review mode':className.trim(),teacher};
+ const owner=teacher?'teacher-preview':`${slug(profile.name)}-${slug(profile.className)}`;
+ let saved;try{saved=JSON.parse(localStorage.getItem(stateKey(owner))||'null');}catch(e){storageFailure('Earlier saved text could not be read. Do not clear browser storage; ask your teacher for help.');return;}
+ if(saved&&saved.owner!==owner)saved=null;
+ state={...saved,owner,profile,revision:REVISION,fields:saved?.fields||{},checks:saved?.checks||{},hints:Array.isArray(saved?.hints)?saved.hints:[],attempts:Array.isArray(saved?.attempts)?saved.attempts:[],supportLog:Array.isArray(saved?.supportLog)?saved.supportLog:[],focus:!!saved?.focus,taskIndices:saved?.taskIndices||{},traceStep:saved?.traceStep||0,startedAt:saved?.startedAt||new Date().toISOString()};
+ state.page=saved?.revision===REVISION&&steps.some(s=>s[0]===saved.page)?saved.page:(originalSections[Number(saved?.currentStep)||0]||'starter');
+ $('#landing').hidden=true;$('#app').hidden=false;$('#reportScreen').hidden=true;$('#profileLabel').textContent=`${profile.name} · ${profile.className}`;$('#teacherBanner').hidden=!teacher;$('#filenamePreview').textContent=filename();
+ for(const el of $$('[data-field]')){const value=state.fields[el.dataset.field]??'';if(el.type==='radio')el.checked=value===el.value;else el.value=value;}
+ $$('[data-hint]').forEach(el=>el.open=false);$$('[data-challenge]').forEach(el=>el.open=false);
+ $('#supportChoice').value=state.fields.r_support||'';$('#pauseMessage').hidden=true;$('#supportAdvice').textContent=supportAdvice(state.fields.r_support);
+ for(const id of Object.keys(checks))renderFeedback(id);
+ updatePhase();renderTrace();go(state.page,true);save();
+ try{await refreshEvidence();}catch(e){announce('Saved screenshots could not be loaded. Your text remains available; retry opening your lesson before exporting.');}
+}
+function filename(){return `W01S03_${slug(state.profile?.name)}_${slug(state.profile?.className)}.pdf`;}
+function go(page,scroll=true){if(!steps.some(s=>s[0]===page))return;state.page=page;state.currentStep=originalSections.indexOf(page)>=0?originalSections.indexOf(page):state.currentStep;$$('[data-page]').forEach(el=>el.hidden=el.dataset.page!==page);$$('[data-go]').forEach(el=>{if(el.classList.contains('nav-button')){if(el.dataset.go===page)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');}});applyFocus();updateProgress();save();if(scroll){$('#lessonContent').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}}
+function updateProgress(){const required=Object.values(fieldSchema).filter(x=>!x.optional&&x.section!=='extension');const done=required.filter(x=>filled(state.fields?.[x.id])).length;const last=Object.entries(checks).map(([id,c])=>[c,state.attempts?.filter(a=>a.check===id).at(-1)]);const verified=last.filter(([c,a])=>a?.correct&&c.ids.every(k=>a.answers[k]===state.fields[k])).length;$('#progress').innerHTML=`<strong>${done} / ${required.length}</strong> core responses recorded.<br><strong>${verified} / ${Object.keys(checks).length}</strong> short checks currently correct.<br><span>Written work and code need review.</span>`;}
+function applyFocus(){document.body.classList.toggle('focus-mode',state.focus);$('#focusToggle').setAttribute('aria-pressed',String(state.focus));$('#focusToggle').textContent=state.focus?'Show all tasks':'One task at a time';const page=$(`[data-page="${state.page}"]`);const tasks=$$('.task',page);const index=Math.min(Math.max(0,state.taskIndices[state.page]||0),Math.max(0,tasks.length-1));state.taskIndices[state.page]=index;tasks.forEach((t,i)=>{t.toggleAttribute('data-focus-hidden',state.focus&&i!==index);});const controls=$('[data-focus-controls]',page);controls.hidden=!state.focus||tasks.length<2;$('.focus-position',controls).textContent=`Task ${index+1} of ${tasks.length}`;$('[data-task-back]',controls).disabled=index===0;const next=$('[data-task-next]',controls);next.disabled=index>=tasks.length-1;next.classList.add('primary');const nextSection=$('.pager .primary',page);if(nextSection)nextSection.hidden=state.focus&&tasks.length>1&&index<tasks.length-1;}
+function moveTask(delta){state.taskIndices[state.page]=(state.taskIndices[state.page]||0)+delta;applyFocus();save();$('#lessonContent').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
+function evaluateCheck(id){const c=checks[id];if(c.ids.some(k=>!filled(state.fields[k]))){const box=$(`#feedback-${id}`);box.hidden=false;box.className='feedback';box.textContent='Choose or write an answer first. This is a practice check; you can retry.';return;}const answers=Object.fromEntries(c.ids.map(k=>[k,state.fields[k]]));const correct=!!c.correct(state.fields);state.attempts.push({check:id,answers,correct,time:new Date().toISOString(),feedback:correct?c.good:c.retry});save();renderFeedback(id);updateProgress();}
+function renderFeedback(id){const box=$(`#feedback-${id}`);if(!box)return;const attempts=state.attempts?.filter(a=>a.check===id)||[],last=attempts.at(-1);if(!last){box.hidden=true;return;}const stale=checks[id].ids.some(k=>last.answers[k]!==state.fields[k]);box.hidden=false;box.className=`feedback ${stale?'stale':last.correct?'good':''}`;box.innerHTML=`<p><strong>${stale?'Answer changed — check again.':last.correct?'That’s right.':'Not yet — try this.'}</strong> ${esc(stale?'Your earlier attempt is still recorded.':last.feedback)}</p><small>${attempts.length} check attempt${attempts.length===1?'':'s'} recorded. ${stale?'':last.correct?'Explain why it works before moving on.':'You can reread the example and try again.'}</small>`;}
+const traceRows=[['Before the first instruction','—','—','—','No output yet.'],['1 · Name ← USERINPUT','Arun','—','—','No output yet.'],['2 · CorrectAnswers ← USERINPUT','Arun','4','—','No output yet.'],['3 · Total ← CorrectAnswers * 5','Arun','4','20','No output yet.'],['4 · OUTPUT Name','Arun','4','20','Arun'],['5 · OUTPUT Total','Arun','4','20','Arun\n20']];
+function renderTrace(){const i=Math.max(0,Math.min(5,state.traceStep||0));state.traceStep=i;['traceLine','traceName','traceCorrect','traceTotal','traceOutput'].forEach((id,n)=>$('#'+id).textContent=traceRows[i][n]);$('#tracePosition').textContent=`${i} / 5 instructions followed`;$('#traceBack').disabled=i===0;$('#traceNext').disabled=i===5;}
+function updatePhase(){const choice=state.fields?.r_phase||'';let text='Choose a phase to see a topic-specific next step.';if(choice.startsWith('New learning'))text='Next step: use the pseudocode-to-Python mapping for one line, then explain that line without looking.';if(choice.startsWith('Consolidating'))text='Next step: trace a new input without the model, then compare it with a real run.';if(choice.startsWith('Treading water'))text='Next step: choose a debugging or independent-design extension. Explain why your repair or design works, and test it.';if(choice.startsWith('Drowning'))text='Next step: stop adding new code. Point to one confusing line or symbol and ask your teacher to model it. You can use the scaffold or take your agreed pause.';$('#phaseAdvice').textContent=text;}
+function supportAdvice(value){if((value||'').includes('quotation'))return 'Choose “Syntax help” in Main activity 2. Look at one pair of quotation marks or brackets at a time; ask your teacher to model one line if needed.';if((value||'').includes('trace'))return 'Return to the worked trace. Follow one instruction, say what changed, then reveal the next step.';if((value||'').includes('next step'))return 'Use “One task at a time”. Read only the numbered instruction you are on. Ask your teacher to show the first action.';if((value||'').includes('error'))return 'Copy the error message into your evidence. Check the named line against the model, one character at a time. Ask for help if it still does not make sense.';if((value||'').includes('pause'))return 'Use your agreed classroom pause. Your place is kept; you do not need to finish every task before asking for support.';return 'You can ask for a demonstration, point to a line, or show your teacher this screen.';}
+function openDB(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const db=req.result;const store=db.createObjectStore('evidence',{keyPath:'id'});store.createIndex('owner','owner',{unique:false});store.createIndex('ownerSection',['owner','section'],{unique:false});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>{dbPromise=null;reject(req.error);};req.onblocked=()=>{dbPromise=null;reject(new Error('Close other lesson tabs, then retry.'));};});return dbPromise;}
+async function readEvidence(){const db=await openDB();return new Promise((resolve,reject)=>{const req=db.transaction('evidence','readonly').objectStore('evidence').index('owner').getAll(state.owner);req.onsuccess=()=>resolve(req.result.sort((a,b)=>a.created-b.created));req.onerror=()=>reject(req.error);});}
+async function writeEvidence(record){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('evidence','readwrite');tx.objectStore('evidence').put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}
+async function removeEvidence(id){if(!confirm('Remove this screenshot from your lesson evidence? This cannot be undone here.'))return;try{if(unsavedEvidence.some(r=>r.id===id)){unsavedEvidence=unsavedEvidence.filter(r=>r.id!==id);}else{const db=await openDB();await new Promise((resolve,reject)=>{const tx=db.transaction('evidence','readwrite');tx.objectStore('evidence').delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}await refreshEvidence();announce('Screenshot removed from the lesson. Your original image file is unchanged.');}catch(e){announce('That image could not be removed. Please try again.');}}
+const dataURL=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file);});
+async function addEvidence(section,files){const owner=state.owner;for(const file of [...files]){if(!['image/png','image/jpeg','image/webp'].includes(file.type)){announce('Please choose a PNG, JPEG or WebP image.');continue;}if(file.size>20*1024*1024){announce('This image is over 20 MB. Use a smaller screenshot without cropping away your evidence.');continue;}try{const url=await dataURL(file);const img=new Image();img.src=url;await img.decode();const record={id:`${owner}:${section}:${Date.now()}:${Math.random().toString(36).slice(2)}`,owner,section,name:file.name||'Pasted screenshot',dataUrl:url,created:Date.now()};try{await writeEvidence(record);}catch(e){unsavedEvidence.push(record);announce('The screenshot is kept in this open page but could not be saved. Export before leaving.');}if(state.owner!==owner)continue;await refreshEvidence();}catch(e){announce('This image could not be opened. Try a new screenshot.');}}}
+async function refreshEvidence(){allRecords=[...await readEvidence(),...unsavedEvidence.filter(r=>r.owner===state.owner)];renderEvidence();}
+function renderEvidence(){$$('[data-evidence-list]').forEach(list=>{const records=allRecords.filter(r=>r.section===list.dataset.evidenceList);list.innerHTML=records.map(r=>`<figure><img src="${esc(r.dataUrl)}" alt="Evidence screenshot: ${esc(r.name)}"><figcaption><span>${esc(r.name)}${unsavedEvidence.some(x=>x.id===r.id)?' · NOT SAVED — export before leaving':''}</span><button class="small" data-remove="${esc(r.id)}">Remove image</button></figcaption></figure>`).join('');});}
+function reportEntry(label,value,type='text',context=''){return `<div class="report-entry"><h3>${esc(label)}</h3>${context?`<p class="report-question-context">${esc(context)}</p>`:''}${type==='code'?`<pre class="report-answer report-code">${esc(filled(value)?value:'Not recorded.')}</pre>`:`<p class="report-answer">${esc(filled(value)?value:'Not recorded.')}</p>`}</div>`;}
+async function buildReport(){
+ save();await refreshEvidence();
+ const required=Object.values(fieldSchema).filter(f=>!f.optional&&f.section!=='extension');
+ let html=`<header><div class="eyebrow">OxfordAQA 9210 · Week 1, Session 3</div><h1>From a plan to a program</h1><p><strong>${esc(state.profile.name)}</strong> · ${esc(state.profile.className)}</p><p class="report-meta">Export prepared: ${esc(new Date().toLocaleString())}<br>File: ${esc(filename())}<br>${required.filter(f=>filled(state.fields[f.id])).length} / ${required.length} core responses recorded. This is a completion record, not a grade.</p><p><strong>WAGBA:</strong> Explain, trace and turn an algorithm into a working Python program.</p><p><strong>Knowledge:</strong> algorithm, program, pseudocode.<br><strong>Skills:</strong> trace, translate, test.<br><strong>Understanding:</strong> the same solution can have different representations.</p><p>Typed responses, draft code, check attempts, support choices and screenshots are included. Blank items are marked “Not recorded”. Optional extensions are not compulsory. Code and written explanations require teacher review.</p></header>`;
+ for(const [key,title] of steps){const fields=Object.values(fieldSchema).filter(f=>f.section===key);html+=`<section class="report-section"><h2>${esc(title)}${key==='extension'?' — optional':''}</h2>`;
+ if(key==='extension'){for(let i=0;i<10;i++){const c=challenges[i],sub=fields.filter(f=>f.id.startsWith(`r_e${i+1}_`)),attempted=sub.some(f=>filled(state.fields[f.id]));html+=`<h3>${i+1}. ${esc(c.title)}</h3>`;if(!attempted){html+='<p class="report-meta">No written response recorded — optional challenge.</p>';continue;}html+=`<p class="report-question-context">${esc(c.scenario)} ${esc(c.instruction)}</p><p class="report-question-context">Tests: ${esc(c.test)}</p>`;for(const f of sub)html+=reportEntry(f.label,state.fields[f.id],f.type);}}
+ else{for(const f of fields)html+=reportEntry(f.label,state.fields[f.id],f.type,f.context);}
+ const attempts=state.attempts.filter(a=>checks[a.check]?.section===key);if(attempts.length){html+='<h3>Practice-check history</h3>';for(const a of attempts){const c=checks[a.check];html+=`<div class="report-entry"><h4>${esc(c.ids.map(id=>fieldSchema[id]?.label||id).join(' / '))}</h4><p class="report-meta">${esc(a.time)} · ${a.correct?'Correct':'Needs another look'}</p><p class="report-answer">${esc(Object.values(a.answers).join('\n'))}</p><p class="report-meta">Feedback: ${esc(a.feedback)}</p></div>`;}}
+ for(const r of allRecords.filter(r=>r.section===key))html+=`<figure class="report-evidence"><figcaption>${esc(r.name)}${unsavedEvidence.some(x=>x.id===r.id)?' — included from this open page; not saved in browser storage':''}</figcaption><img class="report-image" src="${esc(r.dataUrl)}" alt="${esc(r.name)}"></figure>`;
+ html+='</section>';}
+ const legacy=Object.entries(state.fields).filter(([key,value])=>!fieldSchema[key]&&filled(value));if(legacy.length||Object.keys(state.checks).length){html+='<section class="report-section"><h2>Earlier-version responses</h2><p>Your previously saved work has been retained. These prompts belong to the earlier lesson layout and are not treated as answers to the redesigned tasks.</p>';for(const [key,value] of legacy)html+=reportEntry(legacyLabels[key]||key,value,/python|pseudocode/.test(key)?'code':'text');for(const [key,value] of Object.entries(state.checks))html+=reportEntry(`Earlier checkbox: ${key}`,value?'Yes':'No');html+='</section>';}
+ const extra=allRecords.filter(r=>!steps.some(s=>s[0]===r.section));if(extra.length){html+='<section class="report-section"><h2>Other retained evidence</h2>';for(const r of extra)html+=`<figure class="report-evidence"><figcaption>${esc(r.name)}</figcaption><img class="report-image" src="${esc(r.dataUrl)}" alt="${esc(r.name)}"></figure>`;html+='</section>';}
+ html+=`<section class="report-section"><h2>Learning support and submission</h2>${reportEntry('Hints or support panels opened',state.hints.join('\n'))}${reportEntry('Help-request history',state.supportLog.map(s=>`${s.time} · ${s.page}: ${s.request}`).join('\n'))}<h3>Submit your PDF to Microsoft Teams</h3><ol><li>Save as <strong>${esc(filename())}</strong>.</li><li>Open the PDF and check that your text, code and screenshots are complete.</li><li>Open the correct class assignment in Teams. Select Add work or Attach, and upload the PDF.</li><li>Select Turn in and check that the submission is confirmed.</li></ol><p>This report has not been submitted automatically. Keep your .py files as well.</p></section>`;
+ $('#printReport').innerHTML=html;
+ await Promise.all($$('img',$('#printReport')).map(img=>img.decode()));
+ return html;
+}
+async function exportReport(){const buttons=$$('.export-button');buttons.forEach(b=>b.disabled=true);try{await buildReport();$('#app').hidden=true;$('#reportScreen').hidden=false;document.title=filename().replace(/\.pdf$/,'');window.scrollTo({top:0,behavior:'instant'});$('#backFromReport').focus({preventScroll:true});announce('Review the report, then choose Print / Save as PDF.');}catch(e){announce('The complete report could not be prepared, possibly because a saved image could not load. Keep your lesson open, then try again.');}finally{buttons.forEach(b=>b.disabled=false);}}
+async function copy(button){const text=$('pre',button.closest('.code-wrap')).textContent;try{await navigator.clipboard.writeText(text);announce('Code copied. Paste it into your own IDE.');}catch(e){const selection=window.getSelection();const range=document.createRange();range.selectNodeContents($('pre',button.closest('.code-wrap')));selection.removeAllRanges();selection.addRange(range);announce('Code selected. Use your keyboard’s Copy command, then paste into your IDE.');}}
+function teacherSamples(){if(!state.profile.teacher)return;const sample={r_s_total:'15',r_s_process:'total = correct_answers * 5',r_s_run:'It printed Aisha and 15 on separate lines.',r_learning_type:'Skills — I followed values or ran the program.',r_learning_action:'I got better at following a value when I predicted 3 × 5. Next I will trace without running.',r_m1_match:'print(total)',r_m1_misconception:'Disagree: the same steps can be implemented using different language rules.',r_m1_explain:'The algorithm says multiply the correct-answer count by 5. total = correct_answers * 5 implements this by calculating that value and storing it in total.',r_m2_arrow:'Multiply CorrectAnswers by 5 and store the result in Total.',r_m2_trace:'Mei\n30',r_m2_code:quizPython,r_m2_tests:'Test 1 actual:\nMei\n30\nMatched expected output.\n\nTest 2 actual:\nDan\n0\nMatched expected output.',r_m2_compare:'For 6 correct answers the expected score was 30 and the actual score was 30. The zero test also matched, which supports the calculation working for these two inputs.',r_phase:'Consolidating — practice is making my tracing and translation more reliable.',r_phase_action:'I translated the calculation. Next I will try a new scenario without the scaffold.',r_p_algorithm:'A sequence of steps for completing a task.',r_p_trace:'10',r_p_order:'Calculate total after obtaining the inputs and before printing it. The output needs a value that has already been assigned.',r_p_reflect:'I can now match an algorithm step to Python; my evidence is my calculation and two tests. Next I will design different test inputs.'};challenges.forEach((c,i)=>{sample[`r_e${i+1}_plan`]=c.model;sample[`r_e${i+1}_code`]=c.sample;sample[`r_e${i+1}_tests`]='Teacher demonstration of expected results: '+c.test+'\nThese are reference answers, not a recorded student run.';sample[`r_e${i+1}_status`]='Started — I need more time.';});for(const [key,value] of Object.entries(sample))if(!filled(state.fields[key]))state.fields[key]=value;$$('[data-field]').forEach(el=>{if(el.type==='radio')el.checked=el.value===state.fields[el.dataset.field];else el.value=state.fields[el.dataset.field]||'';});updatePhase();save();updateProgress();announce('Blank fields filled with teacher examples. Check histories are unchanged.');}
+function bind(){
+ new ResizeObserver(entries=>document.documentElement.style.setProperty('--toolbar-height',`${entries[0].target.getBoundingClientRect().height}px`)).observe($('.toolbar'));
+ $('#loginForm').onsubmit=e=>{e.preventDefault();const name=$('#studentName').value.trim(),cls=$('#studentClass').value.trim();if(!name||(name.toLowerCase()!=='teacher'&&!cls)){$('#loginError').hidden=false;$('#loginError').textContent='Enter your name and class to open the lesson.';return;}$('#loginError').hidden=true;start(name,cls);};
+ document.addEventListener('input',e=>{const el=e.target;if(!el.dataset.field||el.type==='radio'||el.tagName==='SELECT')return;recordField(el);});
+ document.addEventListener('change',e=>{const el=e.target;if(el.dataset.field)recordField(el);if(el.dataset.upload)addEvidence(el.dataset.upload,el.files).finally(()=>el.value='');});
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.go)go(b.dataset.go);if(b.dataset.check)evaluateCheck(b.dataset.check);if(b.hasAttribute('data-copy'))copy(b);if(b.dataset.close)$('#'+b.dataset.close).close();if(b.dataset.remove)removeEvidence(b.dataset.remove);if(b.hasAttribute('data-task-back'))moveTask(-1);if(b.hasAttribute('data-task-next'))moveTask(1);if(b.classList.contains('export-button'))exportReport();});
+ $$('[data-hint]').forEach(d=>d.addEventListener('toggle',()=>{if(d.open&&state.owner&&!state.hints.includes(d.dataset.hint)){state.hints.push(d.dataset.hint);save();}}));
+ $$('[data-evidence-zone]').forEach(zone=>{zone.addEventListener('paste',e=>{const files=[...(e.clipboardData?.files||[])];if(files.length){e.preventDefault();addEvidence(zone.dataset.evidenceZone,files);}});zone.addEventListener('dragover',e=>e.preventDefault());zone.addEventListener('drop',e=>{e.preventDefault();addEvidence(zone.dataset.evidenceZone,e.dataTransfer.files);});});
+ $('#focusToggle').onclick=()=>{state.focus=!state.focus;applyFocus();save();};
+ $('#traceBack').onclick=()=>{state.traceStep--;renderTrace();save();};$('#traceNext').onclick=()=>{state.traceStep++;renderTrace();save();};
+ $('#helpButton').onclick=()=>$('#helpDialog').showModal();$('#pauseButton').onclick=()=>{save();$('#pauseMessage').hidden=false;};
+ $('#supportChoice').onchange=e=>{state.fields.r_support=e.target.value;$('#supportAdvice').textContent=supportAdvice(e.target.value);if(e.target.value)state.supportLog.push({request:e.target.value,page:state.page,time:new Date().toISOString()});save();};
+ $('#teacherNotes').onclick=()=>$('#notesDialog').showModal();$('#teacherSample').onclick=teacherSamples;
+ $('#switchProfile').onclick=()=>{if(unsavedEvidence.some(r=>r.owner===state.owner)||!savingOK){announce('Please export your current work before switching: some evidence is not saved.');return;}save();$('#app').hidden=true;$('#landing').hidden=false;$('#studentName').value='';$('#studentClass').value='';resumeOffer();$('#studentName').focus();};
+ $('#backFromReport').onclick=()=>{$('#reportScreen').hidden=true;$('#app').hidden=false;document.title='Week 1 · Session 3 — From a plan to a program';go(state.page);};
+ $('#printButton').onclick=()=>window.print();
+ window.addEventListener('beforeunload',e=>{if(!savingOK||unsavedEvidence.length){e.preventDefault();e.returnValue='';}});
+ // Native print while in the lesson uses a synchronously prepared report if one exists.
+ window.addEventListener('beforeprint',()=>{if($('#reportScreen').hidden)$('#printReport').innerHTML='<h1>Export your lesson report first</h1><p>Cancel printing. Use the lesson’s Export PDF button to collect all responses and images, then choose Print / Save as PDF.</p>';});
+}
+function recordField(el){state.fields[el.dataset.field]=el.value;save();Object.entries(checks).filter(([,c])=>c.ids.includes(el.dataset.field)).forEach(([id])=>renderFeedback(id));if(el.dataset.field==='r_phase')updatePhase();updateProgress();}
+initialise();
+})();
+</script>
 </body>
 </html>
