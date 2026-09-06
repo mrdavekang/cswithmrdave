@@ -43,6 +43,10 @@ If export fails: retain the page, retry or open the print-friendly report. On a 
 
 ## Validation and deployment checks
 
+Version 4.0.1 fixes a missing closing brace in the school-map script that caused a blank screen immediately after sign-in. The entry page requests fresh script versions without changing the student storage keys. An unexpected card-rendering error now displays a reload message instead of an empty page; recovery does not delete saved work.
+
+Sign-in regression checks also ran with the real bundled React code in a test DOM: student and teacher entry, a non-Latin name, resume, quiz progression, every lesson card, map/word-help dialogs and recovery after a simulated missing map. This is not a physical Safari/iPad test.
+
 Run `node test.cjs` for the regression tests. The development review checks rule logic, component output and handlers without launching a browser. It is not a live Safari/iPad verification. Before classroom deployment, test actual PDF preparation, file sharing, opening a saved file and Teams Turn in on one school iPad and one laptop, including cancellation and retry. Check portrait, landscape, 200% text enlargement, and the on-screen keyboard.
 
 No website publication or Git push is performed by this file update.

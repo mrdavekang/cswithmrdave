@@ -1,6 +1,22 @@
 (function(){
   'use strict';
   const h=React.createElement, L=Lesson;
+  // React renders asynchronously: a try/catch around root.render cannot catch
+  // errors inside a lesson card. Keep an actionable screen if a card fails.
+  class LessonBoundary extends React.Component {
+    constructor(props){super(props);this.state={error:null};}
+    static getDerivedStateFromError(error){return {error};}
+    componentDidCatch(error,info){console.error('Lesson display failed',error,info);}
+    render(){
+      if(!this.state.error)return this.props.children;
+      return h('main',{className:'landing'},h('section',{className:'entry',role:'alert'},
+        h('h1',null,'The lesson could not open'),
+        h('p',null,'Your saved work has not been deleted. Reload this page, then enter the same name and class to resume.'),
+        h('button',{type:'button',className:'primary',onClick:()=>window.location.reload()},'Reload lesson'),
+        h('p',{className:'hint'},'If this happens again, show this message to your teacher. Do not clear your browser data.'),
+        h('details',null,h('summary',null,'Error details for your teacher'),h('p',null,String(this.state.error.message||this.state.error)))));
+    }
+  }
   function Button({children,...props}){return h('button',{type:'button',...props},children);}
   function MapView({detail=false,alternative=false}){
     return h('figure',{className:'map'},h('img',{src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(schoolMap(detail,alternative)),alt:alternative?'Alternative permitted route: Reception, Covered Courtyard, East Door, East Corner, C1. Main Corridor is closed after the Library.':'Practice map, one floor. Face Reception from the Main Entrance. At Reception turn right to the Library. Continue to the junction and turn left to C1. The branch above Reception is staff-only.'}),h('figcaption',null,'Practice map • all rooms are on one floor • stay in class to test your route.'));
@@ -30,7 +46,7 @@
     React.useEffect(()=>{if(showMap)mapRef.current?.showModal();else mapRef.current?.close();},[showMap]);
     React.useEffect(()=>{if(!state)return;setSave('Saving…'); const timer=setTimeout(()=>{try{localStorage.setItem(keyRef.current,JSON.stringify(state));setSave('Saved on this browser');}catch{setSave('Not saved: browser storage unavailable. Keep this page open and export your report.');}},200);return()=>clearTimeout(timer);},[state]);
     React.useEffect(()=>{const persist=()=>{if(stateRef.current&&keyRef.current)try{localStorage.setItem(keyRef.current,JSON.stringify(stateRef.current));}catch{}};window.addEventListener('pagehide',persist);return()=>window.removeEventListener('pagehide',persist);},[]);
-    React.useEffect(()=>{if(state){document.getElementById('card-title')?.focus();window.scrollTo({top:0,behavior:'instant'});}},[state?.current]);
+    React.useEffect(()=>{if(state){document.getElementById('card-title')?.focus();window.scrollTo(0,0);}},[state?.current]);
     React.useEffect(()=>{if(!state)return;const record=e=>{const control=e.target.closest?.('button,summary,input[type="checkbox"],input[type="radio"],select');if(!control)return;const label=control.getAttribute('aria-label')||control.textContent?.trim()||control.name||control.id||control.type;setState(s=>s?{...s,events:[...s.events,{time:new Date().toISOString(),card:L.cards[s.current].id,action:'Click: '+String(label).slice(0,180)}]}:s);};document.addEventListener('click',record);return()=>document.removeEventListener('click',record);},[!!state]);
     function update(fn,action){setState(s=>{const n=fn(s);return {...n,completed:n.completed.filter(id=>L.missing(n,id).length===0),updated:new Date().toISOString(),events:action?[...n.events,{time:new Date().toISOString(),card:L.cards[s.current].id,action}]:n.events};});}
     function answer(id,value){update(s=>({...s,answers:{...s.answers,[id]:value}}));if(id!=='deviceChoice')setPdf(null);}
@@ -92,5 +108,5 @@
       h('dialog',{ref:mapRef,onCancel:()=>setShowMap(false),className:'map-dialog'},h(Button,{className:'close',onClick:()=>setShowMap(false)},'Close map'),h('h2',null,'Your practice school map'),h(MapView,null),h('p',null,'Main Entrance → Reception (timetable) → Library (book) → junction → CS Room C1. The staff-only branch is not permitted.'))
     );
   }
-  try{ReactDOM.createRoot(document.getElementById('root')).render(h(App));}catch(e){document.getElementById('root').textContent='The lesson could not open. Reload this page or ask your teacher for help. Your saved work has not been deleted.';console.error(e);}
+  try{ReactDOM.createRoot(document.getElementById('root')).render(h(LessonBoundary,null,h(App)));}catch(e){document.getElementById('root').textContent='The lesson could not open. Reload this page or ask your teacher for help. Your saved work has not been deleted.';console.error(e);}
 })();

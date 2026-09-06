@@ -19,4 +19,5 @@
     ${detail?'<g fill="#fff1b7" stroke="#777"><rect x="223" y="112" width="30" height="40"/><rect x="434" y="246" width="45" height="28"/></g><g font-family="Arial,sans-serif" font-size="14" fill="#555"><text x="206" y="102">Poster</text><text x="424" y="294">Wall art</text></g>':''}
     ${alternative?'<path d="M100 180V280H650V70H560" fill="none" stroke="#166347" stroke-width="4" stroke-dasharray="8 5"/><g font-family="Arial,sans-serif" font-size="14" fill="#166347"><text x="272" y="273">Covered Courtyard</text><text x="578" y="308">East Door</text><text x="594" y="55">East Corner</text></g><path d="M424 170l20 20m0-20l-20 20" stroke="#b21c1c" stroke-width="5"/><text x="382" y="242" font-family="Arial,sans-serif" font-size="14" fill="#b21c1c">CLOSED here</text>':''}
     </svg>`;
+  };
 })(window);

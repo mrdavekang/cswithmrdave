@@ -3,6 +3,19 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const L=require('./lesson.js');
 let checks=0;const ok=(condition,message)=>{assert.ok(condition,message);checks++;};
+// Parse every shipped script, including diagrams and libraries. A missing map
+// must fail this test rather than being hidden behind a mocked map function.
+const entry=fs.readFileSync('index.html','utf8');
+for(const match of entry.matchAll(/<script[^>]+src="([^"?]+)(?:\?[^"]*)?"/g)){
+  new vm.Script(fs.readFileSync(match[1],'utf8'),{filename:match[1]});
+  ok(true,'Script syntax: '+match[1]);
+}
+const mapContext={window:{}};
+vm.runInNewContext(fs.readFileSync('map.js','utf8'),mapContext);
+for(const [detail,alternative] of [[false,false],[true,false],[false,true]]){
+  const svg=mapContext.window.schoolMap(detail,alternative);
+  ok(svg.includes('<svg')&&svg.includes('CS Room C1'),'Actual school map renders');
+}
 const s=L.makeState('李 明','7T');
 ok(L.storageKey('李 明','7T')!==L.storageKey('王 明','7T'),'Different non-Latin names retain different profiles');
 ok(L.storageKey('Teacher','')===L.storageKey('teacher','Review'),'Teacher storage is separate and stable');
@@ -33,8 +46,8 @@ ok(L.missing(L.makeState('Test','7T'),'extension').length===0,'Extension never g
 // Unit-render the React components and exercise their handlers, without a browser.
 let app, currentState=null, overrides={},hook=0,pending;
 const ref={current:null};
-const React={Fragment:'fragment',createElement:(type,props,...children)=>({type,props:{...props,children:children.flat(Infinity)}}),useState:initial=>{const index=hook++;let value=index===0?currentState:Object.hasOwn(overrides,index)?overrides[index]:typeof initial==='function'?initial():initial;return [value,next=>{if(index===0){pending=typeof next==='function'?next(currentState):next;}else overrides[index]=typeof next==='function'?next(value):next;}];},useRef:value=>({current:value}),useEffect:()=>{}};
-const sandbox={React,Lesson:L,ReactDOM:{createRoot:()=>({render:e=>{app=e.type;}})},document:{getElementById:()=>({}),querySelector:()=>null},window:{scrollTo:()=>{}},console,setTimeout:()=>{},clearTimeout:()=>{},schoolMap:()=>'<svg/>',Evidence:{load:async()=>[],save:async()=>{}},Report:{},confirm:()=>false,localStorage:{setItem(){},getItem(){return null}},URL,Blob,File:globalThis.File};
+const React={Component:class {},Fragment:'fragment',createElement:(type,props,...children)=>({type,props:{...props,children:children.flat(Infinity)}}),useState:initial=>{const index=hook++;let value=index===0?currentState:Object.hasOwn(overrides,index)?overrides[index]:typeof initial==='function'?initial():initial;return [value,next=>{if(index===0){pending=typeof next==='function'?next(currentState):next;}else overrides[index]=typeof next==='function'?next(value):next;}];},useRef:value=>({current:value}),useEffect:()=>{}};
+const sandbox={React,Lesson:L,ReactDOM:{createRoot:()=>({render:e=>{app=e.props.children[0].type;}})},document:{getElementById:()=>({}),querySelector:()=>null},window:{scrollTo:()=>{}},console,setTimeout:()=>{},clearTimeout:()=>{},schoolMap:mapContext.window.schoolMap,Evidence:{load:async()=>[],save:async()=>{}},Report:{},confirm:()=>false,localStorage:{setItem(){},getItem(){return null}},URL,Blob,File:globalThis.File};
 sandbox.window.window=sandbox.window;
 vm.runInNewContext(fs.readFileSync('app.js','utf8'),sandbox);
 function render(state,extra={}){currentState=state;hook=0;overrides=extra;pending=null;return app();}
