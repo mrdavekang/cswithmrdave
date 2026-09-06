@@ -75,7 +75,22 @@
     extension: [], reflect: ['phase','nextAction'], plenary: ['q:transfer','finalReason'], review: [], submit: []
   };
   const model = ['WALK straight from the Main Entrance to Reception.', 'COLLECT your timetable at Reception.'];
-  const text = value => typeof value === 'string' && value.trim().length > 0;
+  // Frames are support, not completed answers. Never match answer keywords.
+  const text = value => typeof value === 'string' && value.trim().length > 0 && !/_{3,}/.test(value);
+  const scaffolds = {
+    abstractionReason: {hint:'Choose one map detail. Say whether it helps the student find a place or stay out of a restricted area.', frame:'I kept ___ because it helps the student ___.', words:['room names','starting place','staff-only rule','poster','find','stay safe']},
+    step3: {hint:'Face up the map at Reception. Which turn points you along the Main Corridor?', frame:'TURN ___ into the ___.', words:['left','right','Main Corridor']},
+    step4: {hint:'Name the corridor to follow and the place where the book must be returned.', frame:'WALK along the ___ until you reach the ___.', words:['Main Corridor','Library','junction']},
+    step5: {hint:'The student is at the Library with a book. Write the job they must do here.', frame:'RETURN the ___ at the ___.', words:['book','Library','timetable','Reception']},
+    step6: {hint:'The student has finished at the Library and still faces right. Follow the corridor to the next corner.', frame:'WALK along the ___ until you reach the ___.', words:['Main Corridor','junction','Library']},
+    step7: {hint:'Face right at the junction. Which turn points up the map towards C1?', frame:'TURN ___ into the ___.', words:['left','right','Science Corridor']},
+    step8: {hint:'Name the final corridor and room. Tell the student where to stop.', frame:'WALK along the ___ and STOP outside ___.', words:['Science Corridor','CS Room C1','Library']},
+    testRewrite: {hint:'Keep the idea of your original step. Add a clear action or a place to stop. You may change this frame.', frame:'___ until you reach ___.', words:['WALK','TURN','Main Corridor','Science Corridor','Library','junction','C1']},
+    testReason: {hint:'One short reason is enough. Say what your partner could follow, or what you made clearer.', frame:'My partner knew ___ because my step named ___.', words:['where to turn','where to stop','the corridor','the room','the action']},
+    finalReason: {hint:'Choose one part of your own plan. Explain how it helps the new student. A short sentence is enough.', frame:'My step says ___. This helps the student ___.', words:['where to start','where to turn','where to stop','which job to do','avoid staff-only areas']},
+    extensionRoute: {hint:'Write one short instruction for each part: Reception → Covered Courtyard → East Door → East Corner → C1.', frame:'From Reception, WALK to ___.\nContinue to ___.\nAt ___, TURN towards ___.\nSTOP outside ___.', words:['Covered Courtyard','East Door','East Corner','C1']},
+    extensionCompare: {hint:'Choose A or B. Explain whether decoration can change. Then improve the unclear instruction.', frame:'I choose ___ because ___.\nI would change A to: ___.', words:['a named place','decoration may change','Library','Main Corridor']}
+  };
   function missing(state, cardId) {
     const fields = (required[cardId] || []).slice();
     if (cardId === 'test' && state.answers.testResult === 'Needs a clearer instruction') fields.push('testRewrite');
@@ -100,7 +115,7 @@
     return {...old, choice, checked:choice, accepted:correct, supported:false, correct, attempts:[...old.attempts,{choice,correct,time:new Date().toISOString()}]};
   }
   function select(state,id,choice) {return {...(state.quizzes[id]||{attempts:[]}), choice, checked:null, accepted:false, correct:false, supported:false};}
-  const api={stages,cards,goals,terms,questions,labels,required,model,missing,makeState,storageKey,answerLabel,filename,route,check,select};
+  const api={stages,cards,goals,terms,questions,labels,required,model,scaffolds,hasResponse:text,missing,makeState,storageKey,answerLabel,filename,route,check,select};
   root.Lesson=api;
   if(typeof module!=='undefined') module.exports=api;
 })(typeof window==='undefined'?globalThis:window);

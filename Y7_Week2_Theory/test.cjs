@@ -42,6 +42,9 @@ ok(L.missing(peer,'test').length===0,'No-error peer test allowed');peer.answers.
 ok(L.missing(peer,'test').includes('testRewrite'),'Improvement required only when an issue is reported');
 peer.answers.testRewrite='Turn towards the Main Corridor.';ok(!L.missing(peer,'test').length,'Improved response accepted without keywords');
 ok(L.missing(L.makeState('Test','7T'),'extension').length===0,'Extension never gates progress');
+ok(!L.hasResponse('TURN ___ into the ___.'),'Unfinished sentence frame is not a completed answer');
+ok(L.hasResponse('右转。'),'Short non-English responses are accepted');
+ok(L.hasResponse('Turn right.'),'A short answer does not need an exact sentence');
 
 // Unit-render the React components and exercise their handlers, without a browser.
 let app, currentState=null, overrides={},hook=0,pending;
@@ -58,7 +61,10 @@ for(let i=0;i<L.cards.length;i++){
   const t=L.makeState('Student','7T');t.current=i;t.unlocked=i;
   const tree=expand(render(t)),nodes=all(tree);
   ok(nodes.some(n=>n.props?.id==='card-title'),L.cards[i].id+' renders title');
-  for(const id of L.required[L.cards[i].id])ok(nodes.some(n=>n.props?.id==='field-'+id),'Required control is present: '+id);
+  for(const id of L.required[L.cards[i].id]){
+    const target=/^step[3-8]$/.test(id)?all(expand(render(t,{16:id}))):nodes;
+    ok(target.some(n=>n.props?.id==='field-'+id),'Required control is reachable: '+id);
+  }
   ok(nodes.some(n=>n.type==='button'&&text(n)==='Back'),'Back navigation exists');
 }
 const landing=expand(render(null));ok(all(landing).some(n=>n.props.id==='student-name'),'Landing name field');ok(all(landing).some(n=>n.props.id==='student-class'),'Landing class field');

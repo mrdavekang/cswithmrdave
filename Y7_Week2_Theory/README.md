@@ -13,6 +13,12 @@ Core evidence: journey sections; useful/unnecessary detail; IPO checks; six stud
 
 ## Navigation and feedback
 
+Version 4.1 adds visible language/device choices on the welcome page and on every lesson card. Blue labelled panels contain reading; yellow labelled panels contain questions. Scenarios explain who the guide is for and what students will make. The map stays open on route-related cards, beside the work on wide screens and above it on tablets; enlargement is optional. The highlighted starting place changes with the active writing instruction. On a short screen (including many on-screen-keyboard views), the map stops sticking so it cannot cover the writing area.
+
+Each writing card now shows one instruction at a time. Students may insert a sentence starter, replace its ___ gaps, or write their own short answer. Word banks remain visible. A starter cannot overwrite an existing answer. Continue opens the first missing instruction and focuses its field. Only blank answers or unreplaced ___ gaps block written work; spelling, language and specific keywords are not graded. The report records inserted sentence starters separately from final answers. Old saved profiles still use the same storage keys and retain their answers.
+
+Flowchart-symbol samples appear on the worked-example card, before students write their route, and again before the flowchart checks. Input/process/output has a labelled visual example. The generated flowchart is open on its card, and the peer-testing card shows the full written guide. No new required questions or lesson stages were added.
+
 Continue remains clickable. It lists missing answers and takes the student to the first one. Questions are grouped into small expandable checks. Required answers must be attempted; unsupported blank work cannot silently complete a card. Students may correct previous cards. Clearing a required answer removes that card's completion mark. The unlocked route remains available for review.
 
 ## Language and devices
