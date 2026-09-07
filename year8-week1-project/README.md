@@ -36,6 +36,44 @@ Teacher mode unlocks all pages, supplies sample responses and uses separate brow
 
 The extension is optional and never blocks the plenary.
 
+## Editors and iPad setup (version 2.1)
+
+The lesson now distinguishes **MakeCode Blocks**, **MakeCode Python**, and **MicroPython (micro:bit Python Editor)**. MakeCode Python works on computers too; it is the recommended typed-code route for iPad users in this lesson. These are not interchangeable sets of commands.
+
+Students select **iPad (Bluetooth)** in preparation or Main Activity 1, then **MakeCode Python** when choosing the editor. In MakeCode, use the arrow beside **JavaScript** and select **Python** (select JavaScript first if needed). Rotating the iPad to landscape can make the controls easier to access.
+
+Main Activity 2 shows a worked example and expected output for the selected editor. The MakeCode Python example is:
+
+```python
+basic.show_icon(IconNames.HEART)
+basic.pause(1000)
+basic.show_string("GO")
+```
+
+Students adapt the icon and short word. They must not paste `from microbit import *`, `display.show`, `sleep` or `display.scroll` into MakeCode. The separate MicroPython example remains available to students using `python.microbit.org`. Extension Level 1 includes a MakeCode Python Button A event example; Level 2 explains how to adapt it for Button B.
+
+Each example has a Copy button and selectable, read-only code. If clipboard access is blocked, code is selected for manual copying. On iPad, use the selection menu; clipboard permissions depend on the browser and hosting context.
+
+### Before an iPad lesson
+
+- Ask school IT to install/update the official **micro:bit iOS app** and permit Bluetooth access. The lesson web app does not install software or change permissions.
+- Provide teacher-approved power for each micro:bit. Pair with the correct numbered board; do not pair with another group's device.
+- Test the complete workflow on the school's actual iPad, app and micro:bit combination before class. If a board was previously running MicroPython, the teacher may need to flash a fresh MakeCode HEX file from a computer before Bluetooth pairing will work. Back up existing device projects before replacing them.
+- Start MakeCode inside the iOS app using **Create Code** for the simplest route. Select Python as above, build the project, test in the simulator, then select **Download** and follow the app's Bluetooth instructions.
+- If a student starts MakeCode in **Chrome on iPad**, Download → Download in the “Download ready” prompt → Open in micro:bit app transfers the project into the app. Check the latest program is present, then follow the app's sending instructions. The documented hand-off does **not** work in Safari; keep existing work and use the official guide or teacher-assisted transfer into MakeCode inside the app.
+- iPads do not flash a micro:bit through a USB `MICROBIT` drive. The app uses Bluetooth. Re-enter Bluetooth mode each time the app prompts; keep the board powered until transfer is confirmed.
+
+iPad students have a separate connection checklist and are not required to invent a cable number. USB diagrams and transfer instructions are shown on the computer route; the relevant Blocks diagram is explicitly labelled when viewing Python guidance. Device route, editor choice and transfer method are included in progress, backups, review and PDF evidence. A teacher-approved hardware contingency is available if pairing or app access fails; it must not be recorded as successful physical transfer.
+
+Existing saved work is retained: storage keys and schema version are unchanged. The legacy saved value `Python` still means **MicroPython**, never MakeCode Python. Computer and iPad connection checklist answers are kept separately.
+
+Official references (checked 7 September 2026):
+
+- [MakeCode Python and MicroPython compared](https://support.microbit.org/support/solutions/articles/19000111744-makecode-python-and-micropython)
+- [Creating and sending programs on an iPad](https://support.microbit.org/support/solutions/articles/19000117215-micro-bit-ios-app-creating-and-sending-programs-on-an-apple-ipad-or-iphone)
+- [micro:bit mobile apps and current Bluetooth advice](https://microbit.org/get-started/user-guide/mobile/)
+- [MakeCode pause timing](https://makecode.microbit.org/reference/basic/pause)
+
 ## Language support
 
 The landing page offers English, English + Bahasa Melayu, English + Simplified Chinese, and English + Korean.

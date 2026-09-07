@@ -591,6 +591,16 @@ pre.code{ display:block; padding:.75rem .9rem; overflow-x:auto; white-space:pre;
 .editor-card p{ font-size:.83rem; color:var(--grey-600); flex:1 }
 .editor-card .btn{ width:100% }
 .ext-icon{ font-size:.78rem }
+.code-sample{ margin:1rem 0; min-width:0 }
+.code-sample > label{ display:block; font-weight:700; margin-bottom:.4rem }
+.code-reference{
+  display:block; width:100%; box-sizing:border-box; margin:.5rem 0;
+  padding:.8rem; border:1px solid var(--grey-400); border-radius:var(--radius);
+  color:#111; background:#fafafa; font:16px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;
+  white-space:pre; overflow:auto; resize:vertical; -webkit-user-select:text; user-select:text;
+}
+.code-sample .btn{ min-height:44px }
+[data-code-editor] details > summary{ cursor:pointer; padding:.6rem 0; font-weight:700 }
 
 /* =============================================================
    FEEDBACK BLOCK

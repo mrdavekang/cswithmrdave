@@ -18,10 +18,24 @@
      1. CONFIGURATION  — teachers can safely edit the values in this block
      =========================================================================== */
 
-  /** Official micro:bit editors. Update these two links if your school uses
+  /** Official micro:bit editors. Update these links if your school uses
    *  a different version or a mirrored address. */
   var EDITOR_LINK_BLOCKS = 'https://makecode.microbit.org/';
+  var EDITOR_LINK_MAKECODE_PYTHON = 'https://makecode.microbit.org/';
   var EDITOR_LINK_PYTHON = 'https://python.microbit.org/v/3';
+  var IPAD_GUIDE = 'https://support.microbit.org/support/solutions/articles/19000117215-micro-bit-ios-app-creating-and-sending-programs-on-an-apple-ipad-or-iphone';
+  // Keep the legacy "Python" value so existing work still means MicroPython.
+  var EDITOR_OPTIONS = [
+    { value: 'Blocks (MakeCode)', text: 'MakeCode Blocks' },
+    { value: 'MakeCode Python', text: 'MakeCode Python — iPad-friendly' },
+    { value: 'Python', text: 'MicroPython — micro:bit Python Editor' }
+  ];
+  var DEVICE_ROUTES = ['Computer (USB)', 'iPad (Bluetooth)'];
+  var CODE_SAMPLES = {
+    welcomeMakeCode: 'basic.show_icon(IconNames.HEART)\nbasic.pause(1000)\nbasic.show_string("GO")',
+    welcomeMicroPython: 'from microbit import *\n\ndisplay.show(Image.HEART)\nsleep(1000)\ndisplay.scroll("GO")',
+    buttonMakeCode: 'def on_button_pressed_a():\n    basic.show_icon(IconNames.HAPPY)\n\ninput.on_button_pressed(Button.A, on_button_pressed_a)'
+  };
 
   /** Lesson identity — used to validate imported backup files. */
   var LESSON_ID      = 'y8-t1w1-microbit-onboarding';
@@ -84,6 +98,16 @@
         { id: 'c3', text: 'I connected the computer end after the micro:bit end.' },
         { id: 'c4', text: 'The device or MICROBIT drive appeared.' },
         { id: 'c5', text: 'I did not force the connector.' }
+      ]
+    },
+    connectIpad: {
+      title: 'iPad connection checklist',
+      items: [
+        { id: 'c1', text: 'I used a teacher-approved power supply and held the board by its edges.' },
+        { id: 'c2', text: 'I opened the micro:bit iOS app and checked its Bluetooth permission, or asked my teacher for help.' },
+        { id: 'c3', text: 'I followed the app pairing instructions for my numbered micro:bit, or recorded the pairing problem below.' },
+        { id: 'c4', text: 'I checked the app connection result. I am not expecting a MICROBIT drive on my iPad.' },
+        { id: 'c5', text: 'I did not force a connector. I will wait for the app to finish before switching off the board.' }
       ]
     },
     ma1: {
@@ -187,7 +211,9 @@
     'Direct browser pairing (Connect device / WebUSB)',
     'Downloaded .hex file',
     'Drag-and-drop to the MICROBIT drive',
-    'Another teacher-approved method'
+    'Another teacher-approved method',
+    'micro:bit iOS app (Bluetooth)',
+    'Not transferred — teacher-approved hardware contingency'
   ];
 
   var PLENARY_QS = [
@@ -205,7 +231,8 @@
     bm: {
       starter: 'Susun langkah daripada mencipta program hingga memeriksa output sebenar. Tentukan tindakan yang selamat atau tidak selamat.',
       pit1: 'Pilih jenis pembelajaran yang paling banyak anda gunakan: Pengetahuan, Kemahiran atau Pemahaman. Kemudian pilih cara untuk menjadi lebih baik.',
-      ma1: 'Kenal pasti bahagian micro:bit, sambungkan kabel dengan selamat dan buka satu editor. Jangan paksa penyambung.',
+      ma1: 'Kenal pasti bahagian micro:bit dan pilih laluan peranti anda. Komputer menggunakan USB; iPad menggunakan aplikasi micro:bit dan Bluetooth. Jangan paksa penyambung.',
+      python: 'Pada iPad, pilih MakeCode Python. Pilih Python melalui menu di sebelah JavaScript. Jangan gunakan from microbit import * dalam MakeCode. Contoh menunjukkan ikon hati, berhenti seketika, kemudian memaparkan GO. Tukar GO kepada mesej anda. Hantar kod melalui aplikasi micro:bit menggunakan Bluetooth, bukan pemacu USB.',
       ma2: 'Bina ikon dan mesej ringkas. Ramal, uji dalam simulator, pindahkan dan bandingkan output sebenar.',
       pit2: 'Pilih fasa pembelajaran anda sekarang dan beri bukti. Ini menerangkan keadaan tugasan, bukan kebolehan anda.',
       challenge: 'Teruskan mengikut tahap: Butang A, Butang B, kemudian jadual ujian dan penambahbaikan.',
@@ -215,7 +242,8 @@
     zh: {
       starter: '把步骤从“创建程序”排列到“检查真实输出”，并判断每个操作是否安全。',
       pit1: '选择你刚才主要运用的学习类型：知识、技能或理解，然后选择改进方法。',
-      ma1: '辨认 micro:bit 的部件，安全连接数据线，并打开一个编辑器。不要强行插入接头。',
+      ma1: '辨认 micro:bit 的部件，并选择设备连接方式。电脑使用 USB；iPad 使用 micro:bit 应用和 Bluetooth。不要强行插入接头。',
+      python: 'iPad 用户请选择 MakeCode Python，在 JavaScript 旁的菜单中选择 Python。不要在 MakeCode 中使用 from microbit import *。示例先显示爱心，暂停后滚动显示 GO。把 GO 改成自己的简短信息。使用 micro:bit 应用通过 Bluetooth 传输，不需要 USB 磁盘。',
       ma2: '制作图标和简短信息。先预测，在模拟器测试，再传输并比较真实输出。',
       pit2: '选择你目前的学习阶段并提供证据。这描述的是当前任务感受，不是你的能力。',
       challenge: '按顺序继续：按钮 A、按钮 B，然后完成测试表并改进设计。',
@@ -225,7 +253,8 @@
     ko: {
       starter: '프로그램 만들기부터 실제 출력 확인까지의 순서를 배열하고, 각 행동이 안전한지 판단하세요.',
       pit1: '방금 가장 많이 사용한 학습 유형(지식, 기능, 이해)을 고르고 더 나아질 방법을 선택하세요.',
-      ma1: 'micro:bit 부품을 확인하고 케이블을 안전하게 연결한 뒤 편집기를 여세요. 커넥터를 억지로 밀지 마세요.',
+      ma1: 'micro:bit 부품을 확인하고 기기 연결 방법을 선택하세요. 컴퓨터는 USB를, iPad는 micro:bit 앱과 Bluetooth를 사용합니다. 커넥터를 억지로 밀지 마세요.',
+      python: 'iPad에서는 MakeCode Python을 선택하세요. JavaScript 옆 메뉴에서 Python을 고르세요. MakeCode에서는 from microbit import *를 사용하지 않습니다. 예제는 하트를 표시하고 잠시 기다린 뒤 GO를 스크롤합니다. GO를 자신의 짧은 메시지로 바꾸세요. USB 드라이브가 아니라 micro:bit 앱의 Bluetooth로 전송하세요.',
       ma2: '아이콘과 짧은 메시지를 만드세요. 예측하고 시뮬레이터에서 시험한 뒤 전송하고 실제 출력을 비교하세요.',
       pit2: '현재 학습 단계를 선택하고 근거를 적으세요. 이것은 현재 과제의 상태이지 여러분의 능력이 아닙니다.',
       challenge: 'A 버튼, B 버튼, 테스트 표와 개선의 순서로 계속 도전하세요.',
@@ -363,7 +392,7 @@
       lastBackupAt: null,
       lastPdfAt: null,
       data: {
-        prep:      { deviceNumber: '', cableNumber: '', workMode: '', partnerName: '', projectFileName: '', ready: false, safetyStop: false, photoSafe: false },
+        prep:      { deviceRoute: 'Computer (USB)', deviceNumber: '', cableNumber: '', workMode: '', partnerName: '', projectFileName: '', ready: false, safetyStop: false, photoSafe: false },
         pit1:      { learningType: '', evidence: '', strategy: '', commitment: '' },
         ma1:       { editorChoice: '', projectName: '', evidenceCaption: '', problemSolved: '' },
         ma2:       { icon: '', iconOther: '', message: '', prediction: '', reason: '',
@@ -436,7 +465,7 @@
 
   function mergeState(obj) {
     var base = blankState();
-    var out = Object.assign(base, obj);
+    var out = Object.assign({}, base, obj);
     out.student  = Object.assign(base.student, obj.student || {});
     out.data     = Object.assign({}, base.data);
     Object.keys(base.data).forEach(function (k) {
@@ -646,7 +675,7 @@
   var RULES = {
     prep: function () {
       var d = state.data.prep;
-      if (!filled(d.deviceNumber) || !filled(d.cableNumber) || !filled(d.workMode)) return false;
+      if (!filled(d.deviceNumber) || (!isIpad() && !filled(d.cableNumber)) || !filled(d.workMode)) return false;
       if (d.workMode === 'With a partner' && !filled(d.partnerName, 2)) return false;
       return !!d.ready && !!d.safetyStop && !!d.photoSafe;
     },
@@ -664,7 +693,7 @@
       var d = state.data.ma1;
       return state.activity.parts.checked && partsAllAnswered() &&
              state.activity.retrieval.checked && retrievalAllAnswered() &&
-             groupComplete('connect') &&
+             groupComplete(connectionGroup()) &&
              filled(d.editorChoice) &&
              validateProjectName(d.projectName).ok &&
              filled(d.problemSolved, MIN_TEXT) &&
@@ -758,7 +787,7 @@
     var m = [], d = state.data;
     if (id === 'prep') {
       if (!filled(d.prep.deviceNumber)) m.push('device number');
-      if (!filled(d.prep.cableNumber)) m.push('cable number');
+      if (!isIpad() && !filled(d.prep.cableNumber)) m.push('cable number');
       if (!filled(d.prep.workMode)) m.push('independent or with a partner');
       if (d.prep.workMode === 'With a partner' && !filled(d.prep.partnerName, 2)) m.push('partner name');
       if (!d.prep.ready) m.push('the equipment confirmation');
@@ -776,7 +805,7 @@
     } else if (id === 'ma1') {
       if (!partsAllAnswered() || !state.activity.parts.checked) m.push('the parts matching check');
       if (!retrievalAllAnswered() || !state.activity.retrieval.checked) m.push('the two retrieval questions');
-      if (!groupComplete('connect')) m.push('the connection checklist');
+      if (!groupComplete(connectionGroup())) m.push('the connection checklist for your device');
       if (!filled(d.ma1.editorChoice)) m.push('which editor you opened');
       if (!validateProjectName(d.ma1.projectName).ok) m.push('a project name that matches the convention');
       if (!filled(d.ma1.problemSolved, MIN_TEXT)) m.push('your successful check or problem (at least ' + MIN_TEXT + ' characters)');
@@ -925,15 +954,67 @@
       '<p class="support-note">Keep these computing words in English: micro:bit, input, output, editor, simulator, transfer, test, debug.</p></details>';
   }
 
+  function isIpad() { return state.data.prep.deviceRoute === 'iPad (Bluetooth)'; }
+  function connectionGroup() { return isIpad() ? 'connectIpad' : 'connect'; }
+  function editorLabel(value) {
+    var option = EDITOR_OPTIONS.filter(function (o) { return o.value === value; })[0];
+    return option ? option.text : (value || '');
+  }
+  function deviceChoiceHTML(name) {
+    return '<div class="field"><p><strong>Which device are you using?</strong></p>' +
+      radiosHTML(name, 'prep.deviceRoute', DEVICE_ROUTES) + '</div>';
+  }
+  function editorChoiceHTML(id) {
+    return '<div class="field"><label for="' + id + '">Show instructions for my editor</label>' +
+      '<select id="' + id + '" data-bind="ma1.editorChoice"><option value="">Choose your editor…</option>' +
+      EDITOR_OPTIONS.map(function (o) { return '<option value="' + esc(o.value) + '">' + esc(o.text) + '</option>'; }).join('') +
+      '</select></div>';
+  }
+  function codeSampleHTML(key, title) {
+    return '<div class="code-sample"><label for="sample-' + key + '">' + esc(title) + '</label>' +
+      '<textarea class="code-reference" id="sample-' + key + '" readonly spellcheck="false" autocapitalize="off" wrap="off" rows="' +
+      (CODE_SAMPLES[key].split('\n').length + 1) + '">' + esc(CODE_SAMPLES[key]) + '</textarea>' +
+      '<button type="button" class="btn btn-secondary" data-copy-sample="' + key + '">Copy example code</button>' +
+      '<p class="hint" id="copy-status-' + key + '" role="status" aria-live="polite">You can also select the code, then use Copy.</p></div>';
+  }
+  function pythonHelpHTML() {
+    return languageSupportHTML('python') + editorChoiceHTML('buildEditorChoice') +
+      '<p class="note note-warn"><strong>Two editors, two sets of commands.</strong>MakeCode Python and MicroPython are different. ' +
+      'Use only the example labelled for your editor. Do not paste <code>from microbit import *</code> into MakeCode.</p>' +
+      '<div data-code-editor="Blocks (MakeCode)"><h4>MakeCode Blocks</h4>' +
+      '<p>Inside <code>on start</code>, add <code>show icon</code>, <code>pause (ms)</code> and <code>show string</code>, in that order. ' +
+      'Choose your icon, set the pause to 1000, and enter your short welcome word.</p></div>' +
+      '<div data-code-editor="MakeCode Python" hidden><h4>MakeCode Python — including iPad</h4>' +
+      '<ol><li>Open MakeCode and create or open your named project.</li>' +
+      '<li>At the top, use the arrow beside <strong>JavaScript</strong> and choose <strong>Python</strong>. ' +
+      'If you are viewing Blocks, select JavaScript first if needed. Turn the iPad sideways if the controls are cramped.</li>' +
+      '<li>Type or paste the example below in the Python workspace. For a new, empty project, it can replace the default starter code. ' +
+      'Keep a copy of any work you have already made.</li></ol>' +
+      codeSampleHTML('welcomeMakeCode', 'Worked example — MakeCode Python only') +
+      '<p><strong>Expected output:</strong> a heart appears, the program pauses for one extra second, then <code>GO</code> scrolls across the LEDs. ' +
+      '<code>basic.pause(1000)</code> means wait 1000 milliseconds (1 second). The display functions also take time.</p>' +
+      '<p><strong>Your turn:</strong> replace <code>GO</code> with your initials or short welcome word. ' +
+      'You can use <code>IconNames.HAPPY</code> instead of <code>IconNames.HEART</code>. Predict the order, then restart the simulator.</p>' +
+      '<details><summary>Already wrote it in MicroPython?</summary><p>Replace the whole small welcome example with the MakeCode version above, then restore your chosen icon and word. ' +
+      'MakeCode uses <code>basic.show_icon</code>, <code>basic.pause</code> and <code>basic.show_string</code>; ' +
+      'it does not use <code>display.show</code>, <code>sleep</code> or <code>display.scroll</code>. No import line is needed.</p></details></div>' +
+      '<div data-code-editor="Python" hidden><h4>MicroPython — micro:bit Python Editor only</h4>' +
+      '<p>This is for the separate editor at <code>python.microbit.org</code>, not the Python tab in MakeCode.</p>' +
+      codeSampleHTML('welcomeMicroPython', 'Worked example — MicroPython only') +
+      '<p><strong>Expected output:</strong> a heart, a one-second pause, then the scrolling word <code>GO</code>. ' +
+      'Adapt the word and icon for your welcome signal. <strong>iPad users following this lesson:</strong> choose MakeCode Python above instead.</p></div>';
+  }
+
   function buildPrep() {
     var body =
     languageSupportHTML('safety') +
     '<div class="card">' +
       '<h3>What you need on your desk</h3>' +
+      deviceChoiceHTML('deviceRoutePrep') +
       '<ul>' +
         '<li>One micro:bit</li>' +
-        '<li>One USB data cable</li>' +
-        '<li>A laptop or computer</li>' +
+        '<li>A computer and USB data cable, <strong>or an iPad with the micro:bit iOS app</strong></li>' +
+        '<li>For iPad: Bluetooth permission and a teacher-approved power supply for the micro:bit</li>' +
         '<li>Access to a camera or an image file, for evidence</li>' +
         '<li>Access to the official micro:bit editor</li>' +
       '</ul>' +
@@ -959,7 +1040,7 @@
       '<p class="card-sub">Numbered equipment means faults can be traced. Copy the numbers exactly as printed on the labels.</p>' +
       '<div class="ev-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">' +
         '<div>' + inHTML('prepDevice', 'prep.deviceNumber', 'Device number', null, 'e.g. MB-12') + '</div>' +
-        '<div>' + inHTML('prepCable', 'prep.cableNumber', 'Cable number', null, 'e.g. C-07') + '</div>' +
+        '<div>' + inHTML('prepCable', 'prep.cableNumber', 'Cable number (optional for iPad)', 'Leave blank if using iPad Bluetooth without a data cable.', 'e.g. C-07') + '</div>' +
       '</div>' +
       '<div class="field"><label id="lblWorkMode">Are you working independently or with a partner?</label>' +
         radiosHTML('workMode', 'prep.workMode', ['Independently', 'With a partner']) + '</div>' +
@@ -969,7 +1050,7 @@
       '</div>' +
       '<ul class="checklist"><li><label class="check">' +
         '<input type="checkbox" data-flag="prep.ready">' +
-        '<span class="check-text">I have my micro:bit, my cable and a computer, and my desk is clear of drinks.</span>' +
+        '<span class="check-text">I have the equipment for my chosen device route, and my desk is clear of drinks.</span>' +
       '</label></li><li><label class="check"><input type="checkbox" data-flag="prep.safetyStop">' +
         '<span class="check-text">I will stop and tell the teacher if equipment is hot, wet, damaged or bent.</span>' +
       '</label></li><li><label class="check"><input type="checkbox" data-flag="prep.photoSafe">' +
@@ -1080,6 +1161,19 @@
     /* ---- Step 2 ---- */
     '<div class="card">' +
       '<div class="card-head"><span class="step-tag">Step 2</span><h3>Connect safely</h3></div>' +
+      deviceChoiceHTML('deviceRouteOnboard') +
+      '<div data-device-guide="ipad" hidden>' +
+        '<h4>iPad — use the micro:bit iOS app and Bluetooth</h4>' +
+        '<ol class="numsteps"><li>Ask your teacher to check that the <strong>micro:bit iOS app</strong> is installed. Turn on Bluetooth and allow the app to use it.</li>' +
+        '<li>Power the board using the supply provided by your teacher. Hold it by its edges; do not force any connector.</li>' +
+        '<li>In the app, follow the connection/pairing prompts. Ask your teacher to help put the board in Bluetooth mode. Match the pattern for <strong>your own numbered device</strong>.</li>' +
+        '<li>Check the connection result in the app. If it fails, tell your teacher and record the problem in the reflection below.</li></ol>' +
+        '<p><strong>No MICROBIT drive is expected on an iPad.</strong> A cable is not the iPad transfer method. ' +
+        'You can still build and test in the simulator while the teacher helps with pairing.</p>' +
+        '<p><a href="' + IPAD_GUIDE + '" target="_blank" rel="noopener noreferrer">Official iPad setup and transfer guide (opens in a new tab)</a></p>' +
+        checklistHTML('connectIpad') +
+      '</div>' +
+      '<div data-device-guide="computer">' +
       '<div class="split"><div>' +
         '<ol class="numsteps">' +
           '<li>Connect the <strong>micro USB end to the micro:bit first</strong>. The socket is on the top edge of the board.</li>' +
@@ -1089,7 +1183,7 @@
           '<li><strong>Do not disconnect while a transfer light is flashing</strong> on the back of the board.</li>' +
         '</ol>' +
         '<div class="note note-warn"><strong>If it does not slide in, stop.</strong>' +
-        'A connector that needs force is the wrong way round. Turn it over and try again.</div>' +
+        'Check the connector orientation. If it still will not fit, ask your teacher; do not force it.</div>' +
       '</div>' + figureHTML(2) + '</div>' +
       checklistHTML('connect') +
       '<div class="note note-tip" style="margin-top:1rem"><strong>Troubleshooting: nothing appeared?</strong>' +
@@ -1100,6 +1194,7 @@
           '<li>Ask for a spare device and record the new number.</li>' +
           '<li>Keep working in the simulator while you wait. You lose no time.</li>' +
         '</ol></div>' +
+      '</div>' +
     '</div>' +
 
     /* ---- Step 3 ---- */
@@ -1108,22 +1203,31 @@
       '<div class="split"><div>' +
         '<p>An <strong>editor</strong> is the program you write your code in. It also contains a <strong>simulator</strong>: ' +
         'an on-screen micro:bit that runs your code before it ever reaches the real board.</p>' +
-        '<p>Choose <strong>one</strong> editor and open it in a new tab. You may use Blocks or Python — ' +
-        'the required outcome is exactly the same.</p>' +
+        '<p>Choose <strong>one</strong> route. Each creates the same welcome signal. ' +
+        'For typed code on an iPad, choose <strong>MakeCode Python</strong>, not the separate MicroPython editor.</p>' +
         '<div class="editor-grid">' +
           '<div class="editor-card"><h4>Blocks editor</h4>' +
             '<p>MakeCode. Drag blocks together. Recommended if this is your first time.</p>' +
             '<a class="btn btn-primary" href="' + EDITOR_LINK_BLOCKS + '" target="_blank" rel="noopener noreferrer" ' +
               'data-editor="Blocks (MakeCode)">Open the Blocks editor <span class="ext-icon" aria-hidden="true">↗</span>' +
               '<span class="sr-only">(opens in a new tab)</span></a></div>' +
-          '<div class="editor-card"><h4>Python editor</h4>' +
-            '<p>Type MicroPython code. Choose this if you are confident with typed code.</p>' +
+          '<div class="editor-card"><h4>MakeCode Python</h4>' +
+            '<p>Typed code in MakeCode. The Python route for iPad users in this lesson; it also works on computers.</p>' +
+            '<a class="btn btn-primary" href="' + EDITOR_LINK_MAKECODE_PYTHON + '" target="_blank" rel="noopener noreferrer" ' +
+              'data-editor="MakeCode Python">Open MakeCode for Python <span class="ext-icon" aria-hidden="true">↗</span>' +
+              '<span class="sr-only">(opens in a new tab)</span></a>' +
+            '<p>Use the arrow beside <strong>JavaScript</strong> → <strong>Python</strong>. Select JavaScript first if needed.</p></div>' +
+          '<div class="editor-card"><h4>MicroPython editor</h4>' +
+            '<p>The separate micro:bit Python Editor. Its commands are different from MakeCode Python.</p>' +
             '<a class="btn btn-secondary" href="' + EDITOR_LINK_PYTHON + '" target="_blank" rel="noopener noreferrer" ' +
-              'data-editor="Python">Open the Python editor <span class="ext-icon" aria-hidden="true">↗</span>' +
+              'data-editor="Python">Open MicroPython editor <span class="ext-icon" aria-hidden="true">↗</span>' +
               '<span class="sr-only">(opens in a new tab)</span></a></div>' +
         '</div>' +
         '<div class="field"><label id="lblEditor">Which editor are you using?</label>' +
-          radiosHTML('editorChoice', 'ma1.editorChoice', ['Blocks (MakeCode)', 'Python']) + '</div>' +
+          radiosHTML('editorChoice', 'ma1.editorChoice', EDITOR_OPTIONS) + '</div>' +
+        '<div data-device-guide="ipad" hidden class="note note-info"><strong>On iPad</strong>' +
+        'You can open the micro:bit iOS app and tap <strong>Create Code</strong> to use MakeCode inside it. ' +
+        'The links above open a browser tab, not the iOS app. If you start in the browser, use the hand-off instructions in Step 6 to send your code.</div>' +
         '<p>Now select <strong>New Project</strong> and name it using the class convention:</p>' +
         '<pre class="code">Y8_Class_PairNumber_SmartBadge_W1</pre>' +
         '<div class="field"><label for="ma1ProjectName">Type the exact project name you used</label>' +
@@ -1175,18 +1279,8 @@
       '<div class="split"><div>' +
         '<p>Whichever editor you chose, the structure is the same: <strong>show an icon</strong>, ' +
         '<strong>wait a moment</strong>, then <strong>show a short string</strong>.</p>' +
-        '<h4>If you are using Blocks</h4>' +
-        '<p>You will need these four block types. Drag them inside <code>on start</code> in the order you want them to run:</p>' +
-        '<ul><li><code>on start</code> — the container that runs once when the program begins</li>' +
-          '<li><code>show icon</code> — choose your icon from the drop-down</li>' +
-          '<li><code>pause</code> — a short wait, measured in milliseconds</li>' +
-          '<li><code>show string</code> — your initials or welcome word</li></ul>' +
-        '<h4>If you are using Python</h4>' +
-        '<p>Work out the commands yourself from the editor\'s reference panel. You will need one command for each job:</p>' +
-        '<pre class="code">from microbit import *\n\n# 1. display an image  -> look up display.show(...)\n# 2. pause             -> look up sleep(...)\n# 3. scroll a string    -> look up display.scroll(...)</pre>' +
-        '<div class="note note-tip"><strong>Work it out, do not copy it.</strong>' +
-        'The reference panel in the editor lists every command with an example. Finding the right one is part of the task.</div>' +
-      '</div>' + figureHTML(4) + '</div>' +
+        pythonHelpHTML() +
+      '</div><div><p class="hint">The diagram shows the Blocks version. For Python, use your labelled code example.</p>' + figureHTML(4) + '</div></div>' +
 
       '<h4>Plan your program</h4>' +
       '<div class="field"><label for="ma2Icon">Chosen icon</label>' +
@@ -1224,6 +1318,22 @@
     /* ---- Step 6 ---- */
     '<div class="card">' +
       '<div class="card-head"><span class="step-tag">Step 6</span><h3>Download and transfer</h3></div>' +
+      '<div data-device-guide="ipad" hidden>' +
+        '<h4>iPad — send with the micro:bit iOS app</h4>' +
+        '<p><strong>Test in the simulator first.</strong> MakeCode Python uses the same transfer route as MakeCode Blocks.</p>' +
+        '<ol class="numsteps"><li>If you wrote the program inside the micro:bit app using <strong>Create Code</strong>, select <strong>Download</strong>.</li>' +
+        '<li>If you started in <strong>Chrome on iPad</strong>, select Download, then Download again in the “Download ready” prompt. ' +
+        'Choose <strong>Open</strong> when asked to open the micro:bit app. Check that your latest program is visible there.</li>' +
+        '<li>Follow the app instructions to put your micro:bit in Bluetooth mode and connect to the correct device. Ask your teacher if pairing fails.</li>' +
+        '<li>Keep the board powered and nearby until the app confirms the transfer has finished. Watch the real LED output.</li></ol>' +
+        '<div class="note note-warn"><strong>Using Safari?</strong>The documented browser-to-app hand-off uses Chrome, not Safari. ' +
+        'Keep your work; ask your teacher to help move the code into MakeCode inside the micro:bit app, or follow the ' +
+        '<a href="' + IPAD_GUIDE + '" target="_blank" rel="noopener noreferrer">official iPad guide (new tab)</a>. ' +
+        'Do not look for a MICROBIT drive or use the computer USB instructions on an iPad.</div>' +
+        '<p>Record <strong>micro:bit iOS app (Bluetooth)</strong> below after sending. If the app or Bluetooth is unavailable, ' +
+        'show your teacher, choose the approved hardware contingency and save simulator evidence. Do not claim a physical transfer.</p>' +
+      '</div>' +
+      '<div data-device-guide="computer">' +
       '<div class="split"><div>' +
         '<p>Code sitting in an editor does nothing to a physical device. It has to be <strong>transferred</strong> ' +
         '(also called <strong>flashing</strong>) before the micro:bit can run it.</p>' +
@@ -1238,13 +1348,14 @@
         'Some browsers let the editor send the program straight to the device after you use ' +
         '<em>Connect device</em>. If your editor offers it and it works, that is fine — record it below.</div>' +
       '</div>' + figureHTML(6) + '</div>' +
+      '</div>' +
       '<div class="field"><label id="lblTransfer">Which transfer method did you use?</label>' +
         radiosHTML('transferMethod', 'ma2.transferMethod', TRANSFER_METHODS, true) + '</div>' +
       '<div class="field"><label id="lblHardwareOutcome">What happened with the physical device?</label>' +
         radiosHTML('hardwareOutcome', 'ma2.hardwareOutcome', ['Physical device succeeded', 'Teacher-approved hardware contingency'], true) + '</div>' +
       '<div class="field" data-contingency-wrap hidden>' +
         taHTML('contingencyNote', 'ma2.contingencyNote', 'Explain the hardware problem and what you completed in the simulator instead',
-          'Only use this after showing the problem to your teacher. Record the cable/device checks you tried.', 3) +
+          'Only use this after showing the problem to your teacher. Record the cable/device or iPad app/Bluetooth checks you tried.', 3) +
       '</div>' +
     '</div>' +
 
@@ -1325,6 +1436,7 @@
       'welcome signal is already working on the physical device.</div>' +
       '<h3>How the pathway works</h3>' +
       '<p>Start at Level 1. When it works, continue to Level 2, then Level 3. The plenary remains available at any time.</p>' +
+      editorChoiceHTML('extensionEditorChoice') +
     '</div>' +
     '<div class="card extension-level"><div class="card-head"><span class="step-tag">Level 1 · about 5 min</span><h3>Interactive Badge</h3></div>' +
       '<p>Add a <strong>Button A</strong> input that displays a second symbol or short message without removing the original welcome output.</p>' +
@@ -1332,6 +1444,14 @@
       'Your welcome output currently runs once when the program starts. A button press is an ' +
       '<strong>input</strong> that happens later. What kind of block or function reacts to an event ' +
       'rather than running at the start?</div>' +
+      '<div data-code-editor="MakeCode Python" hidden><details><summary>MakeCode Python hint — add a Button A event</summary>' +
+      '<p>An <strong>event handler</strong> is a named set of instructions that runs when an event happens. ' +
+      'Keep your working welcome code. Add this example underneath it; do not replace the welcome program.</p>' +
+      codeSampleHTML('buttonMakeCode', 'Button A example — MakeCode Python only') +
+      '<p>The indented line is what Button A will do. Keep four spaces before <code>basic.show_icon</code>. ' +
+      'The last line starts at the left edge and connects the button to the function. Change the icon or use <code>basic.show_string("HI")</code> as the response.</p>' +
+      '<p><strong>Test:</strong> restart, let the welcome finish, then press A in the simulator. The example should display a happy face. ' +
+      'Transfer the updated program, then test A on the real board.</p></details></div>' +
       taHTML('chPlan', 'challenge.level1Plan', 'What should Button A do?', null, 2) +
       taHTML('chChange', 'challenge.level1Change', 'What change did you make to your program?', null, 3) +
       '<div class="field"><label id="lblChWorked">Did it work?</label>' +
@@ -1339,6 +1459,10 @@
     '</div>' +
     '<div class="card extension-level"><div class="card-head"><span class="step-tag">Level 2 · about 8–10 min</span><h3>Two-Button Badge</h3></div>' +
       '<p>Make Button A and Button B produce <strong>different purposeful outputs</strong>. Preserve the original start-up welcome.</p>' +
+      '<div data-code-editor="MakeCode Python" hidden><details><summary>MakeCode Python hint — adapt the Button A pattern</summary>' +
+      '<p>Add a second event handler. Rename the function to <code>on_button_pressed_b</code> in <strong>both</strong> the definition and the registration line. ' +
+      'Use <code>Button.B</code> in that registration line. Choose a different icon or message inside the function. ' +
+      'Keep the original Button A handler too, then test each button after the welcome finishes.</p></details></div>' +
       taHTML('chL2A', 'challenge.level2A', 'What input and output will Button A use?', 'Example structure: Input — Button A pressed. Output — …', 2) +
       taHTML('chL2B', 'challenge.level2B', 'What input and output will Button B use?', 'Make this different from Button A.', 2) +
       taHTML('chL2Pred', 'challenge.level2Prediction', 'Predict what will happen when you press A, then B', null, 2) +
@@ -1505,10 +1629,26 @@
     /* editor link click records the choice as a convenience */
     $$('[data-editor]').forEach(function (a) {
       a.addEventListener('click', function () {
-        if (!state.data.ma1.editorChoice) {
-          state.data.ma1.editorChoice = a.getAttribute('data-editor');
-          applyStateToDom(); afterInput();
+        state.data.ma1.editorChoice = a.getAttribute('data-editor');
+        afterInput();
+      });
+    });
+
+    $$('[data-copy-sample]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var key = button.getAttribute('data-copy-sample');
+        var code = $('#sample-' + key);
+        var status = $('#copy-status-' + key);
+        function manualCopy() {
+          code.focus(); code.select(); code.setSelectionRange(0, code.value.length);
+          status.textContent = 'Code selected. Use Copy from the iPad selection menu (or Ctrl+C / Cmd+C), then paste into the matching Python editor.';
         }
+        if (!navigator.clipboard || !navigator.clipboard.writeText) { manualCopy(); return; }
+        try {
+          navigator.clipboard.writeText(CODE_SAMPLES[key]).then(function () {
+            status.textContent = 'Copied. Paste into the matching Python editor, then adapt the example for your badge.';
+          }).catch(manualCopy);
+        } catch (err) { manualCopy(); }
       });
     });
 
@@ -1532,6 +1672,18 @@
 
   /** Fields that only appear once a related choice has been made. */
   function refreshConditionals() {
+    // Keep repeated route selectors aligned without rebuilding cards or moving focus.
+    $$('[data-bind="prep.deviceRoute"], [data-bind="ma1.editorChoice"]').forEach(function (el) {
+      var v = getPath(state.data, el.getAttribute('data-bind')) || '';
+      if (el.type === 'radio') el.checked = el.value === v;
+      else el.value = v;
+    });
+    $$('[data-device-guide]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-device-guide') !== (isIpad() ? 'ipad' : 'computer');
+    });
+    $$('[data-code-editor]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-code-editor') !== (state.data.ma1.editorChoice || 'Blocks (MakeCode)');
+    });
     var pw = $('[data-partner-wrap]');
     if (pw) pw.hidden = state.data.prep.workMode !== 'With a partner';
     var io = $('[data-icon-other]');
@@ -2086,7 +2238,8 @@
     var d = state.data;
     return [
       { g: 'Student preparation', q: 'Device number',  a: d.prep.deviceNumber },
-      { g: 'Student preparation', q: 'Cable number',   a: d.prep.cableNumber },
+      { g: 'Student preparation', q: 'Device route',   a: d.prep.deviceRoute || 'Computer (USB)' },
+      { g: 'Student preparation', q: 'Cable number',   a: d.prep.cableNumber || (isIpad() ? 'Not required — iPad Bluetooth' : '') },
       { g: 'Student preparation', q: 'Working',        a: d.prep.workMode },
       { g: 'Student preparation', q: 'Partner',        a: d.prep.workMode === 'With a partner' ? d.prep.partnerName : 'Not applicable' },
       { g: 'Starter',  q: 'Workflow order submitted',  a: state.activity.sequence.checked
@@ -2109,7 +2262,7 @@
       { g: 'Main Activity 1', q: 'Retrieval questions', a: state.activity.retrieval.checked
           ? RETRIEVAL.filter(function (q) { return state.activity.retrieval.answers[q.id] === q.answer; }).length +
             ' out of ' + RETRIEVAL.length + ' correct' : '' },
-      { g: 'Main Activity 1', q: 'Editor chosen',   a: d.ma1.editorChoice },
+      { g: 'Main Activity 1', q: 'Editor chosen',   a: editorLabel(d.ma1.editorChoice) },
       { g: 'Main Activity 1', q: 'Project name',    a: d.ma1.projectName },
       { g: 'Main Activity 1', q: 'Evidence caption', a: d.ma1.evidenceCaption },
       { g: 'Main Activity 1', q: 'Successful check or problem solved', a: d.ma1.problemSolved },
@@ -2162,9 +2315,10 @@
       ['Class', state.student.className],
       ['Language support', LANGUAGE_NAMES[state.student.languageSupport || 'en']],
       ['Device number', d.prep.deviceNumber],
-      ['Cable number', d.prep.cableNumber],
+      ['Device route', d.prep.deviceRoute || 'Computer (USB)'],
+      ['Cable number', d.prep.cableNumber || (isIpad() ? 'Not required — iPad Bluetooth' : '')],
       ['Working', d.prep.workMode + (d.prep.workMode === 'With a partner' && d.prep.partnerName ? ' — ' + d.prep.partnerName : '')],
-      ['Editor', d.ma1.editorChoice],
+      ['Editor', editorLabel(d.ma1.editorChoice)],
       ['Project name', d.ma1.projectName],
       ['Last saved', prettyDate(state.updatedAt)]
     ].map(function (r) {
@@ -2188,7 +2342,9 @@
       b.addEventListener('click', function () { goTo(b.getAttribute('data-goto2')); });
     });
 
-    $('#rvChecklists').innerHTML = Object.keys(CHECKLISTS).map(function (g) {
+    $('#rvChecklists').innerHTML = Object.keys(CHECKLISTS).filter(function (g) {
+      return (g !== 'connect' && g !== 'connectIpad') || g === connectionGroup();
+    }).map(function (g) {
       return '<h4>' + esc(CHECKLISTS[g].title) + '</h4><ul class="rv-status-list">' +
         CHECKLISTS[g].items.map(function (it) {
           var on = checkOn(g, it.id);
@@ -2441,9 +2597,10 @@
     W.kv('Date exported', prettyDate(nowISO()));
     W.kv('Lesson started', prettyDate(state.startedAt));
     W.kv('Device number', d.prep.deviceNumber);
-    W.kv('Cable number', d.prep.cableNumber);
+    W.kv('Device route', d.prep.deviceRoute || 'Computer (USB)');
+    W.kv('Cable number', d.prep.cableNumber || (isIpad() ? 'Not required - iPad Bluetooth' : ''));
     W.kv('Working', d.prep.workMode + (d.prep.workMode === 'With a partner' && d.prep.partnerName ? ' — ' + d.prep.partnerName : ''));
-    W.kv('Editor choice', d.ma1.editorChoice);
+    W.kv('Editor choice', editorLabel(d.ma1.editorChoice));
     W.kv('Project name', d.ma1.projectName);
     W.kv('Export type', isFinal ? 'Final export' : 'Progress export (work in progress)');
     if (state.teacherMode) W.kv('NOTE', 'Generated in TEACHER TEST MODE');
@@ -2551,11 +2708,12 @@
       });
     } else { W.p(na, { style: 'italic', colour: [150, 100, 0] }); }
 
-    W.h3('Step 2: ' + CHECKLISTS.connect.title);
-    CHECKLISTS.connect.items.forEach(function (it) { W.tick(checkOn('connect', it.id), it.text); });
+    var connection = connectionGroup();
+    W.h3('Step 2: ' + CHECKLISTS[connection].title);
+    CHECKLISTS[connection].items.forEach(function (it) { W.tick(checkOn(connection, it.id), it.text); });
 
     W.h3('Step 3: editor and project');
-    W.kv('Editor used', d.ma1.editorChoice);
+    W.kv('Editor used', editorLabel(d.ma1.editorChoice));
     W.kv('Project name', d.ma1.projectName);
     W.kv('Matches convention', filled(d.ma1.projectName) ? (validateProjectName(d.ma1.projectName).ok ? 'Yes' : 'No — needs correcting') : '');
 
@@ -3170,7 +3328,7 @@
     getState: function () { return state; },
     exportPDF: exportPDF,
     exportBackup: exportBackup,
-    version: '2.0.0'
+    version: '2.1.0'
   };
 
 })();
