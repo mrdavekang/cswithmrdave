@@ -14,6 +14,76 @@
   var profileKey = "student-redesign";
   var saveTimer = null;
   var imageCache = {};
+  var CODE_ROUTES = {
+    micropython: {
+      id: "micropython",
+      label: "Laptop/desktop — micro:bit Python Editor (MicroPython)",
+      code: [
+        "from microbit import *",
+        "",
+        "display.show(Image.HAPPY)",
+        "",
+        "while True:",
+        "    if button_a.was_pressed():",
+        "        display.show(Image.CONFUSED)",
+        "        sleep(700)",
+        "        display.scroll(\"STUCK\")",
+        "        display.show(Image.HAPPY)",
+        "    elif button_b.was_pressed():",
+        "        display.show(Image.YES)",
+        "        sleep(700)",
+        "        display.scroll(\"CHECK\")",
+        "        display.show(Image.HAPPY)"
+      ].join("\n"),
+      link: "https://python.microbit.org/v/3",
+      linkLabel: "Open micro:bit Python Editor ↗",
+      explanation: "<strong>Your route:</strong> MicroPython repeatedly checks the buttons inside <code>while True</code>. The <code>if</code> and <code>elif</code> conditions decide which output to show.",
+      reading: ["Start at the top and notice the waiting image.", "Find <code>while True</code>: the program keeps checking.", "Follow only the button A <code>if</code> pathway.", "Underline each output: image, pause and scrolling message."],
+      mapLabels: ["Input check", "Decision/condition", "One output line"],
+      mapOptions: {
+        input: ["button_a.was_pressed()", "display.scroll(\"STUCK\")", "while True"],
+        process: ["if button_a.was_pressed():", "display.show(Image.HAPPY)", "from microbit import *"],
+        output: ["display.scroll(\"STUCK\")", "button_b.was_pressed()", "while True"]
+      },
+      instructions: ["Copy the starter code or download the .py file.", "Open the micro:bit Python Editor.", "Replace the editor code with the starter code.", "Select Run, then press A and B on the simulator.", "Record what happened before changing anything."],
+      changeTip: "MicroPython tip: change text inside <code>display.scroll()</code>, an <code>Image</code>, or the number inside <code>sleep(700)</code>.",
+      physicalAdvice: "Laptop route: use the simulator first. Transfer to a physical micro:bit only after both button pathways run as expected."
+    },
+    makecode: {
+      id: "makecode",
+      label: "iPad — Microsoft MakeCode (Python view)",
+      code: [
+        "def on_button_pressed_a():",
+        "    basic.show_icon(IconNames.CONFUSED)",
+        "    basic.pause(700)",
+        "    basic.show_string(\"STUCK\")",
+        "    basic.show_icon(IconNames.HAPPY)",
+        "input.on_button_pressed(Button.A, on_button_pressed_a)",
+        "",
+        "def on_button_pressed_b():",
+        "    basic.show_icon(IconNames.YES)",
+        "    basic.pause(700)",
+        "    basic.show_string(\"CHECK\")",
+        "    basic.show_icon(IconNames.HAPPY)",
+        "input.on_button_pressed(Button.B, on_button_pressed_b)",
+        "",
+        "basic.show_icon(IconNames.HAPPY)"
+      ].join("\n"),
+      link: "https://makecode.microbit.org/",
+      linkLabel: "Open Microsoft MakeCode ↗",
+      explanation: "<strong>Your route:</strong> MakeCode Python uses event handlers. Each <code>def</code> section describes what happens when its registered button event occurs.",
+      reading: ["Start with <code>def on_button_pressed_a()</code>: this is button A's pathway.", "Read the indented lines inside that function in order.", "Find the line that registers button A as the input event.", "Underline each output: icon, pause and scrolling string."],
+      mapLabels: ["Input event line", "Processing pathway begins", "One output line"],
+      mapOptions: {
+        input: ["input.on_button_pressed(Button.A, on_button_pressed_a)", "basic.show_string(\"STUCK\")", "def on_button_pressed_b():"],
+        process: ["def on_button_pressed_a():", "basic.show_icon(IconNames.HAPPY)", "input.on_button_pressed(Button.B, on_button_pressed_b)"],
+        output: ["basic.show_string(\"STUCK\")", "def on_button_pressed_a():", "input.on_button_pressed(Button.A, on_button_pressed_a)"]
+      },
+      instructions: ["Copy the MakeCode Python starter code.", "Open MakeCode and create a New Project.", "Switch the language from Blocks to Python.", "Select all the existing Python, replace it with the starter code, then use the simulator.", "Press A and B on the simulator and record what happened before changing anything."],
+      changeTip: "MakeCode tip: change text inside <code>basic.show_string()</code>, an <code>IconNames</code> value, or the number inside <code>basic.pause(700)</code>.",
+      physicalAdvice: "iPad route: complete the simulator test first. Use a physical micro:bit only with the app or transfer method demonstrated by your teacher."
+    }
+  };
 
   function $(s, root) { return (root || document).querySelector(s); }
   function $$(s, root) { return Array.prototype.slice.call((root || document).querySelectorAll(s)); }
@@ -37,7 +107,17 @@
   }
 
   function response(key) { return state && Object.prototype.hasOwnProperty.call(state.responses, key) ? state.responses[key] : ""; }
-  function setResponse(key, value) { if (!state) return; state.responses[key] = value; refresh(); scheduleSave(); }
+  function setResponse(key, value) {
+    if (!state) return;
+    if (key === "editor_route" && state.responses.editor_route && state.responses.editor_route !== value) {
+      delete state.responses.m1_map_input;
+      delete state.responses.m1_map_process;
+      delete state.responses.m1_map_output;
+    }
+    state.responses[key] = value;
+    refresh();
+    scheduleSave();
+  }
   function present(key) { var v = response(key); return v === true || (Array.isArray(v) ? v.length > 0 : text(v).length > 0); }
 
   function saveNow() {
@@ -53,7 +133,7 @@
   var REQUIREMENTS = {
     "do-now": ["dn_signal_choice", "dn_reason", "dn_own_message", "dn_own_symbol", "dn_ipo_input", "dn_ipo_process", "dn_ipo_output"],
     learning: ["learn_type", "learn_evidence", "learn_strategy"],
-    main1: ["m1_map_input", "m1_map_process", "m1_map_output", "m1_predict_a", "m1_predict_b", "m1_result_a", "m1_result_b", "m1_change_type", "m1_changed_to", "m1_change_reason", "m1_retest"],
+    main1: ["editor_route", "m1_map_input", "m1_map_process", "m1_map_output", "m1_predict_a", "m1_predict_b", "m1_result_a", "m1_result_b", "m1_change_type", "m1_changed_to", "m1_change_reason", "m1_retest"],
     main2: ["m2_route", "m2_role", "m2_a_expected", "m2_a_actual", "m2_a_outcome", "m2_b_expected", "m2_b_actual", "m2_b_outcome", "m2_clearest", "m2_feedback", "m2_from", "m2_to", "m2_because", "m2_retest", "m2_retest_evidence"],
     pitstop: ["pit_phase", "pit_evidence"],
     plenary: ["ple_input", "ple_processing", "ple_retest", "ple_improvement", "ple_why"],
@@ -75,6 +155,7 @@
   }
 
   function refreshDerived() {
+    updateEditorRoute();
     var type = text(response("learn_type")), evidence = text(response("learn_evidence")), strategy = text(response("learn_strategy"));
     $("#personalGoal").innerHTML = type && evidence && strategy ? "<strong>Your Main Task goal:</strong> Build your " + safe(type.toLowerCase()) + " by " + safe(strategy) + ". Your evidence will be: “" + safe(evidence) + ".”" : "Choose the three boxes to create your Main Task goal.";
     var statuses = [response("m1_result_a"), response("m1_result_b")].join(" ");
@@ -139,8 +220,42 @@
     $$('[data-back]').forEach(function (b) { b.addEventListener("click", function () { goTo(b.dataset.back); }); });
   }
 
-  function starterCode() { return $("#starterCode code").textContent.replace(/^\s+|\s+$/g, "") + "\n"; }
-  function pyFilename() { return safeFile(state.student.class, "Class") + "_" + safeFile(state.student.name, "Student") + "_W1_HelpButton.py"; }
+  function routeId() { return text(response("editor_route")) === "makecode" ? "makecode" : "micropython"; }
+  function routeConfig() { return CODE_ROUTES[routeId()]; }
+  function pyFilename() {
+    var suffix = routeId() === "makecode" ? "_W1_HelpButton_MakeCode.py" : "_W1_HelpButton_MicroPython.py";
+    return safeFile(state.student.class, "Class") + "_" + safeFile(state.student.name, "Student") + suffix;
+  }
+  function starterCode() { return routeConfig().code + "\n"; }
+  function setSelectOptions(select, options, selected) {
+    if (!select) return;
+    select.innerHTML = "";
+    var prompt = document.createElement("option"); prompt.value = ""; prompt.textContent = "Choose…"; select.appendChild(prompt);
+    options.forEach(function (value) { var option = document.createElement("option"); option.value = value; option.textContent = value; select.appendChild(option); });
+    select.value = options.indexOf(selected) >= 0 ? selected : "";
+  }
+  function updateEditorRoute() {
+    if (!state || !$("#starterCode code")) return;
+    var route = routeConfig();
+    $("#starterCode code").textContent = route.code;
+    $("#pythonFilename").textContent = pyFilename();
+    $("#editorLink").href = route.link;
+    $("#editorLink").textContent = route.linkLabel;
+    $("#codeRouteExplanation").innerHTML = route.explanation;
+    $("#codeReadingSteps").innerHTML = route.reading.map(function (item) { return "<li>" + item + "</li>"; }).join("");
+    $("#mapInputLabel").textContent = route.mapLabels[0];
+    $("#mapProcessLabel").textContent = route.mapLabels[1];
+    $("#mapOutputLabel").textContent = route.mapLabels[2];
+    setSelectOptions($("#mapInput"), route.mapOptions.input, response("m1_map_input"));
+    setSelectOptions($("#mapProcess"), route.mapOptions.process, response("m1_map_process"));
+    setSelectOptions($("#mapOutput"), route.mapOptions.output, response("m1_map_output"));
+    $("#editorInstructions").innerHTML = route.instructions.map(function (item) { return "<li>" + safe(item) + "</li>"; }).join("");
+    $("#changeRouteTip").innerHTML = route.changeTip;
+    $("#physicalRouteAdvice").textContent = route.physicalAdvice;
+    $("#makecodePhysicalGuide").hidden = route.id !== "makecode";
+    $("#microPythonPhysicalGuides").hidden = route.id === "makecode";
+    $("#physicalGuideIntro").textContent = route.id === "makecode" ? "The laptop transfer pictures do not match MakeCode on an iPad. Follow this iPad route instead." : "Read one guide at a time. Select any image to enlarge it and see the smaller labels clearly.";
+  }
   function downloadBlob(content, type, filename) { var blob = content instanceof Blob ? content : new Blob([content], { type: type }); var url = URL.createObjectURL(blob); var a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); }
   function bindCode() {
     $("#copyCode").addEventListener("click", function () { navigator.clipboard.writeText(starterCode()).then(function () { toast("Starter code copied."); }).catch(function () { toast("Copy was blocked. Select the code manually."); }); });
@@ -180,7 +295,7 @@
     input: ["Input", "Data or an action entering a system.", "Here, pressing button A or B is the input."],
     processing: ["Processing", "The work or decision carried out by the program.", "The program checks which button was pressed."],
     output: ["Output", "Information or an action produced by a system.", "The LED image and scrolling message are outputs."],
-    condition: ["Condition", "A test that is either true or false.", "button_a.was_pressed() checks whether A was pressed."],
+    condition: ["Condition", "A test that is either true or false.", "MicroPython uses if button_a.was_pressed(). MakeCode registers a button event that starts the matching pathway."],
     prototype: ["Prototype", "An early working version used to learn what should improve.", "The first help button is a prototype, not a final product."],
     test: ["Test", "A planned check that compares an expected result with what actually happens.", "Press A, record the message, then compare it with the expected result."]
   };
@@ -203,7 +318,7 @@
   var REVIEW_GROUPS = [
     ["Do Now", ["dn_signal_choice", "dn_reason", "dn_own_message", "dn_own_symbol", "dn_ipo_input", "dn_ipo_process", "dn_ipo_output"]],
     ["Types of Learning", ["learn_type", "learn_evidence", "learn_strategy"]],
-    ["Main Task 1", ["m1_map_input", "m1_map_process", "m1_map_output", "m1_predict_a", "m1_predict_b", "m1_result_a", "m1_result_b", "m1_debug_action", "m1_change_type", "m1_changed_to", "m1_change_reason", "m1_retest"]],
+    ["Main Task 1", ["editor_route", "m1_map_input", "m1_map_process", "m1_map_output", "m1_predict_a", "m1_predict_b", "m1_result_a", "m1_result_b", "m1_debug_action", "m1_change_type", "m1_changed_to", "m1_change_reason", "m1_retest"]],
     ["Main Task 2", ["m2_route", "m2_role", "m2_number", "m2_a_expected", "m2_a_actual", "m2_a_outcome", "m2_b_expected", "m2_b_actual", "m2_b_outcome", "m2_clearest", "m2_feedback", "m2_from", "m2_to", "m2_because", "m2_retest", "m2_retest_evidence", "ext_level", "ext_evidence"]],
     ["Learning Pitstop", ["pit_phase", "pit_evidence", "pit_action_taken", "pit_action_result"]],
     ["Plenary", ["ple_input", "ple_processing", "ple_retest", "ple_improvement", "ple_why"]],
@@ -211,7 +326,7 @@
   ];
   var LABELS = {
     dn_signal_choice:"Chosen signal",dn_reason:"Reason",dn_own_message:"Own message",dn_own_symbol:"Own symbol",dn_ipo_input:"Input",dn_ipo_process:"Processing",dn_ipo_output:"Output",
-    learn_type:"Strongest learning type",learn_evidence:"Evidence",learn_strategy:"Improvement strategy",m1_map_input:"Input line",m1_map_process:"Condition line",m1_map_output:"Output line",m1_predict_a:"Prediction A",m1_predict_b:"Prediction B",m1_result_a:"First test A",m1_result_b:"First test B",m1_debug_action:"Debug action",m1_change_type:"Change type",m1_changed_to:"Exact change",m1_change_reason:"Reason for change",m1_retest:"Retest result",
+    learn_type:"Strongest learning type",learn_evidence:"Evidence",learn_strategy:"Improvement strategy",editor_route:"Coding route",m1_map_input:"Input line",m1_map_process:"Processing/condition line",m1_map_output:"Output line",m1_predict_a:"Prediction A",m1_predict_b:"Prediction B",m1_result_a:"First test A",m1_result_b:"First test B",m1_debug_action:"Debug action",m1_change_type:"Change type",m1_changed_to:"Exact change",m1_change_reason:"Reason for change",m1_retest:"Retest result",
     m2_route:"Test route",m2_role:"Role",m2_number:"micro:bit number",m2_a_expected:"A expected",m2_a_actual:"A tester understood",m2_a_outcome:"A outcome",m2_b_expected:"B expected",m2_b_actual:"B tester understood",m2_b_outcome:"B outcome",m2_clearest:"Clearest signal",m2_feedback:"Tester comment",m2_from:"Changed from",m2_to:"Changed to",m2_because:"Improvement reason",m2_retest:"Retest result",m2_retest_evidence:"Retest evidence",ext_level:"Extension",ext_evidence:"Extension evidence",
     pit_phase:"Learning phase",pit_evidence:"Phase evidence",pit_action_taken:"Suggested action tried",pit_action_result:"Result of next move",ple_input:"Input check",ple_processing:"Processing check",ple_retest:"Retest check",ple_improvement:"Most useful improvement",ple_why:"Why it helped",exit_confidence:"WAGBA confidence",exit_phase:"Phase after action",exit_reflection:"Strategy/help reflection",exit_help:"Next lesson need",exit_device_returned:"Device returned",exit_cable_returned:"Cable returned"
   };
@@ -232,6 +347,7 @@
   }
 
   function enterLesson() {
+    if (!present("editor_route")) state.responses.editor_route = "micropython";
     $("#landing").hidden = true; $("#app").hidden = false; $("#studentLabel").textContent = state.student.teacher ? "Teacher preview" : state.student.name + " · " + state.student.class; $("#teacherBanner").hidden = !state.student.teacher; $("#pythonFilename").textContent = pyFilename();
     restoreResponses(); loadImages(); refresh(); goTo(state.currentStage || "do-now");
   }
@@ -248,7 +364,11 @@
     if (!name) { $("#nameError").textContent = "Enter your full name."; $("#nameError").hidden = false; return; }
     if (!klass && !teacher) { $("#classError").textContent = "Enter your class."; $("#classError").hidden = false; return; }
     profileKey = teacher ? "teacher-redesign" : "student-redesign";
-    var support = $('input[name="entrySupport"]:checked').value; state = freshState(teacher ? "Teacher" : name, teacher ? "Preview" : klass, support, teacher); saveNow().then(enterLesson);
+    var support = $('input[name="entrySupport"]:checked').value;
+    var editorRoute = $('input[name="entryEditor"]:checked').value;
+    state = freshState(teacher ? "Teacher" : name, teacher ? "Preview" : klass, support, teacher);
+    state.responses.editor_route = editorRoute;
+    saveNow().then(enterLesson);
   }
 
   function init() {
