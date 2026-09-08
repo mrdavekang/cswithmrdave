@@ -109,6 +109,56 @@ test('Static entry has no build/CDN requirement and uses local font',()=>{
   for(const m of html.matchAll(/(?:src|href)="([^"#][^"]+)"/g)){if(!m[1].startsWith('http'))assert(fs.existsSync(path.join(root,m[1].split('?')[0])),m[1]);}
   const css=fs.readFileSync(path.join(root,'styles.css'),'utf8');assert(css.includes('@font-face'));assert(!css.includes('fonts.googleapis'));assert(css.includes('@media print'));assert(css.includes('prefers-reduced-motion'));
 });
+test('All five genuine MakeCode screenshots exist with matching intrinsic dimensions',()=>{
+  const s=JSON.parse(JSON.stringify(pupil));s.responses.editor='blocks';
+  const html=L.CARDS.map(c=>V.card(s,{},c.id)).join('');
+  const files=new Set();
+  for(const m of html.matchAll(/<img src="assets\/images\/makecode\/([^"]+)" alt="([^"]+)" width="(\d+)" height="(\d+)"/g)){
+    const bytes=fs.readFileSync(path.join(root,'assets/images/makecode',m[1]));
+    assert.equal(bytes.readUInt16BE(0),0xffd8);assert(bytes.length>3000);
+    let size;
+    for(let offset=2;offset+9<bytes.length;){
+      const marker=bytes.readUInt16BE(offset);
+      if([0xffc0,0xffc1,0xffc2].includes(marker)){size=[bytes.readUInt16BE(offset+7),bytes.readUInt16BE(offset+5)];break;}
+      offset+=2+bytes.readUInt16BE(offset+2);
+    }
+    assert.deepEqual(size,[Number(m[3]),Number(m[4])]);
+    assert(m[2].length>30);files.add(m[1]);
+  }
+  assert.equal(files.size,5);assert(!html.includes('class="block-example"'));
+});
+test('Block captions distinguish reference values from student choices and label deliberate errors',()=>{
+  const s=JSON.parse(JSON.stringify(pupil));s.responses.editor='blocks';
+  const badge=V.card(s,{},'button');
+  assert(badge.includes('02-startup-and-button-a.jpg'));assert(badge.includes('Happy face'));assert(badge.includes('“MK”'));
+  assert(badge.includes('heart and “AB”'));assert(badge.includes('side by side—not inside each other'));
+  assert(V.card(s,{},'extend1').includes('only the extra B event'));
+  assert(V.card(s,{},'extend2').includes('Deliberately incorrect example—do not copy'));
+  assert(V.card(s,{},'starter').includes('do not open the editor yet'));
+});
+test('Practical editor links are prominent, route-specific, safe and not advertised as pre-filled',()=>{
+  for(const editor of ['blocks','makepython','micropython']){
+    const s=JSON.parse(JSON.stringify(pupil));Object.assign(s.responses,{device:'laptop',editor});
+    for(const id of ['setup','try','button','test','extend1','extend2','extend3']){
+      const html=V.card(s,{},id);
+      assert(html.includes('class="editor-open-link"'),id);
+      assert(html.includes(`href="${editor==='micropython'?L.LINKS.micropython:L.LINKS.makecode}" target="_blank" rel="noopener noreferrer"`));
+      assert(html.includes('not a pre-filled example'));
+    }
+  }
+  const ipad=V.card(pupil,{},'button');assert(ipad.includes('browser alternative'));assert(ipad.includes('Create Code'));assert(ipad.includes('편집기 열기'));
+});
+test('Python keeps copyable dialect code; teaching screenshots are not submitted as pupil evidence',()=>{
+  for(const editor of ['makepython','micropython']){
+    const s=JSON.parse(JSON.stringify(pupil));Object.assign(s.responses,{device:'laptop',editor});
+    const html=V.card(s,{},'button');assert(html.includes('id="exampleCode"'));assert(html.includes('See the equivalent MakeCode blocks'));
+    assert(html.includes('not Python code to paste'));assert(!V.report(s).includes('assets/images/makecode'));
+    if(editor==='micropython')assert(html.includes('MicroPython uses different commands'));
+  }
+  const css=fs.readFileSync(path.join(root,'styles.css'),'utf8');
+  assert(css.includes('.editor-open-link:focus-visible'));assert(css.includes('.makecode-example .figure-link img'));
+  assert(css.includes('max-height:none;object-fit:contain'));assert(css.includes('dialog:has(#dialogBody>img)'));
+});
 
 // Run the real application controller against lightweight DOM/storage doubles.
 // This tests application state transitions, not a browser rendering engine.

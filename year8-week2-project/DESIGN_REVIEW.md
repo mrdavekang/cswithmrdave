@@ -50,6 +50,16 @@ Use a brief individual demonstration or oral follow-up for shared-device pairs a
 
 ## Before calling this classroom-ready
 
+### Follow-up: genuine block examples and editor visibility
+
+The text-style block diagrams have been replaced with screenshots captured from the real MakeCode editor. Startup and Button A show actual nesting; Button B is an optional close-up; the debugging picture is explicitly labelled as incorrect. The full editor view remains collapsed so orientation support does not turn each card into another long page.
+
+Each practical editor link is now a large, high-contrast button. Nearby wording distinguishes opening the editor from opening a ready-made answer, reminds students to reuse their current project, and preserves the iPad app route. A fixed picture cannot reflect each student's choices, so the main example caption names their saved icon/text and explains what to substitute. Python students keep their correct dialect and optional block comparison.
+
+Review judgement: this addresses the reported uncertainty about what blocks look like and where to put them without adding tasks or gates. Actual MakeCode block rendering and all five screenshot crops have been inspected. The 4/5 ratings above remain provisional: image clarity is not evidence of improved learning or proof of a tested tablet lesson layout.
+
+### Remaining classroom checks
+
 - Try the route with a first-time iPad user: app entry, MakeCode Python switch, copying code, simulator, Bluetooth and return to the lesson.
 - Check the full journey and bilingual view on the four requested screen sizes. Allow zoom/reflow rather than forcing no-scroll clipping.
 - Upload/paste a real code screenshot; refresh; export/import a backup; inspect the PDF print preview, including CJK text and images.

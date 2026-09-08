@@ -4,6 +4,17 @@
 @media(max-width:760px){.entry{grid-template-columns:1fr;padding:24px 18px;gap:20px}.entry-copy h1{font-size:2.3rem}.entry-copy h1 br{display:none}.entry-copy h1 span::before{content:' '}.entry-copy img{display:none}.entry-form{padding:22px}.topbar{padding:10px 14px;align-items:flex-start;gap:10px}.identity strong{font-size:.85rem}.toolbar{flex-wrap:wrap;justify-content:flex-end;gap:5px;max-width:245px}.toolbar #saveStatus{flex:0 0 100%;text-align:right;font-size:.76rem}.toolbar button{font-size:.8rem;padding:6px 10px}.lesson-shell{padding:16px 14px}.split,.two,.three{grid-template-columns:1fr;gap:16px}#card{padding:22px 20px}.location-line{font-size:.77rem}.place a{margin-left:0}.card-footer{position:sticky;bottom:0;background:var(--wash);border-top:1px solid var(--line);padding-bottom:10px}.card-footer .text-button{padding:7px;font-size:.86rem}.quiet-note{font-size:.76rem}.code-wrap{padding:10px}.code-wrap textarea{font-size:16px}.choices.columns{grid-template-columns:1fr}.status-list li{align-items:start}.figure-link img{max-height:200px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 /* Navigation stays available without shrinking the task to a fixed, clipped viewport. */
+.editor-launch{display:grid;grid-template-columns:minmax(235px,.9fr) 1.1fr;align-items:center;gap:16px;margin:16px 0 20px}
+.editor-open-link{display:flex;flex-direction:column;justify-content:center;gap:3px;min-height:64px;padding:14px 18px;border:2px solid #2340a6;border-radius:10px;background:#2340a6;color:#fff;text-decoration:none;line-height:1.35}
+.editor-open-link strong{font-size:19px}.editor-link-detail{font-size:14px;font-weight:500}.editor-launch>p{margin:0;line-height:1.5}
+.editor-open-link:hover{background:#162b77;border-color:#162b77}.editor-open-link:focus-visible{outline:3px solid #111;outline-offset:4px}
+.makecode-example{margin:18px 0;width:100%;min-width:0}.makecode-example.single-stack{max-width:435px}
+.makecode-example .figure-link{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#eef1f2;padding:8px}
+.makecode-example .figure-link img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;margin:0}
+.makecode-example .figure-link>span{display:block;padding-top:5px;color:#30363a;font-size:14px;font-weight:600}
+.makecode-example figcaption{font-size:15px;line-height:1.55;margin-top:10px;color:#30363a}
+dialog:has(#dialogBody>img){width:min(1100px,calc(100vw - 28px))}
+@media(max-width:760px){.editor-launch{grid-template-columns:1fr;gap:10px}.editor-open-link{width:100%}.makecode-example .figure-link{padding:5px}.makecode-example figcaption{font-size:15px}}
 .topbar{position:sticky;top:0;z-index:10}.progress-track{position:static}
 #card h1{font-size:clamp(1.8rem,3vw,2.45rem);margin-bottom:18px}
 .eyebrow,.toolbar button,.toolbar #saveStatus,.location-line,.quiet-note,.badge{font-size:max(14px,.83rem)}

@@ -121,11 +121,27 @@ After export is requested, the app instructs students to upload the **PDF** to *
 
 Reused on screen: the badge scenario, the optional simulator-actions illustration and the two school learning posters. The remaining older images are retained as source assets, not displayed. In particular, the old transfer picture appears to depict a full-sized USB connector at the board; it is not used for safety instruction. The old multi-stage planning pictures and mixed-Python image are not put back into the focused cards.
 
+### Real MakeCode examples (visual update 3.1)
+
+Five screenshots in `assets/images/makecode/` were captured from the official MakeCode editor, using a separate teaching-example project. They are not generated illustrations or HTML imitation blocks:
+
+- `01-on-start-heart.jpg`: first working example; shows where the icon snaps into startup.
+- `02-startup-and-button-a.jpg`: starter and main badge model; shows two separate event stacks.
+- `03-button-b-extension.jpg`: optional Level 1 hint; a close-up of B only. The caption explicitly says to keep startup and A.
+- `04-misplaced-output-debugging.jpg`: Level 2 deliberately incorrect placement, clearly labelled so students do not copy it as the solution.
+- `05-editor-workspace.jpg`: optional setup orientation showing simulator, toolbox and workspace.
+
+The screenshots use fixed reference values (heart, AB, tick). The badge card tells students to substitute their own saved icon and message. Python examples remain copyable text in the selected dialect; a collapsed comparison shows equivalent block behaviour, not Python syntax. Screenshots preserve their proportions and can be enlarged; written placement instructions remain available if an image fails.
+
+The prominent **Open MakeCode** button is on setup, build, test and extension cards. It opens the official editor, not a pre-filled project. Students should return to their existing project if already open. iPad cards explicitly prioritise the micro:bit app and label the browser button as an alternative. The optional laptop MicroPython route has its own clearly named editor button. No saved-progress version or storage key changed in this visual update.
+
 ### Verification and remaining checks
 
 The bundled tests exercise state transitions, entry validation, teacher separation, saving, restore, invalid-backup protection, optional extensions, card markup, input/report coverage, safe escaping, language coverage and print-report preparation. They also parse all Python examples and exercise MakeCode event behaviour against API stubs.
 
-These are **not** a browser, actual MakeCode compiler or hardware test. Browser navigation was restricted during this work, so no screenshot-based viewport, real clipboard, physical iPad/Bluetooth or print-pagination test is claimed. Before class, manually check 1366×768, 1920×1080, tablet landscape and portrait; keyboard navigation; a real uploaded/pasted screenshot; refresh; backup restore; and PDF preview on the managed devices.
+For visual update 3.1, the block examples were converted and inspected in the actual MakeCode editor, and each screenshot was checked for complete, readable blocks. The automated tests also check screenshot dimensions/references, personalised captions, safe external links and report separation from teaching examples. This does not validate every Python sample in a real compiler or a physical device.
+
+The lesson app itself has **not** received rendered browser viewport, real clipboard, physical iPad/Bluetooth or print-pagination testing; local browser navigation was restricted during the redesign. Before class, manually check 1366×768, 1920×1080, tablet landscape and portrait; keyboard navigation; a real uploaded/pasted screenshot; refresh; backup restore; and PDF preview on the managed devices.
 
 ### Sources consulted
 
