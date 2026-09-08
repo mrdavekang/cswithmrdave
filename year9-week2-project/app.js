@@ -1,376 +1,182 @@
-const STAGES=[
-  {id:"starter",title:"Case file",core:true},
-  {id:"brief",title:"Big job",core:true},
-  {id:"model",title:"Jobs + IPO",core:true},
-  {id:"algorithm",title:"Build + trace",core:true},
-  {id:"extension",title:"Level-up",core:false},
-  {id:"plenary",title:"Exit check",core:true},
-  {id:"review",title:"Report",core:false}
-];
-
-const REQUIRED={
-  starter:["starterTool","starterIgnore","clueUrgency","clueReward","clueLink","clueSignIn","clueTime","clueNotebook"],
-  brief:["briefUser","briefNeed","briefLimit","reqAsk","reqScore","reqExplain","successCriterion","briefSequenceA","briefSequenceB","briefSequenceC"],
-  model:["jobFirst","jobSecond","jobThird","jobLast","ipoClass1","ipoClass2","ipoClass3","ipoClass4","ipoClass5","ipoClass6","ipoClass7","ipoClass8","ipoClass9","ipoClass10","ipoClass11","ipoClass12","ipoClass13","ipoClass14"],
-  algorithm:["sampleBPurpose","sampleBScore","sampleBOutput","sampleBDescription","sampleCMaybe","sampleCStop","sampleCInput","sampleCDescription","pseudoStart","pseudoInput","pseudoDecision","pseudoUpdate","pseudoOutput","ownPseudoDescription","algoOrder1a","algoOrder1b","algoOrder1c","algoValidationNext","algoOutputOrder","tracePredictionScore","tracePredictionLevel","traceReflection","peerName","peerCase","peerScore","peerLevel"],
-  plenary:["plenaryAO1","plenaryAO2","plenaryAO3","nextTarget"]
-};
-
-const CHECKS_REQUIRED={starter:["starter","clues"],brief:["brief","briefSequences"],model:["jobs","ipo"],algorithm:["pseudoReading","pseudo","algoSequences","trace","peer"],plenary:["plenary"]};
-const DEFAULT_STATE={studentName:"",studentClass:"",current:"starter",completed:{},responses:{},checks:{},updated:null};
-const STUDENT_KEY="y9-t1-w2-scam-detective-guided-v4";
-const TEACHER_KEY="y9-t1-w2-scam-detective-guided-teacher-v4";
-let teacherMode=new URLSearchParams(location.search).get("teacher")==="1";
-let storageKey=teacherMode?TEACHER_KEY:STUDENT_KEY;
-let state=loadState(storageKey);
-let evidenceImage="";
-let traceStep=0;
-let traceHistory=[];
-let saveTimer;
-let pythonRunning=false;
-const PYTHON_STARTER=`# Scam Detective — Creator Mode
-# Build one small working version, then improve it.
-
-concern = 0
-
-# TIP: collect your first YES/NO answer here
-
-# TIP: use an if statement to update concern
-
-# Finish by displaying a level and a safe next step
-print("Concern score:", concern)
-`;
-
-const $=selector=>document.querySelector(selector);
-const $$=selector=>[...document.querySelectorAll(selector)];
-function clone(value){return JSON.parse(JSON.stringify(value))}
-const clean=value=>typeof value==="string"?value.trim():value;
-const safe=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
-const slug=value=>String(value||"student").replace(/[^a-z0-9]+/gi,"_").replace(/^_|_$/g,"");
-
-function loadState(key){try{return {...clone(DEFAULT_STATE),...JSON.parse(localStorage.getItem(key)||"{}")}}catch{return clone(DEFAULT_STATE)}}
-function store(){
-  state.updated=new Date().toISOString();
-  try{localStorage.setItem(storageKey,JSON.stringify(state));if($("#save-status"))$("#save-status").textContent="Saved locally"}catch{if($("#save-status"))$("#save-status").textContent="Could not save"}
-  renderProgress();
-}
-function queueStore(){if($("#save-status"))$("#save-status").textContent="Saving…";clearTimeout(saveTimer);saveTimer=setTimeout(store,220)}
-function hasSavedStudent(){return Boolean(state.studentName&&state.studentClass)}
-
-function populateEntry(){
-  if(hasSavedStudent()){
-    $("#resume-button").classList.remove("hidden");
-    $("#resume-button").textContent=`Resume ${state.studentName}'s saved work`;
-  }
-}
-populateEntry();
-
-$("#entry-form").addEventListener("submit",event=>{
-  event.preventDefault();
-  const name=$("#student-name").value.trim();
-  const group=$("#student-class").value.trim();
-  if(name.toLowerCase()==="teacher"){
-    teacherMode=true;storageKey=TEACHER_KEY;state=loadState(storageKey);
-    state.studentName="Teacher Preview";state.studentClass=group||"Year 9";state.current=state.current||"starter";
-    store();startApp();return;
-  }
-  if(!name||!group){$("#entry-error").textContent="Enter your full name and class before opening the case.";return}
-  const saved=loadState(STUDENT_KEY);
-  state=saved.studentName&&(saved.studentName!==name||saved.studentClass!==group)?clone(DEFAULT_STATE):saved;
-  storageKey=STUDENT_KEY;teacherMode=false;state.studentName=name;state.studentClass=group;state.current=state.current||"starter";
-  store();startApp();
-});
-$("#resume-button").addEventListener("click",startApp);
-
-function startApp(){
-  $("#landing").classList.add("hidden");$("#app").classList.remove("hidden");
-  $("#student-badge").textContent=`${state.studentName} · ${state.studentClass}`;
-  renderJourney();showStage(state.current||"starter",true);
-}
-if(teacherMode&&!state.studentName){state.studentName="Teacher Preview";state.studentClass="Year 9";store()}
-if(new URLSearchParams(location.search).get("teacher")==="1")startApp();
-
-function stageIndex(id){return STAGES.findIndex(stage=>stage.id===id)}
-function unlocked(id){
-  if(teacherMode||id==="starter")return true;
-  if(id==="brief")return Boolean(state.completed.starter);
-  if(id==="model")return Boolean(state.completed.brief);
-  if(id==="algorithm")return Boolean(state.completed.model);
-  if(id==="extension"||id==="plenary")return Boolean(state.completed.algorithm);
-  if(id==="review")return Boolean(state.completed.plenary);
-  return false;
-}
-function renderJourney(){
-  const nav=$("#journey-nav");nav.innerHTML="";
-  STAGES.forEach((stage,index)=>{
-    const button=document.createElement("button");button.type="button";button.dataset.stage=stage.id;
-    button.innerHTML=`<strong>${String(index+1).padStart(2,"0")} · ${stage.title}</strong><small>${stage.core?"Core evidence":"Optional / final"}</small>`;
-    button.addEventListener("click",()=>showStage(stage.id));nav.append(button);
+(() => {
+ 'use strict';
+ const PREFIX='y9-w2-project-plan-v1:',LAST=PREFIX+'last',LEGACY='y9-t1-w2-scam-detective-guided-v4';
+ const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const uuid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2),now=()=>new Date().toISOString();
+ const read=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}};
+ const nameOf=l=>({en:'English',ms:'Bahasa Melayu',zh:'简体中文'})[l],tag=l=>l==='zh'?'zh-Hans':l;
+ let state=null,current=0,saveTimer,toastTimer,unitCount=0,dbPromise,worker=null,workerTimer,pythonOutput='',testDraft={},traceStep=0,traceInput='yes',restoring=false;
+ const memoryImages=new Map(),has=v=>Array.isArray(v)?v.length>0:typeof v==='string'?v.trim().length>0:v!==undefined&&v!==null;
+ const val=id=>state?.responses[id]?.value??'',lang=()=>state?.reading||$('entryRead')?.value||'en';
+ const txt=(v,l=lang())=>typeof v==='object'&&v!==null?(v[l]||v.en||''):String(v??'');
+ const ui=k=>txt(UI[k]);
+ function bi(value){if(!value)return '';const primary=lang(),support=state?.support||'en';const first=`<span lang="${tag(primary)}">${esc(txt(value,primary))}</span>`;if(!state||support==='en'||typeof value==='string')return first;const other=primary==='en'?support:'en';const second=`<span lang="${tag(other)}">${esc(txt(value,other))}</span>`;
+  if(state.view==='compare')return `<span class="compare-pair"><span><small class="language-tag">${nameOf(primary)}</small>${first}</span><span><small class="language-tag">${nameOf(other)}</small>${second}</span></span>`;
+  const id='translation-'+(++unitCount);return `<span class="read-unit">${first}<button type="button" class="translation-button" data-translation="${id}" aria-expanded="false" aria-controls="${id}">${nameOf(other)} +</button><span id="${id}" class="translated" hidden>${second}</span></span>`;
+ }
+ function optionLabel(value){const primary=lang(),support=state.support,other=primary==='en'?support:'en';return `<span lang="${tag(primary)}">${esc(txt(value))}${support!=='en'&&state.view==='compare'?`<span class="option-translation" lang="${tag(other)}">${esc(txt(value,other))}</span>`:''}</span>`;}
+ function blank(profile,teacher=false){return {version:1,id:uuid(),profile,teacher,support:'en',reading:'en',view:'focus',current:0,responses:{},history:[],checks:{},help:{},visits:{},examples:[],tests:[],images:[],created:now()};}
+ const profileKey=(name,group)=>PREFIX+encodeURIComponent(name.trim().toLowerCase()+'|'+group.trim().toLowerCase());
+ function key(){return state.teacher?PREFIX+'teacher':profileKey(state.profile.name,state.profile.className);}
+ function save(immediate=false){if(!state)return;clearTimeout(saveTimer);const write=()=>{state.savedAt=now();try{localStorage.setItem(key(),JSON.stringify(state));if(!state.teacher)localStorage.setItem(LAST,JSON.stringify(key()));if($('saveStatus'))$('saveStatus').textContent=ui('saved');}catch{if($('saveStatus'))$('saveStatus').textContent=ui('saveError');}};if($('saveStatus'))$('saveStatus').textContent=ui('saving');immediate?write():saveTimer=setTimeout(write,180);}
+ function response(id,value,commit=true){state.responses[id]={value,at:now()};if(commit)commitResponse(id);save();}
+ function commitResponse(id){const r=state.responses[id];if(!r)return;const previous=[...state.history].reverse().find(h=>h.id===id);if(!previous||JSON.stringify(previous.value)!==JSON.stringify(r.value))state.history.push({id,value:r.value,at:r.at});}
+ function flush(){if(!state)return;Object.keys(state.responses).forEach(commitResponse);save(true);}
+ function announce(s){$('announcement').textContent=s;}
+ function toast(s){$('toast').textContent=s;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,6000);announce(s);}
+ function supportNote(){return `<p class="hint">${bi(UI.ownWords)}</p>`;}
+ function question(q){const value=val(q.id);let control;
+  if(q.options)control=`<div class="options" role="group" aria-labelledby="label-${q.id}">${q.options.map(o=>`<button type="button" class="option ${value===o.value?'selected':''}" data-answer="${q.id}" data-value="${esc(o.value)}" aria-pressed="${value===o.value}">${optionLabel(o.label)}</button>`).join('')}</div>`;
+  else control=`<textarea id="field-${q.id}" data-field="${q.id}" dir="auto" rows="3" aria-labelledby="label-${q.id}">${esc(value)}</textarea>`;
+  const record=state.checks[q.id]?.at(-1),fresh=record&&record.value===value;
+  return `<section class="question"><label id="label-${q.id}" ${q.options?'':`for="field-${q.id}"`}>${bi(q.prompt)}${q.optional?`<span class="optional">${ui('optional')}</span>`:''}</label>${control}${!q.options?supportNote():''}${q.hint?`<details class="support-details"><summary>${ui('hint')}</summary><p>${bi(q.hint)}</p></details>`:''}${q.answer?`<button type="button" data-check="${q.id}">${ui('check')}</button>${fresh?`<div class="feedback ${record.correct?'good':'try'}">${bi(q.feedback)}</div>`:''}`:''}</section>`;
+ }
+ const questions=c=>(c.questions||[]).map(question).join('');
+ function currentCard(){return typeof current==='number'?CARDS[current]:null;}
+ function navigate(dest){flush();stopPython(false);current=dest;state.current=dest;testDraft=structuredClone(state.testDraft||{});traceStep=0;render();if(currentCard())state.visits[currentCard().id]=now();save(true);$('lesson').focus({preventScroll:true});window.scrollTo(0,0);}
+ function rerender(focusId){const scroll=window.scrollY;render();if(focusId)$(focusId)?.focus({preventScroll:true});window.scrollTo(0,scroll);}
+ function shell(){document.documentElement.lang=tag(lang());$('identity').textContent=state.teacher?'Teacher preview':state.profile.name+' · '+state.profile.className;['wagba','kGoal','sGoal','uGoal'].forEach(id=>$(id).textContent=ui(id));[['kLabel','knowledge'],['sLabel','skills'],['uLabel','understanding'],['languageButton','language'],['reportButton','report'],['profileButton','leave'],['backButton','back'],['nextButton','next']].forEach(([id,k])=>$(id).textContent=ui(k));
+  const c=currentCard();$('stageNav').innerHTML=GROUPS.map((g,i)=>`<button type="button" data-go="${CARDS.findIndex(c=>c.group===i)}" ${c?.group===i?'aria-current="step"':''}>${esc(txt(g))}</button>`).join('')+`<button type="button" data-go="extensions" ${typeof current==='string'&&current.startsWith('ext')?'aria-current="step"':''}>${ui('extensions')}</button>`;
+  $('progressNote').textContent=ui('notGrade');$('backButton').disabled=typeof current==='number'&&current===0;$('nextButton').hidden=current==='report';$('nextButton').textContent=typeof current==='number'&&current===CARDS.length-1?ui('report'):ui('next');
+ }
+ function optionalPaper(id){const note=id+'_paper';if(!FIELD[note])Q(note,B('Paper / discussion evidence: '+txt(currentCard()?.title||EXTENSIONS.find(e=>e.id===id)?.title||B(id,id,id),'en'),'Bukti kertas / perbincangan','纸上／讨论证据'));return `<details class="support-details"><summary>${ui('paper')}</summary><p>${bi(UI.paperGuide)}</p><label for="${note}">${bi(UI.paperNote)}</label><textarea id="${note}" data-field="${note}" rows="2" dir="auto">${esc(val(note))}</textarea><label>${bi(UI.upload)}<input type="file" accept="image/png,image/jpeg,image/webp" data-upload="${id}"></label><p class="hint">${bi(UI.paste)}</p><div class="attachments" data-attachments="${id}"></div></details>`;}
+ function render(){if(!state)return;unitCount=0;shell();const c=currentCard();
+  if(c){$('cardStage').textContent=txt(GROUPS[c.group]);$('cardCount').textContent=`${current+1} / ${CARDS.length}`;$('card').innerHTML=`<h2>${bi(c.title)}</h2><div class="reading">${c.read.map(r=>`<p>${bi(r)}</p>`).join('')}</div>${body(c)}${c.paper?optionalPaper(c.id):''}${words(c)}<details class="support-details"><summary>${ui('needHelp')}</summary><p>${bi(UI.helpNotice)}</p><button type="button" data-help="${c.id}">${ui('needHelp')}</button>${state.help[c.id]?`<p>${bi(UI.helpSaved)}</p>`:''}</details>`;}
+  else{$('cardCount').textContent='';$('cardStage').textContent=current==='report'?ui('report'):ui('extensions');$('card').innerHTML=current==='report'?reportPage():extensionPage();}
+  if(c?.id==='test')tidyTestCard();loadThumbnails();if(current==='report')populateReport();
+ }
+ function tidyTestCard(){
+  // Keep a single visible actual result for on-screen tests; do not ask learners to copy it.
+  const actual=$('card').querySelector('[data-test="observed"]');
+  if(actual&&(testDraft.method||'screen')==='screen'&&!testDraft.result?.error)actual.parentElement.hidden=true;
+  const saved=[...$('card').querySelectorAll('.saved-test')];
+  if(saved.length){const details=document.createElement('details');details.className='support-details';const summary=document.createElement('summary');summary.textContent=ui('recordedTests')+' ('+saved.length+')';details.append(summary);saved[0].before(details);saved.forEach(item=>details.append(item));const heading=[...$('card').querySelectorAll('h3')].find(el=>el.textContent===ui('recordedTests'));heading?.remove();}
+ }
+ function words(c){if(!c.words)return '';return `<details class="support-details"><summary>${ui('glossary')}</summary>${c.words.map(k=>`<p><strong lang="en">${esc(k)}</strong><br>${bi(GLOSSARY[k])}</p>`).join('')}</details>`;}
+ const note=s=>`<div class="notice">${bi(s)}</div>`;
+ function message(){return `<section class="message"><div class="sender">FICTIONAL · PrizePulse Alerts → Sam</div><blockquote>${bi(B('ACT NOW! Your game-credit reward expires today. Sign in to claim 5,000 coins.','BERTINDAK SEKARANG! Ganjaran kredit permainan anda tamat hari ini. Log masuk untuk menuntut 5,000 syiling.','立即行动！你的游戏奖励今天到期，登录即可领取 5,000 游戏币。'))}</blockquote><span class="address">rewards-check.example</span></section>`;}
+ function demo(){const selected=val('demoAnswer');return `<section class="demo-panel"><h3>${bi(UI.modelLabel)}</h3><p class="demo-question">${bi(UI.modelQuestion)}</p><div class="button-row">${YESNO.map(o=>`<button type="button" data-demo="${o.value}" aria-pressed="${selected===o.value}">${o.value.toUpperCase()}${lang()!=='en'?' · '+esc(txt(o.label)):''}</button>`).join('')}</div><div class="demo-output" aria-live="polite">${bi(selected?UI[selected==='yes'?'modelYes':'modelNo']:UI.emptyOutput)}</div><p class="hint">${bi(UI.tryBoth)}</p></section>`;}
+ function draft(){return {question:String(val('draftQuestion')),yes:String(val('draftYes')),no:String(val('draftNo')),order:val('order')||[]};}
+ function fingerprint(d=draft()){return JSON.stringify(d);}
+ function preview(){const d=draft();return `<section class="design-preview"><h3>${ui('preview')}</h3>${!has(d.question)&&!has(d.yes)&&!has(d.no)?`<p class="muted">${bi(UI.emptyDraft)}</p>`:`<strong>${ui('question')}</strong><p data-preview="question" dir="auto">${esc(d.question||'…')}</p><strong>${ui('yesAdvice')}</strong><p data-preview="yes" dir="auto">${esc(d.yes||'…')}</p><strong>${ui('noAdvice')}</strong><p data-preview="no" dir="auto">${esc(d.no||'…')}</p>`}</section>`;}
+ function chosenRisk(){const r=RISKS[val('risk')];return r?note(r.read):note(B('Choose a warning sign in the previous card first, or discuss a choice with your teacher. You can still write a question here.','Pilih tanda amaran pada kad sebelumnya atau bincang dengan guru. Anda masih boleh menulis soalan di sini.','先在上一张卡选一种警示，或与老师讨论。仍可在这里写问题。'));}
+ const CANON=['input','if','yes','else','no','end'],MIXED=['yes','else','input','no','end','if'];
+ function orderOK(order){return JSON.stringify(order)===JSON.stringify(CANON);}
+ function complete(d){return [d.question,d.yes,d.no].every(has);}
+ function line(id,d=draft(),model=false){const a=model?txt(UI.modelYes,'en'):d.yes||'['+ui('yesAdvice')+']',b=model?txt(UI.modelNo,'en'):d.no||'['+ui('noAdvice')+']',variable=model?'urgent':'warning';return {input:`INPUT ${variable}`,if:`IF ${variable} = YES THEN`,yes:`    OUTPUT ${JSON.stringify(a)}`,else:'ELSE',no:`    OUTPUT ${JSON.stringify(b)}`,end:'ENDIF'}[id];}
+ function code(d=draft(),order=d.order){return (order.length?order:MIXED).map(id=>line(id,d)).join('\n');}
+ function modelCode(){const active=traceStep?modelPath(traceInput)[Math.min(traceStep-1,3)]:null;return `<pre aria-label="Teacher pseudocode">${CANON.map((id,i)=>`<span class="code-line ${id===active?'active':''}"><span class="number">${i+1}</span>${esc(line(id,{},true))}</span>`).join('')}</pre>`;}
+ const modelPath=input=>['input','if',input==='yes'?'yes':'no','end'];
+ function modelTrace(){return `${modelCode()}<div class="button-row">${YESNO.map(o=>`<button type="button" data-trace-input="${o.value}" aria-pressed="${traceInput===o.value}">urgent = ${o.value.toUpperCase()}</button>`).join('')}<button type="button" data-action="trace-step">${traceStep>=4?ui('restart'):ui('step')}</button></div>${traceStep?`<div class="feedback">${bi(traceStep===1?B('INPUT stores the chosen answer in urgent.','INPUT menyimpan jawapan dalam urgent.','INPUT 将所选答案存入 urgent。'):traceStep===2?B('IF compares urgent with YES. Only the matching branch is followed; ELSE is the alternative route.','IF membandingkan urgent dengan YES. Hanya cabang sepadan diikuti; ELSE ialah laluan lain.','IF 将 urgent 与 YES 比较，只执行匹配分支；ELSE 是另一条路径。'):traceStep===3?UI[traceInput==='yes'?'modelYes':'modelNo']:B('ENDIF ends this decision. The other output was skipped.','ENDIF menamatkan keputusan ini. Output lain dilangkau.','ENDIF 结束此判断，另一条输出被跳过。'))}</div>`:''}`;}
+ function orderBuilder(){const d=draft(),order=d.order.length?d.order:MIXED;return `${complete(d)?`<p><strong>${ui('question')}:</strong> ${esc(d.question)}</p>`:note(UI.needsDraft)}<p>${bi(UI.orderPrompt)}</p><ol class="line-list">${order.map((id,i)=>`<li><code>${esc(line(id,d))}</code><span class="move"><button type="button" data-move="${i}" data-dir="-1" aria-label="${ui('up')}: ${esc(id)}" ${i===0?'disabled':''}>↑</button><button type="button" data-move="${i}" data-dir="1" aria-label="${ui('down')}: ${esc(id)}" ${i===order.length-1?'disabled':''}>↓</button></span></li>`).join('')}</ol><div class="button-row"><button type="button" data-action="check-order">${ui('checkOrder')}</button><button type="button" data-action="reset-order">${ui('resetOrder')}</button></div>${state.checks.order?.at(-1)&&JSON.stringify(state.checks.order.at(-1).value)===JSON.stringify(d.order)?`<div class="feedback">${bi(orderOK(d.order)?UI.orderGood:UI.orderTry)}</div>`:''}`;}
+ function learningAction(){return {knowledge:B('Try the example, then point to the answer going in and the advice coming out. Say “input” and “output” when you explain.','Cuba contoh, kemudian tunjuk jawapan masuk dan nasihat keluar. Sebut “input” dan “output” semasa menerangkan.','尝试示例，指出输入的答案和输出的建议，解释时使用 input 和 output。'),skill:B('Follow one YES case together, then try the NO case yourself. Point to each instruction before deciding what happens.','Ikut satu kes YES bersama, kemudian cuba NO sendiri. Tunjuk setiap arahan sebelum menentukan hasil.','一起执行一个 YES 案例，再独立尝试 NO。先指出每条指令，再判断会发生什么。'),understanding:B('Explain what the helper does NOT know. Look for a message where urgency could have an innocent reason.','Terangkan apa yang pembantu TIDAK tahu. Cari mesej yang mendesak atas sebab tidak berbahaya.','解释助手不知道什么，找一个因正常原因而急迫的消息。')}[val('learningFocus')];}
+ function phaseAction(){return {new:B('Use the worked example again. Follow the YES route, then explain what changes for NO.','Gunakan contoh semula. Ikut laluan YES, kemudian terangkan perubahan bagi NO.','再看示例，执行 YES 路径，再解释 NO 时有什么变化。'),consolidating:B('Test the other answer without the worked example. Compare your partner’s output with your success criterion.','Uji jawapan lain tanpa contoh. Bandingkan output rakan dengan kriteria kejayaan.','不看示例测试另一答案，将同伴输出与你的成功标准比较。'),treading:B('Try “Challenge the rule” in Optional challenges. Look for a limitation, not extra decoration.','Cuba “Cabar peraturan” dalam Cabaran pilihan. Cari had, bukan hiasan tambahan.','尝试可选挑战中的“质疑规则”，寻找局限，而不是增加装饰。'),help:B('Show your teacher the first instruction you cannot explain. Ask to follow one input together. If wording is the difficulty, open the translation or explain in your preferred language.','Tunjukkan arahan pertama yang tidak dapat diterangkan kepada guru. Minta ikut satu input bersama. Jika bahasa sukar, buka terjemahan atau terangkan dalam bahasa pilihan.','向老师指出第一条无法解释的指令，一起执行一个输入。若难在措辞，打开翻译或用熟悉的语言解释。')}[val('phase')];}
+ function body(c){switch(c.type){
+ case 'case':return message()+questions(c)+`<details class="support-details"><summary>${txt(B('Optional: view Sam’s illustration','Pilihan: lihat ilustrasi Sam','可选：查看 Sam 的插画'))}</summary><button type="button" class="image-open" data-image="assets/sam-message.png"><img class="small-image" src="assets/sam-message.png" alt="Sam considers a fictional gaming-reward message"></button></details>`;
+ case 'types':return questions(c)+(learningAction()?`<div class="phase-action">${bi(learningAction())}</div>`:'');
+ case 'example':return demo()+questions(c);
+ case 'ipo':return `<div class="ipo"><section><strong>INPUT</strong><p>${bi(B('Sam’s answer: YES or NO','Jawapan Sam: YES atau NO','Sam 的回答：YES 或 NO'))}</p></section><section><strong>PROCESS</strong><p>${bi(B('Check whether the answer is YES; choose one route.','Semak sama ada jawapan YES; pilih satu laluan.','检查答案是否为 YES，选择一条路径。'))}</p></section><section><strong>OUTPUT</strong><p>${bi(B('The advice selected by that route','Nasihat dipilih oleh laluan itu','该路径选出的建议'))}</p></section></div>${questions(c)}`;
+ case 'brief':return questions(c)+(RISKS[val('risk')]?chosenRisk():'');
+ case 'question':return chosenRisk()+questions(c)+`<details class="support-details"><summary>${txt(B('Show a question example for my chosen sign','Lihat contoh soalan tanda dipilih','查看所选警示的问题示例'))}</summary><p>${bi(RISKS[val('risk')]?.question||B('Choose a warning sign first.','Pilih tanda amaran dahulu.','请先选择警示。'))}</p><p class="hint">${bi(B('You can adapt this wording. Looking at an example does not fill your answer.','Anda boleh ubah perkataan ini. Melihat contoh tidak mengisi jawapan.','可以改写这段措辞，查看示例不会自动填写你的答案。'))}</p></details>`;
+ case 'advice':return `<p class="notice"><strong>${ui('question')}:</strong> ${esc(val('draftQuestion')||'…')}</p>${questions(c)}`;
+ case 'success':return `<div class="split"><div>${questions(c)}</div>${preview()}</div>`;
+ case 'read':return modelTrace()+questions(c);
+ case 'build':return orderBuilder();
+ case 'describe':return `<details class="support-details" open><summary>${ui('showPlan')}</summary><pre>${esc(code())}</pre></details>${questions(c)}`;
+ case 'test':return testing();
+ case 'improve':return `<div class="button-row"><button type="button" data-go="5">${ui('goDesign')}</button><button type="button" data-go="6">${txt(B('Revise my advice','Baiki nasihat saya','修改我的建议'))}</button><button type="button" data-go="9">${txt(B('Revise instruction order','Baiki urutan arahan','修改指令顺序'))}</button><button type="button" data-go="11">${txt(B('Test again','Uji semula','再次测试'))}</button></div>${questions(c)}`;
+ case 'pitstop':return questions(c)+(phaseAction()?`<div class="phase-action">${bi(phaseAction())}</div>`:'');
+ case 'exit':return questions(c)+`<div class="button-row"><button class="primary" type="button" data-go="report">${ui('report')}</button><button type="button" data-go="extensions">${ui('extensions')}</button></div>`;
+ default:return questions(c);
+ }}
+ function runPlan(d,input){if(!complete(d))return {error:'incomplete'};if(!orderOK(d.order))return {error:'order'};return {output:input==='yes'?d.yes:d.no,path:['input','if',input==='yes'?'yes':'no','end']};}
+ function testing(){const d=draft(),method=testDraft.method||'screen';const result=testDraft.result;return `<details class="support-details"><summary>${ui('showPlan')}</summary><p>${esc(d.question||'…')}</p><pre>${esc(code())}</pre></details><label>${ui('testMethod')}<select data-test="method"><option value="screen" ${method==='screen'?'selected':''}>${ui('solo')}</option><option value="partner" ${method==='partner'?'selected':''}>${ui('partner')}</option><option value="paper" ${method==='paper'?'selected':''}>${ui('paperTest')}</option></select></label>${method==='partner'?note(B('Reader: supply the chosen answer. Computer: point to each applicable instruction and read its output exactly. Do not fix missing instructions silently. Swap roles for the second case.','Pembaca: beri jawapan dipilih. Komputer: tunjuk setiap arahan dan baca output tepat. Jangan baiki arahan hilang secara senyap. Tukar peranan untuk kes kedua.','读者提供所选答案；“计算机”指向每条适用指令并准确读出输出，不要悄悄补齐缺失指令。第二个案例交换角色。')):''}<label>${ui('testAnswer')}<select data-test="input"><option value="">${ui('choose')}</option>${YESNO.map(o=>`<option value="${o.value}" ${testDraft.input===o.value?'selected':''}>${o.value.toUpperCase()} · ${esc(txt(o.label))}</option>`).join('')}</select></label><label>${ui('expected')}<textarea data-test="expected" rows="2" dir="auto">${esc(testDraft.expected||'')}</textarea></label><button type="button" data-action="run-test">${method==='screen'?ui('runTest'):txt(B('Record what happened','Rekod apa berlaku','记录实际结果'))}</button>${result?`<div class="feedback" role="status">${result.error?bi(result.error==='incomplete'?UI.needsDraft:UI.orderTry):`<strong>${ui('observed')}</strong><p class="report-answer">${esc(result.output)}</p><p class="hint">INPUT → IF → ${testDraft.input==='yes'?'YES output':'ELSE / NO output'} → ENDIF</p>`}</div>`:''}${testDraft.open?`<label>${ui('observed')}<textarea data-test="observed" rows="2" dir="auto">${esc(testDraft.observed||'')}</textarea></label><label>${ui('match')}<select data-test="match"><option value="">${ui('choose')}</option><option value="matched" ${testDraft.match==='matched'?'selected':''}>${txt(B('Matched','Sepadan','一致'))}</option><option value="different" ${testDraft.match==='different'?'selected':''}>${txt(B('Different','Berbeza','不一致'))}</option><option value="unclear" ${testDraft.match==='unclear'?'selected':''}>${txt(B('Unclear / needed help','Kurang jelas / perlukan bantuan','不清楚／需要帮助'))}</option></select></label><button type="button" class="primary" data-action="save-test">${ui('saveTest')}</button>`:''}<h3 style="margin-top:1.3rem">${ui('recordedTests')}</h3>${state.tests.length?state.tests.map((t,i)=>`<div class="saved-test"><strong>${i+1}. ${esc(t.input.toUpperCase())} · ${esc(t.method)}</strong><p>${ui('expected')} ${esc(t.expected)}</p>${t.observed?`<p>${ui('observed')} ${esc(t.observed)}</p>`:''}${t.fingerprint!==fingerprint()?`<p class="hint">${bi(UI.stale)}</p>`:''}</div>`).join(''):`<p class="muted">${txt(B('No tests saved yet. Start with one answer, then test the other.','Belum ada ujian disimpan. Mula dengan satu jawapan, kemudian uji jawapan lain.','尚未保存测试。先测一个答案，再测另一个。'))}</p>`}`;}
+ function extensionPage(){const e=EXTENSIONS.find(e=>e.id===current);if(!e)return `<h2>${ui('extensions')}</h2><p>${bi(B('Choose a challenge that stretches your thinking. None is required to continue or export. You can work on paper. Python is also available; it is optional preparation for next lesson.','Pilih cabaran yang mencabar pemikiran. Tiada yang wajib untuk teruskan atau eksport. Boleh guna kertas. Python juga tersedia sebagai persediaan pilihan.','选择能拓展思考的挑战。继续学习或导出不要求完成挑战，可用纸笔。Python 也可选做，为下节课准备。'))}</p><div class="extension-list">${EXTENSIONS.map(e=>`<button type="button" data-go="${e.id}"><strong>${esc(txt(e.title))}</strong></button>`).join('')}<button type="button" data-go="python"><strong>Python · ${txt(B('Optional coding studio','Studio kod pilihan','可选编程工作室'))}</strong><span>${txt(B('Turn one question into a small text program. No micro:bit required.','Tukar satu soalan kepada program teks kecil. Tidak memerlukan micro:bit.','把一个问题变成小型文本程序，不需要 micro:bit。'))}</span></button></div>`;
+ return `<h2>${bi(e.title)}</h2><p>${bi(e.intro)}</p>${question(FIELD[e.id+'_work'])}${optionalPaper(e.id)}`;}
+ function reportPage(){return `<h2>${ui('report')}</h2><p>${bi(UI.reportIntro)}</p><div class="button-row"><button type="button" class="primary" data-action="print">${ui('print')}</button><button type="button" data-action="backup">${ui('backup')}</button><button type="button" data-action="html-report">${ui('saveHtml')}</button></div><p>${bi(UI.printHelp)}</p><div class="notice blue">${bi(UI.teams)}</div><label>${ui('restore')}<input type="file" id="restoreFile" accept="application/json,.json"></label><div id="reportBody"></div>${optionalPaper('report')}`;}
+ function displayAnswer(id,value){const q=FIELD[id];if(q?.options)return txt(q.options.find(o=>o.value===value)?.label||value,'en');return Array.isArray(value)?value.join(' → '):String(value);}
+ function reportHTML(){const answered=Object.entries(state.responses).filter(([id,r])=>has(r.value)&&id!=='demoAnswer'&&id!=='order'&&id!=='testDraft');let html=`<h1>Year 9 · Week 2 Project</h1><h2>Message Helper — planning evidence</h2><p><strong>${esc(state.profile.name)} · ${esc(state.profile.className)}</strong></p><p class="meta">${state.teacher?'TEACHER PREVIEW · ':''}Saved: ${esc(state.savedAt||now())} · Support: ${esc(nameOf(state.support))}. Responses are for teacher review; completion is not a grade.</p>`;
+  const partial=state.testDraft&&['input','expected','observed','match'].some(k=>has(state.testDraft[k]));
+  if(!answered.length&&!state.tests.length&&!state.images.length&&!state.examples.length&&!Object.keys(state.help).length&&!has(val('order'))&&!partial)html+=`<p>${ui('noAttempts')}</p>`;
+  for(const c of [...CARDS,...EXTENSIONS.map(e=>({id:e.id,title:e.title,questions:[FIELD[e.id+'_work']]})),{id:'python',title:B('Optional Python','Python pilihan','可选 Python'),questions:[FIELD.pythonCode,FIELD.pythonReflection]},{id:'report',title:B('Additional evidence','Bukti tambahan','补充证据')}]){const ids=(c.questions||[]).map(q=>q.id).concat(c.id+'_paper');const records=answered.filter(([id])=>ids.includes(id));const tests=c.id==='test'?state.tests:[];const attachments=state.images.filter(img=>img.card===c.id);const checks=c.id==='build'?(state.checks.order||[]):[];const examples=c.id==='example'?state.examples:[];if(!records.length&&!tests.length&&!attachments.length&&!checks.length&&!examples.length&&!state.help[c.id]&&!(c.id==='build'&&has(val('order')))&&!(c.id==='test'&&partial))continue;
+   html+=`<section class="report-section"><h2>${esc(txt(c.title,'en'))}</h2>`;
+   for(const [id,r]of records){html+=`<div class="report-row"><strong>${esc(txt(FIELD[id]?.prompt||id,'en'))}</strong><div class="report-answer" dir="auto">${esc(displayAnswer(id,r.value))}</div><small class="meta">${esc(r.at)}</small>`;const history=state.history.filter(h=>h.id===id&&has(h.value));if(history.length>1)html+=`<details open class="report-history"><summary>Earlier revisions</summary>${history.slice(0,-1).map(h=>`<p>${esc(h.at)}: ${esc(displayAnswer(id,h.value))}</p>`).join('')}</details>`;const checks=state.checks[id]||[];if(checks.length)html+=`<div class="report-history">${checks.map(a=>`<p>${esc(a.at)} · ${esc(displayAnswer(id,a.value))} · ${a.correct?'Matched the example':'Feedback offered'}${a.value!==r.value?' (answer changed since this check)':''}</p>`).join('')}</div>`;html+='</div>';}
+   if(c.id==='build'&&has(val('order')))html+=`<pre>${esc(code())}</pre>${checks.map(a=>`<p class="meta">${esc(a.at)} · ${esc(a.value.join(' → '))} · ${a.correct?'Order matched':'Order needs review'}</p>`).join('')}`;
+   if(c.id==='test'&&partial)html+=`<div class="report-row"><strong>In-progress test · not yet saved as a completed test</strong>${['input','expected','observed','match'].filter(k=>has(state.testDraft[k])).map(k=>`<p>${esc(k)}: ${esc(state.testDraft[k])}</p>`).join('')}</div>`;
+   for(const t of tests)html+=`<div class="saved-test"><strong>Test ${state.tests.indexOf(t)+1}: ${esc(t.input.toUpperCase())} · ${esc(t.method)} · ${esc(t.at)}</strong><p>Prediction: ${esc(t.expected)}</p>${t.observed?`<p>Observed: ${esc(t.observed)}</p>`:''}${t.match?`<p>Student comparison: ${esc(t.match)}</p>`:''}${t.error?`<p>Walkthrough could not follow plan: ${esc(t.error)}</p>`:''}${t.fingerprint!==fingerprint()?'<p>Plan revised since this test. Retesting needed.</p>':''}<details open><summary>Plan tested</summary><p>${esc(t.snapshot.question)}</p><pre>${esc(code(t.snapshot,t.snapshot.order))}</pre></details></div>`;
+   if(examples.length)html+=`<p>Teacher example explored: ${examples.map(a=>esc(a.input.toUpperCase())).join(', ')}. Exploration is not a mastery score.</p>`;
+   if(state.help[c.id])html+=`<p>Student requested support at ${esc(state.help[c.id])}. This is not a live teacher notification.</p>`;
+   for(const img of attachments)html+=`<figure><figcaption>${esc(img.name)} · ${esc(img.at)}</figcaption><img data-report-image="${img.id}" alt="Student evidence: ${esc(img.name)}"></figure>`;
+   if(c.id==='python'&&state.pythonRuns?.length)html+=state.pythonRuns.map(r=>`<div class="report-history"><strong>Run · ${esc(r.at)}</strong><pre>${esc(r.code)}</pre><pre>${esc(r.output)}</pre></div>`).join('');html+='</section>';
+  }return html;
+ }
+ async function populatedReport(){const holder=document.createElement('div');holder.innerHTML=reportHTML();await Promise.all([...holder.querySelectorAll('[data-report-image]')].map(async img=>{const record=await imageGet(img.dataset.reportImage);if(record?.data)img.src=record.data;else img.replaceWith(document.createTextNode('Image unavailable on this browser. Restore its backup or add it again.'));}));return holder.innerHTML;}
+ async function populateReport(){const container=$('reportBody');if(container)container.innerHTML=await populatedReport();}
+ function download(content,filename,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),20000);}
+ function filename(suffix){return ('Y9_W2_Project_'+state.profile.className+'_'+state.profile.name).replace(/[^\p{L}\p{N}_-]/gu,'_')+suffix;}
+ function db(){if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{const r=indexedDB.open('y9-w2-project-evidence',1);r.onupgradeneeded=()=>r.result.createObjectStore('images',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});return dbPromise;}
+ async function imageGet(id){if(memoryImages.has(id))return memoryImages.get(id);try{const d=await db();return await new Promise((resolve,reject)=>{const r=d.transaction('images').objectStore('images').get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}catch{return null;}}
+ async function imagePut(record){memoryImages.set(record.id,record);const d=await db();await new Promise((resolve,reject)=>{const t=d.transaction('images','readwrite');t.objectStore('images').put(record);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error);});}
+ async function addImage(file,card){if(!file||!/^image\/(png|jpeg|webp)$/.test(file.type))return toast(txt(B('Choose a PNG, JPG or WebP image.','Pilih imej PNG, JPG atau WebP.','请选择 PNG、JPG 或 WebP 图片。')));if(file.size>8*1024*1024)return toast(txt(B('Choose an image smaller than 8 MB.','Pilih imej kurang 8 MB.','请选择小于 8 MB 的图片。')));const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});const img={id:uuid(),data,name:file.name||'pasted-image.png',card,at:now(),owner:state.id};try{await imagePut(img);}catch{toast(txt(B('Image kept for this session only. Download a backup before leaving.','Imej disimpan untuk sesi ini sahaja. Muat turun sandaran sebelum keluar.','图片仅保留在本次会话中，退出前请下载备份。')));}state.images.push({id:img.id,name:img.name,card,at:img.at});save(true);loadThumbnails();if(current==='report')populateReport();}
+ async function loadThumbnails(){for(const container of document.querySelectorAll('[data-attachments]')){const records=state.images.filter(img=>img.card===container.dataset.attachments);container.innerHTML='';for(const meta of records){const r=await imageGet(meta.id);const figure=document.createElement('figure');figure.className='attachment';figure.innerHTML=`${r?.data?`<button type="button" class="image-open" data-image-id="${meta.id}"><img src="${r.data}" alt="${esc(meta.name)}"></button>`:'<p>Image unavailable; restore backup.</p>'}<p>${esc(meta.name)}</p><button type="button" data-remove-image="${meta.id}">${ui('remove')}</button>`;container.append(figure);}}}
+ async function exportBackup(){flush();const images=await Promise.all(state.images.map(m=>imageGet(m.id)));download(JSON.stringify({app:'y9-w2-message-helper',version:1,state,images:images.filter(Boolean)},null,2),filename('_backup.json'),'application/json');if(images.some(i=>!i))toast(txt(B('Some image files were unavailable. Check the backup and add those images again.','Sesetengah imej tidak tersedia. Semak sandaran dan tambah semula imej.','部分图片不可用，请检查备份并重新添加。')));}
+ async function restoreBackup(file){if(!file)return;if(file.size>100*1024*1024)return toast('Backup is too large.');try{const data=JSON.parse(await file.text()),s=data.state;if(data.app!=='y9-w2-message-helper'||data.version!==1||s?.version!==1||typeof s.profile?.name!=='string'||typeof s.profile?.className!=='string'||!Array.isArray(s.tests)||!s.responses||!Array.isArray(s.images)||!Array.isArray(data.images))throw Error('format');if(!confirm(txt(B('Restore this backup as '+s.profile.name+'? Any existing redesigned work for this name and class will be replaced. Download a backup of it first.','Pulihkan sandaran sebagai '+s.profile.name+'? Kerja reka bentuk semula sedia ada bagi nama dan kelas ini akan diganti. Sandarkan dahulu.','以 '+s.profile.name+' 恢复？此姓名和班级已有的新版记录将被替换，请先备份。'))))return;for(const img of data.images){if(!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(img.data)||typeof img.id!=='string')throw Error('image');await imagePut(img);}flush();state=s;state.teacher=new URLSearchParams(location.search).get('teacher')==='1';normalise();save(true);current='report';render();toast(txt(B('Backup restored.','Sandaran dipulihkan.','备份已恢复。')));}catch{toast(txt(B('This backup could not be restored. Your current work has not been replaced unless restoration completed.','Sandaran tidak dapat dipulihkan. Kerja semasa tidak diganti kecuali pemulihan selesai.','无法恢复此备份。恢复完成前不会替换当前作品。')));}}
+ function normalise(){if(!['en','ms','zh'].includes(state.support))state.support='en';if(!['en',state.support].includes(state.reading))state.reading='en';if(!['focus','compare'].includes(state.view))state.view='focus';if(state.support==='en'){state.reading='en';state.view='focus';}state.history??=[];state.help??={};state.examples??=[];state.checks??={};state.visits??={};state.images??=[];state.tests??=[];}
+ function start(name,group,support,reading,teacher=false){flush();const stored=read(teacher?PREFIX+'teacher':profileKey(name,group));state=stored?.version===1?stored:blank({name:teacher?'Teacher':name,className:teacher?'Preview':group},teacher);state.teacher=teacher;if(support)state.support=support;if(reading)state.reading=reading;normalise();current=state.current??0;testDraft=structuredClone(state.testDraft||{});if(typeof current==='number'&&!CARDS[current])current=0;$('landing').hidden=true;$('app').hidden=false;render();save(true);$('lesson').focus();window.scrollTo(0,0);}
+ function entryLanguage(){const support=$('entrySupport').value,previous=$('entryRead').value;const language=previous==='en'||previous===support?previous:'en';$('entryRead').innerHTML='<option value="en">English</option>'+(support!=='en'?`<option value="${support}">${nameOf(support)}</option>`:'');$('entryRead').value=language;$('entryReadWrap').hidden=support==='en';[['entryTitle','entryTitle'],['entryIntro','entryIntro'],['nameLabel','name'],['classLabel','className'],['entryNote','entryNote'],['entryPrivacy','privacy'],['outcomeText','outcome'],['startButton','start']].forEach(([id,k])=>$(id).textContent=txt(UI[k],language));$('supportLabel').textContent=txt(B('Language support','Bantuan bahasa','语言支持'),language);$('readLabel').textContent=txt(B('Read first in','Baca dahulu dalam','优先阅读语言'),language);$('outcomeLabel').textContent=txt(B('Your outcome today','Hasil anda hari ini','今天的成果'),language);}
+ function showLanguage(){const l=lang();$('languageTitle').textContent=txt(B('Reading support','Bantuan bacaan','阅读支持'));$('languageSelectLabel').textContent=txt(B('Support language','Bahasa sokongan','辅助语言'));$('primarySelectLabel').textContent=txt(B('Read first in','Baca dahulu dalam','优先阅读语言'));$('viewSelectLabel').textContent=txt(B('Reading view','Paparan bacaan','阅读方式'));$('languageNote').textContent=ui('entryNote');$('applyLanguage').textContent=txt(B('Apply','Gunakan','应用'));$('supportSelect').value=state.support;setPrimaryOptions(state.reading);$('viewSelect').options[0].textContent=ui('focus');$('viewSelect').options[1].textContent=ui('compare');$('viewSelect').value=state.view;$('languageDialog').showModal();}
+ function setPrimaryOptions(reading='en'){const support=$('supportSelect').value;$('primarySelect').innerHTML='<option value="en">English</option>'+(support!=='en'?`<option value="${support}">${nameOf(support)}</option>`:'');$('primarySelect').value=[support,'en'].includes(reading)?reading:'en';}
+ function bind(){
+  $('entrySupport').addEventListener('change',entryLanguage);$('entryRead').addEventListener('change',entryLanguage);
+  $('entryForm').addEventListener('submit',e=>{e.preventDefault();const name=$('studentName').value.trim(),group=$('studentClass').value.trim();if(!name||!group){$('entryError').textContent=txt(B('Enter your name and class.','Masukkan nama dan kelas.','请输入姓名和班级。'));return;}start(name,group,$('entrySupport').value,$('entryRead').value);});
+  $('resumeButton').addEventListener('click',()=>{const s=read(read(LAST));if(s)start(s.profile.name,s.profile.className,s.support,s.reading);});
+  $('legacyButton').addEventListener('click',()=>download(JSON.stringify({app:'previous-scam-detective',state:read(LEGACY),image:localStorage.getItem(LEGACY+'-image')||null},null,2),'Y9_W2_previous_version_backup.json','application/json'));
+  $('languageButton').addEventListener('click',showLanguage);$('supportSelect').addEventListener('change',()=>setPrimaryOptions());$('applyLanguage').addEventListener('click',()=>{flush();state.support=$('supportSelect').value;state.reading=$('primarySelect').value;state.view=$('viewSelect').value;normalise();save(true);$('languageDialog').close();rerender();});
+  $('home').addEventListener('click',e=>{e.preventDefault();navigate(0);});$('reportButton').addEventListener('click',()=>navigate('report'));$('profileButton').addEventListener('click',()=>{flush();stopPython();$('app').hidden=true;$('landing').hidden=false;state=null;setupResume();$('studentName').focus();});
+  $('backButton').addEventListener('click',()=>navigate(typeof current==='number'?Math.max(0,current-1):15));$('nextButton').addEventListener('click',()=>navigate(typeof current==='number'&&current<CARDS.length-1?current+1:'report'));
+  document.addEventListener('input',e=>{const field=e.target.dataset.field;if(field){response(field,e.target.value,false);if(field==='pythonCode')state.codeEdited=true;}if(e.target.dataset.test){testDraft[e.target.dataset.test]=e.target.value;if(e.target.dataset.test==='expected'&&testDraft.open){testDraft.open=false;delete testDraft.result;}state.testDraft=structuredClone(testDraft);save();}});
+  document.addEventListener('change',async e=>{if(e.target.dataset.field)commitResponse(e.target.dataset.field);if(e.target.dataset.test){testDraft[e.target.dataset.test]=e.target.value;if(['method','input'].includes(e.target.dataset.test)){delete testDraft.result;testDraft.open=false;testDraft.observed='';testDraft.match='';}state.testDraft=structuredClone(testDraft);save();if(e.target.tagName==='SELECT')rerender();}if(e.target.dataset.upload)await addImage(e.target.files[0],e.target.dataset.upload);if(e.target.id==='restoreFile')await restoreBackup(e.target.files[0]);});
+  document.addEventListener('paste',e=>{if(!state)return;const file=[...(e.clipboardData?.items||[])].find(i=>i.kind==='file'&&i.type.startsWith('image/'))?.getAsFile();if(file){e.preventDefault();addImage(file,currentCard()?.id||(typeof current==='string'?current:'report'));}});
+  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+   if(b.dataset.translation){const target=$(b.dataset.translation);target.hidden=!target.hidden;b.setAttribute('aria-expanded',String(!target.hidden));return;}
+   if(b.dataset.go){navigate(/^\d+$/.test(b.dataset.go)?Number(b.dataset.go):b.dataset.go);return;}
+   if(b.dataset.answer){response(b.dataset.answer,b.dataset.value);rerender();return;}
+   if(b.dataset.check){const q=FIELD[b.dataset.check],v=val(q.id);if(!has(v))return toast(txt(B('Choose an answer for feedback, or continue and return later.','Pilih jawapan untuk maklum balas, atau teruskan dan kembali kemudian.','选择答案可获得反馈，也可先继续稍后返回。')));(state.checks[q.id]??=[]).push({value:v,correct:v===q.answer,at:now()});save();rerender();return;}
+   if(b.dataset.help){state.help[b.dataset.help]=now();save();toast(ui('helpSaved'));return;}
+   if(b.dataset.demo){response('demoAnswer',b.dataset.demo);state.examples.push({input:b.dataset.demo,at:now()});save();rerender();return;}
+   if(b.dataset.traceInput){traceInput=b.dataset.traceInput;traceStep=0;rerender();return;}
+   if(b.dataset.move!==undefined){const order=[...(val('order').length?val('order'):MIXED)],i=Number(b.dataset.move),j=i+Number(b.dataset.dir);if(j>=0&&j<order.length){[order[i],order[j]]=[order[j],order[i]];response('order',order);rerender();}return;}
+   if(b.dataset.image||b.dataset.imageId){const src=b.dataset.image||(await imageGet(b.dataset.imageId))?.data;if(src){$('largeImage').src=src;$('imageDialog').showModal();}return;}
+   if(b.dataset.removeImage){if(!confirm(txt(B('Remove this evidence image from your report?','Buang imej bukti ini daripada laporan?','从报告中移除此证据图片？'))))return;state.images=state.images.filter(i=>i.id!==b.dataset.removeImage);save(true);loadThumbnails();if(current==='report')populateReport();return;}
+   if(b.dataset.action)await action(b.dataset.action);
   });
-  renderProgress();
-}
-function renderProgress(){
-  const core=STAGES.filter(stage=>stage.core);const done=core.filter(stage=>state.completed[stage.id]).length;
-  if($("#progress-bar"))$("#progress-bar").style.width=`${Math.round(done/core.length*100)}%`;
-  $$("#journey-nav button").forEach(button=>{
-    button.disabled=!unlocked(button.dataset.stage);
-    button.classList.toggle("current",button.dataset.stage===state.current);
-    button.classList.toggle("complete",Boolean(state.completed[button.dataset.stage]));
-  });
-}
-function showStage(id,force=false){
-  if(!force&&!unlocked(id))return;
-  state.current=id;queueStore();
-  const template=$(`#stage-${id}`);$("#stage-host").replaceChildren(template.content.cloneNode(true));
-  bindStage();restoreStage();
-  if(id==="review")renderReport();
-  const index=stageIndex(id);$("#back-button").disabled=index===0;
-  $("#back-button").onclick=()=>showStage(STAGES[Math.max(0,index-1)].id,true);
-  $("#next-button").textContent=id==="review"?"Return to case file":id==="extension"?"Skip / continue":"Check and continue";
-  $("#next-button").onclick=()=>advance(id,index);
-  renderProgress();window.scrollTo({top:0,behavior:"auto"});
-}
-
-function bindStage(){
-  $$("[data-save]").forEach(element=>{element.addEventListener("input",capture);element.addEventListener("change",capture)});
-  $$("[data-action]").forEach(element=>element.addEventListener("click",()=>handleAction(element.dataset.action)));
-  $$("[data-enlarge]").forEach(element=>element.addEventListener("click",()=>openImage(element.dataset.enlarge,element.querySelector("img").alt)));
-  if($("#evidence-file"))$("#evidence-file").addEventListener("change",handleFile);
-  if($("#paste-zone"))$("#paste-zone").addEventListener("paste",handlePaste);
-  if($("#download-backup"))$("#download-backup").addEventListener("click",downloadBackup);
-  if($("#download-pdf"))$("#download-pdf").addEventListener("click",downloadPDF);
-}
-function capture(event){
-  const element=event.currentTarget;state.responses[element.dataset.save]=element.type==="checkbox"?element.checked:element.value;
-  queueStore();
-}
-function restoreStage(){
-  $$("[data-save]").forEach(element=>{
-    const value=state.responses[element.dataset.save];if(value===undefined)return;
-    if(element.type==="checkbox")element.checked=Boolean(value);else element.value=value;
-  });
-  Object.entries(state.checks).forEach(([id,result])=>showFeedback(id,result.ok,result.message));
-  if(state.current==="algorithm")renderBuiltAlgorithm();
-  if(state.current==="extension")unlockPython();
-  renderEvidence();
-}
-function setCheck(id,ok,message){state.checks[id]={ok,message};showFeedback(id,ok,message);store()}
-function showFeedback(id,ok,message){
-  const element=$(`[data-feedback="${id}"]`);if(!element)return;
-  element.textContent=message;element.className=`feedback ${ok?"success":"improve"}`;
-}
-
-function handleAction(action){
-  const actions={
-    "check-starter":checkStarter,"check-clues":checkClues,"check-brief":checkBrief,"check-brief-sequences":checkBriefSequences,"check-jobs":checkJobs,"check-ipo":checkIPO,
-    "check-pseudo-reading":checkPseudoReading,"check-pseudo":checkPseudo,"check-algo-sequences":checkAlgoSequences,"trace-next":traceNext,"trace-reset":resetTrace,"check-peer":checkPeer,"check-extension":checkExtension,"check-plenary":checkPlenary,
-    "run-python":runPython,"stop-python":stopPython,"reset-python":resetPython,"download-python":downloadPython
-  };
-  actions[action]?.();
-}
-function checkStarter(){
-  const ok=state.responses.starterTool==="Decomposition"&&state.responses.starterIgnore==="Abstraction";
-  setCheck("starter",ok,ok?"Secure: decomposition splits the big job; abstraction removes irrelevant detail.":"Look again: splitting into jobs is decomposition. Keeping only useful details is abstraction.");
-}
-function checkClues(){
-  const expected={clueUrgency:"Warning sign",clueReward:"Warning sign",clueLink:"Warning sign",clueSignIn:"Warning sign",clueTime:"Neutral detail",clueNotebook:"Neutral detail"};
-  const score=Object.entries(expected).filter(([key,value])=>state.responses[key]===value).length;
-  setCheck("clues",score===6,score===6?"6/6: you kept the four observable warning signs and ignored two neutral details.":`${score}/6 correct. A detail matters only if it helps the program judge the fictional message.`);
-}
-function checkBrief(){
-  const r=state.responses;
-  const core=r.briefUser==="Sam, a Year 9 student who received a message"&&r.briefNeed==="Help noticing warning signs and choosing a safe next step"&&r.briefLimit==="Claim certainty, request a password or open a link"&&r.reqAsk&&r.reqScore&&r.reqExplain&&r.successCriterion==="Given a test case with three warning signs, the program displays HIGH concern, gives the reasons and advises the user not to open the link.";
-  const unsafe=r.reqOpen||r.reqPassword;
-  setCheck("brief",core&&!unsafe,core&&!unsafe?"Design brief ready: the user, need, safety limit, functions and observable success test all match the project.":unsafe?"Remove unsafe functions: the detector must not open links or request passwords.":"Use the big-job statement and examples above. The detector asks, scores, explains and gives safe advice; success must be observable during a test.");
-}
-function checkBriefSequences(){
-  const r=state.responses;
-  const ok=r.briefSequenceA==="Ask about warning signs → calculate concern → explain reasons → recommend a safe action"&&r.briefSequenceB==="Collect observations → apply the same rules → explain a LOW result while reminding the user to stay cautious"&&r.briefSequenceC==="Validate → explain the allowed answers → ask the same question again → continue scoring";
-  setCheck("briefSequences",ok,ok?"3/3: every sequence collects usable information before judging and finishes with an honest, safe output.":"Think about dependency: the program must collect and validate information before rules can use it, then explain the result before advising the user.");
-}
-function checkJobs(){
-  const r=state.responses;const ok=r.jobFirst==="Collect observations"&&r.jobSecond==="Validate responses"&&r.jobThird==="Apply the scoring rules"&&r.jobLast==="Explain reasons and safe advice";
-  setCheck("jobs",ok,ok?"Correct sequence: collect → validate → apply rules → choose level → explain and advise.":"Follow the five job cards from top to bottom. The program needs valid observations before it can score or explain.");
-}
-function checkIPO(){
-  const r=state.responses;
-  const expected={ipoClass1:"Input",ipoClass2:"Process",ipoClass3:"Not used",ipoClass4:"Output",ipoClass5:"Input",ipoClass6:"Not used",ipoClass7:"Process",ipoClass8:"Output",ipoClass9:"Input",ipoClass10:"Process",ipoClass11:"Not used",ipoClass12:"Output",ipoClass13:"Input",ipoClass14:"Not used"};
-  let score=0;
-  Object.entries(expected).forEach(([key,value])=>{const select=$(`[data-save="${key}"]`);const correct=r[key]===value;if(correct)score++;select?.closest("label")?.classList.toggle("answer-correct",correct);select?.closest("label")?.classList.toggle("answer-review",!correct)});
-  const ok=score===Object.keys(expected).length;
-  setCheck("ipo",ok,ok?"14/14: your model matches this version—four inputs, three internal processes, three outputs and four deliberately unused details.":`${score}/14 correct. Reconsider the rows marked “review”. Ask: does it enter, happen inside, leave for the user, or sit outside the agreed requirements?`);
-}
-function checkPseudo(){
-  const r=state.responses;const ok=r.pseudoStart==="concern ← 0"&&r.pseudoInput==="INPUT urgent"&&r.pseudoDecision==="IF urgent = YES THEN"&&r.pseudoUpdate==="concern ← concern + 1"&&r.pseudoOutput==="OUTPUT concern";
-  setCheck("pseudo",ok,ok?"Mini-algorithm built. Read it down: initialise → input → decide → update → output.":"Match each line to its purpose. Use the five building-block cards directly above.");
-  renderBuiltAlgorithm();
-}
-function checkPseudoReading(){
-  const r=state.responses;
-  const knowledge=r.sampleBPurpose==="Use two observations to decide whether the student should check before acting"&&r.sampleBScore==="1"&&r.sampleBOutput==="Check before acting"&&r.sampleCMaybe==="The program explains the allowed answers and asks again"&&r.sampleCStop==="When the answer is YES or NO"&&r.sampleCInput==="To give the user another opportunity to enter a valid answer";
-  const b=clean(r.sampleBDescription||""),c=clean(r.sampleCDescription||"");
-  const bWords=b.split(/\s+/).filter(Boolean).length,cWords=c.split(/\s+/).filter(Boolean).length;
-  const bMeaning=/input|sender|link/i.test(b)&&/concern|point|add/i.test(b)&&/output|display|check/i.test(b);
-  const cMeaning=/repeat|again|while|loop/i.test(c)&&/yes|no|valid/i.test(c)&&/stop|until|when/i.test(c);
-  const descriptions=bWords>=25&&cWords>=15&&bMeaning&&cMeaning;
-  setCheck("pseudoReading",knowledge&&descriptions,knowledge&&descriptions?"Both descriptions are ready: you identified the inputs, decisions, variable change, repetition and outputs without copying the pseudocode line by line.":!knowledge?"Re-read each algorithm from top to bottom and correct the selected answers. Follow the value of each variable after every condition.":`Your selections are secure. Strengthen the written descriptions: Sample B needs at least 25 words about inputs, concern changes and output; Sample C needs at least 15 words about repetition, valid answers and when it stops.`);
-}
-function checkAlgoSequences(){
-  const r=state.responses;
-  const ok=r.algoOrder1a==="INPUT urgent"&&r.algoOrder1b==="IF urgent = YES THEN"&&r.algoOrder1c==="concern ← concern + 1"&&r.algoValidationNext==="Display “Enter YES or NO”, then ask again"&&r.algoOutputOrder==="Initialise → collect four answers → apply four rules → choose level → explain output";
-  setCheck("algoSequences",ok,ok?"All three repaired: input exists before a decision uses it, invalid data is corrected, and the final level waits until every rule has run.":"Use the clue in each card: INPUT must come before IF; invalid data must be requested again; final output comes after all four rules.");
-}
-function renderBuiltAlgorithm(){
-  const host=$("#built-algorithm");if(!host)return;
-  if(!state.checks.pseudo?.ok){host.innerHTML="";return}
-  host.innerHTML=`<strong>YOUR WORKING MINI-ALGORITHM</strong><pre>concern ← 0\nINPUT urgent\nIF urgent = YES THEN\n    concern ← concern + 1\nENDIF\nOUTPUT concern</pre><p>One warning sign is now working. The full detector repeats the IF-and-update pattern four times.</p>`;
-}
-
-const TRACE_STEPS=[
-  {line:"Initialise concern ← 0",score:0,level:"Running",explain:"The variable is created. It must start at 0 before any rules run."},
-  {line:"Unknown sender? NO",score:0,level:"Running",explain:"The condition is false, so no point is added."},
-  {line:"Urgent language? YES",score:1,level:"Running",explain:"The condition is true. concern changes from 0 to 1."},
-  {line:"Unexpected link? YES",score:2,level:"Running",explain:"The condition is true. concern changes from 1 to 2."},
-  {line:"Requests sign-in information? NO",score:2,level:"Running",explain:"The condition is false, so concern stays at 2."},
-  {line:"Compare score 2 with boundaries",score:2,level:"MEDIUM",explain:"A score of 1–2 selects MEDIUM concern. The detector explains urgency and the unexpected link, then advises Sam not to open it and to check with a trusted source."}
-];
-function traceNext(){
-  const r=state.responses;
-  if(!r.tracePredictionScore||!r.tracePredictionLevel){showFeedback("trace",false,"Make both predictions before running the trace.");return}
-  if(traceStep>=TRACE_STEPS.length)return;
-  const item=TRACE_STEPS[traceStep];traceHistory.push(item);traceStep++;
-  $("#trace-score").textContent=String(item.score);$("#trace-level").textContent=item.level;
-  $("#trace-line").innerHTML=`<strong>${safe(item.line)}</strong><br>${safe(item.explain)}`;
-  $("#trace-history").innerHTML=traceHistory.map((entry,index)=>`<div><span>${index+1}</span><b>${safe(entry.line)}</b><em>concern = ${entry.score}</em></div>`).join("");
-  if(traceStep===TRACE_STEPS.length){
-    const ok=r.tracePredictionScore==="2"&&r.tracePredictionLevel==="MEDIUM";
-    setCheck("trace",true,ok?"Trace complete: your prediction matched the rules. concern ended at 2, so MEDIUM ran.":`Trace complete: the actual result is score 2, MEDIUM. Compare this with your prediction and explain the difference below.`);
-  }else showFeedback("trace",true,`Step ${traceStep} of ${TRACE_STEPS.length}. Read why the score changed or stayed the same, then run the next step.`);
-}
-function resetTrace(){traceStep=0;traceHistory=[];if($("#trace-score"))$("#trace-score").textContent="?";if($("#trace-level"))$("#trace-level").textContent="Not started";if($("#trace-line"))$("#trace-line").textContent="Make both predictions, then run the first step.";if($("#trace-history"))$("#trace-history").innerHTML="";delete state.checks.trace;queueStore();showFeedback("trace",false,"Trace reset. Your prediction is still saved; run the first step again.")}
-function checkPeer(){
-  const answers={A:{score:"0",level:"LOW"},B:{score:"2",level:"MEDIUM"},C:{score:"4",level:"HIGH"}};
-  const r=state.responses;if(!r.peerName||!r.peerCase||!r.peerScore||!r.peerLevel){setCheck("peer",false,"Complete the partner/solo name, case, predicted score and predicted level.");return}
-  const expected=answers[r.peerCase],ok=r.peerScore===expected.score&&r.peerLevel===expected.level;
-  setCheck("peer",ok,ok?`Prediction matched: case ${r.peerCase} produces score ${expected.score}, ${expected.level}.`:`Check the four answers again. Case ${r.peerCase} produces score ${expected.score}, so the level is ${expected.level}. Find the first point that was missed or added incorrectly.`);
-}
-function checkExtension(){
-  const r=state.responses;const ok=r.extValidation==="Display “Enter YES or NO” and ask the same question again"&&r.extBoundary==="HIGH"&&r.extOutput==="HIGH concern: three warning signs found. Do not open the link; show a trusted adult. This is an estimate, not proof.";
-  setCheck("extension",ok,ok?"3/3: the detector now handles invalid input, the exact boundary and honest output.":"Revisit each mission: invalid input must be requested again, 3 is the HIGH boundary, and useful output explains both reasons and limits.");
-  unlockPython(ok);
-}
-function unlockPython(ok=Boolean(state.checks.extension?.ok)){
-  if($("#extension-unlock"))$("#extension-unlock").classList.toggle("hidden",!ok);
-  if($("#python-studio"))$("#python-studio").classList.toggle("hidden",!ok);
-  if(ok&&$("#python-code")){
-    $("#python-code").value=state.responses.pythonCode||PYTHON_STARTER;
-    $("#python-console").textContent=state.responses.pythonOutput||"Python is ready. Write a small part, then select Run program.";
-    $("#python-code").addEventListener("input",event=>{state.responses.pythonCode=event.currentTarget.value;queueStore()});
-  }
-}
-function builtinRead(name){if(Sk.builtinFiles===undefined||Sk.builtinFiles.files[name]===undefined)throw new Error(`File not found: ${name}`);return Sk.builtinFiles.files[name]}
-function normalisePython(code){return String(code||"").replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/−/g,"-")}
-function friendlyPythonError(error){
-  const raw=String(error),match=raw.match(/line\s+(\d+)/i);let help="Read the named line and compare its spelling, brackets and indentation with the lines around it.";
-  if(/indent/i.test(raw))help="Check the spaces at the beginning of this line. Instructions inside an if statement must be indented.";
-  else if(/bad input|EOF|never closed|unexpected/i.test(raw))help="Check for a missing colon, bracket or quotation mark near this line.";
-  else if(/NameError/i.test(raw))help="Check the spelling and capital letters in your variable name.";
-  return `Your program needs one correction${match?` near line ${match[1]}`:""}.\n${help}\n\nTechnical detail: ${raw}`;
-}
-function runPython(){
-  if(pythonRunning||!state.checks.extension?.ok)return;
-  const editor=$("#python-code"),consoleBox=$("#python-console");if(!editor||!consoleBox)return;
-  const code=normalisePython(editor.value);editor.value=code;state.responses.pythonCode=code;state.responses.pythonRuns=(Number(state.responses.pythonRuns)||0)+1;consoleBox.textContent="Running…\n";pythonRunning=true;
-  try{
-    Sk.configure({output:text=>{consoleBox.textContent+=text},read:builtinRead,__future__:Sk.python3,execLimit:8000,inputfun:promptText=>window.prompt(promptText)||"",inputfunTakesPrompt:true});
-    Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody("<student>",false,code,true)).then(()=>{pythonRunning=false;consoleBox.textContent+=(consoleBox.textContent.endsWith("\n")?"":"\n")+`Run ${state.responses.pythonRuns} finished.`;state.responses.pythonOutput=consoleBox.textContent;state.responses.pythonSuccessful=true;showFeedback("python",true,"Program ran. Read the console, improve one part, then run it again or download your .py file.");store()},error=>{pythonRunning=false;consoleBox.textContent+="\n"+friendlyPythonError(error);state.responses.pythonOutput=consoleBox.textContent;state.responses.pythonSuccessful=false;showFeedback("python",false,"Use the console guidance to make one correction, then run again.");store()});
-  }catch(error){pythonRunning=false;consoleBox.textContent+="\n"+friendlyPythonError(error);state.responses.pythonOutput=consoleBox.textContent;showFeedback("python",false,"Make one correction and try again.");store()}
-}
-function stopPython(){pythonRunning=false;if($("#python-console"))$("#python-console").textContent+="\nStopped. If an input box is open, close it before running again."}
-function resetPython(){if(!$("#python-code"))return;if(confirm("Replace the Python editor with the small starter framework?")){$("#python-code").value=PYTHON_STARTER;state.responses.pythonCode=PYTHON_STARTER;state.responses.pythonOutput="Python reset. Add your own questions and rules.";$("#python-console").textContent=state.responses.pythonOutput;queueStore()}}
-function downloadPython(){
-  const code=$("#python-code")?.value||state.responses.pythonCode||PYTHON_STARTER;state.responses.pythonCode=code;
-  const blob=new Blob([code],{type:"text/x-python"});downloadBlob(blob,`Y9_${slug(state.studentClass)}_${slug(state.studentName)}_Scam_Detective.py`);showFeedback("python",true,"Python file downloaded. Keep it with your project evidence.");store();
-}
-function checkPlenary(){
-  const r=state.responses;const ok=r.plenaryAO1==="Splitting a large problem into smaller manageable jobs"&&r.plenaryAO2==="MEDIUM"&&r.plenaryAO3==="Explain the warning signs and give a safe action";
-  setCheck("plenary",ok,ok?"3/3: AO1 knowledge, AO2 application and AO3 evaluation are secure.":"Use today's model: decomposition splits jobs; two signs produce MEDIUM; useful output explains reasons and a safe action.");
-}
-
-function missingFor(id){
-  if(teacherMode||id==="extension"||id==="review")return [];
-  const missing=(REQUIRED[id]||[]).filter(key=>{const value=state.responses[key];return value===undefined||value===false||clean(value)===""});
-  for(const check of CHECKS_REQUIRED[id]||[]){if(!state.checks[check]?.ok)missing.push(`complete and check: ${check}`)}
-  if(id==="algorithm"){
-    const description=clean(state.responses.ownPseudoDescription||"");
-    const words=description.split(/\s+/).filter(Boolean).length;
-    if(words<20||!/input|urgent/i.test(description)||!/concern|point|add/i.test(description)||!/output|display|show/i.test(description))missing.push("describe your own mini-algorithm in at least 20 words, including its input, concern change and output");
-  }
-  if(id==="brief"&&(state.responses.reqOpen||state.responses.reqPassword))missing.push("remove unsafe requirements");
-  return [...new Set(missing)];
-}
-function advance(id,index){
-  if(id==="review"){showStage("starter",true);return}
-  const missing=missingFor(id);
-  if(missing.length){alert("Before continuing:\n• "+missing.join("\n• "));return}
-  if(id!=="extension")state.completed[id]=true;
-  store();showStage(STAGES[Math.min(index+1,STAGES.length-1)].id,true);
-}
-
-$("#learning-toggle").addEventListener("click",()=>{const panel=$("#learning-panel");panel.classList.toggle("open");$("#learning-toggle").setAttribute("aria-expanded",panel.classList.contains("open"))});
-$("#learning-close").addEventListener("click",()=>$("#learning-panel").classList.remove("open"));
-$("#report-button").addEventListener("click",()=>{if(teacherMode||unlocked("review"))showStage("review",true);else alert("Complete the exit check before opening the final report.")});
-$("#reset-button").addEventListener("click",()=>{if(confirm("Delete all locally saved answers and the optional evidence image for this lesson?")){localStorage.removeItem(storageKey);localStorage.removeItem(storageKey+"-image");location.reload()}});
-function openImage(src,alt){$("#dialog-image").src=src;$("#dialog-image").alt=alt;$("#image-dialog").showModal();document.body.classList.add("dialog-open")}
-$("#dialog-close").addEventListener("click",()=>{$("#image-dialog").close();document.body.classList.remove("dialog-open")});
-$("#image-dialog").addEventListener("click",event=>{if(event.target===$("#image-dialog"))$("#dialog-close").click()});
-
-const REPORT_SECTIONS=[
-  ["Case file and clue sorting",[["Thinking tool for splitting jobs","starterTool"],["Thinking tool for ignoring detail","starterIgnore"],["Urgency","clueUrgency"],["Unexpected reward","clueReward"],["Unexpected link","clueLink"],["Sign-in request","clueSignIn"],["Time shown","clueTime"],["Notebook colour","clueNotebook"]]],
-  ["Program purpose and sequences",[["User","briefUser"],["User need","briefNeed"],["Safety limit","briefLimit"],["Ask four questions","reqAsk"],["Calculate concern","reqScore"],["Explain and advise","reqExplain"],["Success criterion","successCriterion"],["Gaming reward sequence","briefSequenceA"],["School email sequence","briefSequenceB"],["Invalid response sequence","briefSequenceC"]]],
-  ["Decomposition and IPO classification",[["First job","jobFirst"],["After collecting","jobSecond"],["Before level selection","jobThird"],["Last job","jobLast"],["Unknown sender answer","ipoClass1"],["Compare level boundaries","ipoClass2"],["Message arrival time","ipoClass3"],["Warning signs found","ipoClass4"],["Sign-in request answer","ipoClass5"],["Complete original message","ipoClass6"],["Reject MAYBE and ask again","ipoClass7"],["Concern level","ipoClass8"],["Unexpected link answer","ipoClass9"],["Add a concern point","ipoClass10"],["Gaming username","ipoClass11"],["Safe next step","ipoClass12"],["Urgent language answer","ipoClass13"],["Name of game","ipoClass14"]]],
-  ["Pseudocode reading, description and testing",[["Sample B purpose","sampleBPurpose"],["Sample B predicted score","sampleBScore"],["Sample B predicted output","sampleBOutput"],["Sample B description","sampleBDescription"],["Sample C invalid-answer behaviour","sampleCMaybe"],["Sample C stopping condition","sampleCStop"],["Sample C repeated input","sampleCInput"],["Sample C description","sampleCDescription"],["Initialise","pseudoStart"],["Input","pseudoInput"],["Decision","pseudoDecision"],["Update","pseudoUpdate"],["Output","pseudoOutput"],["Own pseudocode description","ownPseudoDescription"],["Repair 1 line 1","algoOrder1a"],["Repair 1 line 2","algoOrder1b"],["Repair 1 line 3","algoOrder1c"],["Validation repair","algoValidationNext"],["Full detector order","algoOutputOrder"],["Predicted score","tracePredictionScore"],["Predicted level","tracePredictionLevel"],["Trace reflection","traceReflection"],["Partner / solo","peerName"],["Peer case","peerCase"],["Peer score","peerScore"],["Peer level","peerLevel"]]],
-  ["Exit check",[["AO1","plenaryAO1"],["AO2","plenaryAO2"],["AO3","plenaryAO3"],["Week 3 focus","nextTarget"]]]
-];
-function answer(key){const value=state.responses[key];if(value===undefined||value===false||clean(value)==="")return '<span class="not-complete">Not selected</span>';return `<div class="report-answer">${safe(value===true?"Selected":value)}</div>`}
-function renderReport(){
-  const extension=["extValidation","extBoundary","extOutput"].some(key=>clean(state.responses[key]||""));
-  const python=Boolean(state.responses.pythonCode||state.responses.pythonRuns||state.responses.pythonReflection);
-  const extras=[];if(extension)extras.push(["Optional level-up",[["Validation","extValidation"],["Boundary","extBoundary"],["Improved output","extOutput"]]]);if(python)extras.push(["Optional Python creator mode",[["Runs","pythonRuns"],["Successful run","pythonSuccessful"],["Python code","pythonCode"],["Last console output","pythonOutput"],["Improvement reflection","pythonReflection"]]]);
-  const sections=[...REPORT_SECTIONS.slice(0,4),...extras,REPORT_SECTIONS[4]];
-  $("#report-summary").innerHTML=`<section class="report-card"><h3>Student and project</h3><div class="report-item"><strong>Name</strong><div class="report-answer">${safe(state.studentName)}</div></div><div class="report-item"><strong>Class</strong><div class="report-answer">${safe(state.studentClass)}</div></div><div class="report-item"><strong>WAGBA</strong><div class="report-answer">Turn a familiar cybersecurity problem into a clear, testable program plan.</div></div><div class="report-item"><strong>Safety boundary</strong><div class="report-answer">Fictional messages only. The detector estimates concern; it does not prove a scam.</div></div></section>`+sections.map(([title,items])=>`<section class="report-card"><h3>${safe(title)}</h3>${items.map(([label,key])=>`<div class="report-item"><strong>${safe(label)}</strong>${answer(key)}</div>`).join("")}</section>`).join("");
-  loadEvidence();renderEvidence();
-}
-
-function loadEvidence(){try{evidenceImage=localStorage.getItem(storageKey+"-image")||""}catch{evidenceImage=""}}
-loadEvidence();
-function handleFile(event){const file=event.target.files?.[0];if(file)storeImage(file)}
-function handlePaste(event){const item=[...(event.clipboardData?.items||[])].find(entry=>entry.type.startsWith("image/"));if(!item){alert("No image was found on the clipboard.");return}event.preventDefault();storeImage(item.getAsFile())}
-function storeImage(file){
-  if(!file)return;if(file.size>4*1024*1024){alert("Choose an image smaller than 4 MB.");return}
-  const reader=new FileReader();reader.onload=()=>{evidenceImage=reader.result;try{localStorage.setItem(storageKey+"-image",evidenceImage)}catch{alert("The image is too large to save. Try a smaller screenshot.")}renderEvidence()};reader.readAsDataURL(file);
-}
-function renderEvidence(){const host=$("#image-preview");if(!host)return;host.innerHTML=evidenceImage?`<img src="${evidenceImage}" alt="Uploaded supporting project evidence"><button id="remove-image" class="button secondary" type="button">Remove image</button>`:"";if($("#remove-image"))$("#remove-image").onclick=()=>{evidenceImage="";localStorage.removeItem(storageKey+"-image");renderEvidence()}}
-function downloadBackup(){const blob=new Blob([JSON.stringify({lesson:"Y9-T1-W2-Scam-Detective-Guided",version:4,...state},null,2)],{type:"application/json"});downloadBlob(blob,`Y9_${slug(state.studentClass)}_${slug(state.studentName)}_W2_Scam_Detective_Backup.json`)}
-function downloadBlob(blob,name){const anchor=document.createElement("a");anchor.href=URL.createObjectURL(blob);anchor.download=name;anchor.click();setTimeout(()=>URL.revokeObjectURL(anchor.href),500)}
-function addWrapped(doc,text,x,y,maxWidth,lineHeight=5){const lines=doc.splitTextToSize(String(text||"Not selected"),maxWidth);lines.forEach(line=>{if(y>277){doc.addPage();y=18}doc.text(line,x,y);y+=lineHeight});return y}
-async function downloadPDF(){
-  const status=$("#pdf-status");status.className="pdf-status";status.textContent="Creating your PDF report…";
-  try{
-    if(!window.jspdf?.jsPDF)throw new Error("PDF library unavailable");
-    const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4"});const margin=15,width=180;let y=18;
-    doc.setFillColor(17,17,17);doc.rect(0,0,210,36,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(18);doc.text("Year 9 Scam Detective Lab",margin,16);doc.setFontSize(10);doc.text("Week 2 project planning evidence",margin,26);
-    doc.setTextColor(17,17,17);y=45;doc.setFontSize(11);doc.setFont("helvetica","bold");doc.text("Student",margin,y);doc.setFont("helvetica","normal");doc.text(`${state.studentName} · ${state.studentClass}`,margin+28,y);y+=8;
-    doc.setFont("helvetica","bold");doc.text("WAGBA",margin,y);doc.setFont("helvetica","normal");y=addWrapped(doc,"Turn a familiar cybersecurity problem into a clear, testable program plan.",margin+28,y,width-28,5)+4;
-    doc.setFont("helvetica","bold");doc.text("Safety",margin,y);doc.setFont("helvetica","normal");y=addWrapped(doc,"Fictional messages only. The detector estimates concern; it does not prove a scam.",margin+28,y,width-28,5)+5;
-    const extension=["extValidation","extBoundary","extOutput"].some(key=>clean(state.responses[key]||""));
-    const python=Boolean(state.responses.pythonCode||state.responses.pythonRuns||state.responses.pythonReflection);const extras=[];if(extension)extras.push(["Optional level-up",[["Validation","extValidation"],["Boundary","extBoundary"],["Improved output","extOutput"]]]);if(python)extras.push(["Optional Python creator mode",[["Runs","pythonRuns"],["Successful run","pythonSuccessful"],["Python code","pythonCode"],["Last console output","pythonOutput"],["Improvement reflection","pythonReflection"]]]);const sections=[...REPORT_SECTIONS.slice(0,4),...extras,REPORT_SECTIONS[4]];
-    for(const [title,items] of sections){
-      if(y>255){doc.addPage();y=18}doc.setFillColor(235,229,214);doc.rect(margin,y-5,width,8,"F");doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(title,margin+2,y);y+=8;
-      for(const [label,key] of items){if(y>265){doc.addPage();y=18}doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.text(label.toUpperCase(),margin,y);y+=5;doc.setFont("helvetica","normal");doc.setFontSize(10);const value=state.responses[key]===true?"Selected":state.responses[key]||"Not selected";y=addWrapped(doc,value,margin,y,width,5)+3}
-    }
-    if(evidenceImage){if(y>190){doc.addPage();y=18}doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("Supporting image",margin,y);y+=5;const properties=doc.getImageProperties(evidenceImage),ratio=Math.min(width/properties.width,80/properties.height);doc.addImage(evidenceImage,properties.fileType||"PNG",margin,y,properties.width*ratio,properties.height*ratio)}
-    const pages=doc.getNumberOfPages();for(let page=1;page<=pages;page++){doc.setPage(page);doc.setFontSize(8);doc.setTextColor(90);doc.text(`Year 9 Week 2 · ${state.studentName} · Page ${page} of ${pages}`,margin,290)}
-    doc.save(`Y9_${slug(state.studentClass)}_${slug(state.studentName)}_Scam_Detective.pdf`);status.textContent="PDF downloaded. Open it, check it, then upload it to Microsoft Teams: Week 2 Project.";
-  }catch(error){status.className="pdf-status error";status.textContent="The direct download could not be created. Use the browser's Print option and choose Save as PDF.";console.error(error);setTimeout(()=>window.print(),200)}
-}
+  window.addEventListener('pagehide',()=>{flush();stopPython(false);});document.addEventListener('visibilitychange',()=>{if(document.hidden)flush();});
+ }
+ async function action(a){if(a==='trace-step'){traceStep=traceStep>=4?0:traceStep+1;rerender();}
+  if(a==='check-order'){const order=val('order').length?val('order'):[...MIXED];response('order',order);(state.checks.order??=[]).push({value:[...order],correct:orderOK(order),at:now()});save();rerender();}
+  if(a==='reset-order'){response('order',[...MIXED]);rerender();}
+  if(a==='run-test'){if(!testDraft.input||!has(testDraft.expected))return toast(txt(B('Choose a test answer and record a prediction first. A short phrase is fine. You can also continue without testing yet.','Pilih jawapan ujian dan rekod ramalan dahulu. Frasa pendek memadai. Anda juga boleh teruskan tanpa menguji dahulu.','先选测试答案并记录预测，短语即可。也可暂不测试直接继续。')));testDraft.snapshot=structuredClone(draft());testDraft.fingerprint=fingerprint();testDraft.predictedAt=now();testDraft.open=true;if((testDraft.method||'screen')==='screen'){testDraft.result=runPlan(testDraft.snapshot,testDraft.input);testDraft.observed=testDraft.result.output||'';}state.testDraft=structuredClone(testDraft);save();rerender();}
+  if(a==='save-test'){if(!testDraft.open)return;state.tests.push({...structuredClone(testDraft),method:testDraft.method||'screen',at:now(),error:testDraft.result?.error||null});testDraft={};delete state.testDraft;save(true);rerender();toast(ui('saved'));}
+  if(a==='backup')await exportBackup();
+  if(a==='print'){flush();$('printReport').innerHTML=await populatedReport();$('printReport').hidden=false;document.title=filename('');await Promise.all([...$('printReport').querySelectorAll('img')].map(img=>img.decode?.().catch(()=>{})));window.print();}
+  if(a==='html-report'){flush();const report=await populatedReport();download(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Week 2 Project report</title><style>body{max-width:850px;margin:2rem auto;padding:1rem;font:17px/1.6 Arial,"PingFang SC",sans-serif}h1{font-size:28px}h2{font-size:22px}.report-section{border-top:1px solid #aaa;padding:1rem 0}.report-row{margin:1rem 0}.report-answer,pre{white-space:pre-wrap;overflow-wrap:anywhere}.meta,.report-history{font-size:13px;color:#555}img{max-width:100%}@media print{body{font-size:11pt}.report-row,figure{break-inside:avoid}}</style><body>${report}</body></html>`,filename('_report.html'),'text/html');}
+  if(a==='run-python')runPython();if(a==='stop-python')stopPython();if(a==='download-python'){download(val('pythonCode')||pythonStarter(),filename('.py'),'text/x-python');}if(a==='reset-python'){if(confirm(txt(B('Replace your editor text with the starter? Previous edits remain in the response history.','Ganti teks editor dengan contoh awal? Suntingan terdahulu kekal dalam sejarah.','用起始代码替换编辑器内容？先前修改仍保留在历史中。')))){response('pythonCode',pythonStarter());rerender();}}
+ }
+ function setupResume(){const s=read(read(LAST));$('resumeButton').hidden=!s;if(s)$('resumeButton').textContent='Resume '+s.profile.name+' · '+s.profile.className;$('legacyButton').hidden=!read(LEGACY);}
+ const pythonStarter=()=>`# Optional: build one small question from your plan.\n# Start with input(), then choose advice using if / else.\n\nanswer = input("Does the message pressure you? yes/no: ")\n\n# Add your decision and advice below.\n`;
+ function pythonPage(){return `<h2>Python · ${txt(B('Optional creator space','Ruang pencipta pilihan','可选创作空间'))}</h2><p>${bi(B('This is ordinary text-based Python, not micro:bit code. Try one question from your plan first. Use input() to collect an answer and if / else to choose advice. Test YES and NO. No extension must be completed to use this space.','Ini Python teks biasa, bukan kod micro:bit. Cuba satu soalan daripada pelan dahulu. Gunakan input() untuk jawapan dan if / else untuk nasihat. Uji YES dan NO. Tidak perlu menyiapkan cabaran lain dahulu.','这是普通文本 Python，不是 micro:bit 代码。先实现计划中的一个问题，用 input() 接收答案，用 if / else 选择建议，测试 YES 和 NO。不要求先完成其他挑战。'))}</p><label for="pythonCode">Python</label><textarea id="pythonCode" class="python-editor" data-field="pythonCode" spellcheck="false">${esc(val('pythonCode')||pythonStarter())}</textarea><div class="button-row"><button type="button" class="primary" data-action="run-python">Run Python</button><button type="button" data-action="stop-python">Stop</button><button type="button" data-action="download-python">Download .py</button><button type="button" data-action="reset-python">Reset starter</button></div><pre id="pythonConsole" class="python-console" role="log">${esc(pythonOutput||txt(B('Output will appear here. Run a program when you are ready.','Output akan muncul di sini. Jalankan apabila bersedia.','输出将显示在这里，准备好后再运行。')))}</pre><div id="pythonInput" hidden><label id="pythonPrompt" for="pythonReply">Python input</label><input id="pythonReply"><button type="button" data-action="python-send">Send answer</button></div>${question(FIELD.pythonReflection)}${optionalPaper('python')}`;}
+ const baseExtensionPage=extensionPage;extensionPage=function(){return current==='python'?pythonPage():baseExtensionPage();};
+ let activeRun=null;
+ function finishRun(message){if(!activeRun)return;if(message)pythonOutput+='\n'+message;activeRun.output=pythonOutput;activeRun.finished=now();(state.pythonRuns??=[]).push(activeRun);activeRun=null;save(true);if($('pythonConsole'))$('pythonConsole').textContent=pythonOutput;}
+ function stopPython(show=true){if(worker){worker.terminate();worker=null;clearTimeout(workerTimer);finishRun(show?'Stopped.':'Stopped when leaving the coding card.');if($('pythonInput'))$('pythonInput').hidden=true;}}
+ function runPython(){stopPython(false);const source=$('pythonCode').value;response('pythonCode',source);pythonOutput='';activeRun={code:source,at:now(),inputs:[]};try{worker=new Worker('python-worker.js?v=20260908-input-pause');}catch{finishRun(txt(B('The browser could not start Python here. Open the lesson through its GitHub Pages address, or download your .py file for a Python editor.','Pelayar tidak dapat memulakan Python. Buka melalui GitHub Pages atau muat turun fail .py untuk editor Python.','浏览器无法在这里启动 Python。请通过 GitHub Pages 打开，或下载 .py 文件到 Python 编辑器。')));return;}
+  $('pythonConsole').textContent='';
+  worker.onmessage=e=>{const m=e.data;if(m.type==='output'){pythonOutput+=m.text;if($('pythonConsole'))$('pythonConsole').textContent=pythonOutput;}if(m.type==='input'){clearTimeout(workerTimer);$('pythonInput').hidden=false;$('pythonPrompt').textContent=m.prompt||'Python input';$('pythonReply').value='';$('pythonReply').focus();}if(m.type==='done'||m.type==='error'){finishRun(m.type==='error'?m.error:'');worker?.terminate();worker=null;clearTimeout(workerTimer);if($('pythonInput'))$('pythonInput').hidden=true;}};
+  worker.onerror=()=>{finishRun('Python could not load. Use the hosted lesson or download your .py file.');worker?.terminate();worker=null;clearTimeout(workerTimer);};worker.postMessage({type:'run',code:source});armPythonTimer();
+ }
+ function armPythonTimer(){clearTimeout(workerTimer);workerTimer=setTimeout(()=>{if(worker){finishRun('Stopped: execution time limit reached.');worker.terminate();worker=null;if($('pythonInput'))$('pythonInput').hidden=true;toast(txt(B('Python stopped. Check for an endless loop and try again. Time spent answering input is not counted.','Python dihentikan. Semak gelung tanpa henti dan cuba lagi. Masa menjawab input tidak dikira.','Python 已停止。请检查无限循环后重试，等待你输入答案的时间不计入限制。')));}},60000);}
+ const baseAction=action;action=async function(a){if(a==='python-send'&&worker){const reply=$('pythonReply').value;activeRun?.inputs.push({value:reply,at:now()});pythonOutput+=reply+'\n';worker.postMessage({type:'input',value:reply});armPythonTimer();$('pythonInput').hidden=true;return;}return baseAction(a);};
+ // Expose pure logic and render helpers only for the local non-browser regression suite.
+ if(globalThis.__LESSON_TEST__){globalThis.LESSON_TEST={runPlan,orderOK,fingerprint,code,CANON,MIXED,blank,has,reportHTML,body,question,bi,normalise,setState:s=>{state=s;},getState:()=>state,setCurrent:c=>{current=c;},response,commitResponse,profileKey};return;}
+ bind();entryLanguage();setupResume();if(new URLSearchParams(location.search).get('teacher')==='1')start('Teacher','Preview',null,null,true);
+})();
