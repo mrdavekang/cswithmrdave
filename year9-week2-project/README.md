@@ -76,6 +76,30 @@ Skulpt is retained from the supplied app. Python runs in an isolated worker with
 
 Tested in a local browser: starting/resuming, open navigation after an incorrect answer, own-word writing, Chinese and Malay reading modes, arranging and testing both branches using the learner's advice, image upload/persistence, Python input with thinking time and Stop. Tested Chrome backup download/restore and Save as PDF; the saved PDF was rendered and checked for English, Malay and Chinese text. The source regression suite passed 1,290 checks, including all 720 instruction-order permutations and attempted-only reporting. Physical iPad/Safari testing and the school's deployed GitHub Pages URL have not been verified in this run.
 
+## Worked-example revision (9 September 2026)
+
+The former context-free YES/NO demo is now three short steps within the same lesson card:
+
+1. **Watch Sam:** a visible fictional gaming message, Sam's explanation of the pressure clues, and the advice produced by his YES answer. Viewing this does not create student evidence.
+2. **Read the rule:** a six-line pseudocode model, an explanation of INPUT / IF / ELSE / OUTPUT / ENDIF, and an optional check about who reads the message.
+3. **Your turn:** a different coding-club message. Students choose an input, predict the advice in their own words, run the model, compare, and explain a limitation. The input and a non-empty prediction are needed only to run this experiment; all lesson navigation remains open. There is no keyword or language requirement.
+
+New passages support English, Bahasa Melayu and Simplified Chinese, using the existing Focus / Compare controls. The model reports the user's observation; it never labels a message definitely safe. A date in a club invitation is distinguished from pressure to act immediately in the post-run explanation.
+
+Every practice run retains its message, input, prediction and actual advice. Revised predictions do not rewrite earlier attempts. Only attempted questions appear in reports; old demo evidence and saved lesson positions remain compatible. Replace `index.html`, `content.js`, `app.js` and `styles.css` together when updating hosting; no student storage reset is required.
+
+Verified locally: the three example steps, an own-word English prediction, a Chinese prediction, both answer routes, continuation without keyword grading, refresh/resume, passage translation, Malay reading, report inclusion of separate run snapshots, and hiding an old output while a prediction is edited. The existing 1,304 regression checks and 156 new worked-example checks passed. The PDF layout engine is unchanged; report contents were checked in the browser. No live GitHub deployment was changed.
+
+## Main Task 1 project-brief revision (9 September 2026)
+
+The vague “Sam needs help to…” prompt has been replaced by a concrete, choice-first brief. Sam's reward message is displayed alongside the task, with an explanation of why he is unsure about following the link and signing in. Students first choose one warning sign, then receive an observation and a thinking prompt specific to that choice. They explain what their check would help Sam notice and why that matters before he acts.
+
+The card distinguishes today's planning from later programming. An optional purpose example uses the teacher's pressure check, not a completed answer for the student's chosen sign. The next question-writing card carries forward the student's own purpose statement. English, Bahasa Melayu and Simplified Chinese are included with existing on-demand translation controls.
+
+Existing `need` and `risk` response identifiers, all 16 card positions and saved histories are preserved. Changing a sign does not erase existing writing. No keyword checker, minimum word count or navigation gate is added. Only attempted responses appear in the report.
+
+Verified locally: selecting a sign, writing in English and Chinese, continuing to the next card, refreshing and resuming, reading the new brief in Malay and Chinese, and the report preserving the latest explanation plus its earlier revision. The 1,304 general checks, 156 worked-example checks and 207 new brief checks passed. The PDF engine is unchanged; report contents were checked, not a new PDF rendering. No live GitHub deployment was changed.
+
 ## Sources behind the teaching approach
 
 - School Year 9 scheme: Week 2 identifies user/requirements/IPO/success criteria and produces an initial algorithm before Week 3 implementation.
