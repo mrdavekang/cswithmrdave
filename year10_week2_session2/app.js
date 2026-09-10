@@ -141,6 +141,8 @@
     $$('[data-field]').forEach(element => { element.value = state.fields[element.dataset.field] ?? ""; });
     $("#profileLabel").textContent = state.profile.teacher ? "Teacher preview" : `${state.profile.name} · ${state.profile.className}`;
     $("#filenamePreview").textContent = suggestedFilename();
+    window.LessonTutor?.render();
+    window.LessonReflection?.render();
   }
 
   function startLesson(name, className) {
@@ -183,7 +185,7 @@
     $("#stepIndicator").textContent = `${stepNames[next]} · Page ${next + 1} of ${stepNames.length}`;
     saveState();
     updateProgress();
-    if (scroll) window.scrollTo({top: 0, behavior: "smooth"});
+    if (scroll) window.scrollTo({top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
   }
 
   function updateProgress() {
@@ -191,6 +193,11 @@
     const percent = Math.round(completed / coreRequired.length * 100);
     $("#progressBar").style.width = `${percent}%`;
     $("#progressText").textContent = `${percent}% complete · ${coreRequired.length - completed} core answers left`;
+    if (state.currentStep === 0) {
+      const starterDone = starterRequired.filter(key => safe(state.fields[key]).trim()).length;
+      $("#progressBar").style.width = Math.round(starterDone / starterRequired.length * 100) + "%";
+      $("#progressText").textContent = "Starter answers recorded: " + starterDone + " of " + starterRequired.length;
+    }
     $$('.step-button').forEach((button, index) => {
       const keys = requiredByStep[index];
       const complete = index === 3
@@ -203,10 +210,11 @@
 
   function bindPersistence() {
     $$('[data-field]').forEach(element => {
-      const save = () => {
+      const save = event => {
         state.fields[element.dataset.field] = element.value;
         saveState();
         updateProgress();
+        if (event.type === 'change' && element.tagName === 'SELECT' && element.closest('.learning-reflection')) window.LessonReflection?.render();
       };
       element.addEventListener("input", save);
       element.addEventListener("change", save);
@@ -403,9 +411,13 @@
       const title = document.createElement("h2");
       title.textContent = section.dataset.reportTitle;
       printable.append(title);
+      const starterCode = section.querySelector("[data-starter-report-code]");
+      if (starterCode) printable.append(reportEntry("Python program used in starter questions 4 and 5", starterCode.textContent, "code"));
+      if (section.dataset.sectionKey === "main2") window.LessonTutor?.appendReport(printable, reportEntry);
       for (const field of $$('[data-field]', section)) {
         printable.append(reportEntry(field.dataset.label || field.id, state.fields[field.dataset.field], field.dataset.reportType));
       }
+      window.LessonReflection?.appendReport(printable, section.dataset.sectionKey, reportEntry);
       const evidenceSection = section.dataset.sectionKey;
       if (sectionKeys.includes(evidenceSection)) {
         const records = await recordsFor(evidenceSection);
@@ -477,6 +489,8 @@
     const owner = state.owner;
     state = {owner, profile, currentStep: 0, fields: {}};
     $$('[data-field]').forEach(field => { field.value = ""; });
+    window.LessonTutor?.render();
+    window.LessonReflection?.render();
     await refreshEvidenceLists();
     goToStep(0);
     saveState();
@@ -520,7 +534,7 @@
     $$('.step-button').forEach(button => button.addEventListener("click", () => goToStep(button.dataset.step)));
     $$('.next-step').forEach(button => button.addEventListener("click", () => goToStep(state.currentStep + 1)));
     $$('.previous-step').forEach(button => button.addEventListener("click", () => goToStep(state.currentStep - 1)));
-    $$('.copy-button').forEach(button => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
+    $$('.copy-button, .starter-copy').forEach(button => button.addEventListener("click", () => copyCode(button.dataset.copyTarget, button)));
     $$('.lesson-visual').forEach(figure => {
       figure.addEventListener("click", () => openVisual(figure));
       figure.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openVisual(figure); } });
@@ -537,10 +551,12 @@
     window.addEventListener("afterprint", () => { document.title = titleBeforePrint; });
   }
 
+  window.LessonReflection?.init();
   renderExtensions();
   bindPersistence();
   bindEvidence();
   bindEvents();
+  window.LessonTutor?.init({getState: () => state, saveState});
   showSavedProfile();
   updateProgress();
   window.__lessonApp = {startLesson, goToStep, buildReport, getState: () => state, extensionTasks};

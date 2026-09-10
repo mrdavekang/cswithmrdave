@@ -50,41 +50,138 @@
         <div class="side-card ksu-list">
           <h3>Knowledge · Skills · Understanding</h3>
           <p><strong>K</strong> A variable can change; a constant should remain unchanged; <code>=</code> assigns a value.</p>
-          <p><strong>S</strong> Classify names, predict state, assign and reassign values, write and test code.</p>
+          <p><strong>S</strong> Choose and repair valid, meaningful names; predict values; assign, reassign, write and test code.</p>
           <p><strong>U</strong> Purpose determines variable or constant; clear names and constants improve maintainability.</p>
           <div class="ao-strip"><span class="ao-badge ao1">AO1 recall</span><span class="ao-badge ao2">AO2 apply</span><span class="ao-badge ao3">AO3 program</span></div>
         </div>
         <nav class="step-nav" aria-label="Lesson pages">
-          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">7 min</span></button>
-          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Main Activity 1</span><span class="step-time">20 min</span></button>
-          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 2</span><span class="step-time">22 min</span></button>
+          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter & learning focus</span><span class="step-time">10 min</span></button>
+          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Main Activity 1</span><span class="step-time">18 min</span></button>
+          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 2 & pit stop</span><span class="step-time">25 min</span></button>
           <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Early finish</span></button>
-          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Plenary & export</span><span class="step-time">8 min</span></button>
+          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Plenary & export</span><span class="step-time">7 min</span></button>
         </nav>
       </aside>
 
       <main class="main-content">
-        <details class="mobile-ksu" open><summary>WAGBA and Knowledge · Skills · Understanding</summary><p><strong>WAGBA:</strong> Using meaningful identifiers and assignment to store and change values, while distinguishing variables from constants.</p><p><strong>K:</strong> variables, constants and assignment. <strong>S:</strong> classify, predict, write and test. <strong>U:</strong> purpose determines the role of a name.</p></details>
+        <details class="mobile-ksu" open><summary>WAGBA and Knowledge · Skills · Understanding</summary><p><strong>WAGBA:</strong> Using meaningful identifiers and assignment to store and change values, while distinguishing variables from constants.</p><p><strong>Knowledge:</strong> variables, constants, assignment and identifier rules.</p><p><strong>Skills:</strong> choose and repair valid, meaningful names; predict values; assign, reassign, write and test code.</p><p><strong>Understanding:</strong> purpose determines variable or constant; clear names and constants make code easier to understand, check and update (maintainability).</p></details>
 
-        <section class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - What changes?">
-          <p class="section-kicker">Starter · First thoughts · AO1/AO2</p>
-          <h1>What changes—and what stays fixed?</h1>
-          <p class="section-lead">Work independently. Make sensible predictions; today’s vocabulary will be taught after you answer.</p>
-          <div class="time-chip">Target: 7 minutes</div>
-          <div class="task-card">
-            <h2>Five quick questions</h2>
-            <div class="question-grid">
-              <div class="question"><label class="question-label" for="s_type">1. What data type is <code>"10"</code>?</label><input id="s_type" data-field="s_type" data-label="Type of quoted 10" type="text" placeholder="Write the OxfordAQA or Python term"></div>
-              <div class="question"><label class="question-label" for="s_best_name">2. Best name for a student’s score: <code>x</code>, <code>s</code> or <code>student_score</code>? Why?</label><textarea id="s_best_name" data-field="s_best_name" data-label="Best identifier and reason"></textarea></div>
-              <div class="question"><label class="question-label" for="s_valid">3. Which identifiers are valid: <code>player_name</code>, <code>2score</code>, <code>first name</code>, <code>level3</code>?</label><input id="s_valid" data-field="s_valid" data-label="Valid identifiers" type="text"></div>
-              <div class="question"><label class="question-label" for="s_predict">4. Predict the output.</label><div class="code-wrap compact"><pre id="starterCode">score = 5
+        <section id="starter" class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - What changes?">
+          <p class="section-kicker">Starter · Recap, then practise · AO1/AO2</p>
+          <h1>Names, values and data types</h1>
+          <p class="section-lead">Read the short recap first. Then answer five questions, working from top to bottom. You can look back at the recap or ask for help at any time.</p>
+          <p class="starter-timing">Allow about 7 minutes, including the reading. This is practice, not a timed test.</p>
+
+          <article id="starterRecap" class="starter-recap" aria-labelledby="starterRecapTitle">
+            <h2 id="starterRecapTitle">Read first: the words you will use</h2>
+            <h3>1. The name and the value are different</h3>
+            <p>A game needs to remember a player's score. This Python line stores it:</p>
+            <pre class="starter-code"><code>player_score = 12</code></pre>
+            <dl class="starter-definitions">
+              <dt>Identifier</dt><dd>The name used in code: <code>player_score</code>.</dd>
+              <dt>Value</dt><dd>The data stored under that name: <code>12</code>.</dd>
+              <dt>Assignment</dt><dd><code>=</code> stores the value on the right under the name on the left.</dd>
+            </dl>
+            <h3>2. A data type describes the kind of value</h3>
+            <p>OxfordAQA uses general terms; Python uses its own names:</p>
+            <ul class="starter-type-reminder">
+              <li><code>12</code> — integer / <code>int</code>: a whole number.</li>
+              <li><code>12.5</code> — real / <code>float</code>: a number that can include a fractional part.</li>
+              <li><code>"Maya"</code> — string / <code>str</code>: text. Quotes make a string literal, even when the text contains digits.</li>
+              <li><code>True</code> — Boolean / <code>bool</code>: one of two logical values, <code>True</code> or <code>False</code>.</li>
+            </ul>
+            <p>A character is one text symbol. Python stores <code>"A"</code> as a one-character <code>str</code>, with no separate character type.</p>
+            <h3>3. Choose a name that explains its purpose</h3>
+            <p><code>remaining_lives</code> tells a reader more than <code>n</code>. Meaningful names help you understand, check and change a program later.</p>
+            <p>For today's names, use letters, digits and underscores (<code>_</code>), but never start with a digit. Do not use spaces, hyphens or Python keywords such as <code>if</code>. Python allows an underscore at the start; we will practise starting with a letter.</p>
+            <h3>4. A variable's value can change</h3>
+            <p>If <code>lives = 3</code> is followed by <code>lives = 2</code>, the name stays <code>lives</code> but its value becomes <code>2</code>. This is <strong>reassignment</strong>. <code>print(lives)</code> then displays its current value.</p>
+          </article>
+
+          <div class="starter-practice" aria-labelledby="starterPracticeTitle">
+            <h2 id="starterPracticeTitle">Your turn: five questions</h2>
+            <p>Read each task, then write the short answer requested. Open a hint only if you need one. Your answers save as you type.</p>
+
+            <article class="starter-question" aria-labelledby="starterQ1Title">
+              <p class="starter-question-count">Question 1 of 5</p>
+              <h3 id="starterQ1Title">Identify a data type</h3>
+              <p>The value below is written directly in Python code. Notice the quotation marks.</p>
+              <pre class="starter-code"><code>"10"</code></pre>
+              <label class="question-label" for="s_type">What is the data type of this value?</label>
+              <p id="s_type_help" class="starter-answer-guide">Write one type name. You may use the OxfordAQA term or the Python name from the recap.</p>
+              <input id="s_type" data-field="s_type" data-label='Q1. What is the data type of "10"? Use an OxfordAQA term or Python name.' type="text" aria-describedby="s_type_help" autocomplete="off" spellcheck="false">
+              <details class="starter-hint"><summary>Hint for question 1</summary><p>Check the quotation marks, not just the digits. Revisit the string example in the recap.</p></details>
+            </article>
+
+            <article class="starter-question" aria-labelledby="starterQ2Title">
+              <p class="starter-question-count">Question 2 of 5</p>
+              <h3 id="starterQ2Title">Choose a meaningful name</h3>
+              <p>A teacher's quiz program stores a student's score. Another teacher will need to read and update the program. Compare these three possible names:</p>
+              <ul class="starter-options" aria-label="Possible names for the score"><li><code>x</code></li><li><code>s</code></li><li><code>student_score</code></li></ul>
+              <label class="question-label" for="s_best_name">Which name communicates its purpose most clearly? Explain why.</label>
+              <p id="s_best_name_help" class="starter-answer-guide">Write the name and one reason. One sentence is enough.</p>
+              <textarea id="s_best_name" data-field="s_best_name" data-label="Q2. Choose x, s or student_score for a student's score and explain why." aria-describedby="s_best_name_help" rows="3"></textarea>
+              <details class="starter-hint"><summary>Hint for question 2</summary><p>All three names are allowed by Python. Which one helps a reader understand the stored data without guessing?</p><p>Sentence starter: “I chose ___ because it tells the reader ___.”</p></details>
+            </article>
+
+            <article class="starter-question" aria-labelledby="starterQ3Title">
+              <p class="starter-question-count">Question 3 of 5</p>
+              <h3 id="starterQ3Title">Check which names Python allows</h3>
+              <p>A <strong>valid identifier</strong> follows Python's naming rules. Check each name below against the rules in the recap.</p>
+              <ul class="starter-options" aria-label="Names to check"><li><code>player_name</code></li><li><code>2score</code></li><li><code>first name</code></li><li><code>level3</code></li></ul>
+              <label class="question-label" for="s_valid">Which two identifiers are valid?</label>
+              <p id="s_valid_help" class="starter-answer-guide">Copy only the two valid names into the answer box. Separate them with a comma; no explanation is needed.</p>
+              <input id="s_valid" data-field="s_valid" data-label="Q3. Which two are valid: player_name, 2score, first name, level3?" type="text" aria-describedby="s_valid_help" autocomplete="off" spellcheck="false">
+              <details class="starter-hint"><summary>Hint for question 3</summary><p>Look at the first character and any spaces. An underscore is allowed. A digit can appear after the first character.</p></details>
+            </article>
+
+            <article class="starter-question" aria-labelledby="starterQ4Title">
+              <p class="starter-question-count">Question 4 of 5</p>
+              <h3 id="starterQ4Title">Predict the displayed value</h3>
+              <p>Read the three lines from top to bottom. Each assignment replaces the value stored under <code>score</code>. Make your prediction before running the code.</p>
+              <p id="starterCodeLabel" class="starter-code-label">Python code · read from top to bottom</p>
+              <pre id="starterCode" class="starter-code" aria-labelledby="starterCodeLabel" data-starter-report-code><code>score = 5
 score = 8
-print(score)</pre><button class="copy-button" data-copy-target="starterCode" type="button">Copy</button></div><input id="s_predict" data-field="s_predict" data-label="Starter output prediction" type="text"></div>
-              <div class="question full"><label class="question-label" for="s_changed">5. In the program above, what changed: the identifier or the value stored by it?</label><textarea id="s_changed" data-field="s_changed" data-label="What changed in the starter program"></textarea></div>
-            </div>
+print(score)</code></pre>
+              <label class="question-label" for="s_predict">What does the final line display?</label>
+              <p id="s_predict_help" class="starter-answer-guide">Write only the number that appears on screen.</p>
+              <input id="s_predict" data-field="s_predict" data-label="Q4. Predict the output of the three-line score program." type="text" aria-describedby="s_predict_help" autocomplete="off">
+              <details class="starter-hint"><summary>Hint for question 4</summary><p>Stop just before <code>print(score)</code>. Which value is now stored under <code>score</code>? Only the print line displays output.</p></details>
+              <button class="secondary starter-copy" data-copy-target="starterCode" type="button">Copy code after predicting</button>
+            </article>
+
+            <article class="starter-question" aria-labelledby="starterQ5Title">
+              <p class="starter-question-count">Question 5 of 5</p>
+              <h3 id="starterQ5Title">Explain what changed</h3>
+              <p>Use the same program, repeated here so you do not have to scroll back.</p>
+              <pre class="starter-code"><code>score = 5
+score = 8
+print(score)</code></pre>
+              <label class="question-label" for="s_changed">Between the first and second lines, did the identifier change or did its stored value change?</label>
+              <p id="s_changed_help" class="starter-answer-guide">Write one sentence. State what stayed the same and describe the change.</p>
+              <textarea id="s_changed" data-field="s_changed" data-label="Q5. In the score program, explain what stayed the same and what changed between the first two lines." aria-describedby="s_changed_help" rows="3"></textarea>
+              <details class="starter-hint"><summary>Hint for question 5</summary><p>Compare the name on the left of <code>=</code>, then the value on the right.</p><p>Sentence starter: “The identifier stayed ___; the value changed from ___ to ___.”</p></details>
+            </article>
+            <p class="starter-finish">When you have tried all five questions, use the Types of learning check below to choose your focus before Main Activity 1. If something is unclear, ask your teacher to show the first step.</p>
           </div>
           <div class="callout green"><strong>Today’s objective</strong>To create, run and explain a short Python program that uses variables, constants, assignment and meaningful identifiers.</div>
           <div class="paper-strip"><div><strong>Paper 1</strong><span>Read, write, run and change Python code.</span></div><div><strong>Paper 2</strong><span>Define, distinguish, predict and explain.</span></div></div>
+          <section id="learningTypes" class="learning-reflection" aria-labelledby="learningTypesTitle">
+            <p class="reflection-kicker">After the starter · Before Main Activity 1 · About 3 minutes</p>
+            <h2 id="learningTypesTitle">Types of learning: what do I need to get better at?</h2>
+            <p>Look back at your starter answers. Separate what you already knew from what the recap helped you remember. You do not have to choose a definition you already know as your improvement target.</p>
+            <p><strong>Knowledge:</strong> what I can recall. <strong>Skills:</strong> what I can do. <strong>Understanding:</strong> what I can explain and apply in a different situation. These describe the learning, not a fixed type of learner.</p>
+            <p>Choose one response for each statement. Constants and some explanations may be new today: the starter did not test everything. “New to me” or “Not sure” is a useful starting point, not a wrong answer.</p>
+            <div id="learningBeforeRows"></div>
+            <div class="reflection-summary"><h3>Your possible learning focus</h3><div id="learningSuggestions" aria-live="polite" aria-atomic="true"></div></div>
+            <label class="question-label" for="lt_focus">Choose one thing you want to get better at next.</label>
+            <select id="lt_focus" data-field="lt_focus" data-label="Types of learning: student's chosen WAGBA improvement target"><option value="">Choose your focus</option></select>
+            <p id="learningFocusAction" class="reflection-feedback"></p>
+            <label class="question-label" for="lt_reason">What helped you choose? Give one short example, or discuss it with your teacher.</label>
+            <p id="ltReasonHelp" class="reflection-hint">For example: “I explained why the value changed in question 5, but I do not yet know why MAX_LIVES should stay fixed.” You can write “Discussed with my teacher” and the focus you agreed.</p>
+            <textarea id="lt_reason" data-field="lt_reason" data-label="Types of learning: starter evidence or teacher discussion supporting the chosen target" aria-describedby="ltReasonHelp" rows="2"></textarea>
+            <p class="reflection-hint">These are your self-checks, not automatic marks. Your teacher can help you check them against your work. You can continue even if you are unsure.</p>
+          </section>
           <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main Activity 1</button></div>
         </section>
 
@@ -92,14 +189,14 @@ print(score)</pre><button class="copy-button" data-copy-target="starterCode" typ
           <p class="section-kicker">Main Activity 1 · Learn, classify and justify · AO1/AO2</p>
           <h1>Build confidence with names and roles</h1>
           <p class="section-lead">Read the short teaching notes first. Then complete the confidence ladder from simple identification to explanation.</p>
-          <div class="time-chip">Target: 20 minutes</div>
+          <div class="time-chip">Suggested time: 18 minutes</div>
 
           <article class="reading-card">
             <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed pages 6–7 and 22</span><span>Specification 3.2.1</span></div>
             <h2>Reading: named storage</h2>
             <p>A <strong>variable</strong> is a named storage location whose value can change while a program runs. An <strong>assignment statement</strong> stores a value using <code>=</code>. In Python, the first assignment creates the variable; a later assignment can replace its stored value.</p>
             <p>A <strong>constant</strong> is a named value that should not change while the program runs. Python does not enforce constants, so programmers use <code>UPPERCASE_SNAKE_CASE</code> to communicate “do not change this”. Variables normally use <code>lowercase_snake_case</code>.</p>
-            <p>Identifiers should start with a letter, contain only letters, numbers and underscores, have no spaces, and describe their purpose.</p>
+            <p>Use meaningful identifiers with letters, digits and underscores, but no spaces or hyphens. Do not start with a digit or use a Python keyword such as <code>if</code>. For this lesson, practise starting with a letter; Python also permits an underscore at the start.</p>
           </article>
 
           <div class="visual-grid two">
@@ -157,16 +254,49 @@ print(score)</pre><button class="copy-button" data-copy-target="starterCode" typ
           <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Continue to Main Activity 2</button></div>
         </section>
 
-        <section class="activity-step" data-step="2" data-section-key="main2" data-report-title="Main Activity 2 - Predict, run and explain">
+        <section id="main2" class="activity-step" data-step="2" data-section-key="main2" data-report-title="Main Activity 2 - Predict, trace, run and explain">
           <p class="section-kicker">Main Activity 2 · Paper 1 practical · AO2/AO3</p>
           <h1>Predict, run, adapt and explain</h1>
-          <p class="section-lead">Do the prediction before opening your IDE. Run the code on your own device; this webpage does not execute Python.</p>
-          <div class="time-chip">Target: 22 minutes</div>
-
-          <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-05-program-state-timeline.png" alt="Timeline showing constants staying fixed while variables are reassigned"><figcaption>Visual 5 · Trace the stored values from top to bottom.</figcaption></figure>
+          <p class="section-lead">Study a small game example, then adapt it in your own Python IDE. Work through one line or one action at a time. This webpage does not execute Python.</p>
+          <p class="tutor-note">Suggested time: 22 minutes, not a countdown. You can pause, revisit a line or ask your teacher to work through it with you.</p>
 
           <div class="task-card">
             <h2>Part A: inspect and predict</h2>
+            <p>Imagine you are helping to design <strong>Code Quest</strong>. Its rules give each player a maximum of three lives and a starting score of zero. These settings stay fixed. A player's name, remaining lives and current score are stored using variables.</p>
+            <p>This short program prints a player's starting details, then sets their remaining lives to two and their score to twenty. It is a demonstration of changing values, not a playable game. Your job is to follow what is stored and what is printed.</p>
+            <div id="codeTutor" class="code-tutor" aria-labelledby="tutorHeading">
+              <h3 id="tutorHeading">Your line-by-line tutor</h3>
+              <p>Read the current line. Predict what it does, then select <strong>Show explanation and values</strong>. Choose <strong>Next line</strong> when you are ready. Nothing moves automatically.</p>
+              <p class="tutor-note">This is a prepared walkthrough of the supplied program only. It does not run or check your own code. The value view shows the result of following the original program from line 1 up to the selected line.</p>
+              <div class="tutor-toolbar">
+                <button id="tutorPrevious" class="secondary" type="button">Previous line</button>
+                <p id="tutorPosition" class="tutor-position" role="status" aria-live="polite" aria-atomic="true"></p>
+                <button id="tutorNext" class="secondary" type="button">Next line</button>
+              </div>
+              <label class="question-label" for="tutorJump">Or choose a line to study</label>
+              <select id="tutorJump"></select>
+              <div class="tutor-focus" aria-label="Current line of Python">
+                <p id="tutorLineLabel" class="tutor-line-label"></p>
+                <pre><code id="tutorCurrentCode"></code></pre>
+              </div>
+              <button id="tutorReveal" class="secondary" type="button" aria-expanded="false" aria-controls="tutorExplanation">Show explanation and values</button>
+              <div id="tutorExplanation" hidden>
+                <h4>What this line does</h4>
+                <p id="tutorMeaning"></p>
+                <p id="tutorChange" class="tutor-change"></p>
+                <details id="tutorSyntax" class="tutor-details"><summary>Help with the symbols on this line</summary><p id="tutorSyntaxText"></p></details>
+                <details id="tutorSnapshot" class="tutor-details">
+                  <summary>See all stored values and output so far</summary>
+                  <p class="tutor-note">Quotation marks here identify text values. They are not part of the text printed by this program.</p>
+                  <dl id="tutorValues" class="tutor-values"></dl>
+                  <h4>Output so far</h4>
+                  <pre id="tutorOutput" class="tutor-output"></pre>
+                </details>
+              </div>
+              <details class="tutor-details"><summary>See all 19 numbered lines / choose a line</summary><p class="tutor-note">Blank lines count as lines too. Select any line below to move the tutor's pointer there.</p><div id="tutorFullCode" class="tutor-full-code"></div></details>
+              <noscript><p>The line tutor needs JavaScript enabled. You can still read and copy the original program below and work through it with your teacher.</p></noscript>
+            </div>
+            <details class="tutor-details"><summary>Original program to read or copy into your IDE</summary><p>Copy the Python only. Line numbers and the tutor pointer are not included.</p>
             <div class="code-wrap"><pre id="mainProgram">GAME_TITLE = "Code Quest"
 MAX_LIVES = 3
 STARTING_SCORE = 0
@@ -185,28 +315,46 @@ lives_remaining = 2
 current_score = 20
 
 print("Updated lives:", lives_remaining)
-print("Updated score:", current_score)</pre><button class="copy-button" data-copy-target="mainProgram" type="button">Copy code</button></div>
+print("Updated score:", current_score)</pre><button class="copy-button" data-copy-target="mainProgram" type="button">Copy original Python</button></div></details>
+            <details class="tutor-details"><summary>Optional picture: the whole-program timeline</summary><figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-05-program-state-timeline.png" alt="Timeline showing constants staying fixed while variables are reassigned"><figcaption>Visual 5 · Trace the stored values from top to bottom.</figcaption></figure></details>
+            <h3>Record what you think</h3>
+            <p>Try these before opening an explanation if you feel ready. You may also use the tutor to help: this is practice, not a timed test. If you used help, say which line helped you.</p>
             <div class="question-grid">
-              <div class="question"><label class="question-label" for="m2_constants">Identify the three constants.</label><textarea id="m2_constants" data-field="m2_constants" data-label="Three constants in the program"></textarea></div>
-              <div class="question"><label class="question-label" for="m2_variables">Identify the three variables.</label><textarea id="m2_variables" data-field="m2_variables" data-label="Three variables in the program"></textarea></div>
-              <div class="question"><label class="question-label" for="m2_first_outputs">Predict the first five output lines.</label><textarea id="m2_first_outputs" data-field="m2_first_outputs" data-label="First five output predictions"></textarea></div>
-              <div class="question"><label class="question-label" for="m2_final_outputs">Predict the final two output lines.</label><textarea id="m2_final_outputs" data-field="m2_final_outputs" data-label="Final two output predictions"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_constants">1. Write the three names intended to be constants (lines 1–3).</label><p id="m2ConstantsHelp" class="tutor-note">Write the identifiers, such as <code>GAME_TITLE</code>, not their stored values.</p><textarea id="m2_constants" data-field="m2_constants" data-label="A1: Three identifiers intended as constants in lines 1–3" aria-describedby="m2ConstantsHelp"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_variables">2. Write the three variable names created in lines 5–7.</label><p id="m2VariablesHelp" class="tutor-note">These names hold the player's details. They do not all have to change during this short example to be variables.</p><textarea id="m2_variables" data-field="m2_variables" data-label="A2: Three variable identifiers in lines 5–7" aria-describedby="m2VariablesHelp"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_first_outputs">3. Write what lines 9–13 will print: five output lines.</label><p id="m2FirstHelp" class="tutor-note">Include each label and value, not the Python instructions. Use a new line for each output.</p><textarea id="m2_first_outputs" data-field="m2_first_outputs" data-label="A3: First five outputs (lines 9–13); prediction or tutor-supported response" aria-describedby="m2FirstHelp"></textarea></div>
+              <div class="question"><label class="question-label" for="m2_final_outputs">4. After lines 15 and 16 change the values, what will lines 18 and 19 print?</label><p id="m2FinalHelp" class="tutor-note">Write the final two output lines. Look at the most recent assignment to each variable.</p><textarea id="m2_final_outputs" data-field="m2_final_outputs" data-label="A4: Final two outputs after reassignment; prediction or tutor-supported response" aria-describedby="m2FinalHelp"></textarea></div>
             </div>
           </div>
 
           <div class="task-card">
             <h2>Part B: run and adapt in your IDE</h2>
-            <ol class="instruction-steps">
-              <li>Copy the program into your own Python IDE and run it.</li>
-              <li>Compare the actual output with your prediction; correct any misconception.</li>
-              <li>Change <code>player_name</code>.</li>
-              <li>Reassign <code>lives_remaining</code> and <code>current_score</code> to sensible new values.</li>
-              <li>Do <strong>not</strong> change the three supplied constants.</li>
-              <li>Add one new uppercase constant and one new lowercase variable.</li>
-              <li>Print both new names with clear labels.</li>
-              <li>Paste your final code and add a clear screenshot below.</li>
-            </ol>
-            <label class="question-label" for="m2_actual">Actual output and any correction to your prediction</label><textarea id="m2_actual" data-field="m2_actual" data-label="Actual output and corrections"></textarea>
+            <p>Now turn your reading into practical work. You will run the original program, make one small change at a time, then add one setting and one player detail of your own. Use your own Python IDE throughout.</p>
+            <p id="guideCheckHelp" class="tutor-note">This is your personal checklist, not automatic marking. Tick a step only after checking it in your IDE. A tick does not move the pointer. Select <strong>Next step</strong> yourself; you can go back or leave a step unticked and ask for help.</p>
+            <div id="adaptGuide" class="adapt-guide" aria-labelledby="guideHeading">
+              <h3 id="guideHeading">Your run-and-adapt guide</h3>
+              <div class="tutor-toolbar">
+                <button id="guidePrevious" class="secondary" type="button">Previous step</button>
+                <p id="guidePosition" class="tutor-position" role="status" aria-live="polite" aria-atomic="true"></p>
+                <button id="guideNext" class="secondary" type="button">Next step</button>
+              </div>
+              <h4 id="guideTitle"></h4>
+              <p id="guideAction"></p>
+              <div id="guidePointer" class="tutor-focus"><p id="guideLineLabel" class="tutor-line-label"></p><div id="guideCode"></div><p class="tutor-note">This is the <strong>original code</strong> to help you find the right place. Your edited values may be different.</p></div>
+              <p id="guideReferenceNote" class="tutor-note">The numbers refer to the original program. If your IDE shows different line numbers after an edit, find the named identifier instead. Do not type the line numbers.</p>
+              <div id="guideExamplePanel" hidden><h4>Example you can adapt</h4><p id="guideExampleNote"></p><pre id="guideExample" class="tutor-output"></pre></div>
+              <button class="secondary starter-copy" data-copy-target="mainProgram" id="guideCopy" type="button">Copy original Python</button>
+              <h4>What to check</h4><p id="guideCheckText"></p>
+              <div id="guideExpectedPanel" hidden><p class="tutor-note">Expected output for this check</p><pre id="guideExpected" class="tutor-output"></pre></div>
+              <label class="guide-check-label" for="guideChecked"><input id="guideChecked" type="checkbox" aria-describedby="guideCheckHelp"><span>I have done this step and checked it in my IDE.</span></label>
+              <p id="guideCheckStatus" class="tutor-note" role="status" aria-live="polite" aria-atomic="true"></p>
+              <div class="tutor-toolbar" aria-label="Continue through the run-and-adapt guide"><button id="guidePreviousBottom" class="secondary" type="button">Previous step</button><button id="guideNextBottom" class="secondary" type="button">Next step</button></div>
+              <details class="tutor-details"><summary>See all 10 steps / return to a step</summary><ol id="guideOverview" class="guide-overview"></ol></details>
+              <details class="tutor-details"><summary>If the program does not run</summary><p>Pause and look at the line number in the error message. Compare just that line with the example. Check matching quotation marks and brackets, spelling, and capital letters. Run it again after one change. If you are stuck, show your teacher the line and the message. You do not need to solve an unfamiliar error alone.</p></details>
+            </div>
+            <h3>Save your work as evidence</h3>
+            <p>Keep the work you have, even if it is unfinished. The export includes your answers, code, screenshots and checked steps. Checked steps are your own record, not a score.</p>
+            <label class="question-label" for="m2_actual">Paste the output from your IDE. Explain one result you checked or one place you need help.</label><textarea id="m2_actual" data-field="m2_actual" data-label="B: Actual IDE output, corrections, checks or help needed"></textarea>
             <label class="question-label" for="m2_code">Your final adapted Python code</label><textarea id="m2_code" class="code-entry" data-field="m2_code" data-label="Final adapted Python code" data-report-type="code" spellcheck="false"></textarea>
             <div class="evidence-zone" data-evidence-zone="main2" tabindex="0"><strong>Add a complete IDE screenshot</strong><p>Paste, drag or choose an image. It will be kept at full aspect ratio in the PDF report.</p><label class="secondary" for="evidenceMain2">Choose image</label><input id="evidenceMain2" data-evidence-input="main2" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="main2"></div></div>
           </div>
@@ -220,6 +368,28 @@ print("Updated score:", current_score)</pre><button class="copy-button" data-cop
               <div class="question"><label class="question-label" for="m2_q4">Would Python prevent <code>MAX_LIVES = 5</code>? Explain the convention.</label><textarea id="m2_q4" data-field="m2_q4" data-label="Python constant convention"></textarea></div>
             </div>
           </div>
+          <section id="learningPitStop" class="learning-reflection" aria-labelledby="learningPitStopTitle">
+            <p class="reflection-kicker">After Main Activity 2 · Before extension or plenary · About 3 minutes</p>
+            <h2 id="learningPitStopTitle">Learning pit stop: where am I now?</h2>
+            <p>Look at your classifications, your IDE output and your explanations. Revisit the same six statements. Your stage can be different for each one: you might find names easy but need help tracing a changed value.</p>
+            <p id="pitStopStartingFocus"></p>
+            <dl class="reflection-phases">
+              <dt>New learning — a good struggle</dt><dd>This is new and takes effort, but I can make progress with the example or a little support.</dd>
+              <dt>Consolidating</dt><dd>I am practising what I know and becoming more secure. I still need to check my work.</dd>
+              <dt>Treading water</dt><dd>This feels easy and is not stretching me. I am ready to explain more or try a different scenario.</dd>
+              <dt>Drowning — I need help</dt><dd>I feel stuck or overwhelmed and need help with a smaller next step. I do not have to keep struggling alone.</dd>
+            </dl>
+            <p>Choose a stage for each statement you have practised. If you have not reached it, choose “Not attempted yet”. These are feelings about today's task, not grades or permanent labels.</p>
+            <div id="learningAfterRows"></div>
+            <div class="reflection-summary"><h3>My next step towards the WAGBA</h3><div id="pitStopSuggestions" aria-live="polite" aria-atomic="true"></div></div>
+            <label class="question-label" for="lp_priority">Which part should you focus on next or discuss with your teacher?</label>
+            <select id="lp_priority" data-field="lp_priority" data-label="Learning pit stop: student's chosen next K/S/U focus"><option value="">Choose one part of today's learning</option></select>
+            <p id="pitStopChosenAction" class="reflection-feedback"></p>
+            <label class="question-label" for="lp_evidence">What in your work supports your choice? Write one example and your next action.</label>
+            <p id="lpEvidenceHelp" class="reflection-hint">For example: “I changed lives_remaining to 1 and MAX_LIVES stayed 3. I want to explain why they have different roles.” Or: “I cannot follow line 6 yet. Please trace it with me.”</p>
+            <textarea id="lp_evidence" data-field="lp_evidence" data-label="Learning pit stop: evidence, next action or specific help request" aria-describedby="lpEvidenceHelp" rows="3"></textarea>
+            <p class="reflection-hint"><strong>If you need help now:</strong> pause and tell your teacher, or show them the statement you selected. Saving this reflection does not send a message or alert to your teacher.</p>
+          </section>
           <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Open extension tasks</button></div>
         </section>
 
@@ -239,7 +409,7 @@ print("Updated score:", current_score)</pre><button class="copy-button" data-cop
           <p class="section-kicker">Plenary · Independent exit ticket · AO1/AO2</p>
           <h1>Prove what changed</h1>
           <p class="section-lead">Answer without running the code. Then export every answer, code sample and evidence image as one PDF.</p>
-          <div class="time-chip">Target: 8 minutes</div>
+          <div class="time-chip">Suggested time: 7 minutes, including export</div>
           <div class="task-card">
             <h2>Exit code</h2>
             <div class="code-wrap"><pre id="plenaryCode">MAX_ATTEMPTS = 3
@@ -271,6 +441,8 @@ attempts_remaining = 2</pre><button class="copy-button" data-copy-target="plenar
 
   <div id="imageModal" class="image-modal hidden" role="dialog" aria-modal="true" aria-label="Enlarged lesson visual"><button id="closeModal" type="button" aria-label="Close enlarged visual">×</button><img id="modalImage" alt=""></div>
   <article id="printReport" class="print-report" aria-label="Printable complete lesson report"></article>
+  <script src="tutor.js"></script>
+  <script src="reflections.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

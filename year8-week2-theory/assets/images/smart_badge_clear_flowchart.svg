@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="780" viewBox="0 0 600 780" role="img" aria-labelledby="title desc">
+  <title id="title">One Smart Badge welcome interaction</title>
+  <desc id="desc">Start in an oval. Output: display welcome icon in a parallelogram. Input: wait for Button A in a parallelogram. Output: display initials in a parallelogram. End in an oval. Downward arrows connect each step.</desc>
+  <rect width="600" height="780" fill="white"/>
+  <g stroke="#141414" stroke-width="4" fill="white">
+    <ellipse cx="300" cy="96" rx="130" ry="38"/>
+    <path d="M178 194 H448 L422 294 H152 Z"/>
+    <path d="M178 354 H448 L422 454 H152 Z"/>
+    <path d="M178 514 H448 L422 614 H152 Z"/>
+    <ellipse cx="300" cy="714" rx="130" ry="38"/>
+    <g fill="none"><path d="M300 134 V178 M290 164 L300 178 L310 164"/><path d="M300 294 V338 M290 324 L300 338 L310 324"/><path d="M300 454 V498 M290 484 L300 498 L310 484"/><path d="M300 614 V660 M290 646 L300 660 L310 646"/></g>
+  </g>
+  <g font-family="Raleway, Arial, sans-serif" fill="#141414" text-anchor="middle">
+    <text x="300" y="30" font-size="24" font-weight="700">SMART BADGE · FOLLOW THE ARROWS</text>
+    <text x="300" y="105" font-size="28" font-weight="700">START</text>
+    <text x="300" y="226" font-size="18" font-weight="700" fill="#1559a5">OUTPUT</text>
+    <text x="300" y="254" font-size="24">Display welcome icon</text>
+    <text x="300" y="386" font-size="18" font-weight="700" fill="#1559a5">INPUT</text>
+    <text x="300" y="414" font-size="24">Wait for Button A</text>
+    <text x="300" y="444" font-size="18">to be pressed</text>
+    <text x="300" y="546" font-size="18" font-weight="700" fill="#1559a5">OUTPUT</text>
+    <text x="300" y="578" font-size="24">Display initials</text>
+    <text x="300" y="723" font-size="28" font-weight="700">END</text>
+  </g>
+</svg>

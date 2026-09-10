@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Year 8 Week 2 theory lesson: decompose one Smart Badge problem and represent its algorithm as a flowchart.">
   <title>Year 8 Week 2 Theory — Smart Badge Flowchart</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=gimkit-finish-1">
 </head>
 <body>
   <a class="skip-link" href="#lessonContent">Skip to lesson content</a>
@@ -17,7 +17,7 @@
       <p class="landing-lead">One scenario. One worked example. One flowchart to create.</p>
 
       <div class="mission-preview" aria-label="Lesson journey preview">
-        <span>Recall</span><b>→</b><span>Learn</span><b>→</b><span>See</span><b>→</b><span>Create</span><b>→</b><span>Reflect</span>
+        <span>Our mission</span><b>→</b><span>Recall</span><b>→</b><span>Learn</span><b>→</b><span>Create</span><b>→</b><span>Reflect</span>
       </div>
 
       <form id="entryForm" novalidate>
@@ -53,6 +53,7 @@
         <span id="languageChip" class="language-chip" hidden></span>
         <span id="saveStatus" class="save-status" role="status" aria-live="polite">Saved</span>
         <button id="headerExportButton" class="button light compact" type="button">Export progress</button>
+        <button class="button light compact" type="button" data-open-submission>PDF / Teams help</button>
         <button id="mobileMenuButton" class="button light compact mobile-only" type="button" aria-expanded="false">Journey</button>
         <button id="learningDrawerButton" class="button light compact mobile-only" type="button" aria-expanded="false">Learning</button>
       </div>
@@ -74,7 +75,35 @@
       </nav>
 
       <main id="lessonContent" class="lesson-content" tabindex="-1">
-        <section class="lesson-section active" data-section="doNow" aria-labelledby="doNowHeading">
+        <section class="lesson-section active mission-section" data-section="mission" aria-labelledby="missionHeading">
+          <div class="section-heading">
+            <div><p class="stage-label">BEFORE DO NOW</p><h2 id="missionHeading">Why plan a Smart Badge?</h2></div>
+            <span class="time-badge">3–4 min</span>
+          </div>
+
+          <div id="missionReadingCard">
+            <p class="field-help">Read the mission first. Then try three quick questions, one at a time.</p>
+            <p id="missionReading" class="mission-reading">Imagine our school is welcoming new students. Your Smart Badge will help them introduce themselves using initials: the first letters of their name. When it starts, a welcome icon appears. The badge then waits for Button A to be pressed before displaying the student's initials. Today, you will break this problem into smaller parts, arrange clear instructions and draw a flowchart: a diagram showing the steps. You are planning what the badge does, not writing its code yet.</p>
+            <details class="language-help" data-support="mission" hidden><summary>Language help</summary><div></div></details>
+            <div class="mission-confirmation">
+              <label class="choice"><input type="checkbox" data-track="mission_read"> <span>I have finished reading the mission.</span></label>
+              <p class="field-help">You can return to the reading during the questions.</p>
+              <div id="missionReadingFeedback" class="feedback" role="status" hidden></div>
+              <button id="startMissionQuiz" class="button primary" type="button">Continue to the 3 questions</button>
+            </div>
+          </div>
+
+          <div id="missionQuizCard" hidden>
+            <div class="mission-quiz-top"><p id="missionQuizCounter" class="stage-label"></p><button id="rereadMission" class="button secondary compact" type="button">Read the mission again</button></div>
+            <p class="field-help">Choose one answer. Read the feedback, then continue. Mistakes will not block you.</p>
+            <div id="missionQuestion"></div>
+            <details id="missionQuizLanguage" class="language-help" hidden><summary>Language help</summary><div></div></details>
+            <div id="missionQuizFeedback" class="feedback" role="status" aria-live="polite" hidden></div>
+            <div class="section-actions"><button id="missionQuizBack" class="button secondary" type="button">Back</button><button id="missionQuizAction" class="button primary" type="button">Check answer</button></div>
+          </div>
+        </section>
+
+        <section class="lesson-section" data-section="doNow" aria-labelledby="doNowHeading">
           <div class="section-heading">
             <div><p class="stage-label">DO NOW</p><h2 id="doNowHeading">Meet the Smart Badge mission</h2></div>
             <span class="time-badge">5–7 min</span>
@@ -121,149 +150,169 @@
             <div id="doNowFeedback" class="feedback" hidden></div>
           </div>
 
-          <div class="section-actions"><span></span><button class="button primary" data-next="types" type="button" hidden>Continue: Types of Learning</button></div>
+          <div class="section-actions"><button class="button secondary" data-back="mission" type="button">Back: Our mission</button><button class="button primary" data-next="types" type="button" hidden>Continue: Types of Learning</button></div>
         </section>
 
         <section class="lesson-section" data-section="types" aria-labelledby="typesHeading">
           <div class="section-heading">
-            <div><p class="stage-label">TYPES OF LEARNING</p><h2 id="typesHeading">How will you get better today?</h2></div>
-            <span class="time-badge">3 min</span>
+            <div><p class="stage-label">TYPES OF LEARNING</p><h2 id="typesHeading">What do I need to practise?</h2></div>
+            <span class="time-badge">5–7 min</span>
           </div>
 
-          <p class="section-intro">Today uses all three types of learning. Choose the one that you personally need to concentrate on first.</p>
-          <div class="learning-type-grid" role="radiogroup" aria-label="Current learning focus">
-            <label class="learning-type knowledge"><input type="radio" name="learningType" value="knowledge" data-track="learning_type"><strong>Knowledge</strong><span>Remember the meanings of algorithm, decomposition and flowchart symbols.</span></label>
-            <label class="learning-type skills"><input type="radio" name="learningType" value="skills" data-track="learning_type"><strong>Skills</strong><span>Arrange precise steps and draw a correctly shaped flowchart.</span></label>
-            <label class="learning-type understanding"><input type="radio" name="learningType" value="understanding" data-track="learning_type"><strong>Understanding</strong><span>Explain how Button A causes the LED output.</span></label>
+          <p id="ksuStepCounter" class="stage-label" aria-live="polite">1 of 3 · Knowledge</p>
+          <p class="field-help">Try a small task, use help if needed, then identify your next step. This is not a grade.</p>
+
+          <div data-ksu-card="0">
+            <h3>Knowledge: can I explain the key words?</h3>
+            <fieldset><legend>Can you explain both algorithm and decomposition?</legend>
+              <label class="choice"><input type="radio" name="ksuKnowledge" value="yes" data-track="ksu_k_confidence"> Yes — I will explain them in my own words.</label>
+              <label class="choice"><input type="radio" name="ksuKnowledge" value="no" data-track="ksu_k_confidence"> Not yet — I need to find out or refresh my memory.</label>
+            </fieldset>
+            <div id="ksuKnowledgeExplain" class="ksu-writing" hidden>
+              <label>What is an algorithm?<textarea data-track="ksu_k_algorithm" rows="2" maxlength="250" placeholder="An algorithm is…"></textarea></label>
+              <label>What is decomposition?<textarea data-track="ksu_k_decomposition" rows="2" maxlength="250" placeholder="Decomposition means…"></textarea></label>
+              <label class="choice"><input type="checkbox" data-track="ksu_k_help"> I need help explaining these words.</label>
+            </div>
+            <div id="ksuKnowledgeGuide" class="ksu-guide" hidden>
+              <h4>Find out here — then cover and recall</h4>
+              <p><strong>Algorithm:</strong> a precise, ordered set of instructions for solving a problem. A Smart Badge algorithm tells it what to display and when.</p>
+              <p><strong>Decomposition:</strong> breaking a bigger problem into smaller parts. For our badge, plan the welcome display, button input and response separately.</p>
+              <p><strong>Flowchart key:</strong> an oval marks START/END; a parallelogram marks input/output; a rectangle marks a processing action; an arrow shows the direction to follow. Our simple badge model needs no process rectangle.</p>
+              <p>Read the meanings. Cover them briefly and try explaining one to your partner. You will practise using these ideas in Main Task 1.</p>
+              <label class="choice"><input type="checkbox" data-track="ksu_k_read"> I have read the guide and tried recalling a meaning.</label>
+            </div>
           </div>
 
-          <div class="strategy-box">
-            <h3>Choose how you will get better</h3>
-            <label><span>My strategy today</span>
-              <select data-track="learning_strategy">
-                <option value="">Choose one…</option>
-                <option>Study the worked example carefully</option>
-                <option>Use the symbol guide and word bank</option>
-                <option>Explain each step aloud to a partner</option>
-                <option>Ask for the partially completed model</option>
-                <option>Check every arrow before submitting</option>
-              </select>
-            </label>
+          <div data-ksu-card="1" hidden>
+            <h3>Skills: can I make an instruction precise?</h3>
+            <p>The badge must display your initials when Button A is pressed. A trainee wrote: <strong>“Show something.”</strong> Rewrite this so someone knows exactly what should happen.</p>
+            <p><strong>Include:</strong> When does it happen? What exactly is displayed? Where does it appear?</p>
+            <label class="ksu-writing">My improved instruction<textarea data-track="ksu_s_instruction" rows="3" maxlength="350" placeholder="When… display… on…"></textarea></label>
+            <label class="choice"><input type="checkbox" data-track="ksu_s_help"> I need a prompt or help to write this.</label>
+            <div id="ksuSkillsGuide" class="ksu-guide" hidden><p><strong>Sentence frame:</strong> When ___ is pressed, display ___ on the ___.</p><p>Useful words: Button A · my initials · LED matrix. Choose the words that match the badge brief. If you are still stuck, leave the box for now and record that you need support.</p></div>
           </div>
+
+          <div data-ksu-card="2" hidden>
+            <h3>Understanding: can I read what the plan means?</h3>
+            <div class="ksu-flow-example">
+              <figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/smart_badge_worked_flowchart.svg" data-alt="Smart Badge flowchart: Start, display a welcome icon, wait for Button A, display initials, End."><img src="assets/images/smart_badge_worked_flowchart.svg" alt="Smart Badge flowchart: Start, display a welcome icon, wait for Button A, display initials, End."></button><figcaption>Select to enlarge. Follow the arrows.</figcaption></figure>
+              <div><p>Find <strong>Button A</strong> in the flowchart. Follow its arrow to <strong>DISPLAY initials</strong>.</p><fieldset><legend>What does that part of the flowchart mean?</legend>
+                <label class="choice"><input type="radio" name="ksuUnderstanding" value="response" data-track="ksu_u_meaning"> Pressing Button A sends an input. The micro:bit follows its instructions and displays initials as the output.</label>
+                <label class="choice"><input type="radio" name="ksuUnderstanding" value="reverse" data-track="ksu_u_meaning"> The initials appear first and make Button A press itself.</label>
+                <label class="choice"><input type="radio" name="ksuUnderstanding" value="decoration" data-track="ksu_u_meaning"> The arrow is decoration, so either event can happen first.</label>
+                <label class="choice"><input type="radio" name="ksuUnderstanding" value="help" data-track="ksu_u_meaning"> I cannot follow it yet — I need a guided explanation.</label>
+              </fieldset></div>
+            </div>
+            <div id="ksuUnderstandingGuide" class="ksu-guide" hidden><p>Point to the Button A input. Follow the arrow forwards: the next instruction is to display initials. The micro:bit processes the button event by following its stored instructions. The initials on the LEDs are the output. The arrow shows the sequence; it is not a wire or decoration.</p><p>Trace this part again with your finger, then explain it to your partner or teacher.</p></div>
+          </div>
+
+          <div data-ksu-card="3" hidden><h3>My practice plan — based on what I tried</h3><p>You may need to work on more than one area. These are next steps, not labels about what kind of learner you are.</p><div id="ksuPracticePlan"></div><p class="field-help">Your explanations, help requests and next steps will be in your lesson report. Your teacher will review your written answers.</p></div>
 
           <details class="guide-preview"><summary>Open the school Types of Learning guide</summary>
             <figure class="lesson-figure wide"><button class="image-button" type="button" data-image="assets/images/types_of_learning_school_guide.png" data-alt="School guide explaining Knowledge, Skills and Understanding."><img src="assets/images/types_of_learning_school_guide.png" alt="School guide explaining Knowledge, Skills and Understanding."></button></figure>
           </details>
-          <details class="language-help" data-support="types" hidden><summary>Language help</summary><div></div></details>
-          <div id="typesFeedback" class="feedback" hidden></div>
-          <div class="section-actions"><button class="button secondary" data-back="doNow" type="button">Back</button><button id="completeTypes" class="button primary" type="button">Save my learning plan</button></div>
+          <details id="ksuLanguageHelp" class="language-help" hidden><summary>Language help</summary><div></div></details>
+          <div id="typesFeedback" class="feedback" role="status" aria-live="polite" hidden></div>
+          <fieldset id="ksuSkillReflection" hidden><legend>After reading the feedback: does your instruction say when, what and where?</legend>
+            <label class="choice"><input type="radio" name="ksuSkillReady" value="yes" data-track="ksu_s_ready"> Yes — I can point to all three in my sentence.</label>
+            <label class="choice"><input type="radio" name="ksuSkillReady" value="notyet" data-track="ksu_s_ready"> Not yet — this is a skill I need to practise today.</label>
+          </fieldset>
+          <div class="section-actions"><button id="ksuBack" class="button secondary" type="button">Back</button><button id="completeTypes" class="button primary" type="button">Check Knowledge</button></div>
         </section>
 
         <section class="lesson-section" data-section="main1" aria-labelledby="main1Heading">
           <div class="section-heading">
-            <div><p class="stage-label">MAIN TASK 1 · LEARN AND SEE</p><h2 id="main1Heading">Turn the mission into a visual plan</h2></div>
-            <span class="time-badge">12 min</span>
+            <div><p id="main1Part" class="stage-label">MAIN TASK 1A · ALGORITHMS</p><h2 id="main1Heading">What makes a useful algorithm?</h2></div>
+            <span id="main1Time" class="time-badge">3 min</span>
           </div>
 
-          <details class="language-help" data-support="main1" hidden><summary>Language help</summary><div></div></details>
-
-          <div class="concept-strip">
-            <article><strong>Algorithm</strong><p>A precise, ordered set of instructions for solving a problem.</p></article>
-            <article><strong>Decomposition</strong><p>Breaking one large problem into smaller parts that can be planned separately.</p></article>
-            <article><strong>Flowchart</strong><p>A diagram that uses standard symbols and arrows to show an algorithm.</p></article>
+          <p id="main1Counter" class="stage-label">Card 1 of 5 · about 18 minutes in total</p>
+          <div class="m1-view-switch" role="group" aria-label="Study or practise this card">
+            <button class="button secondary" data-m1-view="study" type="button" aria-pressed="true">Read & see an example</button>
+            <button class="button primary" data-m1-view="practice" type="button" aria-pressed="false">Try the questions</button>
           </div>
-
-          <div class="smart-decomposition">
-            <h3>Decompose this Smart Badge into three parts</h3>
-            <div><span>1</span><p><strong>Start:</strong> show a welcome icon.</p></div>
-            <div><span>2</span><p><strong>Input:</strong> wait for Button A.</p></div>
-            <div><span>3</span><p><strong>Response:</strong> show the student’s initials.</p></div>
-          </div>
-
-          <article class="worked-example">
-            <div class="worked-label">WORKED EXAMPLE</div>
-            <div class="split-card">
-              <div>
-                <h3>Study the completed Smart Badge flowchart</h3>
-                <p>Follow the arrows from top to bottom. Notice how the same scenario has become a visual algorithm.</p>
-                <ul class="tight-list">
-                  <li><strong>Oval:</strong> begins or ends the algorithm.</li>
-                  <li><strong>Parallelogram:</strong> shows an input or output.</li>
-                  <li><strong>Arrow:</strong> shows what happens next.</li>
-                </ul>
-                <p class="not-yet"><strong>Not yet:</strong> decision diamonds will be introduced when the class studies selection.</p>
-              </div>
-              <figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/smart_badge_worked_flowchart.svg" data-alt="Worked Smart Badge flowchart from Start to welcome icon, Button A input, initials output and End."><img src="assets/images/smart_badge_worked_flowchart.svg" alt="Worked Smart Badge flowchart from Start to welcome icon, Button A input, initials output and End."></button><figcaption>Select the diagram to enlarge it.</figcaption></figure>
-            </div>
-          </article>
-
-          <article class="task-card">
-            <div class="task-heading"><span>1</span><h3>Check the symbols</h3></div>
-            <div class="symbol-check-grid">
-              <label>START uses a…<select data-track="symbol_start"><option value="">Choose…</option><option value="oval">oval</option><option value="parallelogram">parallelogram</option><option value="rectangle">rectangle</option></select></label>
-              <label>DISPLAY initials uses a…<select data-track="symbol_output"><option value="">Choose…</option><option value="oval">oval</option><option value="parallelogram">parallelogram</option><option value="rectangle">rectangle</option></select></label>
-            </div>
-
-            <div class="task-heading second"><span>2</span><h3>Make a vague instruction precise</h3></div>
-            <p><strong>Vague:</strong> “Display something nice.” Use the writing frame and word bank.</p>
-            <div class="word-bank" aria-label="Useful words"><span>When</span><span>starts</span><span>display</span><span>welcome icon</span><span>LED matrix</span></div>
-            <div class="sentence-frame"><strong>When</strong> the Smart Badge starts, <strong>display</strong> <input data-track="precise_output" maxlength="80" placeholder="exactly what?"> on the LED matrix.</div>
-            <button id="checkMain1" class="button primary" type="button">Check Main Task 1</button>
-            <div id="main1Feedback" class="feedback" hidden></div>
-          </article>
-          <div class="section-actions"><button class="button secondary" data-back="types" type="button">Back</button><button class="button primary" data-next="main2" type="button" hidden>Continue: Create my flowchart</button></div>
+          <details id="main1Language" class="language-help" hidden><summary>Language help</summary><div></div></details>
+          <details class="guide-preview" data-ksu-reminder hidden><summary>My practice targets from the KSU check</summary><div></div></details>
+          <div id="main1Study"></div>
+          <div id="main1Practice" hidden></div>
+          <div id="main1Feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+          <div class="section-actions"><button id="main1Back" class="button secondary" type="button">Back</button><button id="checkMain1" class="button primary" type="button">Try the questions</button></div>
+          <div class="section-actions"><span></span><button class="button secondary" data-next="main2" type="button" hidden>Continue: Create my flowchart</button></div>
         </section>
 
         <section class="lesson-section" data-section="main2" aria-labelledby="main2Heading">
           <div class="section-heading">
             <div><p class="stage-label">MAIN TASK 2 · CREATE</p><h2 id="main2Heading">Create your Smart Badge blueprint</h2></div>
-            <span class="time-badge">25 min</span>
+            <span class="time-badge">18–20 min</span>
           </div>
 
           <div class="scenario-panel compact-scenario">
             <p class="scenario-label">YOUR A4 PAPER TASK</p>
             <p>Create a flowchart for the same Smart Badge: it displays a welcome icon, waits for Button A, then displays your initials.</p>
           </div>
-          <details class="language-help" data-support="main2" hidden><summary>Language help</summary><div></div></details>
-
-          <div class="a4-instructions">
-            <div class="paper-icon" aria-hidden="true">A4</div>
-            <div>
-              <h3>On the A4 paper your teacher gives you</h3>
-              <ol>
-                <li>Write the title <strong>Smart Badge Flowchart</strong> and your name.</li>
-                <li>Draw these five steps in order: <strong>START → DISPLAY welcome icon → INPUT Button A → DISPLAY initials → END</strong>.</li>
-                <li>Use ovals for START/END and parallelograms for inputs/outputs.</li>
-                <li>Connect every symbol with an arrow.</li>
-                <li>Compare your drawing with the worked example before taking a photograph.</li>
+          <details class="guide-preview" data-ksu-reminder hidden><summary>Use my practice targets while drawing</summary><div></div></details>
+          <div class="paper-workspace">
+            <aside class="paper-model" aria-label="Visible Smart Badge example">
+              <h3>A model to adapt</h3>
+              <p>This badge welcomes a visitor with a <strong>heart</strong>. After Button A is pressed, it scrolls <strong>JP</strong>.</p>
+              <figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/smart_badge_paper_model.svg" data-alt="Start, display a heart, wait for Button A, scroll JP, end. Ovals mark start and end; parallelograms mark input and output; arrows show order."><img src="assets/images/smart_badge_paper_model.svg" alt="Start → display a heart → wait for Button A → scroll JP → end. Ovals are start/end; parallelograms are input/output." width="540" height="740"></button><figcaption>Tap to enlarge. END ends this planned interaction; it does not switch off the micro:bit.</figcaption></figure>
+              <p><strong>Keep the structure, make the design yours.</strong> Choose your own welcome icon and initials. Do not simply copy the heart and JP.</p>
+            </aside>
+            <div class="paper-task">
+              <div class="paper-card-nav" aria-label="Paper activity cards">
+                <button type="button" class="button secondary" data-paper-view="draw" aria-pressed="true">Draw on A4</button>
+                <button type="button" class="button secondary" data-paper-view="explain" aria-pressed="false">Explain &amp; finish</button>
+              </div>
+              <div data-paper-card="draw">
+              <h3>1. Choose, then draw on A4</h3>
+              <figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/smart_badge_display_ideas.svg" data-alt="Welcome ideas: heart, smile or diamond on a five-by-five LED grid. After Button A, JP scrolls across the display, one letter after another."><img src="assets/images/smart_badge_display_ideas.svg" alt="Choose a heart, smile or diamond LED icon. After Button A, display your own initials, such as JP; the letters scroll, not side by side." width="680" height="390"></button></figure>
+              <p>A small heart ♥, smile ☺ or diamond ◆ makes a clear welcome. These are <strong>LED patterns, not colour emojis</strong>. Use your initials after Button A (for example, AK or MH). Keep text short.</p>
+              <ol class="paper-steps">
+                <li>Write <strong>Smart Badge Flowchart</strong>, your name and class at the top of your A4 paper. Sketch your chosen icon in the margin.</li>
+                <li>Draw <strong>five large symbols from top to bottom</strong>, using the model beside you. Replace its heart and JP with your choices.</li>
+                <li>Write an exact action inside each symbol: <strong>DISPLAY [your icon]</strong>, <strong>WAIT until Button A is pressed</strong>, and <strong>DISPLAY initials “[your initials]”</strong>.</li>
+                <li>Join the symbols with arrowheads. Trace the route with your finger: <strong>Does the badge wait before showing your initials?</strong></li>
               </ol>
-            </div>
-          </div>
-
-          <div class="support-row">
-            <details><summary>Need the symbol guide?</summary><figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/05_flowchart_symbol_guide_4x3.svg" data-alt="Flowchart symbol guide showing start, input and output symbols."><img src="assets/images/05_flowchart_symbol_guide_4x3.svg" alt="Flowchart symbol guide showing start, input and output symbols."></button></figure></details>
-            <details><summary>Need the worked example again?</summary><figure class="lesson-figure"><button class="image-button" type="button" data-image="assets/images/smart_badge_worked_flowchart.svg" data-alt="Worked Smart Badge flowchart."><img src="assets/images/smart_badge_worked_flowchart.svg" alt="Worked Smart Badge flowchart."></button></figure></details>
-          </div>
-
-          <article class="evidence-card">
-            <h3>Submit one clear photograph</h3>
-            <p>Choose a file or paste a screenshot/photo into the box. Your image stays in this browser and will appear in the PDF.</p>
+              <p class="paper-symbol-note"><strong>Shape reminder:</strong> oval = start/end; slanted parallelogram = input/output; arrow = order. No decision diamond is needed for this sequence.</p>
+              <button type="button" class="button primary" data-paper-view="explain">My drawing is ready → Explain it</button>
+              </div>
+              <div data-paper-card="explain" hidden>
+              <h3>2. Explain your own drawing</h3>
+              <p>Write 2–4 short sentences. Say <strong>what appears first, what input it waits for, what appears next, and how the arrows show the order</strong>. Your teacher will read this; it is not a keyword test.</p>
+              <div class="paper-writing-guide">
+                <p><strong>Sentence starters</strong><br>First, my badge displays ___.<br>It waits until ___. Then it displays ___.<br>The arrows show ___. I chose ___ because ___.</p>
+                <p><strong>English example — adapt it:</strong> First, my badge displays a heart to welcome visitors. It waits until Button A is pressed, then scrolls JP. The arrows show the order from the welcome image to the initials.</p>
+                <div id="paperLanguageSupport" hidden></div>
+              </div>
+              <details class="paper-draft"><summary>Plan in my own language first (optional)</summary>
+                <p>Write your ideas in Mandarin, Korean, Bahasa Melayu or another language. Use the English frame to try your own English version below. Ask a partner or your teacher to help translate; the app does not translate your writing automatically.</p>
+                <label><span>My own-language draft (saved in my report)</span><textarea data-track="flowchart_home_draft" rows="3" maxlength="900" placeholder="Describe your own icon, Button A input and initials."></textarea></label>
+              </details>
+              <label><span>My flowchart explanation</span><textarea data-track="flowchart_explanation" rows="4" maxlength="900" placeholder="First, my badge displays… It waits until… Then… The arrows show…"></textarea></label>
+              <p>You may use your own language here if you still need English support. Explain your design, not the example.</p>
+              <h3>3. Show your paper to your teacher</h3>
+              <label class="paper-teacher-check"><input type="checkbox" data-track="evidence_teacher_checked"><span><strong>My teacher has checked my paper flowchart.</strong><small>No photograph needed. Tick only after your teacher has looked at your paper.</small></span></label>
+              <label class="choice"><input type="checkbox" data-track="evidence_teacher_pending"> My paper is ready, but I am waiting for my teacher to check it.</label>
+              <p>Waiting? Save your explanation and continue. Your report will say <strong>teacher review pending</strong>, not “checked”. Keep your A4 paper for your teacher.</p>
+              <details class="evidence-card optional-photo"><summary>Add a photograph or screenshot (optional)</summary>
+            <p>You do not need a camera to finish. If you want to attach an image, choose a file or paste it below. It stays in this browser and is included in your report.</p>
             <div class="upload-actions">
               <label class="button secondary upload-label">Choose image<input id="evidenceFile" type="file" accept="image/*" hidden></label>
               <button id="removeEvidence" class="button text-button" type="button" hidden>Remove image</button>
             </div>
             <div id="pasteZone" class="paste-zone" contenteditable="true" role="textbox" tabindex="0" aria-label="Paste flowchart screenshot here">Click here, then press Ctrl+V or Cmd+V to paste an image.</div>
             <div id="evidencePreview" class="evidence-preview" hidden></div>
-            <label class="choice"><input type="checkbox" data-track="evidence_teacher_checked"> My teacher has checked my paper flowchart because I cannot upload the image right now.</label>
-            <label><span>Explain your flowchart using the frame</span><textarea data-track="flowchart_explanation" rows="3" maxlength="600" placeholder="My flowchart begins by… The input is… After this input, the micro:bit…"></textarea></label>
-          </article>
+              </details>
+              </div>
+            </div>
+          </div>
 
           <div id="main2Feedback" class="feedback" hidden></div>
           <div id="main2Routes" class="route-choice" hidden>
             <button class="button secondary" data-next="extension" type="button">I have time: try extension</button>
             <button class="button primary" data-next="pitstop" type="button">Continue: Learning Pitstop</button>
           </div>
-          <div class="section-actions"><button class="button secondary" data-back="main1" type="button">Back</button><button id="completeMain2" class="button primary" type="button">Submit my Main Task</button></div>
+          <div class="section-actions"><button class="button secondary" data-back="main1" type="button">Back</button><button id="completeMain2" class="button primary" type="button">Save my explanation &amp; continue</button></div>
         </section>
 
         <section class="lesson-section" data-section="extension" aria-labelledby="extensionHeading">
@@ -271,28 +320,49 @@
             <div><p class="stage-label">OPTIONAL EXTENSION</p><h2 id="extensionHeading">Keep extending the same badge</h2></div>
             <span class="time-badge">Early finishers</span>
           </div>
-          <p class="section-intro">Complete Level 1, then continue to Level 2 and Level 3 if time allows. You may move to the Learning Pitstop at any time.</p>
+          <p class="section-intro">Give visitors one more way to use your Smart Badge. Keep your welcome icon and Button A initials; design a <strong>different, useful response for Button B</strong>. Work on paper first. No device or photograph is required.</p>
+          <div class="extension-card-nav" aria-label="Extension cards">
+            <button class="button secondary" type="button" data-extension-card="1" aria-pressed="true">1. Choose</button>
+            <button class="button secondary" type="button" data-extension-card="2" aria-pressed="false">2. Draw</button>
+            <button class="button secondary" type="button" data-extension-card="3" aria-pressed="false">3. Explain &amp; test</button>
+          </div>
 
           <article class="level-card" data-level="1">
-            <span class="level-label">LEVEL 1 · IMPROVE</span>
-            <h3>Write a precise Button B instruction</h3>
-            <p>Use: <strong>When [event], display [exact output] on [device].</strong></p>
-            <textarea data-track="extension_1" rows="2" maxlength="400" placeholder="When Button B is pressed, display…"></textarea>
-            <button class="button secondary level-save" data-level-save="1" type="button">Save Level 1</button>
+            <span class="level-label">LEVEL 1 · CHOOSE · ABOUT 3 MIN</span>
+            <h3>What should Button B do?</h3>
+            <p>An <strong>event</strong> is something the program responds to. Here, pressing and releasing Button B is the event; displaying your chosen image or text is the response.</p>
+            <figure class="lesson-figure"><button type="button" class="image-button" data-image="assets/images/button_b_event_example.svg" data-alt="Simplified micro:bit front view. Button A is left of the LED matrix and Button B is right. Press and release B: a smile appears on the LEDs."><img src="assets/images/button_b_event_example.svg" alt="Button B is on the right. Example: pressing and releasing B displays a smile on the five-by-five LED matrix." width="720" height="320"></button></figure>
+            <p><strong>Example:</strong> “When Button B is pressed, display a smile on the LED matrix to welcome someone.” Borrow the pattern; choose a response with your own purpose.</p>
+            <ul class="extension-ideas"><li><strong>Say hello:</strong> scroll “HI”.</li><li><strong>Show readiness:</strong> display a tick.</li><li><strong>Show a direction:</strong> display a left arrow to a welcome desk.</li><li><strong>Share an interest:</strong> design a tiny music-note LED pattern.</li></ul>
+            <p>Or invent your own. Sketch a simple 5×5 pattern or use a short word. Avoid a full-colour emoji: the micro:bit uses LEDs.</p>
+            <details class="language-help" data-support="extension1" open hidden><summary>Language support</summary><div></div></details>
+            <label><span>My Button B idea and purpose</span><textarea data-track="extension_1" rows="3" maxlength="650" placeholder="When Button B is pressed, display ___ on the LED matrix. This helps ___ because ___. It is different from Button A because ___."></textarea></label>
+            <details class="extension-try"><summary>Optional: try the model in MakeCode</summary><p>Open MakeCode in another tab. In <strong>Blocks → Input</strong>, drag <strong>on button A pressed</strong> into the workspace. Change its dropdown from A to <strong>B</strong>. From <strong>Basic</strong>, place <strong>show icon</strong> inside that event block and choose a smile. Click and release the simulator’s B button. Keep any existing A block and welcome code. Return here to plan your own response; no download is needed.</p><a class="button secondary" href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer">Open MakeCode →</a></details>
+            <button class="button primary level-save" data-level-save="1" type="button">Save my idea → Draw</button>
           </article>
           <article class="level-card" data-level="2" hidden>
-            <span class="level-label">LEVEL 2 · EXTEND</span>
-            <h3>Add Button B to your paper flowchart</h3>
-            <p>Add the new Button B input and its exact output. Keep the original Button A behaviour.</p>
-            <textarea data-track="extension_2" rows="2" maxlength="400" placeholder="Describe where you added the new steps."></textarea>
-            <button class="button secondary level-save" data-level-save="2" type="button">Save Level 2</button>
+            <span class="level-label">LEVEL 2 · DRAW · ABOUT 5 MIN</span>
+            <h3>Two buttons, two response plans</h3>
+            <p>Your first flowchart showed one sequence. This version adds <strong>two separate event responses</strong>: each button triggers its own instructions after the welcome display.</p>
+            <p>Use the back of your A4 paper or a fresh sheet. Write <strong>“On startup: display my welcome icon”</strong> across the top. Draw two columns underneath: <strong>Button A</strong> on the left and <strong>Button B</strong> on the right.</p>
+            <figure class="lesson-figure"><button type="button" class="image-button" data-image="assets/images/button_a_b_flowcharts.svg" data-alt="Two separate flowcharts. A: start, Button A pressed, display JP, end response. B: start, Button B pressed, display smile, end response. No arrow connects the two columns."><img src="assets/images/button_a_b_flowcharts.svg" alt="Side-by-side Button A and B flowcharts, with ovals for start/end, parallelograms for button input and display output, and arrows down each column. The columns are not connected." width="800" height="630"></button></figure>
+            <ol><li>Draw an <strong>oval START</strong> at the top of each column.</li><li>Below it, draw a <strong>parallelogram INPUT</strong>: “Button A pressed” on the left; “Button B pressed” on the right.</li><li>Draw a <strong>parallelogram OUTPUT</strong>: your own initials for A; the exact icon or text you chose for B. Sketch B’s output beside its symbol.</li><li>Finish each column with an <strong>oval END response</strong>. Connect the symbols within each column with downward arrows.</li></ol>
+            <p class="paper-symbol-note"><strong>Keep the columns separate.</strong> Do not join A’s end to B’s start. After startup, either button can be used first. END finishes that response, not the whole badge. No decision diamond or calculation rectangle is needed for these simple responses.</p>
+            <details class="language-help" data-support="extension2" open hidden><summary>Language support</summary><div></div></details>
+            <label><span>Explain what you drew</span><textarea data-track="extension_2" rows="3" maxlength="650" placeholder="My left column keeps Button A → ___. My right column adds Button B → ___. I used ___ for inputs/outputs and ___ to show the order."></textarea></label>
+            <p>Show the paper to your teacher when they are available. A photo is not required.</p>
+            <button class="button primary level-save" data-level-save="2" type="button">Save my drawing notes → Explain &amp; test</button>
           </article>
           <article class="level-card" data-level="3" hidden>
-            <span class="level-label">LEVEL 3 · REASON</span>
-            <h3>Explain how the algorithm changed</h3>
-            <p>What new input and output did you add? Why must the original behaviour remain?</p>
-            <textarea data-track="extension_3" rows="3" maxlength="500" placeholder="I added… This changes the algorithm because…"></textarea>
-            <button class="button secondary level-save" data-level-save="3" type="button">Save Level 3</button>
+            <span class="level-label">LEVEL 3 · EXPLAIN &amp; TEST · ABOUT 4 MIN</span>
+            <h3>Can your partner follow both responses?</h3>
+            <p>Use your finger to act as the computer; you do not need a working micro:bit. Ask a partner to choose a button, then follow only that column.</p>
+            <ol><li><strong>Start the badge:</strong> point to your welcome icon.</li><li><strong>Press B first:</strong> which exact output should appear? Explain why pressing A beforehand is unnecessary.</li><li><strong>Now press A:</strong> check that your initials still appear, not B’s output.</li><li><strong>Press B again:</strong> check that its own response still works.</li></ol>
+            <p><strong>Keep / change / explain:</strong> What stayed the same? What did you add? How does your new output help the person wearing or reading the badge?</p>
+            <details class="language-help" data-support="extension3" open hidden><summary>Language support</summary><div></div></details>
+            <label><span>My explanation and paper test</span><textarea data-track="extension_3" rows="4" maxlength="900" placeholder="I kept ___. I added ___ so that ___. When we tested B first, we expected ___. A still displays ___. I improved ___ / no change was needed because ___."></textarea></label>
+            <p>You may draft in your own language and use the English prompts to help. Your teacher reviews your reasoning, not exact wording.</p>
+            <button class="button primary level-save" data-level-save="3" type="button">Save my explanation</button>
           </article>
           <div id="extensionFeedback" class="feedback" hidden></div>
           <div class="section-actions"><button class="button secondary" data-back="main2" type="button">Back</button><button class="button primary" data-next="pitstop" type="button">Go to Learning Pitstop</button></div>
@@ -301,9 +371,65 @@
         <section class="lesson-section" data-section="pitstop" aria-labelledby="pitstopHeading">
           <div class="section-heading">
             <div><p class="stage-label">LEARNING PITSTOP</p><h2 id="pitstopHeading">Where are you now?</h2></div>
-            <span class="time-badge">3 min</span>
+            <span class="time-badge">8–10 min</span>
           </div>
-          <p class="section-intro">Think specifically about decomposing the Smart Badge and creating its flowchart.</p>
+          <p class="section-intro">What can you do now, how did it feel, and what will help next? Use evidence from your Smart Badge work. This is <strong>not a grade or a label about your ability</strong>. You can be confident in one area and need help in another.</p>
+          <div class="pit-card-nav" aria-label="Learning Pitstop cards">
+            <button type="button" class="button secondary" data-pit-card="0">1. Know</button><button type="button" class="button secondary" data-pit-card="1">2. Write</button><button type="button" class="button secondary" data-pit-card="2">3. Read</button><button type="button" class="button secondary" data-pit-card="3">4. Reflect</button><button type="button" class="button secondary" data-pit-card="4">5. Plan</button>
+          </div>
+          <div id="pitLanguageSupport" class="pit-language-support" hidden></div>
+          <article data-pit-panel="0">
+            <h3>Knowledge: can I explain the ideas?</h3>
+            <p><strong>Today’s target:</strong> explain algorithm and decomposition, and recognise why the order of instructions matters. Try from memory first. “Not sure yet” is a useful answer.</p>
+            <div id="pitQuestions0"></div>
+            <button type="button" class="button secondary" data-pit-check="0">Check my knowledge</button>
+            <div id="pitCheck0" class="feedback" hidden></div>
+            <label class="choice"><input type="checkbox" data-track="pit_ready_k"> I can now explain algorithm and decomposition in my own words, without reading the definitions.</label>
+            <p>Try saying both meanings before ticking. Leave it unticked if you need more practice; that will not block you.</p>
+            <button type="button" class="button primary" data-pit-next="1">Continue to Skills →</button>
+          </article>
+          <article data-pit-panel="1" hidden>
+            <h3>Skills: can I make an instruction precise?</h3>
+            <p><strong>Today’s target:</strong> write precise instructions and order them in a flowchart. The trainee wrote <strong>“Show something nice.”</strong> Your job is to make the instruction usable.</p>
+            <div id="pitQuestions1"></div>
+            <label><span>Write your own Button A instruction</span><textarea data-track="pit_instruction" rows="2" maxlength="500" placeholder="When ___, display ___ on ___."></textarea></label>
+            <p><strong>Technique:</strong> name <strong>when</strong> it happens, <strong>what</strong> exact icon/text appears, and <strong>where</strong> it appears. Use your initials, not a full name. You may explain in your own language or write where you need help.</p>
+            <button type="button" class="button secondary" data-pit-check="1">Check the example &amp; review my sentence</button>
+            <div id="pitCheck1" class="feedback" hidden></div>
+            <label class="choice"><input type="checkbox" data-track="pit_ready_s"> I can write an instruction with when, what and where, and place it in the correct order.</label>
+            <p>Your own sentence is for teacher review, not automatic keyword marking.</p>
+            <button type="button" class="button primary" data-pit-next="2">Continue to Understanding →</button>
+          </article>
+          <article data-pit-panel="2" hidden>
+            <h3>Understanding: can I read the flowchart?</h3>
+            <p><strong>Today’s target:</strong> explain how a flowchart represents input, processing and output. This Smart Badge variation builds the greeting <strong>HELLO JT</strong> after Button A is pressed. Read the words as well as the shapes.</p>
+            <div class="pit-flow-layout">
+              <figure class="lesson-figure"><button type="button" class="image-button" data-image="assets/images/pitstop_greeting_flowchart.svg" data-alt="Start, step 1 wait for Button A, step 2 join HELLO and JT to make greeting, step 3 display greeting, end. Steps 1 and 3 are parallelograms; step 2 is a rectangle."><img src="assets/images/pitstop_greeting_flowchart.svg" alt="Smart Badge greeting flowchart. 1: Wait for Button A. 2: Join HELLO and JT to make the greeting. 3: Display the greeting. Arrows connect start to end." width="520" height="650"></button></figure>
+              <div><div id="pitQuestions2"></div><p><strong>Trace it:</strong> touch each arrow and say what happens next. Does preparing the text mean it is already visible on the LEDs?</p></div>
+            </div>
+            <button type="button" class="button secondary" data-pit-check="2">Check my flowchart reading</button>
+            <div id="pitCheck2" class="feedback" hidden></div>
+            <label class="choice"><input type="checkbox" data-track="pit_ready_u"> I can follow the arrows and explain which instruction is input, process or output.</label>
+            <button type="button" class="button primary" data-pit-next="3">See my evidence →</button>
+          </article>
+          <article data-pit-panel="3" hidden>
+            <h3>How did this learning feel?</h3>
+            <div id="pitEvidenceSummary" class="pit-evidence-summary" aria-live="polite"></div>
+            <div class="pit-reflection-options">
+            <fieldset><legend>How much challenge did the checks and paper task give you?</legend>
+              <label class="choice"><input type="radio" name="pitDifficulty" data-track="pit_difficulty" value="easy"> Easy — I was not stretching myself.</label>
+              <label class="choice"><input type="radio" name="pitDifficulty" data-track="pit_difficulty" value="medium"> Medium — useful practice; I could keep going.</label>
+              <label class="choice"><input type="radio" name="pitDifficulty" data-track="pit_difficulty" value="challenge"> Challenging — I had to think, but made progress.</label>
+              <label class="choice"><input type="radio" name="pitDifficulty" data-track="pit_difficulty" value="hard"> Too hard right now — I am stuck and need support.</label>
+            </fieldset>
+            <fieldset><legend>Compared with the start of the lesson…</legend>
+              <label class="choice"><input type="radio" name="pitFamiliarity" data-track="pit_familiarity" value="new"> Much of this knowledge or these skills were new to me.</label>
+              <label class="choice"><input type="radio" name="pitFamiliarity" data-track="pit_familiarity" value="improving"> I knew some of it; I can now explain or do it more confidently.</label>
+              <label class="choice"><input type="radio" name="pitFamiliarity" data-track="pit_familiarity" value="familiar"> I could already do these things before today.</label>
+            </fieldset>
+            </div>
+            <div id="pitSuggestion" class="adaptive-advice" aria-live="polite"></div>
+            <p><strong>Does that suggestion fit you?</strong> Choose your stage below. You may disagree: the app cannot know how you feel from six questions.</p>
           <div class="pitstop-grid">
             <label class="pit-option new"><input type="radio" name="pitstop" value="new" data-track="pitstop_stage"><strong>New learning</strong><span>I am in a good struggle and learning something new.</span></label>
             <label class="pit-option consolidating"><input type="radio" name="pitstop" value="consolidating" data-track="pitstop_stage"><strong>Consolidating</strong><span>I am getting better and using what I already know.</span></label>
@@ -311,11 +437,25 @@
             <label class="pit-option drowning"><input type="radio" name="pitstop" value="drowning" data-track="pitstop_stage"><strong>Drowning</strong><span>This feels too hard and I need help to move forward.</span></label>
           </div>
           <div id="pitstopAdvice" class="adaptive-advice" hidden></div>
-          <label><span>My next action</span><select data-track="pitstop_action"><option value="">Choose after selecting your stage…</option><option>Revisit the labelled worked example</option><option>Use the word bank and sentence frame</option><option>Explain my flowchart to a partner</option><option>Ask the teacher to check one symbol</option><option>Attempt or continue the extension</option></select></label>
+            <label><span>Why this stage? Include a feeling and one piece of evidence.</span><textarea data-track="pit_reason" rows="3" maxlength="650" placeholder="I felt ___ when ___. At first I ___; now I can ___. I chose this stage because ___."></textarea></label>
+            <p><strong>Example:</strong> “I felt unsure about the two slanted shapes. Now I read ‘wait for Button A’ as input and ‘display’ as output. I chose consolidating because I can explain a difference I could not explain earlier.” Use your own experience.</p>
+            <button type="button" class="button primary" data-pit-next="4">Plan how to get better →</button>
+          </article>
+          <article data-pit-panel="4" hidden>
+            <h3>My next practice — not just a choice</h3>
+            <p>Write <strong>one short sentence for each area</strong>. Adapt these examples to what you found difficult or too easy. Asking for a specific piece of help is a valid plan. The aim is useful progress, not feeling stuck all the time.</p>
+            <div id="pitPlanAdvice" class="adaptive-advice"></div>
+            <label><span>Knowledge — how will I remember algorithm, sequence and decomposition?</span><textarea data-track="pit_plan_k" rows="2" maxlength="500" placeholder="I will cover ___, explain ___ from memory, then check ___."></textarea></label>
+            <p><strong>Example:</strong> “I will cover the definitions, recall that sequence means order and decomposition means breaking a problem into smaller parts, then check with a partner.”</p>
+            <label><span>Skills — how will I practise writing precise instructions?</span><textarea data-track="pit_plan_s" rows="2" maxlength="500" placeholder="I will rewrite ___ using when, what and where. I will ask ___ to follow it."></textarea></label>
+            <p><strong>Example:</strong> “I will replace ‘show something’ with an exact icon, trigger and display location, then ask a partner whether any detail is missing.”</p>
+            <label><span>Understanding — how will I get better at reading flowcharts?</span><textarea data-track="pit_plan_u" rows="2" maxlength="500" placeholder="I will follow ___ and read ___. To distinguish input, process and output, I will ___."></textarea></label>
+            <p><strong>Example:</strong> “I will follow each arrow and read its instruction: a button provides input, making the greeting is processing, and displaying it is output. I will explain why input and output can share a shape.”</p>
+            <p>Write in English, Mandarin, Korean or Bahasa Melayu if that helps you explain your thinking. Your teacher can discuss an English version with you. Do not copy a plan that you will not use.</p>
+          </article>
           <details class="guide-preview"><summary>Open the school Learning Pitstop guide</summary><figure class="lesson-figure wide"><button class="image-button" type="button" data-image="assets/images/learning_pitstop_school_guide.png" data-alt="School Learning Pitstop guide showing New Learning, Consolidating, Treading Water and Drowning."><img src="assets/images/learning_pitstop_school_guide.png" alt="School Learning Pitstop guide showing New Learning, Consolidating, Treading Water and Drowning."></button></figure></details>
-          <details class="language-help" data-support="pitstop" hidden><summary>Language help</summary><div></div></details>
           <div id="pitstopFeedback" class="feedback" hidden></div>
-          <div class="section-actions"><button class="button secondary" data-back="main2" type="button">Back</button><button id="completePitstop" class="button primary" type="button">Save my Pitstop</button></div>
+          <div class="section-actions"><button class="button secondary" data-back="main2" type="button">Back to my paper task</button><button id="completePitstop" class="button primary" type="button" hidden>Save my reflection → Plenary</button></div>
         </section>
 
         <section class="lesson-section" data-section="plenary" aria-labelledby="plenaryHeading">
@@ -344,16 +484,40 @@
           <div class="teams-callout">
             <h3>Microsoft Teams submission</h3>
             <p>After the PDF downloads, upload it to the assignment named <strong>Week 2 Theory</strong>.</p>
-            <ul><li>Check your name and class.</li><li>Check that your flowchart photograph is visible.</li><li>Upload the PDF—not a screenshot of the PDF.</li></ul>
+            <ul><li>Check your name and class.</li><li>Check your explanation and paper-review status. If you chose to add a photograph, check that it is visible.</li><li>Keep your A4 flowchart for your teacher.</li><li>Upload the PDF—not a screenshot of the PDF.</li></ul>
           </div>
           <div class="export-grid">
             <button id="finalExportButton" class="button primary large" type="button">Download evidence PDF</button>
             <button id="printButton" class="button secondary" type="button">Print / Save as PDF</button>
+            <button class="button secondary" type="button" data-open-submission>Where is my PDF? / Teams guide</button>
             <button id="backupButton" class="button secondary" type="button">Download backup</button>
             <label class="button secondary upload-label">Import backup<input id="backupInput" type="file" accept="application/json" hidden></label>
           </div>
           <div id="exportFeedback" class="feedback" hidden></div>
           <div class="section-actions"><button class="button secondary" data-back="plenary" type="button">Back</button><span></span></div>
+        </section>
+        <section class="lesson-section" data-section="finisher" aria-labelledby="finisherHeading">
+          <p class="stage-label">AFTER YOUR SUBMISSION · OPTIONAL</p>
+          <h2 id="finisherHeading">You're ready for the Flowchart Gimkit!</h2>
+          <p>Your Teams confirmation is saved in this browser. Your teacher will check the actual assignment in Teams.</p>
+          <div class="gimkit-fun-card">
+            <p class="stage-label">CASH TYCOON · SELF-PACED</p>
+            <h3>Put your Smart Badge thinking into play</h3>
+            <p>Recognise flowchart symbols, follow the arrows, break down a problem and repair a mixed-up sequence. The kit contains <strong>10 questions</strong>, including picture choices.</p>
+            <ol><li>Open the game in a new tab and choose <strong>Start Assignment</strong>.</li><li>Use a name your teacher recognises. Read the game instructions, then aim for <strong>10 correct answers</strong>. Questions may repeat as you practise.</li><li>Read corrections and try again. Keep this lesson tab open; you do not need another PDF or Teams upload for this game.</li></ol>
+            <a id="gimkitAssignmentLink" class="button primary large" target="_blank" rel="noopener noreferrer" hidden>Play the Flowchart Gimkit →</a>
+            <p><strong>Deadline: Friday 18 September 2026, 5 PM (Malaysia).</strong></p>
+            <p id="gimkitAvailability" role="status"></p>
+            <p id="gimkitLanguage" class="pit-language-support" hidden></p>
+            <p class="field-help">An internet connection is needed. Gimkit records game progress separately; opening the link does not mark the game complete here.</p>
+          </div>
+          <details class="gimkit-offline"><summary>No connection, or want one more quick puzzle?</summary>
+          <div id="finisherActivity"></div>
+          <button id="checkFinisher" class="button primary" type="button">Check my idea</button>
+          <div id="finisherFeedback" class="feedback" hidden></div>
+          <p>No extra upload is needed for this mini-activity. Keep your A4 flowchart for your teacher.</p>
+          </details>
+          <div class="section-actions"><button id="finishReturn" class="button secondary" type="button">Back to my lesson</button><button class="button secondary" data-open-submission type="button">Reopen submission guide</button></div>
         </section>
       </main>
 
@@ -375,7 +539,44 @@
   </template>
 
   <dialog id="imageDialog" class="image-dialog"><button id="closeImageDialog" class="dialog-close" type="button">Close</button><img id="dialogImage" alt=""></dialog>
+  <dialog id="submissionDialog" class="submission-dialog" aria-labelledby="submissionHeading">
+    <div id="downloadPointer" class="download-pointer" hidden><span aria-hidden="true">↗</span><strong>Look above this page</strong><small>Your browser’s Downloads button is often near the top right.</small></div>
+    <div class="submission-dialog-header"><div><p class="stage-label">SAVE → ATTACH → TURN IN</p><h2 id="submissionHeading">Get your PDF into Teams</h2></div><button id="closeSubmission" class="button secondary" type="button">Close guide</button></div>
+    <p id="submissionFile" class="submission-filename"></p>
+    <p id="submissionReportWarning" class="feedback warning" hidden></p>
+    <div class="submission-device-choice" role="group" aria-label="Choose your device"><button class="button secondary" type="button" data-sub-device="laptop">Laptop / desktop</button><button class="button secondary" type="button" data-sub-device="ios">iPad / iPhone</button></div>
+    <div class="submission-step-nav" aria-label="Submission guide steps"><button class="button secondary" data-sub-step="0" type="button">1. Find / save</button><button class="button secondary" data-sub-step="1" type="button">2. Upload</button><button class="button secondary" data-sub-step="2" type="button">3. Confirm</button></div>
+    <div id="submissionLanguage" class="pit-language-support" hidden></div>
+    <article data-sub-panel="0">
+      <h3>1. Find and open your PDF</h3>
+      <div data-sub-route="laptop">
+        <ol><li>Look for the browser’s <strong>Downloads ↓</strong> button near the <strong>top right, above this webpage</strong>. Click it and open the filename shown above.</li><li>If there is no icon, open the browser menu and choose <strong>Downloads</strong>, or open your computer’s <strong>Downloads</strong> folder in File Explorer / Finder. If you chose another save folder, look there.</li><li>Open the PDF. Check your <strong>name, class and lesson answers</strong>. Remember the folder so you can select the same file in Teams.</li></ol>
+        <p>The arrow is a guide, not a clickable browser control. Toolbar layouts and school browsers vary.</p>
+      </div>
+      <div data-sub-route="ios" hidden>
+        <div class="submission-illustrated"><div><ol><li>If the PDF opens on screen, tap <strong>Share</strong> (square with an upward arrow). In some Safari layouts, first tap <strong>More … → Share</strong>.</li><li>Choose <strong>Save to Files</strong>. Pick <strong>On My iPad / On My iPhone</strong> or an available <strong>iCloud Drive</strong> folder, then tap <strong>Save</strong>. Keep the filename shown above.</li><li>If the file downloaded directly, open the <strong>Files</strong> app → <strong>Browse</strong> and check <strong>Downloads</strong> in your chosen location. Tap the PDF to check it.</li><li>Return to this lesson tab for the Teams steps. A screenshot in Photos is not the PDF.</li></ol><button id="shareLessonPdf" class="button primary" type="button">Save / share this PDF</button><a id="previewLessonPdf" class="button secondary" target="_blank" rel="noopener noreferrer" hidden>Open PDF preview</a><p id="sharePdfStatus" role="status"></p></div>
+          <figure><button type="button" class="image-button" data-image="assets/images/apple-save-pdf-to-files.png" data-alt="Apple’s iPhone screenshot points to Save to Files in the Share menu."><img src="assets/images/apple-save-pdf-to-files.png" alt="Apple screenshot: Save to Files appears in the Share menu; a blue arrow points to it."></button><figcaption>Apple’s iPhone example. iPad uses similar actions; the layout may differ. Tap to enlarge. <a href="https://support.apple.com/en-ie/guide/iphone/ipha9ed5131c/ios" target="_blank" rel="noopener noreferrer">Apple guide</a></figcaption></figure></div>
+      </div>
+      <p><strong>Used Print / Save as PDF?</strong> Choose the PDF-saving destination, not a physical printer. A print window closing does not prove a file was saved. If it did not save, close this guide and use Download evidence PDF instead.</p>
+      <button class="button primary" type="button" data-sub-step="1">I found and checked my PDF →</button>
+    </article>
+    <article data-sub-panel="1" hidden>
+      <h3>2. Attach it to the assignment — then Turn in</h3>
+      <div class="submission-illustrated"><div><ol><li>Open <strong>Microsoft Teams</strong> with your school account. Choose <strong id="submissionClass">your Computing class</strong>.</li><li>Open <strong>Classwork → Term 1 / Week 2 Theory</strong>, then its submission assignment. If Classwork is not shown, use <strong>Assignments</strong> and look for <strong>Week 2 Theory</strong>. Ask your teacher if the assignment is missing.</li><li>Under <strong>My work</strong>, choose <strong>+ Add work</strong> on a laptop, or <strong>Attach</strong> on mobile. Choose the file option / Browse, then find your saved PDF in Downloads or Files. Labels may vary.</li><li>Select the PDF and wait until it appears as an attachment. Open it to check it is <strong>your Week 2 report</strong>.</li><li>Choose <strong>Turn in</strong> (or Turn in again / Turn in late if appropriate). Look for a <strong>submitted status, time stamp or Undo turn in</strong>.</li></ol><p><strong>Attaching is not the last step.</strong> A class chat message or channel post is not an assignment submission.</p><a href="https://teams.microsoft.com/" target="_blank" rel="noopener noreferrer" class="button primary">Open Microsoft Teams →</a><p>If Turn in is unavailable or an error appears, ask for help. Do not tick the confirmation yet.</p></div>
+      <figure><button type="button" class="image-button" data-image="assets/images/teams-mobile-turn-in.jpg" data-alt="Microsoft’s sample Teams mobile assignment shows Attach under My work and Turn in at the top right."><img src="assets/images/teams-mobile-turn-in.jpg" alt="Microsoft sample mobile assignment: Attach is below My work; Turn in is at the top right."></button><figcaption>Microsoft’s example uses a different class and assignment. Use <strong>your Week 2 Theory</strong> assignment, not the title pictured. <a href="https://support.microsoft.com/en-us/education/assignments/manage-assignments-on-a-mobile-device" target="_blank" rel="noopener noreferrer">Microsoft guide</a></figcaption></figure></div>
+      <button class="button primary" type="button" data-sub-step="2">Back from Teams → Confirm</button>
+    </article>
+    <article data-sub-panel="2" hidden>
+      <h3>3. Confirm what you did</h3>
+      <p>Check the status in Teams first. This website cannot upload the file for you or verify your submission.</p>
+      <label class="submission-confirm"><input id="teamsUploadConfirmed" type="checkbox"><span><strong>I uploaded my Week 2 Theory PDF to the Teams assignment, clicked Turn in, and saw that it was submitted.</strong><small>I did not only attach it or send it in chat.</small></span></label>
+      <button id="confirmTeamsSubmission" class="button primary large" type="button" disabled>Confirm &amp; open my final activity →</button>
+      <p id="submissionConfirmStatus" role="status"></p>
+      <button class="button secondary" type="button" data-sub-step="1">Not yet — show the upload steps again</button>
+    </article>
+  </dialog>
   <script src="libraries/pdf-lib.min.js"></script>
-  <script src="app.js"></script>
+  <script src="main1-content.js?v=main1-practice-1"></script>
+  <script src="app.js?v=gimkit-finish-1"></script>
 </body>
 </html>
