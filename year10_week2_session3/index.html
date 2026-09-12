@@ -56,47 +56,123 @@
           <div class="ao-strip"><span class="ao-badge ao1">AO1 recall</span><span class="ao-badge ao2">AO2 apply</span><span class="ao-badge ao3">AO3 program</span></div>
         </div>
         <nav class="step-nav" aria-label="Lesson pages">
-          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Starter</span><span class="step-time">8 min</span></button>
-          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Main Activity 1</span><span class="step-time">20 min</span></button>
-          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 2</span><span class="step-time">25 min</span></button>
-          <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Extension</span><span class="step-time">Early finish</span></button>
-          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Plenary &amp; export</span><span class="step-time">7 min</span></button>
+          <button id="openReadFirst" class="secondary read-first-nav" type="button">Read first · about 4 min</button>
+          <button class="step-button active" data-step="0" type="button"><span class="step-number">1</span><span class="step-name">Do Now</span><span class="step-time">4 min</span></button>
+          <button class="step-button" data-step="1" type="button"><span class="step-number">2</span><span class="step-name">Types of learning</span><span class="step-time">3 min</span></button>
+          <button class="step-button" data-step="2" type="button"><span class="step-number">3</span><span class="step-name">Main Activity 1</span><span class="step-time">18 min</span></button>
+          <button class="step-button" data-step="3" type="button"><span class="step-number">4</span><span class="step-name">Main Activity 2</span><span class="step-time">22 min</span></button>
+          <button class="step-button" data-step="4" type="button"><span class="step-number">5</span><span class="step-name">Extension</span><span class="step-time">Early finish</span></button>
+          <button class="step-button" data-step="5" type="button"><span class="step-number">6</span><span class="step-name">Learning pit stop</span><span class="step-time">3 min</span></button>
+          <button class="step-button" data-step="6" type="button"><span class="step-number">7</span><span class="step-name">Plenary &amp; export</span><span class="step-time">6 min</span></button>
         </nav>
       </aside>
 
       <main class="main-content">
         <details class="mobile-ksu" open><summary>Objective, WAGBA and Knowledge · Skills · Understanding</summary><p><strong>Objective:</strong> Create, run and explain a Python program that accepts, converts and processes input.</p><p><strong>WAGBA:</strong> Converting user input into usable data and selecting the correct arithmetic operator.</p><p><strong>K:</strong> input, output, conversion and operators. <strong>S:</strong> predict, write, test and debug. <strong>U:</strong> data type and operator choices depend on the problem.</p></details>
 
-        <section class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - Diagnose the input problem">
+        <section id="readFirst" class="pre-starter hidden" aria-labelledby="readFirstTitle">
+          <p class="section-kicker">Before Do Now · Read, follow, then predict</p>
+          <h1 id="readFirstTitle" tabindex="-1">How does Python use what we type?</h1>
+          <p class="section-lead">A school club needs to collect a name and a number of tickets. Follow these small examples before trying the starter. You do not need to run code yet.</p>
+          <p class="read-first-time">About 4 minutes, then 4 minutes for Do Now. Take longer or ask for one smaller step if needed.</p>
+
+          <article class="reading-chunk">
+            <h2>1. Input is data entering a program</h2>
+            <blockquote><p>“Input” means the data values that are entered when the program is running.</p></blockquote>
+            <p class="source-note">Short textbook extract: <cite>OxfordAQA Computer Science Student Book</cite>, “Input”, printed p8 (PDF p12). The explanations and examples below are teacher-written, not textbook quotations.</p>
+            <p>In Python, <code>input()</code> displays a <strong>prompt</strong> (a message telling the user what to enter), waits for typing, and returns the text when the user presses Enter.</p>
+          </article>
+
+          <article class="reading-chunk">
+            <h2>2. Give the input a meaningful name</h2>
+            <pre class="recap-code"><code>club_member = input("Enter your name: ")</code></pre>
+            <ul class="reading-points">
+              <li><code>input("Enter your name: ")</code> collects the reply. The paired quotes surround the prompt; the parentheses <code>( )</code> enclose what we pass to the function.</li>
+              <li><code>=</code> assigns that reply to <code>club_member</code>, the variable’s <strong>identifier</strong> (name).</li>
+              <li>If the user types <code>Maya</code>, the stored <strong>value</strong> is the string <code>"Maya"</code>, not the prompt. The user does not type the quotes.</li>
+            </ul>
+          </article>
+
+          <article class="reading-chunk">
+            <h2>3. Convert text before numerical arithmetic</h2>
+            <p><code>input()</code> returns a <strong>string</strong> (<code>str</code>), even when someone types digits. Read this example from top to bottom. Here the user types <code>4</code>.</p>
+            <pre class="recap-code"><code>tickets_text = input("How many tickets? ")
+tickets = int(tickets_text)
+total_tickets = tickets + 2
+print("Tickets including two guests:", total_tickets)</code></pre>
+            <ol class="reading-points">
+              <li><strong>Line 1:</strong> <code>tickets_text</code> stores <code>"4"</code>, a string.</li>
+              <li><strong>Line 2:</strong> <code>int()</code> converts that text to the integer <code>4</code>, assigned to <code>tickets</code>.</li>
+              <li><strong>Line 3:</strong> <code>+</code> adds two numbers: <code>4 + 2</code> gives <code>6</code>.</li>
+              <li><strong>Line 4:</strong> <code>print()</code> displays <code>Tickets including two guests: 6</code>.</li>
+            </ol>
+            <p>Choose <code>int()</code> for a whole-number count; choose <code>float()</code> for a value that may have a decimal part, such as <code>float("2.50")</code>. Names stay as strings.</p>
+            <p><strong>How to inspect a type:</strong> <code>print(type(tickets_text))</code> displays <code>&lt;class 'str'&gt;</code>. For <code>tickets</code>, it displays <code>&lt;class 'int'&gt;</code>.</p>
+          </article>
+
+          <article class="reading-chunk">
+            <h2>4. An error gives you a clue</h2>
+            <p><code>"4" + 2</code> raises a <code>TypeError</code>: Python cannot add a string and an integer. Convert suitable number text before adding. <code>"4" + "2"</code> joins text to make <code>"42"</code>; it does not add the numbers.</p>
+            <details class="reading-help"><summary>Optional help: other errors you may meet</summary>
+              <ul class="reading-points"><li><strong>SyntaxError:</strong> check missing closing quotes or parentheses.</li><li><strong>NameError:</strong> check spelling and whether you assigned the name before using it. Python distinguishes <code>print</code> from <code>Print</code>.</li><li><strong>ValueError:</strong> <code>int("four")</code> and <code>int("4.5")</code> cannot convert that text to an integer. <code>float("4.5")</code> accepts the decimal text.</li></ul>
+              <p>Read the error name and line number, change one thing, then try again in your IDE. You do not need to memorise all the errors now.</p>
+            </details>
+          </article>
+          <p class="source-note">Further reading: “Input”, printed pp8–9 (PDF pp12–13), and “Convert data type”, printed pp18–19 (PDF pp22–23). Python behaviour checked against the <a href="https://docs.python.org/3/library/functions.html#input" target="_blank" rel="noopener noreferrer">official function reference</a> and <a href="https://docs.python.org/3/tutorial/errors.html" target="_blank" rel="noopener noreferrer">error guide</a>. These links are optional.</p>
+          <p><strong>Now apply it:</strong> the starter asks about an age instead of tickets. Follow each line, track its value and type, and identify where a calculation goes wrong. You can return to this reading at any time.</p>
+          <div class="step-footer"><span>No quiz or timer on this reading.</span><button id="startDoNow" class="primary" type="button">Continue to Do Now</button></div>
+        </section>
+
+        <section id="starter" class="activity-step active" data-step="0" data-section-key="starter" data-report-title="Starter - Diagnose the input problem">
           <p class="section-kicker">Starter · Diagnose before running · AO1/AO2</p>
-          <h1>Why will this program fail?</h1>
-          <p class="section-lead">Work independently. Predict from the code first—do not run it yet.</p>
-          <div class="time-chip">Target: 8 minutes</div>
+          <h1 tabindex="-1">Do Now: use what you have just read</h1>
+          <p class="section-lead">A club asks a student’s age in completed years and tries to calculate their age next year. The user types <code>15</code> and presses Enter. Read the three lines in order and predict before running. You may look back at the reading or ask for help.</p>
+          <div class="time-chip">About 4 minutes · not a timed test</div>
+          <button id="backToReadFirst" class="secondary" type="button">Revisit the input reading</button>
           <div class="task-card">
             <h2>Do Now: five quick questions</h2>
             <div class="code-wrap"><pre id="starterCode">age = input("Enter your age: ")
 print(type(age))
 next_age = age + 1</pre><button class="copy-button" data-copy-target="starterCode" type="button">Copy</button></div>
             <div class="question-grid">
-              <div class="question"><label class="question-label" for="s_stored">1. If the user types <code>15</code>, what value is stored in <code>age</code>?</label><input id="s_stored" data-field="s_stored" data-label="Starter value stored in age" type="text"></div>
-              <div class="question"><label class="question-label" for="s_type">2. What data type will <code>type(age)</code> report?</label><input id="s_type" data-field="s_type" data-label="Starter data type of age" type="text"></div>
-              <div class="question"><label class="question-label" for="s_error_line">3. Which line will cause an error?</label><input id="s_error_line" data-field="s_error_line" data-label="Starter line causing an error" type="text"></div>
-              <div class="question"><label class="question-label" for="s_error_reason">4. Why can Python not calculate that line?</label><textarea id="s_error_reason" data-field="s_error_reason" data-label="Starter reason for the error"></textarea></div>
-              <div class="question full"><label class="question-label" for="s_conversion">5. Should the age be converted with <code>int()</code> or <code>float()</code>? Give a reason.</label><textarea id="s_conversion" data-field="s_conversion" data-label="Starter conversion choice and reason"></textarea></div>
+              <div class="question"><label class="question-label" for="s_stored">1. After line 1, what value is stored in <code>age</code>?</label><p id="sStoredHelp" class="answer-guide">Write the value. Use quotation marks if it is text.</p><input id="s_stored" data-field="s_stored" data-label="Starter value stored in age" type="text" aria-describedby="sStoredHelp"></div>
+              <div class="question"><label class="question-label" for="s_type">2. What is the data type of <code>age</code> on line 2?</label><p id="sTypeHelp" class="answer-guide">Write the type name, such as a Python name or its English term. You do not need the full &lt;class ...&gt; display.</p><input id="s_type" data-field="s_type" data-label="Starter data type of age" type="text" aria-describedby="sTypeHelp"></div>
+              <div class="question"><label class="question-label" for="s_error_line">3. Which line causes an error?</label><p id="sLineHelp" class="answer-guide">Count from the top: 1, 2, 3. Write one line number.</p><input id="s_error_line" data-field="s_error_line" data-label="Starter line causing an error" type="text" aria-describedby="sLineHelp"></div>
+              <div class="question"><label class="question-label" for="s_error_reason">4. Why can Python not calculate that line?</label><p id="sReasonHelp" class="answer-guide">Name the two data types being combined. One sentence is enough.</p><textarea id="s_error_reason" data-field="s_error_reason" data-label="Starter reason for the error" aria-describedby="sReasonHelp"></textarea></div>
+              <div class="question full"><label class="question-label" for="s_conversion">5. Should this age in completed years be converted with <code>int()</code> or <code>float()</code>?</label><p id="sConversionHelp" class="answer-guide">Choose one function and explain why it suits the value needed in this scenario.</p><textarea id="s_conversion" data-field="s_conversion" data-label="Starter conversion choice and reason" aria-describedby="sConversionHelp"></textarea></div>
             </div>
             <details class="answer-check"><summary>Check after answering</summary><p>If the user types 15, <code>input()</code> stores the string <code>"15"</code>. The final line attempts to add a string and an integer, causing a type error. <code>int()</code> is suitable because age in years is being treated as a whole number.</p></details>
           </div>
           <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-1-input-process-output.png" alt="Five-stage journey from keyboard input to string data, conversion, processing and printed output"><figcaption>Visual 1 · A numerical program still receives keyboard input as text first. Select to enlarge.</figcaption></figure>
           <div class="callout green"><strong>Today’s objective</strong>Create, run and explain a Python program that accepts user input, converts it into a suitable data type, performs arithmetic and displays clearly labelled output.</div>
           <div class="paper-strip"><div><strong>Paper 1</strong><span>Write, run, test and repair Python programs in your own IDE.</span></div><div><strong>Paper 2</strong><span>Predict results and explain input, output, conversion and arithmetic operators.</span></div></div>
-          <div class="step-footer"><span></span><button class="primary next-step" type="button">Continue to Main Activity 1</button></div>
+          <div class="step-footer"><span></span><button class="primary next-step" type="button">Choose your learning focus</button></div>
         </section>
 
-        <section class="activity-step" data-step="1" data-section-key="main1" data-report-title="Main Activity 1 - Input, conversion and debugging">
+        <section id="learningTypes" class="activity-step learning-reflection" data-step="1" data-section-key="learningTypes" data-report-title="Types of learning - Starting points and WAGBA focus">
+          <p class="section-kicker">After Do Now · About 3 minutes</p>
+          <h1>What am I getting better at?</h1>
+          <p>Look back at your five starter answers. Which ideas did you already know, and which needed the reading or a prompt? Choose a starting point for each statement below, then choose one focus for today.</p>
+          <p><strong>Knowledge:</strong> facts I can recall. <strong>Skills:</strong> things I can do. <strong>Understanding:</strong> reasons I can explain and apply. You can work on all three; these are not fixed types of learner.</p>
+          <p><strong>Our WAGBA:</strong> converting user input into usable data and selecting the correct arithmetic operator to produce accurate output.</p>
+          <p class="reflection-hint">The starter did not assess everything, especially division and practical testing. Choose “Not sure / not checked yet” if you have no evidence. A fact you already know does not need to be your main improvement target.</p>
+          <div id="learningBeforeRows"></div>
+          <div class="reflection-summary"><h2>Your learning focus overview</h2><div id="learningSuggestions" aria-live="polite"></div></div>
+          <label class="question-label" for="lt_focus">Choose one focus to work on next.</label>
+          <select id="lt_focus" data-field="lt_focus" data-label="Types of learning: chosen K/S/U focus"><option value="">Choose a focus</option></select>
+          <p id="learningFocusAction" class="reflection-feedback"></p>
+          <label class="question-label" for="lt_reason">What in your starter or discussion helped you choose?</label>
+          <p id="ltReasonHelp" class="reflection-hint">For example: “I knew input() gives a string, but I needed the reading to explain why age + 1 fails.” A short sentence or a note of your discussion with your teacher is enough.</p>
+          <textarea id="lt_reason" data-field="lt_reason" data-label="Types of learning: evidence for chosen focus" aria-describedby="ltReasonHelp" rows="2"></textarea>
+          <p class="reflection-hint">These checks are self-reports, not marks. You can continue when unsure and discuss your focus with your teacher.</p>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to Do Now</button><button class="primary next-step" type="button">Continue to Main Activity 1</button></div>
+        </section>
+
+        <section class="activity-step" data-step="2" data-section-key="main1" data-report-title="Main Activity 1 - Input, conversion and debugging">
           <p class="section-kicker">Main Activity 1 · Read, diagnose and repair · AO1/AO2/AO3</p>
           <h1>Turn text input into numerical data</h1>
           <p class="section-lead">Read the teaching notes and worked example before repairing the delivery-cost program in your own IDE.</p>
-          <div class="time-chip">Target: 20 minutes</div>
+          <div class="time-chip">Target: 18 minutes</div>
 
           <article class="reading-card">
             <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed p4, pp8–9 and pp18–19</span><span>PDF pp8, 12–13 and 22–23</span><span>Specification 3.2.7</span></div>
@@ -156,17 +232,47 @@ print("Total cost:", total_cost)</pre><button class="copy-button" data-copy-targ
           <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Continue to Main Activity 2</button></div>
         </section>
 
-        <section class="activity-step" data-step="2" data-section-key="main2" data-report-title="Main Activity 2 - Division, remainder and testing">
+        <section class="activity-step" data-step="3" data-section-key="main2" data-report-title="Main Activity 2 - Division, remainder and testing">
           <p class="section-kicker">Main Activity 2 · Apply operators in Python and pseudocode · AO1/AO2/AO3</p>
           <h1>Complete groups or exact division?</h1>
           <p class="section-lead">Learn the three division operators, then build and test a minutes-to-hours converter in your own IDE.</p>
-          <div class="time-chip">Target: 25 minutes</div>
+          <div class="time-chip">Target: 22 minutes</div>
 
           <article class="reading-card">
             <div class="reading-meta"><span>OxfordAQA Student Book</span><span>Printed pp14–15 and pp20–21</span><span>PDF pp18–19 and pp24–25</span><span>Specification 3.2.3 and 3.2.7</span></div>
             <h2>Reading: three different division results</h2>
             <p>Real division <code>/</code> calculates the full numerical result, including a decimal part when needed. Integer division <code>//</code> returns the number of <strong>complete groups</strong>. The remainder operator <code>%</code> returns the amount <strong>left over</strong>.</p>
             <p>OxfordAQA pseudocode uses <code>DIV</code> for integer division and <code>MOD</code> for remainder. Python uses <code>//</code> and <code>%</code>. The notation changes, but the calculation and meaning stay the same.</p>
+          </article>
+
+          <article class="division-example" aria-labelledby="divisionExampleTitle">
+            <h2 id="divisionExampleTitle">Worked example: where does the remainder 3 come from?</h2>
+            <p>There are <strong>19 students</strong>. Each complete team needs <strong>4 students</strong>. How many complete teams can we make, and how many students are left without a team? Use long division, stopping at a whole-number answer.</p>
+            <figure class="division-figure">
+              <div class="long-division" role="img" aria-label="Long division: 19 divided by 4. Write 4 above the division bar. Four times four is 16. Subtract 16 from 19 to leave a remainder of 3.">
+                <span class="division-quotient">4</span>
+                <span class="division-divisor">4</span>
+                <span class="division-dividend">19</span>
+                <span class="division-minus">−</span>
+                <span class="division-product">16</span>
+                <span class="division-remainder">3</span>
+              </div>
+              <figcaption><strong>19 ÷ 4 = 4 remainder 3</strong><br>4 complete teams; 3 students left over.</figcaption>
+            </figure>
+            <ol class="division-explanation">
+              <li><strong>Divide:</strong> 4 fits into 19 four whole times. Write <strong>4</strong> above the bar. This is the whole-number quotient.</li>
+              <li><strong>Multiply:</strong> 4 × 4 = <strong>16</strong>. Write 16 underneath 19. Four complete teams use 16 students.</li>
+              <li><strong>Subtract:</strong> 19 − 16 = <strong>3</strong>. Write 3 underneath the subtraction line. These are the students left over: the <strong>remainder</strong>.</li>
+              <li><strong>Check:</strong> 3 is less than 4, so there are not enough students for another complete team. Also, 4 × 4 + 3 = 19.</li>
+            </ol>
+            <h3>Now connect the same calculation to Python</h3>
+            <ul class="division-results">
+              <li><code>19 // 4</code> gives <strong>4</strong> — the whole-number answer above the bar.</li>
+              <li><code>19 % 4</code> gives <strong>3</strong> — the remainder below the subtraction line.</li>
+              <li><code>19 / 4</code> gives <strong>4.75</strong> — the decimal answer if you continue dividing.</li>
+            </ul>
+            <p><strong>Why 4.75, not 4.3?</strong> The 3 left over is <strong>3 out of the 4</strong> needed for another group. That fraction is 3 ÷ 4 = 0.75. So 4 remainder 3 means 4 + 0.75, not 4.3.</p>
+            <p class="division-transfer"><strong>Next, use this same thinking with minutes:</strong> a complete hour needs 60 minutes. Use <code>//</code> to count complete hours and <code>%</code> to find the minutes left over.</p>
           </article>
 
           <figure class="lesson-visual wide-visual" tabindex="0"><img src="assets/image-4-python-division-operators.png" alt="Nineteen objects grouped in fours to compare slash, double slash and percent operators"><figcaption>Visual 4 · Real division, complete groups and what remains answer different questions.</figcaption></figure>
@@ -226,7 +332,7 @@ print("Minutes remaining:", minutes_remaining)</pre><button class="copy-button" 
           <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Open extension tasks</button></div>
         </section>
 
-        <section class="activity-step" data-step="3" data-section-key="extension" data-report-title="Extension - Ten MOOC-style programming challenges">
+        <section class="activity-step" data-step="4" data-section-key="extension" data-report-title="Extension - Ten MOOC-style programming challenges">
           <p class="section-kicker">Extension · Early finisher practice · AO1/AO2/AO3</p>
           <h1>Ten small scenario-based challenges</h1>
           <p class="section-lead">Complete as many as time allows. Follow the same cycle each time: understand → predict → code → run → test → improve.</p>
@@ -234,14 +340,38 @@ print("Minutes remaining:", minutes_remaining)</pre><button class="copy-button" 
           <div id="extensionChallenges"></div>
           <div class="task-card"><h2>Extension reflection and evidence</h2><label class="question-label" for="ext_summary">Which challenges did you complete, and what did you learn or improve?</label><textarea id="ext_summary" data-field="ext_summary" data-label="Extension completion summary"></textarea><div class="evidence-zone" data-evidence-zone="extension" tabindex="0"><strong>Add extension screenshots</strong><p>Paste, drag or choose one or more complete IDE screenshots.</p><label class="secondary" for="evidenceExtension">Choose images</label><input id="evidenceExtension" data-evidence-input="extension" type="file" accept="image/*" multiple><div class="evidence-list" data-evidence-list="extension"></div></div></div>
           <div class="source-note">The extension uses an original scaffolded practice style inspired by the <a href="https://programming-26.mooc.fi/part-1/" target="_blank" rel="noopener">University of Helsinki Python Programming MOOC</a>. The scenarios and wording are original.</div>
-          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Go to plenary</button></div>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back</button><button class="primary next-step" type="button">Continue to learning pit stop (extension is optional)</button></div>
         </section>
 
-        <section class="activity-step" data-step="4" data-section-key="plenary" data-report-title="Plenary - Exit ticket and reflection">
+        <section id="learningPitStop" class="activity-step learning-reflection" data-step="5" data-section-key="learningPitStop" data-report-title="Learning pit stop - Current stages, evidence and next steps">
+          <p class="section-kicker">After extension · Before plenary · About 3 minutes</p>
+          <h1>Where am I now?</h1>
+          <p>Look at your answers, your Python output and any tests you completed. Revisit the same six checks. You can reflect on the main activities even if you did not attempt an extension.</p>
+          <p id="pitStopStartingFocus"></p>
+          <dl class="reflection-phases">
+            <dt>New learning — a good struggle</dt><dd>This is new and takes effort, but I am making progress with examples or a little support.</dd>
+            <dt>Consolidating</dt><dd>I am practising what I know and becoming more secure.</dd>
+            <dt>Treading water</dt><dd>This feels easy and is not stretching me. I need a deeper explanation or a new scenario.</dd>
+            <dt>Drowning — I need help</dt><dd>I feel stuck or overwhelmed. I can pause and ask for a smaller, guided next step.</dd>
+          </dl>
+          <p>Choose a stage for each statement. Use “Not attempted yet” where needed. You might be consolidating conversion but need help with remainder: there is no single overall stage or score.</p>
+          <div id="learningAfterRows"></div>
+          <div class="reflection-summary"><h2>Your K/S/U review</h2><div id="pitStopSuggestions" aria-live="polite"></div></div>
+          <label class="question-label" for="lp_priority">Choose one topic to practise, extend or discuss with your teacher.</label>
+          <select id="lp_priority" data-field="lp_priority" data-label="Learning pit stop: chosen next K/S/U focus"><option value="">Choose a topic</option></select>
+          <p id="pitStopChosenAction" class="reflection-feedback"></p>
+          <label class="question-label" for="lp_evidence">Give one piece of evidence and your next step.</label>
+          <p id="lpEvidenceHelp" class="reflection-hint">For example: “My test with 59 minutes gave 0 hours and 59 minutes. Next I will explain why both operators are needed.” Or: “I cannot follow the conversion line yet. Please work through it with me.”</p>
+          <textarea id="lp_evidence" data-field="lp_evidence" data-label="Learning pit stop: evidence and next action or help request" aria-describedby="lpEvidenceHelp" rows="3"></textarea>
+          <p class="reflection-hint"><strong>Need help now?</strong> Pause and tell your teacher or show them your selected statement. Saving here does not send an alert. These are feelings about this task, not grades or permanent labels.</p>
+          <div class="step-footer"><button class="secondary previous-step" type="button">Back to extension</button><button class="primary next-step" type="button">Continue to plenary &amp; export</button></div>
+        </section>
+
+        <section class="activity-step" data-step="6" data-section-key="plenary" data-report-title="Plenary - Exit ticket and reflection">
           <p class="section-kicker">Plenary · Independent exit ticket · AO1/AO2</p>
           <h1>Explain every stage</h1>
           <p class="section-lead">Answer without running the code. Then export every answer, code sample and evidence image as one PDF.</p>
-          <div class="time-chip">Target: 7 minutes</div>
+          <div class="time-chip">Target: 6 minutes</div>
           <div class="task-card">
             <h2>Exit code</h2>
             <div class="code-wrap"><pre id="plenaryCode">number_text = input("Enter a number: ")
@@ -279,6 +409,7 @@ print(left_over)</pre><button class="copy-button" data-copy-target="plenaryCode"
 
   <div id="imageModal" class="image-modal hidden" role="dialog" aria-modal="true" aria-label="Enlarged lesson visual"><button id="closeModal" type="button" aria-label="Close enlarged visual">×</button><img id="modalImage" alt=""></div>
   <article id="printReport" class="print-report" aria-label="Printable complete lesson report"></article>
+  <script src="reflections.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

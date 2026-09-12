@@ -4,7 +4,7 @@
   const LESSON_ID = "w02s03-input-arithmetic-conversion-v1";
   const DB_NAME = "OxfordAQA9210Evidence";
   const DB_STORE = "images";
-  const stepNames = ["Starter", "Main Activity 1", "Main Activity 2", "Extension", "Plenary & export"];
+  const stepNames = ["Starter", "Types of learning", "Main Activity 1", "Main Activity 2", "Extension", "Learning pit stop", "Plenary & export"];
   const extensionTasks = [
     {
       title: "Age next year",
@@ -91,7 +91,7 @@
   const main2Required = ["m2_operator_hours", "m2_operator_remaining", "m2_aqa_terms", "m2_operator_explain", "m2_constant", "m2_variables", "m2_predict220", "m2_int_reason", "m2_test220", "m2_test60", "m2_test59", "m2_test0", "m2_code", "m2_paper2"];
   const plenaryRequired = ["p_type_text", "p_type_number", "p_outputs", "p_groups_mean", "p_remainder_mean", "p_int_reason", "p_wagba", "p_papers", "p_support"];
   const coreRequired = [...starterRequired, ...main1Required, ...main2Required, ...plenaryRequired];
-  const requiredByStep = {0: starterRequired, 1: main1Required, 2: main2Required, 3: [], 4: plenaryRequired};
+  const requiredByStep = {0: starterRequired, 1: [...window.LessonReflection.keys('lt'), 'lt_focus', 'lt_reason'], 2: main1Required, 3: main2Required, 4: [], 5: [...window.LessonReflection.keys('lp'), 'lp_priority', 'lp_evidence'], 6: plenaryRequired};
   const sectionKeys = ["main1", "main2", "extension"];
   let state = {owner: "", profile: {name: "", className: "", teacher: false}, currentStep: 0, fields: {}};
   let dbPromise;
@@ -128,15 +128,20 @@
   function loadState(owner, profile) {
     try {
       const loaded = JSON.parse(localStorage.getItem(stateKey(owner)) || "null");
-      if (loaded && loaded.fields) return {...loaded, owner, profile};
+      if (loaded && loaded.fields) {
+        // Preserve the same saved lesson page when inserting two reflection pages.
+        if (loaded.navigationVersion !== 2) loaded.currentStep = [0, 2, 3, 4, 6][loaded.currentStep] ?? 0;
+        return {...loaded, navigationVersion: 2, owner, profile};
+      }
     } catch (error) {
       console.warn("Saved lesson state could not be read.", error);
     }
-    return {owner, profile, currentStep: 0, fields: {}};
+    return {owner, profile, currentStep: 0, navigationVersion: 2, fields: {}};
   }
 
   function applyState() {
     $$('[data-field]').forEach(element => { element.value = state.fields[element.dataset.field] ?? ""; });
+    window.LessonReflection.render();
     $("#profileLabel").textContent = state.profile.teacher ? "Teacher preview" : `${state.profile.name} · ${state.profile.className}`;
     $("#filenamePreview").textContent = suggestedFilename();
   }
@@ -151,7 +156,8 @@
     $("#landing").classList.add("hidden");
     $("#app").classList.remove("hidden");
     $("#reviewBanner").classList.toggle("hidden", !teacher);
-    goToStep(state.currentStep || 0, false);
+    if (state.readFirstVisited) goToStep(state.currentStep || 0, false);
+    else showReadFirst(false);
     refreshEvidenceLists();
     saveState();
   }
@@ -173,25 +179,48 @@
     }
   }
 
+  function showReadFirst(scroll = true) {
+    $('#readFirst').classList.remove('hidden');
+    $$('.activity-step').forEach(section => section.classList.remove('active'));
+    $$('.step-button').forEach(button => { button.classList.remove('active'); button.removeAttribute('aria-current'); });
+    $('#openReadFirst').setAttribute('aria-current', 'page');
+    $('#stepIndicator').textContent = 'Read first · Before Do Now';
+    updateProgress();
+    if (scroll) window.scrollTo({top: 0, behavior: 'auto'});
+    $('#readFirstTitle').focus({preventScroll: true});
+  }
+
   function goToStep(value, scroll = true) {
+    $('#readFirst').classList.add('hidden');
+    $('#openReadFirst').removeAttribute('aria-current');
     const next = Math.max(0, Math.min(stepNames.length - 1, Number(value) || 0));
     state.currentStep = next;
     $$('.activity-step').forEach(section => section.classList.toggle("active", Number(section.dataset.step) === next));
-    $$('.step-button').forEach(button => button.classList.toggle("active", Number(button.dataset.step) === next));
+    $$('.step-button').forEach(button => {
+      const active = Number(button.dataset.step) === next;
+      button.classList.toggle("active", active);
+      if (active) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
     $("#stepIndicator").textContent = `${stepNames[next]} · Page ${next + 1} of ${stepNames.length}`;
     saveState();
     updateProgress();
-    if (scroll) window.scrollTo({top: 0, behavior: "smooth"});
+    if (scroll) {
+      window.scrollTo({top: 0, behavior: "auto"});
+      const heading = $('.activity-step.active h1');
+      heading.setAttribute('tabindex', '-1');
+      heading.focus({preventScroll: true});
+    }
   }
 
   function updateProgress() {
     const completed = coreRequired.filter(key => safe(state.fields[key]).trim()).length;
     const percent = Math.round(completed / coreRequired.length * 100);
     $("#progressBar").style.width = `${percent}%`;
-    $("#progressText").textContent = `${percent}% complete · ${coreRequired.length - completed} core answers left`;
+    $("#progressText").textContent = `${completed}/${coreRequired.length} core answers recorded · not a mark`;
     $$('.step-button').forEach((button, index) => {
       const keys = requiredByStep[index];
-      const complete = index === 3
+      const complete = index === 4
         ? Object.keys(state.fields).some(key => /^e\d+_code$/.test(key) && safe(state.fields[key]).trim())
         : keys.every(key => safe(state.fields[key]).trim());
       button.classList.toggle("done", complete);
@@ -205,6 +234,7 @@
         state.fields[element.dataset.field] = element.value;
         saveState();
         updateProgress();
+        if (element.closest('.learning-reflection') && element.tagName === 'SELECT') window.LessonReflection.render();
       };
       element.addEventListener("input", save);
       element.addEventListener("change", save);
@@ -394,6 +424,9 @@
     header.className = "report-page-header";
     header.innerHTML = `<p>OxfordAQA International GCSE Computer Science 9210</p><h1>Week 2 Session 3 - Input, Arithmetic and Conversion</h1><div class="report-meta"><p><strong>Student:</strong> ${escapeHtml(state.profile.name)}</p><p><strong>Class:</strong> ${escapeHtml(state.profile.className)}</p><p><strong>Generated:</strong> ${escapeHtml(new Date().toLocaleString())}</p><p><strong>Filename:</strong> ${escapeHtml(suggestedFilename())}</p></div><p class="report-progress">Core response completion: ${done} of ${coreRequired.length}</p><div class="report-ksu"><p><strong>Objective:</strong> Create, run and explain a Python program that accepts user input, converts it into a suitable data type, performs arithmetic and displays clearly labelled output.</p><p><strong>WAGBA:</strong> Converting user input into usable data and selecting the correct arithmetic operator to produce accurate output.</p><p><strong>Knowledge:</strong> input(), print(), int(), float(), real division, integer division and remainder.</p><p><strong>Skills:</strong> Predict, convert, calculate, write, run, test and debug.</p><p><strong>Understanding:</strong> The problem determines the data type and operator; quotient and remainder answer different questions.</p><p><strong>AOs:</strong> AO1 recall · AO2 application · AO3 programming, testing and explanation.</p></div>`;
     report.append(header);
+    report.append(reportEntry('Preparation before Do Now', state.readFirstVisited
+      ? 'Student selected Continue to Do Now after opening the input reading. This records navigation, not proof of reading or understanding.'
+      : 'Reading continuation not recorded. This is not an assessment mark.'));
 
     for (const section of $$('.activity-step')) {
       const printable = document.createElement("section");
@@ -405,6 +438,7 @@
         printable.append(reportEntry(field.dataset.label || field.id, state.fields[field.dataset.field], field.dataset.reportType));
       }
       const evidenceSection = section.dataset.sectionKey;
+      window.LessonReflection.appendReport(printable, evidenceSection, reportEntry);
       if (sectionKeys.includes(evidenceSection)) {
         const records = await recordsFor(evidenceSection);
         if (!records.length) printable.append(reportEntry("Evidence images", "No image submitted"));
@@ -454,7 +488,7 @@
   function fillTeacherSamples() {
     $$('[data-field]').forEach(field => {
       const key = field.dataset.field;
-      const sample = field.dataset.reportType === "code"
+      const sample = field.tagName === 'SELECT' ? field.options[1].value : field.dataset.reportType === "code"
         ? "# Teacher preview sample\nMINUTES_PER_HOUR = 60\ntotal_minutes = int(input(\"Minutes: \"))\nprint(total_minutes // MINUTES_PER_HOUR)\nprint(total_minutes % MINUTES_PER_HOUR)"
         : `Teacher preview response for: ${field.dataset.label || field.id}`;
       field.value = sample;
@@ -471,8 +505,9 @@
     await clearOwnerEvidence();
     const profile = state.profile;
     const owner = state.owner;
-    state = {owner, profile, currentStep: 0, fields: {}};
+    state = {owner, profile, currentStep: 0, navigationVersion: 2, fields: {}};
     $$('[data-field]').forEach(field => { field.value = ""; });
+    window.LessonReflection.render();
     await refreshEvidenceLists();
     goToStep(0);
     saveState();
@@ -501,6 +536,13 @@
   }
 
   function bindEvents() {
+    $('#openReadFirst').addEventListener('click', () => showReadFirst());
+    $('#backToReadFirst').addEventListener('click', () => showReadFirst());
+    $('#startDoNow').addEventListener('click', () => {
+      state.readFirstVisited = true;
+      goToStep(0);
+      $('#starter h1').focus({preventScroll: true});
+    });
     $("#entryForm").addEventListener("submit", event => {
       event.preventDefault();
       const name = $("#studentName").value.trim();
@@ -533,6 +575,7 @@
     window.addEventListener("afterprint", () => { document.title = titleBeforePrint; });
   }
 
+  window.LessonReflection.init();
   renderExtensions();
   bindPersistence();
   bindEvidence();
