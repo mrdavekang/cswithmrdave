@@ -98,6 +98,7 @@
     s.responses=s.responses || {};s.cards=s.cards || {};s.checks=s.checks || {};s.evidence=s.evidence || {};s.history=Array.isArray(s.history)?s.history:[];
     if(!L.CARDS.some(c=>c.id===s.current))s.current='starter';
     s.reached=Math.min(L.CORE.length-1,Math.max(0,Number(s.reached)||0));
+    for(const id of ['learning','pitstop'])if(s.cards[id]?.status==='done' && L.missing(s,id).length)s.cards[id].status='review';
     return s;
   }
   function preserveLegacy(s,isTeacher) {
@@ -130,17 +131,19 @@
     const coreIndex=L.CORE.findIndex(item=>item.id===state.current);
     $('studentIdentity').textContent=state.student.name+' · '+state.student.className;
     $('locationLabel').textContent=c.stage;
-    $('cardCount').textContent=c.optional?'Optional · choose your level':`Card ${coreIndex+1} of ${L.CORE.length}`;
+    $('cardCount').textContent=c.optional||c.hub?'Challenge yourself if you have time':`Card ${coreIndex+1} of ${L.CORE.length}`;
+    $('learningCues').innerHTML=`<p class="wagba"><strong>WAGBA</strong> ${V.e(L.OBJECTIVES.WAGBA)}</p><div class="cue-grid">${['Knowledge','Skills','Understanding'].map(k=>`<p><strong>${k}</strong><span>${V.e(L.OBJECTIVES[k])}</span></p>`).join('')}</div>`;
     $('card').innerHTML=V.card(state,images);
     $('continueFeedback').hidden=true;
     const recorded=L.CORE.filter(item=>['done','review'].includes(state.cards[item.id]?.status)).length;
     $('progressFill').style.width=(recorded/L.CORE.length*100)+'%';
     document.querySelector('.progress-track').setAttribute('aria-valuenow',String(recorded));
     document.querySelector('.progress-track').setAttribute('aria-valuetext',`${recorded} of ${L.CORE.length} core cards recorded; some may need review`);
+    renderJourney(recorded);
     $('backButton').disabled=!c.optional && coreIndex===0;
     $('nextButton').hidden=state.current==='review';
-    $('nextButton').textContent=c.optional ? 'Save extension & choose next →' : state.current==='plenary' ? 'Review my work →' : 'Continue →';
-    if(focus){ $('card').focus({preventScroll:true}); window.scrollTo({top:0,behavior:'instant'}); }
+    $('nextButton').textContent=c.hub?'Continue to Learning Pitstop →':c.optional ? 'Save extension & choose next →' : state.current==='evidence'?'Explore the extension →':state.current==='plenary' ? 'Review my work →' : 'Continue →';
+    if(focus){ $('card').focus({preventScroll:true}); $('lessonPanel').scrollTop=0; window.scrollTo({top:0,behavior:'instant'}); }
     else if(focusedField){
       const nodes=Array.from(document.querySelectorAll(`[data-field="${focusedField}"]`));
       const replacement=nodes.find(n=>n.value===focusedValue) || nodes[0];
@@ -148,6 +151,19 @@
       if(detail && !detail.open)detail.querySelector('summary')?.focus({preventScroll:true});
       else replacement?.focus({preventScroll:true});
     }
+  }
+  function renderJourney(recorded) {
+    const active=L.STAGES.findIndex(s=>s.ids.includes(state.current));
+    $('lessonJourney').innerHTML=L.STAGES.map((s,i)=>{
+      const isExtension=s.ids[0]==='extensions';
+      const done=isExtension?s.ids.slice(1).some(id=>['done','review'].includes(state.cards[id]?.status)):s.ids.every(id=>['done','review'].includes(state.cards[id]?.status));
+      const needsReview=s.ids.some(id=>state.cards[id]?.status==='review');
+      const target=i===active?state.current:s.ids[0];
+      const unlocked=teacher || (isExtension?state.reached>=8:L.CORE.findIndex(c=>c.id===target)<=state.reached);
+      const status=i===active?'Current':done?(needsReview?'Needs review':'Recorded'):isExtension?'If time':'Not yet recorded';
+      return `<button type="button" data-action="go" data-card="${target}" ${!unlocked?'disabled':''} ${i===active?'aria-current="step"':''} class="journey-step ${done?'recorded':''}" aria-label="${V.e(s.label+': '+status)}"><span>${i+1}. ${V.e(s.label)}</span><small>${status}</small></button>`;
+    }).join('');
+    $('progressSummary').textContent=`You are here: ${L.STAGES[active]?.label||'Lesson'} · ${recorded}/${L.CORE.length} core cards recorded · Recorded work may still need teacher review`;
   }
   function snapshot(id) {
     const data={}; for(const [k,[card]]of Object.entries(L.FIELDS))if(card===id && state.responses[k])data[k]=state.responses[k];
@@ -161,6 +177,7 @@
   }
   function continueCard(force=false) {
     if(!state)return;
+    if(state.current==='extensions'){state.reached=Math.max(state.reached,9);go('pitstop',true);return;}
     const c=L.CARDS.find(c=>c.id===state.current), missing=L.missing(state,c.id);
     if(missing.length && !force && !teacher) {
       $('continueFeedback').hidden=false;
@@ -170,15 +187,16 @@
     for(const key of ['prediction','eventCheck'])if(L.FIELDS[key][0]===c.id && state.responses[key] && !state.checks[key])check(key,false);
     record(c.id,force);
     if(c.optional){extensions();return;}
+    if(c.id==='evidence'){extensions();return;}
     const idx=L.CORE.findIndex(x=>x.id===c.id), next=L.CORE[idx+1];
     if(next){state.reached=Math.max(state.reached,idx+1);go(next.id);}
   }
   function go(id, allow=false) {
     const c=L.CARDS.find(x=>x.id===id);if(!c)return;
-    if(c.optional && !teacher && state.reached<8){toast('Try the main badge tasks first. Extensions open when you reach the evidence card.');return;}
+    if((c.optional||c.hub) && !teacher && state.reached<8){toast('Try the main badge tasks first. Extensions open when you reach the evidence card.');return;}
     const idx=L.CORE.findIndex(x=>x.id===id);
     if(!teacher && !c.optional && idx>state.reached && !allow){toast('Use Continue to record your current card first. You can always choose “mark for review” if you need help.');return;}
-    if(c.optional && state.current==='evidence')record('evidence');
+    if((c.optional||c.hub) && state.current==='evidence' && !state.cards.evidence)record('evidence');
     state.current=id;save(true);if($('dialog').open)$('dialog').close();render();
   }
   function check(key, update=true) {
@@ -194,11 +212,11 @@
   }
   function closeDialog(){ $('dialog').close();if(lastFocus?.isConnected)lastFocus.focus(); }
   function menu() {
-    openDialog('Your lesson',`<ol class="menu-list">${L.CORE.map((c,i)=>`<li>${V.button('go',`${i+1}. ${V.e(c.title)}`,`data-card="${c.id}" ${!teacher && i>state.reached?'disabled':''}`)}<span class="badge ${state.cards[c.id]?.status==='done'?'done':'review'}">${V.e(V.status(state,c.id))}</span></li>`).join('')}</ol><div class="buttons">${V.button('extensions','Optional extensions')}${V.button('pdf','Export current progress as PDF')}${V.button('backup','Download progress backup')}${V.button('import','Restore backup')}${V.button('reset','Reset this student’s progress')}</div><p class="small">Progress is private to this browser. You can export a partial report at any time. Nothing is sent to your teacher automatically.</p>`);
+    openDialog('Your lesson',`<ol class="menu-list">${L.CORE.map((c,i)=>`<li>${V.button('go',`${i+1}. ${V.e(c.title)}`,`data-card="${c.id}" ${!teacher && i>state.reached?'disabled':''}`)}<span class="badge ${state.cards[c.id]?.status==='done'?'done':'review'}">${V.e(V.status(state,c.id))}</span></li>${c.id==='evidence'?`<li>${V.button('extensions','Extension — challenge yourself if you have time')}</li>`:''}`).join('')}</ol><div class="buttons">${V.button('pdf','Export current progress as PDF')}${V.button('backup','Download progress backup')}${V.button('import','Restore backup')}${V.button('reset','Reset this student’s progress')}</div><p class="small">Progress is private to this browser. You can export a partial report at any time. Nothing is sent to your teacher automatically.</p>`);
   }
   function extensions() {
     if(!teacher && state.reached<8){toast('Extensions open after the main build-and-test cards.');return;}
-    openDialog('Finished early? Keep learning.',`<p>Choose the challenge that stretches you. After one, choose another while there is time. You do not need to finish all three to reach the plenary.</p><div class="choices">${L.CARDS.filter(c=>c.optional).map(c=>V.button('go',V.e(c.stage+' — '+c.title),`data-card="${c.id}"`)).join('')}</div><p class="small">Level 1: another event. Level 2: diagnose and explain. Level 3: evaluate with a user. Levels 2 and 3 can use A4 paper.</p>${V.button('return-pitstop','Continue to Learning Pitstop','',true)}`);
+    go('extensions');
   }
   function glossary() {
     const col={zh:2,ko:3,bm:4}[state.language];
@@ -319,6 +337,7 @@
         }
       }
       save();
+      if(final && /^(lt_|lp_)/.test(key))render(false);
       if(final && ['device','editor','startTest','pressTest'].includes(key))render(false);
       if(final && (key==='icon'||key==='message'))render(false);
     }
@@ -334,6 +353,7 @@
     if(a==='import'){$('backupFile').click();return;}
     if(!state)return;
     switch(a){
+      case 'reflection-page':state.reflectionPages??={};state.reflectionPages[state.current==='pitstop'?'lp':'lt']=Math.max(0,Math.min(3,Number(el.dataset.page)||0));save();render();break;
       case 'menu':menu();break;
       case 'go':go(el.dataset.card);break;
       case 'check':check(el.dataset.key);break;
@@ -365,7 +385,7 @@
   function init(){
     $('entryForm').addEventListener('submit',enter);
     $('nextButton').addEventListener('click',()=>continueCard());
-    $('backButton').addEventListener('click',()=>{const idx=L.CORE.findIndex(c=>c.id===state.current);go(idx<0?'evidence':L.CORE[Math.max(0,idx-1)].id);});
+    $('backButton').addEventListener('click',()=>{const idx=L.CORE.findIndex(c=>c.id===state.current);go(state.current==='pitstop'?'extensions':state.current==='extensions'?'evidence':idx<0?'extensions':L.CORE[Math.max(0,idx-1)].id);});
     document.addEventListener('click',ev=>{const el=ev.target.closest('[data-action]');if(el){ev.preventDefault();action(el).catch(err=>toast('That action did not finish: '+err.message));}});
     document.addEventListener('input',ev=>{if(state)changed(ev.target,false);});
     document.addEventListener('change',ev=>{

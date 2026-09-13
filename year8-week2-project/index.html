@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Year 8 · Week 2 Project · Smart Badge</title>
   <meta name="description" content="A guided Year 8 micro:bit project: choose your device, build a button response, test and explain it.">
-  <link rel="stylesheet" href="styles.css?v=3.1">
-  <script src="lesson.js?v=3.0" defer></script>
-  <script src="views.js?v=3.1" defer></script>
-  <script src="app.js?v=3.0" defer></script>
+  <link rel="stylesheet" href="styles.css?v=3.4">
+  <script src="lesson.js?v=3.3" defer></script>
+  <script src="reflections.js?v=3.3" defer></script>
+  <script src="views.js?v=3.3" defer></script>
+  <script src="app.js?v=3.4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#card">Skip to the activity</a>
@@ -40,17 +41,26 @@
   </main>
 
   <div id="app" hidden>
-    <header class="topbar">
+    <header class="lesson-header">
+    <div class="topbar">
       <div class="identity"><strong>SMART BADGE <span class="week">/ W2</span></strong><span id="studentIdentity" class="small"></span></div>
-      <div class="toolbar"><span id="saveStatus" role="status">Saved</span><button data-action="language" title="Language support" type="button">文 / A</button><button data-action="ksu" type="button" aria-label="Open WAGBA, Knowledge, Skills and Understanding">KSU</button><button data-action="menu" type="button">Lesson menu</button></div>
+      <div class="toolbar"><span id="saveStatus" role="status">Saved</span><button data-action="language" title="Language support" type="button">文 / A</button><button data-action="pdf" type="button">Export PDF</button><button data-action="menu" type="button">Lesson menu</button></div>
+    </div>
     </header>
+    <div class="lesson-workspace">
+    <aside class="learning-sidebar" aria-label="Learning goals and lesson progress" tabindex="0">
+    <p id="progressSummary" class="progress-summary" aria-live="polite"></p>
     <div class="progress-track" role="progressbar" aria-label="Core cards reviewed" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0"><span id="progressFill"></span></div>
-    <div class="lesson-shell">
+    <nav id="lessonJourney" class="lesson-journey" aria-label="Your lesson journey"></nav>
+    <section id="learningCues" class="learning-cues" aria-label="WAGBA and learning objectives"></section>
+    </aside>
+    <div class="lesson-shell" id="lessonPanel">
       <div class="location-line"><span id="locationLabel"></span><span id="cardCount"></span></div>
       <main id="card" tabindex="-1"></main>
       <div id="continueFeedback" class="continue-feedback" role="status" hidden></div>
       <nav class="card-footer" aria-label="Card navigation"><button id="backButton" class="secondary" type="button">← Back</button><button data-action="help" class="text-button" type="button">Need help?</button><button id="nextButton" class="primary" type="button">Continue →</button></nav>
       <p class="quiet-note">Your code belongs in the editor. Your thinking and evidence belong here.</p>
+    </div>
     </div>
   </div>
 

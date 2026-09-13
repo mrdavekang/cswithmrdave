@@ -16,6 +16,61 @@
 dialog:has(#dialogBody>img){width:min(1100px,calc(100vw - 28px))}
 @media(max-width:760px){.editor-launch{grid-template-columns:1fr;gap:10px}.editor-open-link{width:100%}.makecode-example .figure-link{padding:5px}.makecode-example figcaption{font-size:15px}}
 .topbar{position:sticky;top:0;z-index:10}.progress-track{position:static}
+/* Compact top toolbar; learning goals and progress live beside the activity. */
+.lesson-header{position:relative;z-index:10;background:white;border-bottom:1px solid var(--line)}
+.lesson-header .topbar{position:static;min-height:56px;padding-top:7px;padding-bottom:7px}
+.learning-cues,.lesson-journey,.progress-summary{max-width:1280px;margin:0 auto;padding:8px 22px}
+.learning-cues{font-size:14px;line-height:1.4}
+.learning-cues .wagba{margin:0 0 7px}.wagba>strong{margin-right:8px}
+.cue-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.cue-grid p{margin:0;border-left:2px solid #333;padding-left:10px}
+.cue-grid strong{display:block;margin-bottom:2px}.cue-grid span{display:block}
+.lesson-journey{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;padding-top:4px;padding-bottom:4px}
+.journey-step{font-size:12px;line-height:1.25;padding:7px 5px;text-align:left;min-height:48px;border-radius:5px}
+.journey-step span,.journey-step small{display:block}.journey-step small{font-size:11px;font-weight:500;margin-top:4px}
+.journey-step[aria-current=step]{background:#171717;color:white;border:2px solid #171717}
+.journey-step.recorded:not([aria-current]){border-bottom:3px solid var(--accent)}
+.progress-summary{font-size:12px;line-height:1.3;padding-top:3px;padding-bottom:6px;color:#444}
+.extension-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
+.extension-choices>section{border:1px solid var(--line);padding:18px;border-radius:10px}
+.extension-choices h2{font-size:20px}.extension-choices p{margin-bottom:12px}
+@media(max-width:760px){.learning-cues,.lesson-journey,.progress-summary{padding-left:12px;padding-right:12px}.cue-grid{gap:8px}.cue-grid p{padding-left:6px}.learning-cues{font-size:13px}.lesson-journey{grid-template-columns:repeat(4,minmax(0,1fr))}.journey-step{min-height:44px}.extension-choices{grid-template-columns:1fr}.lesson-header .topbar{position:static}.lesson-header .toolbar{max-width:none}.lesson-header .topbar{flex-wrap:wrap}.lesson-header .toolbar #saveStatus{flex:auto;text-align:left}.progress-summary{font-size:11px}}
+.learning-reflection{max-width:76ch;line-height:1.65;margin:auto}
+.reflection-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:18px 0}
+.reflection-nav button{text-align:left;font-size:14px;padding:8px;line-height:1.4}
+.reflection-nav [aria-current=step]{color:white;background:#171717}
+.reflection-item{padding:20px 0;border-top:1px solid var(--line)}
+.reflection-item h2{font-size:19px;line-height:1.55;margin:0 0 8px;letter-spacing:0}
+.reflection-kicker{font-size:14px;font-weight:800;color:var(--accent);margin:0 0 8px}
+.reflection-hint,.reflection-prior{font-size:16px;color:#454b50;line-height:1.6}
+.reflection-prior{border-left:2px solid #aaa;padding-left:12px}
+.reflection-label{display:block;font-size:16px;font-weight:700;margin:12px 0 7px}
+.reflection-feedback{border-left:3px solid #2340a6;padding-left:14px;margin:14px 0 0;font-size:16px}
+.reflection-summary{padding:18px;background:#f5f6f5;border:1px solid var(--line);border-radius:8px;margin:18px 0}
+.reflection-summary h2{font-size:21px}.reflection-summary p{font-size:15px;line-height:1.65}
+.reflection-translation{display:block;font-weight:400;font-size:.94em;margin-top:5px}
+.learning-reflection select{font-size:16px;min-height:48px;max-width:100%}
+.reflection-report{border-top:1px solid #aaa;margin-top:18px;padding-top:10px}
+@media(max-width:600px){.reflection-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.reflection-item h2{font-size:18px}}
+.learning-sidebar{background:#fff;border-bottom:1px solid var(--line);min-width:0}
+.learning-sidebar .progress-track{margin:0 18px 8px}
+.learning-sidebar .learning-cues{padding-bottom:16px}
+.lesson-workspace,.lesson-shell{min-width:0}
+@media(min-width:1000px){
+  #app{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+  .lesson-workspace{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:0}
+  .learning-sidebar{overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;border-right:1px solid var(--line);border-bottom:0;padding:12px 0}
+  .learning-sidebar .learning-cues,.learning-sidebar .lesson-journey,.learning-sidebar .progress-summary{padding-left:16px;padding-right:16px}
+  .learning-sidebar .cue-grid{grid-template-columns:1fr;gap:12px}
+  .learning-sidebar .wagba{border-top:1px solid var(--line);padding-top:12px;margin-bottom:14px}
+  .learning-sidebar .wagba>strong{display:block;margin-bottom:4px}
+  .learning-sidebar .lesson-journey{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .learning-sidebar .journey-step{font-size:13px;min-height:49px;padding:7px}
+  .learning-sidebar .progress-summary{font-size:12px;line-height:1.45;margin-bottom:6px}
+  .lesson-shell{width:100%;max-width:1060px;height:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-top:20px}
+  .lesson-header .topbar{padding-left:20px;padding-right:20px}
+}
+@media(min-width:1000px) and (max-width:1200px){.lesson-workspace{grid-template-columns:280px minmax(0,1fr)}.lesson-shell{padding-left:20px;padding-right:20px}.lesson-shell .split,.lesson-shell .two,.lesson-shell .extension-choices{grid-template-columns:1fr}}
 #card h1{font-size:clamp(1.8rem,3vw,2.45rem);margin-bottom:18px}
 .eyebrow,.toolbar button,.toolbar #saveStatus,.location-line,.quiet-note,.badge{font-size:max(14px,.83rem)}
 summary{cursor:pointer;min-height:44px;padding:8px 0;font-weight:700}

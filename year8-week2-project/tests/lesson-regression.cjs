@@ -7,6 +7,7 @@ const {spawnSync} = require('node:child_process');
 const root = path.join(__dirname,'..');
 const contentContext=vm.createContext({console});
 vm.runInContext(fs.readFileSync(path.join(root,'lesson.js'),'utf8'),contentContext);
+vm.runInContext(fs.readFileSync(path.join(root,'reflections.js'),'utf8'),contentContext);
 vm.runInContext(fs.readFileSync(path.join(root,'views.js'),'utf8'),contentContext);
 const L=contentContext.Lesson, V=contentContext.Views;
 let count=0;
@@ -23,6 +24,40 @@ function balanced(html){
   assert.equal(stack.length,0,'Unclosed '+stack.join(','));
 }
 const pupil=L.blank('김민준 王同学','8A','ko');
+const R=contentContext.BadgeReflection;
+test('Desktop layout moves objectives and progress out of the compact toolbar into a left sidebar',()=>{
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');balanced(html);
+  const header=html.slice(html.indexOf('<header class="lesson-header">'),html.indexOf('</header>'));
+  assert(!header.includes('learningCues'));assert(!header.includes('lessonJourney'));
+  const sidebar=html.slice(html.indexOf('<aside class="learning-sidebar"'),html.indexOf('</aside>'));
+  for(const id of ['learningCues','lessonJourney','progressSummary','progressFill'])assert(sidebar.includes(id));
+  assert(html.indexOf('learning-sidebar')<html.indexOf('id="lessonPanel"'));
+  const css=fs.readFileSync(path.join(root,'styles.css'),'utf8');assert(css.includes('grid-template-columns:300px minmax(0,1fr)'));assert(css.includes('@media(min-width:1000px)'));
+});
+test('Six matched reflection topics use Year 8 evidence, not Year 10 arithmetic',()=>{
+  assert.equal(R.topics.length,6);
+  for(const group of ['Knowledge','Skills','Understanding'])assert.equal(R.topics.filter(t=>t.group===group).length,2);
+  for(const topic of R.topics){assert(L.FIELDS['lt_'+topic.id]);assert(L.FIELDS['lp_'+topic.id]);for(const lang of ['en','zh','ko','bm'])for(const field of ['statement','before','evidence','practice'])assert(topic[field][lang]?.length>10);}
+  assert(!R.topics.some(t=>/float\(|DIV|MOD|division operator/.test(t.statement.en)));
+});
+test('Reflection pages show two checks at a time with accessible labels in every language',()=>{
+  for(const language of ['en','zh','ko','bm'])for(const after of [false,true])for(let page=0;page<4;page++){
+    const s=L.blank('Test','8T',language);s.reflectionPages={lt:page,lp:page};
+    const html=R.render(s,after);balanced(html);
+    assert.equal((html.match(/class="reflection-item"/g)||[]).length,page===3?0:2);
+    assert.equal((html.match(/aria-current="step"/g)||[]).length,1);
+    assert(!html.includes('undefined'));if(language!=='en')assert(html.includes('reflection-translation'));
+  }
+});
+test('Reflection reports and backups preserve mixed phases, short bilingual evidence and legacy answers',()=>{
+  const s=L.blank('Test','8T','zh');s.responses={lt_parts:'independent',lt_events:'new',lt_focus:'parts',lp_parts:'consolidate',lp_events:'drown',lp_priority:'events',lp_evidence:'我会检查 A。',strategy:'skill',phase:'new',nextMove:'Earlier response'};s.reflectionPages={lt:3,lp:1};
+  const restored=L.validateBackup({lessonId:L.ID,version:L.VERSION,state:s,images:{}}).state;
+  for(const [k,v]of Object.entries(s.responses))assert.equal(restored.responses[k],v);
+  assert.equal(restored.reflectionPages.lp,1);
+  const report=V.report(restored,{});assert(report.includes('Before-and-after KSU comparison'));assert(report.includes('Already knew / could do independently'));assert(report.includes('我会检查 A。'));
+  const html=R.render({...s,reflectionPages:{lp:0}},true);assert(html.includes('Show this page to your teacher'));assert.equal(s.responses.lp_parts,'consolidate');
+  assert(R.action(R.topics[1],s,true).en.includes('Ask your teacher'));assert(R.render({...s,reflectionPages:{lp:3}},true).includes('not attainment'));
+});
 Object.assign(pupil.responses,{device:'ipad',editor:'makepython',icon:'HAPPY',message:'MK'});
 test('All core stages and three optional levels are present',()=>{
   assert.equal(L.CORE.length,12);assert.equal(L.CARDS.filter(c=>c.optional).length,3);
@@ -173,6 +208,7 @@ const sandbox={document,location:{search:''},navigator:{},console,URL,URLSearchP
   setTimeout:()=>1,clearTimeout(){},addEventListener(){},removeEventListener(){},scrollTo(){},print(){printed++;},confirm:()=>confirmValue,alert(m){sandbox.lastAlert=m;}};
 sandbox.window=sandbox;vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'lesson.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'reflections.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'views.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'app.js'),'utf8').replace(/\}\)\(\);\s*$/,`
   window.test={enter,activate,continueCard,go,check,changed,save,importBackup,pdf,backup,reset,normalizeSaved,
@@ -198,7 +234,41 @@ async function run(){
     assert(get('continueFeedback').innerHTML.includes('Continue — mark for review'));t.continueCard(true);assert.equal(t.getState().current,'learning');assert.equal(t.getState().cards.starter.status,'review');
   });
   test('All blank cards can advance with a review record; no checker dead end',()=>{
-    for(let i=1;i<11;i++){t.continueCard(true);}assert.equal(t.getState().current,'review');assert.equal(get('entry').hidden,true);
+    const route=[];for(let i=0;i<14 && t.getState().current!=='review';i++){route.push(t.getState().current);t.continueCard(true);}
+    assert.equal(t.getState().current,'review');assert.equal(get('entry').hidden,true);
+    assert.equal(route[route.indexOf('evidence')+1],'extensions');
+    assert.equal(route[route.indexOf('extensions')+1],'pitstop');
+    assert.equal(t.getState().cards.extensions,undefined,'Viewing or skipping challenges must not fabricate completion');
+  });
+  test('Reflection edits update their own status, feedback, report and saved response',()=>{
+    t.go('learning');t.changed({dataset:{field:'lt_parts'},value:'new'},true);
+    assert(get('card').innerHTML.includes('Cover the labels'));assert.equal(t.getState().responses.lt_parts,'new');
+    t.changed({dataset:{field:'lt_parts'},value:'independent'},true);t.save(true);
+    assert(t.getState().history.some(h=>h.data?.before==='new'&&h.data?.after==='Already knew / could do independently'));
+    assert.equal(t.getState().cards.learning.status,'started');t.go('review');
+  });
+  test('Objectives and all eight named stages are visible without a dialog',()=>{
+    const cues=get('learningCues').innerHTML;
+    for(const k of ['WAGBA','Knowledge','Skills','Understanding'])assert(cues.includes(L.OBJECTIVES[k]));
+    const journey=get('lessonJourney').innerHTML;
+    for(const stage of L.STAGES)assert(journey.includes(stage.label));
+    assert(journey.includes('aria-current="step"'));assert(get('progressSummary').textContent.includes('Review / PDF'));
+    const entry=fs.readFileSync(path.join(root,'index.html'),'utf8');
+    assert(!entry.includes('data-action="ksu"'));assert(entry.indexOf('lessonJourney')<entry.indexOf('lesson-shell'));
+  });
+  test('Extension hub is a complete card with no completion gate or optional label',()=>{
+    t.go('extensions');const html=get('card').innerHTML;
+    assert(html.includes('If you have time'));assert(!/optional/i.test(html));
+    for(const id of ['extend1','extend2','extend3'])assert(html.includes('data-card="'+id+'"'));
+    t.go('extend1');t.continueCard(true);assert.equal(t.getState().current,'extensions');
+    t.continueCard();assert.equal(t.getState().current,'pitstop');
+  });
+  test('Saved v3 core positions and unfinished challenge backups remain compatible',()=>{
+    assert.equal(L.CORE[8].id,'evidence');assert.equal(L.CORE[9].id,'pitstop');assert.equal(L.CORE[11].id,'review');
+    const s=JSON.parse(JSON.stringify(t.getState()));s.current='extensions';s.reached=8;
+    assert.equal(t.normalizeSaved(s).current,'extensions');
+    const result=L.validateBackup({lessonId:L.ID,version:L.VERSION,state:s,images:{}});
+    assert.equal(result.state.current,'extensions');
   });
   test('Incorrect choice can be revised; stale feedback and completion are invalidated',()=>{
     t.go('starter');t.changed({dataset:{field:'prediction'},value:'icon'},true);t.check('prediction');assert.equal(t.getState().checks.prediction.correct,false);

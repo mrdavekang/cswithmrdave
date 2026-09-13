@@ -19,7 +19,7 @@
   };
   const CARDS = [
     ['starter', 'Do Now', 'What happens when you press A?'],
-    ['learning', 'Types of learning · How to get better', 'Choose a useful learning move'],
+    ['learning', 'Types of learning · How to get better', 'Know your starting point'],
     ['setup', 'Main Task 1 · Get ready', 'Choose your device and editor'],
     ['try', 'Main Task 1 · Try a model', 'Make the welcome icon appear'],
     ['design', 'Main Task 1 · Make two choices', 'Make it your badge'],
@@ -30,11 +30,20 @@
     ['pitstop', 'Learning Pitstop', 'Where are you in your learning?'],
     ['plenary', 'Plenary', 'Explain your button response'],
     ['review', 'Review & submit', 'Your learning report'],
-    ['extend1', 'Optional extension · Level 1', 'Give Button B a different job', true],
-    ['extend2', 'Optional extension · Level 2', 'Rescue a badge with a bug', true],
-    ['extend3', 'Optional extension · Level 3', 'Test your badge with a real user', true]
+    ['extend1', 'Extension · Level 1', 'Give Button B a different job', true],
+    ['extend2', 'Extension · Level 2', 'Rescue a badge with a bug', true],
+    ['extend3', 'Extension · Level 3', 'Test your badge with a real user', true]
   ].map(([id, stage, title, optional]) => ({ id, stage, title, optional: !!optional }));
-  const CORE = CARDS.filter(c => !c.optional);
+  // The extension landing page is encountered by everyone, but is not graded.
+  // Keep core indices stable so saved v3 progress still resumes correctly.
+  CARDS.splice(9, 0, {id:'extensions',stage:'Extension',title:'Have time? Challenge yourself further',hub:true});
+  const CORE = CARDS.filter(c => !c.optional && !c.hub);
+  const STAGES = [
+    ['Do Now',['starter']], ['Types of learning',['learning']],
+    ['Main Task 1',['setup','try','design']], ['Main Task 2',['button','test','transfer','evidence']],
+    ['Extension',['extensions','extend1','extend2','extend3']], ['Learning Pitstop',['pitstop']],
+    ['Plenary',['plenary']], ['Review / PDF',['review']]
+  ].map(([label,ids])=>({label,ids}));
   const FIELDS = {
     prediction: ['starter', 'Prediction for pressing Button A'],
     strategy: ['learning', 'Chosen learning move'],
@@ -188,6 +197,8 @@
     if (!x.student || typeof x.student.name !== 'string' || !x.student.name.trim() || typeof x.student.className !== 'string' || !x.student.className.trim()) throw new Error('The backup is missing a name or class.');
     const s = blank(x.student.name.slice(0,100), x.student.className.slice(0,40), ['en','zh','ko','bm'].includes(x.language) ? x.language : 'en');
     s.current = CARDS.some(c => c.id === x.current) ? x.current : 'starter';
+    s.reflectionPages={};
+    for(const key of ['lt','lp'])if(Number.isInteger(x.reflectionPages?.[key]) && x.reflectionPages[key]>=0 && x.reflectionPages[key]<=3)s.reflectionPages[key]=x.reflectionPages[key];
     s.reached = Math.min(CORE.length - 1, Math.max(0, Number(x.reached) || 0));
     for (const key of Object.keys(FIELDS)) if (typeof x.responses?.[key] === 'string') {
       const value = x.responses[key].slice(0, 12000);
@@ -209,7 +220,11 @@
     s.created = typeof x.created === 'string' ? x.created.slice(0,40) : s.created;
     return { state: s, images };
   }
-  const api = { ID, VERSION, LINKS, OBJECTIVES, CARDS, CORE, FIELDS, VALUES, REQUIRED, GLOSSARY, SUPPORT, FEEDBACK_SUPPORT, blank, label, missing, grade, reviewReasons, sample, filename, validateBackup };
+  REQUIRED.extensions=[];
+  SUPPORT.zh.extensions='如果还有时间，请选择一项挑战，进一步练习。完成后可尝试另一项。保留启动图标和按钮 A 的功能。老师要求全班反思时，请继续到学习加油站。';
+  SUPPORT.ko.extensions='시간이 남으면 도전 과제를 골라 더 연습하세요. 하나를 마치면 다른 과제도 해 보세요. 시작 아이콘과 버튼 A 기능은 유지하세요. 선생님이 함께 돌아보자고 하면 학습 피트스톱으로 이동하세요.';
+  SUPPORT.bm.extensions='Jika ada masa, pilih cabaran untuk meningkatkan kemahiran. Selepas satu, cuba cabaran lain. Kekalkan ikon permulaan dan fungsi Butang A. Apabila guru meminta refleksi kelas, teruskan ke Learning Pitstop.';
+  const api = { ID, VERSION, LINKS, OBJECTIVES, CARDS, CORE, STAGES, FIELDS, VALUES, REQUIRED, GLOSSARY, SUPPORT, FEEDBACK_SUPPORT, blank, label, missing, grade, reviewReasons, sample, filename, validateBackup };
   root.Lesson = api;
   if (typeof module !== 'undefined') module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -1,5 +1,32 @@
 # Year 8 · Term 1 Week 2 Project
 
+### Left-sidebar layout · update 3.4
+
+On screens at least 1000px wide, the lesson journey, progress bar and expanded WAGBA/KSU occupy a 280–300px left sidebar. The top toolbar contains only identity, saving, language, PDF and menu controls. The sidebar and activity scroll independently; moving to a new lesson card resets the activity scroll, not student work. Smaller screens stack the expanded panel above the activity rather than squeezing the learning card or hiding the objectives. This supersedes the tall sticky-header layout described in update 3.2.
+
+48 non-browser checks pass. Browser visual verification remains outstanding; no publishing or GitHub push was performed.
+
+### Matched KSU reflections · update 3.3
+
+The Types of Learning and Learning Pitstop pages adapt the provided Year 10 reflection pattern to Smart Badge learning. Six matched statements cover two Knowledge checks (input/output and event triggers), two Skills checks (building in the chosen editor and testing), and two Understanding checks (code location/timing and simulator versus physical evidence).
+
+Students see two checks at a time: Knowledge → Skills → Understanding → My next step. Before practical work they identify their starting points and choose a focus. Afterwards they revisit the same statements, compare prior responses, cite actual badge/test evidence and choose a specific next action. Mixed learning phases are valid; no overall score or automatic emotional classification is produced. “Not attempted” and connection difficulties are not treated as conceptual failure.
+
+The single-column question style, evidence prompts, stage-dependent suggestions and before/after summaries follow the supplied Year 10 reference, with Year 8 language and device-specific examples. Mandarin, Korean and Malay translations cover statements, evidence prompts, choices and practice guidance. A short written explanation can use any language.
+
+Include the new `reflections.js` with the other static files when publishing. Load it after `lesson.js` and before `views.js`. All new responses are registered for autosave, revision history, PDF reports and backup restore. Earlier `strategy`, `phase` and `nextMove` answers are preserved as older-version evidence, not silently converted into six new answers. Old completed reflection cards that lack the new responses are marked for review without locking navigation.
+
+Verification: 47 non-browser regression checks passed, including every reflection subpage in all four languages, mixed stages, persistence, before/after report content, new backup fields and no-lockout progression. Live layout and print pagination were not visually verified in this update because local browser preview was blocked.
+
+### Header and extension update · 13 September 2026
+
+- WAGBA and full Knowledge, Skills and Understanding statements are displayed in the header, not behind a KSU button. The same objective source supplies the PDF report.
+- Eight labelled stages show the current location and recorded/needs-review status, from Do Now to Review / PDF. A permanent Export PDF control is in the top toolbar. The progress bar counts recorded core work, not mastery or confirmed Teams submission.
+- The full Extension page is encountered after Main Task 2 evidence and before Learning Pitstop. Students are invited to challenge themselves if there is time. They can choose among three levels, return for another challenge, or continue without a required extension submission.
+- Existing v3 core indices, storage keys, responses and evidence are preserved. The extension landing page is not counted as completed work or added as an empty assessment section in reports.
+- The header is sticky on standard laptop/tablet viewports. On very short screens (below 620px tall, including some high-zoom layouts), it remains expanded at the top but scrolls with the page so it cannot cover the activity. It never becomes a hidden button.
+- Verification: 43 non-browser regression checks pass, including the revised route, visible header markup, unchanged saved core positions, extension backup recovery and report generation. Live visual preview was blocked by the browser tool's local-URL policy; responsive rendering and actual print pagination need a manual browser check. No GitHub push or deployment was performed.
+
 ## Smart Badge — Mission 1 (redesigned September 2026)
 
 A static, one-card-at-a-time lesson. Students build a welcome icon and a Button A response, then test, explain and preserve evidence. There is no server, account system or build step for this lesson.
@@ -28,16 +55,17 @@ Prefer HTTPS hosting for classroom iPads. Files opened through iPad Files/previe
 | Time | Stage | What students do |
 |---|---|---|
 | 0–4 min | Do Now | Read the badge example; predict the A response. |
-| 4–6 min | Types of learning / how to get better | Select one useful knowledge, skill or understanding strategy. |
+| 4–6 min | Types of learning / how to get better | Record six starting points (two per K/S/U group), then choose one focus. |
 | 6–20 min | Main Task 1 | Choose the correct route; run a tiny working model; choose an icon and initials. |
 | 20–48 min | Main Task 2 | Add the A response; test restart and A; transfer; capture evidence. |
-| 48–51 min | Learning Pitstop | Choose a current phase, cite a test and identify the next move. |
+| Within practical time | Extension | Choose a challenge if time; continue to the Pitstop without a completion requirement. |
+| 48–51 min | Learning Pitstop | Revisit the six checks, compare starting points, cite evidence and choose one next action. |
 | 51–56 min | Plenary | Explain the event using the student’s program; predict a change. |
 | 56–60 min | Review, submission and pack away | Save PDF/backup, submit to Teams, return equipment. |
 
 The 12 core cards sit inside these stages; they are not 12 separate worksheets. Only one card is rendered at a time. Picture guides, full code explanations and the report expand on request. A little vertical scrolling is intentionally allowed for larger text, translations and code rather than clipping content to an exam-sized viewport.
 
-Optional extensions open at the evidence card. Students choose Level 1 (another button event), Level 2 (diagnose a misplaced instruction, using A4 paper if helpful), or Level 3 (user test and improvement). After one, they can choose another. Extensions never block the pitstop or plenary. Budget 5–15 minutes from the practical window for early finishers; do not add all extension time on top of 60 minutes.
+An Extension page appears automatically after the evidence card and before Learning Pitstop. If there is time, students should use it to challenge themselves. Students choose Level 1 (another button event), Level 2 (diagnose a misplaced instruction, using A4 paper if helpful), or Level 3 (user test and improvement). After one, they can choose another. Extensions never block the pitstop or plenary. Budget 5–15 minutes from the practical window for early finishers; do not add all extension time on top of 60 minutes.
 
 ### Device and code routes
 
@@ -76,7 +104,7 @@ Editor URLs are constants in `lesson.js` (`LINKS`). Instructions say exactly whi
 
 Entry offers English, English + Simplified Chinese, English + Korean, and English + Bahasa Melayu. Bilingual task support appears on every card and the two concept checks have translated explanations. The compact header language button and glossary remain available. These are authored classroom supports, not a live translation service; review wording with bilingual staff where possible. Code and official editor names stay unchanged.
 
-The interface uses local Raleway (OFL licence included) with system fallbacks for CJK glyphs, labelled controls, native keyboard-operable choices/dialogs, visible focus, 44px touch controls, reduced-motion support and responsive layouts. KSU stays available through a small sticky-header button. No timed exam restrictions or inaccessible drag-and-drop are used.
+The interface uses local Raleway (OFL licence included) with system fallbacks for CJK glyphs, labelled controls, native keyboard-operable choices/dialogs, visible focus, 44px touch controls, reduced-motion support and responsive layouts. WAGBA and KSU remain visible in the sticky learning header, alongside the labelled lesson journey and an Export PDF button. No timed exam restrictions or inaccessible drag-and-drop are used.
 
 ### Saving, evidence and privacy
 
@@ -113,6 +141,7 @@ After export is requested, the app instructs students to upload the **PDF** to *
 - `index.html`: landing page and small app shell.
 - `styles.css`: monochrome-first layout and print styles.
 - `lesson.js`: learning intentions, card spine, route-specific examples, languages, progress/backup rules.
+- `reflections.js`: matched Year 8 KSU checks, bilingual guidance and before/after report comparison.
 - `views.js`: focused card content and complete evidence-report template.
 - `app.js`: navigation, entry, saving, evidence, import/export and feedback.
 - `assets/`: existing artwork, school learning posters and local font.
