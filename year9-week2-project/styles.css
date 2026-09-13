@@ -12,3 +12,79 @@
 @media(prefers-reduced-motion:no-preference){button{transition:background .12s,border-color .12s}}
 #printReport{display:none}.report-section figure{margin:1rem 0;max-width:100%}.report-section img{display:block;max-width:100%;height:auto;object-fit:contain}.report-section figcaption{font-size:.8rem;overflow-wrap:anywhere}.attachment{min-width:0;margin:.5rem 0}
 @media print{@page{size:A4;margin:16mm}body{background:#fff;font-size:11pt;color:#111}body>*:not(#printReport){display:none!important}#printReport{display:block!important}#printReport h1{font-size:24pt;letter-spacing:-.02em}#printReport h2{font-size:16pt}#printReport h3{font-size:12pt}.report-section{break-inside:auto}.report-row,.saved-test,figure{break-inside:avoid}#printReport img{max-width:100%;max-height:180mm;object-fit:contain}#printReport pre{background:#fff;color:#111;border:1px solid #bbb;font-size:9pt}#printReport .meta{font-size:9pt}.report-history{font-size:9pt}a{color:#111}details{display:block}summary{display:none}}
+
+/* Detailed learning guidance stays in the activity; the header is a short reminder. */
+.learning-guide{max-width:49rem}.learning-section{border-top:1px solid var(--line);padding:1.3rem 0 .4rem}.learning-section h3{font-size:1.15rem}.learning-parts{padding-left:1.4rem}.learning-parts li{margin:.7rem 0}.learning-evidence{border-left:3px solid var(--good);padding:.65rem .9rem;background:#f0f7f3;margin:.9rem 0}.learning-evidence p:last-child{margin-bottom:0}.learning-guide-link{font-size:.78rem;min-height:32px;padding:.2rem .4rem;margin-top:.3rem;border:0;color:var(--blue);text-decoration:underline}.ksu{grid-template-columns:1fr 1fr 1.2fr}.ksu strong{display:block}.learning-guide .compare-pair{align-items:start}
+@media(max-width:600px){.app-header{position:relative}.ksu{grid-template-columns:1fr;gap:.35rem}.ksu strong{display:inline}.learning-section{padding-top:1rem}}
+
+/* The reading comes first; the starter then shows four questions at a time. */
+.starter-reading{max-width:49rem}.starter-reading-section{border-top:1px solid var(--line);padding-top:1.1rem;margin-top:1.1rem}.starter-model{border:1px solid #bcc9da;background:#f6f9fd;border-radius:10px;padding:1rem;margin:.9rem 0}.starter-model p:last-child{margin-bottom:0}.starter-nav button{flex:1 1 140px}.starter-reading .address{overflow-wrap:anywhere}.starter-reading .notice p:last-child{margin-bottom:0}
+
+.reflection-page{max-width:49rem}.reflection-tabs button{flex:1 1 140px}.reflection-check{border-top:2px solid var(--line);padding-top:1.2rem;margin-top:1.4rem;scroll-margin-top:220px}.reflection-check h3{font-size:1.15rem}.reflection-check h4{margin:.2rem 0 .5rem}.reflection-probe{border-left:3px solid #8a9bb0;padding:.6rem .8rem;background:#f7f9fc;margin:.8rem 0}.reflection-counts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem}.reflection-summary{padding:.8rem;background:#f0f4fa;border:1px solid #c7d2e0;border-radius:9px;font-size:.9rem}.reflection-summary p{margin:.5rem 0 0}.reflection-summary .hint{font-size:.82rem}.reflection-earlier{padding:.8rem 1rem;border-left:3px solid #7693be;background:#f4f7fc;margin:1rem 0}.reflection-earlier p{white-space:pre-wrap;overflow-wrap:anywhere}.reflection-next{padding:.9rem;border:1px solid #b7c7dd;border-radius:9px;background:#fafcff;margin:.9rem 0}.reflection-next button,.reflection-target{font-size:.87rem}.reflection-target{margin-top:1rem}.reflection-source{border-top:1px solid #d9e1ea;padding:.65rem 0;font-size:.88rem}.reflection-source p{white-space:pre-wrap;overflow-wrap:anywhere;margin:.3rem 0}.reflection-targets{border:1px solid #d2dce7;padding:.9rem;border-radius:9px;margin:1rem 0}.reflection-targets p{white-space:pre-wrap;overflow-wrap:anywhere}.reflection-targets>div+div{border-top:1px solid var(--line);padding-top:.6rem}.reflection-comparison{border-top:2px solid var(--line);margin-top:1.4rem;padding-top:1rem}.reflection-page select{font-weight:400}.reflection-page .learning-guide{font-size:.94rem}@media(max-width:600px){.reflection-counts{grid-template-columns:1fr}.reflection-next{padding:.7rem}.reflection-check{scroll-margin-top:20px}}
+
+/* Main Task 1: selectable, fictional platform-inspired messages. */
+.main-task-nav,.sample-nav{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.1rem 0 1.5rem}
+.main-task-nav button{font-size:.85rem;padding:.55rem .7rem}
+.main-task-nav [aria-current],.sample-nav [aria-current],.plan-tabs [aria-pressed="true"]{background:#173e55;color:white;border-color:#173e55}
+.message-investigation{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem;align-items:start}
+.message-investigation>*{min-width:0}.sample-context{border-left:4px solid #448084;padding:.2rem 1rem;margin-bottom:1.3rem}.sample-context h3{font-size:1rem}.sample-context p{margin:.5rem 0}
+.social-chat{margin:0 0 1.5rem;border:1px solid #d7dce4;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 12px 30px #183b4a16;color:#232936}
+.social-chat figcaption{padding:.65rem 1rem;font-size:.72rem;line-height:1.5;background:#f0f3f7;color:#42526a}
+.chat-brand{padding:.9rem 1.2rem;display:flex;justify-content:space-between;font-size:1.1rem}.chat-contact{padding:1rem 1.2rem;display:flex;align-items:center;gap:.8rem;border-bottom:1px solid #8995aa33}.chat-contact small{display:block;font-size:.78rem;overflow-wrap:anywhere}
+.chat-avatar{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:50%;background:#c4d1e8;color:#24314c;font-size:1.25rem;font-weight:bold}
+.chat-thread{padding:1.25rem;display:flex;flex-direction:column;gap:.8rem}.chat-bubble{padding:.85rem 1rem;border-radius:3px 16px 16px;background:#edf0f5;line-height:1.65;overflow-wrap:anywhere;font-size:1rem}
+.chat-link{display:flex;gap:.85rem;border:1px solid #bbc5d166;border-radius:12px;overflow:hidden;padding:.8rem;background:#f7f9fb;min-width:0}.chat-link>div{min-width:0}.chat-link strong{display:block;font-size:.95rem}.chat-link small{display:block;margin-top:.5rem;font-size:.7rem;line-height:1.5}.chat-address{display:block;margin-top:.4rem;text-decoration:underline;overflow-wrap:anywhere;color:#246ab1;font-size:.86rem}.link-art{display:grid;place-items:center;font-size:1.6rem;border-radius:8px;background:#dce6f5;width:48px;min-width:48px;height:58px;color:#355579}
+.chat-compose{margin:.1rem 1.2rem 1rem;padding:.65rem .9rem;border-radius:24px;border:1px solid #95a3b355;font-size:.72rem}
+.discord{background:#313338;color:#f2f3f5;border-color:#313338}.discord .chat-brand{background:#5865f2;color:white}.discord .chat-bubble{background:#383a40;border-radius:4px}.discord .chat-avatar{background:#757cfa;color:white}.discord .chat-link{background:#2b2d31}.discord .chat-address{color:#81c8ff}.discord .translation-button{color:#d6e1ff;border-color:#8d9bbe;background:transparent}.discord .translated{color:#f0f3ff;background:#272933}.discord .chat-bubble .language-tag{color:#bdc8e8}
+.instagram .chat-brand{background:linear-gradient(115deg,#683bd0,#b32a96,#d94358,#da7833);color:white}.instagram .chat-avatar{background:#fae0f3;color:#932487;border:3px solid #d74791}.instagram .chat-bubble{background:#f0edf7;border-radius:18px}.instagram .chat-thread .chat-bubble:nth-child(2){background:#e8e5ff}
+.snapchat .chat-brand{background:#ffed00;color:#17191c}.snapchat .chat-avatar{background:#ffef77;color:#3e3712}.snapchat .chat-bubble{background:#fff;border-radius:0;border-left:3px solid #ed3e69;padding-left:.85rem}.snapchat .chat-thread{background:#fdfdfd}.snapchat .chat-link{border-left:3px solid #ed3e69;border-radius:0}
+.social-chat .compare-pair{display:block}.social-chat .compare-pair>span{display:block;padding:.35rem 0}.social-chat .compare-pair>span+span{border-top:1px solid #9aabc055;margin-top:.5rem}.sample-work .question:first-child{margin-top:0}
+.plan-tabs{padding:1rem;border:1px solid #afc7d1;border-radius:12px;background:#f1f7f9;margin-bottom:1.3rem}.plan-tabs .button-row{margin-top:.65rem}.plan-tabs p{margin-bottom:0}.question-patterns{padding-left:1.4rem}.question-patterns li{padding:.8rem .5rem;line-height:1.7}
+@media(max-width:800px){.message-investigation{grid-template-columns:1fr}.social-chat{max-width:530px;margin-left:auto;margin-right:auto}.main-task-nav button{flex:1 1 130px}.sample-nav button{flex:1 1 100px}}
+@media print{.main-task-nav,.sample-nav,.plan-tabs{display:none}.social-chat{box-shadow:none;break-inside:avoid}}
+/* First encounter with pseudocode and a literal partner walkthrough. */
+.notation-list{display:grid;gap:.8rem;margin:1rem 0}.notation-list section{border:1px solid #c5d2dc;border-left:4px solid #315e80;border-radius:8px;padding:.85rem 1rem;background:#f8fbfd}.notation-list code{font-size:.94rem;white-space:pre-wrap;overflow-wrap:anywhere}.notation-list p{margin:.5rem 0 0}
+.pc-lines{list-style:none;padding:0;margin:1rem 0;border:1px solid #bacbd7;border-radius:10px;background:#f5f9fc;overflow:hidden}.pc-lines li{display:flex;gap:.75rem;padding:.65rem .8rem;border-left:4px solid transparent;border-bottom:1px solid #dde6ed;align-items:baseline}.pc-lines li:last-child{border-bottom:0}.pc-lines code{background:transparent;color:#203345;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;font-size:.9rem;line-height:1.6}.pc-number{width:1.6rem;flex-shrink:0;text-align:right;color:#62758a;font:12px/1.6 ui-monospace,monospace}.pc-lines li.active{background:#fff1ba;border-left-color:#9a6610}.pc-lines li.active .pc-number{color:#714600;font-weight:bold}.pc-case blockquote{padding:.7rem 1rem;background:white;border-left:3px solid #819bb6;border-radius:0 10px 10px 0}
+.sequence-blocks li{align-items:center}.sequence-blocks code{line-height:1.7;font-size:.9rem}.line-review{border:2px solid #9c731d;padding:1rem;border-radius:10px;background:#fffaf0}.line-review h4{margin:0 0 .6rem}.line-review select{background:#fff}textarea[data-field^="planCode"]{font:15px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;min-height:300px;tab-size:4;background:#f7fafc;color:#172d42}.pc-lines+.support-details{margin-bottom:1rem}
+@media(max-width:600px){.pc-lines li{gap:.45rem;padding:.6rem .4rem}.pc-number{width:1.2rem}.pc-lines code{font-size:.8rem}.line-review{padding:.7rem}.sequence-blocks li{gap:.3rem}}
+.review-current-line{white-space:pre-wrap;overflow-wrap:anywhere;margin:.65rem 0;padding:.8rem;font-size:.9rem}
+/* A single final hand-in page: PDF first, then Teams. */
+.submit-intro{font-size:1.07rem;max-width:45rem}.submit-check{padding:1rem 1.2rem;background:#f4f8fa;border:1px solid #d1dce4;border-radius:10px;margin:1.2rem 0}.submit-check h3{margin-top:0}.submit-identity{font-size:.92rem}.submit-check li,.submit-step li{margin:.55rem 0;line-height:1.65}.submit-check ul,.submit-step ol{padding-left:1.4rem}.submit-step{padding:1rem 0 1.2rem;border-bottom:1px solid #dde4ea}.submit-step h3{font-size:1.2rem}.save-pdf-button{font-size:1.05rem;padding:.85rem 1.4rem;margin:.35rem 0 .7rem}.submit-reminder{padding:.7rem 1rem;background:#fff8df;border-left:3px solid #a67a17;font-size:.94rem}.teams-help{font-size:.85rem}.submit-other{margin-top:1.2rem}.submit-other>section{padding:.7rem 0 1rem;border-top:1px solid #dce4ea}.submit-other h3{font-size:1rem}.submit-preview #reportBody{background:#fff;padding:1rem;border:1px solid #d6dfe6;margin:1rem 0}.submit-page .compare-pair>span{min-width:0}
+@media(max-width:600px){.submit-check{padding:.8rem}.save-pdf-button{width:100%}.submit-preview #reportBody{padding:.6rem}.submit-page .compare-pair{grid-template-columns:1fr}}
+.submission-view .goals{display:none}
+
+/* Further challenges use the learner's own plan and explicit evidence checks. */
+.challenge-source,.challenge-evidence{margin:1.4rem 0;padding:1.1rem;border:1px solid var(--border,#cbd5e1);border-radius:14px;background:var(--surface,#fff)}
+.challenge-source h3,.challenge-evidence h3{margin-top:0}
+.challenge-model{white-space:pre-line;line-height:1.75}
+.challenge-evidence li{margin:.65rem 0}
+.table-scroll{max-width:100%;overflow-x:auto}
+.challenge-table{width:100%;border-collapse:collapse;margin:1rem 0}
+.challenge-table th,.challenge-table td{padding:.8rem;border:1px solid #cbd5e1;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.challenge-table th{background:#eef4fa}
+.challenge-table code{white-space:pre-wrap}
+.challenge-page pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.extension-list button span{line-height:1.6}
+.extension-list button{display:flex;flex-direction:column;gap:.6rem;align-items:flex-start;text-align:left}
+@media(max-width:600px){.challenge-source,.challenge-evidence{padding:.8rem}.challenge-table th,.challenge-table td{padding:.5rem}}
+
+/* Starting-point reflection and later learning phases have distinct structures. */
+.learning-reflection{line-height:1.65}
+.learning-topic{padding:1.15rem 0;border-bottom:1px solid #d9e1ec}
+.learning-topic h3{margin:.25rem 0 .55rem}
+.learning-kicker{font-size:.82rem;font-weight:700;color:#475569;margin:0}
+.learning-context{color:#475569;margin:.55rem 0}
+.learning-topic label,.learning-focus-choice>label{display:block;font-weight:650;margin:.8rem 0 .45rem}
+.learning-topic select,.learning-focus-choice select{width:100%;max-width:100%;margin-bottom:.45rem}
+.learning-prior{font-size:.92rem;background:#f1f5f9;border-radius:7px;padding:.65rem .85rem}
+.learning-action{background:#edf6f2;border-left:3px solid #25846a;padding:.85rem 1rem;line-height:1.65}
+.learning-overview{background:#f5f7fb;border:1px solid #d8e0ed;border-radius:12px;padding:1.2rem;margin:1.5rem 0}
+.learning-count-group{margin:.8rem 0}.learning-count-group p{margin:.3rem 0;font-size:.92rem}
+.learning-suggestion{color:#245447}
+.learning-phase-guide{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1rem 0}
+.learning-phase-guide>div{border:1px solid #d8e0ed;border-radius:10px;padding:1rem;background:#f8fafc}
+.learning-phase-guide dt{font-weight:700}.learning-phase-guide dd{margin:.5rem 0 0}
+.learning-focus-choice{margin-top:1.3rem}.learning-start-focus{font-weight:650}
+.learning-work{font-size:.93rem}.learning-work .reflection-source p{white-space:pre-wrap}
+.learning-report table{border-collapse:collapse;width:100%}.learning-report th,.learning-report td{border:1px solid #ccd4df;padding:.5rem;text-align:left}
+@media(max-width:600px){.learning-phase-guide{grid-template-columns:1fr}.learning-overview{padding:.9rem}.learning-topic{padding:1rem 0}.learning-topic select,.learning-focus-choice select{font-size:.9rem}}
