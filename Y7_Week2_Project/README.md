@@ -1,79 +1,95 @@
-# Year 7 Week 2 Practical Web App
+# Year 7 — Week 2 Practical: My first Python route
 
-## Open the lesson
+This redesigned lesson introduces Python for the first time. It deliberately replaces long planning forms and a multi-stop tour with small coding actions and a single chosen destination.
 
-1. Extract the ZIP fully.
-2. Open `index.html` in a modern browser.
-3. Students enter their full name and class.
+## Open and review
 
-The app is deliberately built without modules or online services, so the core lesson, Turtle editor, images, saving and PDF tools can run directly from `file://` after extraction.
+Extract the ZIP and keep all files together. Open `index.html`. For reliable school deployment, serve the folder on standard static HTTPS hosting; no build, student account, database or paid API is needed. All essential libraries, fonts and map assets are local. No data is sent to an external service.
 
-## Teacher review access
+Enter **teacher** as the name, with no class, to open every stage. This uses a separate local record. There are no teacher-control panels. This is a convenience for review, **not authentication**: students who know the name can also unlock the pages. Do not use the interface as a secure examination.
 
-Enter `teacher` as the name (capitalisation does not matter). The class field becomes unavailable and all lesson pages unlock. Teacher review data is stored separately from student data. There are no visible teacher controls.
+The normal student route requires name and class. Use the same spelling and browser to resume. Students may choose English or English + Simplified Chinese, and can change it from the always-visible header. Device help and word help remain visible.
 
-## Student progress
+## Suggested 60-minute classroom use
 
-- Text, selections, checkboxes, navigation, Python code and significant actions are saved automatically in browser storage.
-- Each name-and-class combination has a separate record on the same device.
-- Large evidence images are compressed before saving.
-- Progress remains on the current browser and device. It is not a central teacher-monitoring system.
-- Clearing browser site data removes locally saved progress; students should export evidence before doing so.
+- 0–6 minutes: concrete story, start/destination and what the program will produce.
+- 6–8 minutes: learning-strategy pitstop — knowledge, skills and understanding.
+- 8–28 minutes: Main Task 1, ten short checkpoints. Run before typing; learn `t.goto`, x, y, sequence, punctuation, pen up/down, then explain.
+- 28–46 minutes: Main Task 2, ten scaffolded checkpoints on the supplied map. The shared route workspace persists across these cards. Reception is a shorter route; C1 is the standard route; Library is an alternative.
+- 46–51 minutes: spoken peer check. Extensions are for spare time, not additional compulsory work.
+- 51–55 minutes: learning-phase pitstop and three short plenary checks.
+- 55–60 minutes: prepare PDF and Python file, save, then turn in to Teams.
 
-## Python Turtle implementation
+This is a pacing suggestion, not a deadline. Students learning typing and coordinates may need more time. Do not rush them through all checkpoints at the expense of understanding. The **I need teacher help** button records support and lets a learner move on from a coding barrier. The learner must raise a hand; no alert is sent to the teacher. Required choices still need an attempt, not a particular answer or keyword.
 
-- The app bundles Skulpt locally and runs Python in the browser without sending code to an external editor.
-- A transparent 800 × 600 Turtle canvas is placed over `assets/school_map_800x600.png`.
-- Turtle coordinates use the centre of the map as `(0, 0)`, matching standard Turtle reasoning.
-- The line `screen.bgpic("school_map.gif")` remains in the student’s downloaded `.py` file for desktop Python. Inside the browser, the app safely recognises this line and uses the web page’s background layer instead.
-- `t.done()` remains in the downloaded file but is safely omitted during browser execution.
-- The editor supports tab indentation and `Ctrl+Enter` to run.
-- An execution time limit reduces the risk of an infinite loop freezing the lesson.
+## Learning design and assessment
 
-For the downloaded `.py` file to load its background in desktop Python, keep `school_map.gif` in the same folder as the Python file.
+- Persistent WAGBA, keywords and concise Knowledge / Skills / Understanding are never hidden behind a drawer.
+- Each card separates a short blue reading passage from an amber action. Instructions say where to type and what to press.
+- Examples lead to small changes, then independent use on the map. Students are not asked to type imports or set up folders first.
+- One `t` name and the same coordinate system are used throughout. `goto` means an absolute position, not extra steps.
+- Peer assessment is **point to a line → predict → run → explain**, with a sentence stem. The app records the selected line and the student's account, not an audio recording.
+- Multiple-choice feedback does not trap a learner after an incorrect answer. The report retains attempts and indicates when feedback/support was used.
+- Route checks test start, destination, corridor boundaries and continuity. They are feedback, not a keyword gate or a substitute for teacher judgement.
+- Missing work is highlighted with an actionable message. Merely opening a card does not complete it.
+- Three independent extension workspaces preserve the main route. Each extension visit and its finish/return state is recorded.
+- Progress is evidence of participation, not a grade. Assess whether students can explain a `goto` command, predict a coordinate change, and connect their code to their route.
 
-## Evidence and submission
+## Tablets, language support and PDF saving
 
-Students can:
+English + Chinese support is human-readable lesson scaffolding, not a live translation service. Python tokens stay in English. Full-width brackets, commas, curly quotes and minus signs are visibly normalised before running to reduce keyboard-related errors. A Mandarin-speaking member of staff should review the phrasing for your class.
 
-- add a screenshot or photo of an annotated route plan;
-- capture combined Python code and Turtle-map evidence;
-- download their `.py` file;
-- export a PDF report containing their answers and evidence;
-- use Print / Save as PDF if direct PDF creation is blocked.
+The controls have large touch targets. Point buttons provide an alternative to tapping the map; there is no drag-only or hover-only interaction. Punctuation buttons help with tablet keyboards. Laptop and iPad-sized layouts are responsive, with normal scrolling where needed; the learning header remains visible. Very small screens with a software keyboard may require closing the keyboard to see the full drawing.
 
-The app instructs students to upload the PDF and `.py` file to the Microsoft Teams Assignment **Week 2 Practical**.
+On the final page:
 
-## Reading level and lesson visuals
+1. Tap **Prepare my files** and wait for the ready message.
+2. On an iPad, tap **Save / share PDF → Save to Files → Save**. On a computer, use **Download PDF**.
+3. Save the Python `.py` file too.
+4. In Teams, open **Week 2 Practical**, attach both files, and tap **Turn in**.
 
-- Student instructions use everyday examples before introducing Computer Science vocabulary.
-- Necessary terms such as decomposition, abstraction, IPO and pseudocode appear beside a plain-language meaning.
-- The starter begins with a first-day scenario and the actual working map, including its green start, blue finish and red restricted area.
-- The map is repeated beside planning only when students need to refer to it.
-- A worked pseudocode example shows how to plan Main Entrance to Reception before students write their own route.
-- A short visual example shows that Python Turtle works like a digital pen drawing a blue line on the map.
-- The project is now a First-Day School Tour with required stops at Reception, Library, Main Stairs, Science Corridor and CS Room C1. This makes decomposition necessary rather than artificial.
-- Main Task 1 explicitly compares an overloaded map with a simplified abstraction and asks students what should be kept, removed and why.
-- Main Task 2 contains a worked Journey 1 plus separate thinking instructions and writing areas for Journeys 2, 3 and 4.
-- Longer teaching content is divided into numbered expandable cards so students focus on one step at a time.
+A website **cannot silently choose an iPad folder or force Safari to save rather than preview a PDF**. This app prepares the file first, then offers native sharing on a separate tap so the save operation retains the browser's required user gesture. If a browser opens a preview, the app explains **Share → Save to Files**. A download fallback and print-friendly report are included. Browser settings and in-app browsers can still change the behaviour; test on one actual school iPad before class.
 
-## Hosting
+Students do not need to take device screenshots: each Turtle run captures its output and code. The report includes responses, corrections, code, route drawing, reflection, attempted extensions, run history and interaction evidence. A teacher appendix may make an active learner's PDF fairly long. PDF pages preserve bilingual text as rendered images; the print-friendly report retains browser text.
 
-Upload the whole extracted folder without changing its internal structure. It works on standard static hosts such as a school web server, GitHub Pages, Netlify or Vercel. No database, account, build step or CDN is required.
+Teams checkboxes are the student's own confirmations. The site cannot inspect Teams or verify a submission, and students do not have to regenerate the PDF after ticking them.
 
-## Replace the map
+## Saving, privacy and existing work
 
-To use a real school map:
+Small records use localStorage; drawings use IndexedDB. Records are separated by lesson version, name and class; teacher work has its own key. This is **local progress only**, not a class dashboard. Private browsing, clearing browser data or changing device/browser may lose access to the record.
 
-1. Prepare a privacy-safe 800 × 600 PNG with no student information.
-2. Replace `assets/school_map_800x600.png` using exactly the same filename.
-3. Provide a matching GIF named `assets/school_map.gif` for the downloaded desktop-Python activity.
-4. Update the route coordinates and location wording in `app.js`.
-5. Test the start, destination and restricted-area alignment before deployment.
+Use **Device help → Download backup** to keep a transferable JSON backup containing code, progress and drawing evidence. Import requires the same name and class and offers a safety backup before replacing that learner's redesigned record. The Reset action likewise preserves a backup and affects only this version's record.
 
-## Browser notes
+The earlier Week 2 application's storage key is not deleted or migrated destructively. Where a matching earlier record is found, the final page offers **Download earlier work**. Existing records from different browser origins cannot be read automatically; use their original export first.
 
-- Current versions of Chrome, Edge, Safari and Firefox are recommended.
-- Direct PDF generation and evidence capture require the local `html2canvas` and `jsPDF` files in `vendor/`.
-- Browser privacy settings can block storage in unusual private-browsing modes.
-- If a browser restricts a function under `file://`, serve the folder through a normal static host.
+Names, class and student work appear in downloaded reports. Use school-approved storage and Teams; do not publish student evidence or backups publicly. There is no analytics service, camera access, advertising or external sign-in.
+
+## Python implementation and safety
+
+The app uses the included Skulpt Python interpreter in Python 3 mode, with a canvas-backed Turtle subset. This is genuine execution of Python expressions, variables, loops and functions, not a matcher for pre-written answers. It is **not full desktop IDLE / CPython / Tkinter**.
+
+The Turtle subset includes `goto`, `forward`, `backward`, `right`, `left`, `setheading`, `penup`, `pendown`, `pensize`, `color`, `circle`, `home`, `position`, `xcor`, `ycor`, `heading`, `clear`, `reset` and usual short aliases. `done`, `shape`, `speed`, and visibility calls are harmless compatibility no-ops. Drawing is shown after execution rather than animating according to `speed`. Arbitrary Tkinter windows, packages, file/network access and interactive input are outside this lesson.
+
+On HTTP/HTTPS, code runs in a Web Worker with termination, execution-time and drawing-count limits. A sandboxed frame with no connection permission is the fallback for direct local opening. It has interpreter limits; browser support for file URLs varies. **Static hosting is recommended**, especially for reliable PDF/ZIP export. The runtime is intended for classroom code, not as a hardened security service for hostile programs.
+
+The map is a simplified **practice map**, not a map for real-world navigation. Students stay seated, avoid the marked staff-only area in their drawing, and do not undertake a physical walk around school.
+
+The exported Route.py adds ordinary desktop Turtle setup and uses `school_map.gif`. The optional all-files ZIP contains this GIF and any attempted extension `.py` files. Keep the GIF beside Route.py when opening it in desktop Python with Tk installed. In the website, the background is loaded automatically.
+
+## Files and maintenance
+
+- `lesson.js`: English/Chinese lesson cards, objectives, destinations and route checks.
+- `app.js`: navigation, input, local saving, editor, evidence capture and device-specific export flow.
+- `model.js`: isolated progress/validation rules.
+- `runtime.js`, `runner-worker.js`, `runner-frame.*`: Python execution.
+- `report.js`: report generation and block-based PDF pagination.
+- `assets/school-map.svg`, `.png`, `school_map.gif`: the same map for web and desktop use.
+- `vendor/`: bundled Skulpt, html2canvas, jsPDF and JSZip. Retain their licence notices.
+
+If changing the map, update its geometry, destination coordinates and corridor checker together. Do not simply swap a differently scaled image. The drawing coordinate origin is the centre of an 800 × 600 canvas; positive y points up.
+
+## Verification
+
+Unit checks cover every card's language content and validation, teacher separation, varied quiz answer positions, code-change detection, Unicode punctuation, filename safety, corridor routes, genuine Python execution, syntax/runtime errors, time limits and recovery.
+
+Browser review covers the student journey, refresh recovery, map insertion, peer checks, optional extensions, reports, teacher access, and responsive layouts. These are browser checks, **not physical iPad/Safari certification**. Before use, confirm one actual classroom iPad can save both files and attach them in your school's Teams setup.
