@@ -2,6 +2,13 @@
 
 ## Passed
 
+- Types of learning appears after Starter and Learning pitstop appears after extension choices and before the plenary.
+- Reflection checks are one topic per card; “This is new”, “Not sure / not checked yet”, “Drowning” and “Not attempted yet” are accepted without a correctness keyword.
+- Missing reflection choices redirect to the correct check with a bilingual message and visible focus; selected phase choices show a topic-specific next step.
+- The Learning pitstop can open the pupil's latest saved code/drawing, records one next focus, evidence choice and optional teacher note, and retains choices after refresh.
+- The PDF report includes matched Knowledge/Skills/Understanding before/after evidence, phase, next action and help status while preserving legacy generic responses separately.
+- Reflection layout tested at 768×1024 portrait with English + 中文 and no horizontal overflow.
+
 - Syntax checks for application and report scripts; Node unit suite in the working copy.
 - Every card has English and Chinese reading/action text.
 - Name/class validation and case-insensitive `teacher` entry without a class.

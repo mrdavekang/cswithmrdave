@@ -33,6 +33,9 @@ This is a pacing suggestion, not a deadline. Students learning typing and coordi
 - Route checks test start, destination, corridor boundaries and continuity. They are feedback, not a keyword gate or a substitute for teacher judgement.
 - Missing work is highlighted with an actionable message. Merely opening a card does not complete it.
 - Three independent extension workspaces preserve the main route. Each extension visit and its finish/return state is recorded.
+- The **Types of learning** check now sits immediately after the Starter. It uses three matched, Year 7-friendly checks: reading a Turtle command (Knowledge), writing/testing a command (Skills), and explaining why route points are needed (Understanding). Pupils choose one starting point for each and one focus for the lesson; “This is new” and “Not sure / not checked yet” are valid learning evidence.
+- The **Learning pitstop** now sits after the extension choices and before the plenary. It revisits those same three statements with “New learning”, “Consolidating”, “Treading water”, “Drowning — I need help” and “Not attempted yet”, then asks for one practical next step and one piece of evidence. The pupil can open their latest code/drawing while reflecting.
+- Reflections are shown as short one-topic cards instead of a long form. The report records the before/after comparison, phase-specific next action, evidence choice and optional note; these are self-reports, not marks or fixed learner labels.
 - Progress is evidence of participation, not a grade. Assess whether students can explain a `goto` command, predict a coordinate change, and connect their code to their route.
 
 ## Tablets, language support and PDF saving

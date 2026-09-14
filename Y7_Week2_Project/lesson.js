@@ -50,6 +50,11 @@
  function inCorridor(x,y){return (x>=-35&&x<=35&&y>=-225&&y<=135)||(x>=-235&&x<=235&&y>=65&&y<=135)||(x>=-235&&x<=35&&y>=-135&&y<=-65);}
  function checkRoute(draws,destination){const seg=draws.filter(d=>d.from&&d.pen&&Math.hypot(d.to[0]-d.from[0],d.to[1]-d.from[1])>0.01);let safe=seg.length>0,continuous=true;for(let i=0;i<seg.length;i++){const d=seg[i],n=Math.max(1,Math.ceil(Math.hypot(d.to[0]-d.from[0],d.to[1]-d.from[1])/4));for(let k=0;k<=n;k++)if(!inCorridor(d.from[0]+(d.to[0]-d.from[0])*k/n,d.from[1]+(d.to[1]-d.from[1])*k/n))safe=false;if(i&&Math.hypot(d.from[0]-seg[i-1].to[0],d.from[1]-seg[i-1].to[1])>2)continuous=false;}const first=seg[0]?.from,last=seg[seg.length-1]?.to,end=destinations[destination||'c1'].point;return {hasLine:!!seg.length,start:!!first&&Math.hypot(first[0],first[1]+200)<16,finish:!!last&&Math.hypot(last[0]-end[0],last[1]-end[1])<16,safe,continuous};}
  cards.find(c=>c.id==='peer').map=true;
+ // Keep card IDs and positions stable so existing pupils resume without losing work.
+ for(const [id,kind,en,zh] of [['strategy','learning-before','Types of learning: what will I get better at?','学习类型：我要在哪方面进步？'],['reflect','learning-after','Learning pitstop: where am I now?','学习加油站：我现在的状态']]){
+  const c=cards.find(c=>c.id===id);c.legacyQuestion=c.question;delete c.question;delete c.choiceOnly;
+  c.kind=kind;c.title=pair(en,zh);
+ }
  // Stable varied answer positions; never shuffle a saved student's answers on render.
  let quizNumber=0;for(const c of cards){if(c.question&&!c.choiceOnly){const q=c.question,n=q.choices.length,shift=(++quizNumber)%n;q.choices=q.choices.slice(shift).concat(q.choices.slice(0,shift));q.correct=(q.correct-shift+n)%n;}}
  const api={pair,goals,terms,stages,cards,extensions,destinations,normaliseCode,inCorridor,checkRoute};root.Lesson=api;if(typeof module!=='undefined')module.exports=api;
