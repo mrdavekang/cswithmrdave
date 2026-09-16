@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "cloudId": "ks/microbit",
+    "editor": "blocksprj",
+    "name": "W3_Radio1_Receiver"
+  },
+  "source": "{\"pxt.json\":\"{\\n  \\\"name\\\": \\\"W3_Radio1_Receiver\\\",\\n  \\\"description\\\": \\\"Week 3: LED sequences and two-board radio. No motors.\\\",\\n  \\\"dependencies\\\": {\\n    \\\"core\\\": \\\"*\\\",\\n    \\\"radio\\\": \\\"*\\\"\\n  },\\n  \\\"files\\\": [\\n    \\\"main.ts\\\"\\n  ],\\n  \\\"preferredEditor\\\": \\\"blocksprj\\\"\\n}\",\"main.ts\":\"radio.onReceivedString(function (receivedString) {\\n    if (receivedString == \\\"HELP\\\") {\\n        basic.showIcon(IconNames.Diamond)\\n        basic.pause(500)\\n        basic.clearScreen()\\n        basic.pause(500)\\n        basic.showIcon(IconNames.Diamond)\\n        basic.pause(500)\\n        basic.clearScreen()\\n        basic.pause(500)\\n        basic.showIcon(IconNames.Yes)\\n    }\\n})\\nradio.setGroup(23)\\nbasic.showIcon(IconNames.Yes)\\n\"}"
+}

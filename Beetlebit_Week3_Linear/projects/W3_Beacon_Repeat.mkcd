@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "cloudId": "ks/microbit",
+    "editor": "blocksprj",
+    "name": "W3_Beacon_Repeat"
+  },
+  "source": "{\"pxt.json\":\"{\\n  \\\"name\\\": \\\"W3_Beacon_Repeat\\\",\\n  \\\"description\\\": \\\"Week 3: LED sequences and two-board radio. No motors.\\\",\\n  \\\"dependencies\\\": {\\n    \\\"core\\\": \\\"*\\\"\\n  },\\n  \\\"files\\\": [\\n    \\\"main.ts\\\"\\n  ],\\n  \\\"preferredEditor\\\": \\\"blocksprj\\\"\\n}\",\"main.ts\":\"input.onButtonPressed(Button.A, function () {\\n    for (let index = 0; index < 2; index++) {\\n        basic.showIcon(IconNames.Diamond)\\n        basic.pause(500)\\n        basic.clearScreen()\\n        basic.pause(500)\\n    }\\n    basic.showIcon(IconNames.Yes)\\n})\\nbasic.showIcon(IconNames.Yes)\\n\"}"
+}

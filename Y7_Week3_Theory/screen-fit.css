@@ -1,0 +1,253 @@
+/* Adaptive screen fitting. Loaded last so legacy small-device rules never shrink
+   the lesson to make it fit. Layout follows available space, not device names. */
+:root {
+  --reading-scale: 1;
+  --base-reading-size: 106.25%;
+  --visible-height: 100dvh;
+  --visible-top: 0px;
+  --layout-height: 100dvh;
+  --code-line-height: 1.7rem;
+  font-size: calc(var(--base-reading-size) * var(--reading-scale));
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@media (any-pointer: coarse) { :root { --base-reading-size: 112.5%; } }
+@media (min-width: 1600px) { :root { --base-reading-size: 112.5%; } }
+/* Keep document reporting geometry independent of on-screen reading preferences. */
+.report-sheet h1 { margin: 0 0 13.6px; }
+.report-sheet h2 { margin: 5.6px 0 9.6px; }
+.report-sheet h3 { margin: 3.2px 0 8px; }
+.report-sheet p { margin: 4.8px 0 9.6px; }
+.report-sheet pre { margin: 8px 0; }
+.report-sheet code { padding: 2.08px 4px; }
+.report-sheet th, .report-sheet td { padding: 11.2px 13.6px; }
+.report-sheet th { font-size: 13.28px; }
+.report-sheet .report-meta { gap: 6.4px; }
+
+@media screen {
+  body { min-width: 0; }
+  #app { overflow-wrap: anywhere; }
+  #app *, dialog * { min-width: 0; }
+  #app img, #app svg { max-width: 100%; }
+  #app button, #app .button, dialog button, dialog .button {
+    max-width: 100%; min-height: 2.7rem; white-space: normal;
+  }
+  #app button.small, #app .button.small, dialog button.small {
+    font-size: .9rem; min-height: 2.65rem;
+  }
+  #app input:not([type=checkbox]):not([type=radio]), #app select, #app textarea,
+  dialog input:not([type=checkbox]):not([type=radio]), dialog select, dialog textarea {
+    font-size: max(16px, 1rem); max-width: 100%;
+  }
+  #app p, #app li, #app legend, #app .option { line-height: 1.65; }
+  #app .sub { font-size: .95em; line-height: 1.65; }
+  #app .muted, #app .hint, #app small { font-size: .9rem; }
+  #app .eyebrow { font-size: .78rem; }
+  #app .tag { font-size: .8rem; }
+  #app code { overflow-wrap: anywhere; }
+  #app .grid-two { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+  #app .grid-two[data-fit-columns=one] { grid-template-columns: minmax(0, 1fr); }
+  #app .grid-three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  #app .option { align-items: flex-start; }
+  #app .option input, #app .checkrow input { margin-top: .28rem; }
+  #app .row > *, #app .button-row > *, #app .subfooter > * { min-width: 0; }
+  #app .subfooter { flex-wrap: wrap; }
+  #app .code-line > span:last-child { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  #app .codebox { padding: 1rem; }
+
+  /* Landing and header. Device selection is a saving-guide preference, not layout. */
+  .landing { max-width: 76rem; gap: 3rem; padding: clamp(1rem, 3vw, 3rem); }
+  .landing-copy h1 { font-size: clamp(2.6rem, 5vw, 4.5rem); }
+  .landing-form { padding: clamp(1.2rem, 2.6vw, 2rem); }
+  .landing-display { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin: 1.1rem 0; }
+  .landing-display small { flex: 1 1 13rem; font-size: .85rem; }
+  .screen-display-button { gap: .4rem; }
+  .screen-display-button .aa { font-size: 1.02em; }
+  #device-suggestion { display: block; margin-top: .45rem; }
+  .topbar { flex-wrap: wrap; gap: .7rem 1rem; padding: .85rem clamp(.8rem, 2vw, 1.5rem); }
+  .brand { flex: 0 1 auto; max-width: 100%; }
+  .brand > div { flex: 1 1 auto; min-width: 0; }
+  .brand-badge { flex-shrink: 0; }
+  .brand strong { font-size: 1rem; }
+  .brand small { font-size: .8rem !important; }
+  .brand-badge { width: 2.55rem; height: 2.55rem; }
+  .header-actions { flex: 1 1 26rem; max-width: none; gap: .5rem; }
+  #app .header-actions select { width: auto; max-width: 14rem; padding: .45rem .65rem; min-height: 2.65rem; font-size: 1rem; }
+  #app .header-actions button { padding: .5rem .7rem; font-size: .9rem; }
+  #app .saved { font-size: .8rem; }
+
+  /* The goals rail only appears when both it and the lesson have room. */
+  .layout { max-width: 96rem; gap: 1.5rem; padding: clamp(.7rem, 2vw, 1.5rem); }
+  html[data-layout=wide] .layout { display: grid; grid-template-columns: 15rem minmax(0, 1fr); }
+  html[data-layout=wide] .sidebar { display: block; position: sticky; top: 1rem; padding: 1.1rem; max-height: calc(var(--visible-height) - 2rem); }
+  html[data-layout=wide] .mobile-goals { display: none; }
+  html:not([data-layout=wide]) .layout { display: block; max-width: 72rem; }
+  html:not([data-layout=wide]) .sidebar { display: none; }
+  html:not([data-layout=wide]) .mobile-goals { display: block; position: static; background: white; border: 1px solid var(--line); border-radius: 10px; padding: 0 .9rem; margin: 0 0 .8rem; }
+  .mobile-goals[open] { max-height: none; overflow: visible; }
+  .mobile-goals dl { font-size: 1rem; }
+  .mobile-goals dd { margin: 0 0 .8rem; }
+  .mobile-goals dt { font-weight: 750; color: var(--teal-dark); }
+  #app .sidebar dd, #app .sidebar .wagba { font-size: .95rem; }
+  #app .sidebar .keywords, #app .sidebar dt { font-size: .85rem; }
+  .lesson-card { padding: clamp(1rem, 2.5vw, 2.25rem); min-height: 0; }
+  .card-title { flex-wrap: wrap; }
+  .card-title > div { flex: 1 1 16rem; }
+  #app .card-title h1 { font-size: clamp(1.8rem, 3vw, 2.7rem); }
+  #app .stage-nav { flex-wrap: wrap; overflow: visible; gap: .35rem; }
+  #app .stage-nav button { font-size: .87rem; min-height: 2.65rem; white-space: normal; }
+  #app .subtabs { flex-wrap: wrap; overflow: visible; gap: .45rem; }
+  #app .subtabs button { font-size: .95rem; min-height: 2.7rem; max-width: 100%; }
+  .progress-label { flex-wrap: wrap; font-size: .85rem; gap: .4rem 1rem; }
+  .screen-stage-picker { display: none; }
+  .screen-stage-picker label { font-size: .9rem; margin-bottom: .35rem; }
+  .screen-stage-picker select { width: 100%; }
+  .stage-footer { position: static; flex-wrap: wrap; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  #app .stage-footer button { font-size: .95rem; }
+  #app .starting span { font-size: .95rem; }
+  #app .guide-tabs button { min-width: 2.65rem; width: auto; }
+  .guide-meta { grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  #app .guide-instruction { font-size: 1.2rem; }
+  #app .guide-file { font-size: 1rem; }
+  #app .shot-label { flex-wrap: wrap; }
+  #app .shot-label .tag { font-size: .8rem; }
+  #app .diagram-row, #app .diagram-top { font-size: .95rem; }
+  #app .diagram-sidebar { font-size: .88rem; }
+  #app .screenshot-frame img { max-height: none; }
+  .image-wrap, .shot-container { max-width: 100%; }
+  .screenshot-frame { padding: .9rem; }
+
+  /* Python: size the actual pane, not the physical screen. The original canvas
+     backing store and coordinate system stay intact when it is resized. */
+  .python-lab { --code-line-height: 1.7rem; }
+  .python-head { flex-wrap: wrap; gap: .7rem; }
+  .python-head > div { flex: 1 1 14rem; }
+  #app .python-head h2 { font-size: 1.3rem; }
+  #app .python-head button { font-size: .9rem; }
+  #app .python-name, #app .python-start, #app .python-caption { font-size: 1rem; }
+  #app .python-head .eyebrow { font-size: .8rem; }
+  #app .python-toolbar button { font-size: 1rem; min-height: 2.8rem; }
+  .python-speed { flex-wrap: wrap; font-size: .95rem; gap: .4rem; }
+  #app .python-speed select { font-size: 1rem; min-height: 2.7rem; }
+  .python-lab[data-panes=side-by-side] .python-split { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .python-lab[data-panes=stacked] .python-split { grid-template-columns: minmax(0,1fr); }
+  .python-lab .python-split { max-width: 88rem; gap: 1.2rem; }
+  .python-lab .python-output-side { width: 100%; max-width: 42rem; margin-inline: auto; }
+  .python-lab[data-panes=side-by-side] .python-output-side { max-width: none; }
+  #app .python-lab .python-canvas { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: 6 / 5; object-fit: fill; touch-action: pan-y pinch-zoom; }
+  #app .python-lab[data-panes=side-by-side] .python-jump { display: none; }
+  #app .python-lab[data-panes=stacked] .python-jump { display: inline-flex; font-size: .95rem; white-space: normal; }
+  .python-caption { flex-wrap: wrap; }
+  #app .python-caption span { font-size: .85rem; }
+  .python-lab .python-editor { height: var(--editor-fit-height, 14rem); }
+  #app .python-lab .python-editor textarea[data-ide-code] {
+    font-size: max(16px, 1rem); line-height: var(--code-line-height); min-height: 0; height: 100%;
+    resize: none; flex: 1 1 0; width: 0; padding: .65rem .6rem; tab-size: 4;
+    white-space: pre; overflow-wrap: normal; word-break: normal;
+  }
+  #app .python-lines { flex: 0 0 2.7rem; font-size: .95rem; line-height: var(--code-line-height); padding: .65rem 0; }
+  #app .python-lines span { height: var(--code-line-height); }
+  #app .python-chips button { font-size: .95rem; min-height: 2.7rem; }
+  #app .python-console pre, #app .python-error, #app .python-active-line, #app .python-setup pre { font-size: .95rem; }
+  #app .python-console-heading { font-size: .8rem; }
+  #app .python-tools, #app .python-setup, #app .python-help { font-size: .95rem; }
+  #app .python-help p, #app .python-setup p { font-size: .95rem; }
+  #app .python-stats small { font-size: .85rem; }
+  #app .python-stats strong { font-size: 1rem; }
+  #app .python-view-options { font-size: .95rem; }
+  #app .python-view-options label { min-height: 2.7rem; }
+  #app .python-playback button, #app .python-playback span { font-size: .9rem; }
+  #app .python-status { font-size: 1rem; }
+  #app .python-observation label, #app .python-observation textarea { font-size: 1rem; }
+  #app .python-evidence-row button { font-size: .9rem; }
+  .python-code-side, .python-output-side { scroll-margin-top: 1rem; }
+  .python-expanded .python-code-side, .python-expanded .python-output-side { scroll-margin-top: 7rem; }
+  .python-lab.python-expanded {
+    inset: auto; left: max(.6rem, env(safe-area-inset-left)); right: max(.6rem, env(safe-area-inset-right));
+    top: calc(var(--visible-top) + max(.6rem, env(safe-area-inset-top)));
+    height: calc(var(--visible-height) - max(.6rem, env(safe-area-inset-top)) - max(.6rem, env(safe-area-inset-bottom)));
+    max-height: none; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  }
+  .python-lab.python-expanded .python-editor { height: var(--editor-fit-height, 14rem); }
+  html[data-keyboard=true] .python-lab .python-editor { height: clamp(8rem, calc(var(--visible-height) * .48), 18rem); }
+  html[data-keyboard=true] .python-expanded .python-head, html[data-short=true] .python-expanded .python-head { position: static; }
+  html[data-keyboard=true] .python-expanded .python-code-side { scroll-margin-top: .5rem; }
+  html[data-short=true] .sidebar { position: static; }
+
+  /* Compact screens and split views: don't squeeze a two-column worksheet. */
+  html[data-layout=compact] .landing, html[data-layout=medium] .landing { grid-template-columns: minmax(0,1fr); max-width: 44rem; gap: 1.5rem; }
+  html:not([data-layout=wide]) .landing-mini { display: none; }
+  html[data-layout=compact] .layout { padding: .6rem; }
+  html[data-layout=compact] .lesson-card { padding: .9rem; }
+  html[data-layout=compact] .topbar { align-items: flex-start; }
+  html[data-layout=compact] .header-actions { flex: 1 1 100%; justify-content: flex-start; }
+  html[data-layout=compact] .header-actions .saved { display: none; }
+  html[data-layout=compact] .screen-stage-picker { display: block; margin-bottom: .9rem; }
+  html[data-layout=compact] .stage-nav { display: none !important; }
+  html[data-layout=compact] .reflection .options { grid-template-columns: minmax(0,1fr); }
+  html[data-layout=compact] .stage-footer .hint { display: none; }
+  html[data-layout=compact] .grid-three { grid-template-columns: minmax(0,1fr); }
+  html[data-layout=compact] .card-title .tag { white-space: normal; }
+  html[data-layout=compact] .starting { gap: .4rem; }
+  html[data-layout=compact] .starting span { flex: 1 1 8rem; }
+  html[data-layout=compact] .python-speed { margin-left: 0; }
+  html[data-layout=compact] .python-stats { grid-template-columns: 1fr 1fr; }
+  html[data-layout=compact] .python-stats > div:first-child { grid-column: 1 / -1; }
+  html[data-layout=compact] .python-playback span { flex: 1 1 100%; order: 3; }
+  html[data-layout=compact] .python-head, html[data-layout=compact] .python-observation { padding: .85rem; }
+  html[data-layout=compact] .python-prompt { padding: .85rem .85rem 0; }
+  html[data-layout=compact] .python-split { padding: 0 .85rem .85rem; }
+  html[data-layout=compact] .python-toolbar { padding: .6rem .85rem .85rem; }
+  html[data-layout=compact] .python-start { padding-inline: .85rem; }
+  html[data-layout=compact] .question { padding: .8rem; }
+  html[data-layout=compact] .read-panel, html[data-layout=compact] .task-panel { padding: .9rem; }
+  html[data-layout=compact] .option { padding: .8rem .7rem; }
+  html[data-layout=compact] .diagram-columns { grid-template-columns: minmax(0,1fr); }
+  html[data-layout=compact] .diagram-sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: .6rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+  html[data-layout=compact] .diagram-sidebar p { margin: 0; }
+  html[data-layout=compact] .diagram-top, html[data-layout=compact] .diagram-body { padding: .8rem; }
+  html[data-layout=compact] .print-guide .overview { grid-template-columns: minmax(0,1fr); }
+  html[data-reading=true] .reflection .options { grid-template-columns: minmax(0,1fr); }
+
+  /* Labelled table rows on narrow screens; keep explicit table semantics. */
+  html[data-layout=compact] #main table[data-fit-cards] { display: block; }
+  html[data-layout=compact] #main table[data-fit-cards] thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  html[data-layout=compact] #main table[data-fit-cards] tbody { display: block; }
+  html[data-layout=compact] #main table[data-fit-cards] tr { display: block; padding: .8rem; border-bottom: 2px solid var(--line); }
+  html[data-layout=compact] #main table[data-fit-cards] td { display: block; padding: .5rem 0; border: 0; }
+  html[data-layout=compact] #main table[data-fit-cards] td::before { content: attr(data-column); display: block; font-size: .9rem; font-weight: 750; margin-bottom: .4rem; color: var(--teal-dark); }
+  html[data-layout=compact] #main table[data-fit-cards] td input { min-width: 0; }
+  html[data-layout=compact] #main table[data-fit-cards] td select { min-width: 0; }
+
+  /* Dialogs fit the visual viewport and do not cover the on-screen keyboard. */
+  dialog { overflow-wrap: anywhere; width: min(56rem, calc(100vw - 1.4rem)); max-height: calc(var(--visible-height) - 1.4rem); padding: clamp(.9rem, 2.5vw, 1.5rem); }
+  dialog .modal-head { flex-wrap: wrap; }
+  dialog .teacher-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+  .screen-display-dialog { width: min(35rem, calc(100vw - 1.4rem)); }
+  .screen-status-card { display: grid; gap: .3rem; background: #edf5f3; border: 1px solid #c9ded8; padding: .9rem 1rem; border-radius: 10px; }
+  .screen-status-card small { font-size: .85rem; }
+  .screen-text-settings { margin: 1.25rem 0; }
+  .screen-size-buttons { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: .5rem; align-items: center; margin: .6rem 0; }
+  .screen-size-buttons button { padding: .35rem .4rem; font-size: 1.2rem; }
+  .screen-size-buttons output { min-width: 0; font-weight: 750; text-align: center; }
+  .screen-display-dialog .checkrow { font-size: 1rem; }
+  .screen-display-dialog .hint { font-size: .9rem; }
+  .screen-display-dialog .button-row { flex-wrap: wrap; }
+  .toast { bottom: max(1rem, env(safe-area-inset-bottom)); width: max-content; max-width: calc(100vw - 2rem); }
+  .report-modal { width: min(900px, calc(100vw - 1rem)); }
+  .report-preview-scroll { width: 100%; }
+  .screen-preview-controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .8rem 0; }
+  .screen-preview-controls button { font-size: .9rem; }
+  .screen-preview-controls button[aria-pressed=true] { color: white; background: var(--teal); }
+  .screen-preview-controls small { flex: 1 1 100%; }
+  .screen-report-frame { position: relative; overflow: hidden; margin: 1rem auto; flex-shrink: 0; }
+  .screen-report-frame .report-sheet { position: absolute; left: 0; top: 0; margin: 0; transform: scale(var(--page-scale,1)); transform-origin: top left; }
+  .report-preview-scroll[data-preview=fit] { overflow-x: hidden; }
+  .report-preview-scroll[data-preview=actual] { overflow: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .screen-report-frame { scroll-behavior: auto; } }
+@media print {
+  #screen-display-dialog, .screen-preview-controls { display: none !important; }
+  .screen-report-frame { display: contents !important; width: auto !important; height: auto !important; }
+  .screen-report-frame .report-sheet { position: static !important; transform: none !important; }
+}

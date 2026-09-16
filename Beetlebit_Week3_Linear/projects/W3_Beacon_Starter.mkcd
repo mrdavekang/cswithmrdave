@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "cloudId": "ks/microbit",
+    "editor": "blocksprj",
+    "name": "W3_Beacon_Starter"
+  },
+  "source": "{\"pxt.json\":\"{\\n  \\\"name\\\": \\\"W3_Beacon_Starter\\\",\\n  \\\"description\\\": \\\"Week 3: LED sequences and two-board radio. No motors.\\\",\\n  \\\"dependencies\\\": {\\n    \\\"core\\\": \\\"*\\\"\\n  },\\n  \\\"files\\\": [\\n    \\\"main.ts\\\"\\n  ],\\n  \\\"preferredEditor\\\": \\\"blocksprj\\\"\\n}\",\"main.ts\":\"input.onButtonPressed(Button.A, function () {\\n    basic.showIcon(IconNames.Diamond)\\n})\\nbasic.showIcon(IconNames.Yes)\\n\"}"
+}

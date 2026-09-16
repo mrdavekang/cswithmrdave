@@ -1,0 +1,39 @@
+﻿Gimkit Spreadsheet Import Template,,,,
+Question,Correct Answer,Incorrect Answer 1,Incorrect Answer 2,Incorrect Answer 3
+"1. Which line correctly moves the Turtle to (60, 20)?","t.goto(60, 20)",t.goto(60 20),"t.goto(60, 20","t.goto 60, 20"
+"2. Which position does t.goto(-30, 50) specify?","(-30, 50)","(50, -30)","(30, 50)","(-30, -50)"
+3. What does 40 mean in t.forward(40)?,The distance to move forwards,The pen colour,Degrees to turn,An x-coordinate to reach
+4. What does t.penup() allow the Turtle to do?,Move without drawing a line,Stop moving completely,Delete every existing line,"Return to (0, 0)"
+"5. What is the purpose of this line?
+# Draw the route to the classroom",Leave a note for someone reading the code,Display these words on the drawing,Automatically move to the classroom,Repeat the next instruction
+"6. The Turtle is at (20, 10), facing up. It runs t.right(90). Which statement is correct?","At (20, 10), facing right","At (110, 10), facing up","At (20, -80), facing right","At (20, 10), facing left"
+7. The Turtle faces right. It runs t.left(90). Which way does it face now?,Up,Right,Down,Left
+"8. Start at (10, 20), facing right. After t.forward(30), where does the Turtle finish?","(40, 20)","(30, 20)","(10, 50)","(40, 50)"
+"9. The Turtle is already at (-20, 30). It runs t.goto(-20, 30) again. Where does it finish?","(-20, 30)","(0, 0)","(-40, 60)","(20, 30)"
+"10. Which comment best explains this code?
+t.penup()
+t.goto(-60, 0)
+t.pendown()","# Move without drawing, then lower the pen",# Start the program,# Turn the Turtle to face left,"# Draw a line to (-60, 0)"
+"11. Start at (0, 0), facing right, pen down. Where does this program finish?
+t.forward(60)
+t.right(90)
+t.forward(20)","(60, -20)","(60, 20)","(0, -80)","(20, -60)"
+"12. Start at (0, 0), facing right, pen down. Where does this program finish?
+t.goto(0, 40)
+t.forward(20)","(20, 40)","(0, 60)","(20, 0)","(40, 20)"
+"13. Start at (0, 0) on a blank drawing. Which line does this code draw?
+t.penup()
+t.goto(40, 0)
+t.pendown()
+t.goto(40, 30)","Only (40, 0) to (40, 30)","Only (0, 0) to (40, 0)",No line at all,"A diagonal from (0, 0) to (40, 30)"
+"14. Both start at (0, 0), facing right, pen down. Which statement is correct?
+# Program A
+t.forward(40)
+t.right(90)
+
+# Program B
+t.right(90)
+t.forward(40)","Different final positions, same final direction","Same final position, same final direction","Same final position, different final directions",Neither program draws a line
+"15. Start at (0, 0), facing right, pen down. The target is (0, 30). Which single change makes this code reach it?
+t.right(90)
+t.forward(30)",Replace t.right(90) with t.left(90),Replace t.forward(30) with t.forward(60),Add t.penup() before both instructions,Replace t.right(90) with t.right(0)

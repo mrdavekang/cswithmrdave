@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "cloudId": "ks/microbit",
+    "editor": "blocksprj",
+    "name": "W3_Radio2_Controller"
+  },
+  "source": "{\"pxt.json\":\"{\\n  \\\"name\\\": \\\"W3_Radio2_Controller\\\",\\n  \\\"description\\\": \\\"Week 3: LED sequences and two-board radio. No motors.\\\",\\n  \\\"dependencies\\\": {\\n    \\\"core\\\": \\\"*\\\",\\n    \\\"radio\\\": \\\"*\\\"\\n  },\\n  \\\"files\\\": [\\n    \\\"main.ts\\\"\\n  ],\\n  \\\"preferredEditor\\\": \\\"blocksprj\\\"\\n}\",\"main.ts\":\"input.onButtonPressed(Button.A, function () {\\n    radio.sendString(\\\"HELP\\\")\\n})\\ninput.onButtonPressed(Button.B, function () {\\n    radio.sendString(\\\"SAFE\\\")\\n})\\nradio.setGroup(23)\\nbasic.showIcon(IconNames.Yes)\\n\"}"
+}

@@ -1,0 +1,66 @@
+(function(root){
+'use strict';
+const T=root.Lesson.T, E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const steps=[
+ {id:'report',title:T('Check your report','检查你的报告','보고서 확인'),instruction:T('Check your name, class and lesson title.','检查姓名、班级和课题。','이름, 반, 수업 제목을 확인하세요.'),result:T('Your report contains your own answers.','报告里有你自己的答案。','보고서에 자신의 답이 들어 있습니다.'),check:T('I checked that this is my report.','我已确认这是我的报告。','내 보고서가 맞는지 확인했습니다.')},
+ {id:'save',title:T('Save your PDF','保存 PDF','PDF 저장'),instruction:T('Prepare the PDF, then save a copy on your device.','先生成 PDF，再将副本保存到设备上。','PDF를 만든 다음 기기에 저장하세요.'),result:T('A saved PDF is different from an open preview.','保存了 PDF 和打开预览不是同一件事。','미리보기를 여는 것과 파일을 저장하는 것은 다릅니다.'),check:T('I saved a copy of my PDF.','我已保存 PDF 副本。','PDF 사본을 저장했습니다.')},
+ {id:'folder',title:T('Remember the folder','记住文件夹','폴더 기억하기'),instruction:T('Look at the location you used. Record it below.','查看保存的位置，并记录在下方。','저장한 위치를 확인하고 아래에 기록하세요.'),result:T('You know where to look for your file.','你知道要到哪里找文件。','파일을 찾을 위치를 알고 있습니다.'),check:T('I know which folder contains my PDF.','我知道 PDF 在哪个文件夹。','PDF가 들어 있는 폴더를 알고 있습니다.')},
+ {id:'find',title:T('Find and open the saved file','找到并打开保存的文件','저장한 파일 찾아 열기'),instruction:T('Open your file browser. Find your PDF and open it.','打开文件管理器，找到并打开 PDF。','파일 관리 앱에서 PDF를 찾아 여세요.'),result:T('You can see your lesson title and answers inside the saved PDF.','保存的 PDF 中有本课标题和你的答案。','저장한 PDF 안에 수업 제목과 자신의 답이 보입니다.'),check:T('I opened my saved PDF and checked my answers.','我已打开保存的 PDF，并检查了答案。','저장한 PDF를 열고 답을 확인했습니다.')},
+ {id:'assignment',title:T('Open the correct assignment','打开正确的作业','올바른 과제 열기'),instruction:T('Open Teams. Choose your class and this lesson’s assignment.','打开 Teams，选择你的班级和本课作业。','Teams에서 자신의 반과 이번 수업 과제를 선택하세요.'),result:T('The assignment title matches the one shown below.','作业标题与下方显示的标题一致。','과제 제목이 아래 제목과 일치합니다.'),check:T('I opened the correct Teams assignment.','我已打开正确的 Teams 作业。','올바른 Teams 과제를 열었습니다.')},
+ {id:'attach',title:T('Attach your PDF','附加 PDF','PDF 첨부'),instruction:T('Choose Attach or +Add work. Select your saved PDF from your device.','选择 Attach 或 +Add work，从设备中选择保存的 PDF。','Attach 또는 +Add work를 누르고 기기에 저장한 PDF를 선택하세요.'),result:T('Your PDF appears as an attachment in the assignment.','PDF 出现在作业附件中。','과제에 PDF가 첨부되어 보입니다.'),check:T('My PDF is attached to the assignment.','我的 PDF 已附加到作业中。','과제에 PDF를 첨부했습니다.')},
+ {id:'verify',title:T('Check the attachment','检查附件','첨부 파일 확인'),instruction:T('Check the filename. Open the attachment to check that it is your report.','检查文件名，打开附件确认这是你的报告。','파일 이름을 확인하고 첨부 파일을 열어 내 보고서인지 확인하세요.'),result:T('The attached file has the right lesson, name and answers.','附件里的课题、姓名和答案都正确。','첨부 파일의 수업, 이름, 답이 올바릅니다.'),check:T('I checked the attached PDF, not just its name.','我已检查附件内容，而不只是文件名。','이름뿐 아니라 첨부 PDF 내용도 확인했습니다.')},
+ {id:'turn',title:T('Turn it in','提交作业','과제 제출'),instruction:T('Your file is attached. Now select Turn in.','文件已附加。现在选择 Turn in。','파일을 첨부했습니다. 이제 Turn in을 누르세요.'),result:T('Teams responds to your turn-in action. Wait for it to finish.','等待 Teams 完成提交操作。','Teams가 제출 처리를 마칠 때까지 기다리세요.'),check:T('I selected Turn in and waited for Teams.','我已选择 Turn in，并等待 Teams 完成。','Turn in을 누르고 Teams 처리를 기다렸습니다.')},
+ {id:'confirm',title:T('Check the submission confirmation','检查提交确认','제출 확인'),instruction:T('Look for Turned in and the submission date/time.','查看 Turned in 状态及提交日期和时间。','Turned in 상태와 제출 날짜 및 시간을 확인하세요.'),result:T('An attached file alone does not prove the assignment is turned in.','仅有附件并不表示作业已经提交。','파일을 첨부한 것만으로는 제출이 완료되지 않습니다.'),check:T('I checked that Teams shows my assignment as turned in.','我已确认 Teams 显示作业已提交。','Teams에서 과제가 제출되었다고 표시되는지 확인했습니다.')}
+];
+function filename(s){const safe=x=>String(x||'Student').normalize('NFKC').trim().replace(/[^\p{L}\p{N}_-]+/gu,'_').slice(0,55);return 'Y7_W3_Theory_'+safe(s.klass)+'_'+safe(s.name)+'.pdf';}
+function routeLabel(s){const ds={ipad:'iPad',android:'Android tablet',windows:'Windows laptop',mac:'Mac laptop',chromebook:'Chromebook'};return (ds[s.device]||'Device')+' · '+(s.browser||'Browser')+' · Teams '+(s.teamsMode==='app'?'app':'browser');}
+function screenshotKey(s,i){return [s.device,s.browser,s.teamsMode,steps[i].id].join('|');}
+function deviceText(s,i){
+const ipad=s.device==='ipad',and=s.device==='android';
+const finder=s.device==='mac'?'Finder':s.device==='windows'?'File Explorer':'Files';
+if(i===1){
+ if(ipad&&s.browser==='Chrome')return T('Tap Prepare PDF. Then use Save / share PDF. Choose Save to Files and Save. If Chrome opens a PDF preview instead, look for SAVE… → Files, or Share → Save to Files.','点击 Prepare PDF，再点 Save / share PDF。选择 Save to Files 和 Save。如果 Chrome 打开预览，寻找 SAVE… → Files，或 Share → Save to Files。','Prepare PDF 다음 Save / share PDF를 누르세요. Save to Files와 Save를 선택하세요. Chrome 미리보기가 열리면 SAVE… → Files 또는 Share → Save to Files를 찾으세요.');
+ if(ipad)return T('Tap Prepare PDF. Then tap Save / share PDF and choose Save to Files. Pick a folder and tap Save. If a PDF preview opens, use its Share button; View More may reveal Save to Files.','点击 Prepare PDF，再点 Save / share PDF，选择 Save to Files。选择文件夹后点 Save。若打开 PDF 预览，使用 Share；可能需要点 View More 才能看到 Save to Files。','Prepare PDF 다음 Save / share PDF를 누르고 Save to Files를 선택하세요. 폴더를 정하고 Save를 누르세요. 미리보기에서는 Share를 사용하세요. Save to Files가 안 보이면 View More를 누르세요.');
+ if(and)return T('Tap Prepare PDF, then Download PDF. If a PDF viewer appears, use its download control. If asked, choose a folder and confirm Download or Save.','点击 Prepare PDF，再点 Download PDF。如果出现 PDF 阅读器，使用其中的下载按钮。若有提示，选择文件夹并确认 Download 或 Save。','Prepare PDF 다음 Download PDF를 누르세요. PDF 뷰어가 열리면 다운로드 버튼을 사용하세요. 요청하면 폴더를 선택하고 Download 또는 Save를 누르세요.');
+ return T('Click Prepare PDF, then Download PDF. A Save window may appear: choose your folder and Save. If it downloads immediately, open your browser’s downloads list. Do not save this webpage instead.','点击 Prepare PDF，再点 Download PDF。如果出现保存窗口，选择文件夹并点 Save。如果自动下载，打开浏览器下载列表。不要把本网页保存为文件。','Prepare PDF 다음 Download PDF를 클릭하세요. 저장 창이 뜨면 폴더를 선택하고 Save를 누르세요. 자동으로 다운로드되면 브라우저 다운로드 목록을 여세요. 이 웹페이지 자체를 저장하지 마세요.');
+}
+if(i===2||i===3){
+ if(ipad)return T('Open Files → Browse. Look in the location you selected: On My iPad, iCloud Drive, or another folder. Downloads is common, but your device may use a different folder.','打开 Files → Browse。查看你选择的位置：On My iPad、iCloud Drive 或其他文件夹。Downloads 很常见，但你的设备可能使用其他位置。','Files → Browse를 여세요. 선택한 위치인 On My iPad, iCloud Drive 또는 다른 폴더를 확인하세요. 보통 Downloads이지만 기기마다 다를 수 있습니다.');
+ if(and)return T('In Chrome, open ⋮ → Downloads. You can also open Files / My Files and look in Downloads or the folder you chose. A device may use a different file-browser name.','在 Chrome 中打开 ⋮ → Downloads，也可以打开 Files / My Files，查看 Downloads 或你选择的文件夹。不同设备的文件管理器名称可能不同。','Chrome에서 ⋮ → Downloads를 여세요. Files / My Files에서 Downloads 또는 선택한 폴더를 찾아도 됩니다. 기기마다 파일 관리 앱 이름이 다를 수 있습니다.');
+ return T('Open '+finder+'. Choose Downloads or the folder you selected. You can also use your browser’s downloads list to show the saved file in its folder.','打开 '+finder+'。选择 Downloads 或你保存时选的文件夹。也可以从浏览器的下载列表显示文件所在位置。',finder+'를 여세요. Downloads 또는 선택한 폴더를 고르세요. 브라우저 다운로드 목록에서 파일이 있는 폴더를 열어도 됩니다.');
+}
+if(i===4)return T('Use your school account. Open Assignments from the app bar or your class team. If Assignments is hidden, check More (…). Your teacher may also provide a direct assignment link.','使用学校账号。从应用栏或班级团队打开 Assignments。如果看不到，检查 More (…)。老师也可能提供作业直达链接。','학교 계정을 사용하세요. 앱 메뉴나 반 팀에서 Assignments를 여세요. 안 보이면 More (…)를 확인하세요. 선생님이 직접 링크를 줄 수도 있습니다.');
+if(i===5)return T((s.teamsMode==='app'?'In the app, look for Attach.':'In the browser, look for +Add work.')+' Choose a local file: Upload from this device, Browse or Files (wording varies). Open the same folder, choose your PDF, and confirm Open / Upload / Done if asked.','寻找 '+(s.teamsMode==='app'?'Attach':'＋Add work')+'。选择本地文件：Upload from this device、Browse 或 Files（名称可能不同）。打开同一个文件夹，选择 PDF，按提示确认 Open / Upload / Done。',(s.teamsMode==='app'?'앱에서 Attach':'브라우저에서 +Add work')+'를 찾으세요. Upload from this device, Browse 또는 Files에서 저장한 PDF를 선택하세요. 요청하면 Open / Upload / Done을 누르세요.');
+if(i===7)return T('Attaching is not turning in. If Teams says Turn in late, ask your teacher if late submissions are accepted. If Turn in is unavailable, keep your saved file and show your teacher.','附加附件不等于提交。如果显示 Turn in late，询问老师是否接受迟交。如果无法提交，保留文件并请老师帮助。','첨부와 제출은 다릅니다. Turn in late가 보이면 지각 제출이 가능한지 선생님께 확인하세요. 제출할 수 없으면 파일을 보관하고 선생님께 보여주세요.');
+if(i===8)return T('Some views also show Undo turn in after submission. Do not press it just to check. This checkbox records your own check; the lesson app cannot verify Teams.','某些界面提交后还会显示 Undo turn in。不要为了检查而点击它。下方勾选仅记录你自己的确认；本应用无法验证 Teams 的状态。','제출 후 Undo turn in이 보이기도 합니다. 확인하려고 누르지 마세요. 체크 상자는 자신의 확인 기록이며 이 수업 앱은 Teams 제출을 확인할 수 없습니다.');
+return T('Read the lesson title and your own answers before leaving the lesson.','离开本课前，检查课题和自己的答案。','수업을 나가기 전에 제목과 자신의 답을 확인하세요.');
+}
+function diagram(s,i){
+const f=E(filename(s)), isMobile=['ipad','android'].includes(s.device), app=s.teamsMode==='app';
+const pdf='<div class="fakefile"><span class="pdfbadge">PDF</span><span>'+f+'</span></div>';
+let title='Your lesson report',body='';
+if(i===0){body='<div class="diagram-row highlight"><strong>Python Turtle: Read, Trace and Predict</strong><br>'+E(s.name)+' · '+E(s.klass)+'</div><div class="diagram-row">Your predictions · Your trace · Your checkpoint</div><div class="diagram-row">'+pdf+'</div>';}
+else if(i===1){
+ title=s.device==='ipad'?'iPad · Save / share':s.device==='android'?'Android · Download':'Browser · Save PDF';
+ if(s.device==='ipad')body='<div class="diagram-row">'+pdf+'</div><div class="diagram-row">Share <span style="float:right">↑</span></div><div class="diagram-row highlight">Save to Files</div><div class="diagram-row">Choose a folder → Save</div>';
+ else body='<div class="diagram-row">'+pdf+'</div><div class="diagram-row highlight">'+(s.device==='android'?'Download PDF ↓':'Download PDF ↓')+'</div><div class="diagram-row">Choose a folder if asked → Save</div>';
+}
+else if(i===2||i===3){title=s.device==='ipad'?'Files · Browse':s.device==='android'?'Files / My Files':s.device==='mac'?'Finder':s.device==='windows'?'File Explorer':'Files';body='<div class="diagram-columns"><div class="diagram-sidebar"><p>'+ (s.device==='ipad'?'On My iPad':'My files')+'</p><p>Downloads</p><p>'+(s.device==='ipad'?'iCloud Drive':'Documents')+'</p></div><div class="diagram-body"><div class="diagram-row '+(i===2?'highlight':'')+'">'+E(s.fields.folder||'Your chosen folder')+'</div><div class="diagram-row '+(i===3?'highlight':'')+'">'+pdf+'</div></div></div>';}
+else {title='Microsoft Teams · '+(app?'app':'browser');if(i===4)body='<div class="diagram-row">Your school account → Your class</div><div class="diagram-row highlight">Assignments</div><div class="diagram-row">'+E((root.App?.config||root.LESSON_CONFIG).assignmentTitle)+'</div>';
+ if(i===5)body='<div class="diagram-row">Your assignment → Your work</div><div class="diagram-row highlight">'+(app?'Attach':'＋ Add work')+'</div><div class="diagram-row">Upload from this device / Browse / Files</div><div class="diagram-row">Choose '+f+'</div>';
+ if(i===6)body='<div class="diagram-row">Your work</div><div class="diagram-row highlight">'+pdf+'</div><div class="diagram-row">Open it. Check the lesson, name and answers.</div>';
+ if(i===7)body='<div class="diagram-row">'+pdf+'</div><div class="diagram-body"><span class="diagram-button highlight">Turn in</span><small>Attaching is not turning in.</small></div>';
+ if(i===8)body='<div class="diagram-row highlight">✓ Turned in</div><div class="diagram-row">Submission date and time</div><div class="diagram-row">Undo turn in <small>Do not press this just to check.</small></div>';
+}
+return '<div class="diagram"><div class="diagram-top"><span>'+title+'</span><span>•••</span></div><div class="diagram-body">'+body+'</div></div>';
+}
+function render(s,i,config,t){
+ const step=steps[i],over=config.screenshotOverrides[screenshotKey(s,i)],shot=over?.src;
+ const label=shot?T('Teacher-supplied screenshot','老师提供的截图','선생님이 제공한 화면 캡처'):T('Illustrated walkthrough — not a device screenshot','操作示意图，并非设备截图','안내용 그림 — 실제 기기 화면 캡처가 아님');
+ let out='<div class="shot-label"><span class="tag">'+t(label)+'</span><button class="small" data-act="enlarge-guide">'+t(T('Enlarge','放大','크게 보기'))+'</button></div>';
+ out+='<div id="guide-visual" class="screenshot-frame">'+(shot?'<div class="shot-container"><div class="image-wrap"><img src="'+E(shot)+'" alt="'+E(over.caption||step.title.en)+'">'+(over.point?'<span class="shot-marker" style="left:'+Number(over.point.x)*100+'%;top:'+Number(over.point.y)*100+'%">1</span>':'')+'</div></div>':diagram(s,i))+'</div>';
+ out+='<p class="hint space">'+(shot?E(over.caption||'Check that this screenshot matches your device.'):t(T('Look for the same button labels. Menu positions can differ. Your teacher can replace this diagram with a screenshot of your device.','寻找相同的按钮名称。菜单位置可能不同，老师可以将示意图替换为你设备的截图。','같은 버튼 이름을 찾으세요. 메뉴 위치는 다를 수 있습니다. 선생님이 이 그림을 기기 화면 캡처로 바꿀 수 있습니다.')))+'</p>';
+ return out;
+}
+root.SubmissionGuide={steps,filename,routeLabel,screenshotKey,deviceText,render};
+})(window);
