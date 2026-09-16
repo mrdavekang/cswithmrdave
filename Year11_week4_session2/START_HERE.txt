@@ -1,0 +1,106 @@
+YEAR 11 | TERM 1 WEEK 4 | SESSIONS 2 + 3
+Cyber security threats | OxfordAQA 9210 | 60 minutes
+
+OPEN THE LESSON
+Open the index.html file in the main folder in a web browser.
+It is self-contained: no installation, build step, account, remote script,
+font download or Internet connection is needed for the lesson itself.
+Teams submission needs your normal connection and school account.
+
+Some tablet file apps show a preview of HTML rather than running the lesson.
+Use the full browser, or place index.html on your usual permitted static
+lesson host and share that address with students. No hosted URL is supplied.
+
+Do not open editable-source/index.html: that is the template for rebuilding.
+
+STUDENTS
+Enter your name, class and device. Reuse exactly the same name and class
+when returning in the same browser to locate your local profile.
+
+TEACHER PREVIEW
+Enter teacher as the name. The class can be left blank.
+A visible teacher banner provides Teacher notes and Show all marking guidance.
+This is a separate demonstration profile, not secure authentication.
+All stages remain freely navigable for students too.
+
+60-MINUTE SEQUENCE
+00-05  Do Now: original November 2024 Q06.1-Q06.2, 4 retrieval marks
+05-08  Types of Learning: starting checks and one focus
+08-26  Main Activity 1: people, passwords, permissions and social engineering
+26-48  Main Activity 2: malware, media, updates, protection, 10 exam marks
+48-52  Learning Pitstop: the same six checks, evidence and next action
+52-57  Plenary: textbook spyware explanation and three malware effects
+57-60  Save & submit: check the PDF and submit through Teams
+Optional extension: June 2023 Q05.2, 2 marks, in spare time only.
+
+Main Activity 2: 9 minutes content/checks + 10 minutes independent questions
++ 3 minutes checking and one improvement.
+
+SAVE AND SUBMIT
+Work is saved locally using IndexedDB. Watch the save-status message.
+Browser restrictions, private sessions, storage limits, clearing browser data,
+or moving/renaming the HTML file can affect access to saved work.
+The app shows a warning rather than falsely claiming a save succeeded.
+
+Export PDF includes every stage, even those not currently open.
+Use Open PDF or Share PDF when a browser download is not obvious.
+If necessary, use the Print / save as PDF fallback in Save & submit.
+Check that names, answers and photographs are readable before submitting.
+
+A PDF is not editable lesson data. Save a JSON backup before changing device,
+browser or file location. Restore that backup through the landing page or
+Save & submit. Restore asks before replacing the named local profile.
+
+Names, answers, marks, photos and backups are personal pupil information.
+Keep them private. Do not add student work to any public website/repository.
+No pupil work is transmitted to a server by this app.
+The Teams checkboxes are learner confirmations, not verified submission.
+
+PAPER EVIDENCE
+Photographs can replace typed answers. On exam questions tick the paper-answer
+box and add the matching photographs before keeping the original attempt.
+JPEG, PNG and WebP are accepted, up to 15 MB each, resized to a maximum of
+2,000 pixels. Add a caption with question numbers and check legibility.
+HEIC files must first be converted. Up to 40 photographs are supported.
+A photo included in a retained exam attempt cannot be deleted; add a new
+photo for corrections instead. Photos retain their original aspect ratio.
+
+MARKING
+Written explanations are not automatically graded. Use the actual matching
+mark schemes to record self, peer or teacher marks. Quiz checks are separate.
+
+For June 2023 Q06, the app allows up to 3 points for each threat area and
+caps the total at 4. It does not impose an incorrect fixed 2 + 2 split.
+For June 2024 Q10.1, award any 3 of 4 distinct virus features.
+Retaining an attempt keeps the original answers separate from improvements.
+Unmarked answers do not count as zero. Completion is not a mastery score.
+
+RESOURCES
+The Sources button opens the embedded original textbook excerpt (printed
+238-245), supplied specification Version 3.5 pages 28-30, and selected question
+pages. Original exam images and corresponding mark-scheme pages are included.
+Teacher-created checks/scaffolds and condensed course notes are labelled.
+
+Pharming: the app explicitly follows the specification's traffic-redirection
+wording; the textbook's emphasis on the fake site is separately acknowledged.
+Penetration testing and the fuller protection lesson continue in Week 5.
+
+The teacher folder contains the separate original questions/mark-scheme PDF.
+Material supplied here is for the school's permitted use. Review permissions
+before publicly hosting textbook or examination extracts. Do not publish the
+teacher folder. Client-side answer panels are not a secure examination system.
+
+FONT AND PDF NOTES
+The interface uses Raleway when installed on the device, with sans-serif
+fallbacks. No font files are included or downloaded.
+English PDF text uses built-in PDF fonts; non-Latin text lines are rendered
+using available browser fonts. Those non-Latin lines are images in the PDF.
+The browser-print fallback retains the browser's normal text rendering.
+
+WHAT IS IN THIS FOLDER
+index.html                 The complete self-contained web app
+START_HERE.txt             This guide
+teacher/                   Original source/mark-scheme PDF and source map
+editable-source/           Readable HTML/CSS/JS and a portable rebuild script
+
+All files run locally. No backend, database server or API keys are required.

@@ -1,0 +1,34 @@
+BUILD CHECKS
+
+Syntax checks: app.js and lesson.js passed Node syntax validation.
+
+Rendered in Chromium with browser-injected HTML (network navigation is blocked
+by the test environment's administrator policy). Exercised the complete
+student route and responsive widths of 1440, 1024 and 390 pixels.
+
+Verified:
+- Name/class validation and the separate teacher-preview controls.
+- All eight navigation entries and all main-activity tabs.
+- First and subsequent quiz-check history.
+- Empty attempts and paper declarations without photos cannot finalise.
+- Retained original answers remain separate from improvements.
+- June 2023 Q06 3+3 subcounts cap at 4 overall; main task totals 10.
+- Text-only evidence export includes all stages, not just the current screen.
+- Photo upload, caption, original-evidence retention and backup round-trip.
+- Invalid lesson backups and out-of-range marks rejected without replacing work.
+- Long responses paginate; tested non-Latin names and mixed-language text.
+- Generated PDFs rendered and inspected; text boundary checks passed.
+- No JavaScript errors in the exercised flows; no page-level horizontal
+  overflow at the tested desktop, tablet and phone widths.
+- The storage-unavailable path gives an explicit warning and still permits
+  PDF export and backup/restore.
+
+The test browser's opaque injected-document origin prevents a real IndexedDB
+persistence/reload test. Saving uses the standard IndexedDB transaction API,
+with separate per-lesson/per-profile keys and explicit write-failure handling.
+Please check persistence in the actual school hosting/browser environment.
+
+Physical iPad/Android hardware, native device share sheets, print dialogs and
+actual Teams submission were not available in this test environment. The app
+provides alternative PDF download/open/share/print routes and does not claim
+to verify Teams submission.
