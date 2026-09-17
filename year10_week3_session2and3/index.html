@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176448">
+  <meta name="description" content="Year 10 OxfordAQA 9210 Week 3 combined lesson: represent, trace and implement an algorithm.">
+  <title>Represent, Trace & Implement · Year 10 Week 3</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#lesson">Skip to lesson</a>
+
+  <section id="landing" class="landing" aria-labelledby="landingTitle">
+    <div class="entry-inner">
+      <p class="eyebrow">YEAR 10 · OXFORDAQA 9210 · TERM 1 WEEK 3</p>
+      <h1 id="landingTitle">Represent. Trace.<br>Implement.</h1>
+      <p class="lead">One problem, four representations: flowchart, pseudocode, trace table and Python.</p>
+      <form id="entryForm">
+        <label for="studentName">Your name</label>
+        <input id="studentName" name="name" autocomplete="name" maxlength="100" required>
+        <label for="studentClass">Your class</label>
+        <input id="studentClass" name="class" maxlength="50" placeholder="For example: 10T">
+        <button class="primary" type="submit">Open my lesson</button>
+      </form>
+      <p id="entryMessage" class="form-message" role="status"></p>
+      <p class="small">Your responses are saved on this browser and device. Enter <strong>teacher</strong> as the name for teacher preview. Teacher preview is not a secure login.</p>
+    </div>
+  </section>
+
+  <div id="app" hidden>
+    <header class="topbar">
+      <button id="menuButton" type="button" aria-expanded="false" aria-controls="route">Lesson route</button>
+      <div class="current">
+        <strong id="currentLabel">Read First</strong>
+        <span id="identity"></span>
+      </div>
+      <div class="save-area">
+        <span id="saveStatus" role="status">Saved on this device</span>
+        <button id="exportTop" type="button">Review / export PDF</button>
+      </div>
+    </header>
+
+    <aside class="learning-focus" aria-label="Today's learning focus">
+      <p><strong>WAGBA</strong> Showing how an algorithm works and turning it into accurate Python.</p>
+      <p><strong>K:</strong> flowchart symbols, <code>USERINPUT</code>, assignment <code>←</code>, <code>OUTPUT</code> · <strong>S:</strong> represent, trace, translate and test · <strong>U:</strong> explain sequence, reassignment and equivalent representations.</p>
+      <p><strong>Keywords:</strong> flowchart · pseudocode · sequence · assignment · processing · trace table · dry run · output</p>
+    </aside>
+
+    <div id="teacherNotice" class="notice" hidden><strong>Teacher preview:</strong> model guidance and answer notes are available throughout. Student evidence is kept separate.</div>
+    <div id="storageWarning" class="warning" hidden></div>
+    <nav id="route" aria-label="Lesson route" hidden></nav>
+    <main id="lesson" tabindex="-1"></main>
+    <footer class="site-footer">60-minute combined lesson · use your own Python IDE for practical coding · ask for help at any stage</footer>
+  </div>
+
+  <section id="reportOverlay" class="report-overlay" hidden aria-labelledby="reportTitle">
+    <div class="report-shell">
+      <div class="report-toolbar no-print">
+        <button id="closeReport" type="button">Back to lesson</button>
+        <div>
+          <strong id="reportTitle">Evidence report</strong>
+          <span id="reportFilename"></span>
+        </div>
+        <button id="printReportButton" class="primary" type="button">Export complete PDF</button>
+      </div>
+      <div id="reportPrint" class="report-print"></div>
+    </div>
+  </section>
+
+  <p id="toast" class="toast" role="status" hidden></p>
+  <noscript>This lesson needs JavaScript enabled for navigation, saving and evidence export. Python still runs only in your own IDE.</noscript>
+</body>
+</html>
