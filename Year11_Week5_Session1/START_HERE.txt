@@ -1,0 +1,13 @@
+YEAR 11 · TERM 1 WEEK 5 · SESSION 1
+CYBER-SECURITY PROTECTION · OXFORDAQA 9210
+
+Open index.html in a modern browser.
+
+Student profiles are saved locally in the browser. Enter the same name + class to resume.
+Type teacher as the student name for the separate teacher-preview profile.
+
+Core lesson: 60 minutes.
+Assessment: 10 marks total (9 official OxfordAQA marks + 1 clearly labelled teacher-written CAPTCHA item).
+
+The app can export an evidence PDF and JSON backup. Microsoft Teams submission remains manual.
+Do not enter real passwords or confidential information.

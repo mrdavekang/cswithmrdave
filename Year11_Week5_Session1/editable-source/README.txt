@@ -1,0 +1,1 @@
+Edit lesson.js for learning content, app.js for behaviour, styles.css for appearance. Run python build.py from this folder to rebuild ../index.html. Original source excerpts are in ../teacher/.
