@@ -1,1 +1,3 @@
-Edit lesson.js for learning content, app.js for behaviour, styles.css for appearance. Run python build.py from this folder to rebuild ../index.html. Original source excerpts are in ../teacher/.
+Editable source for Year 11 Week 5 Session 1. Run `python build.py` to rebuild ../index.html.
+
+The 10-mark assessment is completed on printed paper; the app records only completion, the /10 total, feedback and one improvement. Exact past-paper screenshot PDFs are in ../teacher/.
