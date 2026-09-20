@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Making decisions · Year 10 · Week 4</title>
+<meta name="description" content="A guided OxfordAQA 9210 lesson on comparisons, Boolean expressions and selection. Work locally and export your evidence.">
+<!-- STYLE -->
+</head>
+<body>
+<a class="skip" href="#lesson">Skip to lesson</a>
+<section id="landing"><div class="entry">
+ <p class="eyebrow">YEAR 10 · OXFORDAQA 9210 · WEEK 4 · SESSIONS 1 + 2</p>
+ <h1>Making<br>decisions.</h1>
+ <p class="lead">Read a rule. Check a condition. Choose the right path.</p>
+ <p>A guided 60-minute lesson. You will write and run Python in your own IDE—not on this website.</p>
+ <form id="entryForm"><label for="name">Your name</label><input id="name" required maxlength="100" autocomplete="name"><label for="className">Your class</label><input id="className" maxlength="40" placeholder="For example: 10T"><button class="primary">Open my lesson</button></form>
+ <p id="entryError" role="alert"></p>
+ <p class="small">Enter <strong>teacher</strong> as your name to preview every page. This is a convenience, not a secure login. Student work stays in this browser; it is not sent to your teacher automatically.</p>
+ <label class="import">Restore a lesson backup <input type="file" id="importFile" accept=".json,application/json"></label>
+</div></section>
+<div id="app" hidden>
+ <header class="topbar"><button id="menu" aria-expanded="false" aria-controls="route">Lesson route</button><span id="identity"></span><span id="saveStatus" role="status"></span><button id="exportTop">Review / export PDF</button></header>
+ <aside class="focus" aria-label="Learning focus"><strong>WAGBA</strong> Writing clear conditions and making the correct decisions in a program.
+ <p><b>K</b> Know comparisons and AND / OR / NOT. <b>S</b> Predict, complete and test selection. <b>U</b> Explain branch order and nested decisions.</p></aside>
+ <div id="teacherBanner" class="notice" hidden>Teacher preview · every stage is available · separate from student work · not a secure account.</div>
+ <div id="warning" class="warning" hidden role="alert"></div>
+ <nav id="route" hidden aria-label="Lesson stages"></nav>
+ <main id="lesson" tabindex="-1"></main>
+ <footer class="footer"><p>You can pause, ask for help or export unfinished work at any time.</p><button id="backup">Download full backup</button> <button id="switchUser">Change learner</button><p class="small">No leaderboard. No automatic countdown. A check is practice feedback, not an exam grade.</p></footer>
+</div>
+<div id="printRoot"></div><noscript>Please enable JavaScript for navigation, local saving and the evidence report.</noscript>
+<!-- SCRIPT -->
+</body></html>
