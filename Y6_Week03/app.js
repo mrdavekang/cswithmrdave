@@ -1,402 +1,224 @@
 (function () {
-  "use strict";
-
-  const STORAGE_KEY = "coordinateQuestProfilesV2";
-  const SESSION_KEY = "coordinateQuestActiveV2";
-  const PAGES = ["starter", "main1", "main2", "extension", "plenary", "report"];
-  const PAGE_LABELS = {
-    starter: "Starter: decode coordinates",
-    main1: "Main Activity 1: predict the code",
-    main2: "Main Activity 2: program the route",
-    extension: "Extension: complete three levels",
-    plenary: "Plenary: explain and reflect",
-    report: "Evidence report: download and upload"
-  };
-  const predictions = [
-    { title: "One coordinate changes", prompt: "Where will the sprite finish?", image: "assets/images/prediction-level-1.png", x: "-40", y: "-100" },
-    { title: "Track both coordinates", prompt: "Work out the final x and y.", image: "assets/images/prediction-level-2.png", x: "-40", y: "50" },
-    { title: "Ignore the distractor", prompt: "Which final coordinate is correct?", image: "assets/images/prediction-level-3.png", x: "80", y: "-50" }
-  ];
-  const extensions = [
-    { heading: "Reach the portal", type: "COORDINATE CHALLENGE", difficulty: "●○○○○", description: "After reaching the key, add one more glide block to the portal at (195, −140).", success: "The explorer visits all checkpoints, collects the key and finishes inside the portal.", visual: ["KEY", "PORTAL"] },
-    { heading: "Return to the start", type: "SEQUENCE CHALLENGE", difficulty: "●●○○○", description: "After the portal, glide back to START at (−200, −135) and say ‘Mission complete!’. Find a route that does not skip any required checkpoint.", success: "One connected script completes the full route, portal and return journey.", visual: ["PORTAL", "START"] },
-    { heading: "Add a keyboard event", type: "EVENT CHALLENGE", difficulty: "●●●○○", description: "Keep the green flag for Version 1. Create a second event so pressing the space key sends the explorer from the key to the portal.", success: "The green flag runs the core route; the space key controls the extra portal movement.", visual: ["SPACE", "PORTAL"] },
-    { heading: "Choose a portal location", type: "DESIGN CHALLENGE", difficulty: "●●●●○", description: "Move the portal to a valid empty part of the map. Record its exact x and y, then update the final glide block to match.", success: "The portal is not on a wall and the code ends at its new exact coordinate.", visual: ["CHOOSE", "CODE"] },
-    { heading: "Create a custom mission", type: "CREATOR CHALLENGE", difficulty: "●●●●●", description: "Add two new checkpoints in safe spaces. Design an algorithm that visits every old and new checkpoint, then reaches the key and portal.", success: "Your map is playable, every coordinate is recorded and another student can follow your sequence.", visual: ["+2", "PORTAL"] }
-  ];
-
-  let profiles = readProfiles();
-  let activeId = sessionStorage.getItem(SESSION_KEY) || "";
-  let profile = activeId ? profiles[activeId] : null;
-  let isTeacher = false;
-  let currentPage = "starter";
-  let predictionIndex = 0;
-  let extensionIndex = 0;
-  let saveTimer = null;
-  let pendingDialogAction = null;
-
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
-  const landingView = $("#landingView");
-  const appView = $("#appView");
-
-  function readProfiles() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
-    catch (error) { return {}; }
-  }
-
-  function blankProfile(name, studentClass) {
-    return {
-      id: makeId(name, studentClass), name, className: studentClass, created: Date.now(), updated: Date.now(),
-      currentPage: "starter", furthestPage: 0, answers: {}, predictions: [{}, {}, {}], extensionComplete: [false, false, false, false, false],
-      screenshots: { main1: [], main2: [], extension: [] }, completed: {}, teamsSubmitted: false
-    };
-  }
-
-  function makeId(name, studentClass) {
-    return (name + "__" + studentClass).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  }
-
-  function saveProfile(immediate) {
-    if (!profile || isTeacher) return;
-    clearTimeout(saveTimer);
-    const commit = () => {
-      profile.updated = Date.now();
-      profile.currentPage = currentPage;
-      profiles[profile.id] = profile;
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles)); }
-      catch (error) { toast("Storage is full. Remove an old screenshot, then try again."); }
-      updateProgress();
-      updateReport();
-    };
-    if (immediate) commit(); else saveTimer = setTimeout(commit, 250);
-  }
-
-  function toast(message) {
-    const el = $("#toast"); el.textContent = message; el.classList.add("show");
-    clearTimeout(el.toastTimer); el.toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
-  }
-
-  function setFeedback(id, message, good) {
-    const el = $(id); el.textContent = message; el.className = "feedback " + (good ? "good" : "bad");
-  }
-
-  function showLanding() {
-    appView.hidden = true; landingView.hidden = false; $("#entryError").textContent = "";
-    const last = Object.values(profiles).sort((a, b) => b.updated - a.updated)[0];
-    const resume = $("#resumeButton");
-    if (last) { resume.hidden = false; resume.textContent = `Resume ${last.name} · ${last.className}`; resume.dataset.id = last.id; }
-    else resume.hidden = true;
-  }
-
-  function enterLesson(name, studentClass, teacherMode) {
-    isTeacher = teacherMode;
-    if (teacherMode) {
-      profile = { id: "teacher", name: "Teacher", className: "All classes", answers: {}, predictions: [{}, {}, {}], extensionComplete: [false, false, false, false, false], screenshots: { main1: [], main2: [], extension: [] }, completed: {} };
-      currentPage = "teacher";
-    } else {
-      const id = makeId(name, studentClass);
-      profile = profiles[id] || blankProfile(name, studentClass);
-      activeId = id; sessionStorage.setItem(SESSION_KEY, id);
-      if (!Number.isInteger(profile.furthestPage)) profile.furthestPage = Math.max(0, PAGES.indexOf(profile.currentPage || "starter"));
-      currentPage = profile.currentPage || "starter";
-      if (!isPageReachable(currentPage)) currentPage = PAGES[Math.min(profile.furthestPage, firstIncompleteIndex())] || "starter";
-    }
-    landingView.hidden = true; appView.hidden = false;
-    document.body.classList.toggle("teacher-mode", teacherMode);
-    $$(".teacher-only").forEach(el => el.hidden = !teacherMode);
-    $("#sequenceBanner").hidden = teacherMode;
-    $("#profileMode").textContent = teacherMode ? "TEACHER" : "STUDENT";
-    $("#profileName").textContent = profile.name;
-    $("#profileClass").textContent = profile.className;
-    hydrateForms(); renderScreenshots(); renderRecords(); showPage(currentPage, false); updateProgress(); updateReport();
-  }
-
-  function showPage(page, scrollTop = true) {
-    if (page === "teacher" && !isTeacher) page = "starter";
-    if (!isTeacher && !isPageReachable(page)) {
-      const step = PAGES[Math.min(profile.furthestPage, PAGES.length - 1)] || "starter";
-      toast(`Complete ${PAGE_LABELS[step]} first.`);
-      return;
-    }
-    currentPage = page;
-    $$("[data-page-panel]").forEach(panel => panel.classList.toggle("active", panel.dataset.pagePanel === page));
-    $$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.page === page));
-    $("#sidebar").classList.remove("open"); $("#menuButton").setAttribute("aria-expanded", "false");
-    updateSequenceBanner();
-    if (scrollTop) $("#workspace").scrollIntoView({ block: "start" });
-    updateProgress();
-    if (!isTeacher) saveProfile();
-  }
-
-  function pageComplete(page) {
-    if (!profile) return false;
-    if (page === "starter") return !!profile.completed.starter;
-    if (page === "main1") return profile.predictions.filter(p => p.saved).length === 3;
-    if (page === "main2") return !!profile.completed.main2 && profile.screenshots.main2.length > 0;
-    if (page === "extension") return profile.extensionComplete.filter(Boolean).length >= 3 && !!(profile.answers.extensionNotes || "").trim();
-    if (page === "plenary") return !!profile.completed.plenary;
-    if (page === "report") return !!profile.teamsSubmitted;
-    return true;
-  }
-
-  function firstIncompleteIndex() {
-    const index = PAGES.findIndex(page => !pageComplete(page));
-    return index < 0 ? PAGES.length - 1 : index;
-  }
-
-  function isPageReachable(page) {
-    if (isTeacher || page === "teacher") return true;
-    const index = PAGES.indexOf(page);
-    if (index < 0 || index > (profile.furthestPage || 0)) return false;
-    return PAGES.slice(0, index).every(pageComplete);
-  }
-
-  function updateSequenceBanner() {
-    if (isTeacher || !profile) return;
-    const index = Math.max(0, PAGES.indexOf(currentPage));
-    const done = pageComplete(currentPage);
-    const next = PAGES[index + 1];
-    $("#sequenceNumber").textContent = `STEP ${index + 1} OF ${PAGES.length}`;
-    if (done && next) {
-      $("#sequenceTitle").textContent = `Step complete. Continue to ${PAGE_LABELS[next]}.`;
-      $("#sequenceHelp").textContent = "Use the yellow Continue button at the bottom of this page.";
-    } else if (done) {
-      $("#sequenceTitle").textContent = "Lesson complete.";
-      $("#sequenceHelp").textContent = "Check your PDF and follow the Teams submission instructions.";
-    } else {
-      $("#sequenceTitle").textContent = `Do this now: ${PAGE_LABELS[currentPage]}.`;
-      $("#sequenceHelp").textContent = "Finish this highlighted step. The Continue button will then turn yellow.";
-    }
-  }
-
-  function updateProgress() {
-    if (!profile) return;
-    const completed = PAGES.filter(pageComplete).length;
-    const percent = Math.round(completed / PAGES.length * 100);
-    $("#progressFill").style.width = percent + "%"; $("#progressText").textContent = percent + "% complete";
-    $$(".nav-item[data-page]").forEach(button => {
-      const page = button.dataset.page;
-      if (page === "teacher") return;
-      const done = pageComplete(page); const reachable = isPageReachable(page); const active = page === currentPage;
-      button.disabled = !reachable; button.classList.toggle("complete", done); button.classList.toggle("next-unlocked", reachable && !done && !active);
-      const status = $(".nav-status", button);
-      if (status) status.textContent = done ? "✓" : active ? "NOW" : reachable ? "OPEN" : "LOCKED";
-    });
-    $$(".continue-button").forEach(button => {
-      const ready = isTeacher || pageComplete(button.dataset.current);
-      button.disabled = !ready; button.classList.toggle("ready", ready);
-    });
-    updateSequenceBanner();
-  }
-
-  function collectForm(form) {
-    const data = new FormData(form); const result = {};
-    for (const [key, value] of data.entries()) result[key] = value;
-    return result;
-  }
-
-  function hydrateForms() {
-    if (!profile || isTeacher) return;
-    const a = profile.answers || {};
-    if (a.starterPointA && (!a.starterPointAX || !a.starterPointAY)) {
-      const oldPair = String(a.starterPointA).replace(/−/g, "-").match(/-?\d+/g) || [];
-      if (oldPair.length >= 2) { a.starterPointAX = oldPair[0]; a.starterPointAY = oldPair[1]; }
-    }
-    setFormValues($("#starterForm"), a);
-    setFormValues($("#main2Form"), a);
-    setFormValues($("#plenaryForm"), a);
-    $("#extensionNotes").value = a.extensionNotes || "";
-    $("#teamsSubmitted").checked = !!profile.teamsSubmitted;
-    predictionIndex = Math.max(0, profile.predictions.findIndex(p => !p.saved)); if (predictionIndex < 0) predictionIndex = 2;
-    renderPrediction(); extensionIndex = 0; renderExtension();
-  }
-
-  function setFormValues(form, values) {
-    if (!form) return;
-    $$('input, textarea', form).forEach(input => {
-      if (!input.name && !input.id) return; const key = input.name || input.id; const value = values[key];
-      if (input.type === "radio" || input.type === "checkbox") input.checked = value === input.value || value === true;
-      else if (value !== undefined) input.value = value;
-    });
-  }
-
-  function renderPrediction() {
-    const item = predictions[predictionIndex]; const saved = profile && profile.predictions[predictionIndex] || {};
-    $("#predictionCounter").textContent = `LEVEL ${predictionIndex + 1} / 3`;
-    $("#predictionHeading").textContent = item.title; $("#predictionPrompt").textContent = item.prompt;
-    $("#predictionImage").src = item.image; $("#predictionImage").alt = `Prediction level ${predictionIndex + 1}: ${item.title}`;
-    $("#predictionX").value = saved.x || ""; $("#predictionY").value = saved.y || ""; $("#predictionExplain").value = saved.explain || "";
-    $("#predictionFeedback").textContent = saved.saved ? "Saved." : ""; $("#predictionFeedback").className = saved.saved ? "feedback good" : "feedback";
-    $("#predictionPrev").disabled = predictionIndex === 0; $("#predictionNext").disabled = predictionIndex === predictions.length - 1;
-    const dots = $("#predictionDots"); dots.innerHTML = "";
-    predictions.forEach((_, index) => { const button = document.createElement("button"); button.type = "button"; button.className = index === predictionIndex ? "active" : ""; button.setAttribute("aria-label", `Prediction ${index + 1}`); button.addEventListener("click", () => { predictionIndex = index; renderPrediction(); }); dots.append(button); });
-  }
-
-  function renderExtension() {
-    const item = extensions[extensionIndex];
-    $("#extensionLevel").textContent = `LEVEL ${extensionIndex + 1}`; $("#extensionDifficulty").textContent = item.difficulty;
-    $("#extensionType").textContent = item.type; $("#extensionHeading").textContent = item.heading; $("#extensionDescription").textContent = item.description; $("#extensionSuccess").textContent = item.success;
-    const visual = $("#extensionVisual"); visual.innerHTML = `<span>${item.visual[0]}</span><i>→</i><span class="portal">${item.visual[1]}</span>`;
-    $("#extensionComplete").checked = !!profile.extensionComplete[extensionIndex]; $("#extensionPrev").disabled = extensionIndex === 0; $("#extensionNext").disabled = extensionIndex === extensions.length - 1;
-    const count = profile.extensionComplete.filter(Boolean).length; $("#extensionCount").textContent = count;
-    const dots = $("#extensionDots"); dots.innerHTML = "";
-    extensions.forEach((_, index) => { const button = document.createElement("button"); button.type = "button"; button.className = index === extensionIndex ? "active" : ""; button.setAttribute("aria-label", `Extension level ${index + 1}`); button.addEventListener("click", () => { extensionIndex = index; renderExtension(); }); dots.append(button); });
-  }
-
-  function handleUpload(event) {
-    if (isTeacher || !profile) return;
-    const area = event.target.dataset.upload; const files = Array.from(event.target.files || []); if (!files.length) return;
-    const max = area === "main2" ? 3 : 2;
-    files.slice(0, Math.max(0, max - profile.screenshots[area].length)).forEach(file => compressImage(file).then(data => { profile.screenshots[area].push({ name: file.name, data }); saveProfile(true); renderScreenshots(); toast(area === "main2" && pageComplete("main2") ? "Main Activity 2 complete. Use the yellow Continue button." : "Screenshot saved to this profile."); }).catch(() => toast("That image could not be added.")));
-    event.target.value = "";
-  }
-
-  function compressImage(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader(); reader.onerror = reject; reader.onload = () => {
-        const image = new Image(); image.onerror = reject; image.onload = () => {
-          const maxWidth = 1200, scale = Math.min(1, maxWidth / image.width); const canvas = document.createElement("canvas");
-          canvas.width = Math.round(image.width * scale); canvas.height = Math.round(image.height * scale);
-          canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL("image/jpeg", .78));
-        }; image.src = reader.result;
-      }; reader.readAsDataURL(file);
-    });
-  }
-
-  function renderScreenshots() {
-    if (!profile) return;
-    $$('[data-thumbs]').forEach(container => {
-      const area = container.dataset.thumbs; container.innerHTML = "";
-      (profile.screenshots[area] || []).forEach((shot, index) => {
-        const wrap = document.createElement("div"); wrap.className = "thumb"; const img = document.createElement("img"); img.src = shot.data; img.alt = `${area} evidence ${index + 1}`;
-        const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "×"; remove.setAttribute("aria-label", `Remove evidence ${index + 1}`); remove.addEventListener("click", () => { profile.screenshots[area].splice(index, 1); saveProfile(true); renderScreenshots(); });
-        wrap.append(img, remove); container.append(wrap);
-      });
-    });
-  }
-
-  function renderRecords() {
-    const body = $("#recordsBody"); body.innerHTML = ""; const records = Object.values(readProfiles()).sort((a, b) => b.updated - a.updated);
-    if (!records.length) { body.innerHTML = '<tr><td class="empty-row" colspan="5">No student profiles have been saved on this device yet.</td></tr>'; return; }
-    records.forEach(record => {
-      const done = PAGES.filter(page => pageCompleteFor(record, page)).length; const row = document.createElement("tr");
-      row.innerHTML = `<td><strong>${escapeHtml(record.name)}</strong></td><td>${escapeHtml(record.className)}</td><td>${Math.round(done / PAGES.length * 100)}%</td><td>${new Date(record.updated).toLocaleString()}</td><td><button class="button outline small" data-open-record="${record.id}">Open</button></td>`; body.append(row);
-    });
-    $$('[data-open-record]', body).forEach(button => button.addEventListener("click", () => { const record = profiles[button.dataset.openRecord]; if (record) { isTeacher = false; enterLesson(record.name, record.className, false); } }));
-  }
-
-  function pageCompleteFor(record, page) {
-    const previous = profile; profile = record; const value = pageComplete(page); profile = previous; return value;
-  }
-
-  function updateReport() {
-    if (!profile) return;
-    $("#reportStudentName").textContent = profile.name; $("#reportStudentClass").textContent = profile.className; $("#previewStudentName").textContent = profile.name;
-    $("#reportStarterStatus").textContent = profile.completed.starter ? "Complete" : "Not complete";
-    $("#reportPredictionStatus").textContent = `${profile.predictions.filter(p => p.saved).length} / 3`;
-    const shots = Object.values(profile.screenshots).flat().length; $("#reportScreenshotStatus").textContent = `${shots} added`;
-    $("#reportExtensionStatus").textContent = `${profile.extensionComplete.filter(Boolean).length} / 5`; $("#reportPlenaryStatus").textContent = profile.completed.plenary ? "Complete" : "Not complete";
-    const filename = safeFilename(`${profile.name}_${profile.className}_CoordinateQuest.pdf`); $("#teamsFilename").textContent = filename;
-  }
-
-  function safeFilename(value) { return value.replace(/[^a-z0-9_.-]+/gi, "_").replace(/_+/g, "_"); }
-  function escapeHtml(value) { return String(value || "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char])); }
-
-  function continueTo(current, next) {
-    if (!isTeacher && !pageComplete(current)) { toast("Finish the required work on this page first."); return; }
-    if (!isTeacher) {
-      profile.furthestPage = Math.max(profile.furthestPage || 0, PAGES.indexOf(next));
-      saveProfile(true);
-    }
-    showPage(next); toast(`Now complete ${PAGE_LABELS[next]}.`);
-  }
-
-  function askConfirm(title, message, action) {
-    pendingDialogAction = action; $("#dialogTitle").textContent = title; $("#dialogMessage").textContent = message; $("#confirmDialog").showModal();
-  }
-
-  function exportPDF() {
-    if (!window.jspdf || !profile) { setFeedback("#pdfFeedback", "The PDF tool did not load. Refresh the page and try again.", false); return; }
-    const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: "mm", format: "a4" }); const margin = 16, width = 178; let y = 18; let pageNo = 1;
-    const addHeader = (title) => { doc.setFillColor(16, 16, 16); doc.rect(0, 0, 210, 18, "F"); doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.text("COORDINATE QUEST · YEAR 6 COMPUTING", margin, 11); doc.setTextColor(16,16,16); doc.setFontSize(19); doc.text(title, margin, 30); y = 39; };
-    const addFooter = () => { doc.setFontSize(8); doc.setTextColor(100); doc.text(`Generated ${new Date().toLocaleString()} · Page ${pageNo}`, margin, 290); };
-    const newPage = title => { addFooter(); doc.addPage(); pageNo += 1; addHeader(title); };
-    const ensure = amount => { if (y + amount > 280) newPage("Evidence continued"); };
-    const section = (title, colour) => { ensure(14); doc.setFillColor(...colour); doc.rect(margin, y, width, 9, "F"); doc.setTextColor(colour[0]+colour[1]+colour[2] > 450 ? 16 : 255); doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.text(title, margin + 3, y + 6); doc.setTextColor(16); y += 13; };
-    const line = (label, value) => { const text = String(value || "Not answered"); const wrapped = doc.splitTextToSize(text, 126); ensure(7 + wrapped.length * 5); doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.text(label, margin, y); doc.setFont("helvetica","normal"); doc.text(wrapped, margin + 48, y); y += Math.max(7, wrapped.length * 5 + 2); };
-    addHeader("Student Evidence Report");
-    doc.setFontSize(12); doc.setFont("helvetica","bold"); doc.text(profile.name, margin, y); doc.setFont("helvetica","normal"); doc.text(`Class: ${profile.className}`, margin + 85, y); y += 11;
-    section("WAGBA: KNOWLEDGE · SKILLS · UNDERSTANDING", [255,211,53]);
-    line("Knowledge", "Coordinates contain an x value and a y value."); line("Skills", "Build, test and debug an accurate Scratch block sequence."); line("Understanding", "Changing a coordinate or block order changes the program outcome.");
-    section("STARTER", [255,211,53]);
-    line("X direction", profile.answers.starterXDirection); line("First coordinate", profile.answers.starterFirstCoordinate); line("Point A", `(${profile.answers.starterPointAX || "?"}, ${profile.answers.starterPointAY || "?"})`); line("Starting event", profile.answers.starterEvent);
-    section("MAIN ACTIVITY 1 · PREDICTIONS", [76,151,255]);
-    profile.predictions.forEach((answer, index) => { line(`Level ${index + 1}`, answer.saved ? `Final position (${answer.x}, ${answer.y})` : "Not completed"); line("Explanation", answer.explain); });
-    section("MAIN ACTIVITY 2 · BUILD NOTES", [153,102,255]);
-    line("Predicted finish", profile.answers.main2Prediction); line("Debugging", profile.answers.main2Debug); line("Scratch filename", profile.answers.main2Filename);
-    section("EXTENSION", [56,173,114]);
-    line("Levels completed", profile.extensionComplete.map((done, index) => done ? index + 1 : null).filter(Boolean).join(", ") || "None"); line("Improvement notes", profile.answers.extensionNotes);
-    section("PLENARY", [232,103,162]);
-    line("What is a coordinate?", profile.answers.plenaryCoordinate); line("Why order matters", profile.answers.plenarySequence); line("How I debugged", profile.answers.plenaryDebug); line("Confidence", profile.answers.confidence ? `${profile.answers.confidence} / 5` : "Not selected");
-    const allShots = [];
-    Object.keys(profile.screenshots).forEach(area => profile.screenshots[area].forEach((shot, index) => allShots.push({ ...shot, label: `${area.toUpperCase()} EVIDENCE ${index + 1}` })));
-    allShots.forEach(shot => { newPage(shot.label); try { const props = doc.getImageProperties(shot.data); const ratio = props.width / props.height; let imageWidth = width, imageHeight = imageWidth / ratio; if (imageHeight > 220) { imageHeight = 220; imageWidth = imageHeight * ratio; } doc.addImage(shot.data, "JPEG", margin + (width - imageWidth) / 2, y, imageWidth, imageHeight, undefined, "FAST"); y += imageHeight + 8; doc.setFontSize(9); doc.text(shot.name || "Student screenshot", margin, y); } catch (error) { line("Image", "This screenshot could not be placed into the PDF."); } });
-    newPage("Submission checklist"); section("MICROSOFT TEAMS", [98,100,167]); line("1", "Open the correct Computing assignment in Teams."); line("2", "Choose Add work or Attach."); line("3", `Upload ${safeFilename(`${profile.name}_${profile.className}_CoordinateQuest.pdf`)}.`); line("4", "Wait for the upload, check the attachment, then select Turn in.");
-    addFooter(); const filename = safeFilename(`${profile.name}_${profile.className}_CoordinateQuest.pdf`); doc.save(filename); profile.completed.report = true; saveProfile(true); setFeedback("#pdfFeedback", `Downloaded ${filename}. Open it and check your evidence before uploading to Teams.`, true); toast("PDF downloaded.");
-  }
-
-  $("#entryForm").addEventListener("submit", event => {
-    event.preventDefault(); const name = $("#studentName").value.trim(); const studentClass = $("#studentClass").value.trim();
-    if (name.toLowerCase() === "teacher") { enterLesson("Teacher", "All classes", true); return; }
-    if (!name || !studentClass) { $("#entryError").textContent = "Please type both your name and your class."; return; }
-    enterLesson(name, studentClass, false);
-  });
-  $("#resumeButton").addEventListener("click", event => { const saved = profiles[event.currentTarget.dataset.id]; if (saved) enterLesson(saved.name, saved.className, false); });
-  $("#switchUserButton").addEventListener("click", () => { if (!isTeacher) saveProfile(true); sessionStorage.removeItem(SESSION_KEY); profile = null; showLanding(); });
-  $("#menuButton").addEventListener("click", () => { const open = $("#sidebar").classList.toggle("open"); $("#menuButton").setAttribute("aria-expanded", String(open)); });
-  $$(".nav-item").forEach(button => button.addEventListener("click", () => showPage(button.dataset.page)));
-  $$(".jump-button").forEach(button => button.addEventListener("click", () => showPage(button.dataset.jump)));
-  $$(".continue-button").forEach(button => button.addEventListener("click", () => continueTo(button.dataset.current, button.dataset.next)));
-  $("#resetWorkButton").addEventListener("click", () => { if (isTeacher) return; askConfirm("Reset this profile?", "This will permanently remove all saved answers and screenshots for this name and class from this device.", () => { delete profiles[profile.id]; localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles)); sessionStorage.removeItem(SESSION_KEY); profile = null; showLanding(); }); });
-  $("#dialogConfirm").addEventListener("click", () => { if (pendingDialogAction) pendingDialogAction(); pendingDialogAction = null; });
-  $("#refreshRecordsButton").addEventListener("click", renderRecords);
-  $$(".concept-tabs button").forEach(button => button.addEventListener("click", () => {
-    $$(".concept-tabs button").forEach(item => item.classList.remove("active")); button.classList.add("active");
-    const content = { x: ["X", "Across first", "The x coordinate moves a sprite left or right. Negative x is left; positive x is right.", "walk along the corridor before climbing the stairs.", "blue"], y: ["Y", "Then up or down", "The y coordinate moves a sprite up or down. Negative y is down; positive y is up.", "climb the stairs only after moving across.", "purple"], event: ["⚑", "What starts the code?", "An event tells Scratch when to begin a script. The green flag and a key press are both events.", "look for the hat-shaped block at the top.", "yellow"] }[button.dataset.concept];
-    $("#conceptPanel").innerHTML = `<div class="big-letter ${content[4]}">${content[0]}</div><div><h2>${content[1]}</h2><p>${content[2]}</p><p class="memory-tip"><strong>Memory tip:</strong> ${content[3]}</p></div>`;
-  }));
-  $("#referenceToggle").addEventListener("click", event => { const image = $("#referenceImage"); image.hidden = !image.hidden; event.currentTarget.textContent = image.hidden ? "Show the full coordinate reference ↓" : "Hide coordinate reference ↑"; });
-  $("#starterForm").addEventListener("submit", event => {
-    event.preventDefault(); const values = collectForm(event.currentTarget); Object.assign(profile.answers, values);
-    const pointX = String(values.starterPointAX || "").trim().replace("−", "-");
-    const pointY = String(values.starterPointAY || "").trim().replace("−", "-");
-    const correct = values.starterXDirection === "left-right" && values.starterFirstCoordinate === "x" && pointX === "-120" && pointY === "-135" && values.starterEvent === "flag";
-    profile.completed.starter = correct; saveProfile(true);
-    setFeedback("#starterFeedback", correct ? "Starter complete. Main Activity 1 is ready—use the yellow Continue button below." : "Try again. Read x across first, then read y up or down. Include the negative signs for Point A.", correct);
-  });
-  $("#predictionPrev").addEventListener("click", () => { predictionIndex = Math.max(0, predictionIndex - 1); renderPrediction(); });
-  $("#predictionNext").addEventListener("click", () => { predictionIndex = Math.min(2, predictionIndex + 1); renderPrediction(); });
-  $("#predictionForm").addEventListener("submit", event => {
-    event.preventDefault(); const x = $("#predictionX").value.trim(), y = $("#predictionY").value.trim(), explain = $("#predictionExplain").value.trim();
-    if (!x || !y || explain.length < 8) { setFeedback("#predictionFeedback", "Enter both coordinates and explain your thinking.", false); return; }
-    const correct = x.replace("−", "-") === predictions[predictionIndex].x && y.replace("−", "-") === predictions[predictionIndex].y;
-    profile.predictions[predictionIndex] = { x, y, explain, saved: true, correct }; saveProfile(true);
-    const allSaved = profile.predictions.filter(answer => answer.saved).length === 3;
-    setFeedback("#predictionFeedback", allSaved ? "All three predictions are saved. Use the yellow Continue button below." : correct ? "Prediction saved—and the final coordinate is correct." : "Prediction saved. Recheck the x and y changes before running the code.", allSaved || correct);
-    if (correct && predictionIndex < 2) setTimeout(() => { predictionIndex += 1; renderPrediction(); }, 700);
-  });
-  $("#main2Form").addEventListener("submit", event => { event.preventDefault(); const values = collectForm(event.currentTarget); Object.assign(profile.answers, values); const complete = (values.main2Prediction || "").trim() && (values.main2Debug || "").trim().length >= 10 && (values.main2Filename || "").trim(); profile.completed.main2 = !!complete; saveProfile(true); const ready = pageComplete("main2"); setFeedback("#main2Feedback", ready ? "Main Activity 2 complete. Use the yellow Continue button below." : complete ? "Build notes saved. Add the required Scratch screenshot to finish this step." : "Complete all three build-note fields.", ready); });
-  $$('[data-upload]').forEach(input => input.addEventListener("change", handleUpload));
-  $("#extensionPrev").addEventListener("click", () => { extensionIndex = Math.max(0, extensionIndex - 1); renderExtension(); });
-  $("#extensionNext").addEventListener("click", () => { extensionIndex = Math.min(4, extensionIndex + 1); renderExtension(); });
-  $("#extensionComplete").addEventListener("change", event => { profile.extensionComplete[extensionIndex] = event.target.checked; saveProfile(true); renderExtension(); toast(event.target.checked ? "Extension level marked complete." : "Extension level reopened."); });
-  $("#extensionNotes").addEventListener("input", event => { profile.answers.extensionNotes = event.target.value; saveProfile(); });
-  $("#extensionNotes").addEventListener("blur", () => { if (pageComplete("extension")) toast("Extension complete. Use the yellow Continue button."); });
-  $("#plenaryForm").addEventListener("submit", event => { event.preventDefault(); const values = collectForm(event.currentTarget); Object.assign(profile.answers, values); const complete = [values.plenaryCoordinate, values.plenarySequence, values.plenaryDebug].every(value => (value || "").trim().length >= 10) && values.confidence; profile.completed.plenary = !!complete; saveProfile(true); setFeedback("#plenaryFeedback", complete ? "Exit ticket saved. Your report is ready to build." : "Write a complete response for all three questions and choose a confidence level.", complete); });
-  $("#teamsSubmitted").addEventListener("change", event => { profile.teamsSubmitted = event.target.checked; saveProfile(true); updateProgress(); });
-  $("#exportPdfButton").addEventListener("click", exportPDF);
-  document.addEventListener("visibilitychange", () => { if (document.hidden) saveProfile(true); }); window.addEventListener("beforeunload", () => saveProfile(true));
-
-  if (profile) enterLesson(profile.name, profile.className, false); else showLanding();
+'use strict';
+const L=window.CQ, $=s=>document.querySelector(s);
+const KEY='coordinateQuestProfilesV3', OLD='coordinateQuestProfilesV2', PIN='coordinateQuestTeacherV3';
+let storageIssue='', profiles=read(KEY,{}), p=null, preview=false, person=0, language=read('coordinateQuestLanguageV3','en'), waitingExtension=false;
+let workedTrace=0, noticeTimer;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const B=(en,zh)=>esc(en)+(language==='zh'&&zh?'<span class="zh" lang="zh-Hans">'+esc(zh)+'</span>':'');
+const btn=(action,en,zh,cls='',attrs='')=>'<button type="button" class="'+cls+'" data-action="'+action+'" '+attrs+'>'+B(en,zh)+'</button>';
+const para=(en,zh,cls='')=>'<p class="'+cls+'">'+B(en,zh)+'</p>';
+const hint=(en,zh)=>'<details class="hint"><summary>'+B('Need a clue?','需要提示？')+'</summary>'+para(en,zh)+'</details>';
+function read(key,fallback){try{const value=localStorage.getItem(key);return value?JSON.parse(value):fallback;}catch(e){if(key===KEY)storageIssue='Saved data could not be read. New work is kept in memory; download a backup before closing.';return fallback;}}
+function save(){if(!p||preview)return;p.updated=Date.now();profiles[p.id]=p;if(!storageIssue)try{localStorage.setItem(KEY,JSON.stringify(profiles));}catch(e){storageIssue='This browser could not save your work. Keep this page open and download a backup.';}saveLabel();}
+function saveLabel(){$('#saveStatus').textContent=storageIssue|| (preview?'Teacher preview — changes here are not student work.':p?'Saved on this device · '+new Date(p.updated).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'Your work stays on this device.');$('#saveStatus').classList.toggle('warning',!!storageIssue);}
+function notify(en,zh){$('#notice').innerHTML=B(en,zh);$('#notice').className='visible';clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('#notice').className='',4500);}
+function textField(path,label,zh,value='',multiline=false){return '<label for="'+esc(path)+'">'+B(label,zh)+'</label>'+(multiline?'<textarea rows="3" maxlength="500"':'<input maxlength="120"')+' id="'+esc(path)+'" data-field="'+esc(path)+'" '+(multiline?'>'+esc(value)+'</textarea>':'value="'+esc(value)+'">');}
+function options(path,label,zh,items,value){return '<label for="'+path+'">'+B(label,zh)+'</label><select id="'+path+'" data-field="'+path+'"><option value="">'+(language==='zh'?'Choose / 请选择':'Choose one')+'</option>'+items.map(([v,en,cn])=>'<option value="'+v+'" '+(value===v?'selected':'')+'>'+esc(en)+(language==='zh'?' / '+esc(cn):'')+'</option>').join('')+'</select>';}
+function radio(name,question,zh,items,value){return '<fieldset><legend>'+B(question,zh)+'</legend>'+items.map(([v,en,cn])=>'<label class="check"><input type="radio" name="'+name+'" data-field="answers.'+name+'" value="'+v+'" '+(value===v?'checked':'')+'><span>'+B(en,cn)+'</span></label>').join('')+'</fieldset>';}
+function feedback(en,zh,kind=''){return '<div role="status" class="feedback '+kind+'">'+B(en,zh)+'</div>';}
+function grid(x,y,dir=90,path=[]){
+ const px=280+x,py=220-y;let lines='';
+ for(let v=-240;v<=240;v+=40)lines+='<line x1="'+(280+v)+'" y1="40" x2="'+(280+v)+'" y2="400" stroke="#e3e4e6"/>';
+ for(let v=-180;v<=180;v+=40)lines+='<line x1="40" y1="'+(220-v)+'" x2="520" y2="'+(220-v)+'" stroke="#e3e4e6"/>';
+ const pts=path.map(([a,b])=>(280+a)+','+(220-b)).join(' ');
+ return '<div class="diagram-wrap"><svg class="grid" viewBox="0 0 560 440" role="img" aria-label="'+esc('Coordinate grid. Current position ('+x+', '+y+'). Direction '+dir+' degrees.')+'"><rect x="40" y="40" width="480" height="360" fill="white" stroke="#888"/>'+lines+
+ '<path d="M40 220H520M280 40V400" stroke="#111" stroke-width="2"/><g font-size="14" font-family="Arial" fill="#333"><text x="40" y="425">−240</text><text x="502" y="425">240</text><text x="290" y="34">180</text><text x="285" y="418">−180</text><text x="288" y="237">(0, 0)</text><text x="533" y="224">x</text><text x="264" y="27">y</text></g>'+
+ (pts?'<polyline points="'+pts+'" fill="none" stroke="#236ad0" stroke-width="3"/>':'')+
+ '<path d="M280 '+py+'H'+px+'V220" fill="none" stroke="#236ad0" stroke-dasharray="5 5"/><circle cx="'+px+'" cy="'+py+'" r="10" fill="#236ad0" stroke="white" stroke-width="2"/><line x1="'+px+'" y1="'+py+'" x2="'+(px+20*Math.sin(dir*Math.PI/180))+'" y2="'+(py-20*Math.cos(dir*Math.PI/180))+'" stroke="#111" stroke-width="3"/></svg></div>';
+}
+function map(){return '<details class="hint"><summary>'+B('See the route map','查看路线图')+'</summary><img class="route-map" src="assets/images/route-map.svg" alt="Scratch maze: START, A, B, C, D, key and portal."></details>';}
+function code(lines,active=-1){return '<ol class="code-list" aria-label="Code to read">'+lines.map((line,i)=>'<li '+(i===active?'class="active" aria-current="step"':'')+'>'+esc(line)+'</li>').join('')+'</ol>';}
+function toolbar(){
+ $('#toolbar').innerHTML=btn('language',language==='zh'?'English only':'English + 中文','', 'small quiet')+(p?btn('backup','Save backup','保存备份','small quiet')+btn('exit','Save & leave','保存并退出','small quiet'):'');
+ saveLabel();
+}
+function landing(){
+ p=null;preview=false;waitingExtension=false;toolbar();
+ $('#content').innerHTML='<div class="landing"><section><span class="pill web">'+B('ONE STEP AT A TIME','一步一步来')+'</span><h1>'+B('Plan a route.\nMake it move.','规划路线，让角色移动。')+'</h1>'+para('Learn here. Build in Scratch. Show your working program.','在这里学习，在 Scratch 编程，展示运行的程序。','lead')+'<ol><li>'+B('Read and predict short code.','阅读并预测简短代码。')+'</li><li>'+B('Open Scratch and test your own route.','打开 Scratch，测试自己的路线。')+'</li><li>'+B('Show your teacher, then reflect.','向老师展示，然后回顾学习。')+'</li></ol>'+para('Answering the website questions is not the whole task. You will also make a Scratch project.','回答网站问题不是全部任务。你还需要制作一个 Scratch 项目。')+'</section><form id="entry" class="card"><h2>'+B('Let’s get ready','准备开始')+'</h2><label for="name">'+B('Your name','你的姓名')+'</label><input id="name" name="name" required maxlength="80" autocomplete="name"><label for="class">'+B('Your class','你的班级')+'</label><input id="class" name="class" maxlength="50"><label for="mode">'+B('How are you working?','你怎样完成任务？')+'</label><select id="mode" name="mode"><option value="solo">'+(language==='zh'?'On my own / 独立完成':'On my own')+'</option><option value="pair">'+(language==='zh'?'With a partner / 与同伴合作':'With a partner')+'</option></select><div id="partnerField" hidden><label for="partner">'+B('Partner’s name','同伴姓名')+'</label><input id="partner" name="partner" maxlength="80"></div><p class="muted">'+B('Returning? Use the same names and class to resume. Teacher preview: enter teacher as your name.','再次进入？使用相同姓名和班级继续。教师预览：姓名输入 teacher。')+'</p><button class="primary" type="submit">'+B('Start / resume my lesson →','开始／继续课程 →')+'</button><div id="entryError" role="alert"></div></form></div>';
+}
+function enter(name,cls,partner=''){
+ const id=L.key(name,cls,partner);p=profiles[id]||L.fresh(name,cls,partner);
+ if(!profiles[id]){
+  const old=Object.values(read(OLD,{})).find(r=>L.key(r.name,r.className,'')===L.key(name,cls,''));
+  if(old){p.legacyId=old.id;p.answers.legacyNote='Previous version found. Its answers remain saved; the new practical checkpoints start fresh.';}
+ }
+ p.at=Math.min(p.at,p.furthest);if(p.at>14&&!p.practical.wrap&&p.practical.status!=='teacher-checked'){p.at=14;p.furthest=Math.min(p.furthest,14);}
+ person=0;preview=false;save();render();
+}
+function studentNames(){return p.partner?[p.name,p.partner]:[p.name];}
+function personalTabs(){return (p.partner?para('Take turns. Each person chooses their own answer.','轮流回答，每个人选择自己的答案。'):'')+'<div class="person-tabs">'+studentNames().map((name,i)=>'<button type="button" data-person="'+i+'" aria-pressed="'+(i===person)+'">'+esc(name)+'</button>').join('')+'</div>';}
+function render(){
+ if(!p)return landing();toolbar();const s=L.steps[p.at];
+ const stages=[...new Set(L.steps.map(x=>x.stage))],current=stages.indexOf(s.stage);
+ let heading='<ol class="trail" aria-label="Lesson journey">'+stages.map((stage,i)=>'<li class="'+(i===current?'current':i<current?'past':'')+'" '+(i===current?'aria-current="step"':'')+'>'+esc(stage)+'</li>').join('')+'</ol>';
+ if(preview)heading+='<div class="teacher-preview"><strong>Teacher preview · no pupil work is saved</strong><label for="previewStep">Review any card</label><select id="previewStep">'+L.steps.map((x,i)=>'<option value="'+i+'" '+(i===p.at?'selected':'')+'>'+esc(x.stage+' — '+x.title)+'</option>').join('')+'</select>'+btn('teacher-home','Teacher controls','教师控制','small')+'</div>';
+ heading+='<div class="journey-meta"><span class="eyebrow">'+B('CARD '+(p.at+1)+' OF '+L.steps.length,'第 '+(p.at+1)+' / '+L.steps.length+' 张卡片')+'</span><span class="pill '+s.place+'">'+(s.place==='scratch'?B('WORK IN SCRATCH','在 SCRATCH 中操作'):B('WORK ON THIS WEBSITE','在本网站学习'))+'</span></div>';
+ if(p.partner&&s.place==='scratch'){const builder=(p.at>=12?1:0);heading+='<p class="roles">'+B('Builder: ','操作员：')+esc(studentNames()[builder])+ ' · '+B('Checker: ','检查员：')+esc(studentNames()[1-builder])+'. '+B('The checker reads the next step. Both explain the result.','检查员读下一步，两人都要能解释结果。')+'</p>';}
+ $('#content').innerHTML=heading+'<article class="card"><div class="card-title"><h1 id="stepTitle" tabindex="-1">'+B(s.title,s.zh)+'</h1></div>'+body(s.id)+'</article>'+
+ (s.id!=='report'?'<div class="step-footer">'+btn('back','← Previous','← 上一步','quiet',p.at===0?'disabled':'')+btn('next',s.id==='checkpoint'?'Continue after teacher check →':s.id==='extension'?'Go to Plenary →':'Continue →',s.id==='checkpoint'?'教师检查后继续 →':s.id==='extension'?'进入课堂小结 →':'继续 →','primary',preview||L.ready(p,s.id)?'':'disabled')+'</div>':'')+
+ (s.id!=='report'&&!preview?'<details class="teacher-tools"><summary>'+B('For your teacher: end-of-lesson control','教师：课程结束控制')+'</summary>'+para('If lesson time has ended, your teacher can open the reflection pages. Unfinished work stays marked unfinished.','课程时间结束时，老师可以打开反思页面，未完成的作品仍标记为未完成。')+btn('wrap','Teacher: move to reflection','教师：进入反思','small')+'</details>':'');
+ if(waitingExtension)$('#content').insertAdjacentHTML('afterbegin','<div class="status-box">'+B('You are trying a challenge while waiting. Your core route still needs a teacher check.','你正在等待检查时尝试挑战。核心路线仍需要教师检查。')+btn('return-check','Return to teacher checkpoint','返回教师检查','small')+'</div>');
+}
+function body(id){
+ const a=p.answers, me=p.learners[person]||{};
+ if(id==='mission')return para('Our explorer needs to reach the key. Guide it through START → A → B → C → D → KEY.','探险者需要到达钥匙。请引导它经过起点、A、B、C、D，最后到达钥匙。','lead')+'<div class="instruction">'+para('First we will read coordinates here. Later, you must open Scratch and build the route.','先在这里学习坐标，之后必须打开 Scratch 编写路线。')+'</div>'+map()+'<ul class="checks"><li>'+B('Know: a position has an x value and a y value.','知识：位置由 x 和 y 两个数表示。')+'</li><li>'+B('Do: build, run and test a sequence.','技能：编写、运行并测试顺序。')+'</li><li>'+B('Explain: why changing a number or block order changes the route.','理解：解释为什么数字或积木顺序会改变路线。')+'</li></ul>'+btn('read','I know what I will make','我知道要制作什么','yellow');
+ if(id==='x')return '<div class="two"><div>'+para('The centre is (0, 0). x tells us how far left or right of the centre a sprite is.','中心是 (0, 0)。x 表示角色在中心左边或右边多远。')+para('Negative x is left of centre. Positive x is right of centre. This tells us a position, not which way it is moving.','负 x 在中心左边，正 x 在右边。这表示位置，而不是移动方向。')+radio('x','The dot has x = −120. Where is it?','圆点的 x = −120。它在哪里？',[['left','Left of the centre','中心左边'],['right','Right of the centre','中心右边']],a.x)+btn('check-x','Check my idea','检查答案','yellow')+'</div><div>'+grid(-120,0)+'</div></div>'+savedFeedback(id);
+ if(id==='xy')return '<div class="two"><div>'+para('y tells us how far above or below the centre a sprite is. Positive y is up; negative y is down. Write x first, then y: (x, y).','y 表示角色在中心上方或下方多远。正 y 在上方，负 y 在下方。先写 x，再写 y：(x, y)。')+para('Worked example: x = 100 and y = −50 is (100, −50). It is right of and below the centre.','示例：x = 100，y = −50，写作 (100, −50)，位于中心右下方。')+'<div class="instruction">'+B('Your turn: the dot is x = −120, y = −135. Build its pair.','轮到你：圆点 x = −120，y = −135。写出坐标对。')+'</div>'+pairInputs('pair',a.pairX,a.pairY)+btn('check-pair','Check my pair','检查坐标对','yellow')+'</div><div>'+grid(-120,-135)+'</div></div>'+savedFeedback(id);
+ if(id==='event')return para('An event tells a script when to start. The green-flag event runs the blocks below it when you click the flag.','事件告诉脚本何时开始。点击绿旗后，绿旗事件会运行下面的积木。')+code(['when green flag clicked','go to x: −200 y: −135'])+radio('event','Which action starts this script?','什么操作启动这个脚本？',[['flag','Click the green flag','点击绿旗'],['space','Press the space key','按空格键']],a.event)+btn('check-event','Check','检查','yellow')+savedFeedback(id);
+ if(id==='focus')return para('These are different kinds of learning, not different kinds of pupils. Choose one thing you want to improve today.','这些是不同的学习内容，不是不同的学生类型。选择今天想进步的一项。')+'<ul class="checks"><li>'+B('Knowledge: what I know and remember.','知识：我知道并记住的内容。')+'</li><li>'+B('Skills: what I can do with practice.','技能：我通过练习能做的事。')+'</li><li>'+B('Understanding: what I can explain with an example.','理解：我能举例解释的道理。')+'</li></ul>'+personalTabs()+options('learner.goal','My goal','我的目标',L.goals,me.goal)+options('learner.before','My starting point','我的起点',[['new','This is new to me','这是新知识'],['example','An example helps me','例子能帮助我'],['ready','I can try without an example','我能不看例子尝试']],me.before)+para('Your choice is not a mark. You will come back to it after coding.','这不是分数，编程后会再次回顾。','muted');
+ if(id==='worked'){
+ const x=-80+40*workedTrace;
+ return para('“Go to” sets a position. “Change x by” adds to the x value already there. Start at (−80, 20), then add 40 to x.','“go to” 设置位置。“change x by” 在现有 x 上加一个数。从 (−80, 20) 开始，x 加 40。')+'<div class="two"><div>'+code(['when green flag clicked','go to x: −80 y: 20','change x by 40'],workedTrace?2:1)+para('−80 + 40 = −40. The sprite moves right, but is still left of the centre. y stays 20.','−80 + 40 = −40。角色向右移动，但仍在中心左侧。y 仍是 20。')+btn('worked','Run this example','运行示例','yellow')+'</div><div>'+grid(x,20,90,workedTrace?[[-80,20],[-40,20]]:[])+para('Position: ('+x+', 20)','位置：('+x+', 20)')+'</div></div>'+para('These blue rows are a code reader. You will use the real Scratch blocks in Main Task 2.','蓝色行用于阅读代码，主任务二会使用真正的 Scratch 积木。','muted');
+ }
+ if(id.startsWith('predict'))return prediction(Number(id.slice(-1))-1);
+ if(id==='launch')return '<p class="lead">'+B('Stop answering for a moment. Your next job is in Scratch.','先停下答题。接下来的任务在 Scratch 中完成。')+'</p><div class="actions"><a class="button yellow" href="assets/scratch/Year6_T1W3_Guided_Template.sb3" download data-link="download">'+B('1. Download the project','1. 下载项目')+'</a><a class="button primary" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener" data-link="scratch">'+B('2. Open Scratch ↗','2. 打开 Scratch ↗')+'</a></div><div class="instruction"><h2>'+B('3. Load the project','3. 加载项目')+'</h2>'+para('In Scratch, choose File → Load from your computer. Choose Year6_T1W3_Guided_Template.sb3 from Downloads.','在 Scratch 中选择 File → Load from your computer（从电脑上传），在下载文件夹中选择 Year6_T1W3_Guided_Template.sb3。')+para('Already using Scratch Desktop? Load the same file there. Keep this lesson open and come back after each check.','使用 Scratch 桌面版？在那里加载同一文件。保留本课页面，每次检查后返回。')+'</div>'+map()+para('Ready looks like: a maze on the stage, plus Explorer, Key and Portal sprites. A blank cat project is not ready.','准备完成的样子：舞台有迷宫，还有 Explorer、Key、Portal 三个角色。只有小猫的空项目还没准备好。')+btn('confirm-open','I can see the maze and explorer in Scratch','我在 Scratch 看到了迷宫和探险者','yellow')+hint('If the file did not open, click File inside Scratch—not your browser menu. Ask your teacher if downloading is blocked.','如果文件没打开，点击 Scratch 内部的 File，不是浏览器菜单。下载被阻止时请老师帮忙。')+savedFeedback(id);
+ if(id==='run-example')return para('In Scratch, select Explorer. Click the green flag. Watch the supplied code reset the explorer, then glide from START to A.','在 Scratch 选择 Explorer，点击绿旗，观察示例代码重置角色，然后从起点滑行到 A。')+code(['when green flag clicked','go to x: −200 y: −135','glide 0.8 secs to x: −120 y: −135'])+radio('example','After running the example in Scratch, where did it stop?','在 Scratch 运行后，它停在哪里？',[['A','At A (−120, −135)','A 点 (−120, −135)'],['start','It stayed at START','仍在起点'],['other','Somewhere else / it did not run','其他位置／没运行']],a.example)+btn('check-example','Record what I saw','记录观察','yellow')+hint('Select Explorer, not Key or Portal. The glide must be connected below the green-flag script.','选择 Explorer，而不是 Key 或 Portal。滑行积木必须连接在绿旗脚本下面。')+savedFeedback(id);
+ if(id==='build-b')return para('Your turn in Scratch: make the explorer move from A to B. A is (−120, −135). B is directly above it at (−120, −35).','在 Scratch 尝试从 A 移到 B。A 是 (−120, −135)，B 在它正上方，坐标为 (−120, −35)。')+radio('same','Which coordinate stays the same?','哪个坐标不变？',[['x','x stays −120','x 保持 −120'],['y','y stays −135','y 保持 −135']],a.same)+'<div class="instruction">'+para('Add one glide block below the example. Set its destination to B. Click the green flag to test the whole script again.','在示例下面添加一个滑行积木，目的地设为 B。点击绿旗重新测试整个脚本。')+'</div>'+code(['glide 0.8 secs to x: −120 y: −35'])+check('bRan','I ran it in Scratch and the explorer reached B.','我在 Scratch 运行了程序，角色到达 B。',a.bRan)+btn('check-b','Save this checkpoint','保存检查点','yellow')+hint('Check the minus sign. −35 is above −135. Use “glide to x: y:”, not “change y by −35”.','检查负号。−35 在 −135 上方。使用 glide to x: y:，而不是 change y by −35。')+savedFeedback(id);
+ if(id==='build-route')return para('Now work in Scratch. Add the route from B → C → D → KEY. Read each destination on the map. Add one glide, then run and check before adding the next.','现在在 Scratch 中编写 B → C → D → KEY。读取地图坐标，每加一个滑行积木就运行检查。')+'<img class="route-map" src="assets/images/route-map.svg" alt="Route map with checkpoint coordinates">'+hint('C = (10, −35), D = (10, 95), KEY = (170, 95). Finish with a short say block.','C = (10, −35)，D = (10, 95)，KEY = (170, 95)。最后加一个简短的 say 积木。')+
+ para('The walls are visual boundaries: Scratch will not stop you hitting them. Watch the whole explorer along every segment. Reaching KEY means arriving there; this template does not hide or collect the key automatically.','墙壁是视觉边界，Scratch 不会自动阻止碰墙。检查角色经过的每一段。到达 KEY 表示抵达位置，模板不会自动隐藏或收集钥匙。','muted')+check('routeRan','I tested START → A → B → C → D → KEY in Scratch.','我在 Scratch 测试了完整路线。',a.routeRan)+btn('check-route','I am ready to record my test','我准备记录测试','yellow')+savedFeedback(id);
+ if(id==='test')return para('Run from the green flag. Watch the route before filling this in. It is okay if it worked first time.','从绿旗开始运行，先观察路线再记录。第一次成功也没关系。')+options('answers.testResult','What happened?','发生了什么？',[['worked','It reached the key through every checkpoint','经过所有检查点到达钥匙'],['wall','It crossed a wall','穿过了墙'],['wrong','It stopped in the wrong place','停错了位置'],['none','It did not start','没运行']],a.testResult)+textField('answers.testNote','What did you check or change?','你检查或修改了什么？',a.testNote,true)+hint('If it worked: “I checked the route, not just the final position.” If it did not: “I changed B’s y value, then ran again.”','成功时：“我检查了整条路线，不只是终点。”没成功时：“我修改了 B 的 y，然后重新运行。”')+btn('log-test','Save this test','保存这次测试','yellow')+(p.practical.tests.length?'<ol>'+p.practical.tests.map(t=>'<li>'+esc(t.result)+' — '+esc(t.note)+'</li>').join('')+'</ol>':'')+'<div class="instruction">'+para('Save your Scratch work: File → Save to your computer. Use a name you will recognise, such as Amina_CoordinateQuest_v1.sb3.','保存 Scratch 作品：File → Save to your computer。使用易辨认的文件名，如 Amina_CoordinateQuest_v1.sb3。')+'</div>'+check('fileSaved','I saved my Scratch project on this computer.','我已把 Scratch 项目保存在电脑上。',a.fileSaved)+textField('answers.filename','My project filename','项目文件名',a.filename)+btn('ready-check','My route is ready to show','我的路线准备好展示了','primary')+savedFeedback(id);
+ if(id==='checkpoint')return '<div class="status-box">'+B(L.status(p),p.practical.status==='teacher-checked'?'教师已检查运行路线。':p.practical.wrap?'实践尚未完成，教师已允许进入反思。':'等待教师检查。')+'</div>'+para('Keep Scratch open. Show Mr David your working program, not just this page.','保留 Scratch，向 Mr David 展示运行的程序，不只是这个网页。','lead')+'<ol><li>'+B('Click the green flag and show the whole route.','点击绿旗，展示完整路线。')+'</li><li>'+B('Point to one glide block and explain its x and y.','指出一个滑行积木并解释 x 和 y。')+'</li><li>'+B('Show that your project is saved. Each partner explains a part.','展示项目已经保存，每位同伴解释一部分。')+'</li></ol>'+para('While you wait, explain the route to your partner or try a challenge. Clicking a button here does not prove that Scratch work is finished.','等待时向同伴解释路线或尝试挑战。点击本页按钮不代表 Scratch 作品已经完成。')+'<div class="actions">'+btn('approve','Teacher: check this project','教师：检查作品','yellow')+btn('waiting-extension','Try a challenge while I wait','等待时尝试挑战','quiet')+'</div>';
+ if(id==='pitstop')return personalTabs()+para('Think about the goal you chose before coding. Use what happened in your Scratch work—not how quickly you clicked through the website.','回想编程前的目标，根据 Scratch 中的表现选择，不要根据点击网页的速度。')+
+ para('My first goal: '+(L.goals.find(g=>g[0]===me.goal)?.[1]||'Not recorded'),'最初的目标：'+(L.goals.find(g=>g[0]===me.goal)?.[2]||'未记录'))+
+ '<details class="hint"><summary>'+B('See our school learning phases','查看学校学习阶段图')+'</summary><img class="original-visual" src="assets/images/learning-pitstop.png" alt="School learning phases: new learning, consolidating, treading water and drowning."></details>'+
+ options('learner.phase','How does this task feel now?','现在这个任务感觉怎样？',L.phases,me.phase)+textField('learner.evidence','What in your work helped you choose? A few words are enough.','作品中的什么帮助你选择？几个词就可以。',me.evidence,true)+(me.phase?feedback(...phaseHelp(me.phase)):'')+para('These choices are not marks. If you need help, tell your teacher; saving does not send an alert.','这些选择不是分数。需要帮助请告诉老师，保存不会发送通知。','muted');
+ if(id==='extension'){const n=p.level,item=L.challenges[n],r=p.extensions[n];return para('Work in Scratch. If you finish early, aim for three challenges. Stop when your teacher calls the plenary. These are optional, not a barrier to reflection.','在 Scratch 操作。提前完成的同学争取做三个挑战，老师开始小结时停下。挑战是选做，不阻挡反思。')+'<div class="levels">'+L.challenges.map((c,i)=>'<button type="button" data-level="'+i+'" aria-label="Challenge '+(i+1)+'" aria-current="'+(i===n)+'">'+(i+1)+(p.extensions[i].done?' ✓':'')+'</button>').join('')+'</div><h2>'+B((n+1)+'. '+item[0],item[1])+'</h2>'+para(item[2],item[3])+'<div class="instruction"><code>'+esc(item[4])+'</code></div>'+map()+textField('extension.note','What did your test show?','测试结果是什么？',r.note,true)+check('extensionTested','I tried this in Scratch and checked the result.','我已在 Scratch 尝试并检查结果。',a.extensionTested)+btn('save-extension',n<4?'Save my attempt & open challenge '+(n+2):'Save my last challenge',n<4?'保存并进入下一关':'保存最后一关','yellow')+para('Challenge ticks are your own reports, not teacher verification. Save your Scratch version before making a new change.','挑战勾选是自我记录，不是教师验证。修改前保存 Scratch 版本。','muted');}
+ if(id==='plenary')return personalTabs()+para('Answer on your own. Your partner can read the question, but let you choose.','独立回答。同伴可以读题，但由你自己选择。')+code(['when green flag clicked','go to x: −60 y: 40','change x by 100'])+pairInputs('exit',me.exitX,me.exitY)+radioLearner('exitWhy','Why does y stay 40?','为什么 y 仍是 40？',[['no-y','No block changes y','没有积木改变 y'],['positive','y is always positive','y 总是正数'],['flag','The flag keeps y still','绿旗让 y 不动']],me.exitWhy)+btn('check-exit','Check my explanation','检查解释','yellow')+btn('unsure-exit','I need help with this question','这道题我需要帮助','quiet')+(me.exitFeedback?feedback(me.exitFeedback,me.exitFeedbackZh,me.exitChecked?'good':'warn'):'')+textField('learner.next','One thing I will check next time…','下次我要检查的一件事……',me.next,true);
+ if(id==='report')return '<div class="status-box">'+esc(L.status(p))+'</div>'+para('This record contains your answers, test notes and teacher-check status. It does not contain an automatic recording of Scratch.','记录包含答案、测试笔记和教师检查状态，不包含自动录制的 Scratch。')+btn('pdf','Download my learning PDF','下载学习 PDF','primary')+'<div class="instruction">'+para('With Mandarin text, a print window opens: choose Save as PDF. Check your names and practical-work status before submitting.','包含中文时会打开打印窗口，请选择“保存为 PDF”。提交前检查姓名和实践状态。')+'</div><h2>'+B('Send your work to Teams','把作品提交到 Teams')+'</h2><ol><li>'+B('Open the Computing assignment your teacher set.','打开老师布置的 Computing 作业。')+'</li><li>'+B('Attach the PDF and your saved Scratch .sb3 project.','附上 PDF 和保存的 Scratch .sb3 项目。')+'</li><li>'+B('Wait for both files to upload. Check them, then select Turn in.','等待两个文件上传，检查后选择 Turn in。')+'</li></ol>'+check('submitted','I attached my work and selected Turn in.','我已附上作品并点击 Turn in。',a.submitted)+para('This is your submission report. The website cannot check Teams for you.','这是你的提交记录，网站不能替你检查 Teams。','muted')+(p.legacyId?para('Work from the previous website is still stored separately. Save a backup to include it.','旧版网站的作品仍单独保存。下载备份可以包含它。'):'');
+ return '';
+}
+function savedFeedback(id){return p.answers['feedback-'+id]?feedback(p.answers['feedback-'+id],p.answers['feedbackZh-'+id],p.done[id]?'good':'warn'):'';}
+function check(key,en,zh,value){return '<label class="check"><input type="checkbox" data-field="answers.'+key+'" '+(value?'checked':'')+'><span>'+B(en,zh)+'</span></label>';}
+function pairInputs(prefix,x='',y=''){return '<div class="coordinate-pair">'+textField(prefix+'.x','Final x','最终 x',x)+textField(prefix+'.y','Final y','最终 y',y)+'</div>';}
+function radioLearner(key,en,zh,items,value){return radio(key,en,zh,items,value).replaceAll('data-field="answers.','data-field="learner.');}
+function phaseHelp(phase){return {new:['Trace one move slowly, then try it yourself.','慢慢追踪一步，再自己尝试。'],practice:['Try a similar route with less help.','少用提示尝试类似路线。'],stretch:['Try an extension and explain why your route works.','尝试挑战并解释路线为什么有效。'],help:['Show your teacher the first step you cannot explain.','向老师指出第一个不理解的步骤。'],untried:['Tell your teacher what stopped you starting. Plan one first step together.','告诉老师什么阻止了开始，一起计划第一步。']}[phase];}
+function prediction(n){
+ const d=L.predictions[n],r=p.predictions[n],pos=L.position(n,r.trace),started=!!r.submitted;
+ const lines=[d.event,'go to x: '+d.start[0]+' y: '+d.start[1],...d.ops.map(([k,v])=>k==='turn'?'turn clockwise '+v+' degrees':'change '+k+' by '+v)];
+ const path=[d.start,...d.ops.slice(0,r.trace).map((_,i)=>{const q=L.position(n,i+1);return [q.x,q.y];})];
+ return (n===2?para('A turn changes which way a sprite faces, not its x or y. “Change x” and “change y” use the stage axes, even after a turn.','转向改变朝向，不改变 x 或 y。即使转向后，change x 和 change y 仍沿舞台坐标轴移动。'):'')+
+ '<div class="two"><div>'+code(lines,started?r.trace+1:-1)+(started?para('My prediction: ('+r.x+', '+r.y+')','我的预测：('+r.x+', '+r.y+')'):pairInputs('prediction',r.x,r.y))+(!started?btn('predict','Save prediction, then test','保存预测，再测试','yellow'):'')+para('A prediction is an idea to test, not a mark. Changing your mind is part of learning.','预测是需要测试的想法，不是分数。改变想法也是学习。','muted')+'</div><div>'+grid(pos.x,pos.y,pos.dir,path)+para('Position now: ('+pos.x+', '+pos.y+')','当前位置：('+pos.x+', '+pos.y+')')+(started?btn('trace',r.trace<d.ops.length?'Run next block':'Replay from the start',r.trace<d.ops.length?'运行下一块':'重新运行','yellow'):'')+'</div></div>'+
+ (r.ran?'<div class="instruction">'+B('The code finishes at ('+d.answer.join(', ')+'). Compare this with your prediction.','代码结束位置为 ('+d.answer.join(', ')+')。和预测比较。')+'</div>'+radio('compare'+n,'What explains the result?','怎样解释这个结果？',n===0?[['correct','Only x changed. y stayed −100.','只有 x 变化，y 保持 −100。'],['wrong','Both coordinates changed.','两个坐标都变化。']]:n===1?[['correct','y increased by 130; x decreased by 100.','y 加 130，x 减 100。'],['wrong','The sprite finishes where it started.','角色回到起点。']]:[['correct','The turn changed direction, not position.','转向改变朝向，不改变位置。'],['wrong','Turning also changed x by 90.','转向也让 x 加 90。']],p.answers['compare'+n])+btn('compare','Check my explanation','检查解释','yellow'):'')+savedFeedback('predict'+(n+1));
+}
+function setFeedback(id,ok,en,zh){p.done[id]=ok;p.answers['feedback-'+id]=en;p.answers['feedbackZh-'+id]=zh;save();render();}
+function refreshContinue(){const el=$('[data-action="next"]');if(el)el.disabled=!preview&&!L.ready(p,L.steps[p.at].id);}
+function setField(path,value){
+ const id=L.steps[p.at].id,parts=path.split('.');
+ if(parts[0]==='learner'){p.learners[person][parts[1]]=value;if(['exitX','exitY','exitWhy'].includes(parts[1])){p.learners[person].exitChecked=false;p.learners[person].exitRecorded=false;}}
+ else if(parts[0]==='prediction'){p.predictions[Number(id.slice(-1))-1][parts[1]]=value;}
+ else if(parts[0]==='pair'){p.answers['pair'+parts[1].toUpperCase()]=value;p.done.xy=false;}
+ else if(parts[0]==='exit'){p.learners[person]['exit'+parts[1].toUpperCase()]=value;p.learners[person].exitChecked=false;p.learners[person].exitRecorded=false;}
+ else if(parts[0]==='extension')p.extensions[p.level][parts[1]]=value;
+ else {p.answers[parts[1]]=value;if(['x','event','run-example','build-b','build-route'].includes(id))p.done[id]=false;if(id.startsWith('predict'))p.done[id]=false;}
+ save();refreshContinue();
+}
+function go(index){if(!preview&&index>p.furthest)return;waitingExtension=false;p.at=Math.max(0,Math.min(index,L.steps.length-1));person=0;save();render();$('#stepTitle')?.focus({preventScroll:true});}
+function validNumber(v){return String(v??'').trim()!==''&&Number.isFinite(Number(String(v).replaceAll('−','-')));}
+function number(v){return Number(String(v).replaceAll('−','-').trim());}
+async function hash(value){if(!crypto.subtle)throw Error('Teacher checks need a secure browser context. Open this site using localhost or HTTPS.');return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))).map(v=>v.toString(16).padStart(2,'0')).join('');}
+function teacherDialog(kind){
+ const configured=read(PIN,null);
+ $('#teacherDialog').innerHTML='<form id="teacherForm"><h2 id="dialogTitle">'+(kind==='approve'?'Teacher practical check':kind==='wrap'?'Teacher: finish lesson time':'Teacher controls')+'</h2><p>'+ (configured?'Enter this device’s teacher passcode.':'Teacher: set a private passcode for this device before its first check. Do not share it with pupils.')+'</p><p class="muted">This is a local classroom control, not a secure school sign-in. It cannot verify Scratch automatically.</p><label for="teacherName">Teacher name</label><input id="teacherName" required maxlength="60" autocomplete="off"><label for="passcode">'+(configured?'Passcode':'Set passcode (at least 6 characters)')+'</label><input id="passcode" type="password" minlength="6" required autocomplete="off">'+(!configured?'<label for="passcodeAgain">Repeat passcode</label><input id="passcodeAgain" type="password" minlength="6" required autocomplete="off">':'')+
+ (kind==='approve'?'<label class="check"><input name="route" type="checkbox" required><span>I saw the full route run in Scratch without crossing a wall.</span></label><label class="check"><input name="explain" type="checkbox" required><span>Each pupil explained a coordinate or block.</span></label><label class="check"><input name="saved" type="checkbox" required><span>I saw that the Scratch project was saved.</span></label>':kind==='wrap'?'<p>This opens reflection and export without claiming the practical is finished.</p>':'')+
+ '<div id="teacherError" role="alert"></div><div class="actions"><button type="submit" class="primary">'+(kind==='approve'?'Record my check':kind==='wrap'?'Move to reflection':'Open teacher preview')+'</button>'+btn('close-dialog','Cancel','','quiet')+'</div></form>';
+ $('#teacherDialog').showModal();
+ $('#teacherForm').addEventListener('submit',async e=>{
+ e.preventDefault();const button=e.submitter;button.disabled=true;
+ try{
+  const pass=$('#passcode').value, teacher=$('#teacherName').value.trim();if(!teacher||pass.length<6)throw Error('Enter your name and a passcode of at least 6 characters.');
+  const digest=await hash(pass);
+  if(configured&&digest!==configured.hash)throw Error('That passcode did not match.');
+  if(!configured){if(pass!==$('#passcodeAgain').value)throw Error('The two passcodes did not match.');try{localStorage.setItem(PIN,JSON.stringify({hash:digest}));}catch(e){throw Error('This device cannot save the teacher passcode. Allow local storage, then try again.');}}
+  $('#teacherDialog').close();
+  if(kind==='preview'){preview=true;p=L.fresh('Teacher preview','—');teacherHome();}
+  else if(kind==='approve'){if(!p.done.test){notify('Record a successful test and save the project first.','先记录成功的测试并保存项目。');return;}p.practical.status='teacher-checked';p.practical.teacher={name:teacher,at:new Date().toISOString()};delete p.practical.wrap;save();render();}
+  else {if(p.practical.status!=='teacher-checked')p.practical.wrap={name:teacher,at:new Date().toISOString()};p.at=15;p.furthest=Math.max(p.furthest,15);save();render();}
+ }catch(error){$('#teacherError').textContent=error.message;button.disabled=false;}
+ });
+}
+function teacherHome(){
+ toolbar();$('#content').innerHTML='<article class="card"><span class="eyebrow">Teacher controls · this device only</span><h1>Guide the practical, not the clicks.</h1><p>60 minutes: setup 3 · Do Now 7 · learning focus 3 · Main 1 12 · Main 2 22 · pitstop 3 · plenary 5 · export 5. Extensions fit inside practical time.</p><p>The teacher checkpoint asks you to watch the route, hear each learner explain a block, and check their saved project. Enter this device’s passcode on the pupil’s checkpoint. Use the end-of-lesson control if work is unfinished.</p><p>Students cannot jump to future cards. They can revisit teaching. Reflection and report access follow the practical check, or your explicit end-of-lesson release. Passcodes are a classroom deterrent, not an authentication system.</p><label for="previewStep">Preview a card</label><select id="previewStep"><option value="">Choose…</option>'+L.steps.map((s,i)=>'<option value="'+i+'">'+esc(s.stage+' — '+s.title)+'</option>').join('')+'</select><h2>Saved records on this device</h2><div class="scroll-table"><table class="records"><thead><tr><th>Pupil(s)</th><th>Class</th><th>Practical status</th></tr></thead><tbody>'+Object.values(profiles).map(r=>'<tr><td>'+esc(r.name+(r.partner?' + '+r.partner:''))+'</td><td>'+esc(r.className)+'</td><td>'+esc(L.status(r))+'</td></tr>').join('')+'</tbody></table></div><p>No class-wide dashboard: other devices keep their own records. Original V2 work remains untouched.</p></article>';
+}
+function download(data,name,type='application/json'){const url=URL.createObjectURL(new Blob([data],{type}));const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),5000);}
+function reportRows(){
+ const rows=[['Student(s)',studentNames().join(' + ')],['Class',p.className],['Practical status',L.status(p)],['Teacher check',p.practical.teacher? p.practical.teacher.name+' · '+p.practical.teacher.at:'Not recorded'],['Teacher end-of-lesson release',p.practical.wrap?p.practical.wrap.name+' · '+p.practical.wrap.at:'Not used'],['Project filename',p.answers.filename||'Not recorded'],['WAGBA knowledge','Read x and y; identify an event.'],['WAGBA skills','Build, run and test a sequence.'],['WAGBA understanding','Explain how a coordinate or block order changes the route.']];
+ ['x','pairX','pairY','event','example','same'].forEach(k=>rows.push(['Do Now / checkpoint: '+k,String(p.answers[k]??'Not recorded')]));
+ p.predictions.forEach((r,i)=>{rows.push(['Prediction '+(i+1),r.history.map(h=>'('+h.x+', '+h.y+')').join(' → ')||'Not attempted']);rows.push(['Prediction explanation '+(i+1),p.done['predict'+(i+1)]?'Checked after tracing':'Not checked']);});
+ Object.entries(p.practical.checks).forEach(([k,v])=>rows.push(['Pupil-reported checkpoint: '+k,v]));
+ p.practical.tests.forEach((t,i)=>rows.push(['Pupil test '+(i+1),t.result+': '+t.note+' · '+t.at]));
+ studentNames().forEach((name,i)=>{const m=p.learners[i];rows.push([name+' — goal',L.goals.find(g=>g[0]===m.goal)?.[1]||'Not recorded'],['Starting point',m.before||'Not recorded'],['Learning phase',L.phases.find(g=>g[0]===m.phase)?.[1]||'Not recorded'],['Reflection evidence',m.evidence||'Not recorded'],['Independent exit answer','('+String(m.exitX??'?')+', '+String(m.exitY??'?')+'); reason: '+(m.exitWhy||'Not recorded')],['Exit feedback',m.exitFeedback||'Not checked'],['Next time',m.next||'Not recorded']);});
+ p.extensions.forEach((r,i)=>rows.push(['Challenge '+(i+1)+' (self-report)',(r.done?'Pupil reports tested':'Not recorded')+(r.note?' — '+r.note:'')]));
+ rows.push(['Teams submission',p.answers.submitted?'Pupil reports submitted; not verified':'Not yet reported'],['Evidence note','This report records responses, pupil-reported tests and a local teacher check. It does not automatically inspect Scratch or Teams.']);
+ return rows;
+}
+function exportPdf(){
+ const rows=reportRows();$('#printReport').innerHTML='<h1>Coordinate Quest</h1><p>Year 6 · Term 1 Week 3 · '+esc(new Date().toLocaleDateString())+'</p>'+rows.map(([k,v])=>'<div class="report-section"><h3>'+esc(k)+'</h3><p>'+esc(v)+'</p></div>').join('');
+ if(language==='zh'||/[^\u0000-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d\u2022\u2192\u2212]/.test(JSON.stringify(rows))||!window.jspdf){notify('Choose Save as PDF in the print window.','在打印窗口选择保存为 PDF。');window.print();return;}
+ try{
+ const doc=new window.jspdf.jsPDF();let y=23;doc.setFontSize(20);doc.text('Coordinate Quest',16,y);y+=10;doc.setFontSize(10);doc.text('Year 6 · Term 1 Week 3',16,y);y+=10;
+ for(const [k,v] of rows){doc.setFont('helvetica','bold');doc.setFontSize(11);const title=doc.splitTextToSize(k,175);if(y+title.length*5+10>280){doc.addPage();y=20;}doc.text(title,16,y);y+=title.length*5+2;doc.setFont('helvetica','normal');doc.setFontSize(10);const lines=doc.splitTextToSize(String(v).replaceAll('−','-').replaceAll('→',' > ').replaceAll('—','-'),175);for(const line of lines){if(y>280){doc.addPage();y=20;}doc.text(line,16,y);y+=5;}y+=5;}
+ const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFontSize(8);doc.text('Coordinate Quest · '+i+' / '+n,16,291);}
+ doc.save((p.name+'_'+p.className+'_CoordinateQuest.pdf').replace(/[^a-z0-9_.-]/gi,'_'));notify('PDF created. Check it, then attach it and your Scratch project in Teams.','PDF 已生成。检查后，把它和 Scratch 项目附到 Teams。');
+ }catch(e){notify('PDF download failed. Use the print window to save a PDF.','下载失败，请通过打印窗口保存 PDF。');window.print();}
+}
+function perform(action){
+ if(action==='language'){language=language==='zh'?'en':'zh';try{localStorage.setItem('coordinateQuestLanguageV3',JSON.stringify(language));}catch(e){}if(p)render();else{const values=$('#entry')?Object.fromEntries(new FormData($('#entry'))):null;landing();if(values){for(const [k,v] of Object.entries(values)){const el=$('#entry [name="'+k+'"]');if(el)el.value=v;}$('#partnerField').hidden=values.mode!=='pair';}}return;}
+ if(action==='exit'){save();landing();return;}
+ if(action==='close-dialog')return $('#teacherDialog').close();
+ if(action==='teacher-home')return teacherHome();
+ if(!p)return;
+ const id=L.steps[p.at].id,a=p.answers;
+ if(action==='backup')return download(JSON.stringify({profile:p,previous:p.legacyId?read(OLD,{})[p.legacyId]:undefined},null,2),'CoordinateQuest_backup.json');
+ if(action==='back'){if(waitingExtension){waitingExtension=false;p.at=14;render();return;}return go(p.at-1);}
+ if(action==='next'){
+  if(waitingExtension){waitingExtension=false;p.at=14;render();return;}
+  if(!preview&&!L.ready(p,id))return;
+  p.furthest=Math.max(p.furthest,Math.min(p.at+1,L.steps.length-1));go(p.at+1);return;
+ }
+ if(action==='read')return setFeedback(id,true,'Your mission is clear. Continue to learn the coordinates.','任务明确，继续学习坐标。');
+ if(action==='check-x')return setFeedback(id,a.x==='left',a.x==='left'?'Yes. −120 is left of the centre.':'Look at the centre line. A negative x is to its left.',a.x==='left'?'正确，−120 在中心左边。':'看中心线，负 x 在它左边。');
+ if(action==='check-pair'){const ok=number(a.pairX)===-120&&number(a.pairY)===-135;return setFeedback(id,ok,ok?'Yes: (−120, −135). x first, then y.':'Keep x first and both minus signs: (−120, −135).',ok?'正确，先 x 后 y。':'先 x 后 y，保留两个负号。');}
+ if(action==='check-event')return setFeedback(id,a.event==='flag',a.event==='flag'?'Yes. Clicking the flag starts this script.':'This script has a flag event, not a space-key event.',a.event==='flag'?'正确，点击绿旗启动。':'这是绿旗事件，不是空格键事件。');
+ if(action==='worked'){workedTrace=1;p.done.worked=true;save();render();return;}
+ if(action==='predict'){
+ const r=p.predictions[Number(id.slice(-1))-1];if(!validNumber(r.x)||!validNumber(r.y)){notify('Enter two numbers first. A prediction can be wrong.','先输入两个数字，预测可以不正确。');return;}
+ r.history.push({x:r.x,y:r.y,at:new Date().toISOString()});r.submitted=true;r.trace=0;r.ran=false;p.done[id]=false;save();render();return;
+ }
+ if(action==='trace'){const n=Number(id.slice(-1))-1,r=p.predictions[n];r.trace=r.trace<L.predictions[n].ops.length?r.trace+1:0;if(r.trace===L.predictions[n].ops.length)r.ran=true;save();render();return;}
+ if(action==='compare'){const n=Number(id.slice(-1))-1;if(!p.predictions[n].ran)return;const ok=a['compare'+n]==='correct';return setFeedback(id,ok,ok?'You compared your idea with what the code did. Ready to continue.':'Trace the blocks again. Watch which value changes; a turn changes direction only.',ok?'你已比较预测和代码结果，可以继续。':'再追踪积木，注意哪个数改变。转向只改变朝向。');}
+ if(action==='confirm-open'){p.practical.status='in-progress';p.practical.checks.opened='Pupil reports seeing maze and Explorer';return setFeedback(id,true,'Opening confirmed by you. Next, run the supplied example in Scratch.','你已确认打开。接下来在 Scratch 运行示例。');}
+ if(action==='check-example'){if(a.example==='A')p.practical.checks.example='Pupil reports START to A';return setFeedback(id,a.example==='A',a.example==='A'?'Observation saved. Now build the next part yourself.':'Go back to Scratch. Select Explorer and run the green flag. Ask for help if it still does not reach A.',a.example==='A'?'观察已保存，接下来自己编写下一段。':'返回 Scratch，选择 Explorer 并点击绿旗。仍没到 A 请寻求帮助。');}
+ if(action==='check-b'){const ok=a.same==='x'&&a.bRan;if(ok)p.practical.checks.B='Pupil reports testing A to B';return setFeedback(id,ok,ok?'B checkpoint recorded. Now finish the route in Scratch.':'x stays −120. Add the glide and test in Scratch, then confirm that it reached B.',ok?'B 检查点已记录，请在 Scratch 完成路线。':'x 保持 −120。添加滑行并在 Scratch 测试，再确认到达 B。');}
+ if(action==='check-route'){if(a.routeRan)p.practical.checks.route='Pupil reports testing all checkpoints';return setFeedback(id,!!a.routeRan,a.routeRan?'Your report is saved. Record what your test showed next.':'Test the full route in Scratch before confirming.',a.routeRan?'自我记录已保存，接下来记录测试结果。':'确认前先在 Scratch 测试完整路线。');}
+ if(action==='log-test'){if(!a.testResult||!a.testNote?.trim()){notify('Choose what happened and add a few words about what you checked.','选择结果，简短说明检查了什么。');return;}p.practical.tests.push({result:a.testResult,note:a.testNote.trim(),at:new Date().toISOString()});p.done.test=false;p.practical.status='in-progress';delete p.practical.teacher;save();render();return;}
+ if(action==='ready-check'){const last=p.practical.tests.at(-1);const ok=last?.result==='worked'&&a.fileSaved&&a.filename?.trim();if(ok)p.practical.status='awaiting-check';return setFeedback(id,!!ok,ok?'Ready for a teacher check. Keep your working Scratch project open.':'Save a successful route test and your Scratch file first. If you are stuck, ask for help; your teacher can record unfinished work at lesson end.',ok?'准备教师检查，请保留 Scratch 作品。':'先记录成功测试并保存 Scratch 文件。卡住时请帮助，课程结束时老师可记录未完成。');}
+ if(action==='approve'||action==='wrap'){if(preview){notify('Preview only: no pupil check is recorded.','仅预览，不记录学生检查。');return;}return teacherDialog(action);}
+ if(action==='waiting-extension'){waitingExtension=true;p.at=16;render();return;}
+ if(action==='return-check'){waitingExtension=false;p.at=14;save();render();return;}
+ if(action==='save-extension'){const r=p.extensions[p.level];if(!a.extensionTested||!r.note.trim()){notify('Try it in Scratch, then record what happened.','先在 Scratch 尝试，再记录结果。');return;}r.done=true;r.at=new Date().toISOString();a.extensionTested=false;if(p.level<4)p.level++;save();render();return;}
+ if(action==='unsure-exit'){const me=p.learners[person];me.exitRecorded=true;me.exitChecked=false;me.exitFeedback='Pupil asked for help; understanding not yet demonstrated.';me.exitFeedbackZh='学生需要帮助，尚未展示理解。';save();render();return;}
+ if(action==='check-exit'){const me=p.learners[person];if(!validNumber(me.exitX)||!validNumber(me.exitY)||!me.exitWhy){notify('Give your answer, or choose “I need help”.','回答问题，或选择“需要帮助”。');return;}me.exitRecorded=true;const ok=validNumber(me.exitX)&&validNumber(me.exitY)&&number(me.exitX)===40&&number(me.exitY)===40&&me.exitWhy==='no-y';me.exitAttempts=(me.exitAttempts||[]).concat({x:me.exitX,y:me.exitY,why:me.exitWhy,correct:ok});me.exitChecked=ok;me.exitFeedback=ok?'Yes: (40, 40). Only x changed.':'Trace again: −60 + 100 = 40. No block changes y, so y stays 40.';me.exitFeedbackZh=ok?'正确：(40, 40)，只有 x 改变。':'再追踪：−60 + 100 = 40。没有积木改变 y，所以 y 保持 40。';save();render();return;}
+ if(action==='pdf')return exportPdf();
+}
+document.addEventListener('click',e=>{
+ const action=e.target.closest('[data-action]');if(action){perform(action.dataset.action);return;}
+ const tab=e.target.closest('[data-person]');if(tab){person=Number(tab.dataset.person);render();return;}
+ const level=e.target.closest('[data-level]');if(level){p.level=Number(level.dataset.level);p.answers.extensionTested=false;save();render();}
+});
+document.addEventListener('input',e=>{if(p&&e.target.dataset.field)setField(e.target.dataset.field,e.target.type==='checkbox'?e.target.checked:e.target.value);});
+document.addEventListener('change',e=>{
+ if(e.target.id==='mode')$('#partnerField').hidden=e.target.value!=='pair';
+ if(e.target.id==='previewStep'&&preview&&e.target.value!==''){p.at=Number(e.target.value);render();}
+ if(p&&e.target.dataset.field){setField(e.target.dataset.field,e.target.type==='checkbox'?e.target.checked:e.target.value);if(['learner.phase','learner.goal'].includes(e.target.dataset.field))render();}
+});
+document.addEventListener('submit',e=>{
+ if(e.target.id!=='entry')return;e.preventDefault();const f=new FormData(e.target),name=String(f.get('name')).trim(),cls=String(f.get('class')).trim(),partner=f.get('mode')==='pair'?String(f.get('partner')).trim():'';
+ if(name.toLowerCase()==='teacher'){teacherDialog('preview');return;}
+ if(!name||!cls||(f.get('mode')==='pair'&&!partner)){$('#entryError').textContent=language==='zh'?'请填写姓名、班级和同伴姓名。':'Enter your name, class and partner’s name if working together.';return;}
+ enter(name,cls,partner);
+});
+window.addEventListener('beforeunload',save);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
+landing();
 })();

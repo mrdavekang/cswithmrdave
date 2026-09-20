@@ -1,37 +1,120 @@
 # Coordinate Quest — Year 6 Term 1 Week 3
 
-A self-contained static lesson website for GitHub Pages. No build step, database or package installation is required.
+Static GitHub Pages lesson. Open index.html or serve this folder; no installation,
+build, account, database or server-side application is required. Scratch Online
+needs internet access; Scratch Desktop can load the bundled project offline.
 
-## Lesson flow
+## What changed
 
-1. Landing page with student name and typed class.
-2. Starter: coordinate vocabulary and retrieval check.
-3. Main Activity 1: three visual Scratch prediction levels.
-4. Main Activity 2: Scratch build task with downloadable `.sb3` templates.
-5. Extension: five increasingly difficult challenges; students must complete at least three.
-6. Plenary: written exit ticket and confidence check.
-7. Evidence report: local PDF generation followed by Microsoft Teams submission instructions.
+The lesson is a linear 19-card journey: Do Now → learning focus → code prediction
+and tracing → a prominent Scratch handover → build/test/save checkpoints →
+teacher practical check → learning pitstop → optional extensions → individual
+plenary → PDF and Teams submission.
 
-Typing `teacher` in the name field opens the teacher overview and every lesson page.
+Students cannot select future tasks. Earlier cards remain available through
+Previous. The progress trail describes location, not percentage attainment.
+Prediction feedback waits for the pupil to continue; no timed auto-advance.
+Opening a link never proves practical completion. Every practical observation
+before the teacher check is explicitly a pupil self-report.
 
-## Publish with GitHub Pages
+## Before class: teacher setup
 
-1. Create a new GitHub repository.
-2. Upload the contents of this folder to the repository root.
-3. In the repository, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select the `main` branch and `/ (root)`, then save.
+1. On each shared computer/browser, enter teacher as the name.
+2. Set a private teacher passcode (at least six characters). Remember it: there
+   is no remote password recovery or default shared code.
+3. Preview any card without changing student records.
+4. Leave preview. Pupils enter their name, typed class and optional partner.
 
-## Storage and privacy
+This is a **local classroom control**, not secure school authentication. A hash
+is stored in this browser; it deters casual clicking but cannot stop a determined
+pupil using developer tools. First-time setup must be done by the teacher.
+There is no central class dashboard or notification system.
 
-Student answers and compressed screenshots are stored only in that browser on that device using `localStorage`. A static GitHub Pages site cannot send or combine records from different student devices. The PDF is generated locally and downloaded by the student, who then uploads it to Teams.
+## During the practical
 
-If a device is shared, each name-and-class combination creates a separate local profile. Teacher view lists the profiles saved in the current browser only.
+Use the new **Year6_T1W3_Guided_Template.sb3**, not the older template.
+The website gives three large steps: download → open Scratch → load the file.
+Students run START → A, build/test A → B, then finish B → C → D → KEY.
+They record actual test outcomes, including first-time success, and save .sb3.
 
-## Included resources
+At the checkpoint, keep Scratch visible and ask pupils to:
 
-- `assets/scratch/Year6_T1W3_Coordinate_Quest_Starter.sb3`
-- `assets/scratch/Year6_T1W3_Main_Activity_2_Template.sb3`
-- Coordinate reference and three prediction images under `assets/images/`
-- A local copy of jsPDF under `vendor/` for offline PDF creation
+- Run the whole route without crossing a wall.
+- Explain one coordinate or block (both pupils when paired).
+- Show the saved Scratch project.
 
+Use Teacher: check this project and enter the device's passcode to record your
+observation. Until then the route is awaiting a check, not finished.
+Students can try extensions while waiting but return to the same checkpoint.
+
+At lesson end use the teacher control beneath any card to move to reflection.
+It records unfinished practical work honestly rather than marking it successful.
+Extensions never block the plenary. A pupil can record needing help in the exit
+question; this remains “understanding not yet demonstrated” in their report.
+
+## Learning and accuracy
+
+Position (x, y) is taught separately from changes in position. Three predictions
+use a mathematical coordinate diagram and a step-through code reader. This is
+not an embedded Scratch editor. The old question-mark prediction PNGs remain in
+assets for reference but are no longer used.
+
+The original template/backdrop and old .sb3 files remain unchanged. The new
+guided template uses a 55% Explorer so its whole costume fits the narrow corridor.
+The portal extension now uses intermediate points:
+
+KEY (170, 95) → (205, 95) → (205, -20) → (70, -20) →
+(70, -140) → PORTAL (195, -140).
+
+The backdrop walls do not implement collision detection; reaching the key does
+not automatically collect/hide it. Students must visually test every segment.
+The website says this explicitly. The space-key extension is a separate saved
+version to avoid competing scripts.
+
+Knowledge, Skills and Understanding have child-friendly descriptions and a
+personal goal. The Learning Pitstop reuses the school's original colourful
+poster with simple phase descriptions, task evidence and next-step advice.
+Partner goals, reflections and exit answers are separate; practical work is
+shared. Builder/checker roles swap when the build begins.
+
+English + Simplified Mandarin supports lesson text. Code labels remain literal
+English. Teacher administration and the report headings remain English. Review
+translated classroom wording with a Mandarin-speaking teacher before first use.
+
+## Evidence, storage and privacy
+
+No screenshot, camera, clipboard or image-upload task is required.
+English reports download using the bundled jsPDF. Bilingual mode or unsupported
+Unicode text uses the browser's Print → Save as PDF to preserve characters.
+Pupils attach the PDF **and their saved .sb3** to the teacher's Teams assignment.
+The site does not submit or verify Teams work automatically.
+
+V3 answers use coordinateQuestProfilesV3 in localStorage. V2 data, including old
+screenshots, is untouched. Matching old profiles start the new practical path
+fresh; old completion flags do not become a new teacher check. Save backup
+exports the active profile and its matching legacy data as JSON. Keep that
+backup if local storage fails; there is no automatic backup restore screen.
+An unsaved-data warning stays visible if the browser cannot persist changes.
+Use the same site origin/browser and names/class/partner to resume.
+
+## Suggested 60 minutes
+
+Setup 3 · Do Now 7 · learning focus 3 · Main 1 12 · Main 2 22
+(including early-finisher extensions) · pitstop 3 · plenary 5 · submission 5.
+
+## Developer verification
+
+Runtime files: index.html, styles.css, lesson.js, app.js, assets/, vendor/.
+No new runtime dependencies. Regression tests use Node with jsdom and jszip:
+
+```sh
+node --test tests/journey.test.cjs
+```
+
+If those test-only libraries live elsewhere, set CQ_TEST_MODULES to their
+node_modules directory. Tests cover linear progression, actual teacher gate,
+unfinished release, partner independence, resume, Unicode identity, draft
+saving, optional extensions, all cards in both languages, real English PDF
+generation, storage failure, untouched legacy data and route/costume geometry.
+Browser visual QA was not completed: the local file preview was blocked by the
+browser tool's URL policy. Check classroom display and print layout before use.
