@@ -76,4 +76,33 @@ test('new Scratch file keeps the starter, removes screenshot demands and fits th
  const route=[[170,95],[205,95],[205,-20],[70,-20],[70,-140],[195,-140]];const radius=35*.55;
  for(let i=1;i<route.length;i++)for(let t=0;t<=100;t++){const x=240+route[i-1][0]+(route[i][0]-route[i-1][0])*t/100;const y=180-route[i-1][1]-(route[i][1]-route[i-1][1])*t/100;for(const [rx,ry,rw,rh] of walls)assert.ok(!(x+radius>rx&&x-radius<rx+rw&&y+radius>ry&&y-radius<ry+rh),'Sprite overlaps wall on segment '+i);}
 });
+test('all eight code examples use local Scratch screenshots with matching text',async()=>{
+ const zip=await JSZip.loadAsync(fs.readFileSync(path.join(root,'assets/scratch/Year6_T1W3_Example_Blocks.sb3')));
+ const project=JSON.parse(await zip.file('project.json').async('string'));
+ function script(target){
+  const blocks=target.blocks,lines=[];let b=Object.values(blocks).find(b=>b.topLevel);
+  while(b){const value=k=>b.inputs[k][1][1];
+   const labels={event_whenflagclicked:()=> 'when green flag clicked',event_whenkeypressed:()=> 'when '+b.fields.KEY_OPTION[0]+' key pressed',event_whenthisspriteclicked:()=> 'when this sprite clicked',motion_gotoxy:()=> 'go to x: '+value('X')+' y: '+value('Y'),motion_changexby:()=> 'change x by '+value('DX'),motion_changeyby:()=> 'change y by '+value('DY'),motion_turnright:()=> 'turn clockwise '+value('DEGREES')+' degrees',motion_glidesecstoxy:()=> 'glide '+value('SECS')+' secs to x: '+value('X')+' y: '+value('Y'),looks_sayforsecs:()=> 'say "'+value('MESSAGE')+'" for '+value('SECS')+' seconds'};
+   lines.push(labels[b.opcode]());b=blocks[b.next];
+  }return lines;
+ }
+ for(const id of ['event','worked','predict1','predict2','predict3','run-example','build-b','plenary']){
+  const t=mount(seeded(L.steps.findIndex(s=>s.id===id)));t.enter();
+  const image=t.q('.scratch-block-image');assert.ok(image,id);
+  assert.equal(image.getAttribute('src'),'assets/images/scratch-blocks/'+id+'.png');
+  const png=fs.readFileSync(path.join(root,image.getAttribute('src')));
+  assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png.readUInt32BE(16),Number(image.getAttribute('width')));assert.equal(png.readUInt32BE(20),Number(image.getAttribute('height')));
+  const transcript=[...t.w.document.querySelectorAll('.code-transcript li')].map(li=>li.textContent.replaceAll('−','-'));
+  assert.deepEqual(transcript,script(project.targets.find(s=>s.name===id)),id+' screenshot source differs from lesson');
+  assert.equal(image.alt.replaceAll('−','-'),'Scratch blocks, top to bottom: '+transcript.join('; '));assert.equal(t.q('.code-list'),null);
+  const before=t.record().at;t.click('[data-code-image]');assert.equal(t.q('#codeImageDialog').open,true);assert.equal(t.q('#codeImageLarge').alt,image.alt);t.click('#closeCodeImage');assert.equal(t.q('#codeImageDialog').open,false);assert.equal(t.record().at,before);t.w.close();
+ }
+ const guided=await JSZip.loadAsync(fs.readFileSync(path.join(root,'assets/scratch/Year6_T1W3_Guided_Template.sb3')));
+ const guidedProject=JSON.parse(await guided.file('project.json').async('string'));
+ assert.deepEqual(script(project.targets.find(s=>s.name==='run-example')),script(guidedProject.targets.find(s=>s.name==='Explorer')));
+});
+test('step-through still identifies the matching screenshot block',()=>{
+ const t=mount(seeded(8));t.enter();t.field('prediction.x','80');t.field('prediction.y','-50');t.action('predict');assert.match(t.q('.trace-block').textContent,/Current block 2 of 5/);
+ t.action('trace');t.action('trace');assert.match(t.q('.trace-block').textContent,/Current block 4 of 5/);assert.match(t.q('.trace-block strong').textContent,/turn clockwise 90 degrees/);assert.equal(t.q('.scratch-block-image').getAttribute('src'),'assets/images/scratch-blocks/predict3.png');
+});
 test.after(()=>{for(const w of windows)w.close();});

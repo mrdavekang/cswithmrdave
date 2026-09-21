@@ -55,9 +55,21 @@ question; this remains “understanding not yet demonstrated” in their report.
 ## Learning and accuracy
 
 Position (x, y) is taught separately from changes in position. Three predictions
-use a mathematical coordinate diagram and a step-through code reader. This is
-not an embedded Scratch editor. The old question-mark prediction PNGs remain in
+use a mathematical coordinate diagram beside genuine Scratch 3 Desktop block
+screenshots. Select a screenshot to enlarge it in the lesson; Escape or Back to
+my lesson closes the viewer. Step-through feedback names the current block;
+expand Read the blocks as text for an accessible transcript. This is not an
+embedded Scratch editor. The old question-mark prediction PNGs remain in
 assets for reference but are no longer used.
+
+Eight screenshots in assets/images/scratch-blocks/ cover the event, worked
+example, three predictions, supplied starter script, A-to-B glide and plenary.
+They were captured from Scratch 3.32.0, cropped without redrawing the blocks,
+and visually checked against the question values and order. The full supplied
+script includes its purple say block. The screenshot source project is
+assets/scratch/Year6_T1W3_Example_Blocks.sb3 (one named sprite per example;
+teacher/reference use, not the pupil maze template). No external image service
+or network request is needed to display these images.
 
 The original template/backdrop and old .sb3 files remain unchanged. The new
 guided template uses a 55% Explorer so its whole costume fits the narrow corridor.
@@ -118,3 +130,10 @@ saving, optional extensions, all cards in both languages, real English PDF
 generation, storage failure, untouched legacy data and route/costume geometry.
 Browser visual QA was not completed: the local file preview was blocked by the
 browser tool's URL policy. Check classroom display and print layout before use.
+
+Screenshot update verification: all eight captures were visually inspected in
+Scratch and after cropping. The two added checks cover image files/dimensions,
+transcripts against the source .sb3, the supplied script, enlargement controls
+and current-block tracing. The current suite passes 18 of 19 tests. The existing
+maze geometry test expects 12 SVG rect elements; the unchanged current backdrop
+uses SVG paths instead, so that geometry assertion needs a separate review.
