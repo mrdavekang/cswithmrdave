@@ -12,7 +12,7 @@
   const classId = new URLSearchParams(location.search).get('classId')?.toLowerCase();
   const permanent = uuid.test(classId || '');
   if (!permanent) return; // Ordinary lesson links remain entirely self-paced.
-  const lessonId = 'year9-week5-theory';
+  const lessonId = 'year9-week3-project';
   const classArgs = () => ({p_class_id:classId,p_lesson:lessonId});
   let room = null, discovery, discovering = false;
   let client, sdkLoading, channel, roster, generation = 0, poll, expiryTimer;
