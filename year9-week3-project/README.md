@@ -42,7 +42,7 @@ The landing name field recognises the full name **Ng Jun Kai** case-insensitivel
 
 This route uses the same pages and goals with short instructions, English/Mandarin support, word/symbol banks and code with small gaps. It uses choices rather than paragraph responses. No reason for the adaptation or personal difficulty is displayed. Selecting English, Malay or Chinese remains possible; the supported route keeps Mandarin help (or English alongside Chinese).
 
-Each normalised name has its own browser notebook; teacher and student storage are separate. This is local convenience, not a secure identity system. There is no server upload, analytics or external student-data transmission.
+Each normalised name has its own browser notebook; teacher and student storage are separate. This is local convenience, not a secure identity system. Lesson work is not uploaded and there is no analytics. The optional Classroom Mode exchanges only temporary connection/control information, as detailed below.
 
 ## Python editor
 
@@ -82,3 +82,35 @@ Browser checks cover moving and checking Parsons blocks, assembling the final pr
 ## Files
 
 `content.js` contains the multilingual curriculum and tasks; `app.js` provides navigation, exercises, storage and editor behaviour; `styles.css` provides the responsive card layout. `python-worker.js`, `vendor/` and `assets/` retain their bundled runtime/font licences. `build-steps.js` is superseded and is no longer loaded by this design.
+
+## Supabase Classroom Mode
+
+The original GitHub Pages path and lesson content are unchanged. Classroom Mode adds `classroom.js`, `classroom.css`, `classroom-config.js`, a locally bundled Supabase browser library (`vendor/supabase.js`, supabase-js 2.117.0, MIT licence in `vendor/supabase-LICENSE`), and a small navigation/anonymous-entry bridge in `app.js`. The library loads only when a classroom connection or teacher sign-in is needed. Ordinary self-paced study does not contact Supabase.
+
+### Teacher workflow
+
+1. Open this lesson with `?teacher=1`, then sign in in the Classroom panel using the approved Supabase teacher account. The URL's existing teacher preview does not authorise classroom commands.
+2. Select **Start classroom** and **Copy link**. Share that session link with this class. The link grants anonymous student access; it does not grant teacher permissions. Use the published GitHub Pages page when sharing with students: a localhost preview link only works on the teacher's computer.
+3. **Lock navigation** freezes lesson-page navigation while allowing answers, exercise tabs, Python editing and Python execution on the current page.
+4. Navigate your own lesson, then select **Bring Everyone Here** to move connected students there once. This saves existing work and stops any running Python program before changing pages. Bring does not automatically lock navigation.
+5. **Unlock / Self-Paced** restores student navigation. **End classroom** releases students and deletes the active session record. After ending, the teacher can sign out.
+
+Sessions expire after two hours. The configured Supabase Cron job deletes expired session records every minute when the service is running. Students disconnect and regain navigation on known expiry/end. Lost messages are recovered from the server snapshot on reconnect, visibility changes and every ten seconds. During a network interruption the last known lock remains until the session expiry; work remains local. The count displays unavailable while its Presence connection is down.
+
+### Anonymous students and privacy
+
+Classroom links use `#classroom=<random-session-UUID>`. Students bypass name/class entry and can choose step-by-step Mandarin support without a name. No student Supabase Auth account is created. Existing named notebooks remain separate. Anonymous notebooks use tab session storage, so students should export a PDF or backup before closing the tab. Ending a classroom preserves their current local work for continued self-paced study. Loading a backup into an anonymous notebook removes its name/class/legacy fields; nothing is uploaded.
+
+Only the session UUID, control state and temporary random Presence key are sent. Names, class labels, answers, Python code and program input/output are not sent to Supabase. The teacher count is an estimate of connected browsers, not a verified count of physical devices or people. Tabs in the same browser share a session-specific random ID where storage is available. Private windows, different browsers and blocked storage can count separately. IDs expire with that classroom, are never reused across classes, are cleared on confirmed End/expiry while open, and expired remnants are removed on the next classroom join. No student list or device history is stored in the database. Supabase's own operational logs/backups have their own retention; this feature does not promise zero provider logging.
+
+### Security and setup
+
+`classroom-config.js` contains the public project URL and publishable key, which are intended to ship to browsers. Never add a teacher password, service-role key or secret API key. Teacher authentication is stored in session storage for the teacher tab and is not reused by student clients. Other tabs and devices must sign in separately. User sign-ups and anonymous Auth sign-ins are disabled in Supabase.
+
+Private Broadcast and Presence channels use the installed RLS rules. Students can receive control broadcasts and publish Presence; only the owning, allow-listed teacher can issue commands and read Presence. Every mutation RPC checks account approval, session ownership, expiry and revision. Supabase enforces those permissions even if someone modifies the webpage. The page-navigation lock itself is a classroom pacing feature on a static website, not a tamper-proof device lock.
+
+The setup SQL is in `supabase/`: `06-session-permissions.sql`, `07-classroom-controls.sql`, `08-automatic-cleanup.sql`, and `09-presence-join-fix.sql`. It assumes the previously installed `classroom_private.teachers` allow-list. Rerunning these scripts updates the feature's own setup. Enable `pg_cron` before running step 8. Apply step 9 after step 6: it gives student clients the read permission required to join the Presence channel, while still denying them the Presence list and all Broadcast sends on that channel. Control snapshots use browser Broadcast after an authorised RPC; there are no database Broadcast triggers or student-data tables.
+
+### Classroom verification
+
+Local PostgreSQL tests cover channel permissions and teacher RPCs, including other-account denial, expiry, stale updates and cleanup. Browser integration tests with a simulated transport cover two-device counts, shared-browser tabs, lock/bring/unlock, missed and stale messages, anonymous support, code preservation, mobile layout, translations and real Python execution while locked. The original lesson regression suite passes 156 view combinations and 22 Python cases. Live anonymous checks against the configured Supabase project confirm snapshot access and rejection of teacher RPCs. Live teacher sign-in, session creation, anonymous student entry, Lock, Bring Everyone Here and Unlock have passed against the configured Supabase project. After applying step 9, the live teacher count correctly showed one anonymous browser, including when that browser had two student tabs open. Ending a locked session restored student navigation, and a subsequent server snapshot returned null, confirming that the temporary session was removed. These checks used the local preview; publication to GitHub Pages and a check on the published origin remain separate steps.
