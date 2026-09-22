@@ -85,10 +85,12 @@ Browser checks cover moving and checking Parsons blocks, assembling the final pr
 
 ## Permanent Classroom Mode
 
-Student link (already shared in Teams):
-https://mrdavekang.github.io/cswithmrdave/year9-week3-project/index.html?classId=c429701c-21c3-4e99-b84d-c2faadca7afb
+Student link:
+https://mrdavekang.github.io/cswithmrdave/year9-week3-project/index.html
 
-Teacher: open that same link, choose **Teacher sign-in** in the Classroom bar, and sign in. This adds `&teacher=1` while preserving the class ID. Only the registered teacher account can start or control this class. The public teacher preview alone grants no classroom privileges.
+The folder URL works too. All visitors use one live classroom for this lesson. Teams-added query parameters, including classId, do not select the room. The internal class ID is configured in classroom-config.js. Existing Teams links need no changes.
+
+Teacher: open that same link, choose **Teacher sign-in** in the Classroom bar, and sign in. This opens `?teacher=1` on the same lesson. Copy link removes query parameters and shares the plain lesson URL. Only the registered teacher account can start or control this class. The public teacher preview alone grants no classroom privileges.
 
 - **Copy link** is available before starting, and always copies the same permanent student URL.
 - Before the session, students enter their name/class for local reports and work normally. No student Supabase account is created. Name, class, lesson answers and Python code remain in their browser and are included in the local PDF/backup, not sent to Supabase.
@@ -98,7 +100,7 @@ Teacher: open that same link, choose **Teacher sign-in** in the Classroom bar, a
 - **End classroom** releases navigation and deletes the temporary session. The same URL, name/class and local work remain. Students can export their PDF afterwards and automatically connect to the next session on this link. Closed tabs can reopen the named notebook later from this same link.
 - Use **End classroom** when teaching is finished. Closing only the teacher tab does not end a session: it can be resumed and otherwise expires after two hours. Ending and starting creates a new internal session ID, but the student link never changes. Session IDs and anonymous Presence IDs are temporary; the permanent database row stores only the class ID, lesson ID and approved teacher ID.
 
-The count estimates connected browsers, excluding the teacher. Multiple tabs share a temporary per-session ID when storage is available; different browsers/private windows may count separately. No student roster/history is stored. Provider operational logs have their own retention. Ordinary URLs without a valid `classId` remain self-paced and do not start Supabase connections. Invalid/unregistered class IDs cannot be claimed through the webpage. The page lock is a pacing aid, not a kiosk: a website cannot stop pupils closing tabs or deliberately opening a different URL.
+The count estimates connected browsers, excluding the teacher. Multiple tabs share a temporary per-session ID when storage is available; different browsers/private windows may count separately. No student roster/history is stored. Provider operational logs have their own retention. Plain URLs and Teams-decorated URLs discover this lesson’s configured classroom; they remain self-paced when no session is active. Invalid/unregistered class IDs cannot be claimed through the webpage. The page lock is a pacing aid, not a kiosk: a website cannot stop pupils closing tabs or deliberately opening a different URL.
 
 ### Setup and implementation
 
@@ -115,4 +117,10 @@ The migration passed 24 PostgreSQL RPC/permission checks plus assertions for per
 
 ### Compatibility with older session links
 
-`classroom.js` remains for older `#classroom=…` temporary links and the original teacher URL without a class ID. It does not run alongside the permanent controller. Older anonymous session notebooks remain available in their original tab storage. The new `?classId=…` link always uses the named local notebook and report form, even if old anonymous parameters are present. Use the permanent link above for all future sessions; the old session links still expire. The student Leave button has also been removed from the older controller.
+`classroom.js` remains for older `#classroom=…` temporary links and the original teacher URL without a class ID. It does not run alongside the permanent controller. Older anonymous session notebooks remain available in their original tab storage. The plain lesson URL and Teams-decorated links use the named local notebook and report form. Explicit old session hashes and old anonymous-notebook URLs keep their legacy storage for compatibility. Use the plain lesson link above for future sessions; old session links still expire. The student Leave button has also been removed from the older controller.
+
+### Root entry routing
+
+index.html loads classroom-config.js before app.js. CLASSROOM_ROUTE selects the permanent controller for plain student and teacher URLs; the old controller is skipped. Both folder and index.html entry points use the same configured class ID. Arbitrary Teams classId values are ignored for room selection. Class names entered for PDFs stay local and do not create separate live groups. No Supabase migration was needed for this entry-point update.
+
+End classroom acts directly, matching Week 5: it ends only the temporary live controls and preserves student work.

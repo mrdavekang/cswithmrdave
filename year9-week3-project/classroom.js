@@ -4,7 +4,7 @@
   const root = document.getElementById('classroom-root');
   const lesson = window.LessonClassroom;
   if (!root || !lesson) return;
-  if (/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(new URLSearchParams(location.search).get('classId')||'')) return;
+  if (window.CLASSROOM_ROUTE?.permanent) return;
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const info = () => lesson.info();
   const words = (en, ms, zh) => ({en, ms, zh})[info().lang] || en;

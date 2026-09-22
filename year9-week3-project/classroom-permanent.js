@@ -9,9 +9,9 @@
   const words = (en, ms, zh) => ({en, ms, zh})[info().lang] || en;
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const pick = (en, ms, zh) => escape(words(en, ms, zh));
-  const classId = new URLSearchParams(location.search).get('classId')?.toLowerCase();
-  const permanent = uuid.test(classId || '');
-  if (!permanent) return; // Ordinary lesson links remain entirely self-paced.
+  const classId = window.CLASSROOM_ROUTE?.classId?.toLowerCase();
+  const permanent = window.CLASSROOM_ROUTE?.permanent && uuid.test(classId || '');
+  if (!permanent) return; // Only explicit legacy session links use the older controller.
   const lessonId = 'year9-week3-project';
   const classArgs = () => ({p_class_id:classId,p_lesson:lessonId});
   let room = null, discovery, discovering = false;
@@ -29,7 +29,7 @@
   }
   function sessionLink() {
     const url = new URL(location.href);
-    url.search = ''; url.searchParams.set('classId',classId); url.hash = '';
+    url.search = ''; url.hash = ''; // Share the plain lesson URL, never a Teams tracking ID.
     return url.href;
   }
   function teacherLink() {const url=new URL(sessionLink());url.searchParams.set('teacher','1');return url.href;}
@@ -235,7 +235,6 @@
         if(current)return;
         await client.auth.signOut({scope:'local'});allowed=false;disconnect();
       } else if(current && ['lock','bring','unlock','end'].includes(cmd)){
-        if(cmd==='end'&&!confirm(words('End this classroom for everyone? Their work will stay in their browsers.','Tamatkan kelas untuk semua? Kerja kekal dalam pelayar masing-masing.','结束全班课堂吗？作品仍会保留在各自浏览器中。')))return;
         const snapshot=await rpc('classroom_control',{p_session_id:room,p_action:cmd,p_expected_revision:current.revision,p_stage:cmd==='bring'?info().page:null});
         const outgoing=channel;
         // The RPC result is authoritative; a failed broadcast is recovered by polling.

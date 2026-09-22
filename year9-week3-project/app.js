@@ -2,7 +2,7 @@
 const APP='year9-helpdesk-sketch',VERSION=2;
 const params=new URLSearchParams(location.search),teacher=params.get('teacher')==='1';
 const classroomLink=new URLSearchParams(location.hash.slice(1)).get('classroom')||'';
-const permanentClassroom=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(params.get('classId')||'');
+const permanentClassroom=window.CLASSROOM_ROUTE?.permanent===true;
 const anonymousMode=!permanentClassroom&&!teacher&&(params.get('anonymous')==='1'||/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(classroomLink));
 const notebookStorage=()=>anonymousMode?sessionStorage:localStorage;
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
