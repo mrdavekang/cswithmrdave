@@ -102,9 +102,9 @@ The count estimates connected browsers, excluding the teacher. Multiple tabs sha
 
 ### Setup and implementation
 
-The existing project already has steps 5–10 installed. Run `supabase/11-correct-class-to-week3.sql` once to correct this class ID from Week 5 to Week 3. It preserves the same teacher, public key and class ID, leaves student work untouched, and refuses to move a class while its previous session is live. It is safe to rerun. Do not rerun the earlier Week 5 registration after this correction. For a new installation, apply steps 5–10 first, followed by 11.
+The Supabase project has steps 5–11 installed. Run `supabase/12-classroom-multiple-lessons.sql` once to let the existing class ID work independently on Week 3 and Week 5. The class ID identifies its teacher-owned class; session lookup also uses the lesson ID. Existing active sessions are preserved. Lock/Bring/Unlock/End affect only the chosen lesson. No new keys, accounts or links are needed. Do not rerun earlier single-lesson registration/correction scripts after this update.
 
-This corrects the lesson assignment for the URL originally supplied in error. The earlier Week 5 website integration is removed; its original teaching content and name/PDF workflow remain.
+Week 5 now has its own controls at its existing URL with this same class ID. The two lesson paths keep separate temporary sessions. Additional lesson types and a general registration dashboard are not implemented by this update.
 
 `classroom-permanent.js`, `classroom.css`, `classroom-config.js` and locally bundled `vendor/supabase.js` handle the connection. The small app bridge exposes only page/language/navigation, never identity or work. Live controls use private channels and server-authorised RPCs. Session discovery uses a read-only RPC every 10 seconds and on reconnect/visibility; an inactive class returns null. A network failure while a class is known to be locked retains that lock until confirmed End or known expiry. Names/class are local report details, not Supabase identities.
 
