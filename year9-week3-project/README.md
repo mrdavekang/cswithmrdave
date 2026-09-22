@@ -22,9 +22,9 @@ Student view opens with name, class and reading-language entry. `?teacher=1` ope
 |---|---:|
 | Read first: Sam's situation and highlighted trace tutor | 5 |
 | Do Now: six starting checks | 5 |
-| Types of Learning: evidence and development focus | 3 |
-| Main Task 1: collect input and calculate time | 13 |
-| Main Task 2: advice, partner walkthrough and three tests | 22 |
+| Types of Learning: six short checks and one practice choice | 3 |
+| Main Task 1: Parsons inputs, calculation gaps and first run | 13 |
+| Main Task 2: Parsons decision, full program and three checks | 22 |
 | Further Challenges: use extra time | 5 |
 | Learning Pit Stop: current evidence, learning phases and action | 3 |
 | Plenary and submission | 4 |
@@ -51,7 +51,7 @@ English, Bahasa Melayu and Simplified Chinese are available throughout. Focus sh
 
 The WAGBA and lesson-specific knowledge, skills and understanding remain on the left on desktop; on smaller screens they sit above the lesson.
 
-Types of Learning uses six checks, two per KSU area. Independent, supported, not-yet-demonstrated and unattempted evidence are separate. Counts explain the highest development area with an action relevant to this lesson. Recognising a correct starter option is explicitly distinguished from demonstrating code-writing skill.
+Types of Learning uses six checks, two per KSU area. Independent, supported, not-yet-demonstrated and unattempted evidence are separate. Counts explain the highest development area with an action relevant to this lesson. Starter answers appear beside each check. No written explanation is required here; learners choose a concrete practice action.
 
 Learning Pit Stop returns to the same checks, showing earlier judgements and new evidence. Learners separately identify a phase for each topic. The summary distinguishes a highest count, a tie and a majority, keeps pending checks separate and retains specific help needs. Correctness does not automatically assign a phase. No help notification is sent to a teacher.
 
@@ -75,6 +75,14 @@ Live in-app browser checks confirmed two real input prompts, correct outputs for
 
 ## Files and licences
 
-`index.html`, `content.js`, `app.js`, `styles.css` and `python-worker.js` make up the lesson. Skulpt files and their licence are in `vendor/`. Raleway and its Open Font Licence are in `assets/`.
+`index.html`, `content.js`, `build-steps.js`, `app.js`, `styles.css` and `python-worker.js` make up the lesson. Skulpt files and their licence are in `vendor/`. Raleway and its Open Font Licence are in `assets/`.
 
 The source curriculum used for the plan is *Year 9 KS3 Computing Curriculum AY 2026–2027 Assessment Aligned (2)*, Weekly Curriculum G7:K7. No historical curriculum assessment dates are imposed by the app.
+
+## Parsons revision
+
+Students order three small sets of Python blocks using keyboard-accessible up/down buttons. They choose `*`, `+` and `<=` in gaps, check each section, assemble inputs and calculations, and then add the decision to produce a complete runnable program. Feedback explains dependencies and indentation. The activity prescribes a prompt order because the test inputs use that order; it does not imply that other independent assignments can never be reordered.
+
+No advice-planning essay is required. Test cards give inputs and expected numeric outputs, ask for an advice prediction, record actual execution, and offer a short comparison choice. All activities, orders, gaps and comparisons save with the notebook. Reports include the assembled blocks and checks; earlier written answers remain in backups and reports. Existing custom code is never replaced without confirmation. Moving from the unedited assembled Main Task 1 code to the full program adds the decision without a confirmation.
+
+Revision checks cover all 48 page/language/view combinations, valid and invalid block orders/operators, backup restoration, report escaping, both Python branches, equality and boundary values, and partial-program execution.

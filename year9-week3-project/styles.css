@@ -7,3 +7,6 @@
 
 @media(max-width:1250px){#tutor>.grid{grid-template-columns:1fr}.tutor-note{min-height:0}}
 @media print{.report-content .code-block{color:#111!important;background:#f4f4f4!important;white-space:pre-wrap}.report-content .countgrid{grid-template-columns:repeat(3,1fr)}.report-content .phases{grid-template-columns:repeat(2,1fr)}.report-content .countcard strong{font-size:12pt}.report-content .band{break-inside:avoid}}
+
+/* Accessible Parsons blocks: keep indentation visible at every screen size. */
+.parsons-list{list-style:none;padding:0;display:grid;gap:.8rem}.parsons-list li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;align-items:center;gap:.75rem;padding:.9rem;background:#f3f6ef;border:1px solid #bbcbbd;border-radius:12px}.parsons-list pre{margin:0;overflow:auto;padding:.6rem 0;white-space:pre;font-size:15px;line-height:1.7}.block-position{font-weight:800;color:#36563f}.block-controls{display:flex;gap:.4rem}.block-controls button{min-width:44px;min-height:44px;padding:.3rem}.build-feedback:empty{display:none}.parsons select{max-width:100%}@media(max-width:650px){.parsons-list li{grid-template-columns:1.5rem minmax(0,1fr)}.block-controls{grid-column:2;justify-content:flex-end}.parsons-list pre{font-size:13px}}

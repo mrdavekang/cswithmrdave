@@ -3,7 +3,7 @@ const B=(en,ms,zh)=>({en,ms,zh});
 const C={
  title:B('Build a helpdesk adviser','Bina penasihat meja bantuan','编写服务台建议程序'),
  subtitle:B('Your first working prototype','Prototaip pertama yang berfungsi','你的第一个可运行原型'),
- wagba:B('Turn a helpdesk plan into Python: collect input, calculate useful values, choose advice, then test and explain both paths.','Tukarkan rancangan meja bantuan kepada Python: kumpul input, kira nilai berguna, pilih nasihat, kemudian uji dan jelaskan kedua-dua laluan.','将服务台计划变成 Python 程序：获取输入、计算有用的数值、选择建议，然后测试并解释两条路径。'),
+ wagba:B('Build a Python helpdesk program: collect two inputs, calculate time, choose advice and test both paths.','Bina atur cara meja bantuan Python: kumpul dua input, kira masa, pilih nasihat dan uji kedua-dua laluan.','编写 Python 服务台程序：获取两个输入，计算时间，选择建议并测试两条路径。'),
  knowledge:B('Know what input(), int(), variables, constants and conditions mean.','Ketahui maksud input(), int(), pemboleh ubah, pemalar dan syarat.','知道 input()、int()、变量、常量和条件的含义。'),
  skills:B('Collect two numbers, calculate time, write if/else and test both advice paths.','Kumpul dua nombor, kira masa, tulis if/else dan uji kedua-dua laluan nasihat.','获取两个数字、计算时间、编写 if/else，并测试两条建议路径。'),
  understanding:B('Explain why the type, calculation and decision fit Sam’s problem—and why the time is only an estimate.','Jelaskan mengapa jenis data, pengiraan dan keputusan sesuai dengan masalah Sam, serta mengapa masa itu hanya anggaran.','解释数据类型、计算和判断为什么适合 Sam 的问题，以及为什么时间只是估计。'),
