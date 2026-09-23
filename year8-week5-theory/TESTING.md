@@ -34,3 +34,11 @@
 ## Teacher acceptance check
 
 On one school laptop and one iPad: start a named session, run a two-prompt program, refresh and resume, export/import a backup, export the PDF, then confirm the correct Teams assignment is accessible. Use the 60-minute core route before considering additional practice.
+
+## Classroom integration checks
+
+- `node tests/content.test.cjs`: existing 48-card content, navigation and backup checks.
+- `node tests/classroom.test.cjs`: anonymous bridge contains no identity, pending teacher movement waits for landing entry, End clears pending movement, exact-card movement, locked navigation, unlock, and name-based preview cannot claim teacher role.
+- Development SQL fixture: 88 RPC checks passed against steps 6–13, including idempotent Year 8 upgrade, all 48 card IDs, unknown card rejection, anonymous/other-teacher denial, and isolation from Year 9.
+- Browser preview: landing name/class preserved, plain URL exposes Teacher sign-in, student entry and Continue work, teacher form appears.
+- Live Year 8 Start/Presence/Lock/Bring/Unlock/End must be checked after running step 13 and signing into the teacher preview. These have not yet been verified against the live Year 8 session.

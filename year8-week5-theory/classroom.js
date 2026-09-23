@@ -11,8 +11,8 @@
   const pick = (en, ms, zh) => escape(words(en, ms, zh));
   const classId = window.CLASSROOM_ROUTE?.classId?.toLowerCase();
   const permanent = window.CLASSROOM_ROUTE?.permanent && uuid.test(classId || '');
-  if (!permanent) return; // Only explicit legacy session links use the older controller.
-  const lessonId = 'year9-week3-project';
+  if (!permanent) return;
+  const lessonId = 'year8-week5-theory';
   const classArgs = () => ({p_class_id:classId,p_lesson:lessonId});
   let room = null, discovery, discovering = false;
   let client, sdkLoading, channel, roster, generation = 0, poll, expiryTimer;
@@ -35,7 +35,7 @@
   function teacherLink() {const url=new URL(sessionLink());url.searchParams.set('teacher','1');return url.href;}
   function linkField() {return `<label>${pick('Permanent student link','Pautan murid kekal','固定学生链接')}<input class="cm-link" readonly value="${escape(sessionLink())}" aria-label="${pick('Student classroom link','Pautan kelas murid','学生课堂链接')}"></label>`;}
   function guardNavigation() {
-    document.querySelectorAll('[data-page],[data-action="home"],[data-home]').forEach(el => {
+    document.querySelectorAll('[data-stage],[data-review],#cardJump,#back,#next,#morePractice,#menuEntry,#menuReset,#menuRestore,#restore').forEach(el => {
       el.classList.toggle('cm-nav-locked', locked());
       if (locked()) {
         if (!el.hasAttribute('data-cm-disabled')) el.dataset.cmDisabled = String(Boolean(el.disabled));

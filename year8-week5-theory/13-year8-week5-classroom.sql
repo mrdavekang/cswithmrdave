@@ -1,0 +1,15 @@
+-- Step 13: enable Year 8 Week 5 after the existing step 12 setup.
+-- Keeps Year 9 lessons, teacher ownership and Realtime permissions unchanged.
+begin;
+create or replace function classroom_private.valid_lesson_stage(p_lesson text,p_stage text)
+returns boolean language sql immutable set search_path='' as $$
+ select coalesce(case p_lesson
+ when 'year9-week3-project' then classroom_private.valid_stage(p_stage)
+ when 'year9-week5-theory' then p_stage in ('read','starter','types','nested-read','parsons','debug','program','validation-read','validation','pit','plenary','extension','submit')
+ -- read is the existing RPC's supported-lesson probe; actual Year 8 cards use the IDs below.
+ when 'year8-week5-theory' then p_stage in ('read','mission','starter1','starter2','starter3','starter4','starter5','sp1','sp2','sp3','sp4','sp5','before','six','match','condition0','condition1','condition2','condition3','condition4','condition5','condition6','condition7','trace-model','path0','path1','path2','output1','output2','syntax-read','mp1','mp2','mp3','indent1','indent2','debug1','debug2','pp1','pp2','code1','code2','code3','ext1','ext2','ext3','after','exit-operators','exit-path','review')
+ else false end,false);
+$$;
+revoke all on function classroom_private.valid_lesson_stage(text,text) from public,anon,authenticated;
+commit;
+select classroom_private.valid_lesson_stage('year8-week5-theory','mission') as year8_classroom_ready;
