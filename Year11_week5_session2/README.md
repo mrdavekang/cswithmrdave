@@ -28,3 +28,28 @@ Exam copyright remains with OxfordAQA. Retain attribution and check your school'
 
 ## Dependencies
 Bundled jsPDF, Raleway font and embedded report fonts reused from the existing lesson assets. Raleway licence: assets/OFL.txt. No network is needed after loading, except external source/Teams links. Manual paper uploads support JPEG, PNG and WebP up to 15 MB each, resized for the report; HEIC should be converted to JPEG first.
+
+## Live classroom and teacher-led fact pages
+
+Use the existing plain lesson URL. Teams classId parameters do not choose separate rooms. One live session serves this lesson, isolated from Year 8 and Year 9. Student names, class labels, answers, photos and database designs stay in the existing IndexedDB notebook for the PDF; Supabase receives only anonymous presence and control state.
+
+### One-time activation
+
+After the shared setup through step 13, run `14-year11-week5-session2.sql` in Supabase SQL Editor. Expect `year11_classroom_ready = true`. This extends the private stage allowlist for `Year11_week5_session2`, keeping existing lessons and permissions. No new student accounts or class IDs are needed. Publish this folder's changed and new files to GitHub Pages.
+
+### Teaching with the fact pages
+
+1. Open the normal lesson URL and choose Teacher sign-in (`?teacher=1`). Use the approved classroom account. Typing Teacher in the notebook name field does not grant classroom controls.
+2. Start classroom. Connected students join automatically, usually within 10 seconds. Lock navigation pauses page changes but allows answers and table editing.
+3. In the signed-in teacher panel, select a page under **Teacher-led fact slides**: Table structure, Suitable data types, or Length and limits.
+4. Click **Bring Everyone Here**. This sends the selected page to student browsers. Opening a fact page alone does not broadcast it. A student still on the name/class form sees it after entering the lesson.
+5. Students type in the class-question boxes. Their responses save locally and appear in their PDF once answered. Responses are not collected centrally. The teacher can write a separate demonstration answer on the teacher device.
+6. Select a normal lesson page after returning to the lesson, use Bring Everyone Here again, and Unlock / Self-Paced when ready. End classroom restores independent study and retains local work. The same link can be reused; sessions expire after two hours if not ended.
+
+Fact pages are not in the normal student page list, Next/Back sequence or URL routing. They are opened from the authenticated teacher panel or an authorised live classroom signal. Reloading does not independently reopen them from a saved notebook. When a live teacher signal applies, they may reopen as intended. Their static HTML/JavaScript content is publicly downloadable on GitHub Pages: this is navigation hiding, not secrecy or secure exam storage. Deliberate browser modification/closing cannot be prevented by classroom pacing controls.
+
+Fact content follows the supplied three-slide Teacher Notes presentation, using green headings, a topic/WAGBA/keywords sidebar, readable examples and class questions. The original PowerPoint was not modified. Completed fact answers are included in backup and PDF; unanswered hidden pages do not add blank report sections.
+
+### Verification
+
+Run `node tests/classroom.test.cjs` for hidden navigation, pending entry, student/teacher bridge behavior, lock/return, local answers and PDF inclusion. Database fixture tests passed 110 RPC checks including all Year 11 pages, anonymous/other-teacher denial, and Year 8/9 compatibility. Browser preview checked all three slide layouts, answer retention and the ordinary student navigation list. Live Supabase Year 11 Start/Presence/Bring/Lock/Unlock/End still requires activation and teacher sign-in.

@@ -1,0 +1,15 @@
+/* Projection-friendly versions of the supplied green-and-white fact slides. */
+.fact-view .stage-head h1{color:#00833c;font-size:clamp(2rem,3vw,3.1rem)}
+.fact-slide{background:white;border:1px solid #c5d0c8;border-radius:10px;padding:clamp(18px,2.5vw,36px)}
+.fact-columns{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.fact-slide p,.fact-slide th,.fact-slide td{font-size:clamp(19px,1.7vw,26px);line-height:1.5}
+.fact-slide .small{font-size:14px}.fact-slide h2{font-size:24px}.fact-slide code{font-size:1em;font-variant-numeric:tabular-nums}
+.fact-definitions p{border-bottom:1px solid #e1e9e3;padding-bottom:14px}.fact-definitions b{color:#00833c}
+.fact-table table{width:100%;border-collapse:collapse}.fact-table caption{font-size:23px;font-weight:800;text-align:left;margin-bottom:12px}.fact-table th{background:#00833c;color:white}.fact-table td,.fact-table th{padding:13px;border:1px solid #b3c8b9}.fact-table tbody tr:nth-child(even){background:#edf6f0}
+.fact-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.fact-types>div{padding:20px;background:#edf6f0;border-top:5px solid #00833c;border-radius:6px}.fact-types b{font-size:24px;color:#006c31}.fact-types p{margin:10px 0}.fact-types code{display:block;font-size:22px;background:white;padding:7px}
+.fact-example{display:flex;align-items:center;gap:24px;background:#edf6f0;padding:18px}.fact-example>code{font-size:36px}.fact-example>span{font-size:22px}
+.fact-questions{border-top:4px solid #00833c;margin-top:25px;padding-top:20px}.fact-questions .eyebrow{font-size:13px}.fact-questions .question{margin:12px 0}.fact-questions label{font-size:clamp(18px,1.5vw,23px)}.fact-questions textarea{font-size:20px;min-height:80px;background:#fbfdfb}
+.fact-challenge{border:1px solid #9db4a5;background:#f1f6f2;margin-top:24px;padding:15px}.fact-challenge b{color:#00833c}.fact-challenge p{font-size:19px;margin:5px 0 0}.cm-fact-pages{border-top:1px solid #cad9e6;margin-top:18px;padding-top:14px}.cm-fact-pages button{margin:4px}
+@media(max-width:800px){.fact-columns{grid-template-columns:1fr}.fact-types{grid-template-columns:1fr 1fr}.fact-view .layout{display:block}}
+@media(max-width:480px){.fact-types{grid-template-columns:1fr}}
+.fact-view aside nav,.fact-view aside>h2{display:none}.fact-view aside .facts{margin-top:0}.fact-view aside .facts h3{font-size:16px}.fact-view aside .facts p{font-size:16px;line-height:1.5}.fact-view aside{background:#eef4ef}
