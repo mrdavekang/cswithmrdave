@@ -22,7 +22,7 @@
   let refreshing = false, authSubscription;
   const locked = () => !info().teacher && Boolean(current?.locked);
   // This guard is for classroom pacing; the Supabase rules enforce privileges.
-  window.ClassroomMode = Object.freeze({locked});
+  window.ClassroomMode = Object.freeze({locked,sendSlide:async id=>{if(!allowed||!current||!window.TeacherPresentation?.ids().includes(id))return false;return action('bring',id);}});
   function say(en, ms, zh, error = false) {message = words(en, ms, zh); bad = error; render();}
   function button(cmd, label, disabled = false, primary = false) {
     return `<button type="button" data-cm="${cmd}" ${disabled?'disabled':''} class="${primary?'primary':''}">${label}</button>`;
@@ -57,13 +57,13 @@
     if (open && info().teacher) {
       if (!allowed) body = `<form id="cm-login"><h2>${pick('Teacher sign-in','Log masuk guru','教师登录')}</h2><p>${pick('Use the teacher login you created in Supabase.','Gunakan log masuk guru yang dibuat dalam Supabase.','使用你在 Supabase 创建的教师账户。')}</p><label>${pick('Email','E-mel','电子邮箱')}<input type="email" name="email" autocomplete="username" required></label><label>${pick('Password','Kata laluan','密码')}<input type="password" name="password" autocomplete="current-password" required></label><button class="primary" ${busy?'disabled':''}>${pick('Sign in','Log masuk','登录')}</button></form>`;
       else if (!current) body = `<h2>${pick('Your classroom','Bilik darjah anda','你的课堂')}</h2><p>${pick('Share this permanent link before the lesson. Start classroom connects open student pages automatically, usually within 10 seconds. End classroom restores self-paced study. Sessions last up to two hours.','Kongsi pautan kekal ini sebelum pelajaran. Mulakan kelas menyambung halaman murid secara automatik, biasanya dalam 10 saat. Tamatkan kelas memulihkan pembelajaran kendiri. Sesi sehingga dua jam.','课前即可分享此固定链接。开始课堂后，已打开的学生页面通常在 10 秒内自动连接。结束课堂后恢复自主学习。每次课堂最长两小时。')}</p>${linkField()}<div class="cm-actions">${button('copy',pick('Copy link','Salin pautan','复制链接'))}${button('start',pick('Start classroom','Mulakan kelas','开始课堂'),busy,true)}${button('signout',pick('Sign out','Log keluar','退出登录'),busy)}</div>`;
-      else body = `<h2>${pick('Live classroom','Kelas langsung','实时课堂')}</h2><p><strong class="cm-count">${presenceReady && count !== null ? count : '—'}</strong> ${pick('anonymous browsers connected','pelayar tanpa nama tersambung','个匿名浏览器已连接')}<span class="cm-small">${pick('A device estimate; multiple tabs in the same browser count once. You are excluded.','Anggaran peranti; beberapa tab pelayar sama dikira sekali. Guru tidak dikira.','同一浏览器的多个标签页计为一个，不包含教师。此数值是设备数量的估计。')}</span></p>${linkField()}<div class="cm-actions">${button('copy',pick('Copy link','Salin pautan','复制链接'))}${button('lock',pick('Lock navigation','Kunci navigasi','锁定页面切换'),busy||current.locked)}${button('bring',pick('Bring Everyone Here','Bawa Semua ke Sini','带所有人到此页'),busy||!!window.TeacherPresentation?.isOpen(),true)}${button('unlock',pick('Unlock / Self-Paced','Buka / Ikut kadar sendiri','解锁／自主学习'),busy||!current.locked)}${button('end',pick('End classroom','Tamatkan kelas','结束课堂'),busy)}</div><p class="cm-small">${pick('Bring Everyone Here moves students to:','Bawa Semua ke Sini mengalih murid ke:','“带所有人到此页”将移动到：')} <b>${escape(lesson.label())}</b></p><p class="cm-small">${pick('Lock pauses page changes. Students can still answer questions and edit their database table. Bring moves them once; Unlock restores navigation.','Kunci menghentikan pertukaran halaman. Murid masih boleh menjawab dan mengedit jadual pangkalan data. Bawa memindahkan sekali; Buka memulihkan navigasi.','锁定后仍可答题和编辑数据库表格。“带到此页”只移动一次，“解锁”恢复自主切换。')}</p>`;
+      else body = `<h2>${pick('Live classroom','Kelas langsung','实时课堂')}</h2><p><strong class="cm-count">${presenceReady && count !== null ? count : '—'}</strong> ${pick('anonymous browsers connected','pelayar tanpa nama tersambung','个匿名浏览器已连接')}<span class="cm-small">${pick('A device estimate; multiple tabs in the same browser count once. You are excluded.','Anggaran peranti; beberapa tab pelayar sama dikira sekali. Guru tidak dikira.','同一浏览器的多个标签页计为一个，不包含教师。此数值是设备数量的估计。')}</span></p>${linkField()}<div class="cm-actions">${button('copy',pick('Copy link','Salin pautan','复制链接'))}${button('lock',pick('Lock navigation','Kunci navigasi','锁定页面切换'),busy||current.locked)}${button('bring',pick('Bring Everyone Here','Bawa Semua ke Sini','带所有人到此页'),busy,true)}${button('unlock',pick('Unlock / Self-Paced','Buka / Ikut kadar sendiri','解锁／自主学习'),busy||!current.locked)}${button('end',pick('End classroom','Tamatkan kelas','结束课堂'),busy)}</div><p class="cm-small">${pick('Bring Everyone Here moves students to:','Bawa Semua ke Sini mengalih murid ke:','“带所有人到此页”将移动到：')} <b>${escape(lesson.label())}</b></p><p class="cm-small">${pick('Lock pauses page changes. Students can still answer questions and edit their database table. Bring moves them once; Unlock restores navigation.','Kunci menghentikan pertukaran halaman. Murid masih boleh menjawab dan mengedit jadual pangkalan data. Bawa memindahkan sekali; Buka memulihkan navigasi.','锁定后仍可答题和编辑数据库表格。“带到此页”只移动一次，“解锁”恢复自主切换。')}</p>`;
     } else if (open && current) {
       body = `<p>${locked()?pick('Your teacher has paused page navigation. Keep working here; you can still answer and run Python.','Guru mengunci navigasi. Teruskan menjawab dan menjalankan Python di sini.','老师已暂停页面切换。你仍可在本页答题和运行 Python。'):pick('Choose lesson pages yourself. Your teacher can bring everyone to a shared page.','Pilih halaman sendiri. Guru boleh membawa semua ke halaman yang sama.','可以自主选择课程页面。老师也可以带大家到同一页。')}</p><p class="cm-small">${pick('Only a temporary random connection ID is shared. Your name, answers and code are not sent to Supabase.','Hanya ID rawak sementara dikongsi. Nama, jawapan dan kod tidak dihantar ke Supabase.','仅分享临时随机连接编号，不向 Supabase 发送姓名、答案或代码。')}</p>`;
     } else if (open && !info().teacher) {
       body = `<p>${pick('Study at your own pace. This page will connect automatically when your teacher starts the classroom. Keep using the same link.','Belajar mengikut kadar sendiri. Halaman ini akan bersambung secara automatik apabila guru memulakan kelas. Gunakan pautan yang sama.','现在可以自主学习。老师开始课堂时，此页面会自动连接。继续使用同一个链接。')}</p><p class="cm-small">${pick('Your name and class stay in this browser for your PDF. They are not sent to Supabase.','Nama dan kelas disimpan dalam pelayar untuk PDF, bukan dihantar ke Supabase.','姓名和班级仅保存在此浏览器，用于 PDF，不发送到 Supabase。')}</p><a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`;
     }
-    if(open && info().teacher && allowed) body += `<div class="cm-presentation"><h3>Teacher presentation</h3><p class="cm-small">TTA instructions and three facts. Opens only on your screen; it is never sent to students.</p>${button('presentation','Open teacher presentation')}</div>`;
+    if(open && info().teacher && allowed) body += `<div class="cm-presentation"><h3>Teacher presentation</h3><p class="cm-small">Preview TTA slides and three facts. Use Bring everyone to this slide to show one on student devices.</p>${button('presentation','Open teacher presentation')}</div>`;
     root.innerHTML = `<div class="cm-bar"><div><strong>${pick('Classroom','Bilik darjah','课堂')}</strong> <span class="cm-status ${current&&!connected?'pending':''}">${escape(status)}</span></div><div class="cm-actions">${!info().teacher?`<a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`:''}${button('toggle',open?pick('Hide panel','Sembunyikan panel','收起面板'):pick('Open panel','Buka panel','打开面板'))}</div></div>${open?`<section class="cm-panel" aria-label="${pick('Classroom controls','Kawalan kelas','课堂控制')}">${body}</section>`:''}<p class="cm-message ${bad?'cm-error':''}" role="status" aria-live="polite">${escape(message)}</p>`;
   }
   async function loadSDK() {
@@ -224,8 +224,8 @@
       if(saved){room=saved.session_id;if(!valid(saved))throw Error('Invalid session');await attach(saved);}
     } finally {checking=false;render(true);}
   }
-  async function action(cmd) {
-    if(busy||!allowed||(cmd==='bring'&&window.TeacherPresentation?.isOpen()))return;
+  async function action(cmd,stage=null) {
+    if(busy||!allowed)return false;
     busy=true;render();
     try {
       if(cmd==='start'){
@@ -236,7 +236,7 @@
         if(current)return;
         await client.auth.signOut({scope:'local'});allowed=false;disconnect();
       } else if(current && ['lock','bring','unlock','end'].includes(cmd)){
-        const snapshot=await rpc('classroom_control',{p_session_id:room,p_action:cmd,p_expected_revision:current.revision,p_stage:cmd==='bring'?info().page:null});
+        const snapshot=await rpc('classroom_control',{p_session_id:room,p_action:cmd,p_expected_revision:current.revision,p_stage:cmd==='bring'?(stage||info().page):null});
         const outgoing=channel;
         // The RPC result is authoritative; a failed broadcast is recovered by polling.
         let sent=false;
@@ -245,9 +245,11 @@
         if(!sent&&cmd!=='end')say('Saved. Some browsers may take up to 10 seconds to catch up.','Disimpan. Sesetengah pelayar mungkin mengambil sehingga 10 saat.','已保存。部分浏览器可能需要最多 10 秒同步。');
         else if(cmd!=='end'){message='';bad=false;}
       }
+      return true;
     } catch(error) {
       await refresh();
       say(error.code==='40001'?'Another command arrived first. Check the current state, then try again.':'Could not complete the action. Check your connection and teacher sign-in.','Tindakan tidak selesai. Semak sambungan dan log masuk guru.','操作未完成。请检查网络及教师登录状态。',true);
+      return false;
     } finally {busy=false;render(true);}
   }
   function signInFailure(error, phase) {
@@ -283,7 +285,7 @@
     const el=event.target.closest('[data-cm]');if(!el||el.disabled)return;
     const cmd=el.dataset.cm;
     if(cmd==='presentation'&&allowed&&info().teacher){
-      try{if(!window.TeacherPresentation)await new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='teacher-presentation.js?v=1';tag.onload=resolve;tag.onerror=()=>{tag.remove();reject(Error('Presentation unavailable'));};document.head.append(tag);});window.TeacherPresentation.open();}catch{say('Could not load the presentation. Check your connection and try again.','Tidak dapat memuatkan pembentangan. Cuba lagi.','无法加载演示，请重试。',true);}return;
+      try{if(!window.TeacherPresentation)await new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='teacher-presentation.js?v=2';tag.onload=resolve;tag.onerror=()=>{tag.remove();reject(Error('Presentation unavailable'));};document.head.append(tag);});window.TeacherPresentation.open();}catch{say('Could not load the presentation. Check your connection and try again.','Tidak dapat memuatkan pembentangan. Cuba lagi.','无法加载演示，请重试。',true);}return;
     }
     if(cmd==='toggle'){open=!open;render(true);}
     else if(cmd==='copy'){
