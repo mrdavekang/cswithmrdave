@@ -1,6 +1,6 @@
 # Year 11 · Week 5 Session 3
 
-Open index.html in a modern browser, or upload this entire folder to GitHub Pages. All fonts and PDF dependencies are local; no build step is required. No external database or student account service is used.
+Open index.html in a modern browser, or upload this entire folder to GitHub Pages. All fonts and PDF dependencies are local; no build step is required. Student work is stored locally. Supabase supplies anonymous live classroom control; students do not need accounts.
 
 ## Teacher
 Enter `teacher` as the name (class may be blank) to review the lesson. Navigation is open for all students so that they can revisit reading. On Review answers, use the passcode `Y11isawesome`. This is a classroom reveal control, NOT secure authentication: a static website cannot keep answers secret from someone inspecting its source. Do not use this for a secure assessment. Changing student locks the review again.
@@ -10,7 +10,7 @@ The timings total 60 minutes: reading 5, starter 4, types of learning 3, design 
 ## Save and resume
 Full backup and Save PDF are pinned top-right throughout the lesson. On the landing page they are visible but disabled until a student starts/restores work. Backup includes answers, all saved SQL attempts, table design, example records and resized evidence photos. Restore validates the file and asks for confirmation before replacing a saved profile. Work is also saved locally in IndexedDB under name/class. Browser/device clearing removes local work: keep backups. The PDF reports every lesson section, not just the current screen. Review answers themselves are not exported; student corrections are.
 
-Submit the PDF manually to Teams. There is no live teacher dashboard and nothing is uploaded automatically. Keep backups private. JPG/PNG/WebP photographs are supported; convert HEIC first.
+Submit the PDF manually to Teams. Classroom Mode shows anonymous connected-device counts and navigation controls. Student names, answers and work are not uploaded to Supabase. Keep backups private. JPG/PNG/WebP photographs are supported; convert HEIC first.
 
 ## SQL practice
 This is a restricted SELECT interpreter, not a full SQL engine. Supports Club, named fields or *, comparisons = > < >= <= <> !=, AND, quoted text and Boolean True/False. It rejects unsupported syntax rather than pretending to execute it. Text matching is case-sensitive in this simulator. Keywords and field names are case-insensitive. Feedback compares requested output fields (in requested order) and records, but does not prove a query is general for every future dataset. Ask students to explain their conditions.
@@ -20,3 +20,34 @@ The extension is paper-only: students collect the printed June 2023 9210/2 Quest
 ## Dependencies
 Raleway font: SIL Open Font License (assets/OFL.txt).
 jsPDF: MIT license (license information in vendor file).
+
+## Classroom Mode and teacher presentation
+Open `index.html?teacher=1`, sign in with your approved Supabase teacher account, then use Start classroom, Lock, Bring Everyone Here, and Unlock / Self-Paced. Plain student URLs automatically use the permanent classroom for this lesson. Existing classId query links remain compatible. Navigation remains self-paced while no session is active. Student identity for PDF export remains local.
+
+Run `16-year11-week5-session3.sql` once in Supabase SQL Editor to register this lesson’s allowed stages. It preserves other lessons and uses the existing shared session functions and teacher permissions. Expect `session3_classroom_ready = true`. No new student table or new account setup is required. Publish the updated website folder to GitHub Pages separately.
+
+After approved teacher sign-in, choose **Open teacher presentation**. Its 14 TTA-style slides include all lesson stages, extension/review guidance, and three fact discussions: primary keys; SELECT/FROM/WHERE; inclusive boundary conditions. Topic, WAGBA, knowledge/skills/understanding, keywords and challenge appear beside the instructions. Use Previous, Next or the slide selector. Close the presentation to return to classroom controls.
+
+The presentation is absent from student navigation and loads only through the authenticated teacher panel. It never sends its slides to students: Bring Everyone Here is disabled while it is open, and the server accepts only normal lesson stage IDs. As with all static GitHub Pages assets, the presentation source is publicly downloadable; this is teacher-only interface visibility, not confidential file storage.
+
+## Student lesson clock: 11:20–12:20
+The collapsible Lesson clock appears at the bottom right. Students may switch **Follow the lesson clock** on/off. It suggests the current activity and displays time remaining, the next activity and the full schedule. It never automatically changes pages. The student can explicitly open the suggested page, provided classroom navigation is unlocked.
+
+The schedule uses the device clock in Asia/Kuala_Lumpur time, independently of whether a live classroom is running. Before 11:20 it counts down to the start; after 12:20 it shows that lesson time has ended. It repeats each day; it is not a teacher-started stopwatch.
+
+| Time | Activity |
+| --- | --- |
+| 11:20–11:25 | Read first |
+| 11:25–11:29 | Do Now |
+| 11:29–11:32 | Types of Learning |
+| 11:32–11:47 | Main Task 1: design a table |
+| 11:47–11:52 | Read SQL |
+| 11:52–12:10 | Main Task 2: query, test and improve |
+| 12:10–12:13 | Learning Pitstop |
+| 12:13–12:18 | Plenary |
+| 12:18–12:20 | Save PDF and submit |
+
+Facts, review and extra-time paper extension fit within the relevant task blocks.
+
+## Verification
+Run `node tests/classroom.test.cjs` for local bridge, navigation lock, pending classroom move, clock boundaries, optional clock following, presentation visibility and original SQL query checks. The migration was also checked in local PostgreSQL-compatible tests for all normal stages, rejected presentation stages, teacher permissions and compatibility with existing lessons. Live Supabase operation requires the migration above and a signed-in teacher; it has not yet been verified for this lesson.
