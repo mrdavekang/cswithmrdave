@@ -9,9 +9,9 @@
   const words = (en, ms, zh) => ({en, ms, zh})[info().lang] || en;
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const pick = (en, ms, zh) => escape(words(en, ms, zh));
-  const classId = new URLSearchParams(location.search).get('classId')?.toLowerCase();
-  const permanent = uuid.test(classId || '');
-  if (!permanent) return; // Ordinary lesson links remain entirely self-paced.
+  const classId = window.CLASSROOM_ROUTE?.classId?.toLowerCase();
+  const permanent = window.CLASSROOM_ROUTE?.permanent && uuid.test(classId || '');
+  if (!permanent) return;
   const lessonId = 'year9-week5-theory';
   const classArgs = () => ({p_class_id:classId,p_lesson:lessonId});
   let room = null, discovery, discovering = false;
@@ -29,7 +29,7 @@
   }
   function sessionLink() {
     const url = new URL(location.href);
-    url.search = ''; url.searchParams.set('classId',classId); url.hash = '';
+    url.search = ''; url.hash = ''; // Share the plain lesson URL, never a Teams tracking ID.
     return url.href;
   }
   function teacherLink() {const url=new URL(sessionLink());url.searchParams.set('teacher','1');return url.href;}
@@ -63,6 +63,7 @@
     } else if (open && !info().teacher) {
       body = `<p>${pick('Study at your own pace. This page will connect automatically when your teacher starts the classroom. Keep using the same link.','Belajar mengikut kadar sendiri. Halaman ini akan bersambung secara automatik apabila guru memulakan kelas. Gunakan pautan yang sama.','现在可以自主学习。老师开始课堂时，此页面会自动连接。继续使用同一个链接。')}</p><p class="cm-small">${pick('Your name and class stay in this browser for your PDF. They are not sent to Supabase.','Nama dan kelas disimpan dalam pelayar untuk PDF, bukan dihantar ke Supabase.','姓名和班级仅保存在此浏览器，用于 PDF，不发送到 Supabase。')}</p><a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`;
     }
+    if(open && info().teacher && allowed) body += `<div class="cm-fact-pages"><h3>Teacher-led fact slides</h3><p class="cm-small">Open a slide, then choose Bring Everyone Here. Use Lock to keep students on that page while they answer.</p>${lesson.teacherPages().map(p=>button('fact:'+p.id,escape(p.title))).join('')}</div>`;
     root.innerHTML = `<div class="cm-bar"><div><strong>${pick('Classroom','Bilik darjah','课堂')}</strong> <span class="cm-status ${current&&!connected?'pending':''}">${escape(status)}</span></div><div class="cm-actions">${!info().teacher?`<a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`:''}${button('toggle',open?pick('Hide panel','Sembunyikan panel','收起面板'):pick('Open panel','Buka panel','打开面板'))}</div></div>${open?`<section class="cm-panel" aria-label="${pick('Classroom controls','Kawalan kelas','课堂控制')}">${body}</section>`:''}<p class="cm-message ${bad?'cm-error':''}" role="status" aria-live="polite">${escape(message)}</p>`;
   }
   async function loadSDK() {
@@ -218,7 +219,7 @@
       const {data}=await api.auth.getSession();
       if(!data.session)return;
       allowed=(await rpc('classroom_is_teacher'))===true;
-      if(!allowed){await api.auth.signOut({scope:'local'});throw Error('Not a teacher');}
+      if(!allowed){await api.auth.signOut({scope:'local'});throw Object.assign(Error('Not a teacher'),{code:'teacher_not_approved'});}
       const saved=await rpc('classroom_class_current',classArgs());
       if(saved){room=saved.session_id;if(!valid(saved))throw Error('Invalid session');await attach(saved);}
     } finally {checking=false;render(true);}
@@ -249,24 +250,39 @@
       say(error.code==='40001'?'Another command arrived first. Check the current state, then try again.':'Could not complete the action. Check your connection and teacher sign-in.','Tindakan tidak selesai. Semak sambungan dan log masuk guru.','操作未完成。请检查网络及教师登录状态。',true);
     } finally {busy=false;render(true);}
   }
+  function signInFailure(error, phase) {
+    const code=String(error?.code||'');
+    const detail=code ? ` [${code.replace(/[^a-zA-Z0-9_]/g,'').slice(0,60)}]` : '';
+    if(code==='invalid_credentials')
+      say('Supabase rejected the email or password. Use your classroom teacher account, not your Supabase dashboard login.','Supabase menolak e-mel atau kata laluan. Gunakan akaun guru kelas, bukan log masuk papan pemuka Supabase.','邮箱或密码不正确。请使用课堂教师账户，而不是 Supabase 控制台账户。',true);
+    else if(code==='teacher_not_approved')
+      say('Your email and password worked, but this account is not approved as a classroom teacher.','E-mel dan kata laluan betul, tetapi akaun ini belum diluluskan sebagai guru kelas.','邮箱和密码正确，但此账户尚未获准担任课堂教师。',true);
+    else if(phase==='permissions')
+      say('Your email and password worked, but classroom permissions could not be checked. Share this error code with the person setting up Classroom Mode.'+detail,'Log masuk berjaya, tetapi kebenaran kelas tidak dapat disemak. Kongsi kod ralat ini dengan penyedia Mod Kelas.'+detail,'登录成功，但无法检查课堂权限。请将此错误代码告知课堂模式设置人员。'+detail,true);
+    else
+      say('Could not complete Supabase sign-in. Check your connection and try again. If it continues, share this error code.'+detail,'Log masuk Supabase tidak selesai. Semak sambungan dan cuba lagi. Jika berterusan, kongsi kod ralat ini.'+detail,'无法完成 Supabase 登录。请检查网络后重试。如仍失败，请提供此错误代码。'+detail,true);
+  }
   root.addEventListener('submit',async event=>{
     event.preventDefault();
     if(event.target.id==='cm-login'&&!busy){
       const form=new FormData(event.target),email=String(form.get('email')).trim(),password=String(form.get('password'));
       event.target.elements.password.value='';busy=true;render(true);
+      let phase='authentication';
       try {
         const api=await ensureClient();
         const {error}=await api.auth.signInWithPassword({email,password});
         if(error)throw error;
+        phase='permissions';
         await recoverTeacher();
         say('Teacher sign-in confirmed.','Log masuk guru disahkan.','教师登录已验证。');
-      } catch {allowed=false;say('Sign-in failed. Check the email and password for your approved teacher account.','Log masuk gagal. Semak e-mel dan kata laluan akaun guru.','登录失败。请检查已授权教师账户的邮箱及密码。',true);}
+      } catch(error) {allowed=false;signInFailure(error,phase);}
       finally{busy=false;render(true);}
     }
   });
   root.addEventListener('click',async event=>{
     const el=event.target.closest('[data-cm]');if(!el||el.disabled)return;
     const cmd=el.dataset.cm;
+    if(cmd.startsWith('fact:')&&allowed&&info().teacher){lesson.openTeacherPage(cmd.slice(5));render(true);return;}
     if(cmd==='toggle'){open=!open;render(true);}
     else if(cmd==='copy'){
       try{await navigator.clipboard.writeText(sessionLink());say('Link copied. Share it with this class.','Pautan disalin. Kongsi dengan kelas ini.','链接已复制，请分享给本班学生。');}

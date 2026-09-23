@@ -39,3 +39,15 @@ The lesson and Python runtime are unchanged. `classroom.js` handles private Real
 The restored classroom UI was previously checked across 156 lesson/language/view combinations and 18 Python cases, with additional named-entry and report checks. Step 12 passed 28 PostgreSQL RPC/permission checks, including simultaneous lesson isolation, preservation of an already active session, repeated installation, per-lesson stage validation, owner/student denial, End/restart and legacy-session compatibility. Published-site availability depends on publishing these restored website files.
 
 Live preview verification against the configured Supabase project passed teacher recovery, permanent-link auto-join and count, Lock/Bring/Unlock for Week 5 while a Week 3 student stayed self-paced on its own page. Local name/class details were retained. These checks use the existing URLs’ class ID; the restored website files still require publishing.
+
+## Teacher-led presentation pages (three supplied fact slides)
+
+The plain lesson URL now uses the configured shared permanent class, independent of Teams-added classId parameters. Choose Teacher sign-in and use the approved Supabase classroom account. Under Teacher-led fact slides, open Nested selection, Validation, or Boundary test data, then press Bring Everyone Here. Opening a slide alone does not move students. Lock keeps students on the displayed page while they answer. Unlock allows normal navigation, and Return to lesson returns to the previous lesson stage.
+
+Facts are excluded from student menus and the normal Next sequence; students see them when the teacher brings the class there. A learner at the landing page completes local name/class entry first. The pages remain publicly downloadable static assets, not secret material. Teacher control permissions remain enforced by Supabase. Names, work and answers are never sent to Supabase.
+
+Each page preserves the supplied PPT example, class question and challenge. English, Malay and Mandarin (including bilingual/supported reading) are available. Responses save in the existing notebook, survive backup/restore and appear in PDF/readable reports when answered. Hidden pages do not change saved lesson-page IDs. The original presentation is unchanged.
+
+Activation: after shared setup through step 14, run `supabase/15-year9-week5-facts.sql` once. Expect `week5_facts_ready = true`. It adds only three allowed Year 9 Week 5 stage IDs and preserves all previously enabled lessons and teacher permissions. Publish the changed/new files in this folder, including fact-slides.js, fact-integration.js and fact-slides.css. The old Teams URL continues to work.
+
+Checks: `node tests/facts.test.cjs` covers 156 existing page/language/view combinations, all three fact pages in all supported languages, answer backup/report retention, hidden menus, lock/return behavior and 18 Python examples with console input. SQL migration checked for idempotence, allowed fact stages and existing permission/isolation regressions. Browser layouts inspected for all three pages. Live Bring/Presence tests await running step 15 and signing in.
