@@ -1,0 +1,17 @@
+/* Preserve readable source pixels and native vectors; never squeeze code into a short thumbnail. */
+.guide-figure img,.challenge-figure img,.image-button img{display:block;width:auto!important;height:auto!important;max-width:100%!important;max-height:none!important;margin-inline:auto;object-fit:contain}
+.visual-pair,.build-pair{grid-template-columns:minmax(0,1fr)!important}
+.guide-figure,.challenge-figure,.image-button{min-width:0}
+.guide-figure img[src$=".svg"],.challenge-figure img[src$=".svg"]{width:min(100%,1050px)!important}
+.clarity-viewer{width:96vw;max-width:1600px;height:94dvh;max-height:94dvh;padding:16px;border:2px solid #222;border-radius:12px;background:white;color:#151515;box-sizing:border-box}
+.clarity-viewer::backdrop{background:#000b}
+.clarity-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.clarity-toolbar button,.clarity-toolbar a{font:600 16px/1.3 system-ui;padding:10px 14px;border:1px solid #333;border-radius:6px;background:white;color:#111;min-height:44px}
+.clarity-toolbar [aria-pressed="true"]{background:#163e31;color:white}
+.clarity-toolbar [data-close]{margin-left:auto}
+.clarity-description{font:16px/1.4 system-ui;margin:12px 0}
+.clarity-scroll{overflow:auto;height:calc(100% - 130px);background:#fff;border:1px solid #bbb;overscroll-behavior:contain}
+.clarity-scroll img{display:block;max-width:none!important;max-height:none!important;height:auto!important;margin:0!important}
+.clarity-viewer :focus-visible{outline:3px solid #3069db;outline-offset:3px}
+@media(max-width:600px){.clarity-viewer{padding:10px}.clarity-scroll{height:calc(100% - 190px)}}
+@media print{.clarity-viewer{display:none!important}}
