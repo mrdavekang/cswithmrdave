@@ -59,3 +59,28 @@ External editors require internet. Lesson images and jsPDF are local; Raleway ha
 visual-lesson.js and visual-lesson.css implement the visual build/challenges. assets/guides contains actual MakeCode captures, original wiring diagrams, the Seeed kit photo and plug/Pins guides. Read SOURCES.md and TEST_REPORT.md for sources and verification limits.
 
 Developer check (not required to use the lesson): JSDOM_PATH=/path/to/jsdom node test-visual.cjs.
+
+
+## Class Remote (September 2026)
+
+Use the same lesson URL for students; open `?teacher=1` and sign in with the approved Supabase classroom teacher account for the control dock. The name field alone does not authorize remote controls. Student names, class, code and answers remain local for their PDF.
+
+Before publishing, run `supabase/20-year8-week3-class-remote.sql` once in Supabase SQL Editor. It extends the existing shared setup, preserves other lesson routes and adds a teacher-only control function. Do not rerun older allowlist migrations afterwards. The result should show `class_remote_ready = true`.
+
+The bottom dock stays visible when viewing the lesson or presentation:
+- **Start classroom** opens a live self-paced session. LIVE / connecting status and anonymous device counts show whether the session is active. “Received this update” confirms delivery, not student attention.
+- **Screens down** covers student pages with an attention message.
+- **Show only** follows the teacher and allows scrolling, while blocking answering and other lesson interactions.
+- **Let students answer** follows the teacher while allowing responses; navigation stays locked.
+- While any of those three modes is active, changing the teacher's lesson page or public slide automatically moves students too.
+- **Self-paced** restores navigation. **Return to own work** also restores each student's saved page and scroll position from before the interruption. Answers are preserved.
+- **Bring here once** sends the current public page without changing the mode.
+- **End classroom** releases students. Sessions expire after two hours; missed broadcasts recover through polling, normally within ten seconds.
+
+Choose a lesson page or teaching slide from the dock. Back to lesson returns to the teacher's underlying activity. Three facts cover storing values, updating versus assigning a fixed value, and reset. Their response boxes save locally and student responses appear in the report.
+
+Two teacher-reference slides include the original TTA Types of Learning and Learning Pitstop images. They are excluded from student menus and server broadcast destinations. Public slides can be shared; private references leave students where they are. GitHub Pages assets are public files, so hidden reference slides are not confidential storage.
+
+The controls operate within the lesson website; they cannot prevent a student closing the browser or switching apps.
+
+Checks: `JSDOM_PATH=/path/to/jsdom node test-visual.cjs` and `JSDOM_PATH=/path/to/jsdom node test-classroom.cjs`. The database upgrade was also checked locally against prior classroom migrations. Browser visual review remains pending because the browser tool's security check was unavailable.
