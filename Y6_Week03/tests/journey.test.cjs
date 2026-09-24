@@ -28,8 +28,8 @@ function mount(seed,extra={}){
  return {w,q,input,click,action,field,enter,record,errors};
 }
 function seeded(at,partner='') {const p=L.fresh('Amina','6 Cedar',partner);p.at=p.furthest=at;if(at>14)p.practical.status='teacher-checked';return p;}
-async function submitTeacher(t,pass='test-only-pass'){
- t.input('#teacherName','Test Teacher');t.input('#passcode',pass);if(t.q('#passcodeAgain'))t.input('#passcodeAgain',pass);
+async function submitTeacher(t){
+ t.input('#teacherName','Test Teacher');assert.equal(t.q('input[type=password]'),null);
  for(const el of t.w.document.querySelectorAll('#teacherForm input[type=checkbox]'))el.checked=true;
  t.q('#teacherForm button[type=submit]').click();await new Promise(resolve=>setTimeout(resolve,30));
 }
@@ -51,7 +51,9 @@ test('full student path requires Scratch handover, testing and teacher check',as
 });
 test('reload from waiting challenge returns to unfinished teacher checkpoint',()=>{const s=seeded(14);s.at=16;s.practical.status='awaiting-check';const t=mount(s);t.enter();assert.equal(t.record().at,14);assert.equal(t.q('[data-action=next]').disabled,true);t.action('waiting-extension');t.action('next');assert.equal(t.q('#stepTitle').textContent,'Show your working program');});
 test('teacher can release unfinished practical work without marking it checked',async()=>{const t=mount();t.enter();t.action('wrap');await submitTeacher(t);assert.equal(t.record().at,15);assert.ok(t.record().practical.wrap);assert.notEqual(t.record().practical.status,'teacher-checked');assert.match(L.status(t.record()),/unfinished/);});
-test('incorrect teacher passcode cannot approve work',async()=>{const digest=Buffer.from(await webcrypto.subtle.digest('SHA-256',new TextEncoder().encode('real-test-pass'))).toString('hex');const s=seeded(14);s.done.test=true;const t=mount(s,{coordinateQuestTeacherV3:{hash:digest}});t.enter();t.action('approve');await submitTeacher(t,'wrong-test-pass');assert.match(t.q('#teacherError').textContent,/did not match/);assert.notEqual(t.record().practical.status,'teacher-checked');});
+test('old teacher passcodes no longer block observation',async()=>{const s=seeded(14);s.done.test=true;const t=mount(s,{coordinateQuestTeacherV3:{hash:'old-code'}});t.enter();t.action('approve');await submitTeacher(t);assert.equal(t.record().practical.status,'teacher-checked');assert.equal(t.q('input[type=password]'),null);});
+test('home completion and backup preserve independent reflection attempts',()=>{const s=seeded(14);s.done.test=true;s.answers.fileSaved=true;s.answers.filename='route.sb3';s.practical.tests=[{result:'worked',note:'Tested',at:new Date().toISOString()}];s.learners[0].exitAttempts=[{x:'40',y:'40',correct:true}];const t=mount(s);t.enter();t.action('home-complete');assert.equal(t.record().at,15);assert.equal(t.record().practical.status,'self-checked');assert.equal(L.restore({profile:t.record()}).learners[0].exitAttempts.length,1);});
+test('backup validation rejects wrong files and unsafe records',()=>{assert.throws(()=>L.restore({}));const s=seeded(4);s.at=999;assert.throws(()=>L.restore({profile:s}));assert.throws(()=>L.restore(JSON.parse('{"profile":{"__proto__":{}}}')));});
 test('partner learning choices remain separate and both get a turn',()=>{const s=seeded(4,'Ben');const t=mount(s);t.enter('Amina','6 Cedar','Ben');t.field('learner.goal','build');assert.equal(t.q('[data-action=next]').disabled,true);t.click('[data-person="1"]');t.field('learner.goal','coordinates');assert.equal(t.q('[data-action=next]').disabled,false);assert.equal(t.record().learners[0].goal,'build');assert.equal(t.record().learners[1].goal,'coordinates');});
 test('prediction draft survives previous / next and saved prediction remains fixed',()=>{const s=seeded(6);s.done.worked=true;const t=mount(s);t.enter();t.field('prediction.x','-40');t.field('prediction.y','-100');t.action('back');t.action('next');assert.equal(t.q('[data-field="prediction.x"]').value,'-40');t.action('predict');assert.equal(t.q('[data-field="prediction.x"]'),null);});
 test('help in plenary is recorded honestly and does not block export',()=>{const t=mount(seeded(17));t.enter();t.action('unsure-exit');assert.equal(t.q('[data-action=next]').disabled,false);assert.equal(t.record().learners[0].exitChecked,false);assert.match(t.record().learners[0].exitFeedback,/not yet demonstrated/);});

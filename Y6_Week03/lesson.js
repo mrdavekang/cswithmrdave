@@ -25,7 +25,7 @@
  const key=(name,cls,partner)=>JSON.stringify([normal(name),normal(cls),normal(partner)]);
  const fresh=(name,cls,partner='')=>({version:3,id:key(name,cls,partner),name,className:cls,partner,at:0,furthest:0,done:{},answers:{},predictions:predictions.map(()=>({x:'',y:'',history:[],trace:0})),learners:[{},{}],practical:{checks:{},tests:[],status:'not-started'},extensions:challenges.map(()=>({note:'',done:false})),level:0,updated:Date.now()});
  function ready(p,id){
-  if(id==='checkpoint')return p.practical.status==='teacher-checked'||!!p.practical.wrap;
+  if(id==='checkpoint')return p.practical.status==='teacher-checked'||p.practical.status==='self-checked'||!!p.practical.wrap;
   if(id==='focus')return p.learners.slice(0,p.partner?2:1).every(l=>l.goal);
   if(id==='pitstop')return p.learners.slice(0,p.partner?2:1).every(l=>l.phase);
   if(id==='plenary')return p.learners.slice(0,p.partner?2:1).every(l=>l.exitRecorded);
@@ -33,7 +33,44 @@
   return !!p.done[id];
  }
  function position(n,count){const p=predictions[n];let [x,y]=p.start;let dir=90;for(const [axis,v] of p.ops.slice(0,count)){if(axis==='x')x+=v;else if(axis==='y')y+=v;else dir=(dir+v)%360;}return {x,y,dir};}
- function status(p){return p.practical.status==='teacher-checked'?'Teacher checked the working route':p.practical.wrap?'Practical unfinished — teacher moved class to reflection':p.practical.status==='awaiting-check'?'Pupil reports ready — awaiting teacher check':'Practical not yet demonstrated';}
- const api={steps,predictions,goals,phases,challenges,key,fresh,ready,position,status};
+ function status(p){return p.practical.status==='teacher-checked'?'Teacher checked the working route':p.practical.status==='self-checked'?'Pupil confirmed tested and saved work — not teacher checked':p.practical.wrap?'Practical unfinished — teacher moved class to reflection':p.practical.status==='awaiting-check'?'Pupil reports ready — awaiting teacher check':'Practical not yet demonstrated';}
+
+ function restore(data){
+  const fail=()=>{throw Error('This is not a valid Coordinate Quest V3 backup. / 这不是有效的课程备份。');};
+  function safe(v,depth=0){
+   if(depth>30)fail();
+   if(v===null||typeof v==='boolean'||typeof v==='number'){if(typeof v==='number'&&!Number.isFinite(v))fail();return;}
+   if(typeof v==='string'){if(v.length>16000000)fail();return;}
+   if(!v||typeof v!=='object')fail();
+   if(Array.isArray(v)){if(v.length>10000)fail();v.forEach(x=>safe(x,depth+1));return;}
+   for(const [k,x] of Object.entries(v)){if(['__proto__','prototype','constructor'].includes(k))fail();safe(x,depth+1);}
+  }
+  safe(data);
+  const p=data?.profile;
+  if(!p||p.version!==3||typeof p.name!=='string'||!p.name.trim()||p.name.length>80||typeof p.className!=='string'||p.className.length>50||typeof p.partner!=='string'||p.partner.length>80)fail();
+  function matches(v,t){
+   if(Array.isArray(t)){if(!Array.isArray(v))fail();return;}
+   if(t&&typeof t==='object'){if(!v||typeof v!=='object'||Array.isArray(v))fail();for(const k of Object.keys(t))matches(v[k],t[k]);return;}
+   if(typeof v!==typeof t)fail();
+  }
+  matches(p,fresh(p.name,p.className,p.partner));
+  for(const n of ['at','furthest'])if(!Number.isInteger(p[n])||p[n]<0||p[n]>=steps.length)fail();
+  if(p.at>p.furthest||!Number.isInteger(p.level)||p.level<0||p.level>=challenges.length)fail();
+  if(Object.values(p.done).some(v=>typeof v!=='boolean'))fail();
+  if(p.predictions.length!==3||p.learners.length!==2||p.extensions.length!==5)fail();
+  p.predictions.forEach((r,i)=>{matches(r,{x:'',y:'',history:[],trace:0});if(!Number.isInteger(r.trace)||r.trace<0||r.trace>predictions[i].ops.length)fail();});
+  p.extensions.forEach(r=>matches(r,{note:'',done:false}));
+  p.learners.forEach(r=>{if(!r||typeof r!=='object'||Array.isArray(r))fail();});
+  p.practical.tests.forEach(r=>matches(r,{result:'',note:'',at:''}));
+  if(!['not-started','in-progress','awaiting-check','teacher-checked','self-checked'].includes(p.practical.status))fail();
+  // Check optional text/boolean fields so malformed backups cannot break rendering.
+  for(const r of [p.answers,...p.learners])for(const [k,v] of Object.entries(r))if(v!==null&&typeof v==='object'&&!(k==='exitAttempts'&&Array.isArray(v)))fail();
+  if(p.practical.teacher)matches(p.practical.teacher,{name:'',at:''});
+  if(p.practical.wrap)matches(p.practical.wrap,{name:'',at:''});
+  p.id=key(p.name,p.className,p.partner);
+  if(p.at>14&&!ready(p,'checkpoint')){p.at=14;p.furthest=14;}
+  return p;
+ }
+ const api={steps,predictions,goals,phases,challenges,key,fresh,ready,position,status,restore};
  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CQ=api;
 })(typeof window!=='undefined'?window:globalThis);

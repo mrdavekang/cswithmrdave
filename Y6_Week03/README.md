@@ -17,18 +17,16 @@ Prediction feedback waits for the pupil to continue; no timed auto-advance.
 Opening a link never proves practical completion. Every practical observation
 before the teacher check is explicitly a pupil self-report.
 
-## Before class: teacher setup
+## Teacher preview and home learning
 
-1. On each shared computer/browser, enter teacher as the name.
-2. Set a private teacher passcode (at least six characters). Remember it: there
-   is no remote password recovery or default shared code.
-3. Preview any card without changing student records.
-4. Leave preview. Pupils enter their name, typed class and optional partner.
+Enter teacher as the name to preview the lesson without a password. The teacher
+observation dialog asks only for a name and the observed checks. There is no
+authentication or automatic Scratch verification.
 
-This is a **local classroom control**, not secure school authentication. A hash
-is stored in this browser; it deters casual clicking but cannot stop a determined
-pupil using developer tools. First-time setup must be done by the teacher.
-There is no central class dashboard or notification system.
+Pupils working at home can use “I tested and saved my work — continue” at the
+practical checkpoint after recording a successful test and saved .sb3 filename.
+Reports label this as pupil-confirmed, not teacher-checked. The linear practical
+steps remain required. Existing saved progress is preserved.
 
 ## During the practical
 
@@ -43,8 +41,8 @@ At the checkpoint, keep Scratch visible and ask pupils to:
 - Explain one coordinate or block (both pupils when paired).
 - Show the saved Scratch project.
 
-Use Teacher: check this project and enter the device's passcode to record your
-observation. Until then the route is awaiting a check, not finished.
+Use Teacher: check this project to record your observation without a password.
+At home pupils can self-confirm instead; their report states that distinction.
 Students can try extensions while waiting but return to the same checkpoint.
 
 At lesson end use the teacher control beneath any card to move to reflection.
@@ -105,7 +103,13 @@ V3 answers use coordinateQuestProfilesV3 in localStorage. V2 data, including old
 screenshots, is untouched. Matching old profiles start the new practical path
 fresh; old completion flags do not become a new teacher check. Save backup
 exports the active profile and its matching legacy data as JSON. Keep that
-backup if local storage fails; there is no automatic backup restore screen.
+backup if local storage fails. On the welcome page choose Load my backup (.json).
+The importer validates V3 backups, preserves names, answers and progress, and
+asks before replacing a same-name/class/partner record. Cancel preserves the
+existing record. Invalid or wrong-type files do not replace saved work.
+JSON contains website progress, not the Scratch project. Save and move .sb3
+separately; load it inside Scratch. The visual file guide distinguishes PDF,
+.sb3 and JSON. Teams requires PDF + .sb3 unless the teacher requests otherwise.
 An unsaved-data warning stays visible if the browser cannot persist changes.
 Use the same site origin/browser and names/class/partner to resume.
 
@@ -130,6 +134,12 @@ saving, optional extensions, all cards in both languages, real English PDF
 generation, storage failure, untouched legacy data and route/costume geometry.
 Browser visual QA was not completed: the local file preview was blocked by the
 browser tool's URL policy. Check classroom display and print layout before use.
+
+Home-learning update: isolated Chrome browser checks passed for malformed-file
+rejection, backup restore, overwrite cancellation, JSON download/re-upload in a
+fresh browser, home self-confirmation, password-free teacher preview, and mobile
+width. The updated regression suite passes 20 of 21 tests; the pre-existing
+backdrop rect/path geometry assertion described below remains unchanged.
 
 Screenshot update verification: all eight captures were visually inspected in
 Scratch and after cropping. The two added checks cover image files/dimensions,
