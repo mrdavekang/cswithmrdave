@@ -38,14 +38,14 @@ test('positions are accurate and turns do not alter x/y',()=>{
  assert.deepEqual(L.position(2,2),{x:80,y:40,dir:180});
 });
 test('names in different writing systems keep separate profile identities',()=>{assert.notEqual(L.key('李明','六班',''),L.key('王明','六班',''));assert.equal(L.key(' AMINA ','6 Cedar',''),L.key('amina','6 cedar',''));});
-test('full student path requires Scratch handover, testing and teacher check',async()=>{
+test('guided student path keeps checks without requiring teacher approval to continue',async()=>{
  const t=mount();t.enter();assert.equal(t.q('#stepTitle').textContent,'The mission');assert.equal(t.q('[data-action=next]').disabled,true);assert.equal(t.q('[data-page]'),null);
  t.action('read');t.action('next');t.input('input[value=left]',true);t.action('check-x');t.action('next');t.field('pair.x','−120');t.field('pair.y','-135');t.action('check-pair');t.action('next');t.input('input[value=flag]',true);t.action('check-event');t.action('next');t.field('learner.goal','build');t.action('next');t.action('worked');t.action('next');
  for(let n=0;n<3;n++){t.field('prediction.x','0');t.field('prediction.y','0');t.action('predict');for(const op of L.predictions[n].ops)t.action('trace');t.input('input[value=correct]',true);t.action('compare');t.action('next');}
  assert.equal(t.q('#stepTitle').textContent,'Now open Scratch');assert.equal(t.q('[data-action=next]').disabled,true);assert.ok(t.q('a[download]'));assert.ok(t.q('a[target=_blank]'));
  t.action('confirm-open');t.action('next');t.input('input[value=A]',true);t.action('check-example');t.action('next');t.input('input[value=x]',true);t.field('answers.bRan',true);t.action('check-b');t.action('next');t.field('answers.routeRan',true);t.action('check-route');t.action('next');
  t.field('answers.testResult','worked');t.field('answers.testNote','I checked each checkpoint.');t.action('log-test');t.field('answers.fileSaved',true);t.field('answers.filename','Amina_CoordinateQuest_v1.sb3');t.action('ready-check');t.action('next');
- assert.equal(t.q('[data-action=next]').disabled,true);assert.equal(t.record().practical.status,'awaiting-check');
+ assert.equal(t.q('[data-action=next]').disabled,false);assert.equal(t.record().practical.status,'awaiting-check');
  t.action('approve');await submitTeacher(t);assert.equal(t.record().practical.status,'teacher-checked');assert.equal(t.q('[data-action=next]').disabled,false);t.action('next');t.field('learner.phase','practice');t.action('next');
  assert.equal(t.record().extensions.filter(r=>r.done).length,0);t.action('next');t.field('exit.x','40');t.field('exit.y','40');t.input('input[value=no-y]',true);t.action('check-exit');t.action('next');assert.equal(t.q('#stepTitle').textContent,'Your learning record');assert.equal(t.q('input[type=file]'),null);assert.equal(t.errors.length,0);
 });
@@ -108,3 +108,7 @@ test('step-through still identifies the matching screenshot block',()=>{
  t.action('trace');t.action('trace');assert.match(t.q('.trace-block').textContent,/Current block 4 of 5/);assert.match(t.q('.trace-block strong').textContent,/turn clockwise 90 degrees/);assert.equal(t.q('.scratch-block-image').getAttribute('src'),'assets/images/scratch-blocks/predict3.png');
 });
 test.after(()=>{for(const w of windows)w.close();});
+
+test('short coordinate drafts allow progress without marking correct',()=>{const s=seeded(2);const t=mount(s);t.enter();t.field('pair.x','0');t.field('pair.y','?');assert.equal(t.q('[data-action=next]').disabled,false);assert.equal(!!t.record().done.xy,false);});
+test('skipped practical checkpoint survives backup and remains unverified',()=>{const s=seeded(14);const t=mount(s);t.enter();t.action('skip');assert.equal(t.record().at,15);assert.ok(t.record().skipped.checkpoint);assert.equal(L.restore({profile:t.record()}).at,15);assert.match(L.status(t.record()),/not verified/);});
+test('second partner can make a personal copy without changing pair answers',()=>{const s=seeded(4,'Ben');s.learners[0].goal='build';s.learners[1].goal='explain';const t=mount(s);t.enter('Amina','6 Cedar','Ben');t.action('solo-choice');t.action('solo-1');const all=JSON.parse(t.w.localStorage.getItem('coordinateQuestProfilesV3'));assert.deepEqual(all[s.id].learners,s.learners);const solo=all[L.key('Ben','6 Cedar','')];assert.equal(solo.partner,'');assert.equal(solo.learners[0].goal,'explain');assert.equal(solo.fromPair,'Amina + Ben');});

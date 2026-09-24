@@ -19,21 +19,31 @@
  ['Return home','返回起点','After reaching the portal, add a glide to START (−200, −135) along the bottom corridor. Add a “Mission complete!” message. Test from the green flag.','到达出口后，沿底部通道滑行到起点 (−200, −135)，添加完成提示，再从绿旗测试。','PORTAL → START → say “Mission complete!”'],
  ['A new event','新的事件','Save a new version first. Keep the green-flag script ending at KEY. Move the portal-route blocks into a new “when space key pressed” script. Run the flag, wait at KEY, then press space.','先另存一个版本。绿旗脚本停在钥匙。把出口路线放到新的空格键事件下。先运行绿旗，到钥匙后再按空格键。','Green flag → KEY. Then space → PORTAL.'],
  ['Move the destination','移动目的地','Save another version. Move the portal to an empty space. Read its x and y in Scratch. Plan safe waypoints and change the route to reach it. Check that the whole explorer fits between walls.','再保存一个版本。把出口移到空处，读取它的坐标，规划安全的路径并修改代码。确保整个角色不会碰墙。','Choose → read coordinates → plan → test'],
- ['Design a new mission','设计新任务','Add two new checkpoints in clear spaces. Record their coordinates. Ask your partner to predict the route, then test a sequence visiting the original and new checkpoints before KEY and PORTAL.','在空处增加两个检查点并记录坐标。请同伴预测，再测试经过新旧检查点、钥匙和出口的路线。','Two new checkpoints · a prediction · a tested route']
+ ['Design a new mission','设计新任务','Add two new checkpoints in clear spaces. Record their coordinates. Predict where the explorer will go (on your own or with a partner), then test a sequence visiting the original and new checkpoints before KEY and PORTAL.','在空处增加两个检查点并记录坐标。自己或与同伴一起预测，再测试经过新旧检查点、钥匙和出口的路线。','Two new checkpoints · a prediction · a tested route']
  ];
  const normal=s=>String(s||'').normalize('NFKC').trim().toLowerCase();
  const key=(name,cls,partner)=>JSON.stringify([normal(name),normal(cls),normal(partner)]);
  const fresh=(name,cls,partner='')=>({version:3,id:key(name,cls,partner),name,className:cls,partner,at:0,furthest:0,done:{},answers:{},predictions:predictions.map(()=>({x:'',y:'',history:[],trace:0})),learners:[{},{}],practical:{checks:{},tests:[],status:'not-started'},extensions:challenges.map(()=>({note:'',done:false})),level:0,updated:Date.now()});
+ const hasText=v=>typeof v==='string'&&v.trim().length>=1;
  function ready(p,id){
-  if(id==='checkpoint')return p.practical.status==='teacher-checked'||p.practical.status==='self-checked'||!!p.practical.wrap;
-  if(id==='focus')return p.learners.slice(0,p.partner?2:1).every(l=>l.goal);
-  if(id==='pitstop')return p.learners.slice(0,p.partner?2:1).every(l=>l.phase);
-  if(id==='plenary')return p.learners.slice(0,p.partner?2:1).every(l=>l.exitRecorded);
+  if(p.skipped?.[id])return true;
+  const a=p.answers;
+  if(id==='x'&&a.x||id==='event'&&a.event||id==='run-example'&&a.example)return true;
+  if(id==='xy'&&hasText(a.pairX)&&hasText(a.pairY))return true;
+  if(id.startsWith('predict')){const r=p.predictions[Number(id.slice(-1))-1];if(r&&(hasText(r.x)&&hasText(r.y)||r.history.length))return true;}
+  if(id==='build-b'&&(a.same||a.bRan))return true;
+  if(id==='build-route'&&a.routeRan)return true;
+  if(id==='test'&&(p.practical.tests.length||hasText(a.testNote)))return true;
+
+  if(id==='checkpoint')return p.practical.tests.length>0||p.practical.status==='teacher-checked'||p.practical.status==='self-checked'||!!p.practical.wrap;
+  if(id==='focus')return p.learners.slice(0,p.partner?2:1).every(l=>l.goal||hasText(l.before));
+  if(id==='pitstop')return p.learners.slice(0,p.partner?2:1).every(l=>l.phase||hasText(l.evidence));
+  if(id==='plenary')return p.learners.slice(0,p.partner?2:1).every(l=>l.exitRecorded||hasText(l.exitX)&&hasText(l.exitY)||hasText(l.next));
   if(id==='extension')return true;
   return !!p.done[id];
  }
  function position(n,count){const p=predictions[n];let [x,y]=p.start;let dir=90;for(const [axis,v] of p.ops.slice(0,count)){if(axis==='x')x+=v;else if(axis==='y')y+=v;else dir=(dir+v)%360;}return {x,y,dir};}
- function status(p){return p.practical.status==='teacher-checked'?'Teacher checked the working route':p.practical.status==='self-checked'?'Pupil confirmed tested and saved work — not teacher checked':p.practical.wrap?'Practical unfinished — teacher moved class to reflection':p.practical.status==='awaiting-check'?'Pupil reports ready — awaiting teacher check':'Practical not yet demonstrated';}
+ function status(p){return p.skipped?.checkpoint?'Practical check skipped for now — not verified':p.practical.status==='teacher-checked'?'Teacher checked the working route':p.practical.status==='self-checked'?'Pupil confirmed tested and saved work — not teacher checked':p.practical.wrap?'Practical unfinished — teacher moved class to reflection':p.practical.status==='awaiting-check'?'Pupil reports ready — awaiting teacher check':'Practical not yet demonstrated';}
 
  function restore(data){
   const fail=()=>{throw Error('This is not a valid Coordinate Quest V3 backup. / 这不是有效的课程备份。');};
@@ -67,6 +77,10 @@
   for(const r of [p.answers,...p.learners])for(const [k,v] of Object.entries(r))if(v!==null&&typeof v==='object'&&!(k==='exitAttempts'&&Array.isArray(v)))fail();
   if(p.practical.teacher)matches(p.practical.teacher,{name:'',at:''});
   if(p.practical.wrap)matches(p.practical.wrap,{name:'',at:''});
+  for(const field of ['skipped','attempted'])if(p[field]){
+   if(typeof p[field]!=='object'||Array.isArray(p[field])||Object.entries(p[field]).some(([k,v])=>!steps.some(s=>s.id===k)||typeof v!=='string'))fail();
+  }
+  if(p.fromPair!==undefined&&typeof p.fromPair!=='string')fail();
   p.id=key(p.name,p.className,p.partner);
   if(p.at>14&&!ready(p,'checkpoint')){p.at=14;p.furthest=14;}
   return p;

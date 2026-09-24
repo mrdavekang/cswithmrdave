@@ -1,5 +1,18 @@
 # Coordinate Quest — Year 6 Term 1 Week 3
 
+## Flexible progress and partners at home
+
+Paired pupils can select “I am working on my own now”, then select their name.
+This makes an individual copy with their own reflections and shared earlier
+practical work. The pair record is preserved. If a solo record already exists,
+the pupil can resume it without replacing either record.
+
+Short responses unlock Continue without claiming correctness. Check buttons
+still give instructional feedback. Each activity has “Skip for now”; skipped
+steps appear in the report as not assessed and can be revisited. Practical
+success and teacher checks are never inferred from clicking Continue or Skip.
+Backups keep individual-copy context and skipped steps.
+
 Static GitHub Pages lesson. Open index.html or serve this folder; no installation,
 build, account, database or server-side application is required. Scratch Online
 needs internet access; Scratch Desktop can load the bundled project offline.
