@@ -1,5 +1,17 @@
 # Design and technical sources
 
+## Visual revision — 24 September 2026
+
+- [micro:bit Step counter](https://microbit.org/projects/make-it-code-it/step-counter/): movement-triggered variable update. Classroom adaptation adds a visible reset and a controlled increment change. Original project material is credited to Micro:bit Educational Foundation (CC BY-SA 4.0 where specified).
+- [MakeCode Activity: Scorekeeper](https://makecode.microbit.org/courses/csintro/variables/activity): inspiration for independent player totals; this adaptation uses two variables, labels and tabletop targets rather than the original three-variable game.
+- [Seeed Studio Grove Inventor Kit](https://wiki.seeedstudio.com/Grove_Inventor_Kit_for_microbit/): kit/module reference. P2 red LED and P0 rotary instructions follow the kit examples. Kit photograph: https://files.seeedstudio.com/wiki/Grove_kit_for_microbit/img/first_im.jpg — Seeed Studio; retain attribution and manufacturer rights.
+- [MakeCode analog read](https://makecode.microbit.org/reference/pins/analog-read-pin) and [MicroPython pins](https://microbit-micropython.readthedocs.io/en/v2-docs/pin.html): distinct pin APIs and raw range 0–1023.
+- Five new PNGs named core/steps/teams/signal/dial-blocks.png are actual MakeCode editor screenshots captured from purpose-built sample programs. Microsoft MakeCode/micro:bit branding belongs to its owners. They are not AI-generated block approximations.
+- signal-wiring.svg and dial-wiring.svg are original simplified connection schematics, explicitly not literal socket-position layouts. The kit photo, keyed-plug guide and Pins toolbox capture were reused from the revised Week 5 lesson.
+- No YouTube player is required for these challenges. All essential visual instructions are local, so no embedded-player error 153 dependency is introduced.
+
+The four extension programs are separate saved projects; they do not replace the core Smart Badge learning intention. Sources below describe the original release and are retained for provenance.
+
 ## User-provided references
 
 - `year8week2project.zip`: one-card-at-a-time Smart Badge project, sidebar and WAGBA/KSU, device-specific editor routes, six matched before/after reflection statements, local evidence/backup/report workflow, optional extension placement, no-lockout progression. Reviewed the root README, design review and lesson/view/reflection/controller/styles source.
