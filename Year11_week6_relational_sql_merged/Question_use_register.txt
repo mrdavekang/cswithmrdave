@@ -1,0 +1,15 @@
+QUESTION-USE REGISTER — THIS LESSON
+OxfordAQA International GCSE Computer Science 9210/2
+
+Extension A — databases and SQL (10 marks)
+November 2024: Q05.3 and Q05.4 (3 marks; Figure 2 context)
+June 2024: Q08.1 and Q08.3 (4 marks; Figure 9 context)
+November 2023: Q06.1 and Q06.4 (3 marks; Figure 4 context)
+
+Extension B — mixed retrieval (10 marks)
+June 2025: Q01.1, Q01.2, Q01.3 (5 marks)
+November 2024: Q01.4, Q01.5, Q01.6 (4 marks)
+June 2025: Q08.1 (1 mark)
+
+For future extraction practice, treat these question parts as already used.
+The context figures are not separately assessed.
