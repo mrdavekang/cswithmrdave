@@ -1,4 +1,4 @@
-# Verification — 22 September 2026
+# Verification — 27 September 2026
 
 ## Passed
 
@@ -39,6 +39,8 @@ On one school laptop and one iPad: start a named session, run a two-prompt progr
 
 - `node tests/content.test.cjs`: existing 48-card content, navigation and backup checks.
 - `node tests/classroom.test.cjs`: anonymous bridge contains no identity, pending teacher movement waits for landing entry, End clears pending movement, exact-card movement, locked navigation, unlock, and name-based preview cannot claim teacher role.
-- Development SQL fixture: 88 RPC checks passed against steps 6–13, including idempotent Year 8 upgrade, all 48 card IDs, unknown card rejection, anonymous/other-teacher denial, and isolation from Year 9.
-- Browser preview: landing name/class preserved, plain URL exposes Teacher sign-in, student entry and Continue work, teacher form appears.
-- Live Year 8 Start/Presence/Lock/Bring/Unlock/End must be checked after running step 13 and signing into the teacher preview. These have not yet been verified against the live Year 8 session.
+- `node tests/lesson-clock.test.cjs`: continuous 1:00–2:00 schedule, valid lesson destinations, WAGBA guidance, 11 cue stages and four corner positions.
+- `node tests/latest-features.test.cjs`: three fact slides, local response evidence, PDF inclusion, Year 8 live-code validation, highlighted line, anonymous Presence and the fixed green dock.
+- Development SQL fixture: 15 latest-feature checks passed, including repeat migration, fact destinations, live-demo ownership, allowed-program and size checks, presentation modes, return, end and legacy compatibility.
+- JavaScript syntax checks passed for the lesson, classroom controller, fact slides, live demonstration and clock.
+- Live Supabase acceptance remains required after running step 22: use one teacher and one student browser to check device count, all four presentation modes, automatic following, return to own work, all three fact slides, code broadcast and End classroom.

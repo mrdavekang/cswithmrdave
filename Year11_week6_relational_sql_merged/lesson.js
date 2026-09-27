@@ -1,22 +1,22 @@
-const LESSON_PAGES=[
+window.LESSON_PAGES=[
   ['Prepare','6 min',pagePrepare],['Do now','5 min',pageStarter],['Types of learning','3 min',pageTypes],
   ['Main task 1','14 min',pageRelations],['Read: SQL changes','7 min',pageSqlRead],['Main task 2','16 min',pageSql],
   ['Learning pit stop','3 min',pagePit],['Plenary','4 min',pagePlenary],['Extension A','After lesson / early finish',pageExtensionA],
   ['Mark & improve','After Extension A',pageMark],['Extension B','After marking',pageExtensionB],['Submit','2 min',pageSubmit]
 ];
-const BASE_DB={
+window.BASE_DB={
   Student:[{StudentID:'S014',Name:'Aisha Karim',Email:'aisha@school.edu'},{StudentID:'S027',Name:'Daniel Lim',Email:'daniel@school.edu'}],
   Book:[{BookID:'B031',Title:'Python Basics'},{BookID:'B044',Title:'Network Essentials'}],
   Loan:[{LoanID:'L101',StudentID:'S014',BookID:'B031',LoanDate:'2026-10-12',Returned:'FALSE'},{LoanID:'L102',StudentID:'S014',BookID:'B044',LoanDate:'2026-10-14',Returned:'FALSE'},{LoanID:'L103',StudentID:'S027',BookID:'B031',LoanDate:'2026-10-15',Returned:'TRUE'}]
 };
-const DB_KEYS={Student:{pk:'StudentID'},Book:{pk:'BookID'},Loan:{pk:'LoanID',fk:['StudentID','BookID']}};
-const SQL_TASKS=[
+window.DB_KEYS={Student:{pk:'StudentID'},Book:{pk:'BookID'},Loan:{pk:'LoanID',fk:['StudentID','BookID']}};
+window.SQL_TASKS=[
  {id:'sql1',label:'A · Add a student',prompt:'Mina Rahman joins the library. Her StudentID is S039 and her email is mina@school.edu. Write one INSERT INTO statement that adds her complete record to Student. Then preview it and explain which row should be added.',expected:'Student'},
  {id:'sql2',label:'B · Correct one email address',prompt:'Aisha Karim has changed her email to aisha.new@school.edu. Write one UPDATE statement that changes only her Student record. Use StudentID, not her name, to identify the row.',expected:'Student'},
  {id:'sql3',label:'C · Record a return',prompt:'Loan L102 has been returned. Write one UPDATE statement that changes its Returned value to TRUE without changing the other loans.',expected:'Loan'},
  {id:'sql4',label:'D · Remove one loan record',prompt:'Loan L103 was entered by mistake and should be removed. Write one DELETE FROM statement that removes only that Loan record. Explain why the Student and Book records must remain.',expected:'Loan'}
 ];
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+window.esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function field(key,label,rows=3,hint=''){return `<label for="${key}">${label}</label>${rows===1?`<input id="${key}" data-key="${key}" value="${esc(appState.answers[key]||'')}" placeholder="${esc(hint)}">`:`<textarea id="${key}" data-key="${key}" rows="${rows}" placeholder="${esc(hint)}">${esc(appState.answers[key]||'')}</textarea>`}`}
 function head(n,title,tag){return `<span class="badge">${n} · ${tag}</span><h1>${title}</h1>`}
 function makeTables(db=BASE_DB,marks={}){return `<div class="tables">${Object.entries(db).map(([table,rows])=>`<div class="table-wrap"><table><caption>${table}</caption><thead><tr>${Object.keys(BASE_DB[table][0]).map(k=>`<th>${DB_KEYS[table].pk===k?`<span class="key">${k}</span>`:DB_KEYS[table].fk?.includes(k)?`<span class="fk">${k}</span>`:k}</th>`).join('')}</tr></thead><tbody>${rows.map((row,i)=>`<tr class="${marks[table]?.[i]||''}">${Object.keys(BASE_DB[table][0]).map(k=>`<td>${esc(row[k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`).join('')}</div><p class="small"><span class="key">Underlined</span> = primary key · <span class="fk">Dotted underline</span> = foreign key. StudentID in Loan links to Student; BookID in Loan links to Book.</p>`}

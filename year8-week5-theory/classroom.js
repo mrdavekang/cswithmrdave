@@ -19,10 +19,12 @@
   let current = null, deadline = Infinity, lastBring = -1, allowed = false;
   let open = info().teacher, busy = false, checking = false;
   let controlReady = false, presenceReady = false, count = null, message = '', bad = false;
-  let refreshing = false, authSubscription;
+  let refreshing = false, authSubscription, desired=null, followTimer, lastReturn=0, updated=0;
+  let demoOpen=false,demoSequence=0,demoSendTimer=null,demoSaveTimer=null,demoSaving=false,pendingDemo=null;
+  const mode=()=>current?.mode||(current?.locked?'answer':'self');
   const locked = () => !info().teacher && Boolean(current?.locked);
   // This guard is for classroom pacing; the Supabase rules enforce privileges.
-  window.ClassroomMode = Object.freeze({locked});
+  window.ClassroomMode = Object.freeze({locked,mode,approved:()=>allowed,demoActive:()=>demoOpen});
   function say(en, ms, zh, error = false) {message = words(en, ms, zh); bad = error; render();}
   function button(cmd, label, disabled = false, primary = false) {
     return `<button type="button" data-cm="${cmd}" ${disabled?'disabled':''} class="${primary?'primary':''}">${label}</button>`;
@@ -34,36 +36,85 @@
   }
   function teacherLink() {const url=new URL(sessionLink());url.searchParams.set('teacher','1');return url.href;}
   function linkField() {return `<label>${pick('Permanent student link','Pautan murid kekal','固定学生链接')}<input class="cm-link" readonly value="${escape(sessionLink())}" aria-label="${pick('Student classroom link','Pautan kelas murid','学生课堂链接')}"></label>`;}
+  const navSelector='[data-stage],[data-review],#cardJump,#back,#next,#morePractice,#menuEntry,#menuReset,#menuRestore,#restore';
   function guardNavigation() {
-    document.querySelectorAll('[data-stage],[data-review],#cardJump,#back,#next,#morePractice,#menuEntry,#menuReset,#menuRestore,#restore').forEach(el => {
-      el.classList.toggle('cm-nav-locked', locked());
-      if (locked()) {
-        if (!el.hasAttribute('data-cm-disabled')) el.dataset.cmDisabled = String(Boolean(el.disabled));
-        if ('disabled' in el) el.disabled = true;
-        el.setAttribute('aria-disabled','true');
-      } else if (el.hasAttribute('data-cm-disabled')) {
-        if ('disabled' in el) el.disabled = el.dataset.cmDisabled === 'true';
-        delete el.dataset.cmDisabled; el.removeAttribute('aria-disabled');
-      }
+    const readonly=!info().teacher&&current&&['view','attention'].includes(mode())&&!info().entry;
+    document.querySelectorAll('#app button,#app input,#app textarea,#app select,#fact-overlay button,#fact-overlay input,#fact-overlay textarea,#fact-overlay select').forEach(el=>{
+      const stop=readonly||(locked()&&el.matches(navSelector));
+      if(stop){if(!el.hasAttribute('data-cm-disabled'))el.dataset.cmDisabled=String(el.disabled);el.disabled=true;}
+      else if(el.hasAttribute('data-cm-disabled')){el.disabled=el.dataset.cmDisabled==='true';delete el.dataset.cmDisabled;}
     });
+    let cover=document.getElementById('classroom-attention');
+    if(!cover){cover=document.createElement('dialog');cover.id='classroom-attention';cover.innerHTML='<div><span>PAUSE</span><h1>Screens down</h1><p>Hands away from your device.<br>Look at your teacher and listen.</p><p lang="ms">Jauhkan tangan daripada peranti. Lihat dan dengar guru.</p><p lang="zh">双手离开设备，看老师，认真听。</p></div>';cover.addEventListener('cancel',e=>e.preventDefault());document.body.append(cover);}
+    const attention=!info().teacher&&current&&mode()==='attention';
+    if(attention&&!cover.open)cover.showModal();else if(!attention&&cover.open)cover.close();
   }
-  function render(force = false) {
+  const labels={attention:'Screens down',view:'Show only',answer:'Let students answer',self:'Self-paced'};
+  function render(force=false){
     guardNavigation();
-    // Presence changes must never erase a password or join link being typed.
-    if (!force && root.contains(document.activeElement) && document.activeElement.matches('input')) return;
-    const connected = controlReady && presenceReady;
-    const status = current ? (connected ? (locked() || current.locked ? words('Navigation locked','Navigasi dikunci','页面切换已锁定') : words('Self-paced','Ikut kadar sendiri','自主学习')) : words('Reconnecting…','Menyambung semula…','正在重新连接…')) : words('Self-paced · waiting for teacher','Ikut kadar sendiri · menunggu guru','自主学习 · 等待老师');
-    let body = '';
-    if (open && info().teacher) {
-      if (!allowed) body = `<form id="cm-login"><h2>${pick('Teacher sign-in','Log masuk guru','教师登录')}</h2><p>${pick('Use the teacher login you created in Supabase.','Gunakan log masuk guru yang dibuat dalam Supabase.','使用你在 Supabase 创建的教师账户。')}</p><label>${pick('Email','E-mel','电子邮箱')}<input type="email" name="email" autocomplete="username" required></label><label>${pick('Password','Kata laluan','密码')}<input type="password" name="password" autocomplete="current-password" required></label><button class="primary" ${busy?'disabled':''}>${pick('Sign in','Log masuk','登录')}</button></form>`;
-      else if (!current) body = `<h2>${pick('Your classroom','Bilik darjah anda','你的课堂')}</h2><p>${pick('Share this permanent link before the lesson. Start classroom connects open student pages automatically, usually within 10 seconds. End classroom restores self-paced study. Sessions last up to two hours.','Kongsi pautan kekal ini sebelum pelajaran. Mulakan kelas menyambung halaman murid secara automatik, biasanya dalam 10 saat. Tamatkan kelas memulihkan pembelajaran kendiri. Sesi sehingga dua jam.','课前即可分享此固定链接。开始课堂后，已打开的学生页面通常在 10 秒内自动连接。结束课堂后恢复自主学习。每次课堂最长两小时。')}</p>${linkField()}<div class="cm-actions">${button('copy',pick('Copy link','Salin pautan','复制链接'))}${button('start',pick('Start classroom','Mulakan kelas','开始课堂'),busy,true)}${button('signout',pick('Sign out','Log keluar','退出登录'),busy)}</div>`;
-      else body = `<h2>${pick('Live classroom','Kelas langsung','实时课堂')}</h2><p><strong class="cm-count">${presenceReady && count !== null ? count : '—'}</strong> ${pick('anonymous browsers connected','pelayar tanpa nama tersambung','个匿名浏览器已连接')}<span class="cm-small">${pick('A device estimate; multiple tabs in the same browser count once. You are excluded.','Anggaran peranti; beberapa tab pelayar sama dikira sekali. Guru tidak dikira.','同一浏览器的多个标签页计为一个，不包含教师。此数值是设备数量的估计。')}</span></p>${linkField()}<div class="cm-actions">${button('copy',pick('Copy link','Salin pautan','复制链接'))}${button('lock',pick('Lock navigation','Kunci navigasi','锁定页面切换'),busy||current.locked)}${button('bring',pick('Bring Everyone Here','Bawa Semua ke Sini','带所有人到此页'),busy,true)}${button('unlock',pick('Unlock / Self-Paced','Buka / Ikut kadar sendiri','解锁／自主学习'),busy||!current.locked)}${button('end',pick('End classroom','Tamatkan kelas','结束课堂'),busy)}</div><p class="cm-small">${pick('Bring Everyone Here moves students to:','Bawa Semua ke Sini mengalih murid ke:','“带所有人到此页”将移动到：')} <b>${escape(lesson.label())}</b></p><p class="cm-small">${pick('Lock pauses page changes. Students can still answer questions and run Python. Bring moves them once; Unlock restores navigation.','Kunci menghentikan pertukaran halaman. Murid masih boleh menjawab dan menjalankan Python. Bawa memindahkan sekali; Buka memulihkan navigasi.','锁定后仍可答题和运行 Python。“带到此页”只移动一次，“解锁”恢复自主切换。')}</p>`;
-    } else if (open && current) {
-      body = `<p>${locked()?pick('Your teacher has paused page navigation. Keep working here; you can still answer and run Python.','Guru mengunci navigasi. Teruskan menjawab dan menjalankan Python di sini.','老师已暂停页面切换。你仍可在本页答题和运行 Python。'):pick('Choose lesson pages yourself. Your teacher can bring everyone to a shared page.','Pilih halaman sendiri. Guru boleh membawa semua ke halaman yang sama.','可以自主选择课程页面。老师也可以带大家到同一页。')}</p><p class="cm-small">${pick('Only a temporary random connection ID is shared. Your name, answers and code are not sent to Supabase.','Hanya ID rawak sementara dikongsi. Nama, jawapan dan kod tidak dihantar ke Supabase.','仅分享临时随机连接编号，不向 Supabase 发送姓名、答案或代码。')}</p>`;
-    } else if (open && !info().teacher) {
-      body = `<p>${pick('Study at your own pace. This page will connect automatically when your teacher starts the classroom. Keep using the same link.','Belajar mengikut kadar sendiri. Halaman ini akan bersambung secara automatik apabila guru memulakan kelas. Gunakan pautan yang sama.','现在可以自主学习。老师开始课堂时，此页面会自动连接。继续使用同一个链接。')}</p><p class="cm-small">${pick('Your name and class stay in this browser for your PDF. They are not sent to Supabase.','Nama dan kelas disimpan dalam pelayar untuk PDF, bukan dihantar ke Supabase.','姓名和班级仅保存在此浏览器，用于 PDF，不发送到 Supabase。')}</p><a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`;
+    if(!force&&root.contains(document.activeElement)&&document.activeElement.matches('input,select'))return;
+    root.classList.toggle('cm-teacher',info().teacher);
+    document.body.classList.toggle('cm-has-dock',info().teacher);
+    if(!info().teacher){
+      const landing=info().entry;
+      root.hidden=!landing;
+      root.classList.toggle('cm-entry-link',landing);
+      root.innerHTML=landing?`<a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`:'';
+      return;
     }
-    root.innerHTML = `<div class="cm-bar"><div><strong>${pick('Classroom','Bilik darjah','课堂')}</strong> <span class="cm-status ${current&&!connected?'pending':''}">${escape(status)}</span></div><div class="cm-actions">${!info().teacher?`<a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`:''}${button('toggle',open?pick('Hide panel','Sembunyikan panel','收起面板'):pick('Open panel','Buka panel','打开面板'))}</div></div>${open?`<section class="cm-panel" aria-label="${pick('Classroom controls','Kawalan kelas','课堂控制')}">${body}</section>`:''}<p class="cm-message ${bad?'cm-error':''}" role="status" aria-live="polite">${escape(message)}</p>`;
+    root.hidden=false;
+    root.classList.remove('cm-entry-link');
+    const status=current?`LIVE · ${labels[mode()]}${controlReady&&presenceReady?'':' · connecting…'}`:'Classroom not started · self-paced';
+    let body='';
+    if(!allowed)body= open?`<form id="cm-login"><label>Teacher email<input type="email" name="email" autocomplete="username" required></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><button ${busy?'disabled':''}>Sign in</button></form>`:'';
+    else {
+        const facts=lesson.teacherPages?.()||[],programs=lesson.demoPrograms?.()||[],activeProgram=lesson.demoState?.().program;
+        body=`<div class="cm-actions cm-modes">${current?['attention','view','answer','self'].map(c=>button(c,labels[c],busy,mode()===c)).join('')+button('return','Return to own work',busy):button('start','Start classroom',busy,true)}${current?button('bring','Bring here once',busy)+button('end','End classroom',busy):button('signout','Sign out',busy)}</div><div class="cm-actions cm-navigation"><label>Lesson page<select id="cm-page"><option value="">Choose a lesson page…</option>${lesson.destinations().map(d=>`<option value="${escape(d.id)}">${escape(d.group+' · '+d.title)}</option>`).join('')}</select></label><label>Fact slide<select id="cm-fact"><option value="">Choose a fact slide…</option>${facts.map(d=>`<option value="${escape(d.id)}">${escape(d.title)}</option>`).join('')}</select></label></div><div class="cm-demo-controls"><strong>Live Python demonstration</strong><label>Program<select id="cm-demo-program">${programs.map(d=>`<option value="${escape(d.id)}" ${d.id===activeProgram?'selected':''}>${escape(d.title)}</option>`).join('')}</select></label>${button('demo-start',demoOpen?'Send latest code':'Start live code',busy||!current,true)}${button('demo-stop','Stop demonstration',busy||!demoOpen)}<small>Students see a read-only mirror of your code, highlighted line and output. Never type passwords, API keys or personal data in a live demonstration.</small></div><small>${current?.locked?'Following automatically: '+escape(lesson.label()):'Self-paced: students choose their own page. Bring here once shares your current page.'}</small>`;
+    }
+    root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${info().teacher&&current?`<span>${count??'—'} devices connected · ${updated} received this update</span>`:''}${info().teacher&&!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}</div>${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p>`;
+  }
+  function acknowledge(){if(!info().teacher&&presenceReady&&roster&&current)roster.track({v:2,revision:current.revision,mode:mode()}).catch(()=>{});}
+  function queueFollow(){
+    if(!allowed||!current?.locked)return;
+    desired=info().page;clearTimeout(followTimer);followTimer=setTimeout(flushFollow,120);
+  }
+  async function flushFollow(){if(busy)return;if(!desired||!current?.locked)return;const target=desired;desired=null;if(target!==current.stage&&lesson.pages().includes(target))await action('bring',target);}
+  function cleanDemo(value){
+    if(!value||typeof value!=='object'||typeof value.open!=='boolean')return null;
+    if(!value.open)return {open:false,seq:Number(value.seq)||0,demo_revision:Number(value.demo_revision)||0};
+    if(!['debug1','debug2','code1','code2','code3','ext1','ext2','ext3'].includes(value.program)||typeof value.code!=='string'||value.code.length>20000||typeof value.output!=='string'||value.output.length>24000)return null;
+    return {open:true,program:value.program,title:String(value.title||'Python demonstration').slice(0,200),code:value.code,output:value.output,line:Math.max(1,Math.min(2000,Number(value.line)||1)),selectionStart:Math.max(0,Number(value.selectionStart)||0),selectionEnd:Math.max(0,Number(value.selectionEnd)||0),running:value.running===true,seq:Number(value.seq)||0,demo_revision:Number(value.demo_revision)||0};
+  }
+  function receiveDemo(value){
+    const demo=cleanDemo(value);if(!demo)return;
+    demoOpen=demo.open;
+    if(!info().teacher){if(demo.open)window.LiveClassDemo?.apply(demo);else window.LiveClassDemo?.close();}
+    render();
+  }
+  async function saveDemo(){
+    if(!allowed||!current||demoSaving||!pendingDemo)return;
+    const value=pendingDemo;pendingDemo=null;demoSaving=true;
+    try{const saved=await rpc('classroom_demo_save',{p_session_id:room,p_demo:value});if(saved)demoOpen=Boolean(saved.open);}
+    catch{say('The live demonstration could not be saved for reconnecting devices. Live viewers may still see the broadcast.','Demonstrasi langsung tidak dapat disimpan untuk peranti yang menyambung semula.','实时演示无法保存供重新连接的设备恢复。',true);}
+    finally{demoSaving=false;if(pendingDemo){clearTimeout(demoSaveTimer);demoSaveTimer=setTimeout(saveDemo,350);}render(true);}
+  }
+  function publishDemo(immediate=false){
+    if(!allowed||!current||!channel)return;
+    const source=cleanDemo(lesson.demoState?.()||{open:false});if(!source)return;
+    const payload={...source,seq:++demoSequence};demoOpen=payload.open;pendingDemo=payload;
+    clearTimeout(demoSendTimer);const send=()=>channel?.send({type:'broadcast',event:'demo',payload}).catch(()=>{});if(immediate)send();else demoSendTimer=setTimeout(send,180);
+    clearTimeout(demoSaveTimer);demoSaveTimer=setTimeout(saveDemo,1200);
+  }
+  async function startDemo(program){
+    if(!allowed||!current||!lesson.startDemo?.(program))return;
+    if(!current.locked||mode()!=='view')await action('view',info().page);
+    publishDemo(true);render(true);
+  }
+  async function stopDemo(persist=true){
+    if(!demoOpen&&!lesson.demoState?.().open)return;
+    lesson.stopDemo?.();const payload={open:false,seq:++demoSequence};demoOpen=false;pendingDemo=payload;
+    try{await channel?.send({type:'broadcast',event:'demo',payload});}catch{}
+    if(persist)await saveDemo();window.LiveClassDemo?.close();render(true);
   }
   async function loadSDK() {
     if (window.supabase?.createClient) return;
@@ -107,25 +158,29 @@
       clearTimeout(expiryTimer);expiryTimer=setTimeout(endLocally,Math.max(0,deadline-performance.now()));
       if(remaining<=0){endLocally();return;}
     }
+    if(current?.revision!==snapshot.revision)updated=0;
     current=snapshot;
+    if(snapshot.demo){demoSequence=Math.max(demoSequence,Number(snapshot.demo.seq)||0);receiveDemo(snapshot.demo);}
     if(!info().teacher){
+      if((snapshot.return_revision||0)>lastReturn){lastReturn=snapshot.return_revision;lesson.returnOwn();lastBring=snapshot.bring_revision;rememberBring();render();acknowledge();return;}
+      if(snapshot.locked)lesson.captureOwn();
       if(snapshot.bring_revision>lastBring && snapshot.bring_revision>0) lesson.move(snapshot.stage);
       else if(snapshot.locked && info().entry) lesson.move(snapshot.stage);
       lastBring=Math.max(lastBring,snapshot.bring_revision);rememberBring();
     }
-    render();
+    render();acknowledge();
   }
-  function clearTimers(){clearInterval(poll);clearTimeout(expiryTimer);poll=null;expiryTimer=null;}
+  function clearTimers(){clearInterval(poll);clearTimeout(expiryTimer);clearTimeout(followTimer);clearTimeout(demoSendTimer);clearTimeout(demoSaveTimer);poll=null;expiryTimer=null;}
   function disconnect() {
     generation++;clearTimers();
     const old=[channel,roster].filter(Boolean);channel=null;roster=null;
     if(client) for(const ch of old) client.removeChannel(ch).catch(()=>{});
-    current=null;controlReady=false;presenceReady=false;count=null;deadline=Infinity;
+    current=null;controlReady=false;presenceReady=false;count=null;deadline=Infinity;demoOpen=false;window.LiveClassDemo?.close();
     guardNavigation();
   }
   function endLocally() {
     const oldRoom=room;
-    disconnect();room=null;lastBring=-1;lesson.clearTarget();
+    lesson.stopDemo?.();disconnect();room=null;lastBring=-1;lesson.clearTarget();
     try{sessionStorage.removeItem('cm-bring:'+oldRoom);localStorage.removeItem('cm-device:'+oldRoom);}catch{}
     // Keep the permanent URL and local notebook. Discovery remains active.
     say('Classroom ended. Continue at your own pace using this same link. Your name and work are still here.','Kelas tamat. Teruskan mengikut kadar sendiri dengan pautan sama. Nama dan kerja anda masih di sini.','课堂已结束，继续用此链接自主学习。你的姓名和作品仍保留在这里。');
@@ -172,9 +227,9 @@
   async function attach(snapshot) {
     const previousRoom=room;room=snapshot?.session_id;
     if(!valid(snapshot)){room=previousRoom;throw Error('Invalid session');}
-    disconnect();room=snapshot.session_id;
+    disconnect();room=snapshot.session_id;lesson.setSession(room);
     const run=generation;
-    lastBring=-1;
+    lastBring=-1;lastReturn=snapshot.return_revision||0;
     if(!info().teacher)try{const previous=sessionStorage.getItem('cm-bring:'+room);if(previous!==null&&/^\d+$/.test(previous))lastBring=Number(previous);}catch{}
     accept(snapshot,true);
     if(!current)return;
@@ -182,6 +237,7 @@
     if(run!==generation)return;
     channel=api.channel(`classroom:${room}:control`,{config:{private:true,broadcast:{ack:true}}});
     channel.on('broadcast',{event:'state'},({payload})=>{if(run===generation)accept(payload);});
+    channel.on('broadcast',{event:'demo'},({payload})=>{if(run===generation)receiveDemo(payload);});
     channel.subscribe(status=>{
       if(run!==generation)return;
       controlReady=status==='SUBSCRIBED';
@@ -194,14 +250,14 @@
     const thisRoster=roster;
     if(info().teacher)roster.on('presence',{event:'sync'},()=>{
       if(run!==generation)return;
-      count=Object.entries(thisRoster.presenceState()).filter(([key,items])=>uuid.test(key)&&Array.isArray(items)&&items.length>0).length;
+      const devices=Object.entries(thisRoster.presenceState()).filter(([key,items])=>uuid.test(key)&&Array.isArray(items)&&items.length>0);count=devices.length;updated=devices.filter(([,items])=>items.some(i=>i.revision>=current?.revision&&i.mode===mode())).length;
       render();
     });
     roster.subscribe(async status=>{
       if(run!==generation)return;
       presenceReady=status==='SUBSCRIBED';
       if(presenceReady&&!info().teacher){
-        let result;try{result=await thisRoster.track({v:1});}catch{result='error';}
+        let result;try{result=await thisRoster.track({v:2,revision:current?.revision,mode:mode()});}catch{result='error';}
         if(run!==generation)return;
         presenceReady=result==='ok';
       }
@@ -223,19 +279,20 @@
       if(saved){room=saved.session_id;if(!valid(saved))throw Error('Invalid session');await attach(saved);}
     } finally {checking=false;render(true);}
   }
-  async function action(cmd) {
-    if(busy||!allowed)return;
-    busy=true;render();
+  async function action(cmd,stage=null) {
+    if(busy||!allowed)return false;
+    busy=true;if(['self','return','end'].includes(cmd))desired=null;render();
     try {
+      if(['self','return','end'].includes(cmd)&&demoOpen)await stopDemo(true);
       if(cmd==='start'){
-        const snapshot=await rpc('classroom_class_start',{...classArgs(),p_stage:info().page});
+        const snapshot=await rpc('classroom_class_start',{...classArgs(),p_stage:lesson.pages().includes(info().page)?info().page:'read'});
         room=snapshot.session_id;if(!valid(snapshot))throw Error('Invalid session');
         await attach(snapshot);message='';
       } else if(cmd==='signout'){
         if(current)return;
         await client.auth.signOut({scope:'local'});allowed=false;disconnect();
-      } else if(current && ['lock','bring','unlock','end'].includes(cmd)){
-        const snapshot=await rpc('classroom_control',{p_session_id:room,p_action:cmd,p_expected_revision:current.revision,p_stage:cmd==='bring'?info().page:null});
+      } else if(current && ['attention','view','answer','self','return','bring','end'].includes(cmd)){
+        const snapshot=await rpc('classroom_teach_control',{p_session_id:room,p_action:cmd,p_expected_revision:current.revision,p_stage:['bring','attention','view','answer'].includes(cmd)?(stage||(lesson.pages().includes(info().page)?info().page:current.stage)):null});
         const outgoing=channel;
         // The RPC result is authoritative; a failed broadcast is recovered by polling.
         let sent=false;
@@ -244,10 +301,12 @@
         if(!sent&&cmd!=='end')say('Saved. Some browsers may take up to 10 seconds to catch up.','Disimpan. Sesetengah pelayar mungkin mengambil sehingga 10 saat.','已保存。部分浏览器可能需要最多 10 秒同步。');
         else if(cmd!=='end'){message='';bad=false;}
       }
+      return true;
     } catch(error) {
       await refresh();
       say(error.code==='40001'?'Another command arrived first. Check the current state, then try again.':'Could not complete the action. Check your connection and teacher sign-in.','Tindakan tidak selesai. Semak sambungan dan log masuk guru.','操作未完成。请检查网络及教师登录状态。',true);
-    } finally {busy=false;render(true);}
+      return false;
+    } finally {busy=false;render(true);void flushFollow();}
   }
   function signInFailure(error, phase) {
     const code=String(error?.code||'');
@@ -286,15 +345,24 @@
       try{await navigator.clipboard.writeText(sessionLink());say('Link copied. Share it with this class.','Pautan disalin. Kongsi dengan kelas ini.','链接已复制，请分享给本班学生。');}
       catch{root.querySelector('.cm-link')?.select();say('Select and copy the classroom link above.','Pilih dan salin pautan di atas.','请选择并复制上方链接。');}
     }
+    else if(cmd==='demo-start')await startDemo(root.querySelector('#cm-demo-program')?.value||'code1');
+    else if(cmd==='demo-stop')await stopDemo(true);
+    else if(cmd==='end'){if(confirm('End this classroom and restore self-paced work?'))await action(cmd);}
     else await action(cmd);
   });
   document.addEventListener('click',event=>{
-    if(locked()&&event.target.closest('[data-page],[data-action="home"],[data-home],[data-action="legacy"]')){event.preventDefault();event.stopImmediatePropagation();}
+    if(locked()&&event.target.closest(navSelector)){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('change',event=>{
     if(locked()&&event.target.matches('[data-restore]')){event.preventDefault();event.stopImmediatePropagation();event.target.value='';say('Load a backup after your teacher unlocks navigation.','Muatkan sandaran selepas guru membuka navigasi.','请等老师解锁后再导入备份。');}
   },true);
-  window.addEventListener('lesson:render',()=>render());
+  root.addEventListener('change',e=>{if(!allowed)return;if(e.target.id==='cm-page'&&e.target.value)lesson.navigate(e.target.value);if(e.target.id==='cm-fact'&&e.target.value)lesson.openTeacherPage?.(e.target.value);});
+  for(const type of ['click','beforeinput','input','change','keydown','paste','drop','submit'])document.addEventListener(type,e=>{
+    if(info().teacher||!current||info().entry||!['view','attention'].includes(mode()))return;
+    if(e.target.closest('#app,#fact-overlay')&&!(type==='keydown'&&['ArrowDown','ArrowUp','PageDown','PageUp','Home','End','Tab'].includes(e.key))){e.preventDefault();e.stopImmediatePropagation();}
+  },true);
+  window.addEventListener('lesson:render',()=>{render();queueFollow();});
+  window.addEventListener('lesson:demo-change',()=>{if(demoOpen)publishDemo(false);});
   window.addEventListener('online',()=>{void refresh();void discover();});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){void refresh();void discover();}});
   window.addEventListener('pagehide',()=>{clearInterval(discovery);disconnect();});

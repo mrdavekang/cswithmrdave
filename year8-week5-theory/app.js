@@ -4,15 +4,41 @@ const L=window.LESSON,$=s=>document.querySelector(s),esc=s=>String(s??'').replac
 const clone=o=>JSON.parse(JSON.stringify(o)),time=()=>new Date().toISOString();
 const qs=new URLSearchParams(location.search);let teacher=qs.get('teacher')==='1',key='',state=null,busy=false,saveTimer=null,saveFailed=false,runToken=0;
 const classroomTeacher=qs.get('teacher')==='1';
-let classroomTarget=null;
-const classroomLocked=()=>!classroomTeacher&&!!window.ClassroomMode?.locked();
+let classroomTarget=null,classroomSession='waiting',classroomPlace=null,activeClassroomDemo=null;
+const classroomLocked=()=>!classroomTeacher&&(typeof window.ClassroomMode?.locked==='function'?window.ClassroomMode.locked():!!window.ClassroomMode?.locked);
 const classroomChanged=()=>window.dispatchEvent(new Event('lesson:render'));
+const classroomDemoChanged=()=>window.dispatchEvent(new Event('lesson:demo-change'));
+const demoIds=new Set(['debug1','debug2','code1','code2','code3','ext1','ext2','ext3']);
+function classroomPlaceKey(){return `cm-own:${classroomSession}:${key||keyFor(classroomTeacher)}`;}
+function captureClassroomPlace(){
+ if(!state||classroomPlace)return;
+ try{classroomPlace=JSON.parse(sessionStorage.getItem(classroomPlaceKey())||'null');}catch{}
+ if(!classroomPlace){classroomPlace={page:state.current,scroll:$('.main-area')?.scrollTop||0};try{sessionStorage.setItem(classroomPlaceKey(),JSON.stringify(classroomPlace));}catch{}}
+}
+function returnClassroomPlace(){
+ if(!state)return;
+ if(!classroomPlace)try{classroomPlace=JSON.parse(sessionStorage.getItem(classroomPlaceKey())||'null');}catch{}
+ const place=classroomPlace;classroomPlace=null;try{sessionStorage.removeItem(classroomPlaceKey());}catch{}
+ if(place&&L.cards.some(c=>c.id===place.page)){go(place.page,true);requestAnimationFrame(()=>{const main=$('.main-area');if(main)main.scrollTop=place.scroll||0;});}
+}
+function classroomDemoState(){
+ if(!activeClassroomDemo||!state)return {open:false};const card=L.cards.find(c=>c.id===activeClassroomDemo&&c.type==='ide');if(!card)return {open:false};
+ const record=state.records[card.id],editor=state.current===card.id?$('#codeEditor'):null,code=String(editor?.value??record?.values?.code??card.starter??'').slice(0,20000),cursor=Math.max(0,Math.min(code.length,editor?.selectionStart||0));
+ const last=(record?.runs||[]).filter(run=>run.kind==='run').at(-1),output=String(last?.transcript||last?.error||'').slice(0,24000);
+ return {open:true,program:card.id,title:card.title,code,output,line:code.slice(0,cursor).split('\n').length,selectionStart:cursor,selectionEnd:Math.max(cursor,Math.min(code.length,editor?.selectionEnd||cursor)),running:Boolean(busy&&state.current===card.id)};
+}
 window.LessonClassroom=Object.freeze({
  info:()=>({teacher:classroomTeacher,lang:state?.student.lang||'en',page:state?.current||L.cards[0].id,entry:!state}),
  pages:()=>L.cards.map(c=>c.id),
+ destinations:()=>L.cards.map(c=>({id:c.id,title:c.title,group:L.stages.find(s=>s[0]===c.stage)?.[1]||c.stage})),
  label:()=>L.cards.find(c=>c.id===(state?.current||L.cards[0].id))?.title||L.title,
- move:id=>{if(classroomTeacher||!L.cards.some(c=>c.id===id))return;classroomTarget=id;if(state){$('#dialog').close();go(id,true);}},
- clearTarget:()=>{classroomTarget=null;}
+ navigate:id=>go(id),
+ move:id=>{if(classroomTeacher||!L.cards.some(c=>c.id===id))return;classroomTarget=id;if(state){captureClassroomPlace();$('#dialog').close();go(id,true);}},
+ captureOwn:captureClassroomPlace,returnOwn:returnClassroomPlace,setSession:id=>{if(classroomSession!==id){classroomSession=id||'waiting';classroomPlace=null;}},
+ clearTarget:()=>{classroomTarget=null;},
+ demoPrograms:()=>L.cards.filter(c=>c.type==='ide'&&demoIds.has(c.id)).map(c=>({id:c.id,title:c.title,page:c.id})),
+ startDemo:id=>{const card=L.cards.find(c=>c.id===id&&c.type==='ide'&&demoIds.has(c.id));if(!classroomTeacher||!state||!card)return false;activeClassroomDemo=id;go(id,true);requestAnimationFrame(()=>{$('#codeEditor')?.focus();classroomDemoChanged();});return true;},
+ stopDemo:()=>{activeClassroomDemo=null;},demoState:classroomDemoState
 });
 // Protect page navigation only; answers, code, console input and exports remain usable.
 const classroomNavigation='[data-stage],[data-review],#cardJump,#back,#next,#morePractice,#menuEntry,#menuReset,#menuRestore,#restore';
@@ -92,7 +118,7 @@ function cardHTML(c){let html='';if(c.code&&c.type!=='trace')html+=`<pre class="
  return html;
 }
 function bind(c){
- document.querySelectorAll('[data-value]').forEach(el=>el.addEventListener('input',()=>{const r=rec(c);r.values[el.dataset.value]=el.type==='checkbox'?el.checked:el.value;r.updated=time();save();updateProgress();}));
+ document.querySelectorAll('[data-value]').forEach(el=>el.addEventListener('input',()=>{const r=rec(c);r.values[el.dataset.value]=el.type==='checkbox'?el.checked:el.value;r.updated=time();save();updateProgress();if(c.id===activeClassroomDemo&&el.id==='codeEditor')classroomDemoChanged();}));
  document.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{const i=+b.dataset.check,q=c.questions[i],v=rec().values['q'+i];if(v===undefined){feedback('Choose an answer first. You can still move on if you need help.',null,'feedback'+i);return;}const right=+v===q.answer;record('q'+i,{question:q.label,chosen:q.options[+v]},q.why,right);feedback(q.why,right,'feedback'+i);});
  document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const r=rec(),i=+b.dataset.move,j=i+(+b.dataset.dir);[r.order[i],r.order[j]]=[r.order[j],r.order[i]];r.updated=time();save();render();const target=document.querySelector(`[data-move="${j}"][data-dir="${b.dataset.dir}"]`);target?.focus({preventScroll:true});});
  if($('#checkOrder'))$('#checkOrder').onclick=()=>{const r=rec(),correct=r.order.every((v,i)=>v===i);record('order',r.order.map(i=>c.lines[i]),c.why,correct);feedback((correct?'The sequence matches the model. ':'Review the ordering. ')+c.why,correct);};
@@ -101,9 +127,9 @@ function bind(c){
  if($('#checkText'))$('#checkText').onclick=()=>{const values=c.fields.map((f,i)=>({question:f,answer:rec().values['f'+i]||''}));if(!values.some(x=>x.answer.trim())){feedback('Write a short response or use a sentence starter. There is no exact-word gate.',null);return;}const simple=c.answers?.map((a,i)=>a===null?null:String(values[i].answer).trim().toUpperCase()===a.toUpperCase());const ok=simple?.filter(x=>x!==null).every(Boolean);const msg=(c.why||'Saved for teacher review.')+' Your written explanations are not automatically graded.';record('text',values,msg,simple?.some(x=>x!==null)?ok:null);feedback(msg,simple?.some(x=>x!==null)?ok:null);};
  if($('#recordReflection'))$('#recordReflection').onclick=()=>{record('reflection',rec().values,'Your reflection is saved. Use your test or prediction as evidence; confidence is not a grade.');feedback('Your reflection is saved. If you need help, show your teacher one specific condition or line of code.',null);};
  if(c.type==='ide'){
-  const editor=$('#codeEditor');let escape=false;editor.onkeydown=e=>{if(e.key==='Escape'){escape=true;return;}if(e.key==='Tab'&&!escape){e.preventDefault();const start=editor.selectionStart,end=editor.selectionEnd;editor.setRangeText('    ',start,end,'end');editor.dispatchEvent(new Event('input',{bubbles:true}));}else escape=false;};
-  $('#run').onclick=()=>runCode(c);$('#stop').onclick=()=>{PythonRunner.stop();if($('#runStatus').textContent.startsWith('Testing')){runToken++;lockRun(false);$('#runStatus').textContent='Tests stopped. Partial results are kept in your report.';}};$('#testCode').onclick=()=>testCode(c);$('#hint').onclick=()=>{feedback(c.hint||'Read the syntax example, then make one change and test. No whole solution is required.',null,'codeFeedback');record('hint','Requested a hint',c.hint||'Syntax reference recommended.');};
-  $('#resetCode').onclick=()=>{if(!confirm('Replace this editor with the starter? Previous runs remain in the report.'))return;record('reset',{previousCode:rec().values.code},'Reset starter requested.');rec().values.code=c.starter;save();render();};
+  const editor=$('#codeEditor');let escape=false;editor.onkeydown=e=>{if(e.key==='Escape'){escape=true;return;}if(e.key==='Tab'&&!escape){e.preventDefault();const start=editor.selectionStart,end=editor.selectionEnd;editor.setRangeText('    ',start,end,'end');editor.dispatchEvent(new Event('input',{bubbles:true}));}else escape=false;};for(const eventName of ['click','keyup','select'])editor.addEventListener(eventName,()=>{if(c.id===activeClassroomDemo)classroomDemoChanged();});
+  $('#run').onclick=()=>runCode(c);$('#stop').onclick=()=>{PythonRunner.stop();if($('#runStatus').textContent.startsWith('Testing')){runToken++;lockRun(false);$('#runStatus').textContent='Tests stopped. Partial results are kept in your report.';}classroomDemoChanged();};$('#testCode').onclick=()=>testCode(c);$('#hint').onclick=()=>{feedback(c.hint||'Read the syntax example, then make one change and test. No whole solution is required.',null,'codeFeedback');record('hint','Requested a hint',c.hint||'Syntax reference recommended.');};
+  $('#resetCode').onclick=()=>{if(!confirm('Replace this editor with the starter? Previous runs remain in the report.'))return;record('reset',{previousCode:rec().values.code},'Reset starter requested.');rec().values.code=c.starter;save();render();if(c.id===activeClassroomDemo)classroomDemoChanged();};
   $('#console').onclick=()=>$('#console .terminal-input')?.focus();
  }
  if(c.type==='review'){$('#finalPDF').onclick=exportPDF;$('#print').onclick=printReport;$('#finalBackup').onclick=backup;document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>go(b.dataset.review));}
@@ -112,11 +138,11 @@ function bind(c){
  document.querySelectorAll('[data-delete-image]').forEach(b=>b.onclick=()=>{if(confirm('Remove this evidence image from the current session?')){rec().images.splice(+b.dataset.deleteImage,1);save();render();}});
 }
 function lockRun(on){busy=on;for(const id of ['run','testCode','resetCode'])if($('#'+id))$('#'+id).disabled=on;if($('#stop'))$('#stop').disabled=!on;}
-async function runCode(c){if(busy)return;const token=++runToken,r=rec(c),source=r.values.code||'',run={kind:'run',at:time(),code:source,transcript:'',inputs:[],status:'running'};r.runs.push(run);const terminal=$('#console');terminal.textContent='';lockRun(true);$('#runStatus').textContent='Running…';save();
- const output=text=>{run.transcript+=text;if(token===runToken){terminal.append(document.createTextNode(text));terminal.scrollTop=terminal.scrollHeight;}save();};
- try{await PythonRunner.run(source,{output,input:prompt=>new Promise(resolve=>{output(prompt);if(token!==runToken)return;$('#runStatus').textContent='Waiting for input — type after the console prompt, then press Enter.';const input=document.createElement('input');input.className='terminal-input';input.setAttribute('aria-label',prompt||'Console input');input.autocomplete='off';input.spellcheck=false;input.maxLength=500;terminal.append(input);input.focus();input.addEventListener('input',()=>{input.style.width=Math.min(Math.max(input.value.length+2,12),45)+'ch';r.values.pendingConsole=input.value;save();});input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const value=input.value;const echo=document.createElement('span');echo.className='echo';echo.textContent=value+'\n';input.replaceWith(echo);run.transcript+=value+'\n';run.inputs.push({prompt,value,at:time()});delete r.values.pendingConsole;$('#runStatus').textContent='Running…';save();resolve(value);}};})});run.status='finished';if(token===runToken)$('#runStatus').textContent='Finished. Compare the output with your prediction.';
+async function runCode(c){if(busy)return;const token=++runToken,r=rec(c),source=r.values.code||'',run={kind:'run',at:time(),code:source,transcript:'',inputs:[],status:'running'};r.runs.push(run);const terminal=$('#console');terminal.textContent='';lockRun(true);$('#runStatus').textContent='Running…';save();if(c.id===activeClassroomDemo)classroomDemoChanged();
+ const output=text=>{run.transcript+=text;if(token===runToken){terminal.append(document.createTextNode(text));terminal.scrollTop=terminal.scrollHeight;}save();if(c.id===activeClassroomDemo)classroomDemoChanged();};
+ try{await PythonRunner.run(source,{output,input:prompt=>new Promise(resolve=>{output(prompt);if(token!==runToken)return;$('#runStatus').textContent='Waiting for input — type after the console prompt, then press Enter.';const input=document.createElement('input');input.className='terminal-input';input.setAttribute('aria-label',prompt||'Console input');input.autocomplete='off';input.spellcheck=false;input.maxLength=500;terminal.append(input);input.focus();input.addEventListener('input',()=>{input.style.width=Math.min(Math.max(input.value.length+2,12),45)+'ch';r.values.pendingConsole=input.value;save();});input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const value=input.value;const echo=document.createElement('span');echo.className='echo';echo.textContent=value+'\n';input.replaceWith(echo);run.transcript+=value+'\n';run.inputs.push({prompt,value,at:time()});delete r.values.pendingConsole;$('#runStatus').textContent='Running…';save();if(c.id===activeClassroomDemo)classroomDemoChanged();resolve(value);}};})});run.status='finished';if(token===runToken)$('#runStatus').textContent='Finished. Compare the output with your prediction.';
  }catch(e){run.status='error';run.error=String(e.message||e);run.transcript+='\n'+run.error;const pending=terminal.querySelector('input');if(pending){run.unsubmittedInput=pending.value;pending.disabled=true;}if(token===runToken){const line=document.createElement('span');line.className='error';line.textContent='\n'+run.error;terminal.append(line);$('#runStatus').textContent='Stopped or needs a correction. Your code and attempt are saved.';}}
- finally{run.finished=time();save();if(token===runToken){lockRun(false);updateProgress();}}
+ finally{run.finished=time();save();if(token===runToken){lockRun(false);updateProgress();}if(c.id===activeClassroomDemo)classroomDemoChanged();}
 }
 async function testCode(c){if(busy)return;const token=++runToken,r=rec(c),source=r.values.code||'',results=[];lockRun(true);$('#runStatus').textContent='Testing the listed examples…';
  try{for(const test of c.tests){if(token!==runToken)break;let src=source,out='',inputs=[...(test.input||[])];if(test.score!==undefined){if(!/^score\s*=.*$/m.test(src)){results.push({test,passed:false,error:'Keep a starting score assignment so the examples can substitute scores.'});continue;}src=src.replace(/^score\s*=.*$/m,`score = ${test.score}`);}try{await PythonRunner.run(src,{output:s=>out+=s,input:()=>{if(!inputs.length)throw Error('Unexpected extra input prompt.');return inputs.shift();}});results.push({test,output:out,passed:out.trim()===test.expect.trim()});}catch(e){results.push({test,output:out,passed:false,error:String(e.message||e)});}}
@@ -140,6 +166,7 @@ function readableEvidence(value){
  return String(value);
 }
 function reportBlocks(){const blocks=[{h:1,text:'Year 8 · Week 5 Theory'},{text:L.title+' — '+L.goals.topic},{text:state.student.name+' | '+state.student.cls},{text:'Generated: '+new Date().toLocaleString()+' | Started: '+state.started},{text:'WAGBA: '+L.goals.wagba},...['K','S','U'].map(k=>({text:k+': '+L.goals[k]})),{text:'Keywords: selection, condition, comparison, True, False, branch, indentation, predict, trace.'},{text:'Challenge: Find a value that reveals an incorrect comparison, then explain and test the correction.'},{text:'Recorded means attempted, not mastered. Open responses require teacher review.'}];
+ blocks.push(...(window.Year8FactSlides?.reportBlocks?.()||[]));
  for(const c of L.cards){if(c.type==='review')continue;const r=state.records[c.id];const has=r&&(Object.keys(r.values).length||r.attempts.length||r.runs.length||r.images.length);if(!c.core&&!has)continue;blocks.push({h:2,text:L.stages.find(s=>s[0]===c.stage)[1]+' · '+c.title});blocks.push({text:attempted(c)?'Status: attempt recorded':has?'Status: in progress':'Status: not completed'});if(!has)continue;
   for(const [label,value] of describeValues(c,r))blocks.push({text:label+':\n'+value,mono:label.includes('code')||label.includes('order')});
   for(const [i,a] of r.attempts.entries()){blocks.push({h:3,text:`Check / reflection ${i+1} · ${a.at||''}`});blocks.push({text:'Submitted evidence:\n'+readableEvidence(a.data),mono:a.kind==='order'||a.kind==='tests'});blocks.push({text:'Feedback: '+String(a.feedback||'Recorded')+' | '+(a.correct===true?'Checked result: matched':a.correct===false?'Checked result: needs improvement':'Teacher review / reflection')});}

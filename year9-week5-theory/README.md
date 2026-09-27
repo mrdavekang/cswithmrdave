@@ -29,6 +29,8 @@ The four teaching modes have distinct purposes:
 
 While Screens down, Show only or Let students answer is active, moving to another lesson page or fact slide automatically moves the class too. **Bring here once** is available for a single move without changing the current mode. The dock includes direct lesson-page and fact-slide menus, so the teacher can return from a presentation to any working page without scrolling to the top.
 
+The teacher dock has separate **− Content**, **+ Content** and **Reset** controls. These change only the lesson above the dock from 80% to 160%; the classroom controls keep their normal size. **Hide controls** collapses the full dock into a slim bar containing the classroom status, device count, zoom controls and **Show controls**. The chosen zoom and collapsed/open state are remembered on the teacher’s browser.
+
 Students see a single, discreet **Teacher sign-in** link on the landing page only. After they open the lesson, the student classroom status strip and teacher link are hidden. Classroom control continues in the background, while the full-screen Screens down and live-code views appear only when the teacher sends them. The teacher’s fixed control dock remains visible in teacher mode.
 
 The circular lesson clock covers **10:20–11:20 a.m.** It shows the current activity, remaining time, the next activity and three short focus steps. Students may expand it, drag it and snap it to any corner. They may turn off activity guidance and keep the clock only. **Open suggested page** is always a choice: the timer never changes pages automatically and disables that button while the teacher controls navigation.

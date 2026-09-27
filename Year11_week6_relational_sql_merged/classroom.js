@@ -12,7 +12,7 @@
   const classId = window.CLASSROOM_ROUTE?.classId?.toLowerCase();
   const permanent = window.CLASSROOM_ROUTE?.permanent && uuid.test(classId || '');
   if (!permanent) return;
-  const lessonId = 'year9-week5-theory';
+  const lessonId = 'Year11_week6_relational_sql_merged';
   const classArgs = () => ({p_class_id:classId,p_lesson:lessonId});
   let room = null, discovery, discovering = false;
   let client, sdkLoading, channel, roster, generation = 0, poll, expiryTimer;
@@ -21,8 +21,6 @@
   let controlReady = false, presenceReady = false, count = null, message = '', bad = false;
   let refreshing = false, authSubscription, desired=null, followTimer, lastReturn=0, updated=0;
   let demoOpen=false,demoSequence=0,demoSendTimer=null,demoSaveTimer=null,demoSaving=false,pendingDemo=null;
-  let dockCollapsed=false,contentZoom=100;
-  if(info().teacher)try{dockCollapsed=localStorage.getItem('y9w5-teacher-dock')==='collapsed';const rawZoom=localStorage.getItem('y9w5-teacher-content-zoom'),saved=Number(rawZoom);if(rawZoom!==null&&Number.isFinite(saved))contentZoom=Math.max(80,Math.min(160,Math.round(saved/10)*10));}catch{}
   const mode=()=>current?.mode||(current?.locked?'answer':'self');
   const locked = () => !info().teacher && Boolean(current?.locked);
   // This guard is for classroom pacing; the Supabase rules enforce privileges.
@@ -31,9 +29,6 @@
   function button(cmd, label, disabled = false, primary = false) {
     return `<button type="button" data-cm="${cmd}" ${disabled?'disabled':''} class="${primary?'primary':''}">${label}</button>`;
   }
-  function saveTeacherView(){try{localStorage.setItem('y9w5-teacher-dock',dockCollapsed?'collapsed':'open');localStorage.setItem('y9w5-teacher-content-zoom',String(contentZoom));}catch{}}
-  function applyTeacherView(){const teacher=info().teacher;root.classList.toggle('cm-collapsed',teacher&&dockCollapsed);document.body.classList.toggle('cm-dock-collapsed',teacher&&dockCollapsed);if(teacher)document.body.style.setProperty('--teacher-content-zoom',String(contentZoom/100));else document.body.style.removeProperty('--teacher-content-zoom');}
-  function viewTools(){return `<div class="cm-view-tools"><span>Lesson content <b>${contentZoom}%</b></span>${button('zoom-out','− Content',contentZoom<=80)}${button('zoom-in','+ Content',contentZoom>=160)}${button('zoom-reset','Reset',contentZoom===100)}${button('collapse',dockCollapsed?'Show controls':'Hide controls')}</div>`;}
   function sessionLink() {
     const url = new URL(location.href);
     url.search = ''; url.hash = ''; // Share the plain lesson URL, never a Teams tracking ID.
@@ -41,10 +36,10 @@
   }
   function teacherLink() {const url=new URL(sessionLink());url.searchParams.set('teacher','1');return url.href;}
   function linkField() {return `<label>${pick('Permanent student link','Pautan murid kekal','固定学生链接')}<input class="cm-link" readonly value="${escape(sessionLink())}" aria-label="${pick('Student classroom link','Pautan kelas murid','学生课堂链接')}"></label>`;}
-  const navSelector='[data-page],[data-home],[data-action="home"],[data-action="legacy"],[data-restore]';
+  const navSelector='[data-go],#prev,#next,#switch,[data-restore]';
   function guardNavigation() {
     const readonly=!info().teacher&&current&&['view','attention'].includes(mode())&&!info().entry;
-    document.querySelectorAll('#app button,#app input,#app textarea,#app select').forEach(el=>{
+    document.querySelectorAll('#lesson button,#lesson input,#lesson textarea,#lesson select,#teacher-presentation button,#teacher-presentation input,#teacher-presentation textarea,#teacher-presentation select').forEach(el=>{
       const stop=readonly||(locked()&&el.matches(navSelector));
       if(stop){if(!el.hasAttribute('data-cm-disabled'))el.dataset.cmDisabled=String(el.disabled);el.disabled=true;}
       else if(el.hasAttribute('data-cm-disabled')){el.disabled=el.dataset.cmDisabled==='true';delete el.dataset.cmDisabled;}
@@ -60,7 +55,6 @@
     if(!force&&root.contains(document.activeElement)&&document.activeElement.matches('input,select'))return;
     root.classList.toggle('cm-teacher',info().teacher);
     document.body.classList.toggle('cm-has-dock',info().teacher);
-    applyTeacherView();
     if(!info().teacher){
       const landing=info().entry;
       root.hidden=!landing;
@@ -75,9 +69,9 @@
     if(!allowed)body= open?`<form id="cm-login"><label>Teacher email<input type="email" name="email" autocomplete="username" required></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><button ${busy?'disabled':''}>Sign in</button></form>`:'';
     else {
         const facts=lesson.teacherPages?.()||[],programs=lesson.demoPrograms?.()||[],activeProgram=lesson.demoState?.().program;
-        body=`<div class="cm-actions cm-modes">${current?['attention','view','answer','self'].map(c=>button(c,labels[c],busy,mode()===c)).join('')+button('return','Return to own work',busy):button('start','Start classroom',busy,true)}${current?button('bring','Bring here once',busy)+button('end','End classroom',busy):button('signout','Sign out',busy)}</div><div class="cm-actions cm-navigation"><label>Lesson page<select id="cm-page"><option value="">Choose a lesson page…</option>${lesson.destinations().map(d=>`<option value="${escape(d.id)}">${escape(d.group+' · '+d.title)}</option>`).join('')}</select></label><label>Fact slide<select id="cm-fact"><option value="">Choose a fact slide…</option>${facts.map(d=>`<option value="${escape(d.id)}">${escape(d.title)}</option>`).join('')}</select></label></div><div class="cm-demo-controls"><strong>Live Python demonstration</strong><label>Program<select id="cm-demo-program">${programs.map(d=>`<option value="${escape(d.id)}" ${d.id===activeProgram?'selected':''}>${escape(d.title)}</option>`).join('')}</select></label>${button('demo-start',demoOpen?'Send latest code':'Start live code',busy||!current,true)}${button('demo-stop','Stop demonstration',busy||!demoOpen)}<small>Students see a read-only mirror of your code, highlighted line and output. Never type passwords, API keys or personal data in a live demonstration.</small></div><small>${current?.locked?'Following automatically: '+escape(lesson.label()):'Self-paced: students choose their own page. Bring here once shares your current page.'}</small>`;
+        body=`<div class="cm-actions cm-modes">${current?['attention','view','answer','self'].map(c=>button(c,labels[c],busy,mode()===c)).join('')+button('return','Return to own work',busy):button('start','Start classroom',busy,true)}${current?button('bring','Bring here once',busy)+button('end','End classroom',busy):button('signout','Sign out',busy)}</div><div class="cm-actions cm-navigation"><label>Lesson page<select id="cm-page"><option value="">Choose a lesson page…</option>${lesson.destinations().map(d=>`<option value="${escape(d.id)}">${escape(d.group+' · '+d.title)}</option>`).join('')}</select></label><label>Presentation / fact slide<select id="cm-fact"><option value="">Choose a teacher slide…</option>${facts.map(d=>`<option value="${escape(d.id)}">${escape(d.title)}</option>`).join('')}</select></label></div><div class="cm-demo-controls"><strong>Live SQL demonstration</strong><label>Query<select id="cm-demo-program">${programs.map(d=>`<option value="${escape(d.id)}" ${d.id===activeProgram?'selected':''}>${escape(d.title)}</option>`).join('')}</select></label>${button('demo-start',demoOpen?'Send latest query':'Start live SQL',busy||!current,true)}${button('demo-stop','Stop demonstration',busy||!demoOpen)}<small>Students see a read-only mirror of your query, highlighted line and preview. Never type passwords, keys or personal data in a live demonstration.</small></div><small>${current?.locked?'Following automatically: '+escape(lesson.label()):'Self-paced: students choose their own page. Bring here once shares your current page.'}</small>`;
     }
-    root.innerHTML=`<div class="cm-bar"><div class="cm-status"><strong>${escape(status)}</strong>${current?`<span>${count??'—'} devices · ${updated} updated</span>`:''}${!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}</div>${viewTools()}</div><div class="cm-dock-body">${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p></div>`;
+    root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${info().teacher&&current?`<span>${count??'—'} devices connected · ${updated} received this update</span>`:''}${info().teacher&&!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}</div>${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p>`;
   }
   function acknowledge(){if(!info().teacher&&presenceReady&&roster&&current)roster.track({v:2,revision:current.revision,mode:mode()}).catch(()=>{});}
   function queueFollow(){
@@ -88,8 +82,8 @@
   function cleanDemo(value){
     if(!value||typeof value!=='object'||typeof value.open!=='boolean')return null;
     if(!value.open)return {open:false,seq:Number(value.seq)||0,demo_revision:Number(value.demo_revision)||0};
-    if(!['gap','syntax','indent','core','extension'].includes(value.program)||typeof value.code!=='string'||value.code.length>20000||typeof value.output!=='string'||value.output.length>24000)return null;
-    return {open:true,program:value.program,title:String(value.title||'Python demonstration').slice(0,200),code:value.code,output:value.output,line:Math.max(1,Math.min(2000,Number(value.line)||1)),selectionStart:Math.max(0,Number(value.selectionStart)||0),selectionEnd:Math.max(0,Number(value.selectionEnd)||0),running:value.running===true,seq:Number(value.seq)||0,demo_revision:Number(value.demo_revision)||0};
+    if(!['insert-student','update-email','update-returned','delete-loan'].includes(value.program)||typeof value.code!=='string'||value.code.length>20000||typeof value.output!=='string'||value.output.length>24000)return null;
+    return {open:true,program:value.program,title:String(value.title||'SQL demonstration').slice(0,200),code:value.code,output:value.output,line:Math.max(1,Math.min(2000,Number(value.line)||1)),selectionStart:Math.max(0,Number(value.selectionStart)||0),selectionEnd:Math.max(0,Number(value.selectionEnd)||0),running:false,seq:Number(value.seq)||0,demo_revision:Number(value.demo_revision)||0};
   }
   function receiveDemo(value){
     const demo=cleanDemo(value);if(!demo)return;
@@ -291,7 +285,7 @@
     try {
       if(['self','return','end'].includes(cmd)&&demoOpen)await stopDemo(true);
       if(cmd==='start'){
-        const snapshot=await rpc('classroom_class_start',{...classArgs(),p_stage:lesson.pages().includes(info().page)?info().page:'read'});
+        const snapshot=await rpc('classroom_class_start',{...classArgs(),p_stage:lesson.pages().includes(info().page)?info().page:'page-0'});
         room=snapshot.session_id;if(!valid(snapshot))throw Error('Invalid session');
         await attach(snapshot);message='';
       } else if(cmd==='signout'){
@@ -346,22 +340,18 @@
   root.addEventListener('click',async event=>{
     const el=event.target.closest('[data-cm]');if(!el||el.disabled)return;
     const cmd=el.dataset.cm;
-    if(cmd==='collapse'){dockCollapsed=!dockCollapsed;saveTeacherView();applyTeacherView();render(true);}
-    else if(cmd==='zoom-out'){contentZoom=Math.max(80,contentZoom-10);saveTeacherView();applyTeacherView();render(true);}
-    else if(cmd==='zoom-in'){contentZoom=Math.min(160,contentZoom+10);saveTeacherView();applyTeacherView();render(true);}
-    else if(cmd==='zoom-reset'){contentZoom=100;saveTeacherView();applyTeacherView();render(true);}
-    else if(cmd==='toggle'){open=!open;render(true);}
+    if(cmd==='toggle'){open=!open;render(true);}
     else if(cmd==='copy'){
       try{await navigator.clipboard.writeText(sessionLink());say('Link copied. Share it with this class.','Pautan disalin. Kongsi dengan kelas ini.','链接已复制，请分享给本班学生。');}
       catch{root.querySelector('.cm-link')?.select();say('Select and copy the classroom link above.','Pilih dan salin pautan di atas.','请选择并复制上方链接。');}
     }
-    else if(cmd==='demo-start')await startDemo(root.querySelector('#cm-demo-program')?.value||'core');
+    else if(cmd==='demo-start')await startDemo(root.querySelector('#cm-demo-program')?.value||'insert-student');
     else if(cmd==='demo-stop')await stopDemo(true);
     else if(cmd==='end'){if(confirm('End this classroom and restore self-paced work?'))await action(cmd);}
     else await action(cmd);
   });
   document.addEventListener('click',event=>{
-    if(locked()&&event.target.closest('[data-page],[data-action="home"],[data-home],[data-action="legacy"]')){event.preventDefault();event.stopImmediatePropagation();}
+    if(locked()&&event.target.closest('[data-go],#prev,#next,#switch')){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('change',event=>{
     if(locked()&&event.target.matches('[data-restore]')){event.preventDefault();event.stopImmediatePropagation();event.target.value='';say('Load a backup after your teacher unlocks navigation.','Muatkan sandaran selepas guru membuka navigasi.','请等老师解锁后再导入备份。');}
@@ -369,7 +359,7 @@
   root.addEventListener('change',e=>{if(!allowed)return;if(e.target.id==='cm-page'&&e.target.value)lesson.navigate(e.target.value);if(e.target.id==='cm-fact'&&e.target.value)lesson.openTeacherPage?.(e.target.value);});
   for(const type of ['click','beforeinput','input','change','keydown','paste','drop','submit'])document.addEventListener(type,e=>{
     if(info().teacher||!current||info().entry||!['view','attention'].includes(mode()))return;
-    if(e.target.closest('#app')&&!(type==='keydown'&&['ArrowDown','ArrowUp','PageDown','PageUp','Home','End','Tab'].includes(e.key))){e.preventDefault();e.stopImmediatePropagation();}
+    if(e.target.closest('#lesson,#teacher-presentation')&&!(type==='keydown'&&['ArrowDown','ArrowUp','PageDown','PageUp','Home','End','Tab'].includes(e.key))){e.preventDefault();e.stopImmediatePropagation();}
   },true);
   window.addEventListener('lesson:render',()=>{render();queueFollow();});
   window.addEventListener('lesson:demo-change',()=>{if(demoOpen)publishDemo(false);});

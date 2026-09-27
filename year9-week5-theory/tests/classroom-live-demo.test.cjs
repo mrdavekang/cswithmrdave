@@ -34,11 +34,14 @@ const keepAlive=setInterval(()=>{},1000);
  student.control().emit('demo',{open:false,seq:2});assert.equal(student.d.querySelector('#live-demo'),null);assert.equal(student.d.querySelector('[data-code="core"]').value,'print("my own work")');
  assert(student.tracked.every(value=>!('name'in value)&&!('className'in value)&&!('code'in value)),'presence must stay anonymous');student.close();
 
- const teacher=await boot(true);assert(teacher.d.querySelector('[data-cm="start"]')||teacher.d.querySelector('[data-cm="attention"]'));
+ const teacher=await boot(true);assert(teacher.d.querySelector('[data-cm="start"]')||teacher.d.querySelector('[data-cm="attention"]'));assert(teacher.d.querySelector('.cm-view-tools').textContent.includes('Lesson content 100%'));
+ teacher.d.querySelector('[data-cm="zoom-in"]').click();assert.equal(teacher.d.body.style.getPropertyValue('--teacher-content-zoom'),'1.1');assert(teacher.d.querySelector('.cm-view-tools').textContent.includes('110%'));
+ teacher.d.querySelector('[data-cm="collapse"]').click();assert(teacher.d.querySelector('#classroom-root').classList.contains('cm-collapsed'));assert(teacher.d.body.classList.contains('cm-dock-collapsed'));assert(teacher.d.querySelector('[data-cm="collapse"]').textContent.includes('Show controls'));
+ teacher.d.querySelector('[data-cm="collapse"]').click();assert(!teacher.d.querySelector('#classroom-root').classList.contains('cm-collapsed'));teacher.d.querySelector('[data-cm="zoom-reset"]').click();assert.equal(teacher.d.body.style.getPropertyValue('--teacher-content-zoom'),'1');
  if(teacher.d.querySelector('[data-cm="start"]')){teacher.d.querySelector('[data-cm="start"]').click();await teacher.flush();}
  const picker=teacher.d.querySelector('#cm-demo-program');picker.value='core';teacher.d.querySelector('[data-cm="demo-start"]').click();await teacher.flush();
  const editor=teacher.d.querySelector('[data-code="core"]');assert(editor);editor.value='x = 2\nprint(x)';editor.selectionStart=editor.selectionEnd=6;editor.dispatchEvent(new teacher.w.Event('input',{bubbles:true}));editor.dispatchEvent(new teacher.w.Event('select',{bubbles:true}));await teacher.flush();
  const messages=teacher.sent.filter(message=>message.event==='demo');assert(messages.length);const latest=messages.at(-1).payload;assert.equal(latest.code,'x = 2\nprint(x)');assert.equal(latest.line,2);assert.equal(latest.open,true);
  teacher.d.querySelector('[data-cm="demo-stop"]').click();await teacher.flush();assert(teacher.sent.some(message=>message.event==='demo'&&message.payload.open===false));teacher.close();
- console.log('PASS landing-only teacher sign-in, hidden student status strip, live demonstration mirror, highlighted line, anonymous presence, protected student code, teacher broadcast and stop.');clearInterval(keepAlive);
+ console.log('PASS landing-only teacher sign-in, hidden student strip, independent content zoom, collapsible teacher dock, live mirror, anonymous presence and protected student code.');clearInterval(keepAlive);
 })().catch(error=>{process.stdout.write('FAIL '+(error?.stack||error)+'\n');clearInterval(keepAlive);process.exitCode=1;});

@@ -87,18 +87,24 @@ After export, students receive download-location and Teams instructions. The act
 - `tests/content.test.cjs`: development-only content checks.
 - `TESTING.md`: verification coverage and limitations.
 
-The application has not been published to GitHub or Teams. No existing classroom app was overwritten.
+These files are prepared for the existing GitHub Pages folder; publishing remains a separate step.
 
 ## Supabase Classroom Mode
 
 The existing GitHub Pages lesson URL is also the permanent classroom link. No classId parameter is required; Teams-added parameters do not choose a different room. One live classroom serves this lesson, independently from Year 9 Week 3 and Week 5.
 
-After the existing Supabase setup through step 12, run `13-year8-week5-classroom.sql` once in SQL Editor. It extends the existing allowed lesson/card list, retains Year 9 support, and changes no teacher grants or student data. Expect `year8_classroom_ready = true`. Do not rerun earlier registration/correction scripts.
+After the existing Supabase setup, run `22-year8-week5-theory-latest-classroom.sql` once in SQL Editor. It is cumulative and safe to run again. It retains the other supported lessons, adds the three Year 8 fact-slide destinations, presentation modes and temporary live-code state. Expect `year8_latest_classroom_ready = true`.
 
-Publish this folder's updates to GitHub Pages, including classroom-config.js, classroom.js, classroom.css and vendor/supabase.js (with its license). Open the plain lesson URL, choose Teacher sign-in, and use the approved classroom teacher account. The teacher URL adds only `?teacher=1`. Open the lesson using the prefilled teacher preview form to select an activity card, then use Start classroom, Lock navigation, Bring Everyone Here, Unlock / Self-Paced and End classroom. Typing "teacher" into the ordinary name form gives only the existing lesson preview; it grants no classroom permissions.
+Publish the complete folder to GitHub Pages. Open the plain lesson URL, choose the small Teacher sign-in link on the landing page, and use the approved classroom teacher account. The teacher URL adds only `?teacher=1`. The fixed green dock provides Screens down, Show only, Let students answer and Self-paced modes, plus direct lesson-page and fact-slide menus, Bring here once, Return to own work and End classroom. In a locked mode, students follow the teacher automatically as the teacher changes pages. Typing "teacher" into the ordinary name form gives only the existing lesson preview; it grants no classroom permissions.
 
-Students join automatically while using the plain URL. Bring moves to the exact card, including extra practice. If a student is still on the landing form, the requested card opens after entry. Lock blocks navigation, card selection, reset and backup import; students can still answer, reorder code, run Python, use console input and export work. Students have no Leave button. End restores self-paced study, keeps work and allows the same URL to join the next lesson session. Closing a teacher tab does not end the session; it expires after two hours.
+Students join automatically while using the plain URL. The classroom status strip is hidden after entry, and students have no Leave button. Screens down displays a full-screen instruction. Show only blocks navigation and input. Let students answer keeps everyone on the teacher’s page while enabling the questions, code and fact-slide answer boxes. Self-paced releases navigation. Return to own work restores the card and scroll position each browser had before teacher control. End keeps all local work and allows the same permanent URL to join the next session. Closing a teacher tab does not end the session; it expires after two hours.
+
+The three fact slides teach assignment versus comparison, boundary testing and branch flow. They are absent from the student lesson menu; the teacher can open and share them from the dock. Student class-question responses stay in localStorage and are included in the PDF.
+
+Live Python demonstration uses the existing Year 8 IDE cards. The teacher selects a program from the dock and broadcasts a read-only mirror of the current code, highlighted line and output. It never executes teacher code on student devices and never replaces student code. Stop demonstration closes the mirror and returns each student to the controlled lesson page. Demonstration state is temporary and is cleared when learners are released or the classroom ends.
+
+The draggable circular Classroom Cue follows Malaysia time from 1:00–2:00 p.m. It shows the suggested stage, remaining time, WAGBA, keywords, challenge and the full schedule. It can snap to any corner. It never changes a page automatically; students can open the suggested page only while classroom navigation is unlocked.
 
 Names, class labels, answers, code, images and PDF records remain in the existing local notebook. Supabase receives only temporary anonymous presence and control state. The count estimates connected browsers, deduplicating tabs in the same browser; it is not an attendance register. Public browser configuration contains no secret key. Authenticated teacher ownership is enforced by the existing Supabase RPCs and private channel policies; hiding controls alone is not the security boundary.
 
-Classroom messages support English, Malay and Mandarin, with English fallback for Korean; existing Korean lesson support remains unchanged. No student account is created. Normal lesson use remains available when no session is active or setup has not yet been applied.
+Classroom messages support English, Malay and Mandarin, with English fallback for Korean; existing Korean lesson support remains unchanged. No student account is created. Normal lesson use remains available when no session is active or Supabase is unavailable.
