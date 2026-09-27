@@ -18,23 +18,32 @@ The editor, notebook and report infrastructure is reused from the earlier helpde
 Keep the existing Teams link:
 https://mrdavekang.github.io/cswithmrdave/year9-week5-theory/index.html?classId=c429701c-21c3-4e99-b84d-c2faadca7afb
 
-Open it and choose **Teacher sign-in**, or add `&teacher=1`. The approved teacher can Start classroom, Copy link, Lock navigation, Bring Everyone Here, Unlock / Self-Paced and End classroom. The permanent link is available before a session starts. Sign-in resumes this lesson’s active session; Start begins one if needed.
+Open it and choose **Teacher sign-in**, or add `&teacher=1`. The approved teacher gets a fixed control dock at the bottom of every page. The classroom status always shows whether the session is live, the current teaching mode and the number of anonymous student devices. The permanent link is available before a session starts. Sign-in resumes this lesson’s active session; Start begins one if needed.
+
+The four teaching modes have distinct purposes:
+
+- **Screens down** displays a large attention screen. Students cannot navigate or type.
+- **Show only** keeps every connected browser on the teacher’s current page. Students can read and scroll, but cannot type.
+- **Let students answer** keeps the page together while enabling its answer boxes, editors and controls.
+- **Self-paced** releases the class. **Return to own work** takes each browser back to the page and scroll position it had before teacher control.
+
+While Screens down, Show only or Let students answer is active, moving to another lesson page or fact slide automatically moves the class too. **Bring here once** is available for a single move without changing the current mode. The dock includes direct lesson-page and fact-slide menus, so the teacher can return from a presentation to any working page without scrolling to the top.
 
 The class ID identifies the teacher-owned class. The lesson path identifies the lesson. Week 3 and Week 5 can use the same class ID in their existing URLs and have separate live sessions. Starting, moving, locking, unlocking or ending one does not alter the other. Internal session IDs and anonymous connection IDs remain temporary; the public lesson URLs stay fixed.
 
 Students enter name/class for local notebooks and PDFs. These details, their answers, Python code and program inputs are not sent to Supabase. No student account is needed. Before a session starts, pupils can study normally. Their open page connects automatically when the teacher starts, usually within 10 seconds (hidden tabs check when visible again). Students arriving while locked still complete the landing form before any requested move. There is no student Leave button. Ending releases navigation and preserves their local work and the permanent URL. A later session on this link reconnects them automatically.
 
-End classroom is a direct action with no browser confirmation; it ends only temporary live control and preserves all student work. Use End classroom to stop immediately; closing only the teacher tab leaves its session resumable until the two-hour expiry. The count estimates browsers, excludes the teacher, and deduplicates same-browser tabs when storage is available. A network interruption retains the last known lock until confirmed End or expiry. The website cannot prevent someone closing a tab or deliberately opening another URL. Ordinary URLs without classId stay self-paced without Supabase connections.
+End classroom is a direct action with no browser confirmation; it ends only temporary live control and preserves all student work. Use End classroom to stop immediately; closing only the teacher tab leaves its session resumable until the two-hour expiry. The count estimates browsers, excludes the teacher, and deduplicates same-browser tabs when storage is available. A network interruption retains the last known lock until confirmed End or expiry. The website cannot prevent someone closing a tab or deliberately opening another URL.
 
 ### Setup
 
-The existing Supabase project already has setup steps 5–11. Run `supabase/12-classroom-multiple-lessons.sql` once. It updates the three permanent-class RPCs to identify sessions by **class ID plus lesson**, retains teacher ownership checks, and works without ending existing sessions. It does not change RLS, create student records, reassign IDs, or require new keys/accounts. Do not rerun the older single-lesson registration/correction scripts. After this upgrade the existing Week 3 and Week 5 lesson links can be started directly from their teacher panels without another lesson-assignment query.
+For the current remote and live-code features, run `supabase/21-year9-week5-live-demonstration.sql` once in the existing Supabase project. It is a cumulative upgrade: it keeps the enabled lesson/stage list, adds the current presentation modes and adds temporary live demonstration state. Expect the final result `live_demo_ready = true`. It does not create student records, reassign the permanent class ID or require new keys/accounts.
 
-The shared teacher dashboard for registering additional classes/lessons is not part of this update. Only the two existing lesson types are currently supported by server stage validation; new lesson types still need integration and authorised configuration.
+The permanent Week 5 URL and existing Teams link continue to work. Future lesson types still need their lesson ID and permitted stages added to the server allowlist.
 
 ### Implementation and verification
 
-The lesson and Python runtime are unchanged. `classroom.js` handles private Realtime channels, anonymous Presence, discovery and controls. `classroom-config.js` contains only the public URL/publishable key; the SDK and licence are local under vendor/. Every command checks the approved teacher and session ownership in Supabase. The lesson bridge exposes only navigation and language, not names or work.
+`classroom.js` handles private Realtime channels, anonymous Presence, discovery, teaching modes and the fixed teacher dock. `classroom-config.js` contains only the public URL/publishable key; the SDK and licence are local under vendor/. Every command checks the approved teacher and session ownership in Supabase. The lesson bridge exposes navigation and the teacher’s selected demonstration only; student names, answers and code remain local.
 
 The restored classroom UI was previously checked across 156 lesson/language/view combinations and 18 Python cases, with additional named-entry and report checks. Step 12 passed 28 PostgreSQL RPC/permission checks, including simultaneous lesson isolation, preservation of an already active session, repeated installation, per-lesson stage validation, owner/student denial, End/restart and legacy-session compatibility. Published-site availability depends on publishing these restored website files.
 
@@ -51,3 +60,18 @@ Each page preserves the supplied PPT example, class question and challenge. Engl
 Activation: after shared setup through step 14, run `supabase/15-year9-week5-facts.sql` once. Expect `week5_facts_ready = true`. It adds only three allowed Year 9 Week 5 stage IDs and preserves all previously enabled lessons and teacher permissions. Publish the changed/new files in this folder, including fact-slides.js, fact-integration.js and fact-slides.css. The old Teams URL continues to work.
 
 Checks: `node tests/facts.test.cjs` covers 156 existing page/language/view combinations, all three fact pages in all supported languages, answer backup/report retention, hidden menus, lock/return behavior and 18 Python examples with console input. SQL migration checked for idempotence, allowed fact stages and existing permission/isolation regressions. Browser layouts inspected for all three pages. Live Bring/Presence tests await running step 15 and signing in.
+
+## Live Python teaching demonstration
+
+In the teacher dock, choose one of the five built-in Python programs and press **Start live code**. The teacher is taken to that editor and the class enters Show only mode. Students see a separate full-screen, read-only mirror containing:
+
+- the teacher’s current code;
+- a highlighted current line that follows the teacher’s cursor;
+- the latest program output; and
+- a clear message that the demonstration does not replace their saved work.
+
+Edits and cursor movement are broadcast quickly through the private Realtime channel. A small temporary snapshot is also saved in the active classroom session so a reconnecting or late-arriving device can recover the current demonstration. Press **Send latest code** to resend immediately and **Stop demonstration** to close it on every connected student browser. Releasing or ending the classroom also closes the mirror.
+
+Students cannot edit or run the mirrored program. Their own editor remains unchanged underneath it. The demonstration code and output disappear with the temporary two-hour classroom session; student code, program input, answers, names and classes are never sent to Supabase. Because the teacher’s demonstration is shared to pupil devices, never type passwords, API keys or personal data in the live editor.
+
+Verification: `node tests/classroom-live-demo.test.cjs` checks the read-only mirror, highlighted line, anonymous Presence, protection of student code, teacher broadcast and stop behavior. The SQL verification covers repeat installation, temporary recovery, size and program validation, teacher ownership, all teaching modes, return/end behavior and compatibility with the existing control call.

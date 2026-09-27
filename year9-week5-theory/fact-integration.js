@@ -11,10 +11,12 @@
  function open(id){if(!lookup(id))return;if(entry){pending=id;return;}if(live)finish('stopped');selected=id;render();window.scrollTo(0,0);document.getElementById('page-title')?.focus();}
  window.LessonClassroom=Object.freeze({
   info:()=>({...bridge.info(),page:selected||bridge.info().page}),pages:()=>[...bridge.pages(),...facts.map(f=>f.id)],
-  label:()=>selected?txt(lookup(selected).title):bridge.label(),teacherPages:()=>facts.map(f=>({id:f.id,title:txt(f.title)})),
+  destinations:bridge.destinations,label:()=>selected?txt(lookup(selected).title):bridge.label(),teacherPages:()=>facts.map(f=>({id:f.id,title:txt(f.title)})),
   openTeacherPage:id=>{if(teacher)open(id);},
-  move:id=>{if(teacher)return;if(lookup(id))open(id);else{pending=null;selected=null;bridge.move(id);}},
-  clearTarget:()=>{pending=null;bridge.clearTarget();}
+  navigate:id=>{if(lookup(id))open(id);else{selected=null;bridge.navigate(id);}},
+  move:id=>{if(teacher)return;bridge.captureOwn();if(lookup(id))open(id);else{pending=null;selected=null;bridge.move(id);}},
+  captureOwn:bridge.captureOwn,returnOwn:()=>{pending=null;selected=null;bridge.returnOwn();},setSession:bridge.setSession,
+  clearTarget:()=>{pending=null;bridge.clearTarget();},demoPrograms:bridge.demoPrograms,startDemo:bridge.startDemo,stopDemo:bridge.stopDemo,demoState:bridge.demoState
  });
  report=function(){let html=baseReport(),extra='';for(const f of facts){const qs=[...f.questions,['challenge',f.challenge]].filter(([k])=>val(f.id+'_'+k).trim());if(qs.length)extra+=`<section><h2>${bi(f.title)}</h2>${qs.map(([k,l])=>`<h3>${bi(l)}</h3><p>${esc(val(f.id+'_'+k))}</p>`).join('')}</section>`;}return html.replace('</article>',extra+'</article>');};
  document.addEventListener('click',e=>{if(!window.ClassroomMode?.locked()&&e.target.closest('[data-home],[data-action="home"]')){selected=null;pending=null;}},true);
