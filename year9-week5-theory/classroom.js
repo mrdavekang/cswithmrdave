@@ -55,15 +55,22 @@
     if(!force&&root.contains(document.activeElement)&&document.activeElement.matches('input,select'))return;
     root.classList.toggle('cm-teacher',info().teacher);
     document.body.classList.toggle('cm-has-dock',info().teacher);
+    if(!info().teacher){
+      const landing=info().entry;
+      root.hidden=!landing;
+      root.classList.toggle('cm-entry-link',landing);
+      root.innerHTML=landing?`<a href="${escape(teacherLink())}">${pick('Teacher sign-in','Log masuk guru','教师登录')}</a>`:'';
+      return;
+    }
+    root.hidden=false;
+    root.classList.remove('cm-entry-link');
     const status=current?`LIVE · ${labels[mode()]}${controlReady&&presenceReady?'':' · connecting…'}`:'Classroom not started · self-paced';
     let body='';
-    if(info().teacher){
-      if(!allowed)body= open?`<form id="cm-login"><label>Teacher email<input type="email" name="email" autocomplete="username" required></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><button ${busy?'disabled':''}>Sign in</button></form>`:'';
-      else {
+    if(!allowed)body= open?`<form id="cm-login"><label>Teacher email<input type="email" name="email" autocomplete="username" required></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><button ${busy?'disabled':''}>Sign in</button></form>`:'';
+    else {
         const facts=lesson.teacherPages?.()||[],programs=lesson.demoPrograms?.()||[],activeProgram=lesson.demoState?.().program;
         body=`<div class="cm-actions cm-modes">${current?['attention','view','answer','self'].map(c=>button(c,labels[c],busy,mode()===c)).join('')+button('return','Return to own work',busy):button('start','Start classroom',busy,true)}${current?button('bring','Bring here once',busy)+button('end','End classroom',busy):button('signout','Sign out',busy)}</div><div class="cm-actions cm-navigation"><label>Lesson page<select id="cm-page"><option value="">Choose a lesson page…</option>${lesson.destinations().map(d=>`<option value="${escape(d.id)}">${escape(d.group+' · '+d.title)}</option>`).join('')}</select></label><label>Fact slide<select id="cm-fact"><option value="">Choose a fact slide…</option>${facts.map(d=>`<option value="${escape(d.id)}">${escape(d.title)}</option>`).join('')}</select></label></div><div class="cm-demo-controls"><strong>Live Python demonstration</strong><label>Program<select id="cm-demo-program">${programs.map(d=>`<option value="${escape(d.id)}" ${d.id===activeProgram?'selected':''}>${escape(d.title)}</option>`).join('')}</select></label>${button('demo-start',demoOpen?'Send latest code':'Start live code',busy||!current,true)}${button('demo-stop','Stop demonstration',busy||!demoOpen)}<small>Students see a read-only mirror of your code, highlighted line and output. Never type passwords, API keys or personal data in a live demonstration.</small></div><small>${current?.locked?'Following automatically: '+escape(lesson.label()):'Self-paced: students choose their own page. Bring here once shares your current page.'}</small>`;
-      }
-    }else body=`<span>${current?mode()==='view'?'Read and scroll. Wait for your teacher before answering.':mode()==='answer'?'Answer on this page. Your teacher controls page changes.':'Choose your own lesson page.':'You can work normally. This page connects when your teacher starts.'}</span><a href="${escape(teacherLink())}">Teacher sign-in</a>`;
+    }
     root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${info().teacher&&current?`<span>${count??'—'} devices connected · ${updated} received this update</span>`:''}${info().teacher&&!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}</div>${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p>`;
   }
   function acknowledge(){if(!info().teacher&&presenceReady&&roster&&current)roster.track({v:2,revision:current.revision,mode:mode()}).catch(()=>{});}

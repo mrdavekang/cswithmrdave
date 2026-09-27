@@ -29,6 +29,12 @@ The four teaching modes have distinct purposes:
 
 While Screens down, Show only or Let students answer is active, moving to another lesson page or fact slide automatically moves the class too. **Bring here once** is available for a single move without changing the current mode. The dock includes direct lesson-page and fact-slide menus, so the teacher can return from a presentation to any working page without scrolling to the top.
 
+Students see a single, discreet **Teacher sign-in** link on the landing page only. After they open the lesson, the student classroom status strip and teacher link are hidden. Classroom control continues in the background, while the full-screen Screens down and live-code views appear only when the teacher sends them. The teacher’s fixed control dock remains visible in teacher mode.
+
+The circular lesson clock covers **10:20–11:20 a.m.** It shows the current activity, remaining time, the next activity and three short focus steps. Students may expand it, drag it and snap it to any corner. They may turn off activity guidance and keep the clock only. **Open suggested page** is always a choice: the timer never changes pages automatically and disables that button while the teacher controls navigation.
+
+`green-theme.css` applies the school’s green palette across the landing page, navigation, cards, reflections, Python IDE, terminal, fact slides, classroom remote, live-code view and timer. White and pale-green surfaces keep long reading sections clear; dark green identifies teacher-led and code areas, with gold used only for focus and current-state emphasis.
+
 The class ID identifies the teacher-owned class. The lesson path identifies the lesson. Week 3 and Week 5 can use the same class ID in their existing URLs and have separate live sessions. Starting, moving, locking, unlocking or ending one does not alter the other. Internal session IDs and anonymous connection IDs remain temporary; the public lesson URLs stay fixed.
 
 Students enter name/class for local notebooks and PDFs. These details, their answers, Python code and program inputs are not sent to Supabase. No student account is needed. Before a session starts, pupils can study normally. Their open page connects automatically when the teacher starts, usually within 10 seconds (hidden tabs check when visible again). Students arriving while locked still complete the landing form before any requested move. There is no student Leave button. Ending releases navigation and preserves their local work and the permanent URL. A later session on this link reconnects them automatically.
@@ -75,3 +81,5 @@ Edits and cursor movement are broadcast quickly through the private Realtime cha
 Students cannot edit or run the mirrored program. Their own editor remains unchanged underneath it. The demonstration code and output disappear with the temporary two-hour classroom session; student code, program input, answers, names and classes are never sent to Supabase. Because the teacher’s demonstration is shared to pupil devices, never type passwords, API keys or personal data in the live editor.
 
 Verification: `node tests/classroom-live-demo.test.cjs` checks the read-only mirror, highlighted line, anonymous Presence, protection of student code, teacher broadcast and stop behavior. The SQL verification covers repeat installation, temporary recovery, size and program validation, teacher ownership, all teaching modes, return/end behavior and compatibility with the existing control call.
+
+`node tests/lesson-clock.test.cjs` checks the complete 60-minute schedule, uninterrupted stage timing, valid lesson destinations, timer wording and the four draggable corner positions.

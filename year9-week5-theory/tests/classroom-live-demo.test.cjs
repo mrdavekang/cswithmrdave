@@ -25,7 +25,8 @@ async function boot(isTeacher=false){
 function enter(env,name='Student',className='9T'){const {w,d}=env;const set=(selector,value)=>{const element=d.querySelector(selector);assert(element,selector);element.value=value;element.dispatchEvent(new w.Event('input',{bubbles:true}));};set('[data-identity="name"]',name);set('[data-identity="className"]',className);d.querySelector('#entry-form').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));}
 const keepAlive=setInterval(()=>{},1000);
 (async()=>{
- const student=await boot(false);enter(student);student.w.LessonClassroom.navigate('program');const own=student.d.querySelector('[data-code="core"]');own.value='print("my own work")';own.dispatchEvent(new student.w.Event('input',{bubbles:true}));
+ const student=await boot(false);assert.equal(student.d.querySelectorAll('#classroom-root a').length,1,'landing should contain one teacher sign-in link');assert(student.d.querySelector('#classroom-root').textContent.includes('Teacher sign-in'));
+ enter(student);assert.equal(student.d.querySelector('#classroom-root').hidden,true,'student classroom strip should disappear after landing');assert(!student.d.body.textContent.includes('Classroom not started · self-paced'),'student should not see classroom status strip');student.w.LessonClassroom.navigate('program');const own=student.d.querySelector('[data-code="core"]');own.value='print("my own work")';own.dispatchEvent(new student.w.Event('input',{bubbles:true}));
  student.control().emit('state',{...student.server(),stage:'program',locked:true,mode:'view',revision:1,bring_revision:1});
  assert(student.d.querySelector('[data-code="core"]').disabled,`show-only must block editing; mode=${student.w.ClassroomMode.mode()} locked=${student.w.ClassroomMode.locked()}`);
  student.control().emit('demo',{open:true,program:'core',title:'Laptop loan adviser',code:'message = "Live"\nprint(message)',output:'Live\n',line:2,selectionStart:17,selectionEnd:17,running:false,seq:1});
@@ -39,5 +40,5 @@ const keepAlive=setInterval(()=>{},1000);
  const editor=teacher.d.querySelector('[data-code="core"]');assert(editor);editor.value='x = 2\nprint(x)';editor.selectionStart=editor.selectionEnd=6;editor.dispatchEvent(new teacher.w.Event('input',{bubbles:true}));editor.dispatchEvent(new teacher.w.Event('select',{bubbles:true}));await teacher.flush();
  const messages=teacher.sent.filter(message=>message.event==='demo');assert(messages.length);const latest=messages.at(-1).payload;assert.equal(latest.code,'x = 2\nprint(x)');assert.equal(latest.line,2);assert.equal(latest.open,true);
  teacher.d.querySelector('[data-cm="demo-stop"]').click();await teacher.flush();assert(teacher.sent.some(message=>message.event==='demo'&&message.payload.open===false));teacher.close();
- console.log('PASS live demonstration mirror, highlighted line, anonymous presence, read-only viewing, protected student code, teacher broadcast and stop.');clearInterval(keepAlive);
+ console.log('PASS landing-only teacher sign-in, hidden student status strip, live demonstration mirror, highlighted line, anonymous presence, protected student code, teacher broadcast and stop.');clearInterval(keepAlive);
 })().catch(error=>{process.stdout.write('FAIL '+(error?.stack||error)+'\n');clearInterval(keepAlive);process.exitCode=1;});
