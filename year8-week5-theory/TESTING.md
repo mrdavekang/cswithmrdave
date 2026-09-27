@@ -43,4 +43,5 @@ On one school laptop and one iPad: start a named session, run a two-prompt progr
 - `node tests/latest-features.test.cjs`: three fact slides, local response evidence, PDF inclusion, Year 8 live-code validation, highlighted line, anonymous Presence and the fixed green dock.
 - Development SQL fixture: 15 latest-feature checks passed, including repeat migration, fact destinations, live-demo ownership, allowed-program and size checks, presentation modes, return, end and legacy compatibility.
 - JavaScript syntax checks passed for the lesson, classroom controller, fact slides, live demonstration and clock.
+- Projector layout was visually checked in both compact and hidden states. Compact controls keep every classroom action available in three shallow rows; Hide controls leaves only a small status-and-device pill in the bottom corner.
 - Live Supabase acceptance remains required after running step 22: use one teacher and one student browser to check device count, all four presentation modes, automatic following, return to own work, all three fact slides, code broadcast and End classroom.

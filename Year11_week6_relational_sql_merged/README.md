@@ -28,6 +28,8 @@ Open the lesson with `?teacher=1` to sign in with the approved Supabase teacher 
 - three relational-database fact slides with local student answer boxes;
 - a live SQL workspace whose query, highlighted line and preview output appear read-only on student devices.
 
+The teacher dock has Standard, Compact and Tiny display sizes. Select **Minimise controls** while projecting to collapse the entire dock into a small live-status pill; select **Show controls** to restore it. This setting lets the lesson content use most of the screen even when the browser is zoomed in.
+
 The draggable circular clock uses Malaysia time and shows the 2:00–3:00 p.m. classroom cue. It suggests a page but never moves a learner automatically.
 
 Before using this lesson for the first time, run [`supabase/24-year11-week6-relational-sql-latest.sql`](supabase/24-year11-week6-relational-sql-latest.sql) once in the existing Supabase project's SQL Editor. The final result should show `year11_week6_relational_sql_latest_ready = true`. This migration adds only the lesson's permitted page IDs and temporary live-SQL program IDs; it preserves the existing Classroom Mode lessons. Supabase stores control signals and temporary teacher demonstration text for the two-hour classroom session, then the normal cleanup removes the session.

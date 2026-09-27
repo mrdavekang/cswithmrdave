@@ -18,6 +18,8 @@
   let client, sdkLoading, channel, roster, generation = 0, poll, expiryTimer;
   let current = null, deadline = Infinity, lastBring = -1, allowed = false;
   let open = info().teacher, busy = false, checking = false;
+  let dockCollapsed=false,dockSize='compact';
+  try{const saved=localStorage.getItem('classroom-teacher-dock-size');if(['standard','compact','tiny'].includes(saved))dockSize=saved;}catch{}
   let controlReady = false, presenceReady = false, count = null, message = '', bad = false;
   let refreshing = false, authSubscription, desired=null, followTimer, lastReturn=0, updated=0;
   let demoOpen=false,demoSequence=0,demoSendTimer=null,demoSaveTimer=null,demoSaving=false,pendingDemo=null;
@@ -54,7 +56,11 @@
     guardNavigation();
     if(!force&&root.contains(document.activeElement)&&document.activeElement.matches('input,select'))return;
     root.classList.toggle('cm-teacher',info().teacher);
-    document.body.classList.toggle('cm-has-dock',info().teacher);
+    root.classList.toggle('cm-collapsed',info().teacher&&dockCollapsed);
+    root.dataset.size=dockSize;
+    document.body.classList.toggle('cm-has-dock',info().teacher&&!dockCollapsed);
+    document.body.classList.toggle('cm-dock-compact',info().teacher&&!dockCollapsed&&dockSize==='compact');
+    document.body.classList.toggle('cm-dock-tiny',info().teacher&&!dockCollapsed&&dockSize==='tiny');
     if(!info().teacher){
       const landing=info().entry;
       root.hidden=!landing;
@@ -65,13 +71,15 @@
     root.hidden=false;
     root.classList.remove('cm-entry-link');
     const status=current?`LIVE · ${labels[mode()]}${controlReady&&presenceReady?'':' · connecting…'}`:'Classroom not started · self-paced';
+    const dockTools=`<div class="cm-dock-tools">${dockCollapsed?'':`<label>Panel size<select id="cm-size"><option value="standard" ${dockSize==='standard'?'selected':''}>Standard</option><option value="compact" ${dockSize==='compact'?'selected':''}>Compact</option><option value="tiny" ${dockSize==='tiny'?'selected':''}>Tiny</option></select></label>`}${button('dock-toggle',dockCollapsed?'Show controls':'Minimise controls')}</div>`;
+    if(dockCollapsed){root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${current?`<span>${count??'—'} devices</span>`:''}${dockTools}</div>`;return;}
     let body='';
     if(!allowed)body= open?`<form id="cm-login"><label>Teacher email<input type="email" name="email" autocomplete="username" required></label><label>Password<input type="password" name="password" autocomplete="current-password" required></label><button ${busy?'disabled':''}>Sign in</button></form>`:'';
     else {
         const facts=lesson.teacherPages?.()||[],programs=lesson.demoPrograms?.()||[],activeProgram=lesson.demoState?.().program;
         body=`<div class="cm-actions cm-modes">${current?['attention','view','answer','self'].map(c=>button(c,labels[c],busy,mode()===c)).join('')+button('return','Return to own work',busy):button('start','Start classroom',busy,true)}${current?button('bring','Bring here once',busy)+button('end','End classroom',busy):button('signout','Sign out',busy)}</div><div class="cm-actions cm-navigation"><label>Lesson page<select id="cm-page"><option value="">Choose a lesson page…</option>${lesson.destinations().map(d=>`<option value="${escape(d.id)}">${escape(d.group+' · '+d.title)}</option>`).join('')}</select></label><label>Presentation / fact slide<select id="cm-fact"><option value="">Choose a teacher slide…</option>${facts.map(d=>`<option value="${escape(d.id)}">${escape(d.title)}</option>`).join('')}</select></label></div><div class="cm-demo-controls"><strong>Live SQL demonstration</strong><label>Query<select id="cm-demo-program">${programs.map(d=>`<option value="${escape(d.id)}" ${d.id===activeProgram?'selected':''}>${escape(d.title)}</option>`).join('')}</select></label>${button('demo-start',demoOpen?'Send latest query':'Start live SQL',busy||!current,true)}${button('demo-stop','Stop demonstration',busy||!demoOpen)}<small>Students see a read-only mirror of your query, highlighted line and preview. Never type passwords, keys or personal data in a live demonstration.</small></div><small>${current?.locked?'Following automatically: '+escape(lesson.label()):'Self-paced: students choose their own page. Bring here once shares your current page.'}</small>`;
     }
-    root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${info().teacher&&current?`<span>${count??'—'} devices connected · ${updated} received this update</span>`:''}${info().teacher&&!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}</div>${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p>`;
+    root.innerHTML=`<div class="cm-bar"><strong>${escape(status)}</strong>${info().teacher&&current?`<span>${count??'—'} devices connected · ${updated} received this update</span>`:''}${info().teacher&&!allowed?button('toggle',open?'Hide sign-in':'Teacher sign-in'):''}${dockTools}</div>${body}<p class="cm-message ${bad?'cm-error':''}" role="status">${escape(message)}</p>`;
   }
   function acknowledge(){if(!info().teacher&&presenceReady&&roster&&current)roster.track({v:2,revision:current.revision,mode:mode()}).catch(()=>{});}
   function queueFollow(){
@@ -341,6 +349,7 @@
     const el=event.target.closest('[data-cm]');if(!el||el.disabled)return;
     const cmd=el.dataset.cm;
     if(cmd==='toggle'){open=!open;render(true);}
+    else if(cmd==='dock-toggle'){dockCollapsed=!dockCollapsed;render(true);}
     else if(cmd==='copy'){
       try{await navigator.clipboard.writeText(sessionLink());say('Link copied. Share it with this class.','Pautan disalin. Kongsi dengan kelas ini.','链接已复制，请分享给本班学生。');}
       catch{root.querySelector('.cm-link')?.select();say('Select and copy the classroom link above.','Pilih dan salin pautan di atas.','请选择并复制上方链接。');}
@@ -356,7 +365,7 @@
   document.addEventListener('change',event=>{
     if(locked()&&event.target.matches('[data-restore]')){event.preventDefault();event.stopImmediatePropagation();event.target.value='';say('Load a backup after your teacher unlocks navigation.','Muatkan sandaran selepas guru membuka navigasi.','请等老师解锁后再导入备份。');}
   },true);
-  root.addEventListener('change',e=>{if(!allowed)return;if(e.target.id==='cm-page'&&e.target.value)lesson.navigate(e.target.value);if(e.target.id==='cm-fact'&&e.target.value)lesson.openTeacherPage?.(e.target.value);});
+  root.addEventListener('change',e=>{if(e.target.id==='cm-size'){dockSize=e.target.value;try{localStorage.setItem('classroom-teacher-dock-size',dockSize);}catch{}render(true);return;}if(!allowed)return;if(e.target.id==='cm-page'&&e.target.value)lesson.navigate(e.target.value);if(e.target.id==='cm-fact'&&e.target.value)lesson.openTeacherPage?.(e.target.value);});
   for(const type of ['click','beforeinput','input','change','keydown','paste','drop','submit'])document.addEventListener(type,e=>{
     if(info().teacher||!current||info().entry||!['view','attention'].includes(mode()))return;
     if(e.target.closest('#lesson,#teacher-presentation')&&!(type==='keydown'&&['ArrowDown','ArrowUp','PageDown','PageUp','Home','End','Tab'].includes(e.key))){e.preventDefault();e.stopImmediatePropagation();}
