@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#116b40">
+  <title>Year 6 · Selection and Repetition</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <strong id="identity">YEAR 6 · TERM 1 · WEEK 5</strong>
+    <span id="saveStatus" role="status">Your work stays on this device until you save it.</span>
+    <div class="save-actions">
+      <button id="backup" type="button" disabled>Full backup</button>
+      <button id="pdf" type="button" class="primary" disabled>Save PDF</button>
+    </div>
+  </header>
+
+  <section id="landing" class="landing">
+    <div>
+      <p class="eyebrow">YEAR 6 COMPUTING · 60 MINUTES</p>
+      <h1>Choose a route.<br>Make it flash.</h1>
+      <p class="lead">Build a visitor choice and a repeated signal in Scratch.</p>
+      <section class="card intro-card">
+        <h2>WAGBA</h2>
+        <p>Making a program that chooses what to do and repeats an action for a reason.</p>
+        <dl>
+          <dt>Knowledge</dt><dd>I know what a condition and a repeat block do.</dd>
+          <dt>Skills</dt><dd>I can build and test two routes and a three-flash signal.</dd>
+          <dt>Understanding</dt><dd>I can explain why the choice and the repeat block are needed.</dd>
+        </dl>
+      </section>
+    </div>
+    <div class="card setup-card">
+      <h2>Your lesson notebook</h2>
+      <p>Enter your name and class. If you work with a partner, both names will appear in your report.</p>
+      <form id="login">
+        <label for="name">Your name</label>
+        <input id="name" required maxlength="60" autocomplete="given-name" placeholder="First name or classroom name">
+        <label for="className">Your class</label>
+        <input id="className" maxlength="30" placeholder="Type your class">
+        <fieldset class="mode-box">
+          <legend>How are you working?</legend>
+          <label><input type="radio" name="mode" value="solo" checked> On my own</label>
+          <label><input type="radio" name="mode" value="pair"> With a partner</label>
+        </fieldset>
+        <div id="partnerWrap" hidden>
+          <label for="partner">Partner's name</label>
+          <input id="partner" maxlength="60" placeholder="Optional - you can continue alone at home">
+        </div>
+        <label for="language">Language support</label>
+        <select id="language"><option value="en">English</option><option value="bi">English + 中文</option></select>
+        <button type="submit" class="primary full">Start / resume lesson →</button>
+      </form>
+      <p id="loginError" class="error" role="alert"></p>
+      <hr>
+      <label for="restore">Continue from a full backup (.json)</label>
+      <input id="restore" type="file" accept=".json,application/json">
+      <div id="restorePanel" class="action" hidden>
+        <p id="restoreSummary"></p>
+        <div class="button-row"><button id="confirmRestore" type="button" class="primary">Restore work</button><button id="cancelRestore" type="button">Cancel</button></div>
+      </div>
+      <p class="small">This website saves work on this device. A backup helps you continue elsewhere. Your Scratch project is a separate <code>.sb3</code> file. The PDF and Scratch file must be uploaded to Teams by you.</p>
+    </div>
+  </section>
+
+  <div id="lesson" hidden>
+    <div class="layout">
+      <aside>
+        <p class="eyebrow">TERM 1 · WEEK 5</p>
+        <h2>Choose & repeat</h2>
+        <nav id="nav" aria-label="Lesson pages"></nav>
+        <div class="facts">
+          <h3>Topic</h3><p>Selection and repetition in Scratch</p>
+          <h3>WAGBA</h3><p>Make a program choose and repeat an action for a reason.</p>
+          <h3>Keywords</h3><p>condition · selection · branch · repeat · loop · test · debug</p>
+          <h3>Challenge</h3><p>Make the robot respond helpfully to a third, unexpected answer.</p>
+        </div>
+        <button id="switch" type="button">Change learner</button>
+      </aside>
+      <main id="content"></main>
+    </div>
+    <footer class="bottom">
+      <button id="prev" type="button">← Back</button>
+      <span id="position" aria-live="polite"></span>
+      <button id="next" type="button" class="primary">Next →</button>
+    </footer>
+  </div>
+
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
