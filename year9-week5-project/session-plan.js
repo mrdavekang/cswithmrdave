@@ -6,8 +6,8 @@ window.SESSION_PLAN=Object.freeze({
   keywords:'input · validation · integer · variable · constant · nested selection · or · and · boundary · erroneous data · test evidence',
   challenge:'Explain why the program must reject unsuitable input before it calculates or gives advice.',
   stages:[
-    {id:'read',title:'Read first',start:530,end:536,steps:['Read Sam’s helpdesk problem.','Follow the highlighted code one line at a time.','Notice why validation comes before advice.']},
-    {id:'starter',title:'Do Now',start:536,end:542,steps:['Complete all six checks.','Use the feedback to correct mistakes.','Keep your first answers as starting evidence.']},
+    {id:'read',title:'Read first',start:530,end:536,steps:['Read Sam’s helpdesk problem and the worked 2-person example.','Compare valid and unsuitable inputs before advice.','Follow the highlighted code one line at a time.']},
+    {id:'starter',title:'Do Now',start:536,end:542,steps:['Use the worked reminders to answer the six K, S and U checks.','Read the hint and feedback for each question.','Keep your first answers as starting evidence.']},
     {id:'types',title:'Types of Learning',start:542,end:546,steps:['Use the six checks to identify your main focus.','Read the explanation for the highest score.','Choose a precise next step.']},
     {id:'main1',title:'Main Task 1',start:546,end:566,steps:['Build and run the one-condition nested program.','Challenge 2: predict and run the separate OR model.','Compare OR with AND, then choose the rule for two inputs.']},
     {id:'main2',title:'Main Task 2',start:566,end:581,steps:['Arrange the validation Parsons puzzle.','Follow Predict, Run, Investigate and Modify on one input.','Make the full program, then predict, run and improve planned tests.']},
