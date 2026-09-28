@@ -4,6 +4,7 @@ returns boolean language sql immutable set search_path='' as $$
  select coalesce(case p_lesson
  when 'year9-week3-project' then classroom_private.valid_stage(p_stage)
  when 'year9-week5-theory' then p_stage in ('read','starter','types','nested-read','parsons','debug','program','validation-read','validation','pit','plenary','extension','submit','fact-nested','fact-validation','fact-boundary')
+ when 'year9-week5-project' then p_stage in ('read','starter','types','main1','main2','challenge','pit','plenary','fact-validate','fact-nested','fact-tests')
  -- read is the existing RPC's supported-lesson probe; actual Year 8 cards use the IDs below.
  when 'year8-week5-theory' then p_stage in ('read','mission','starter1','starter2','starter3','starter4','starter5','sp1','sp2','sp3','sp4','sp5','before','six','match','condition0','condition1','condition2','condition3','condition4','condition5','condition6','condition7','trace-model','path0','path1','path2','output1','output2','syntax-read','mp1','mp2','mp3','indent1','indent2','debug1','debug2','pp1','pp2','code1','code2','code3','ext1','ext2','ext3','after','exit-operators','exit-path','review')
  when 'Year11_week5_session2' then p_stage in ('intro','start','before','read','main1','creation','main2','pit','exit','extension','submit','fact1','fact2','fact3')
@@ -11,7 +12,8 @@ returns boolean language sql immutable set search_path='' as $$
  when 'year7-week5-theory' then p_stage in ('read','loop','indent','starter','types','predict','investigate','modify','make','errors','debug1','debug2','debug3','debug-level','pitstop','plenary','extension','poster','export','slide-loop','slide-indent','slide-starter','slide-types','slide-predict','slide-investigate','slide-modify','slide-make','slide-errors','slide-debug1','slide-debug2','slide-debug3','slide-debug-level','slide-pitstop','slide-plenary','slide-extension','slide-poster','slide-export','slide-fact-loop','slide-fact-indent','slide-fact-debug')
  when 'year8-week5-project' then p_stage in ('read','read-check','predict','baseline','brief','setup','build','personalise','test-read','tests','feedback','transfer','extension','pitstop','plenary','review','slide-read','slide-read-check','slide-predict','slide-baseline','slide-brief','slide-setup','slide-build','slide-personalise','slide-test-read','slide-tests','slide-feedback','slide-transfer','slide-extension','slide-pitstop','slide-plenary','slide-review','slide-fact-event','slide-fact-boundary','slide-fact-test')
  when 'year8-week3-project' then p_stage in ('read','do1','do2','do3','before0','before1','before2','focus','plan','build-open','build','build-try','trace','test','evidence','pit0','pit1','pit2','pitfocus','extension','ext-steps-code','ext-steps-try','ext-teams-brief','ext-teams-code','ext-teams-try','ext-signal-brief','ext-signal-code','ext-signal-try','ext-dial-brief','ext-dial-code','ext-dial-try','explain','review','slide-read','slide-fact-store','slide-do-now','slide-fact-update','slide-types','slide-main1','slide-main2','slide-fact-reset','slide-pitstop','slide-extension','slide-plenary')
- when 'Year11_week6_relational_sql_merged' then p_stage in ('page-0','page-1','page-2','page-3','page-4','page-5','page-6','page-7','page-8','page-9','page-10','page-11','slide-lesson-0','slide-lesson-1','slide-lesson-2','slide-lesson-3','slide-lesson-4','slide-lesson-5','slide-lesson-6','slide-lesson-7','slide-lesson-8','slide-lesson-9','slide-lesson-10','slide-lesson-11','slide-fact-keys','slide-fact-where','slide-fact-safety')
+ -- read is the compatibility probe used by classroom_class_current.
+ when 'Year11_week6_relational_sql_merged' then p_stage in ('read','page-0','page-1','page-2','page-3','page-4','page-5','page-6','page-7','page-8','page-9','page-10','page-11','slide-lesson-0','slide-lesson-1','slide-lesson-2','slide-lesson-3','slide-lesson-4','slide-lesson-5','slide-lesson-6','slide-lesson-7','slide-lesson-8','slide-lesson-9','slide-lesson-10','slide-lesson-11','slide-fact-keys','slide-fact-where','slide-fact-safety')
  else false end,false);
 $$;
 revoke all on function classroom_private.valid_lesson_stage(text,text) from public,anon,authenticated;
@@ -99,7 +101,7 @@ begin
  if (p_demo->>'open')::boolean then
   program_value:=p_demo->>'program';
   if not (
-   (s.lesson='year9-week5-theory' and program_value in ('gap','syntax','indent','core','extension')) or
+   (s.lesson in ('year9-week5-theory','year9-week5-project') and program_value in ('gap','syntax','indent','core','extension')) or
    (s.lesson='Year11_week6_relational_sql_merged' and program_value in ('insert-student','update-email','update-returned','delete-loan'))
   ) then raise exception 'Invalid demonstration program' using errcode='22023'; end if;
   if jsonb_typeof(p_demo->'code')<>'string' or jsonb_typeof(p_demo->'output')<>'string' then raise exception 'Invalid demonstration text' using errcode='22023'; end if;

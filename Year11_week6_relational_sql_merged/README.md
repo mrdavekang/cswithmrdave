@@ -34,6 +34,8 @@ The draggable circular clock uses Malaysia time and shows the 2:00–3:00 p.m. c
 
 Before using this lesson for the first time, run [`supabase/24-year11-week6-relational-sql-latest.sql`](supabase/24-year11-week6-relational-sql-latest.sql) once in the existing Supabase project's SQL Editor. The final result should show `year11_week6_relational_sql_latest_ready = true`. This migration adds only the lesson's permitted page IDs and temporary live-SQL program IDs; it preserves the existing Classroom Mode lessons. Supabase stores control signals and temporary teacher demonstration text for the two-hour classroom session, then the normal cleanup removes the session.
 
+If teacher sign-in reports permission error `[22023]`, rerun this migration. That error means the shared Classroom Mode stage list is older than this lesson registration.
+
 ## Original examination extracts
 
 Extension A, 10 marks: November 2024 9210/2 Q05.3–05.4 (3); June 2024 9210/2 Q08.1 and Q08.3 (4); November 2023 9210/2 Q06.1 and Q06.4 (3).

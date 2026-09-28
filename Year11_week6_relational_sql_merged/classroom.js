@@ -323,6 +323,8 @@
       say('Supabase rejected the email or password. Use your classroom teacher account, not your Supabase dashboard login.','Supabase menolak e-mel atau kata laluan. Gunakan akaun guru kelas, bukan log masuk papan pemuka Supabase.','邮箱或密码不正确。请使用课堂教师账户，而不是 Supabase 控制台账户。',true);
     else if(code==='teacher_not_approved')
       say('Your email and password worked, but this account is not approved as a classroom teacher.','E-mel dan kata laluan betul, tetapi akaun ini belum diluluskan sebagai guru kelas.','邮箱和密码正确，但此账户尚未获准担任课堂教师。',true);
+    else if(code==='22023'&&phase==='permissions')
+      say('Your account is approved, but Classroom Mode for this lesson is missing or out of date. Run the Year 11 Week 6 Supabase update, then sign in again.','Akaun anda diluluskan, tetapi Mod Kelas untuk pelajaran ini belum dipasang atau sudah lapuk. Jalankan kemas kini Supabase Tahun 11 Minggu 6, kemudian log masuk semula.','您的账户已获批准，但本课的课堂模式尚未安装或需要更新。请运行十一年级第六周 Supabase 更新，然后重新登录。',true);
     else if(phase==='permissions')
       say('Your email and password worked, but classroom permissions could not be checked. Share this error code with the person setting up Classroom Mode.'+detail,'Log masuk berjaya, tetapi kebenaran kelas tidak dapat disemak. Kongsi kod ralat ini dengan penyedia Mod Kelas.'+detail,'登录成功，但无法检查课堂权限。请将此错误代码告知课堂模式设置人员。'+detail,true);
     else
