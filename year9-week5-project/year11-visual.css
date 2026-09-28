@@ -1,0 +1,77 @@
+/* Match the Year 11 lesson's calm classroom layout while retaining Year 9 activities. */
+:root{--paper:#f7f8f6;--ink:#17221d;--muted:#53645a;--blue:#116b40;--navy:#17221d;--cyan:#116b40;--line:#c8d2ca;--soft:#e8f3eb;--green:#116b40}
+body{background:var(--paper);color:var(--ink);font-size:17px;line-height:1.65}
+button{border-color:#97aa9c;border-radius:5px;color:var(--ink);background:#fff}
+button:hover{background:#e8f3eb;border-color:#116b40}
+button.primary{background:#116b40;border-color:#116b40;color:#fff}
+button.primary:hover{background:#0b5431}
+.card,.entry-card,.mini-card,.step-card,.task-guide,.focus-overview,.question-card{background:#fff;border:1px solid var(--line);border-radius:5px;box-shadow:none}
+.card.accent,.entry-card{border-top:1px solid var(--line)}
+.eyebrow{color:#116b40;font-size:12px;letter-spacing:.09em}
+h2,h3{color:#116b40}
+.pill,.teacher-tag,.test-kind{background:#e9f2eb;color:#116b40;border-radius:4px}
+.area,.area.S,.area.U{background:#e6f0e8;color:#116b40;border-radius:4px}
+.landing{max-width:1270px;padding:0 36px 65px}
+.landing>header{background:#fff;border-bottom:1px solid var(--line);padding:18px 36px;margin:0 -36px 65px;min-height:76px}
+.brand{color:#116b40;letter-spacing:.08em}
+.landing-grid{grid-template-columns:minmax(0,1.15fr) minmax(340px,.82fr);gap:clamp(32px,5vw,78px)}
+.landing h1{color:#17221d;font-size:clamp(44px,5vw,64px);line-height:1.08}
+.dot{color:#116b40}
+.landing .intro{font-size:19px;color:#394c40}
+.landing .aim-banner{background:transparent;color:#17221d;border:0;border-radius:0;padding:0;margin:34px 0 24px}
+.landing .aim-banner .eyebrow{color:#116b40;font-size:20px;letter-spacing:0;text-transform:none;margin:0 0 6px}
+.landing .aim-banner p{font-size:17px}
+.landing .aims{display:grid;grid-template-columns:1fr;gap:12px}
+.landing .aims>div{border-top:1px solid var(--line);padding-top:10px;font-size:14px}
+.landing .aims b:not(.aim-letter){display:inline;color:#116b40}
+.landing .aims p{display:inline;margin-left:5px;color:#34473a}
+.aim-letter{display:inline-grid;place-items:center;background:#e3efe6;color:#116b40;width:28px;height:28px;margin:0 9px 0 0;border-radius:4px;line-height:1}
+.entry-card{padding:30px}
+.entry-card h2{font-size:30px;color:#17221d}
+.entry-card input,.field textarea,.language select,.input-form input,.test-table select{border-color:#9bad9e;border-radius:4px}
+.shell{grid-template-columns:270px minmax(0,1fr);max-width:1700px;margin:auto}
+.sidebar{background:#f7f8f6;border-right:1px solid var(--line);padding:24px 15px}
+.sidebar .course{color:#4f6657}
+.nav-group{color:#54735e}
+.sidebar nav button{border-radius:5px;margin:3px 0;font-size:14px;padding:10px 11px}
+.sidebar nav button:hover{background:#e6f0e8}
+.sidebar nav button[aria-current]{background:#116b40;color:#fff}
+.sidebar nav button[aria-current] small{color:#e2f3e7}
+.sidebar nav button[aria-current] .nav-dot{background:#fff}
+.sidebar-aims{border-top:1px solid var(--line)}
+.sidebar-aims summary{font-size:12px;color:#116b40}
+.sidebar-aims .aim-banner{background:transparent;color:#17221d;border-radius:0;padding:0;margin:12px 0}
+.sidebar-aims .aim-banner .eyebrow{color:#116b40;font-size:12px;margin-bottom:4px}
+.sidebar-aims .aim-banner p{font-size:12px}
+.sidebar-aims .aims>div{font-size:12px;border-top:1px solid #dce5de;padding-top:7px}
+.sidebar-aims .aims b:not(.aim-letter){color:#116b40}
+.sidebar-aims .aims p{color:#465a4d}
+.topbar{position:sticky;top:0;z-index:15;background:#fff;min-height:74px;padding:15px 34px}
+.topbar small{color:#657569}
+.workspace main{max-width:1230px;padding:37px clamp(22px,4vw,58px) 40px}
+.page-heading{border:0;margin-bottom:28px;padding:0}
+.page-heading h1{color:#17221d;font-size:clamp(33px,3.4vw,49px);line-height:1.13}
+.page-count{color:#627a68}
+.page-footer{background:#fff;border:1px solid var(--line);border-radius:5px;padding:16px 19px;margin-top:34px}
+.rule-grid>div,.mini-card,.order-list>div,.score-grid>div,.task-guide,.tutor-note,.focus-box,.support-strip,.submit-steps>div{border-radius:5px;box-shadow:none}
+.rule-grid>div,.order-list>div,.score-grid>div,.task-guide,.submit-steps>div{background:#fff}
+.code-lines,.code-sample{border-radius:5px}
+.choice,.feedback,.phase-options label{border-radius:5px}
+.choice:hover,.choice.selected{background:#e8f3eb;border-color:#90b29a}
+.focus-box,.support-strip{background:#edf5ee;border-left-color:#116b40}
+th{background:#edf5ee;color:#23492f}
+.y11-ksu-card{position:relative;padding:24px 26px 28px;margin-bottom:15px}
+.y11-ksu-letter{display:inline-grid;place-items:center;float:left;width:36px;height:36px;margin:0 14px 5px 0;border-radius:5px;background:#e3f0e6;color:#116b40;font-weight:900}
+.y11-ksu-card h2{font-size:23px;margin:0 0 14px;padding-top:3px}
+.y11-ksu-card p{clear:both;margin:12px 0;color:#394c40}
+.y11-target{font-size:17px;color:#17221d!important}
+.y11-evidence{background:#f3f7f3;border:1px solid #dbe6dd;padding:12px 14px;border-radius:4px;font-size:14px}
+.y11-check-label{display:block;font-weight:800;color:#244831;margin:16px 0 6px}
+.y11-ksu-card select,.card select[data-y9-reflect]{width:100%;max-width:720px;background:#fff;color:#17221d;border:1px solid #83998a;border-radius:4px;padding:11px 12px;font:inherit}
+.y11-phase-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}
+.y11-phase-key>div{background:#f4f8f4;border:1px solid #d9e5dc;border-radius:4px;padding:12px 14px}
+.y11-phase-key b{display:block;color:#116b40}
+.y11-phase-key span{font-size:14px;color:#43584a}
+.y11-next{background:#eaf4ec;padding:14px;border-left:3px solid #116b40;border-radius:3px}
+@media(max-width:850px){.landing{padding:0 22px 40px}.landing>header{margin:0 -22px 30px;padding:14px 22px}.landing-grid{grid-template-columns:1fr}.shell{display:block}.sidebar{position:relative;max-height:none}.topbar{position:relative}.workspace main{padding:25px 20px}.y11-phase-key{grid-template-columns:1fr}}
+@media(max-width:560px){body{font-size:15px}.landing h1{font-size:40px}.landing .aims p{display:block;margin:3px 0 0}.y11-ksu-card{padding:19px}.page-footer{padding:12px}.y11-ksu-card select,.card select[data-y9-reflect]{max-width:100%}}
