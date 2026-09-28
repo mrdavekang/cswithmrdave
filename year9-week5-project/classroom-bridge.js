@@ -22,7 +22,7 @@
   demoPrograms:()=>[{id:'core',title:'Helpdesk adviser'},{id:'extension',title:'Helpdesk challenge'}],startDemo:id=>{if(!teacher||!['core','extension'].includes(id))return false;activeDemo=id;navigate(id==='core'?'main1':'challenge',true);requestAnimationFrame(()=>document.querySelector(`[data-code="${id==='core'?'main':'challenge'}"]`)?.focus());return true;},stopDemo:()=>{activeDemo=null;},demoState
  });
  report=function(){let html=baseReport(),extra='';for(const f of facts){const qs=[...f.questions,['challenge',f.challenge]].filter(([k])=>String(state.answers[f.id+'_'+k]||'').trim());if(qs.length)extra+=`<section><h2>${esc(tx(f.title))}</h2>${qs.map(([k,l])=>`<h3>${esc(tx(l))}</h3><p>${esc(state.answers[f.id+'_'+k])}</p>`).join('')}</section>`;}const at=html.lastIndexOf('</div>');return at<0?html+extra:html.slice(0,at)+extra+html.slice(at);};
- document.addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b&&fact(b.dataset.page)){e.preventDefault();e.stopImmediatePropagation();navigate(b.dataset.page);}},true);
+ document.addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b&&fact(b.dataset.page)){e.preventDefault();e.stopImmediatePropagation();navigate(b.dataset.page);return;}if(b&&selected&&PAGES.some(p=>p[0]===b.dataset.page)){e.preventDefault();e.stopImmediatePropagation();selected=null;navigate(b.dataset.page,true);return;}if(selected&&e.target.closest('#home'))selected=null;},true);
  document.addEventListener('input',e=>{if(activeDemo&&e.target.matches('textarea[data-code]'))window.dispatchEvent(new Event('lesson:demo-change'));});
  render();
 })();
