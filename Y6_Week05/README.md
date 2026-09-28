@@ -4,6 +4,8 @@ Open `index.html` in a current browser or publish this whole directory to GitHub
 
 This lesson follows the layout, Raleway typeface and green/white palette of the supplied Year 11 Week 5 Session 3 app, but the reading and tasks are written for Year 6. The sidebar keeps the sequence visible. Future pages unlock as pupils move forward. Enter `teacher` as the name to preview every page without completing the route.
 
+Supabase Classroom Mode provides **Screens down** only. Students use the ordinary lesson URL. The teacher opens the URL with `?teacher=1`, signs in, starts the classroom, and can cover or release every connected student screen. This does not send names, answers or Scratch work to Supabase. Run `supabase/30-screen-down-classrooms.sql` once and check that it returns `screen_down_classrooms_ready = true`.
+
 ## 60-minute sequence
 
 | Stage | Time |
