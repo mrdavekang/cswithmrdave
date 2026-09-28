@@ -35,7 +35,7 @@ The 60-minute classroom cue is set to 7:50–8:50 a.m. Malaysia time: Prepare 4;
 
 Open the ordinary link for students. Add `?teacher=1` for teacher sign-in and controls. Available modes are Screens down, Show only, Let students answer and Self-paced. The teacher can bring devices to any lesson page or projector slide, return students to their own place, and broadcast a read-only Python walkthrough. Only anonymous presence and temporary control/demo state enter Supabase; student names, classes and answers remain in their browsers.
 
-Before using Classroom Mode, run `supabase/25-year10-week5-strings-validation.sql` once in the existing Supabase project. This adds the permitted page, slide and Python-demonstration identifiers while retaining earlier lesson identifiers.
+Before using Classroom Mode, run `supabase/25-year10-week5-strings-validation.sql` once in the existing Supabase project. This adds the supported-lesson probe plus the permitted page, slide and Python-demonstration identifiers while retaining earlier lesson identifiers. The file is safe to rerun if an earlier copy produced error `22023`.
 
 ## Files
 

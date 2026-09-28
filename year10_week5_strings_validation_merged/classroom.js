@@ -323,6 +323,8 @@
       say('Supabase rejected the email or password. Use your classroom teacher account, not your Supabase dashboard login.','Supabase menolak e-mel atau kata laluan. Gunakan akaun guru kelas, bukan log masuk papan pemuka Supabase.','邮箱或密码不正确。请使用课堂教师账户，而不是 Supabase 控制台账户。',true);
     else if(code==='teacher_not_approved')
       say('Your email and password worked, but this account is not approved as a classroom teacher.','E-mel dan kata laluan betul, tetapi akaun ini belum diluluskan sebagai guru kelas.','邮箱和密码正确，但此账户尚未获准担任课堂教师。',true);
+    else if(code==='22023')
+      say('Teacher sign-in is valid, but this lesson is not registered in Classroom Mode. Run supabase/25-year10-week5-strings-validation.sql, then refresh this page.'+detail,'Log masuk guru sah, tetapi pelajaran ini belum didaftarkan dalam Mod Kelas. Jalankan fail SQL persediaan, kemudian muat semula halaman ini.'+detail,'教师登录有效，但此课程尚未注册到课堂模式。请运行设置 SQL 文件，然后刷新此页面。'+detail,true);
     else if(phase==='permissions')
       say('Your email and password worked, but classroom permissions could not be checked. Share this error code with the person setting up Classroom Mode.'+detail,'Log masuk berjaya, tetapi kebenaran kelas tidak dapat disemak. Kongsi kod ralat ini dengan penyedia Mod Kelas.'+detail,'登录成功，但无法检查课堂权限。请将此错误代码告知课堂模式设置人员。'+detail,true);
     else
