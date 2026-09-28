@@ -9,10 +9,10 @@ window.SESSION_PLAN=Object.freeze({
     {id:'read',title:'Read first',start:530,end:536,steps:['Read Sam’s helpdesk problem.','Follow the highlighted code one line at a time.','Notice why validation comes before advice.']},
     {id:'starter',title:'Do Now',start:536,end:542,steps:['Complete all six checks.','Use the feedback to correct mistakes.','Keep your first answers as starting evidence.']},
     {id:'types',title:'Types of Learning',start:542,end:546,steps:['Use the six checks to identify your main focus.','Read the explanation for the highest score.','Choose a precise next step.']},
-    {id:'main1',title:'Main Task 1',start:546,end:566,steps:['Arrange the program steps.','Complete the validation and calculation.','Run both advice routes in the Python editor.']},
-    {id:'main2',title:'Main Task 2',start:566,end:581,steps:['Run the planned test cases.','Compare expected and actual results.','Improve one error message and rerun the affected tests.']},
+    {id:'main1',title:'Main Task 1',start:546,end:566,steps:['Arrange the nested-selection Parsons puzzle.','Follow Predict, Run, Investigate and Modify on the small model.','Make and run Sam’s nested advice program.']},
+    {id:'main2',title:'Main Task 2',start:566,end:581,steps:['Arrange the validation Parsons puzzle.','Follow Predict, Run, Investigate and Modify on one input.','Make the full program, then predict, run and improve planned tests.']},
     {id:'challenge',title:'Further challenge',start:581,end:585,steps:['Copy your working program.','Extend it without breaking the original routes.','Run a relevant test after each change.']},
-    {id:'pit',title:'Learning Pit Stop',start:585,end:588,steps:['Use evidence from your answers, code and tests.','Select a phase for knowledge, skills and understanding.','Decide what help or challenge you need next.']},
+    {id:'pit',title:'Learning Pit Stop',start:585,end:588,steps:['Choose your confidence phase for knowledge.','Choose your confidence phase for skills and understanding.','Notice which phase you selected most often.']},
     {id:'plenary',title:'Plenary and PDF',start:588,end:590,steps:['Complete the three final checks.','Explain why input is checked before the time decision.','Save the PDF for Teams.']}
   ]
 });
