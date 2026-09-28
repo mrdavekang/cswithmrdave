@@ -1,0 +1,12 @@
+#live-demo{position:fixed;inset:0;z-index:10000;display:grid;grid-template-rows:auto 1fr auto;background:#0e1726;color:#f7fbff;font-family:Raleway,Arial,sans-serif;overflow:hidden}
+#live-demo header{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:22px 32px;background:#17243a;border-bottom:1px solid #40506b}
+#live-demo h1{font-size:clamp(24px,3vw,42px);margin:8px 0 0;color:#fff}
+.live-pill{font-size:12px;font-weight:850;letter-spacing:.16em;color:#07131f;background:#71e2bf;padding:7px 11px;border-radius:999px}
+.live-state{display:flex;align-items:center;gap:9px;font-weight:700}.live-dot{width:13px;height:13px;background:#ff5964;border-radius:50%;box-shadow:0 0 0 7px #ff596422;animation:live-pulse 1.5s infinite}
+#live-demo main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.8fr);gap:22px;padding:22px;min-height:0}
+.live-code,.live-output{overflow:auto;border:1px solid #40506b;border-radius:14px;background:#101c2e}.live-code{padding:14px 0;font:clamp(16px,1.8vw,27px)/1.62 ui-monospace,SFMono-Regular,Consolas,monospace}
+.live-code-line{display:grid;grid-template-columns:64px 1fr;min-height:1.62em;padding:0 22px 0 0}.live-code-line i{text-align:right;padding-right:18px;color:#7d8da7;font-style:normal;user-select:none}.live-code-line code{white-space:pre;color:#e7f0ff}.live-code-line.current{background:#f8d34c;color:#17202c;box-shadow:inset 5px 0 #ff7b32}.live-code-line.current i,.live-code-line.current code{color:#17202c;font-weight:800}
+.live-output{padding:22px}.live-output h2{font-size:18px;color:#8fd9ff}.live-output pre{white-space:pre-wrap;overflow-wrap:anywhere;font:18px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d9ffe9;margin:0}
+#live-demo footer{padding:12px 28px;background:#17243a;color:#ccd6e7;text-align:center;font-weight:650}
+@keyframes live-pulse{50%{box-shadow:0 0 0 11px #ff596411}}@media(max-width:800px){#live-demo main{grid-template-columns:1fr;grid-template-rows:minmax(260px,1fr) minmax(150px,.5fr)}#live-demo header{padding:15px 18px}.live-code-line{grid-template-columns:48px 1fr}}
+@media(prefers-reduced-motion:reduce){.live-dot{animation:none}}@media print{#live-demo{display:none!important}}

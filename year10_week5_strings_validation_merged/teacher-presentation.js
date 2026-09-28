@@ -1,0 +1,30 @@
+/* Projector pages are separate from the student's normal navigation. */
+(()=>{'use strict';const base=window.LessonClassroom;if(!base)return;
+const meta={topic:'String operations and validation using selection',wagba:'Examining text and testing validation decisions accurately.',keywords:'concatenation · length · index · substring · validation · normal · boundary · erroneous',challenge:'Prove that the checker behaves correctly at both limits.'};
+const instructions=[
+ ['Read the account scenario.','Identify the two jobs of the program.','Notice that validation loops are not part of today’s lesson.'],
+ ['Answer each retrieval question from memory.','Run len("Maya7") only after predicting.','Correct one answer if needed.'],
+ ['Use Do Now evidence for all six KSU targets.','Choose a genuine priority.','Write one precise improvement action.'],
+ ['Follow the character positions from 0.','Compare indexing with slicing.','Explain why the stop index is excluded.'],
+ ['Use the pointer before copying code.','Predict all four outputs.','Run, compare and adapt the example.'],
+ ['Read the 5–8 rule carefully.','Identify the two rejection conditions.','Explain what the else branch represents.'],
+ ['Trace one input line by line.','Build the checker in your own IDE.','Include the username in the accepted message.'],
+ ['Run all six test cases.','Record actual output, not a tick.','Explain any mismatch and correction.'],
+ ['Complete challenges in order.','Stay within strings and selection.','Keep output from the furthest challenge.'],
+ ['Review every KSU target separately.','Use evidence, not general confidence.','Name one next action.'],
+ ['Answer the four transfer questions independently.','Use the exact six-character rule.','Explain why one valid test is insufficient.'],
+ ['Check all core responses.','Save and open the PDF.','Submit the correct file in Teams.']
+];
+const lessonSlides=LESSON_PAGES.map(([title,time],i)=>({id:`slide-lesson-${i}`,title:`${String(i).padStart(2,'0')} · ${title}`,tag:time,body:`<h2>Student instructions</h2><ol>${instructions[i].map(x=>`<li>${x}</li>`).join('')}</ol>`}));
+const question=(key,text)=>`<section class="slide-question"><h2>Class question</h2><label>${text}<textarea rows="3" data-key="${key}">${esc(appState.answers[key]||'')}</textarea></label><p>This response saves locally and appears in the student PDF.</p></section>`;
+const facts=[
+ {id:'slide-fact-positions',title:'Fact 1 · Characters have positions',tag:'PREDICT',body:`<div class="fact-big">People count five characters. Python indexes positions 0–4.</div><div class="relation-visual"><div><b>Maya7</b><code>0 1 2 3 4</code></div><span>index 0 → M</span><div><b>Slice [0:4]</b><code>Maya</code></div></div>${question('factPositions','Why does the slice stop before index 4?')}`},
+ {id:'slide-fact-validation',title:'Fact 2 · Validation checks rules',tag:'EXPLAIN',body:`<div class="fact-big">Accepted does not mean true, available or owned by the student.</div><div class="safety-steps"><span>1 · Read the input</span><span>2 · Calculate its length</span><span>3 · Compare with the rule</span><span>4 · Display one decision</span></div>${question('factValidation','What does this username checker prove—and what does it not prove?')}`},
+ {id:'slide-fact-boundaries',title:'Fact 3 · Test both sides of a limit',tag:'AO3',body:`<div class="fact-big">For 5–8 characters, test 4, 5, 8 and 9.</div><div class="relation-visual"><div><b>Minimum</b><code>4 → reject</code><code>5 → accept</code></div><span>normal: 6 or 7</span><div><b>Maximum</b><code>8 → accept</code><code>9 → reject</code></div></div>${question('factBoundaries','Why does a normal six-character test not prove both limits work?')}`}
+];
+const slides=[...lessonSlides,...facts];let selected=null,pending=null;const lookup=id=>slides.find(s=>s.id===id);
+function renderSlide(){let root=$('teacher-presentation');if(!selected){root?.remove();document.body.classList.remove('presentation-open');return}const slide=lookup(selected);if(!slide)return;if(!root){root=document.createElement('section');root.id='teacher-presentation';document.body.append(root)}document.body.classList.add('presentation-open');root.innerHTML=`<aside><p class="eyebrow">YEAR 10 · STRINGS &amp; VALIDATION</p><h3>Topic</h3><p>${meta.topic}</p><h3>WAGBA</h3><p>${meta.wagba}</p><h3>Keywords</h3><p>${meta.keywords}</p><h3>Challenge</h3><p>${meta.challenge}</p></aside><main><header><span>${slide.tag}</span><h1>${slide.title}</h1></header><article>${slide.body}</article><footer><button id="presentation-close">Return to lesson</button><span>Teacher-led slide · answers save locally</span></footer></main>`;$('presentation-close').onclick=()=>{if(!teacherMode&&window.ClassroomMode?.locked?.())return;selected=null;renderSlide();window.dispatchEvent(new Event('lesson:render'))}}
+function open(id){if(!lookup(id))return;if(!$('landing').hidden){pending=id;return}selected=id;renderSlide();window.scrollTo(0,0);window.dispatchEvent(new Event('lesson:render'))}
+window.addEventListener('lesson:render',()=>{if(pending&&$('landing').hidden){const id=pending;pending=null;open(id)}});
+window.LessonClassroom=Object.freeze({info:()=>({...base.info(),page:selected||base.info().page}),pages:()=>[...base.pages(),...slides.map(s=>s.id)],destinations:base.destinations,label:()=>selected?lookup(selected).title:base.label(),teacherPages:()=>slides.map(s=>({id:s.id,title:s.title})),openTeacherPage:id=>{if(teacherMode)open(id)},navigate:id=>{if(lookup(id))open(id);else{selected=null;renderSlide();base.navigate(id)}},move:id=>{if(teacherMode)return;base.captureOwn();if(lookup(id))open(id);else{pending=null;selected=null;renderSlide();base.move(id)}},captureOwn:base.captureOwn,returnOwn:()=>{selected=null;pending=null;renderSlide();base.returnOwn()},setSession:base.setSession,clearTarget:()=>{pending=null;base.clearTarget()},demoPrograms:base.demoPrograms,startDemo:base.startDemo,stopDemo:base.stopDemo,demoState:base.demoState});
+})();
