@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Year 11 · Make the fitness program reliable</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to lesson</a>
+<header class="topbar">
+  <a class="wordmark" href="index.html">CS <span>WITH MR DAVE</span></a>
+  <span class="save-state" id="saveStatus" role="status">Your lesson notebook</span>
+  <div class="actions"><button id="backupBtn" disabled>Full backup</button><button id="pdfBtn" class="primary" disabled>Save PDF</button></div>
+</header>
+<section class="landing" id="landing">
+  <div class="welcome">
+    <p class="eyebrow">YEAR 11 · OXFORDAQA 9210 · PAPER 1</p>
+    <h1>Read the data.<br>Follow the code.<br><span>Make it reliable.</span></h1>
+    <p class="lead">A 60-minute programming lesson with the June 2023 fitness application.</p>
+    <div class="welcome-facts"><p><strong>Today’s focus</strong><br>Files · validation · testing · subroutines</p><p><strong>Your outcome</strong><br>Explain the data journey and prove that your validation works.</p></div>
+    <p class="muted">Keep your Python IDE open alongside this notebook. You can complete the trace digitally or ask me for a paper copy.</p>
+  </div>
+  <div class="login-card">
+    <p class="eyebrow">YOUR LESSON NOTEBOOK</p><h2>Let’s get started</h2>
+    <form id="loginForm"><label for="studentName">Your name</label><input id="studentName" required maxlength="80" autocomplete="name"><label for="studentClass">Your class</label><input id="studentClass" maxlength="40" placeholder="e.g. 11T"><button class="primary wide" type="submit">Start / resume lesson →</button></form>
+    <p id="loginError" class="error" role="alert"></p>
+    <details><summary>Continue from a saved backup</summary><label for="restoreFile">Choose your lesson backup (.json)</label><input id="restoreFile" type="file" accept=".json,application/json"></details>
+    <p class="small muted">Work saves in this browser. Download a full backup before changing devices, and submit your final PDF in Teams.</p>
+  </div>
+</section>
+<div id="lesson" hidden>
+  <div class="workspace">
+    <aside class="sidebar">
+      <p class="eyebrow">YOUR LEARNING PATH</p><nav id="lessonNav" aria-label="Lesson stages"></nav>
+      <div class="lesson-facts"><h3>Topic</h3><p>Robust programming: files, validation, testing and subroutines.</p><h3>WAGBA</h3><p>Following data through a program, improving its validation and proving our changes work.</p><h3>Keywords</h3><p>read · append · record · parameter · return · validation · boundary · erroneous</p><h3>Challenge</h3><p>Explain why a change works, including when the input is invalid.</p></div>
+      <button id="changeStudent" class="quiet">Change student</button>
+    </aside>
+    <main id="content" tabindex="-1"></main>
+  </div>
+  <footer class="bottom-nav"><button id="previousBtn">← Previous</button><span id="stagePosition"></span><button id="nextBtn" class="primary">Next stage →</button></footer>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="vendor/jspdf.umd.min.js"></script><script src="assets/pdf-fonts.js"></script>
+<script src="source-data.js"></script><script src="lesson.js"></script><script src="app.js"></script>
+</body></html>

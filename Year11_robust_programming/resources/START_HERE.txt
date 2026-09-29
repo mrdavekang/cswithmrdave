@@ -1,0 +1,21 @@
+YEAR 11 - ROBUST PROGRAMMING
+
+1. Extract this ZIP into a new folder. Do not run files inside the ZIP.
+2. Keep all six working files together: fitness_working.py, activity.txt,
+   check_heart_rate.py, file_practice.py, practice.txt and check_validator.py.
+3. Open that folder in your Python 3 IDE. If your IDE asks for a working
+   directory, select this folder.
+4. Use the web lesson for the instructions. In Do Now, open practice.txt
+   as text and predict from the examples; do not run those examples yet.
+   In the syntax practice, edit and run file_practice.py in your Python IDE.
+   Enter requested inputs in the IDE's Shell / Console and press Enter.
+5. fitness_working.py is an unchanged copy of the June 2023 OxfordAQA
+   skeleton, renamed so the test launcher can import it.
+6. For the first program run: enter D, then 2 to load activities,
+   then 4 and running to display them. Enter Q to quit.
+7. To test the validation routine, run check_heart_rate.py. Save any
+   changes to fitness_working.py first. Restart the launcher for each test.
+8. Keep the downloaded ZIP as your original backup. Edit only your
+   extracted working copy. Use practice.txt for the file syntax rehearsal.
+9. Extension only: after writing IsValidHeartRate in fitness_working.py,
+   save it and run check_validator.py to check its Boolean results.
