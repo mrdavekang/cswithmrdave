@@ -9,8 +9,8 @@ YEAR 11 - ROBUST PROGRAMMING
    as text and predict from the examples; do not run those examples yet.
    In the syntax practice, edit and run file_practice.py in your Python IDE.
    Enter requested inputs in the IDE's Shell / Console and press Enter.
-5. fitness_working.py is an unchanged copy of the June 2023 OxfordAQA
-   skeleton, renamed so the test launcher can import it.
+5. fitness_working.py is your working program. Its filename lets the
+   practice test launcher import the routine you edit.
 6. For the first program run: enter D, then 2 to load activities,
    then 4 and running to display them. Enter Q to quit.
 7. To test the validation routine, run check_heart_rate.py. Save any

@@ -2,7 +2,7 @@
 #Developed using Visual Studio
 #To be pre-released to centres
 #Also available in C# and Visual Basic
-#June 2023
+# Fitness application working copy
 
 #The text file "activity.txt" needs to be downloaded from the secure key materials area
 #for this program to run as required during the exam.
