@@ -2,19 +2,94 @@
 window.SESSION_PLAN=Object.freeze({
   zone:'Asia/Kuala_Lumpur',start:530,end:590,
   topic:'Improve the helpdesk adviser',
-  wagba:'Improve the helpdesk program so it handles unsuitable input, makes a nested decision and passes planned tests.',
-  keywords:'input · validation · integer · variable · constant · nested selection · or · and · boundary · erroneous data · test evidence',
+  wagba:'Check an answer, choose useful helpdesk advice, and test that it works.',
+  keywords:'input · if / else · nested selection · validation · boundary · test',
   challenge:'Explain why the program must reject unsuitable input before it calculates or gives advice.',
   stages:[
-    {id:'read',title:'Read first',start:530,end:536,steps:['Read Sam’s helpdesk problem and the worked 2-person example.','Compare valid and unsuitable inputs before advice.','Follow the highlighted code one line at a time.']},
-    {id:'starter',title:'Do Now',start:536,end:542,steps:['Use the worked reminders to answer the six K, S and U checks.','Read the hint and feedback for each question.','Keep your first answers as starting evidence.']},
-    {id:'types',title:'Types of Learning',start:542,end:546,steps:['Use the six checks to identify your main focus.','Read the explanation for the highest score.','Choose a precise next step.']},
-    {id:'main1',title:'Main Task 1',start:546,end:566,steps:['Build and run the one-condition nested program.','Challenge 2: predict and run the separate OR model.','Compare OR with AND, then choose the rule for two inputs.']},
-    {id:'main2',title:'Main Task 2',start:566,end:581,steps:['Arrange the validation Parsons puzzle.','Follow Predict, Run, Investigate and Modify on one input.','Make the full program, then predict, run and improve planned tests.']},
-    {id:'challenge',title:'Further challenge',start:581,end:585,steps:['Copy your working program.','Extend it without breaking the original routes.','Run a relevant test after each change.']},
-    {id:'pit',title:'Learning Pit Stop',start:585,end:588,steps:['Choose your confidence phase for knowledge.','Choose your confidence phase for skills and understanding.','Notice which phase you selected most often.']},
-    {id:'plenary',title:'Plenary and PDF',start:588,end:590,steps:['Complete the three final checks.','Explain why input is checked before the time decision.','Save the PDF for Teams.']}
-  ]
+  {
+    "id": "read",
+    "title": "Read first",
+    "start": 530,
+    "end": 535,
+    "steps": [
+      "Read the queue picture: two people plus Sam need 12 minutes.",
+      "Compare 20, 11 and negative time."
+    ]
+  },
+  {
+    "id": "starter",
+    "title": "Do Now",
+    "start": 535,
+    "end": 538,
+    "steps": [
+      "Answer three short checks.",
+      "Read the feedback."
+    ]
+  },
+  {
+    "id": "types",
+    "title": "Types of Learning",
+    "start": 538,
+    "end": 540,
+    "steps": [
+      "Choose a starting point for K, S and U.",
+      "No written explanation needed."
+    ]
+  },
+  {
+    "id": "main1",
+    "title": "Main Task 1",
+    "start": 540,
+    "end": 556,
+    "steps": [
+      "Arrange the code, then predict and run.",
+      "Follow the branch. Change 20 to 11.",
+      "Include exactly enough time with <=."
+    ]
+  },
+  {
+    "id": "pause",
+    "title": "Pause and play",
+    "start": 556,
+    "end": 562,
+    "steps": [
+      "Rest your eyes and stretch.",
+      "Play the short retrieval questions together.",
+      "Stop when called; all 15 are not required."
+    ]
+  },
+  {
+    "id": "main2",
+    "title": "Main Task 2",
+    "start": 562,
+    "end": 581,
+    "steps": [
+      "Arrange the negative-answer check.",
+      "Predict, run and trace the skipped branch.",
+      "Improve the message. Complete the inner condition.",
+      "Run four tests; use extra time for further challenges."
+    ]
+  },
+  {
+    "id": "pit",
+    "title": "Learning Pit Stop",
+    "start": 581,
+    "end": 584,
+    "steps": [
+      "Choose one confidence phase for each KSU area."
+    ]
+  },
+  {
+    "id": "plenary",
+    "title": "Plenary and PDF",
+    "start": 584,
+    "end": 590,
+    "steps": [
+      "Answer three final checks.",
+      "Save as PDF and submit to Teams."
+    ]
+  }
+]
 });
 window.LessonClock=Object.freeze({
   at(seconds){const p=window.SESSION_PLAN,stage=p.stages.find(s=>seconds>=s.start*60&&seconds<s.end*60);return seconds<p.start*60?{phase:'before',stage:p.stages[0],remaining:p.start*60-seconds}:seconds>=p.end*60?{phase:'after',stage:p.stages.at(-1),remaining:0}:{phase:'active',stage,remaining:stage.end*60-seconds};},

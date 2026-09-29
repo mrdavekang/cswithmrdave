@@ -1,3 +1,36 @@
+# Year 9 Week 5: supported helpdesk project
+
+The active student flow is defined in `gentle-learning.js`, loaded after the earlier support modules. It reuses the existing editor, local Python runtime, notebook, translation and teacher controls.
+
+## Teaching sequence (60 minutes)
+
+- Read first (5): queue picture, three outcomes, three-line calculation tutor.
+- Do Now (3): three short checks with feedback; not a programming score.
+- Types of Learning (2): three KSU starting points without extra writing.
+- Main Task 1 (16): code puzzle then five PRIMM cards; same 2-person queue throughout, change available time, include equality.
+- Pause and play (6): brief stretch, then untimed retrieval questions. Fifteen questions are available; finishing all is not required. This is local practice, not an external Blooket assignment.
+- Main Task 2 (19): code puzzle then five PRIMM cards; negative-input check, nested branch tutor, improved correction, supplied conversion protection, four core tests.
+- Learning Pit Stop (3): phase choices per KSU; no evidence paragraph.
+- Plenary and PDF (6): three checks, save PDF, submit to Teams.
+
+Further challenges are for spare time: 13/0/word/blank inputs, vocabulary table, then a separate OR/AND model. No OR/AND is required to finish the core program.
+
+## Safeguards
+
+Existing code and test records are retained under `state.gentle.previous` in the full backup before the new core scaffold is first opened. Individual editor resets archive the replaced code too. New tests retain the tested code and become stale when it changes. Original question answers remain in the full backup. Student names, language preferences and KSU phase choices remain intact.
+
+The standard and supported routes share the same smaller steps. English, Bahasa Melayu and Simplified Chinese are included; the supported route adds Mandarin prompts. Name matching for Ng Jun Kai remains unchanged.
+
+The existing app clock remains 08:50–09:50, with the revised stage durations. Standalone classroom cue files are not modified.
+
+## Checks
+
+`tests/gentle-learning.test.cjs` checks all pages and both PRIMM sequences in three languages, migration, interactions, PDF content and the actual local Python worker outputs, including boundary and invalid inputs.
+
+---
+
+Previous implementation notes (historical; superseded by the sequence above):
+
 # Year 9 · Improve the helpdesk adviser
 
 This lesson follows the earlier Sam helpdesk project. The WAGBA is to improve the program so it handles unsuitable input, makes a nested decision, and passes planned tests. There are exactly two Main Tasks: build the improved program, then test and improve it.
