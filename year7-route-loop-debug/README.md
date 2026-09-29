@@ -8,9 +8,7 @@ Focused-screen update: the sidebar, stage-button row and large progress panel ar
 
 Teaching update: 26 core cards. One full square cycle now includes an explicit repeated-code-to-loop task; two debugging cases require Predict, Run, Investigate and Modify only. Extra Parsons/Make work remains available after the core. Three independent plenary questions appear one at a time, with first and revised answers preserved in the PDF. Key instructions have Mandarin support and graded hints. Progress records attempts, target checks and help/review needs, not an automatic mastery grade. The latest teaching notes are at the top of TEACHER_GUIDE.md. `lesson-refinement.js` updates the lesson data without replacing the original challenge bank.
 
-The visual theme now matches the supplied Year 11 lesson: locally bundled Raleway, pale neutral background, white bordered cards, green headings and accents, amber focus indicators and dark read-only code examples. `year11-theme.css` is a presentation-only layer; lesson text, progression rules and stored answers are unchanged. Year 7 retains larger touch controls and responsive learning information. Font licensing is included in assets/Raleway-OFL.txt.
-
-Supabase Classroom Mode provides **Screens down** only. Students keep using the ordinary lesson URL and navigating normally. The teacher opens `?teacher=1`, signs in, starts the classroom, and can cover or release every connected student screen. Students have no classroom controls and cannot leave the live session. Names, answers and code remain in the browser. Run `supabase/30-screen-down-classrooms.sql` once and check that it returns `screen_down_classrooms_ready = true`.
+The visual theme now matches the supplied Year 11 lesson: locally bundled Raleway, pale neutral background, white bordered cards, green headings and accents, amber focus indicators and dark read-only code examples. `year11-theme.css` is a presentation-only layer; lesson text, progression rules and stored answers are unchanged. Year 7 retains larger touch controls and responsive learning information. The Year 11 classroom backend, SQL and teacher tools have not been imported. Font licensing is included in assets/Raleway-OFL.txt.
 
 Two main tasks, three challenges each, with **36 separate Parsons + PRIMM cards**. Each challenge has Order, Predict, Run, Investigate, Modify and Make. Squares, rectangles and staircases give meaningful repeated patterns. Introductory cards explain the loop heading and indentation. See **TEACHER_GUIDE.md** for curriculum sources, assessment and realistic pacing.
 
@@ -31,6 +29,14 @@ PDF reports include attempted challenges, Parsons attempts, prediction history, 
 On iPad, use **Share / Save to Files**. If Safari previews the PDF, use its Share menu and Save to Files. In Teams, attach the PDF and required .py files and select Turn in. A website cannot silently choose an iPad Files folder. The app records self-reported submission, not verified Teams status. The exact assignment title was not supplied.
 
 ## Active files
+
+## Progress and help (reviewed September 2026)
+
+Correctness is feedback, not a navigation requirement. Short responses are accepted without keyword matching. Every learning card has an “I am stuck / my device is not working” route: selecting a reason saves the unfinished requirements and permits continuation. The PDF lists these as teacher follow-up, not successful mastery. Students must also tell the teacher; there is no live notification.
+
+Pages reached using Continue remain available when earlier work is edited. An edited but unrun program remains flagged as incomplete evidence; its old drawing is not presented as the new output. Existing answers and runs are preserved on update. Extra challenges can be paused. A draft PDF is always available from My progress.
+
+Tested in desktop Chrome with normal answers, real Python execution, help requests, missing-field highlighting and refreshed saved sessions. Physical iPad/Safari testing is still recommended before class.
 
 - index.html, primm.css, challenges.js, progress.js, primm-app.js: current lesson and shared progress rules.
 - runner-bundle.js, animation.js, map.js: Python and drawing utilities. No school-map background is used.

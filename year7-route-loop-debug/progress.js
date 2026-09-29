@@ -20,7 +20,7 @@
       if(['run','modify','make'].includes(m)) {
         add(m==='run'?'Run the prepared code.':'Run your latest code, even if it still has a bug.', runs.length && (m==='run' || runs.at(-1).code===w.codes?.[m]), '[data-action="run"]');
         if(m==='run') add('Choose how the output compared with your prediction.', filled(w.answers?.compare), '[name="compare"]');
-        else if(m==='make'||n.cid!=='square') add(m==='modify'?'Write what you changed and what happened. A short phrase is enough.':'Explain one part of your code. A short phrase is enough.', filled(w.notes?.[m]), '#'+m);
+        else if(m==='make'||L.challenges.find(c=>c.id===n.cid)?.task===2) add(m==='modify'?'Write what you changed, or choose “I need help” below.':'Explain one part of your code, or choose “I need help” below.', filled(w.notes?.[m]) || w.answers?.[m==='make'?'selfcheck':'targetCheck']===2, '#'+m);
         if(m==='make') add('Choose how your drawing matches the requirements. You can choose “I need help”.', filled(w.answers?.selfcheck), '[name="selfcheck"]');
         if(m==='modify') add('Compare your drawing with the target. “I need help” is accepted.', filled(w.answers?.targetCheck), '[name="targetCheck"]');
       }
@@ -28,7 +28,7 @@
     else if(n.page==='types') ['k','s','u'].forEach((k,i)=>add('Choose your starting point for '+['Knowledge','Skills','Understanding'][i]+'.', filled(a['rating-'+k]), '#rating-'+k));
     else if(n.page==='feedback') {
       add('Write what your partner (or you) noticed.', filled(a.partner), '#partner');
-      add('Write what you changed and tested.', filled(a.improvement), '#improvement');
+      add('Write what you will change, check or keep after feedback.', filled(a.improvement), '#improvement');
     } else if(n.page==='pitstop') {
       add('Choose your learning phase. All four choices are accepted.', filled(a.phase), '[name="phase"]');
       add('Write one next step to help you learn.', filled(a.nextStep), '#nextStep');
@@ -37,6 +37,7 @@
   }
   function done(s,n) {
     if(n.page==='export') return !!s.answers?.submitted;
+    if(s.support?.[id(n)]) return true; // Help recorded, not mastery or a correct answer.
     const r=requirements(s,n);
     return r.length ? r.every(x=>x.done) : !!s.read?.[id(n)];
   }
@@ -44,10 +45,10 @@
   function allowed(s,n) {
     if(s.teacher || n.page==='export') return true; // Draft report is always available.
     const i=path.findIndex(p=>id(p)===id(n)), f=first(s);
-    if(i>=0) return f<0 || i<=f;
+    if(i>=0) return f<0 || i<=Math.max(f,s.unlocked||0);
     if(n.page==='challenge' && L.challenges.some(c=>c.id===n.cid)) {
       const e=path.findIndex(p=>p.page==='extension');
-      return (f<0 || f>=e) && L.models.slice(0,n.mi).every((_,mi)=>done(s,node('challenge',n.cid,mi)));
+      return (f<0 || Math.max(f,s.unlocked||0)>=e) && (n.mi <= (s.extraUnlocked?.[n.cid]||0) || L.models.slice(0,n.mi).every((_,mi)=>done(s,node('challenge',n.cid,mi))));
     }
     return false;
   }
