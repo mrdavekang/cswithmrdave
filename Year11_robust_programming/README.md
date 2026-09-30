@@ -8,9 +8,9 @@ Enter `teacher` in the name field (class can be blank), or open `index.html?teac
 
 ## Lesson
 
-The core activities total 60 minutes. Setup is before the timer. The extension is for early finishers. Students run Python in their own IDE; the website records evidence and does not execute Python.
+The core activities total 60 minutes. Setup is before the timer. The extension is for early finishers. Students run Python in their own IDE; the website records evidence and does not execute Python. The three main tasks are: explore the program's subroutines, trace a record, then improve and test validation.
 
-Each activity names where to work, what to open or run, and where to record the result. Do Now asks students to open practice.txt and predict; the next syntax activity gives the steps for running file_practice.py and distinguishes console output from changes to the text file. Tracing is a manual reading activity. In Main Task 2 students edit fitness_working.py but run check_heart_rate.py to test their edits. The extension has its own check_validator.py file to run after the new function is written.
+Each activity names where to work, what to open or run, and where to record the result. Do Now asks students to open practice.txt and predict; the next syntax activity gives the steps for running file_practice.py and distinguishes console output from changes to the text file. Main Task 1 maps all 23 subroutines by purpose and guides close reading of five routines. Main Task 2 is a manual trace. In Main Task 3 students edit fitness_working.py but run check_heart_rate.py to test their edits. The extension has its own check_validator.py file to run after the new function is written.
 
 The supplied `fitness_working.py` retains the working program logic, with its series-identifying comment removed and a filename suitable for the small test launcher. `activity.txt` is unchanged. The browser source excerpts preserve the relevant program lines. The other Python resources are lesson support, not examination files.
 
