@@ -8,7 +8,7 @@ window.StudentWorkCloud = (() => {
   let retry = 0, conflict = null, connecting = null, label = 'Saved on this device';
   const launch = (() => {
     const p = new URLSearchParams(location.hash.slice(1));
-    const value = {classId:p.get('class'), lessonId:p.get('lesson'), joinToken:p.get('join'), label:p.get('label') || ''};
+    const value = {classId:p.get('class'), lessonId:p.get('lesson'), joinToken:p.get('join'), entryToken:p.get('entry'), label:p.get('label') || ''};
     return uuidPattern.test(value.classId || '') && value.lessonId === cfg.lessonId ? value : null;
   })();
   function uuid() {
@@ -80,7 +80,7 @@ window.StudentWorkCloud = (() => {
     const g = ++generation;
     clearTimeout(timer); state=s; hooks=handlers; conflict=null; retry=0; busy=false; connecting=null;
     if (s.teacher) { emit('Teacher preview · no pupil work sent','local'); return; }
-    if (!validCloud(s.cloud) && launch && tokenPattern.test(launch.joinToken || '')) {
+    if (!validCloud(s.cloud) && launch && (tokenPattern.test(launch.entryToken || '') || tokenPattern.test(launch.joinToken || ''))) {
       try {
         if (!uuidPattern.test(s.student.id)) s.student.id=uuid();
         s.cloud = {classId:launch.classId,lessonId:cfg.lessonId,resumeToken:privateKey(),revision:0,dirty:true,status:'pending'};
@@ -113,7 +113,8 @@ window.StudentWorkCloud = (() => {
           }
         }
         const remote = c.attemptId ? await rpc('student_work_load',{p_attempt_id:c.attemptId,p_resume_token:c.resumeToken}) :
-          await rpc('student_work_register',{p_class_id:c.classId,p_lesson_id:cfg.lessonId,p_join_token:launch?.joinToken || null,
+          await rpc('student_work_register',{p_class_id:c.classId,p_lesson_id:cfg.lessonId,
+            p_join_token:tokenPattern.test(launch?.entryToken || '')?launch.entryToken:launch?.joinToken || null,
             p_local_learner_id:s.student.id,p_learner_name:s.student.name,p_resume_token:c.resumeToken});
         if (g!==generation) return;
         const previousRevision = Number(c.revision || 0);
@@ -125,7 +126,8 @@ window.StudentWorkCloud = (() => {
         if (launch?.joinToken) {
           const p=new URLSearchParams(location.hash.slice(1)); p.delete('join');
           history.replaceState(null,'',location.pathname+location.search+'#'+p.toString());
-          // This memory-only copy supports retries for this page, not public storage.
+          // Legacy, temporary invites are removed. A permanent entry link remains
+          // bookmarkable; it is NOT a key to any pupil's saved work.
         }
         emit(c.dirty || c.pendingWrite?'Saved on device · waiting to sync':c.submittedAt?'Submitted to teacher':'Saved to class',c.dirty || c.pendingWrite?'pending':'saved');
         if (c.dirty || c.pendingWrite) queue(0);
@@ -137,7 +139,14 @@ window.StudentWorkCloud = (() => {
     await connecting;
   }
   function handleError(err) {
-    if (err.code==='42501') emit('Class saving is closed or this class link has expired. Your device copy is safe; ask your teacher.','error');
+    if (err.code==='42501') {
+      const text=state?.cloud?.attemptId
+        ? 'Class saving is closed or your private save key is unavailable. Your device copy is safe; tell your teacher.'
+        : tokenPattern.test(launch?.entryToken || '')
+          ? 'New class entry is closed or this link was replaced. Keep working on this device. Ask your teacher to open entry, then tap Try saving again.'
+          : 'Class saving is closed or this temporary link has expired. Your device copy is safe; ask your teacher for the current class link.';
+      emit(text,'error');
+    }
     else if (err.code==='22023') emit('This lesson cannot sync with the class setup. Keep working, download a backup and tell your teacher.','error');
     else if (err.code==='54000' || err.code==='LOCAL_SIZE') emit(err.code==='LOCAL_SIZE'?err.message:'Class storage limit reached. Download a backup and tell your teacher.','error');
     else emit('Saved on device · waiting for connection. Your work will retry automatically.','pending');

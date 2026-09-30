@@ -1,4 +1,8 @@
-# Year 7 · Week 7 · Consolidation theory · class-saving build
+# Year 7 · Week 7 · Consolidation theory · permanent-class-link build
+
+## Activation status — 1 October 2026
+
+This build is prepared and locally tested, but the permanent-link database migration has NOT been applied or live-tested. The existing working class-saving app/database remain unchanged. Install the separately supplied 06-permanent-class-links.sql, then run the rollback-only 07-permanent-link-tests.sql and the existing 04-enabled-role-tests.sql before publishing this build. Do not rerun the foundation/enable migrations. No permanent pupil link is packaged or invented.
 
 ## Open and host
 
@@ -8,7 +12,7 @@ Extract the ZIP and open index.html, or upload the whole folder to a school-appr
 
 Students enter a name and class and choose English or English with Mandarin support. Enter teacher (case-insensitive), without a class, for preview. This shortcut is NOT secure authentication and never authorizes pupil-data access.
 
-Work saves immediately in the browser. With a current teacher-issued class link, it also saves to the restricted student-work database in cswithmrdave. The top status distinguishes waiting, saved to class and submitted. A plain index.html link without a class invitation is device-only. No data is sent to Teams automatically. PDF is a backup, not the normal submission route.
+Work saves immediately in the browser. After the database update, the permanent teacher-issued class link lets pupils join while their teacher opens entry; responses then save to the restricted student-work database in cswithmrdave. The top status distinguishes waiting, saved to class and submitted. A plain index.html link without a class link is device-only. No data is sent to Teams automatically. PDF is a backup, not the normal submission route.
 
 Names label work; they are not passwords or verified school identities. Each attempt has a private 256-bit recovery key kept on its device, with only a digest stored in the database. Pupils cannot list classmates or open their cloud work by typing a name. On a shared browser, someone with access to its saved private keys could reopen work; use Leave a shared device safely in learner settings, keep the downloaded recovery file in private school storage, and remove that file from shared Downloads. No saved pupil roster is displayed.
 
@@ -20,10 +24,12 @@ The JSON backup contains the private recovery key. Treat it as a password: do no
 
 1. Host the complete folder over HTTPS. Open teacher.html on that same hosted site.
 2. Sign in using your existing approved Supabase classroom-teacher email/password. This is separate from logging into the Supabase dashboard. Entering teacher on index.html only previews activities and sends no pupil work.
-3. Select 7T, or add the actual label for another class. Select Open lesson · 2 hours.
-4. Copy the private pupil link into that class's private Teams resource. Its fragment carries a short-lived invitation; do not post it publicly. Links generated on localhost are only for this computer, so generate classroom links on the hosted site.
+3. Select 7T, or add the actual label for another class. Copy permanent link into that class's private Teams resource once. Viewing/copying a link does not open entry or saving. Links generated on localhost are only for this computer; generate classroom links on the hosted site.
+4. Select Open entry · 2 hours when the class starts. This opens new entry and saving; opening, closing and reopening keep exactly the same class-and-lesson link. The URL fragment contains a random enrollment token, not a pupil recovery key. Do not post it publicly: anyone given it could join during an open window. The link alone cannot read pupil work or list pupils.
 5. Pupils enter their name; the class is filled in by the link. Wait for Saved to class. Finish and save confirms Submitted to teacher only after a server acknowledgement. Partial lessons can be submitted without correctness gates; the teacher must review their unfinished activities.
-6. Open pupil work in teacher.html to see actual answers, code, drawings, reflections and quiz attempts. The summary refreshes every 15 seconds; selected detailed work refreshes when requested. Stop new entries invalidates admission, but existing attempts can still save. Sign out when leaving a shared computer.
+6. Open pupil work in teacher.html to see actual answers, code, drawings, reflections and quiz attempts. The summary refreshes every 15 seconds; selected detailed work refreshes when requested. Stop new entries closes admission but leaves the link and existing saves intact. Existing pupils can resume/save after the entry window expires, using their own private device key. Sign out when leaving a shared computer.
+
+The permanent link has no automatic expiry. It is stable for this class and this registered lesson, as long as the hosting address and database remain available. A new lesson has its own link. Changing the host address/path changes the URL. If a link leaks, use If the link was shared with the wrong people → Replace private class link, confirm, and update Teams. Replacement invalidates previous permanent/temporary admission tokens but does not delete pupil work, change their private keys or reopen a closed window. Existing temporary links still work during their current window.
 
 Real 7T intake/saving was left closed after setup. No student accounts, auth-provider settings, passwords, paid plan or existing classroom-mode tables were changed. A live teacher-account sign-in and real school iPad/host test still need your verification before pupil rollout.
 

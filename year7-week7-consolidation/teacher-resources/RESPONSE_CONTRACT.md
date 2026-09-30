@@ -7,7 +7,7 @@ Connected on 30 September 2026 to cswithmrdave. Database actual-role tests passe
 - Lesson ID: y7-t1-w7-consolidation-v1; lesson version 2; schema version 1.
 - One current row per class, lesson and local learner UUID, not one row per click.
 - Typed names are labels, not authentication, and may collide.
-- A teacher's class invitation admits new attempts for a limited time. Launch URL fragments contain class UUID, lesson ID, label and invitation; no invitations are packaged or hard-coded.
+- After migration 06, a permanent class-and-lesson enrollment token admits new attempts only while accept_new, accept_saves and the teacher's entry deadline permit it. Launch URL fragments contain class UUID, lesson ID, label and entry token; none are packaged or hard-coded. Legacy join tokens remain supported during their valid window. The permanent token is privately stored for its owning teacher to retrieve, unlike pupil resume keys (stored only as digests). Class tokens do not authorize pupil reads/lists/saves.
 - Before registration, the browser persists a learner UUID and cryptographically random 256-bit private resume key. The database stores only its SHA-256 digest. The key permits access to exactly one attempt, never a class roster.
 - The private JSON backup includes the key for cross-device recovery. PDF reports and cloud response payloads omit it. Shared-browser physical access means access to device keys: use the leave-device workflow and private school storage.
 - Typing teacher is preview only. teacher.html requires the existing approved Supabase Auth teacher and server-checked class ownership. Its session uses sessionStorage separately from pupil state.
@@ -33,7 +33,7 @@ The frontend conservative JSON bound is 450,000 bytes. Server limits: 524,288 pa
 
 Student POST endpoints under /rest/v1/rpc/:
 
-- student_work_register: class/lesson/invitation, local learner UUID, name and resume key.
+- student_work_register: class/lesson/enrollment token (permanent entry or legacy join), local learner UUID, name and resume key. The existing p_join_token parameter name is retained for compatibility.
 - student_work_load: attempt UUID and resume key.
 - student_work_save: attempt UUID/key, payload, expected revision, write UUID and finish flag.
 
@@ -41,4 +41,4 @@ Pupil requests use only the public publishable key, never a teacher JWT. teacher
 
 Errors: 40001 = revision conflict; P0001 = retry after rate limit; 54000 = size/cap limit; 42501 = unauthorized/closed/expired access; 22023 = invalid format/version. Device work remains available in each case.
 
-Stop new entries invalidates invitations but permits existing saves. Closing saves or revoking an attempt is a deliberate teacher/database operation. Revocation preserves audit records. Do not casually rerun the separate foundation migration: it deliberately disables APIs before the enable migration.
+Stop new entries closes admission but preserves the permanent link and existing saves. Opening/reopening rotates only legacy temporary invitations, never the permanent link. New authenticated-only owner-checked RPCs teacher_class_link(class,lesson) and teacher_replace_class_link(class,lesson) retrieve or deliberately replace the permanent token. Retrieval creates a missing closed class/lesson binding, not an open entry window. Replacement invalidates previous admission tokens but preserves work/private pupil keys and current window settings. Closing saves or revoking an attempt is a deliberate teacher/database operation. Revocation preserves audit records. Do not casually rerun the separate foundation migration: it deliberately disables APIs before the enable migration.

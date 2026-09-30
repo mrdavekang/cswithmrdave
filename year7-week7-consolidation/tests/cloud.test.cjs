@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),{webcrypto}=require('node:crypto');
 const source=fs.readFileSync(__dirname+'/../cloud.js','utf8');
-const lesson='y7-t1-w7-consolidation-v1',classId=webcrypto.randomUUID(),invite='e'.repeat(64);
-const records=new Map();let offline=false,loseAfterCommit=false,calls=[];
+const lesson='y7-t1-w7-consolidation-v1',classId=webcrypto.randomUUID(),invite='e'.repeat(64),permanent='f'.repeat(64);
+const records=new Map();let offline=false,loseAfterCommit=false,entryOpen=true,calls=[];
 const clone=x=>JSON.parse(JSON.stringify(x));
 function response(status,data){return {ok:status===200,status,json:async()=>clone(data)};}
 function failure(code,message){return response(400,{code,message});}
@@ -11,7 +11,7 @@ async function fakeFetch(url,options){
   if(name==='student_work_register'){
     r=[...records.values()].find(x=>x.local_learner_id===p.p_local_learner_id && x.class_id===p.p_class_id);
     if(r && r.key!==p.p_resume_token)return failure('42501','Wrong key');
-    if(!r){if(p.p_join_token!==invite)return failure('42501','Expired link');r={attempt_id:webcrypto.randomUUID(),class_id:p.p_class_id,
+    if(!r){if(!entryOpen || ![invite,permanent].includes(p.p_join_token))return failure('42501','Closed or wrong link');r={attempt_id:webcrypto.randomUUID(),class_id:p.p_class_id,
       lesson_id:p.p_lesson_id,local_learner_id:p.p_local_learner_id,learner_name:p.p_learner_name,key:p.p_resume_token,payload:{},revision:0,updated_at:'initial',submitted_at:null};records.set(r.attempt_id,r);}
   }else{
     r=records.get(p.p_attempt_id);if(!r || r.key!==p.p_resume_token)return failure('42501','Wrong key');
@@ -26,9 +26,9 @@ async function fakeFetch(url,options){
   }
   const {key,last,...safe}=r;return response(200,safe);
 }
-function client(hash=''){
+function client(hash='',onReplace=()=>{}){
   const c={STUDENT_WORK_CONFIG:{url:'https://example.supabase.co',publishableKey:'sb_publishable_test',lessonId:lesson,lessonVersion:2,debounceMs:5,maxPayloadBytes:450000},
-    location:{hash,pathname:'/index.html',search:''},navigator:{onLine:true},history:{replaceState(){}},crypto:webcrypto,TextEncoder,URLSearchParams,AbortController,
+    location:{hash,pathname:'/index.html',search:''},navigator:{onLine:true},history:{replaceState:(_state,_title,url)=>onReplace(url)},crypto:webcrypto,TextEncoder,URLSearchParams,AbortController,
     setTimeout:()=>1,clearTimeout(){},fetch:fakeFetch,addEventListener(){},document:{addEventListener(){},visibilityState:'visible'}};
   c.window=c;vm.createContext(c);vm.runInContext(source,c);return c.StudentWorkCloud;
 }
@@ -60,6 +60,22 @@ async function test(){
   const big=state();big.answers.large='x'.repeat(500000);assert.throws(()=>A.payload(big),/too large/);
   const specimen=state();specimen.runs.test=[{draws:[{from:[1.12345,0],to:[2.98765,1],pen:true}]},{draws:[]},{draws:[]}];const compact=A.payload(specimen);assert.equal(compact.runs.test.length,2);assert.equal(compact.runs.test[0].draws[0].from[0],1.12);
   const blocked=state();await client(link).attach(blocked,{...hooks,persist:()=>false});assert.equal(blocked.cloud.disabled,true);
-  console.log('PASS: registration, name collisions, credential filtering, role separation, isolation, offline outbox, idempotent retries after refresh, conflicts, submission, remote resume, teacher preview, local fallback, size bounds and coordinate compaction.');
+  const permanentLink='#'+new URLSearchParams({class:classId,lesson,entry:permanent,label:'7T'});
+  let replaced=null;const p=state('Permanent-link learner'),P=client(permanentLink,url=>replaced=url);
+  await P.attach(p,hooks);assert.ok(p.cloud.attemptId);assert.equal(P.launch.entryToken,permanent);await P.flush();
+  assert.equal(replaced,null,'Permanent class URL stays bookmarkable after joining');
+  assert.equal(JSON.parse(calls.find(x=>x.url.endsWith('student_work_register') && JSON.parse(x.options.body).p_local_learner_id===p.student.id).options.body).p_join_token,permanent);
+  entryOpen=false;const n=state('Waiting learner'),N=client(permanentLink);await N.attach(n,hooks);
+  const waitingKey=n.cloud.resumeToken,waitingId=n.student.id;
+  assert.equal(n.cloud.attemptId,undefined);assert.match(N.status().text,/entry is closed/);assert.match(N.status().text,/Try saving again/);
+  const existing=clone(p),E=client(permanentLink);await E.attach(existing,hooks);
+  existing.answers.starter.answer='closed entry edit';E.changed(existing);assert.equal(await E.flush(),true,'Existing pupils can save with intake closed');
+  entryOpen=true;await N.flush();await N.flush();assert.ok(n.cloud.attemptId);assert.equal(n.cloud.resumeToken,waitingKey);assert.equal(n.student.id,waitingId,'Reopening retries the same pupil identity');
+  assert.equal([...records.values()].filter(r=>r.local_learner_id===waitingId).length,1,'No duplicate attempt on entry retry');
+  let legacyURL;await client(link,url=>legacyURL=url).attach(state('Legacy learner'),hooks);assert.ok(legacyURL && !legacyURL.includes('join='),'Temporary invite is removed after registration');
+  const malformed=state('Malformed link');await client('#'+new URLSearchParams({class:classId,lesson,entry:'not-a-token'})).attach(malformed,hooks);assert.equal(malformed.cloud,undefined);
+  const both=state('Both token fields');await client(permanentLink+'&join='+invite).attach(both,hooks);
+  assert.equal(JSON.parse(calls.filter(x=>x.url.endsWith('student_work_register') && JSON.parse(x.options.body).p_local_learner_id===both.student.id).at(-1).options.body).p_join_token,permanent,'Permanent token takes precedence');
+  console.log('PASS: original cloud regressions plus permanent/legacy launch URLs, closed/reopened entry, private key retention, own-work saving with intake closed, no duplicate attempts and invalid-token fallback. Networking is mocked.');
 }
 test().catch(err=>{console.error(err);process.exitCode=1;});

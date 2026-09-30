@@ -1,6 +1,16 @@
-# Verification · lesson version 2 · cloud build 30 September 2026
+# Verification · lesson version 2 · permanent-link build 1 October 2026
 
-## Cloud integration checks performed in this build
+## Permanent-link update: prepared, not yet activated
+
+The permanent-link app is a separate copy. The original working cloud app and its live database are unchanged. Browser connections timed out, so migration 06 has NOT been applied, rollback-only SQL suite 07 has NOT been executed and this update has NOT been tested against the live database or a real browser. Do not interpret the previous build's checks below as validation of the new database migration.
+
+New local Node tests passed with mocked networking: permanent entry-token parsing, permanent URL retained after joining, legacy URL compatibility/removal, malformed-token local fallback, closed-entry explanation, same key/UUID on retry after reopening, no duplicate attempt and existing-pupil saving while intake is closed. All original cloud-client unit checks also passed.
+
+New teacher-page unit tests passed with mocked DOM/Auth/network: fetching a permanent link while intake is closed, stable URL across open/close/reopen, entry-expiry display, closing without disabling saves, replacement confirmation/cancellation, delayed class-switch responses not showing the previous class's link, missing-migration notice and sign-out. JavaScript syntax checks passed. These are not real Supabase access-control tests.
+
+Before publishing: install 06, execute rollback-only 07 and existing 04, then verify the hosted teacher dashboard with the approved account and a synthetic pupil. Confirm the same posted URL works after closing/reopening entry, closed entry denies a new pupil, and an already-joined pupil can still save with their own key. Check Safari/iPad and the hosting address. No actual pupil data or authentication credentials were used in these local tests.
+
+## Earlier cloud build checks (30 September; carried forward, not rerun)
 
 Live browser checks used Chrome and the local app UI, calling the real cswithmrdave Supabase API. Two synthetic pupils in a separate Connection test - 30 Sep class registered and saved different starter answers. One pupil ran a three-sided Turtle drawing; its code and compact output were saved. Finish received a server acknowledgement, and name-based same-device reopening after refresh restored the private-key-authorized work and submission. Database inspection confirmed separate records, bounded JSON and no student/teacher/cloud credential fields in payloads. No actual pupil work was uploaded.
 
