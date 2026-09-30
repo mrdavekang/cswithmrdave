@@ -1,0 +1,21 @@
+"","","","","","","",""
+"Question #","Question Text","Answer 1","Answer 2","Answer 3 
+(Optional)","Answer 4 
+(Optional)","Time Limit (sec) 
+(Max: 300 Seconds)","Correct Answer(s) 
+(Only Include Answer #)"
+"1","What does sequence mean?","The order of instructions","A picture file","The speed of a computer","The colour of a line","30","1"
+"2","Turtle faces right. It moves 40, turns right 90°, then moves 20. Where does it go?","Only right","Right, then down","Up, then right","Left, then up","30","2"
+"3","Which is useful decomposition for a graphics collection?","Only think about the finished collection","Change the whole school","Triangle badge, hexagon tile and zigzag divider","Buy a laptop, open games, change the desk","30","3"
+"4","Which flowchart symbol usually shows Start or End?","Rectangle","Diamond","Arrow","Oval","30","4"
+"5","Which symbol shows an action such as Move forward?","Rectangle","Diamond","Oval","A photograph","30","1"
+"6","Which symbol shows a question with Yes and No paths?","A title","Diamond","Rectangle","Oval","30","2"
+"7","What do flowchart arrows show?","Only the starting point","The file size","Which step to follow next","How fast Python runs","30","3"
+"8","How many repeats does range(4) give in this loop?","3","5","Forever","4","30","4"
+"9","What is i in for i in range(4)?","A counter variable","The number of degrees","The Turtle colour","The End command","30","1"
+"10","Why are both forward and right indented for a square?","Indentation is decoration","Both need to repeat","Spaces make drawing faster","Only right will repeat","30","2"
+"11","The colon is missing after for i in range(4). What kind of error is this?","A source credit","No error","Syntax error","Logic error","30","3"
+"12","A program calls t.forwad(60), a method that does not exist. What happens?","A correct square","It repeats forever","Only the colour changes","A runtime error when that call is reached","30","4"
+"13","A program runs but draws two triangle sides instead of three. What is the problem?","Logic error","Always a syntax error","A correct triangle","File storage","30","1"
+"14","What is a useful debugging step?","Delete the whole project","Make one change, run again and compare","Change all numbers randomly","Run once and assume success","30","2"
+"15","You find an image online with no reuse information. What should you do?","Only add your own name","Assume a credit always gives permission","Check permission or ask the teacher","Use it because it is online","30","3"
