@@ -23,20 +23,23 @@
   }
   async function connect(){
     if(!latest?.name||latest.teacher||connecting)return;
+    if(binding&&uuid.test(invitation.room||'')&&binding.room!==invitation.room){say('This device notebook is connected to a different class session. Open its original class link, or ask me before starting a new notebook. Your saved work has not been moved.');return;}
     if(!binding){
       let room=invitation.room,join=invitation.join;
-      if(!uuid.test(room||'')||!(/^[0-9a-f]{64}$/).test(join||'')){
-        const answer=prompt('Paste the class invitation link I have shared with you.');if(!answer)return;
+      if(!uuid.test(room||'')||(join!==null&&!(/^[0-9a-f]{64}$/).test(join||''))){
+        const answer=prompt('Paste the permanent class link or invitation I have shared with you.');if(!answer)return;
         try{const u=new URL(answer.trim());const p=new URLSearchParams(u.hash.slice(1));room=p.get('room');join=p.get('join');}catch{say('Paste the complete class invitation link.');return;}
       }
-      if(!uuid.test(room||'')||!(/^[0-9a-f]{64}$/).test(join||'')){say('This invitation is incomplete. Ask me for the class link.');return;}
+      if(!uuid.test(room||'')||(join!==null&&!(/^[0-9a-f]{64}$/).test(join||''))){say('This class link is incomplete. Ask me for the complete link.');return;}
       if(!confirm(`Connect ${latest.name} (${latest.className})? Your name, typed work and confidence entries in this notebook will be shared privately with me through Supabase. Photos are not shared.`))return;
-      binding={room,join,learner:crypto.randomUUID(),key:C.token(),registered:false};
+      binding={room,join,permalink:join===null,learner:crypto.randomUUID(),key:C.token(),registered:false};
       if(!store()){binding=null;return;}
     }
     const ctx=contextKey,target=binding;connecting=true;say('Connecting…');
     try{
-      await C.rpc(client,'review_join',{p_room:target.room,p_lesson:cfg.lessonId,p_join_token:target.join||null,p_learner:target.learner,p_key:target.key,p_name:latest.name,p_class:latest.className});
+      const args={p_room:target.room,p_lesson:cfg.lessonId,p_learner:target.learner,p_key:target.key,p_name:latest.name,p_class:latest.className};
+      if(target.permalink&&!target.registered)await C.rpc(client,'review_join_permalink',args);
+      else await C.rpc(client,'review_join',{...args,p_join_token:target.join||null});
       if(ctx!==contextKey)return;
       binding.registered=true;delete binding.join;store();
       const data=await C.rpc(client,'review_student_load',{p_learner:binding.learner,p_key:binding.key});

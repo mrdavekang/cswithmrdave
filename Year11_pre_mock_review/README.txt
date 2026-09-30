@@ -5,17 +5,17 @@ Optional live responses use the existing cswithmrdave Supabase project. No paid 
 
 LIVE RESPONSES - BEFORE CLASS
 Open teacher.html. Sign in with your approved classroom teacher account (not the lesson-preview passcode).
-Create a session, for example "11T - Pre-mock review - 1 October". Copy its invitation and share it privately in Teams.
-Students open that invitation, enter their name and class, and select "Connect to my class". They confirm sharing before anything is sent.
+Create or select a session, for example "11T - Pre-mock review - 1 October". Enable permalink joining and copy its permanent student link into Teams. Reuse the same session and link for follow-up work; the link does not expire.
+Students open that link, enter their name and class, and select "Connect to my class". They confirm sharing before anything is sent. Use "Resume sharing" on the same browser when returning.
 Use the Student and Question filters to read individual work or compare the class's answers to one question. Help requests appear first.
 Write one useful next step and select "Send next step". Students see it beside the answer, usually within ten seconds.
 After they revise, ask them to select "Ready for your check". Use "Confirm this answer" only after reading the revised response.
 Download the class record before leaving. Pause class saving when no more responses are expected; resume it for follow-up work.
-If you reload the dashboard, select your existing session. If the invitation is no longer available in this tab, create a fresh invitation; existing notebooks are not affected.
+If you reload the dashboard, select your existing session. Its permanent link is still available. Close permalink joining to stop new devices, or pause class saving to stop both joining and updates. Temporary invitations remain an optional alternative.
 
 LIVE PRIVACY AND LIMITATIONS
 Teacher access is checked on the server. Student access uses a unique private device key, not a shared name/passcode. Names are self-entered, so verify them in class.
-Invitation links admit new devices for 14 days. Share them only with your class. A copied invitation can admit another person until it expires or is replaced.
+Permanent links admit new devices only after the teacher enables joining, and while class saving is open. Anyone with a copied link can create a notebook during that period but cannot read another student's work. Share only through your class Teams channel. Closing permalink joining does not revoke temporary invitations, which expire after 14 days or can be replaced. Pause class saving to stop all new admission and updates. Existing devices retain private access to their own saved work and feedback.
 Photos stay on the student's device and in their PDF/backup, not in the live dashboard. Ask to see paper work or use Teams for photo evidence.
 Students can pause sharing. Clearing browser data loses the private device key. Keep using the same browser and address; another device will create a separate notebook unless its private key is retained.
 Full backups include work and downloaded feedback, but deliberately exclude private cloud keys. Restoring a backup on another device does not authenticate access to the old cloud notebook.
