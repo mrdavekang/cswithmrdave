@@ -1,4 +1,4 @@
-# Year 7 · Week 7 · Consolidation theory · revised build
+# Year 7 · Week 7 · Consolidation theory · class-saving build
 
 ## Open and host
 
@@ -6,11 +6,34 @@ Extract the ZIP and open index.html, or upload the whole folder to a school-appr
 
 ## Entry and saving
 
-Students enter a name and class and choose English or English with Mandarin support. Enter teacher (case-insensitive), without a class, for preview. This shortcut is NOT secure authentication and must never authorize future cloud pupil access.
+Students enter a name and class and choose English or English with Mandarin support. Enter teacher (case-insensitive), without a class, for preview. This shortcut is NOT secure authentication and never authorizes pupil-data access.
 
-Work saves only in this browser on this device. Supabase is not connected. Finishing does not send work to a teacher or Teams. Collect a JSON or PDF backup if evidence is needed during this pilot. Typed names are not secure identities or cross-device logins; each local profile has an opaque generated ID. Shared-device users can see local saved profiles. Do not use a public kiosk for sensitive records, and keep backups in school-approved storage.
+Work saves immediately in the browser. With a current teacher-issued class link, it also saves to the restricted student-work database in cswithmrdave. The top status distinguishes waiting, saved to class and submitted. A plain index.html link without a class invitation is device-only. No data is sent to Teams automatically. PDF is a backup, not the normal submission route.
+
+Names label work; they are not passwords or verified school identities. Each attempt has a private 256-bit recovery key kept on its device, with only a digest stored in the database. Pupils cannot list classmates or open their cloud work by typing a name. On a shared browser, someone with access to its saved private keys could reopen work; use Leave a shared device safely in learner settings, keep the downloaded recovery file in private school storage, and remove that file from shared Downloads. No saved pupil roster is displayed.
 
 Download backup is visible at the top right throughout the lesson. It saves JSON for recovery; Restore JSON backup is on the landing page. Click your displayed name for learner settings, switching profiles or resetting the current profile after confirmation. Browser data clearing and private browsing may remove local work.
+
+The JSON backup contains the private recovery key. Treat it as a password: do not publish it, put it in the public app folder, or share it with classmates. On a different device, restore this file; a name alone cannot retrieve cloud work. A newer remote revision produces a choice rather than silently overwriting either copy. Keep a backup before choosing. Resetting a connected lesson clears its answers on the next class save, not other pupils' work.
+
+## Teacher setup and class links
+
+1. Host the complete folder over HTTPS. Open teacher.html on that same hosted site.
+2. Sign in using your existing approved Supabase classroom-teacher email/password. This is separate from logging into the Supabase dashboard. Entering teacher on index.html only previews activities and sends no pupil work.
+3. Select 7T, or add the actual label for another class. Select Open lesson · 2 hours.
+4. Copy the private pupil link into that class's private Teams resource. Its fragment carries a short-lived invitation; do not post it publicly. Links generated on localhost are only for this computer, so generate classroom links on the hosted site.
+5. Pupils enter their name; the class is filled in by the link. Wait for Saved to class. Finish and save confirms Submitted to teacher only after a server acknowledgement. Partial lessons can be submitted without correctness gates; the teacher must review their unfinished activities.
+6. Open pupil work in teacher.html to see actual answers, code, drawings, reflections and quiz attempts. The summary refreshes every 15 seconds; selected detailed work refreshes when requested. Stop new entries invalidates admission, but existing attempts can still save. Sign out when leaving a shared computer.
+
+Real 7T intake/saving was left closed after setup. No student accounts, auth-provider settings, passwords, paid plan or existing classroom-mode tables were changed. A live teacher-account sign-in and real school iPad/host test still need your verification before pupil rollout.
+
+## Cloud saving behaviour and size
+
+cloud-config.js contains the service URL and public publishable key, never a service-role key. cloud.js uses only three restricted pupil functions; teacher.html alone loads the locally bundled Supabase Auth library. Pupil requests never carry the teacher session. Private tables have RLS with no direct public table access.
+
+Cloud saves send a versioned full snapshot after about five seconds of idle time. The first/latest run per card and two-decimal drawing coordinates are retained, without image uploads. A persistent outbox retries interrupted writes using the same write ID. Revision conflicts require an explicit choice; failures do not lock lesson cards. Finish status updates when a delayed save succeeds. The frontend caps payloads conservatively at 450,000 bytes; the server cap is 524,288 bytes and one update per second. Device evidence stays intact if these limits are reached.
+
+This is not a guarantee of free-plan capacity. Pilot a class and measure database size and bandwidth: repeated full snapshots, many lessons, retention and teacher reads all matter. Agree a school retention policy before extending across all classes; no automatic deletion was installed. Only names, class scope and lesson evidence are collected, not EAL tiers, CAT scores or grades.
 
 ## Lesson structure
 
@@ -50,4 +73,4 @@ The same 15 questions are available in the app and teacher-resources/Year7_Week7
 
 lesson-data.js defines content and stable response IDs; progress.js defines attempt requirements; app.js handles local state and interaction; report.js exports evidence; lesson-layout.css refines the visible stages and target layout; colour-studio.js/CSS provides the creative colour tool. Keep these scripts together. Changing response meaning requires a lesson-version update and deliberate migration. V1 backups preserve legacy data and restart the revised lesson at Welcome; changed quiz attempts are archived separately.
 
-Read teacher-resources/TEACHER_GUIDE.md and TEST_REPORT.md. Mandarin support covers core readings, vocabulary and selected instructions, not every interface string or automatic translation. Have a bilingual colleague check terminology. Actual Safari/iPad, Teams upload, school filtering and live quiz imports still require school-device testing. No cloud credentials or database changes are included.
+Read teacher-resources/TEACHER_GUIDE.md, RESPONSE_CONTRACT.md and TEST_REPORT.md. Mandarin support covers core readings, vocabulary and selected instructions, not every interface string or automatic translation. Have a bilingual colleague check terminology. Actual Safari/iPad, Teams upload, school filtering and live quiz imports still require school-device testing. Database installation notes are a separate setup artifact; do not rerun its foundation migration casually because it disables the restricted APIs.

@@ -53,7 +53,11 @@ Keep the current goal and target in view. Ask a pupil to explain one line aloud 
 
 ## Evidence and safety
 
-No device screenshots are required: compact code/output evidence is automatic. The top-right backup button saves JSON at any stage; Finish offers PDF. This pilot is local only; Supabase is not connected. Collect backups when needed before browser data is cleared. Keep pupil backups outside the public app folder. The teacher-name preview is not authentication and must never grant future cloud access. Use school-approved storage, observe school device/account policies and avoid untrusted code/files.
+No device screenshots are required: compact code/output evidence is automatic. With the private class link, responses save to Supabase after about five seconds idle; Finish confirms submission after the server acknowledges it. This does not automatically grade work or upload to Teams. The top-right button saves a private recovery JSON at any stage; PDF remains a backup. Keep JSON private because it contains the saved attempt's recovery key.
+
+Open teacher.html on the hosted app and sign in with your existing approved classroom teacher account. Select 7T, Open lesson · 2 hours, then share its link only in the class's private Teams space. Add other actual class labels when needed. Review individual answers, first/latest code and drawings; a submitted partial lesson is still clearly incomplete. Stop new entries closes admission but not existing saves. Sign out on shared computers. The teacher-name preview never authorizes database review. Verify your teacher login and published URL on a real school iPad before class.
+
+Typed names are labels, not secure logins. Private device keys scope each attempt; a class link cannot list pupils. On shared browsers, use Leave a shared device safely and keep its private backup in the pupil's own school storage, not shared Downloads. A different device requires that backup; entering a name alone cannot recover cloud work. Closed/expired links, storage failures or revision conflicts produce non-blocking notices, not impossible task checks. Observe school device/account and retention policies, and avoid untrusted code/files.
 
 ## Sources
 

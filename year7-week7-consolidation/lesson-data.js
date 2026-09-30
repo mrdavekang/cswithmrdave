@@ -487,7 +487,7 @@ window.ConsolidationLesson=(()=>{
       "title": "Finish · review and save your evidence",
       "goal": "Review your answers and drawings, then finish this lesson.",
       "section": "finish",
-      "stage": "Finish · PDF / backup"
+      "stage": "Finish · Class save / backup"
     }
   ],
   "extras": [
@@ -891,7 +891,7 @@ window.ConsolidationLesson=(()=>{
     {
       "id": "finish",
       "label": "Finish",
-      "detail": "PDF / backup",
+      "detail": "Class save / backup",
       "cards": [
         "finish"
       ]

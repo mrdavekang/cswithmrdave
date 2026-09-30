@@ -1,68 +1,44 @@
-# Future Supabase integration · response contract
+# Restricted Supabase connection · response contract
 
-**Design document only. No database is connected or modified in this build.**
+Connected on 30 September 2026 to cswithmrdave. Database actual-role tests passed; browser registration, answer/code/output saves, submission and refresh were verified using synthetic pupils only. See TEST_REPORT.md for remaining checks.
 
-**30 September 2026 setup update:** A separate private student-work database foundation and restricted RPC functions have now been installed and tested in `cswithmrdave`. The lesson app itself is still local-only: cloud sync and the signed-in teacher review/launch interface have not been integrated. Refer to `../../supabase-student-work/SETUP_NOTES.txt` for the actual class/lesson registration, API contract and security/recovery requirements. The proposal below describes the intended frontend connection, not a claim that this app is already connected.
+## Identity and scope
 
-## Revised build (lesson version 2)
+- Lesson ID: y7-t1-w7-consolidation-v1; lesson version 2; schema version 1.
+- One current row per class, lesson and local learner UUID, not one row per click.
+- Typed names are labels, not authentication, and may collide.
+- A teacher's class invitation admits new attempts for a limited time. Launch URL fragments contain class UUID, lesson ID, label and invitation; no invitations are packaged or hard-coded.
+- Before registration, the browser persists a learner UUID and cryptographically random 256-bit private resume key. The database stores only its SHA-256 digest. The key permits access to exactly one attempt, never a class roster.
+- The private JSON backup includes the key for cross-device recovery. PDF reports and cloud response payloads omit it. Shared-browser physical access means access to device keys: use the leave-device workflow and private school storage.
+- Typing teacher is preview only. teacher.html requires the existing approved Supabase Auth teacher and server-checked class ownership. Its session uses sessionStorage separately from pupil state.
 
-The lesson ID stays stable for local recovery. New drawing cards have distinct IDs; legacy answers/runs remain in a migrated backup. Old quiz attempts are archived separately because question meanings changed. No new help-reason or page-visit data is collected. A top-right JSON backup is always available.
+## Payload and limits
 
-## Why app design comes first
+Stable card/question IDs key answers, histories, arranged algorithms, code drafts, first/latest run evidence, progress, reflections and quiz rounds. The snapshot includes schema/lesson versions and client timestamps. Server metadata includes record/class IDs, name, revision, updated_at and submitted_at.
 
-The lesson now defines stable `cardId` and `questionId` values. The database need not have a separate column for every question box. Store a versioned JSON response payload, with a few indexed fields for teacher filtering. Question wording can change without changing the database shape.
+StudentWorkCloud.payload() allowlists fields, omits student/teacher/cloud credentials, rounds coordinates to two decimals and retains first/latest runs. No screenshots, image bucket, EAL tiers, CAT scores or grades are uploaded. Device backups can retain additional recent runs.
 
-## Proposed compact record
+The frontend conservative JSON bound is 450,000 bytes. Server limits: 524,288 payload bytes, one update per second and 60 attempts per class/lesson by default. Revoked fixtures still count. Whole snapshots are sent, not partial patches. Pilot storage and bandwidth across realistic lesson/retention counts before scaling. No automatic retention deletion is installed.
 
-One row per learner, lesson and attempt:
+## Saving and recovery
 
-- `id`: server-generated record ID.
-- `learner_id`: school-approved stable opaque identifier, not a typed name alone.
-- `class_id` and `lesson_id`: teacher-approved scope.
-- `attempt_id`: distinct attempt identifier.
-- `schema_version` and `lesson_version`.
-- `responses`: JSON keyed by card/question ID, including first/latest answer where retained.
-- `code_drafts`: JSON keyed by coding card ID.
-- `run_evidence`: compact coordinates/pen settings, code, error/output and run time; no screenshots/base64.
-- `progress`: completed cards, unfinished fields, response-based completion and local finish state.
-- `reflection`: K/S/U self-ratings and pitstop responses.
-- `quiz`: first/latest choices and round summaries.
-- `interaction_summary`: meaningful action counts and a bounded recent event list.
-- `revision`, `updated_at`, `submitted_at`: server-managed synchronization/status fields.
+1. Save locally immediately; queue cloud sync after about five seconds idle. Network failures do not lock lesson navigation.
+2. Persist an outbox containing payload, expected revision, finish flag and write UUID before sending. Retry the same UUID after a lost response, including after refresh.
+3. Server revisions prevent delayed overwrites. A conflict offers the newer class copy or device draft after recommending a backup; neither is silently discarded.
+4. Show device/pending/class-saved status accurately. Finish confirms submission only after server acknowledgement; delayed successful saves update its heading too.
+5. Core response/code changes reopen the draft. Post-submission quiz practice also saves. Partial lessons can be submitted; missing activities remain visible for teacher review.
+6. Switching pupils detaches pending callbacks. Same-browser resume uses its saved key; another device needs a private backup, not a name-only lookup.
 
-The app's local record already exposes these parts via `ConsolidationApp.exportRecord()`. Local UUIDs are convenient local identities, not evidence of a pupil's identity. Do not treat imported JSON as trusted authorization.
+## API
 
-## Identity and access must be decided before connection
+Student POST endpoints under /rest/v1/rpc/:
 
-Names and classes are not secrets and can collide or be mistyped. Do not permit unrestricted read/update of records by matching a name. For a no-visible-login workflow, consider a school-approved class-entry mechanism plus a server-issued private resume capability for that learner/attempt. Alternatively use managed school sign-in. A class code by itself must not allow pupils to browse classmates' work. Changing device/browser requires a deliberate recovery process.
+- student_work_register: class/lesson/invitation, local learner UUID, name and resume key.
+- student_work_load: attempt UUID and resume key.
+- student_work_save: attempt UUID/key, payload, expected revision, write UUID and finish flag.
 
-The `teacher` preview shortcut must never grant database access. Teachers need authenticated authorization restricted to their classes. Keep pupil tables private with Row Level Security and narrow server-side functions. Do not put a service-role key or database password in the app. Avoid broad anonymous SELECT policies. Rate-limit and size-limit writes, validate lesson/class IDs and test cross-pupil/class access.
+Pupil requests use only the public publishable key, never a teacher JWT. teacher.html uses the authenticated JWT for student_work_teacher_classes, _create_class, _open, _close, _list and _load. The database also provides _revoke for approved-teacher operational use. Direct table/schema access for public clients is revoked; all four private tables have RLS. No service-role key or database password is bundled.
 
-## Recommended save behaviour
+Errors: 40001 = revision conflict; P0001 = retry after rate limit; 54000 = size/cap limit; 42501 = unauthorized/closed/expired access; 22023 = invalid format/version. Device work remains available in each case.
 
-1. Save locally immediately.
-2. Queue a debounced cloud save after a short idle period or card transition, not after every tap.
-3. Send only changed text/code/progress where practical; do not resend the entire history on every character.
-4. Keep an outbox during network loss; retry with backoff and clear “Saved on device / Sync pending / Saved to class” states.
-5. Use revision numbers/idempotent write IDs to prevent delayed writes overwriting newer work. Handle cross-device conflicts explicitly.
-6. On Finish, confirm a durable server save before showing “Submitted to teacher”. If offline, show “Finished on device, waiting to sync” and keep JSON/PDF backup available.
-
-## Data size and retention
-
-Text and coordinate records are much smaller than image screenshots. Actual size depends on code length, number of retained runs and lesson count. Measure serialized UTF-8 bytes after a representative pilot, then estimate pupils × lessons × average bytes with headroom for indexes, metadata and provider overhead. Do not promise a free-tier guarantee from pupil numbers alone; check the project's current database, bandwidth and platform limits before rollout.
-
-Choose school-approved retention/deletion periods and collect only necessary pupil details. This build does not collect EAL tiers, grades or CAT scores. Limit action logs to evidence needed for teaching, not all taps. Keep PDF/image evidence outside the primary text payload if later required, with separate access controls and retention.
-
-## Integration acceptance tests
-
-- Correct learner/class/lesson restored without exposing other pupils.
-- Anonymous/public clients cannot list class records.
-- Student A cannot read or overwrite Student B's work, even by changing local IDs.
-- Teacher sees only authorized classes; typing `teacher` does not bypass authentication.
-- Offline changes, reloads and reconnects do not lose answers.
-- Delayed/duplicate saves do not overwrite newer revisions.
-- Finish confirms the database save, not just a button click.
-- Local backup import cannot escalate permissions.
-- Storage/network failure has clear feedback and a working backup.
-
-Review the existing classroom-mode tables/functions before adding a migration. This app does not assume those presence tables already store lesson responses. Do not replace or weaken existing policies while adding student work.
+Stop new entries invalidates invitations but permits existing saves. Closing saves or revoking an attempt is a deliberate teacher/database operation. Revocation preserves audit records. Do not casually rerun the separate foundation migration: it deliberately disables APIs before the enable migration.

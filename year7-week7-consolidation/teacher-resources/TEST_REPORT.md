@@ -1,4 +1,18 @@
-# Revised build verification · lesson version 2
+# Verification · lesson version 2 · cloud build 30 September 2026
+
+## Cloud integration checks performed in this build
+
+Live browser checks used Chrome and the local app UI, calling the real cswithmrdave Supabase API. Two synthetic pupils in a separate Connection test - 30 Sep class registered and saved different starter answers. One pupil ran a three-sided Turtle drawing; its code and compact output were saved. Finish received a server acknowledgement, and name-based same-device reopening after refresh restored the private-key-authorized work and submission. Database inspection confirmed separate records, bounded JSON and no student/teacher/cloud credential fields in payloads. No actual pupil work was uploaded.
+
+Teacher preview showed no pupil work sent. The unsigned teacher page displayed a separate login, not a class roster. Database tests under actual anon/authenticated roles separately verified pupil-key isolation, denied public/unapproved teacher access, and approved-teacher ownership. Live sign-in with the teacher's own classroom account and dashboard actions still require user verification; no teacher password was retrieved or changed.
+
+Node tests with mocked networking passed: persisted key before registration, same-name separation, credential exclusion, pupil/teacher transport separation, offline outbox, duplicate/idempotent writes, lost response after refresh, revision conflicts, explicit reconciliation, acknowledged submission, edits reopening a draft, remote recovery, preview isolation, no-link local fallback, storage failure and payload limits/coordinate compaction. These simulate interrupted-network conditions; they are not a claim of testing a real school network outage.
+
+A real private JSON download was inspected: valid recovery capability and code/answers; the report-rendering data excludes the capability. Automated UI restore was blocked by the browser extension's file-URL permission, not an observed app error. That permission was not changed. Full cross-device/private-file recovery still needs a school-device check.
+
+Both synthetic attempts were retained but revoked and their class intake/saving closed after the test. The real 7T lesson was left closed. No data was permanently deleted. Existing classroom mode and billing were unchanged.
+
+## Prior lesson and colour-build verification
 
 Automated tests used a separate Chromium browser, not the user's signed-in browser.
 
@@ -29,4 +43,4 @@ Colour studio checks passed in the additive colour build:
 
 During concurrent test browsers, one hosted loading attempt stalled; the full journey passed when repeated on its own. This does not replace testing the published URL and runtime on school devices.
 
-Not independently verified: actual iPad hardware/Safari, native Share to Files, Microsoft Teams upload, school filtering/CSP, live Gimkit/Blooket imports or deployment-provider behaviour. Supabase is not connected; cloud saving is not claimed. Test the published app on real school devices before class.
+Not independently verified: actual iPad hardware/Safari, native Share to Files, Microsoft Teams upload, school filtering/CSP, live Gimkit/Blooket imports or deployment-provider behaviour. Test the published app and teacher login on real school devices before class. The prior checks above predate the cloud integration; the new live/mocked checks are distinguished at the top.
