@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 10 OxfordAQA 9210: validation using selection, independent Python decisions and justified test data.">
+  <meta name="theme-color" content="#00833c">
+  <title>Year 10 · Validate, decide, test</title>
+  <link rel="stylesheet" href="styles.css?v=20261005-1">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the current activity</a>
+  <header class="topbar">
+    <a class="brand" href="#" id="home-link"><img src="assets/tenby-isp-logo.png" alt="Tenby Schools and ISP"><span>YEAR 10 · COMPUTER SCIENCE<br><small>OXFORDAQA 9210 · MERGED LESSON</small></span></a>
+    <div class="top-actions"><span id="save-status" role="status">Your own lesson notebook</span><button id="support-open" disabled>Help / pause</button><button id="export-backup" disabled>Backup</button><button id="export-pdf" class="primary" disabled>Export PDF</button></div>
+  </header>
+  <section class="landing" id="landing">
+    <p class="eyebrow">SELECTION · VALIDATION · TEST DATA</p>
+    <h1>Validate.<br>Decide. Test.</h1>
+    <p class="lead">Build a school-fair ticket program that checks an age before deciding the ticket price.</p>
+    <p><strong>Objective:</strong> design, write and test a selection-based program that validates input before making a decision.</p>
+    <div class="lesson-intent"><h2>WAGBA — What are we getting better at?</h2><p>Using validation rules and purposeful tests to make reliable program decisions.</p><dl><dt>Knowledge</dt><dd>Explain validation, selection, and normal, boundary and erroneous test data.</dd><dt>Skills</dt><dd>Plan a decision, write it in Python, and record tests from your own IDE.</dd><dt>Understanding</dt><dd>Explain why input must be validated before it is used, and why one successful test is not enough.</dd></dl></div>
+    <form id="login-form" class="login-form"><h2>Start your lesson notebook</h2><p>Enter your name and class to save or resume work on this browser.</p><label for="student-name">Name</label><input id="student-name" maxlength="80" autocomplete="name" required><label for="student-class">Class</label><input id="student-class" maxlength="40" placeholder="e.g. 10T" required><button class="primary" id="start-button">Start / resume lesson</button><p id="login-error" class="error" role="alert"></p></form>
+    <p class="small">Teacher preview: enter <strong>teacher</strong> as the name; class is optional. This opens the page guide and suggested answers. It is a preview shortcut, not secure sign-in or a live monitoring service.</p>
+    <details><summary>Resume from a notebook backup</summary><label for="restore-file">Select the JSON backup exported from this lesson</label><input id="restore-file" type="file" accept=".json,application/json"><p id="restore-error" class="error" role="alert"></p></details>
+    <p class="small privacy">Work stays in this browser. Nothing is automatically sent to your teacher or Microsoft Teams. Export a backup before changing devices and a PDF for submission. Run Python in your own IDE, not on this website.</p>
+  </section>
+  <div id="lesson-shell" hidden>
+    <div class="lesson-layout">
+      <aside class="sidebar" id="sidebar"><p class="eyebrow" id="identity"></p><button id="route-toggle" aria-expanded="true" aria-controls="route">Lesson route</button><nav id="route" aria-label="Lesson route"></nav><div class="sidebar-intent"><h2>WAGBA</h2><p>Using validation rules and purposeful tests to make reliable program decisions.</p><h3>Knowledge</h3><p>Validation, selection, normal, boundary and erroneous test data.</p><h3>Skills</h3><p>Plan → code in your IDE → test and record.</p><h3>Understanding</h3><p>Validate before deciding. Use evidence, not just one successful run.</p><h3>Challenge</h3><p>Prove that invalid ages cannot receive a ticket price.</p></div><button id="change-student">Change student / return home</button></aside>
+      <main id="content" tabindex="-1"></main>
+    </div>
+    <footer class="bottom-bar"><button id="previous-page">← Back</button><span id="page-position"></span><button id="next-page" class="primary">Next →</button></footer>
+  </div>
+  <dialog id="support-dialog" aria-labelledby="support-title"><h2 id="support-title">Choose the support you need</h2><p>No explanation out loud is required. These controls do <strong>not</strong> send an alert. Show the selected card to your teacher or use your agreed classroom signal.</p><div class="support-options"><button data-support="Show me one example">Show me one example</button><button data-support="Help me with this line">Help me with this line</button><button data-support="I need a quiet pause">I need a quiet pause</button></div><div id="support-card" hidden role="status"></div><label for="support-note">Optional: name the step or line</label><input id="support-note" placeholder="e.g. the condition on line 2"><p class="small">Use your agreed break routine. You can return to exactly the same task.</p><button id="support-close" class="primary">Return to my task</button></dialog>
+  <dialog id="export-dialog" aria-labelledby="export-title"><h2 id="export-title">Your evidence PDF</h2><p id="export-message" role="status"></p><p>Open the downloaded PDF and check your answers, code and complete screenshots. Then attach it to the correct <strong>Microsoft Teams assignment</strong> and select <strong>Turn in</strong>. Adding a file to Classwork or Files alone does not submit an assignment.</p><button id="export-close" class="primary">Back to my notebook</button></dialog>
+  <div id="live-message" class="sr-only" aria-live="polite"></div>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="assets/pdf-fonts.js"></script>
+  <script src="lesson.js?v=20261005-1"></script>
+  <script src="app.js?v=20261005-1"></script>
+</body>
+</html>
