@@ -91,6 +91,14 @@ Separate concepts, practical work and explanation. Reflection is not a grade. Do
 
 Use the school's developing/secure/extending descriptors for the taught scope. These are not automatic end-of-year OIC ratings. If code works but an explanation is unclear, ask one neutral question before deciding whether the issue is computing understanding or language access. Record support given. Do not require a partner for independent assessment.
 
+## Optional creation worlds
+
+The Create card offers two unfinished Scratch 3 templates: **Comet Courier** (Nova rover, fuel dock, launch pad) and **Moon Garden** (Pip garden bug, star seed, moon flower). All six sprites have original, editable SVG costumes. Each moving sprite has only green flag → go to its start. Pupils choose movements, visit the first stop, pause, and reach FINISH without crossing striped walls. Markers do not disappear automatically: pupils check coordinates and the route themselves.
+
+Save the main Explorer assessment file before opening a new Scratch tab. Extra worlds are optional, not a substitute for the main file. Existing return/own-target choices remain available and saved answers are preserved. Real Scratch screenshots show each template and three small block examples (right/up, left/down, wait). Their example start at (0,0) is not the template start or a completed mission route.
+
+The templates and screenshots were opened and inspected in Scratch. Private completed routes and QA files remain outside the public app folder.
+
 ## Dependencies and privacy
 
 Raleway with OFL license, bundled jsPDF, bundled JSZip (license notice in distribution), local visual assets. No analytics or automatic cloud upload. Keep pupil files and QA outputs outside the public folder. Saving locally does not publish; commit/push only when requested.
