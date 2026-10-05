@@ -1,72 +1,57 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b6b40">
-  <title>Year 6 Computing · Learning Checkpoint</title>
-  <meta name="description" content="A guided Year 6 Computing checkpoint on files, algorithms and Scratch coordinates.">
+  <title>Year 6 · Explorer's Mission Checkpoint</title>
+  <meta name="description" content="A Year 6 checkpoint: plan, build, test and explain one Scratch journey.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">Y6</span><span>Computing checkpoint</span></div>
-    <div class="header-right"><span id="studentBadge"></span><span id="elapsed" aria-label="Time in assessment"></span></div>
-  </header>
-
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">Y6</span><span>Computing checkpoint</span></a><div class="header-right"><span id="studentBadge"></span><span id="elapsed"></span></div></header>
   <main>
     <section id="welcome" class="welcome-shell" aria-labelledby="welcomeTitle">
-      <p class="eyebrow">YEAR 6 · TERM 1 · FIRST THREE LESSONS</p>
-      <h1 id="welcomeTitle">Show what you can do</h1>
-      <p class="lead">You will organise a file, plan a robot route, read coordinates and fix a Scratch project. Do each task yourself. You can go back or ask for help with the instructions.</p>
+      <p class="eyebrow">YEAR 6 · FIRST THREE LESSONS <span class="zh" lang="zh-Hans">六年级 · 前三节课</span></p>
+      <h1 id="welcomeTitle">Explorer's mission<span class="zh" lang="zh-Hans">探索者的任务</span></h1>
+      <p class="lead">One mission. Your plan. Your Scratch program.<span class="zh" lang="zh-Hans">一个任务。你的计划。你的 Scratch 程序。</span></p>
       <div class="welcome-grid">
         <form id="startForm" class="panel">
-          <h2>Start or continue</h2>
-          <label for="studentName">Your name</label>
-          <input id="studentName" name="studentName" autocomplete="name" maxlength="60" required placeholder="Type your name">
-          <label for="studentClass">Your class</label>
-          <input id="studentClass" name="studentClass" maxlength="30" required placeholder="Type your class">
-          <fieldset class="language-choice"><legend>Reading support</legend>
-            <label><input type="radio" name="language" value="en" checked> English</label>
-            <label><input type="radio" name="language" value="bi"> English + 中文</label>
-          </fieldset>
-          <button class="primary big" type="submit">Start assessment <span aria-hidden="true">→</span></button>
-          <p class="small-note">This device saves your answers under your name and class. Use your JSON backup to continue on another device.</p>
+          <h2>Start or continue<span class="zh" lang="zh-Hans">开始或继续</span></h2>
+          <label for="studentName">Your name<span class="zh" lang="zh-Hans">你的姓名</span></label><input id="studentName" maxlength="60" required autocomplete="name" placeholder="Your name / 姓名">
+          <label for="studentClass">Your class<span class="zh" lang="zh-Hans">你的班级</span></label><input id="studentClass" maxlength="30" required placeholder="Your class / 班级">
+          <fieldset class="language-choice"><legend>Reading support / 阅读支持</legend><label><input type="radio" name="language" value="en" checked> English</label><label><input type="radio" name="language" value="bi"> English + 中文</label></fieldset>
+          <button class="primary big" type="submit">Start my mission →<span class="zh" lang="zh-Hans">开始我的任务 →</span></button>
+          <p class="small-note">Work on your own. Ask for help with the instructions if you need it.<span class="zh" lang="zh-Hans">独立完成。如果看不懂操作说明，可以求助。</span></p>
+          <p id="startMessage" class="small-note" role="status"></p>
         </form>
         <aside class="panel preparation">
-          <h2>What you will need</h2>
-          <div class="prep-row"><span class="prep-number">1</span><span>This webpage for your plan and answers</span></div>
-          <div class="prep-row"><span class="prep-number">2</span><span>Scratch or Scratch Desktop for one practical task</span></div>
-          <div class="prep-row"><span class="prep-number">3</span><span>Teams to hand in your answer report and Scratch project</span></div>
-          <label class="restore-label">Have a JSON backup? <input id="restoreFile" type="file" accept=".json,application/json"></label>
+          <h2>What will I make?<span class="zh" lang="zh-Hans">我要制作什么？</span></h2>
+          <div id="welcomeMap"></div>
+          <p>Move Explorer from START to the key, then to the portal. Use the same plan in Scratch.<span class="zh" lang="zh-Hans">让探索者从起点走到钥匙，再到传送门。在 Scratch 中使用同一个计划。</span></p>
+          <div class="prep-row"><span class="prep-number">1</span><span>Plan here<span class="zh" lang="zh-Hans">在这里计划</span></span></div>
+          <div class="prep-row"><span class="prep-number">2</span><span>Build in Scratch<span class="zh" lang="zh-Hans">在 Scratch 中编程</span></span></div>
+          <div class="prep-row"><span class="prep-number">3</span><span>Hand in your PDF and Scratch file in Teams<span class="zh" lang="zh-Hans">在 Teams 提交 PDF 和 Scratch 文件</span></span></div>
+          <label class="restore-label" for="restoreFile">Continue with a backup (.json)<span class="zh" lang="zh-Hans">用备份继续（.json）</span></label><input id="restoreFile" type="file" accept=".json,application/json">
           <p id="restoreMessage" class="small-note" role="status"></p>
+          <p class="small-note">No account or password needed. Type teacher as the name to preview every card.<span class="zh" lang="zh-Hans">无需账号或密码。教师可在姓名处输入 teacher 预览全部卡片。</span></p>
         </aside>
       </div>
     </section>
-
     <section id="assessment" hidden>
       <div class="assessment-shell">
-        <div class="progress-row"><span id="progressText"></span><span id="sectionLabel"></span></div>
-        <progress id="progress" max="100" value="0" aria-label="Assessment progress"></progress>
-        <div class="work-layout">
-          <aside class="journey" aria-label="Your assessment journey">
-            <h2>Your route</h2>
-            <ol id="journeyList"></ol>
-            <p class="journey-help">The steps open in order. You can return to an earlier step.</p>
-            <button id="saveBackup" class="secondary" type="button">Download JSON backup</button>
-          </aside>
-          <article class="task-card" id="taskCard" tabindex="-1" aria-live="polite"></article>
-        </div>
-        <nav class="navigation" aria-label="Assessment navigation">
-          <button id="previous" class="secondary" type="button">← Back</button>
-          <div class="navigation-right"><button id="flag" class="secondary" type="button">Flag for later</button><button id="next" class="primary" type="button">Next step →</button></div>
-        </nav>
+        <div class="progress-row"><span id="progressText"></span><button id="changeLanguage" class="text-button" type="button">English + 中文</button></div>
+        <progress id="progress" max="100" value="0" aria-label="Cards visited"></progress>
+        <ol id="journeyList" class="journey" aria-label="Mission stages"></ol>
+        <div class="mission-strip" id="missionStrip"></div>
+        <article class="task-card" id="taskCard" tabindex="-1"></article>
+        <nav class="navigation" aria-label="Card navigation"><button id="previous" class="secondary" type="button">← Back</button><div class="navigation-right"><button id="flag" class="text-button" type="button">Ask for help</button><button id="next" class="primary" type="button">Save & continue →</button></div></nav>
+        <div class="backup-bar"><span id="saveStatus" role="status"></span><button id="saveBackup" class="text-button" type="button">Download backup (.json)</button></div>
       </div>
     </section>
   </main>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <div id="printReport" hidden></div>
-  <script src="vendor/jspdf.umd.min.js"></script>
-  <script src="app.js"></script>
+  <section id="printReport" hidden></section>
+  <noscript><p class="panel">This activity needs JavaScript. Please ask your teacher to help you open it.</p></noscript>
+  <script src="vendor/jspdf.umd.min.js"></script><script src="vendor/jszip.min.js"></script><script src="mission.js"></script><script src="app.js"></script>
 </body>
 </html>
