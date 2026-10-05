@@ -20,7 +20,7 @@ Protect review time. If corrections expose a prerequisite gap, use a scaffold in
 
 ## Before the lesson
 
-1. Return teacher-marked papers. Give students only the question and marking points they need to review. Actual test questions and mark schemes are not distributed in this public app.
+1. Return teacher-marked papers. Students choose one question in Main Task 1 to view its marking points. The revised written (20 marks) and corrected practical (20 marks) schemes are now distributed in this public app for post-test review, with PDF downloads. This is a deliberate release of answers, not a secure teacher-only area. Do not reuse the released questions as a secure assessment.
 2. Print `resources/Year_10_Checkpoint_Review_Three_Routes.pdf`. Pages 1–2 are Build, 3–4 Strengthen, 5–6 Transfer. Each pupil collects one pair. The teacher preview can also export each pair separately.
 3. Model one paper answer against its marking points before independent review. Do not turn example wording into an exact-match requirement unless the actual question requires an exact term or output.
 4. Have the Python IDE ready, along with the pupil's agreed communication/pause routine.
@@ -43,7 +43,17 @@ The top-right Export PDF works at any stage. It includes all core prompts (unans
 
 Students must open their PDF, attach it to the correct Teams **assignment**, select **Turn in**, and verify the status there. Classwork/Files upload alone is not assignment submission. Hand in the physical review sheet as directed. No private test marks or student response exports are included in the distributed folder.
 
-Teacher preview: name `teacher` (class optional), or `index.html?teacher=1`. All pages, guidance, projection view and blank-sheet exports are available. This shortcut is not access control; teacher notes contain only lesson models and general marking guidance, not the protected test paper/mark scheme.
+Teacher preview: name `teacher` (class optional), or `index.html?teacher=1`. All pages, guidance, projection view and blank-sheet exports are available. This shortcut is not access control. Mark schemes are intentionally available to students in Main Task 1.
+
+## Released checkpoint mark schemes
+
+`mark-scheme.js` provides a one-question-at-a-time reading panel, grouped as written theory and Python practical. Examples/original extracts remain collapsed until requested. The selected question is remembered in the local notebook and JSON backup; reading a mark scheme is not counted as an answer or awarded marks. Corrections and targets stay on paper.
+
+- `resources/Checkpoint_1_Written_Theory_Mark_Scheme.pdf`: unchanged revised written scheme; 01.1–01.2 use June 2025 OxfordAQA 9210/2 Q02.1–02.2 guidance. Other questions are school-authored.
+- `resources/Checkpoint_1_Practical_Mark_Scheme.pdf`: unchanged corrected practical scheme. Q04.2 does not require extra printed results. Q04.3 requires its specified results; code and screenshots earn separate marks. Logically equivalent rejection handling is accepted, not only a literal `or`.
+- `resources/Official_01_1_01_2_Marking_Extract.png`: original official marking extract already used in the written scheme. Readable text appears above it.
+
+The documents retain their original teacher-copy labels; the page explains that they have now been released for post-test review. The PDF skill was used to check the revised source documents, including the official image-based marking extract.
 
 ## References
 
