@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b6b40">
+  <title>Year 6 Computing · Learning Checkpoint</title>
+  <meta name="description" content="A guided Year 6 Computing checkpoint on files, algorithms and Scratch coordinates.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">Y6</span><span>Computing checkpoint</span></div>
+    <div class="header-right"><span id="studentBadge"></span><span id="elapsed" aria-label="Time in assessment"></span></div>
+  </header>
+
+  <main>
+    <section id="welcome" class="welcome-shell" aria-labelledby="welcomeTitle">
+      <p class="eyebrow">YEAR 6 · TERM 1 · FIRST THREE LESSONS</p>
+      <h1 id="welcomeTitle">Show what you can do</h1>
+      <p class="lead">You will organise a file, plan a robot route, read coordinates and fix a Scratch project. Do each task yourself. You can go back or ask for help with the instructions.</p>
+      <div class="welcome-grid">
+        <form id="startForm" class="panel">
+          <h2>Start or continue</h2>
+          <label for="studentName">Your name</label>
+          <input id="studentName" name="studentName" autocomplete="name" maxlength="60" required placeholder="Type your name">
+          <label for="studentClass">Your class</label>
+          <input id="studentClass" name="studentClass" maxlength="30" required placeholder="Type your class">
+          <fieldset class="language-choice"><legend>Reading support</legend>
+            <label><input type="radio" name="language" value="en" checked> English</label>
+            <label><input type="radio" name="language" value="bi"> English + 中文</label>
+          </fieldset>
+          <button class="primary big" type="submit">Start assessment <span aria-hidden="true">→</span></button>
+          <p class="small-note">This device saves your answers under your name and class. Use your JSON backup to continue on another device.</p>
+        </form>
+        <aside class="panel preparation">
+          <h2>What you will need</h2>
+          <div class="prep-row"><span class="prep-number">1</span><span>This webpage for your plan and answers</span></div>
+          <div class="prep-row"><span class="prep-number">2</span><span>Scratch or Scratch Desktop for one practical task</span></div>
+          <div class="prep-row"><span class="prep-number">3</span><span>Teams to hand in your answer report and Scratch project</span></div>
+          <label class="restore-label">Have a JSON backup? <input id="restoreFile" type="file" accept=".json,application/json"></label>
+          <p id="restoreMessage" class="small-note" role="status"></p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="assessment" hidden>
+      <div class="assessment-shell">
+        <div class="progress-row"><span id="progressText"></span><span id="sectionLabel"></span></div>
+        <progress id="progress" max="100" value="0" aria-label="Assessment progress"></progress>
+        <div class="work-layout">
+          <aside class="journey" aria-label="Your assessment journey">
+            <h2>Your route</h2>
+            <ol id="journeyList"></ol>
+            <p class="journey-help">The steps open in order. You can return to an earlier step.</p>
+            <button id="saveBackup" class="secondary" type="button">Download JSON backup</button>
+          </aside>
+          <article class="task-card" id="taskCard" tabindex="-1" aria-live="polite"></article>
+        </div>
+        <nav class="navigation" aria-label="Assessment navigation">
+          <button id="previous" class="secondary" type="button">← Back</button>
+          <div class="navigation-right"><button id="flag" class="secondary" type="button">Flag for later</button><button id="next" class="primary" type="button">Next step →</button></div>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="printReport" hidden></div>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
