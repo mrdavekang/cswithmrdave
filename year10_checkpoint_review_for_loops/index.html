@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Year 10 OxfordAQA 9210: paper checkpoint review, reflection and definite iteration in Python and pseudocode.">
+  <meta name="theme-color" content="#00833c">
+  <title>Year 10 · Review, explain, repeat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#content">Skip to activity</a>
+  <header class="topbar">
+    <a href="#" id="home" class="brand"><img src="assets/tenby-isp-logo.png" alt="Tenby Schools and ISP"><span>YEAR 10 · COMPUTER SCIENCE<small>OXFORDAQA 9210 · 60 MINUTES</small></span></a>
+    <div class="actions"><span id="save-status" role="status">Your private lesson notebook</span><button id="help" disabled>Help / pause</button><button id="backup" disabled>Backup</button><button id="export" class="primary" disabled>Export PDF</button></div>
+  </header>
+  <section id="landing" class="landing">
+    <p class="eyebrow">CHECKPOINT REVIEW · DEFINITE ITERATION</p>
+    <h1>Review. Explain.<br>Repeat.</h1>
+    <p class="lead">Use your checkpoint feedback to improve one answer. Then learn how a loop issues the right number of workshop tickets.</p>
+    <p><strong>Objective:</strong> improve and explain one checkpoint response; predict, trace and modify a definite loop in Python and OxfordAQA pseudocode.</p>
+    <section class="intent"><h2>WAGBA — What are we getting better at?</h2><p>Using evidence and feedback to improve our explanations, and controlling how many times instructions repeat.</p><dl><dt>Knowledge</dt><dd>Recognise the idea needed for a marking point; know definite iteration, counters and loop bounds.</dd><dt>Skills</dt><dd>Improve one written response; trace, modify and test a FOR loop.</dd><dt>Understanding</dt><dd>Explain a correction and why a loop's bounds and indentation produce the required result.</dd></dl></section>
+    <form id="login"><h2>Open your lesson notebook</h2><label for="name">Name</label><input id="name" autocomplete="name" maxlength="80" required><label for="class">Class</label><input id="class" placeholder="e.g. 10T" maxlength="40" required><button id="start" class="primary">Start / resume</button><p id="login-error" role="alert" class="error"></p></form>
+    <p class="small">Teacher preview: enter <strong>teacher</strong> as the name; class is optional. All pages are available for review. This is not secure authentication or live classroom monitoring.</p>
+    <details><summary>Restore an editable notebook backup</summary><label for="restore">Choose this lesson's JSON backup</label><input type="file" id="restore" accept=".json,application/json"><p id="restore-error" class="error" role="alert"></p></details>
+    <p class="small">Your written checkpoint review happens on a paper sheet collected from your teacher. The website contains no test questions or test mark scheme. Your notebook stays on this browser; nothing is sent automatically. Run Python in your own IDE. Export before changing devices.</p>
+  </section>
+  <div id="shell" hidden>
+    <div class="layout">
+      <aside id="sidebar"><p id="identity" class="eyebrow"></p><section class="sidebar-intent"><h2>Topic</h2><p>Checkpoint review &amp; definite iteration</p><h2>WAGBA</h2><p>Improve an explanation. Control repetitions.</p><h3>Knowledge</h3><p>Marking points; iteration; counter; bounds.</p><h3>Skills</h3><p>Correct → explain → trace → modify → test.</p><h3>Understanding</h3><p>Why the correction works; why the loop stops.</p><h3>Keywords</h3><p>Feedback, iteration, counter, range, start, stop, indentation.</p><h3>Challenge</h3><p>Explain your correction and prove that the final ticket is issued exactly once.</p></section><button id="route-toggle" aria-expanded="true" aria-controls="route">Lesson route</button><nav id="route" aria-label="Lesson stages"></nav><button id="change">Change student / home</button></aside>
+      <main id="content" tabindex="-1"></main>
+    </div>
+    <footer class="bottom"><button id="previous">← Back</button><span id="position"></span><button id="next" class="primary">Next →</button></footer>
+  </div>
+  <dialog id="help-dialog" aria-labelledby="help-title"><h2 id="help-title">Choose what would help</h2><p>Choose a card to show your teacher. This does <strong>not</strong> send a notification.</p><div class="support-options"><button data-support="Please show one worked example">One worked example</button><button data-support="Please show the instruction in writing">An instruction in writing</button><button data-support="Please let me prepare an explanation first">Time to prepare an explanation</button><button data-support="I need an agreed quiet pause">An agreed quiet pause</button></div><p id="help-card" hidden></p><label for="help-note">Optional: the line or step</label><input id="help-note" maxlength="300"><p class="small">You may point, write or speak. Follow your agreed pause-and-return routine.</p><button id="help-close" class="primary">Return to my task</button></dialog>
+  <dialog id="export-dialog" aria-labelledby="export-title"><h2 id="export-title">Save your evidence</h2><p id="export-message" role="status"></p><p>Open the downloaded PDF and check your text, code and complete images. In the correct Microsoft Teams assignment, choose <strong>Add work</strong>, attach the PDF and select <strong>Turn in</strong>. Hand in your paper review sheet as directed. The app cannot upload or confirm submission.</p><button id="export-close">Return to lesson</button></dialog>
+  <p id="live" class="sr-only" aria-live="polite"></p>
+  <script src="vendor/jspdf.umd.min.js"></script><script src="assets/pdf-fonts.js"></script><script src="lesson.js"></script><script src="pdf.js"></script><script src="app.js"></script>
+</body>
+</html>
