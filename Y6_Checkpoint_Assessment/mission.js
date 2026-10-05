@@ -16,8 +16,8 @@
     return {outcome:position[0]===model.portal[0]&&position[1]===model.portal[1]&&key?'success':'unfinished',trail,position,key};
   }
   // Coordinates map exactly to Scratch's 480 x 360 stage: px=x+240, py=180-y.
-  function mapSvg(bilingual=false,trail=null){
-    const labels=bilingual?{start:'START / 起点',key:'KEY / 钥匙',end:'FINISH / 终点'}:{start:'START',key:'KEY',end:'FINISH'};
+  function mapSvg(language=false,trail=null){
+    const labels=language==='ko'?{start:'START / 출발',key:'KEY / 열쇠',end:'FINISH / 도착'}:language===true||language==='bi'?{start:'START / 起点',key:'KEY / 钥匙',end:'FINISH / 终点'}:{start:'START',key:'KEY',end:'FINISH'};
     let grid='';for(let x=20;x<=460;x+=40)grid+=`<path d="M${x} 40V320"/>`;for(let y=40;y<=320;y+=40)grid+=`<path d="M20 ${y}H460"/>`;
     const walls=model.walls.map(([x,y])=>`<rect x="${x+220}" y="${160-y}" width="40" height="40" fill="url(#hatch)" stroke="#37453d"/>`).join('');
     const keyX=model.key[0]+240,keyY=180-model.key[1];

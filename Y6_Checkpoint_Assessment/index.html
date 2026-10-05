@@ -1,57 +1,70 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-app-version="3">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b6b40">
-  <title>Year 6 · Explorer's Mission Checkpoint</title>
-  <meta name="description" content="A Year 6 checkpoint: plan, build, test and explain one Scratch journey.">
-  <link rel="stylesheet" href="styles.css">
+  <title>Year 6 · Create in Scratch</title>
+  <meta name="description" content="A Year 6 computing checkpoint: plan, create, test and explain a Scratch journey.">
+  <link rel="stylesheet" href="styles.css?v=20261005-create-ko-1">
 </head>
 <body>
-  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">Y6</span><span>Computing checkpoint</span></a><div class="header-right"><span id="studentBadge"></span><span id="elapsed"></span></div></header>
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">Y6</span><span data-en="Computing checkpoint" data-zh="计算测评">Computing checkpoint</span></a><div class="header-right"><span id="studentBadge"></span><span id="elapsed"></span></div></header>
+  <div id="loadError" class="warning load-error" hidden role="alert"></div>
   <main>
     <section id="welcome" class="welcome-shell" aria-labelledby="welcomeTitle">
-      <p class="eyebrow">YEAR 6 · FIRST THREE LESSONS <span class="zh" lang="zh-Hans">六年级 · 前三节课</span></p>
-      <h1 id="welcomeTitle">Explorer's mission<span class="zh" lang="zh-Hans">探索者的任务</span></h1>
-      <p class="lead">One mission. Your plan. Your Scratch program.<span class="zh" lang="zh-Hans">一个任务。你的计划。你的 Scratch 程序。</span></p>
+      <p class="eyebrow" data-en="YEAR 6 · CREATE IN SCRATCH" data-zh="六年级 · 在 Scratch 创作">YEAR 6 · CREATE IN SCRATCH</p>
+      <h1 id="welcomeTitle" data-en="Explorer's mission" data-zh="探索者的任务">Explorer's mission</h1>
+      <p class="lead" data-en="Your plan. Your code. Your journey." data-zh="你的计划。你的代码。你的路线。">Your plan. Your code. Your journey.</p>
       <div class="welcome-grid">
         <form id="startForm" class="panel">
-          <h2>Start or continue<span class="zh" lang="zh-Hans">开始或继续</span></h2>
-          <label for="studentName">Your name<span class="zh" lang="zh-Hans">你的姓名</span></label><input id="studentName" maxlength="60" required autocomplete="name" placeholder="Your name / 姓名">
-          <label for="studentClass">Your class<span class="zh" lang="zh-Hans">你的班级</span></label><input id="studentClass" maxlength="30" required placeholder="Your class / 班级">
-          <fieldset class="language-choice"><legend>Reading support / 阅读支持</legend><label><input type="radio" name="language" value="en" checked> English</label><label><input type="radio" name="language" value="bi"> English + 中文</label></fieldset>
-          <button class="primary big" type="submit">Start my mission →<span class="zh" lang="zh-Hans">开始我的任务 →</span></button>
-          <p class="small-note">Work on your own. Ask for help with the instructions if you need it.<span class="zh" lang="zh-Hans">独立完成。如果看不懂操作说明，可以求助。</span></p>
+          <h2 data-en="Start or continue" data-zh="开始或继续">Start or continue</h2>
+          <label for="studentName" data-en="Your name" data-zh="你的姓名">Your name</label><input id="studentName" maxlength="60" required autocomplete="name">
+          <label for="studentClass" data-en="Your class" data-zh="你的班级">Your class</label><input id="studentClass" maxlength="30" required>
+          <fieldset class="language-choice"><legend>Reading support / 阅读支持 / 읽기 도움</legend>
+            <label><input type="radio" name="language" value="en" checked> English</label>
+            <label><input type="radio" name="language" value="bi"> English + 中文</label>
+            <label><input type="radio" name="language" value="ko"> English + 한국어</label>
+          </fieldset>
+          <p class="small-note" data-en="Think, talk and answer in English, Mandarin, Korean, or a mix." data-zh="可以用英语、中文、韩语或混合语言思考、交流和作答。">Think, talk and answer in English, Mandarin, Korean, or a mix.</p>
+          <button class="primary big" type="submit" data-en="Start my mission →" data-zh="开始我的任务 →">Start my mission →</button>
           <p id="startMessage" class="small-note" role="status"></p>
         </form>
         <aside class="panel preparation">
-          <h2>What will I make?<span class="zh" lang="zh-Hans">我要制作什么？</span></h2>
+          <h2 data-en="Create, test, improve" data-zh="编写、测试、改进">Create, test, improve</h2>
           <div id="welcomeMap"></div>
-          <p>Move Explorer from START to the key, then to the portal. Use the same plan in Scratch.<span class="zh" lang="zh-Hans">让探索者从起点走到钥匙，再到传送门。在 Scratch 中使用同一个计划。</span></p>
-          <div class="prep-row"><span class="prep-number">1</span><span>Plan here<span class="zh" lang="zh-Hans">在这里计划</span></span></div>
-          <div class="prep-row"><span class="prep-number">2</span><span>Build in Scratch<span class="zh" lang="zh-Hans">在 Scratch 中编程</span></span></div>
-          <div class="prep-row"><span class="prep-number">3</span><span>Hand in your PDF and Scratch file in Teams<span class="zh" lang="zh-Hans">在 Teams 提交 PDF 和 Scratch 文件</span></span></div>
-          <label class="restore-label" for="restoreFile">Continue with a backup (.json)<span class="zh" lang="zh-Hans">用备份继续（.json）</span></label><input id="restoreFile" type="file" accept=".json,application/json">
+          <p data-en="Guide Explorer to the key, then the portal. Most of your work happens in Scratch." data-zh="引导探索者先到钥匙，再到传送门。大部分任务在 Scratch 完成。">Guide Explorer to the key, then the portal. Most of your work happens in Scratch.</p>
+          <label class="restore-label" for="restoreFile" data-en="Continue with a backup (.json)" data-zh="用备份继续（.json）">Continue with a backup (.json)</label><input id="restoreFile" type="file" accept=".json,application/json">
           <p id="restoreMessage" class="small-note" role="status"></p>
-          <p class="small-note">No account or password needed. Type teacher as the name to preview every card.<span class="zh" lang="zh-Hans">无需账号或密码。教师可在姓名处输入 teacher 预览全部卡片。</span></p>
+          <p class="small-note" data-en="Teacher preview: type teacher as your name. No password." data-zh="教师预览：在姓名输入 teacher。无需密码。">Teacher preview: type teacher as your name. No password.</p>
         </aside>
       </div>
     </section>
     <section id="assessment" hidden>
       <div class="assessment-shell">
-        <div class="progress-row"><span id="progressText"></span><button id="changeLanguage" class="text-button" type="button">English + 中文</button></div>
+        <div class="progress-row"><span id="progressText"></span><label class="reading-picker"><span data-en="Reading support" data-zh="阅读支持">Reading support</span><select id="changeLanguage" aria-label="Reading support / 阅读支持 / 읽기 도움"><option value="en">English</option><option value="bi">English + 中文</option><option value="ko">English + 한국어</option></select></label></div>
         <progress id="progress" max="100" value="0" aria-label="Cards visited"></progress>
         <ol id="journeyList" class="journey" aria-label="Mission stages"></ol>
         <div class="mission-strip" id="missionStrip"></div>
         <article class="task-card" id="taskCard" tabindex="-1"></article>
         <nav class="navigation" aria-label="Card navigation"><button id="previous" class="secondary" type="button">← Back</button><div class="navigation-right"><button id="flag" class="text-button" type="button">Ask for help</button><button id="next" class="primary" type="button">Save & continue →</button></div></nav>
-        <div class="backup-bar"><span id="saveStatus" role="status"></span><button id="saveBackup" class="text-button" type="button">Download backup (.json)</button></div>
+        <div class="backup-bar"><span id="saveStatus" role="status"></span><button id="saveBackup" class="text-button" type="button" data-en="Download backup (.json)" data-zh="下载备份（.json）">Download backup (.json)</button></div>
       </div>
     </section>
   </main>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <section id="printReport" hidden></section>
-  <noscript><p class="panel">This activity needs JavaScript. Please ask your teacher to help you open it.</p></noscript>
-  <script src="vendor/jspdf.umd.min.js"></script><script src="vendor/jszip.min.js"></script><script src="mission.js"></script><script src="app.js"></script>
+  <noscript><p class="panel">Please enable JavaScript. / 请启用 JavaScript。 / JavaScript를 켜 주세요.</p></noscript>
+  <script>
+    window.addEventListener('error',function(event){
+      if(event.target && event.target.tagName==='IMG')return;
+      var box=document.getElementById('loadError');box.hidden=false;
+      box.textContent='The lesson could not load. Refresh once without cached files (Mac: ⌘ Shift R). Keep your saved work. / 课程未能载入，请强制刷新。不要删除已保存的作答。 / 수업을 불러오지 못했어요. 강력 새로고침을 해 주세요. 저장한 답은 지우지 마세요.';
+    },true);
+  </script>
+  <script src="vendor/jspdf.umd.min.js?v=20261005-create-ko-1"></script>
+  <script src="vendor/jszip.min.js?v=20261005-create-ko-1"></script>
+  <script src="languages.js?v=20261005-create-ko-1"></script>
+  <script src="mission.js?v=20261005-create-ko-1"></script>
+  <script src="app.js?v=20261005-create-ko-1"></script>
 </body>
 </html>

@@ -14,26 +14,34 @@ Pupils plan a route, implement that same route in the supplied Scratch starter, 
 - A separate genuine Scratch screenshot assesses code reading, not the project solution.
 - Genuine interface screenshot: the new starter open in Scratch. Genuine negative-x screenshot supports the optional return journey.
 
+## Create-first changes (English / Mandarin / Korean)
+
+The warm-up is now compact. Scratch opens on card four, before the full planning task. Programming is split into two bite-sized tasks: code and test the key journey, then extend that SAME program to the portal. File questions happen beside saving, not before pupils begin creating. Definitions and interface help are optional expandable hints.
+
+Reading support can be English, English + Simplified Chinese, or English + Korean. English Scratch block/menu names remain visible. Pupils may think, talk and answer in either language or a mix; language choice is not a grade. Korean wording uses short, age-appropriate explanations, including the technical term in English where useful. A fluent Korean educator should review the draft wording before classroom use.
+
+The optional creation card offers a reverse journey OR a target sprite with pupil-chosen coordinates and a pupil-coded route. It supplies a genuine Scratch block sample and practical steps, not just a sentence asking for a new project. Keep the main SB3 and save the extra version separately. Neither challenge requires loops, sensors or other untaught concepts.
+
 ## Suggested 60-minute allocation
 
 | Stage | Minutes | Evidence |
 | --- | ---: | --- |
-| Ready | 3 | Unscored controls practice; knowledge/skills/understanding |
-| Remember | 10 | File/folder choice, filename, algorithm/program explanation, precise instruction |
-| Plan | 8 | Two subgoals, ordered movement plan, dependency explanation |
-| Read code | 5 | Endpoint prediction from genuine blocks and reason |
-| Open Scratch | 4 | Load mission and verify start |
-| Build | 13 | Own two-part journey; ungraded learning pitstop |
-| Test | 7 | Expected/actual behaviour; saved attempts, fixes or confirmation |
-| Explain | 5 | IPO in own program; movement-block explanation |
-| Save/hand in | 5 | PDF and actual SB3 submitted separately in Teams |
+| Ready + short warm-up | 6 | Learning types, precise move, algorithm choice, read real code |
+| Open Scratch | 4 | Load mission and verify reset |
+| Plan | 5 | Two subgoals, ordered movements, reason for key first |
+| Code Part 1 | 10 | Create and test START → key |
+| Code Part 2 | 10 | Extend the same code: key → portal; ungraded pitstop |
+| Test and improve | 8 | Run, compare with goals, change and retest |
+| Create more / improve more | 6 | Optional return route or pupil-designed target; otherwise continue core testing |
+| Explain | 4 | Short explanations of the pupil's actual code |
+| Save/hand in | 7 | File routines, PDF and actual SB3 in Teams |
 
 The optional extension uses the same movement concepts, with a real block example and numbered instructions. It is not required for secure core evidence.
 
 ## Access and navigation
 
 - Name and typed class; no class dropdown.
-- English or English + Simplified Chinese, changeable during the session. Instructions, choices, navigation and support are bilingual. Canonical Scratch block/menu terms remain alongside explanations.
+- English, English + Simplified Chinese, or English + Korean, changeable without losing work. Instructions, choices, navigation and support are bilingual. Canonical Scratch block/menu terms remain alongside explanations. No machine translation of pupil answers is attempted.
 - Stages open in order. Visited stages and review links allow returns. Missing answers prompt, but never trap a pupil.
 - `teacher` in the name field previews all stages without a password or class. This is a convenience, not secure authentication.
 - Help markers, short responses and a teacher-recorded oral explanation alternative support access without long English paragraphs.
@@ -50,10 +58,12 @@ Latin-text reports download through bundled jsPDF with an embedded map. Bilingua
 ## Save and restore
 
 - Auto-save uses a new v2 name/class storage key; v1 local records are not overwritten.
+- The latest record format is version 3, using that SAME v2 storage key. Version 2 plans, answers, tests and saved code details are retained. Because the card order changed, an older v2 restore starts at the new first card with prior inputs filled in, rather than accidentally jumping past Scratch. Version 3 restores the current card normally.
 - JSON restores webpage answers, plan, tests and code-summary evidence, NOT the Scratch project. Keep the SB3 separately.
 - V1 backups are supported: older answers are preserved separately in the report; the new mission starts at its first card. Old-task answers are not new-task attainment evidence.
 - After restoring, select the latest SB3 again to refresh its code record. The site does not retain the uploaded binary across sessions.
 - Previous assets and route engine remain for history but are not loaded by the new page.
+- Local asset URLs are versioned to avoid cached old JavaScript running against redesigned HTML. A visible loading-error notice replaces silent blank cards if a required script fails.
 
 ## Curriculum and assessment
 
