@@ -22,7 +22,7 @@ The normal route is `index.html`. A teacher can enter **teacher** as the name, o
 2. Do Now: comparison, counter update, selection versus repetition.
 3. Types of Learning / How to Get Better: KSU readiness with examples.
 4. Main Task 1: loop pattern, worked countdown, prediction, repair.
-5. Crew Break: an ungraded ten-tap reactor game, freely skippable.
+5. Crew Break: Reactor Overdrive, a freely skippable ten-second click-speed game with untimed practice and opt-in sound.
 6. Main Task 2: repeated code entry, counter and three test cases.
 7. Learning Pit Stop: KSU evidence and learning experience.
 8. Go Further: three-attempt limit, launch, abort, unreachable target.
@@ -68,7 +68,9 @@ The default instruction is **Week 7 Theory**. Timetable shifts can change the mo
 
 ## Games and accessibility
 
-Charge the Reactor, Remember the Signal and Connect the Wires are short, ungraded breaks. No new Python concept or written response is required. There are no speed leaderboards, sounds, flashing effects or game-based navigation locks. Touch and keyboard controls are supported; symbols supplement colours; memory and matching games are untimed. Core editor behaviour is separate from game mechanics.
+Reactor Overdrive, Remember the Signal and Connect the Wires are short, ungraded breaks. No written response is required and games never gate lesson navigation. Reactor Overdrive starts a ten-second round on the first click/tap or individual Space/Enter press. It shows clicks, remaining time and CPS (clicks ÷ elapsed seconds while playing; clicks ÷ 10 in the final result). Up to three timed rounds per visit encourage a short break. The student's personal best is saved with their own lesson data and JSON backup, not shown in the assessment report or a leaderboard. Mouse and keyboard scores are not compared across students. Untimed ten-tap practice is available without a speed score. Holding a key does not add clicks; completed rounds stop accepting taps. A round is cancelled without updating a best when the tab is hidden, the mode changes, or the student leaves the card. Returning to the lesson is always available.
+
+Sound is **off by default on every visit**. A visible Sound on/off button enables gentle synthesised tap blips, rising charge tones, final-three-second beeps, a short launch whoosh and a personal-best chime. `reactor-game.js` uses the browser's Web Audio API locally, with no audio downloads or CDN. Sound begins only after user interaction, can be muted instantly, and is stopped/released when leaving the game. Unsupported or blocked audio falls back to silent play. Audio API references: [AudioContext.resume](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/resume), [OscillatorNode](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode). There are no flashing effects; reduced-motion settings remove the ring/crew/ship animation. Memory and matching games remain untimed. Core editor behaviour is separate from game mechanics.
 
 All controls use text labels and visible focus states. CodeMirror can be left using Escape. Reduced-motion settings disable transitions. External links in the source notes are documentation, not a required student journey. Original scalable artwork is in `assets/crew.svg` and `assets/ship.svg`; replace those files with the same names to change the visuals.
 
@@ -76,10 +78,4 @@ All controls use text labels and visible focus states. CodeMirror can be left us
 
 Students can progress after an unsuccessful attempt so feedback and teacher help are available. This deliberately avoids earlier strict-language blockers. The completion count describes **submitted attempts**, not grades. Review code, test coverage and the learner's explanation when judging understanding. KSU checks and learning phases are self-reports, not automatic ability diagnoses. Codes and output strings should remain unchanged when writing bilingual explanations. A Mandarin/Korean-speaking colleague should review translated teaching guidance before use.
 
-See `SOURCES.md` for curriculum/runtime references. Private QA screenshots and test outputs are kept outside this public lesson folder.
-
-## Classroom Cue: 08:50–09:50
-
-Open `classroom-cue.html` to project the teacher's 60-minute schedule for this lesson. The cue works as a standalone local file or on the same static host as the lesson app. It includes the three fact discussions, student instructions, teacher answers, supervised seated-check windows, extension, plenary and Teams submission guidance.
-
-Select **Follow clock** at 08:50 to follow Malaysia time. Use **Previous** / **Next stage** to pause the automatic schedule and teach at your own pace. **Teacher view** reveals the private guidance; **Student display** hides it for projection. The cue has its own JSON export/import and print-timetable controls. It does not record or submit students' work.
+See `TESTING.md` for the verification performed and `SOURCES.md` for curriculum/runtime references.

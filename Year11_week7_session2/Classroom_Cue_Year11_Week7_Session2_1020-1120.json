@@ -1,0 +1,191 @@
+{
+  "title": "Year 11 · Term 1 Week 7 Session 2 · Data Detectives",
+  "timezone": "Asia/Kuala_Lumpur",
+  "topic": "Images, sound and compression · Paper 2 revision",
+  "wagba": "Choose the correct method. Show clear working. Explain how data is represented.",
+  "keywords": "Colour depth · Sampling rate · Sample resolution · Huffman coding · Run-length encoding (RLE)\nRecall terms 11–15: binary, denary, hexadecimal, bit and byte.",
+  "challenge": "Explain your method without notes. Justify the storage saving.",
+  "objective": "Knowledge: recall colour depth, sampling rate, sample resolution, bits and bytes.\nSkills: select a formula, substitute values, convert units and follow a Huffman tree.\nUnderstanding: explain how representation settings affect storage and how compression can reduce it.",
+  "rows": [
+    {
+      "start": 620,
+      "end": 624,
+      "stage": "Read first · prepare your paper",
+      "screen": "Screens up · read before recalling",
+      "students": [
+        "Open Data Detectives and enter your name and class. Collect the key-term sheet, core paper and revision notebook.",
+        "Write your name, class and date on your papers. Read the five key terms on the Read first page.",
+        "Keep a pen and a different colour for corrections ready. You will answer on paper, not type full answers."
+      ],
+      "teacher": "Check that everyone has the three papers and can open the correct app. Put students in small teams; remind them that points reward reasoning, useful feedback and independent retries—not speed.",
+      "check": "Everyone can locate key terms 11–15 and knows which sheets to use. The core paper is 16 marks; the optional extension is 11 marks.",
+      "support": "Keep the A3 fact sheets for the discussions. Have the presentation and the marking PDFs ready on your own device; do not share passwords yet.",
+      "seated": false
+    },
+    {
+      "start": 624,
+      "end": 630,
+      "stage": "Do Now · five key terms from memory",
+      "screen": "Screens down · paper recall · 10 marks",
+      "students": [
+        "Close the reminders and turn the study page face down. Answer the five questions on page 2 of the key-term sheet.",
+        "Recall binary, denary, hexadecimal, bit and byte. Attempt every question without notes and keep your first answers.",
+        "If you finish early, explain to your partner why b and B are not interchangeable. Do not mark the sheet yet."
+      ],
+      "teacher": "Sit while students recall independently. Note anyone who needs help starting; ask for their best attempt rather than supply the definition. Keep marking until after both main tasks.",
+      "check": "Look for bases 2, 10 and 16; valid digits; a bit as 0 or 1; eight bits per byte. Check lower-case b versus capital B later.",
+      "support": "A blank answer is useful evidence of what needs revisiting. Do not publicly rank individual recall scores.",
+      "seated": true
+    },
+    {
+      "start": 630,
+      "end": 632,
+      "stage": "Types of learning · choose your focus",
+      "screen": "Screens up · brief partner discussion",
+      "students": [
+        "Look at Knowledge, Skills and Understanding in the app. Discuss one Do Now answer with your partner.",
+        "Choose a specific focus: remembering a term, applying a method or explaining why it works.",
+        "Record your focus on notebook page 1. Say: “I will get better at … by …”."
+      ],
+      "teacher": "Ask for two specific examples linked to WAGBA. Keep this about the learning being practised, not a fixed learning style or ability label.",
+      "check": "Knowledge: accurate terms. Skills: calculation, units and tree tracing. Understanding: explaining settings and storage savings.",
+      "support": "A useful goal is “I will distinguish bits from bytes by writing the unit beside each calculation”, not just “I will improve”.",
+      "seated": false
+    },
+    {
+      "start": 632,
+      "end": 636,
+      "stage": "Facts 1 and 2 · discuss the method",
+      "screen": "Screens down · A3 team answer boxes",
+      "students": [
+        "Read Fact 1. Discuss why 2 bits cannot represent 5 colours and find the minimum colour depth. Write your team answer.",
+        "Read Fact 2. Find the size in bytes of the 3-second, 2000 Hz, 8-bit recording. Show the units and working.",
+        "After the class discussion, add a correction or improvement in the smaller box. Each person should be able to explain the method."
+      ],
+      "teacher": "Use the two fact slides. Give a short think-and-discuss interval for each question, then ask one team to explain its reasoning before showing the answer from the presentation notes.",
+      "check": "Fact 1: 2² = 4 colours, so 3 bits is the minimum (2³ = 8). Fact 2: 2000 × 8 × 3 = 48,000 bits; ÷ 8 = 6000 bytes.",
+      "support": "Ask “What does each factor count?” and “At which step do bits become bytes?” Keep the examples separate from the original exam-paper figures.",
+      "seated": false
+    },
+    {
+      "start": 636,
+      "end": 648,
+      "stage": "Main Task 1 · image and sound storage",
+      "screen": "Screens up for reading · answers on paper · 9 marks",
+      "students": [
+        "Open Main Task 1. Use its readings and worked examples if needed, then read Q13 and Q10 on your printed core paper.",
+        "Attempt the image and sound groups independently. Use the figures in the original questions, showing formula, substitution and units.",
+        "Leave Q05 for Main Task 2. If you finish, compare the first different step with a partner—keep the first answer visible."
+      ],
+      "teacher": "Check two opening substitutions, then sit while students work. Ask anyone stuck to bring the exact unclear step, not the whole paper. Give one prompt and ask them to continue independently.",
+      "check": "Check the smallest suitable colour depth, correct pixel/sample count, inclusion of duration where required, and conversion to the requested unit. Avoid checking only the final number.",
+      "support": "Support: underline the given values and the required unit. Challenge: explain why each factor is needed, then try a fresh calculation without the example.",
+      "seated": true
+    },
+    {
+      "start": 648,
+      "end": 651,
+      "stage": "Feedback checkpoint · repair and retry",
+      "screen": "Screens down · partner check and independent retry",
+      "students": [
+        "Show a partner one calculation. Point to where you counted pixels or samples and where you converted to bytes.",
+        "Find the first different step. Correct it in a different colour and explain why; ask me if neither of you can justify it.",
+        "On notebook page 1, independently find the size in bytes of a 12 × 10 bitmap at 4 bits per pixel. Ignore extra file information."
+      ],
+      "teacher": "Take one brief check round, prioritising students who mixed up units. Award Round 1 points only when you see the paper evidence; the fresh retry must be each student’s own work.",
+      "check": "Retry: 12 × 10 × 4 = 480 bits; ÷ 8 = 60 bytes. A useful correction identifies the mistaken step, rather than replaces the answer without explanation.",
+      "support": "Round 1: clear working 1 XP, justified check/correction 1 XP, everyone’s independent retry 2 XP. Leave the full core marking PDF closed for now.",
+      "seated": false
+    },
+    {
+      "start": 651,
+      "end": 654,
+      "stage": "Fact 3 · find the code boundaries",
+      "screen": "Screens down · A3 team answer box",
+      "students": [
+        "Read Fact 3. With A = 0, B = 10 and C = 11, decode 01110.",
+        "Mark where each character’s code ends. Write the decoded message and explain your method in the team answer box.",
+        "After discussion, add one correction or clarification. Remember that RLE counts adjacent runs, not every occurrence of a value."
+      ],
+      "teacher": "Use the compression fact slide. Ask students to show code boundaries before they name the message. Briefly distinguish following a Huffman code from counting runs in RLE.",
+      "check": "01110 splits as 0 | 11 | 10, giving ACB. Restart at the root after each character. The RLE example 000011100 is (4,0), (3,1), (2,0).",
+      "support": "If someone is lost, follow one bit with a pencil and ask whether a character has been reached. Do not split a variable-length code into equal-sized groups.",
+      "seated": false
+    },
+    {
+      "start": 654,
+      "end": 664,
+      "stage": "Main Task 2 · compression practice",
+      "screen": "Screens up for reading · answers on paper · 7 marks",
+      "students": [
+        "Read Main Task 2, then attempt Q05.1–Q05.3 on your printed core paper. Use that question’s own tree, message and image.",
+        "Show your Huffman code boundaries, storage calculations and RLE pairs. Identify a particular step if you need help.",
+        "If all core parts are attempted and you can explain your method, collect the optional 11-mark extension paper. Begin with its own instructions."
+      ],
+      "teacher": "Sit for independent practice, with brief desk-side checks if students request them. Ask students to show one decoded character or one run before giving a targeted prompt. Do not open the marking PDF until both main tasks are attempted.",
+      "check": "Follow the displayed branch labels; count each code’s length accurately; subtract compressed bits from original bits; include the final RLE run.",
+      "support": "Extension is optional and can be continued later. It includes Huffman tree construction: revisit textbook pages 174–177 before combining the two lowest frequencies each time.",
+      "seated": true
+    },
+    {
+      "start": 664,
+      "end": 669,
+      "stage": "Mark, explain and retry",
+      "screen": "Screens up to check · corrections on paper",
+      "students": [
+        "Ask me for the marking password. Open the key-term answers and core mark scheme only after both main tasks have been attempted.",
+        "Record first-attempt scores: terms /10, image /4, sound /5 and compression /7. Add a correction and explain why it changed.",
+        "Independently decode 01011 using A = 0, B = 10, C = 11 on notebook page 1. Have it checked; keep the retry on paper."
+      ],
+      "teacher": "Remain seated while pairs mark. Invite a student to show one justified correction or retry at your desk. Record Round 2 points against visible evidence rather than a claimed score.",
+      "check": "Fresh code retry: 0 | 10 | 11 gives ABC. Keep original marks separate from improvements. If the optional extension was attempted, use its own protected mark scheme, not the core answers.",
+      "support": "Round 2 uses the same 1 + 1 + 2 XP criteria. If time permits, students can begin photographing checked sheets now; use team aliases, not individual scores, on the leaderboard.",
+      "seated": true
+    },
+    {
+      "start": 669,
+      "end": 671,
+      "stage": "Learning pit stop · evidence, not a label",
+      "screen": "Screens up · notebook page 1",
+      "students": [
+        "Choose one skill and its current phase: new learning, consolidating, treading water or drowning.",
+        "Point to a specific answer or correction as evidence. Write it beside your phase on notebook page 1.",
+        "Tell your partner your next step: another independent attempt, a fresh challenge, or help with one named step."
+      ],
+      "teacher": "Ask a student who needs help to identify the first unclear step. Give one manageable next action. Invite a secure student to explain or transfer the method, not just do more of the same.",
+      "check": "The phase refers to a particular skill today, not the student as a person. A high score with heavy support still needs an independent check.",
+      "support": "Use this to choose who needs a short follow-up next lesson. Keep individual phases and RAG choices private.",
+      "seated": false
+    },
+    {
+      "start": 671,
+      "end": 677,
+      "stage": "Plenary · show independent progress",
+      "screen": "Screens down · notebook page 2 · 10 marks",
+      "students": [
+        "Close the reminders. Attempt the three fresh questions on notebook page 2 independently: image storage, sound storage and compression saving.",
+        "Show working and units. After the attempt, use the protected lesson-check answers when I give permission and record /10.",
+        "Identify one independent answer showing progress and one precise step to revisit. Base your RAG choice on written evidence."
+      ],
+      "teacher": "Sit while students attempt the fresh questions. Give approximately four minutes for independent working and two for checking and a next step. If someone needs longer, keep the attempt honest and do not rush them into copying.",
+      "check": "Image: 16 × 8 × 2 ÷ 8 = 32 bytes. Sound: 1000 × 8 × 5 ÷ 8 = 5000 bytes. Compression: 4×1 + 2×2 + 1×2 = 10 bits; ASCII 7×7 = 49 bits; saving 39 bits.",
+      "support": "A student who cannot start should circle the unclear step. Leave unchecked marks blank until reviewed, not zero. Collect this evidence to decide the next revision priority.",
+      "seated": true
+    },
+    {
+      "start": 677,
+      "end": 680,
+      "stage": "Save your evidence and submit",
+      "screen": "Screens up · PDF and full backup",
+      "students": [
+        "Open Evidence and submission. Photograph your key-term sheet, core paper and notebook; include any extension you attempted. Add each photo to its matching group.",
+        "Check the previews and record your evidence-based RAG and next topic. Download Full backup and Save PDF; open the PDF to check your name and readable pages.",
+        "Upload the PDF to your Teams assignment and select Turn in. If you cannot finish the upload now, keep your paper and backup and tell me what is missing."
+      ],
+      "teacher": "Remain seated while students save. Check one opened PDF and ask for a clear report of any unfinished submission. Do not let a hurried export replace readable evidence.",
+      "check": "The app stores work on the student’s device; it does not submit to Teams automatically. Check that photographs show the answers, not only the score.",
+      "support": "If export fails, download Full backup before closing. Keep the original papers and arrange time to complete the upload. Student display hides teacher notes but is not a security barrier.",
+      "seated": true
+    }
+  ]
+}
