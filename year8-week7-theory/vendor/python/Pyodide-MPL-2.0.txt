@@ -1,0 +1,4 @@
+Pyodide is distributed under the Mozilla Public License 2.0 (MPL-2.0).
+This package includes the unmodified runtime files required to execute Python locally in the browser.
+The complete MPL-2.0 license text is available from the Mozilla Public License project and the Pyodide source distribution.
+Packaged version: 314.0.2

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15252b">
+  <link rel="icon" type="image/svg+xml" href="assets/crew.svg">
+  <title>Year 8 · Mission Loop — Repair the Ship</title>
+  <link rel="stylesheet" href="vendor/codemirror/codemirror.css"><link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/codemirror/codemirror.js"></script><script defer src="vendor/codemirror/mode-python.js"></script>
+  <script defer src="vendor/codemirror/addon-closebrackets.js"></script><script defer src="vendor/codemirror/addon-matchbrackets.js"></script>
+  <script defer src="vendor/codemirror/addon-activeline.js"></script><script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="lesson.js"></script><script defer src="python.js"></script><script defer src="report.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#card">Skip to mission</a>
+  <main id="landing" class="landing">
+    <div class="landing-art"><img src="assets/ship.svg" alt="A cartoon spacecraft with a countdown panel and crew engineer" width="640" height="450"><span class="sticker">YEAR 8 / THEORY / WEEK 7</span></div>
+    <section class="welcome">
+      <p class="eyebrow">SPACE CREW · PYTHON LAB</p><h1>Mission Loop<span>Repair the Ship</span></h1>
+      <p class="intro">The countdown is broken. The console won't ask again. Can your crew make the ship repeat, count and stop correctly?</p>
+      <div id="resume" hidden class="resume"></div>
+      <form id="entry" novalidate>
+        <label for="fullName">Full name</label><input id="fullName" name="fullName" autocomplete="name" required maxlength="90">
+        <label for="className">Class</label><input id="className" name="className" placeholder="For example, 8T" required maxlength="35">
+        <label for="language">Language support <small>English stays visible</small></label>
+        <select id="language"><option value="en">English</option><option value="zh">English + 简体中文</option><option value="ko">English + 한국어</option></select>
+        <fieldset class="crew-choice"><legend>Choose your crew colour</legend><label><input type="radio" name="crew" value="teal" checked> Teal</label><label><input type="radio" name="crew" value="coral"> Coral</label><label><input type="radio" name="crew" value="purple"> Purple</label></fieldset>
+        <p id="entry-error" class="validation" role="alert"></p><button class="primary big" type="submit">Join the mission <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="privacy">Your work stays in this browser. No student account needed. Make a backup before changing devices.</p>
+      <button id="landing-import" class="text-button" type="button">Restore a progress backup</button>
+      <noscript><p>JavaScript is needed for this lesson. Please enable it or ask your teacher.</p></noscript>
+    </section>
+  </main>
+  <div id="lesson" hidden>
+    <aside class="rail" aria-label="Learning information and journey">
+      <div class="brand"><img src="assets/crew.svg" alt="" width="50" height="64"><div>MISSION LOOP<small>Year 8 · Week 7 Theory</small></div></div>
+      <div class="learning">
+        <h2>Our learning</h2><p class="topic">Iteration, counters & stopping conditions</p>
+        <h3>WAGBA</h3><p id="wagba"></p>
+        <h3>Knowledge</h3><p>Identify iteration, a loop condition and a counter.</p>
+        <h3>Skills</h3><p>Predict, write, test and repair a <code>while</code> loop.</p>
+        <h3>Understanding</h3><p>Explain what changes and why a loop continues or stops.</p>
+        <p class="keywords"><b>Keywords</b><br>iteration · condition · counter · update · indentation · infinite loop · debug</p>
+        <p class="challenge"><b>Challenge</b> Limit code entries to three; launch only after success.</p>
+      </div>
+      <div class="progress-head"><b>Mission journey</b><span id="progress-count"></span></div><progress id="progress" max="100" value="0" aria-label="Core lesson progress"></progress>
+      <nav id="journey" aria-label="Lesson stages"></nav>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><div><b id="student"></b><span id="save-state" role="status">Saved locally</span></div><div class="top-tools"><label class="language-label">Support <select id="support"><option value="en">English</option><option value="zh">中文</option><option value="ko">한국어</option></select></label><button type="button" id="export-top">Export PDF</button><details class="tools-menu"><summary>Work tools</summary><button type="button" id="backup">Backup progress</button><button type="button" id="import">Import backup</button><button type="button" id="reset">Reset progress</button><button type="button" id="print">Print report</button></details></div></header>
+      <div class="card-position"><span id="stage-title"></span><span id="card-position"></span></div>
+      <section id="card" class="mission-card" tabindex="-1" aria-labelledby="card-title"></section>
+      <footer class="navigation"><button type="button" id="back">← Back</button><p id="nav-message" role="status"></p><button type="button" id="next" class="primary">Next card →</button></footer>
+    </div>
+  </div>
+  <dialog id="guide" aria-labelledby="guide-title"><button class="close" type="button" data-close>Close ×</button><h2 id="guide-title">Save it. Submit it. Mission complete.</h2><div id="device-guide"></div><div class="teams-note"><h3>Microsoft Teams</h3><ol><li>Open your class in Teams, then <b>Classwork</b>.</li><li>Open the <b>Week 7 Theory</b> assignment/module your teacher has set.</li><li>Open the assignment and choose <b>Add work / Attach</b>.</li><li>Select the downloaded <b>PDF</b>, wait for it to upload, then select <b>Turn in</b>.</li></ol><p>Check your name, class and pages. Upload the PDF, not a screenshot. Your teacher may use a different module number after timetable changes.</p></div><label class="submission"><input id="teams-confirm" type="checkbox"> I have uploaded the PDF and selected Turn in in Teams.</label><button type="button" id="submitted" class="primary big" disabled>Finish submission & enter Crew Lounge →</button><p class="small">This is your confirmation; this website cannot verify your Teams submission.</p></dialog>
+  <dialog id="test-dialog" aria-labelledby="test-dialog-title"><button class="close" type="button" id="test-close">Close ×</button><h2 id="test-dialog-title">Inspect your test results</h2><div id="test-dialog-body"></div></dialog>
+  <input id="import-file" type="file" accept="application/json,.json" hidden><div id="toast" role="status" hidden></div><div id="print-report"></div>
+</body></html>

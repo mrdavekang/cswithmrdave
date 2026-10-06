@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Year 11 | Data Detectives | Week 7 Session 2</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <strong>YEAR 11 · DATA DETECTIVES</strong>
+    <span id="saveStatus" role="status">Paper first. Your evidence stays on this device.</span>
+    <div class="actions"><button id="backup" disabled>Full backup</button><button id="restoreBtn">Restore backup</button><button id="pdf" class="primary" disabled>Save PDF</button></div>
+  </header>
+  <input id="restoreFile" type="file" accept="application/json,.json" hidden>
+  <section id="landing" class="landing">
+    <div><p class="eyebrow">TERM 1 · WEEK 7 · SESSION 2 · 60 MINUTES</p>
+      <h1>Decode.<br>Calculate.<br>Explain.</h1>
+      <p class="lead">Images, sound and compression. Revisit your Year 10 knowledge and make your Paper 2 working clearer.</p>
+      <div class="callout"><h2>What are we getting better at?</h2><p>Choosing the correct method, showing clear working and explaining how data is represented.</p></div>
+      <p>Most of your work will be on paper. Read the reminders here, collect the printed questions from me and keep your first answers and corrections visible.</p>
+      <p>Earn team points for clear reasoning, useful feedback and an independent retry—not for finishing fastest.</p>
+    </div>
+    <div class="card"><h2>Your revision record</h2><form id="login">
+      <label for="name">Name</label><input id="name" maxlength="80" required autocomplete="name">
+      <label for="className">Class</label><input id="className" maxlength="40" placeholder="For example, 11T" required>
+      <button class="primary">Start / resume</button>
+    </form><p class="small">Collect the key-term sheet, core question paper and revision notebook from me. Upload photographs near the end, then save your PDF for Teams.</p><p id="loginError" role="alert"></p></div>
+  </section>
+  <section id="teacherGate" class="card gate" hidden>
+    <p class="eyebrow">TEACHER CONTROLS</p><h1>Open the lesson console</h1>
+    <p>Enter your separate teacher PIN to manage the team leaderboard and preview every stage. This does not open student records from other devices.</p>
+    <form id="teacherLogin"><label for="teacherPin">Teacher PIN</label><input id="teacherPin" type="password" inputmode="numeric" autocomplete="off" required><button class="primary">Open teacher console</button></form>
+    <p id="gateError" role="alert"></p>
+  </section>
+  <section id="boardView" class="board-display" hidden></section>
+  <div id="lesson" hidden>
+    <div class="layout">
+      <aside><p class="eyebrow">YOUR LESSON ROUTE</p><nav id="nav" aria-label="Lesson stages"></nav>
+        <section class="sidefacts"><h3>Topic</h3><p>Images, sound and compression</p><h3>WAGBA</h3><p>Choose the correct method, show clear working and explain how data is represented.</p><h3>Keywords</h3><p>Colour depth · sampling rate · sample resolution · RLE · Huffman coding</p><h3>Challenge</h3><p>Can you justify the storage saving, rather than only give an answer?</p></section>
+        <button id="changeStudent">Change student</button>
+      </aside>
+      <main id="content" tabindex="-1"></main>
+    </div>
+    <footer class="bottom"><button id="prev">← Back</button><span id="position"></span><button id="next" class="primary">Next →</button></footer>
+  </div>
+  <script src="vendor/jspdf.umd.min.js"></script><script src="assets/pdf-fonts.js"></script>
+  <script src="key-terms-data.js"></script><script src="lesson.js"></script><script src="model.js"></script>
+  <script src="teacher-access.js"></script><script src="portfolio.js"></script><script src="app.js"></script>
+</body>
+</html>
