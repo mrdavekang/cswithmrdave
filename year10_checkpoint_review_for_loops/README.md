@@ -21,13 +21,19 @@ Protect review time. If corrections expose a prerequisite gap, use a scaffold in
 ## Before the lesson
 
 1. Return teacher-marked papers. Students choose one question in Main Task 1 to view its marking points. The revised written (20 marks) and corrected practical (20 marks) schemes are now distributed in this public app for post-test review, with PDF downloads. This is a deliberate release of answers, not a secure teacher-only area. Do not reuse the released questions as a secure assessment.
-2. Print `resources/Year_10_Checkpoint_Review_Three_Routes.pdf`. Pages 1–2 are Build, 3–4 Strengthen, 5–6 Transfer. Each pupil collects one pair. The teacher preview can also export each pair separately.
+2. Print `resources/Year_10_Checkpoint_Review_Reflection_One_Page.pdf`, one copy per pupil. Teacher preview can also export the same one-page sheet. The older three-route pack is retained only as an unused archive, not linked or offered in the lesson.
 3. Model one paper answer against its marking points before independent review. Do not turn example wording into an exact-match requirement unless the actual question requires an exact term or output.
 4. Have the Python IDE ready, along with the pupil's agreed communication/pause routine.
 
-The total /40 is optional. The chosen question's awarded/available marks suggest a route: no credit -> Build; partial -> Strengthen; full -> Transfer. These are not validated grade boundaries, fixed ability bands or automatic diagnoses. A student who has full credit but cannot yet explain should choose a more supported route. Teacher/student judgement overrides the suggestion.
+## Simplified paper review: Find - Fix - Check - Target
 
-On paper, collect question/marks, original response, credited/missing ideas, K/S/U focus, corrected or transfer answer, example/test, prepared explanation, evidence level and an actionable next step. The web only records metadata and self-reported paper progress. No typed checkpoint answer or reflection boxes are provided.
+Use one question and one sheet, not an entire-paper analysis. In 15 minutes: short teacher model (2), Find (2), Fix (5), Check (3), Target/private check (3). On paper, students underline/copy the relevant mistake, correct it with a reason, check a similar example, and set one small practice action for next lesson with an observable success criterion. They circle a single K/S/U target focus; no separate three-score reflection is required. Question marks on the sheet are optional context, not an ability route or grade.
+
+Everyone uses the same sheet. Privately adjust support: choose a question/marking point and give a model when needed; fade support when pupils can correct independently. Full-credit pupils explain a credited idea and apply it to a teacher-approved similar example, without inventing a mistake. Accept writing, pointing or reading prepared words. The teacher confirms evidence as not yet / with support / independently and revisits the target next lesson.
+
+The app records only the selected question and a self-reported explanation status. There are no route suggestions, whole-test mark-entry forms, route justifications, multiple paper checkboxes or typed correction/target boxes. Changing the chosen question clears its previous explanation status. The existing Types of Learning and later FOR-loop Learning Pit Stop remain unchanged; the latter reflects on new loop learning, not a duplicate checkpoint review.
+
+Older saved route answers are preserved during reload/backup restore and exported only as an archived record, not counted as current tasks. The current lesson ID/storage keys are unchanged so earlier loop work and evidence images remain accessible.
 
 ## Support and explanation
 
@@ -47,7 +53,7 @@ Teacher preview: name `teacher` (class optional), or `index.html?teacher=1`. All
 
 ## Released checkpoint mark schemes
 
-`mark-scheme.js` provides a one-question-at-a-time reading panel, grouped as written theory and Python practical. Examples/original extracts remain collapsed until requested. The selected question is remembered in the local notebook and JSON backup; reading a mark scheme is not counted as an answer or awarded marks. Corrections and targets stay on paper.
+`mark-scheme.js` provides a one-question-at-a-time reading panel, grouped as written theory and Python practical. Examples/original extracts remain collapsed until requested. Selecting a question records its reference only, not a correct answer or awarded marks. The selection is remembered in the local notebook and JSON backup. Corrections and targets stay on paper.
 
 - `resources/Checkpoint_1_Written_Theory_Mark_Scheme.pdf`: unchanged revised written scheme; 01.1–01.2 use June 2025 OxfordAQA 9210/2 Q02.1–02.2 guidance. Other questions are school-authored.
 - `resources/Checkpoint_1_Practical_Mark_Scheme.pdf`: unchanged corrected practical scheme. Q04.2 does not require extra printed results. Q04.3 requires its specified results; code and screenshots earn separate marks. Logically equivalent rejection handling is accepted, not only a literal `or`.
