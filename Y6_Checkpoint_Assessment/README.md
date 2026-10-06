@@ -10,17 +10,26 @@ Pupils plan a route, implement that same route in the supplied Scratch starter, 
 - START: (-160, -80); key: (-40, 40); portal: (160, 40).
 - Each square is 40 Scratch steps. Three wall squares have x=-80 and y=-80/-40/0.
 - Pupils need not implement wall detection, locks, selection, variables or loops. Assess planned movement, not untaught code.
-- The map does not run the plan or reveal a successful answer. Practical tests happen in Scratch.
+- The planning map draws the pupil's chosen moves; it does not run code, judge the route or supply a solution. Practical tests happen in Scratch.
 - A separate genuine Scratch screenshot assesses code reading, not the project solution.
 - Genuine interface screenshot: the new starter open in Scratch. Genuine negative-x screenshot supports the optional return journey.
 
-## Create-first changes (English / Mandarin / Korean)
+## Purpose-led redesign (English / Mandarin / Korean)
 
-The warm-up is now compact. Scratch opens on card four, before the full planning task. Programming is split into two bite-sized tasks: code and test the key journey, then extend that SAME program to the portal. File questions happen beside saving, not before pupils begin creating. Definitions and interface help are optional expandable hints.
+The earlier version demanded too much task management: repeated reading, weak links between the scenario and questions, hidden practical help, and confirmations that could look like completed work. This redesign keeps the 14-card order and saved records but makes each card serve the same rescue: plan, build, test, explain.
+
+- Each card says WHERE to work, with a next button naming the next action. Scratch opens on card four, before full planning. Large Scratch buttons stay visible on practical cards.
+- The pupil's plan appears as a dotted path with its end coordinate. Undo/restart and list editing are available without scrolling back to the top. A drawn plan is not evidence that the program works.
+- Main programming has two small, connected jobs: reach the key, then add moves to the portal in the SAME program. Real block screenshots are visible one at a time, not hidden or presented as a full solution.
+- The pitstop is visible and suggests a small next action, not an attainment judgement. A successful first test still needs a second check. Pupils record a real change or what they checked again; they need not invent a bug.
+- Two original worlds each offer three practical challenges: deliver, return, design a new ending. Choosing a world alone no longer counts as recorded work. A saved pupil-reported attempt unlocks the next challenge, without pretending a try is a pass. Previously unlocked levels can be revisited.
+- Scratch links try to reuse a named main-project tab; each extra world uses a separate named tab. Existing unnamed Scratch tabs cannot be discovered by the app. Browser popup/cross-origin policies may prevent reuse; pupils are told to use their existing tab and keep the project open. They must save the main SB3 before loading an extra template.
+
+`quest-ui.js` supplies the new mission cards, practical help and challenge progression. Older saved return/target extension choices remain supported through the original content.
 
 Reading support can be English, English + Simplified Chinese, or English + Korean. English Scratch block/menu names remain visible. Pupils may think, talk and answer in either language or a mix; language choice is not a grade. Korean wording uses short, age-appropriate explanations, including the technical term in English where useful. A fluent Korean educator should review the draft wording before classroom use.
 
-The optional creation card offers a reverse journey OR a target sprite with pupil-chosen coordinates and a pupil-coded route. It supplies a genuine Scratch block sample and practical steps, not just a sentence asking for a new project. Keep the main SB3 and save the extra version separately. Neither challenge requires loops, sensors or other untaught concepts.
+Keep the main SB3 and save the extra creation separately. Challenges use taught movement concepts; they do not require loops, sensors or other untaught code. Optional costume editing adds ownership but is not a computing mark.
 
 ## Suggested 60-minute allocation
 
@@ -32,11 +41,11 @@ The optional creation card offers a reverse journey OR a target sprite with pupi
 | Code Part 1 | 10 | Create and test START → key |
 | Code Part 2 | 10 | Extend the same code: key → portal; ungraded pitstop |
 | Test and improve | 8 | Run, compare with goals, change and retest |
-| Create more / improve more | 6 | Optional return route or pupil-designed target; otherwise continue core testing |
+| Create more / improve more | 6 | Begin an extra world or extend one already made; otherwise continue core testing |
 | Explain | 4 | Short explanations of the pupil's actual code |
 | Save/hand in | 7 | File routines, PDF and actual SB3 in Teams |
 
-The optional extension uses the same movement concepts, with a real block example and numbered instructions. It is not required for secure core evidence.
+There are 34 minutes available for building, testing and optional creation in this suggested allocation. The six extension challenges are a bank for early finishers or home continuation, not six compulsory tasks to squeeze into one lesson. The extension is not required for secure core evidence.
 
 ## Access and navigation
 
@@ -52,6 +61,8 @@ The optional extension uses the same movement concepts, with a real block exampl
 The PDF includes the map, answers, current plan, saved-plan count, all retained tests (up to ten), explanation and code details read from the chosen `.sb3`. “Recorded” does not mean correct. Confirmations that Scratch was opened or code built are not independent verification.
 
 The SB3 reader runs locally with bundled JSZip, checks the archive and extracts a sprite's top-level command chains. It does not execute the project, fully reconstruct nested structures or grade it. A likely unchanged starter triggers a reminder, not a false pass. Teachers must run the actual SB3 and judge it against the pupil's plan and requirements.
+
+The Test card also offers an optional SAVED-code route preview: one green-flag script, one reset to the mission start, numeric change x/y and wait blocks only. The dotted path and blue position arrow are a simplified preview, not a Scratch VM, live screenshot or timed simulation. Wait durations are not replayed in real time. Teleports, multiple scripts, other block types, an unchanged starter and excessive routes decline the preview rather than fabricate behaviour. Test those programs in Scratch. This preview supplies no mark or repair instructions.
 
 Latin-text reports download through bundled jsPDF with an embedded map. Bilingual reports or non-Latin names/answers use the browser print window: choose Save as PDF to retain characters. An explicit Print / Save as PDF option is also provided. The site cannot submit to Teams for pupils.
 
@@ -77,6 +88,8 @@ Design follows NCCE's emphasis on concrete contexts, code comprehension, structu
 
 Separate concepts, practical work and explanation. Reflection is not a grade. Do not mark speed, number of blocks, amount of text, decoration or clicking all cards.
 
+With block help, a stated decomposition definition and optional route preview, this is a **guided project-based checkpoint**, not an unaided examination of recall. The decomposition choice checks recognition after teaching; stronger evidence comes from useful subgoals implemented together. Record scaffolds/teacher assistance and examine the main SB3. Use neutral oral questions to distinguish genuine understanding from copied blocks. A pupil trial is still needed to evaluate enjoyment and actual time-on-task; passing technical checks does not establish either.
+
 ### Teacher judgement: observable evidence
 
 | Criterion | Evidence of success in this early checkpoint | Do not infer from |
@@ -95,7 +108,9 @@ Use the school's developing/secure/extending descriptors for the taught scope. T
 
 The Create card offers two unfinished Scratch 3 templates: **Comet Courier** (Nova rover, fuel dock, launch pad) and **Moon Garden** (Pip garden bug, star seed, moon flower). All six sprites have original, editable SVG costumes. Each moving sprite has only green flag → go to its start. Pupils choose movements, visit the first stop, pause, and reach FINISH without crossing striped walls. Markers do not disappear automatically: pupils check coordinates and the route themselves.
 
-Save the main Explorer assessment file before opening a new Scratch tab. Extra worlds are optional, not a substitute for the main file. Existing return/own-target choices remain available and saved answers are preserved. Real Scratch screenshots show each template and three small block examples (right/up, left/down, wait). Their example start at (0,0) is not the template start or a completed mission route.
+Save the main Explorer assessment file before opening a new Scratch tab. Extra worlds are optional, not a substitute for the main file. Existing saved return/own-target choices remain supported. Real Scratch screenshots show each template and three small block examples (right/up, left/down, wait). Their example start at (0,0) is not the template start or a completed mission route.
+
+Within either world: (1) create a route through the first stop to FINISH; (2) add a non-teleporting return to START; (3) choose a reachable empty ending, move the FINISH sprite to those coordinates, and redesign the route. The third challenge's native map is labelled as a design plan, not a Scratch screenshot. Choices, reported attempts and unlocked levels persist in backups and reported attempts appear in the PDF.
 
 The templates and screenshots were opened and inspected in Scratch. Private completed routes and QA files remain outside the public app folder.
 
