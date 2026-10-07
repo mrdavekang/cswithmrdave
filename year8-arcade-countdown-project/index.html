@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173c3b">
+  <title>Countdown Crew · Year 8 · CS with Mr Dave</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="lesson.js"></script>
+  <script defer src="report.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson card</a>
+  <div id="app"></div>
+  <dialog id="confirmation" aria-labelledby="confirmation-title"><h2 id="confirmation-title">Before replacing saved work</h2><p id="confirmation-message"></p><form method="dialog" class="inline-actions"><button value="cancel" autofocus>Keep current work</button><button value="replace" class="danger">Confirm replacement</button></form></dialog>
+  <dialog id="lightbox" aria-labelledby="lightbox-title"><h2 id="lightbox-title">Visual guide</h2><div id="lightbox-content"></div><button type="button" data-action="close-dialog">Close visual guide</button></dialog>
+  <dialog id="tools" aria-labelledby="tools-title"><h2 id="tools-title">Your work tools</h2><p>Your lesson responses and game code are saved separately.</p><div class="tool-grid"><button data-action="backup">Download lesson backup</button><label class="file-button">Restore lesson backup<input type="file" id="import-backup" accept=".json,application/json"></label><button data-action="print">Print / save as PDF</button><button data-action="reset" class="danger">Reset this lesson</button></div><p class="muted">Backups include your responses and compressed screenshot evidence. They do not include code stored in the separate MakeCode editor. Use MakeCode’s Save button to back up your game.</p><button data-action="close-dialog">Close work tools</button></dialog>
+  <dialog id="submission" aria-labelledby="submission-title"><h2 id="submission-title">Your report is ready</h2><p>Check your browser’s downloads list. On an iPad, check Downloads in Safari or the Files app.</p><ol><li>Open the PDF and check your name, class and evidence.</li><li>Open Microsoft Teams → your class → Classwork.</li><li>Open your teacher’s assignment for this Arcade countdown project.</li><li>Select <strong>Add work</strong>, attach the PDF, then select <strong>Turn in</strong>.</li></ol><p>The assignment title follows your class timetable, so use the one your teacher has set. A download is not the same as submitting.</p><label class="check-line"><input type="checkbox" id="teams-confirm"> I have attached my PDF and selected Turn in in Teams.</label><button data-action="submission-done">Save my submission reminder</button><button data-action="close-dialog" class="secondary">I will submit later</button></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="print-report"></div>
+  <noscript>This lesson needs JavaScript enabled. Your teacher can provide the countdown project and instructions instead.</noscript>
+</body>
+</html>

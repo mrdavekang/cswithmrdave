@@ -23,9 +23,6 @@ Copyright (c) 2001-2016 Python Software Foundation; All Rights Reserved.
 https://www.python.org/psf/license/
 https://www.python.org/download/releases/2.6.2/license/
 
-jsPDF - https://github.com/parallax/jsPDF - MIT
-Its distributed copyright and licence notice remains in the local library file.
-
 Raleway is distributed in assets/Raleway.ttf. Its copyright notice and
 SIL Open Font License are included in assets/Raleway-OFL.txt.
 Code uses a device-provided monospaced font.
