@@ -126,3 +126,15 @@ Raleway and its OFL are reused from the existing Year 8 lesson assets.
 jsPDF and its licence are reused locally. Crew/ship SVGs are existing course art.
 The launch-bay templates use the prepared original pixel artwork and MakeCode’s
 built-in spaceship sprite. This is not an official Among Us product.
+
+QA SUMMARY (7 October 2026)
+Checked entry validation, exact next-card order, non-blocking corrective feedback,
+Blocks/Arcade Python route switching, Mandarin/Korean support, keyboard focus,
+screenshot upload and refresh recovery, JSON backup restoration with evidence,
+teacher-by-name entry, challenge-to-plenary navigation, and reset confirmation.
+Reviewed A4 PDF pages visually, including Mandarin/Korean answers and an image.
+Checked 1366x768, 1920x1080, 1024x768 and 768x1024 browser layouts: no horizontal
+document overflow and footer controls remained inside the viewport.
+Physical tablets, direct local-file behaviour, native print dialogs and Clipboard
+API image paste still need school-device checks. Uploaded evidence is not an
+automatic verification of the code running in the external MakeCode tab.
