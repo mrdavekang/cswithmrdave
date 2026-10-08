@@ -9,7 +9,7 @@
   let mode=new URLSearchParams(location.search).get('teacher')==='1'?'teacher':'student';
   let s=readState(mode),images={},started=false,db=null,persistent=true,demoTimer=null,toastTimer=null,reactor=null;
   function resumePosition(value){
-    const order=value.contentRevision===L.contentRevision?L.cards.map(c=>c.id):L.legacyCardIds;
+    const order=value.contentRevision===L.contentRevision?L.cards.map(c=>c.id):value.contentRevision===2?L.previousCardIds:L.legacyCardIds;
     const position=(id,n)=>{const old=order[Math.max(0,Math.min(order.length-1,Number(n)||0))];const i=L.cards.findIndex(c=>c.id===(id||old));return Math.max(0,i);};
     const card=position(value.cardId,value.card),reached=Math.max(card,position(value.reachedId,value.reached));
     return {card,reached,contentRevision:L.contentRevision};
@@ -61,7 +61,7 @@
     return '<strong>'+count+' / 3 KSU areas you report achieving</strong><br>'+esc(next);
   }
   function reviewHTML(){
-    return `<div class="review-grid">${L.stages.map((name,i)=>{const cc=L.cards.filter(c=>c.stage===i&&!c.review);const done=cc.filter(c=>window.CrewReport.cardStatus(c,s,images).startsWith('Responses recorded')).length;const summary=cc[0]?.game?window.CrewReport.cardStatus(cc[0],s,images):done+' / '+cc.length+' cards with responses recorded';return '<div class="review-item"><strong>'+name+'</strong>'+summary+' <button class="small-link" data-goto="'+L.cards.findIndex(c=>c.stage===i)+'">Review</button></div>';}).join('')}</div><p class="muted">Recorded responses are not a grade. Your teacher will assess your code, test results and explanation. Empty answers remain “Not answered” in the report.</p><div class="inline-actions"><button class="primary" data-action="pdf">Download my PDF report ↓</button><button data-action="print">Print / save as PDF</button></div>${images.code?'<p class="pill">✓ Screenshot included</p>':'<p class="warning">No screenshot saved. A teacher-check request can be recorded in “Show your launch works”.</p>'}<details class="help-box"><summary>Read my recorded answers</summary>${L.cards.filter(c=>c.fields.length).map(c=>'<h3>'+esc(c.title)+'</h3>'+c.fields.map(f=>'<p><strong>'+esc(f.label)+'</strong><br>'+esc(window.CrewReport.answer(f,s.answers[f.id]))+'</p>').join('')).join('')}</details><div class="submission-banner"><strong>Upload your PDF to Teams</strong><p>Open your class’s Classwork assignment for this Arcade countdown project, attach the PDF, then select Turn in. Follow the assignment title your teacher has given you.</p><button data-action="submission">Show submission guide</button>${s.teamsSubmitted?'<p>✓ You reported submitting to Teams. This app cannot verify Teams submissions.</p>':''}</div>`;
+    return `<div class="review-grid">${L.stages.map((name,i)=>{const cc=L.cards.filter(c=>c.stage===i&&!c.review);const done=cc.filter(c=>window.CrewReport.cardStatus(c,s,images).startsWith('Responses recorded')).length;const summary=cc[0]?.game||cc[0]?.externalQuiz?window.CrewReport.cardStatus(cc[0],s,images):done+' / '+cc.length+' cards with responses recorded';return '<div class="review-item"><strong>'+name+'</strong>'+summary+' <button class="small-link" data-goto="'+L.cards.findIndex(c=>c.stage===i)+'">Review</button></div>';}).join('')}</div><p class="muted">Recorded responses are not a grade. Your teacher will assess your code, test results and explanation. Empty answers remain “Not answered” in the report.</p><div class="inline-actions"><button class="primary" data-action="pdf">Download my PDF report ↓</button><button data-action="print">Print / save as PDF</button></div>${images.code?'<p class="pill">✓ Screenshot included</p>':'<p class="warning">No screenshot saved. A teacher-check request can be recorded in “Show your launch works”.</p>'}<details class="help-box"><summary>Read my recorded answers</summary>${L.cards.filter(c=>c.fields.length).map(c=>'<h3>'+esc(c.title)+'</h3>'+c.fields.map(f=>'<p><strong>'+esc(f.label)+'</strong><br>'+esc(window.CrewReport.answer(f,s.answers[f.id]))+'</p>').join('')).join('')}</details><div class="submission-banner"><strong>Upload your PDF to Teams</strong><p>Open your class’s Classwork assignment for this Arcade countdown project, attach the PDF, then select Turn in. Follow the assignment title your teacher has given you.</p><button data-action="submission">Show submission guide</button>${s.teamsSubmitted?'<p>✓ You reported submitting to Teams. This app cannot verify Teams submissions.</p>':''}</div>`;
   }
   function renderLanding(){
     const teacher=mode==='teacher';
@@ -79,11 +79,12 @@
     let content='';
     if(card.body)content+='<p>'+esc(card.body)+'</p>';
     if(card.where)content+='<div class="where">↗ Work in: '+esc(card.where)+'</div>';
+    if(card.externalQuiz)content+='<a class="button primary" data-quiz-link="'+card.link+'" href="'+L.links[card.link]+'" target="_blank" rel="noopener noreferrer">'+card.linkLabel+'</a>';
     if(card.steps)content+='<ol class="action-list">'+card.steps.map(step=>'<li>'+step+'</li>').join('')+'</ol>';
-    if(card.link)content+='<a class="button primary" data-editor-link="'+card.link+'" href="'+L.links[card.link]+'" target="_blank" rel="noopener noreferrer">'+card.linkLabel+'</a>';
+    if(card.link&&!card.externalQuiz)content+='<a class="button primary" data-editor-link="'+card.link+'" href="'+L.links[card.link]+'" target="_blank" rel="noopener noreferrer">'+card.linkLabel+'</a>';
     if(card.backup){const n=card.backup;const path=n===2?'02-countdown-crew-student-template.png':'03-reactor-recharge-challenge.png';content+='<p class="muted" style="margin-top:10px">Link blocked? <a href="assets/templates/'+path+'" download>Download the editable template PNG</a> and import it in Arcade.</p>';}
     if(card.code&&s.editor==='python')content+='<p class="sample-label">EDIT THIS LINE IN YOUR EXISTING PROJECT</p><pre class="steps-code"><code>'+esc(card.code)+'</code></pre>';
-    if(card.expected)content+='<div class="expect"><strong>What you should see</strong>'+esc(card.expected)+'</div>';
+    if(card.expected)content+='<div class="expect"><strong>'+(card.externalQuiz?'Assignment deadline':'What you should see')+'</strong>'+esc(card.expected)+'</div>';
     if(card.ksu)content+='<div class="ksu-grid">'+card.fields.map((f,i)=>'<section class="ksu-box"><h3>'+['Knowledge','Skills','Understanding'][i]+'</h3><p>'+esc(L.ksu[i])+'</p>'+fieldHTML(f)+'</section>').join('')+'</div><div class="goal" id="before-guidance">'+esc(beforeGuidance())+'</div>';
     else {if(card.game)content+=window.CrewReactor.html();content+=card.fields.map(fieldHTML).join('');}
     if(card.pit)content+='<div class="goal" id="pit-analysis" aria-live="polite">'+pitGuidance()+'</div>';
@@ -133,7 +134,7 @@
       if(file.size>25*1024*1024)throw new Error('Backup is too large. Choose a file below 25 MB.');
       const b=JSON.parse(await file.text());if(b.lessonId!==L.id||b.version!==1||!b.state?.student||typeof b.state.student.name!=='string'||typeof b.state.student.className!=='string')throw new Error('This is not a supported Countdown Crew lesson backup.');
       const response=b.state.answers||{},safeAnswers={};
-      for(const key of [...Object.keys(fieldMap),'evidence-caption','teacher-evidence']){const val=response[key];if(typeof val==='string')safeAnswers[key]=val.slice(0,2500);else if(typeof val==='boolean'||typeof val==='number')safeAnswers[key]=val;}
+      for(const key of [...Object.keys(fieldMap),'evidence-caption','teacher-evidence','opened-link-gimkit']){const val=response[key];if(typeof val==='string')safeAnswers[key]=val.slice(0,2500);else if(typeof val==='boolean'||typeof val==='number')safeAnswers[key]=val;}
       if(b.evidence?.code&&!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(b.evidence.code.data||''))throw new Error('Backup contains invalid screenshot data.');
       if(!await askReplace('Restore work for '+b.state.student.name+'? This replaces the current saved work for this lesson.'))return;
       const oldState=s,oldImages=images,newState=fresh(mode);
@@ -185,6 +186,7 @@
   document.addEventListener('click',async event=>{
     const target=event.target.closest('button,a');if(!target)return;
     if(target.dataset.editorLink){s.answers['opened-link-'+target.dataset.editorLink]=new Date().toISOString();save();}
+    if(target.dataset.quizLink){s.answers['opened-link-'+target.dataset.quizLink]=new Date().toISOString();save();}
     if(target.dataset.check){const f=fieldMap[target.dataset.check];if(value(f)===undefined){document.getElementById('feedback-'+f.id).innerHTML='<div class="feedback">Choose your best answer first. You can continue if you need help.</div>';return;}const arr=s.attempts[f.id]||[];arr.push({value:value(f),correct:Number(value(f))===f.correct,at:new Date().toISOString()});s.attempts[f.id]=arr.slice(-50);save();document.getElementById('feedback-'+f.id).innerHTML=feedbackHTML(f);return;}
     if(target.dataset.guide){document.getElementById('lightbox-content').innerHTML=guideHTML(target.dataset.guide,false);document.getElementById('lightbox').showModal();return;}
     if(target.dataset.goto!==undefined){navigate(Number(target.dataset.goto));return;}

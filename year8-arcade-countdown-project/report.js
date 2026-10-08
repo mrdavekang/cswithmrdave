@@ -8,6 +8,7 @@ window.CrewReport = (() => {
     return String(v);
   };
   function cardStatus(card,s,images) {
+    if(card.externalQuiz)return s.answers['opened-link-'+card.link]?'Link opened - results held in Gimkit':'Not opened - no score required to continue';
     if(card.game)return (s.reactorRounds||[]).some(r=>r.status==='complete')?'Played - not graded':s.visited[card.id]?'Visited - play not required':'Not played - play not required';
     if(!s.visited[card.id]) return 'Not completed';
     const complete = card.fields.filter(f=>f.required).every(f=>f.id==='stop-explain'&&s.answers['spoken-proof']===true ? true : f.type==='check' ? s.answers[f.id]===true : s.answers[f.id]!==undefined && String(s.answers[f.id]).trim()!=='');
@@ -31,7 +32,7 @@ window.CrewReport = (() => {
     add('Progress summary','heading');
     L.stages.forEach((name,i)=>{
       const cc=L.cards.filter(c=>c.stage===i&&!c.review);
-      if(cc[0]?.game){add(name+': '+cardStatus(cc[0],s,images),'small');return;}
+      if(cc[0]?.game||cc[0]?.externalQuiz){add(name+': '+cardStatus(cc[0],s,images),'small');return;}
       const completed=cc.filter(c=>cardStatus(c,s,images).startsWith('Responses recorded')).length;
       add(name+': '+completed+' / '+cc.length+' cards with required responses recorded','small');
     });
@@ -39,6 +40,13 @@ window.CrewReport = (() => {
     L.cards.filter(c=>!c.review).forEach(card=>{
       add(L.stages[card.stage]+' - '+card.title,'subheading');
       add(cardStatus(card,s,images),'small');
+      if(card.externalQuiz){
+        add('Student assignment: '+L.links[card.link],'small');
+        add(card.expected,'small');
+        const opened=s.answers['opened-link-'+card.link];
+        if(opened)add('Link opened: '+opened,'small');
+        add('Game responses, scores and completion are recorded separately in Gimkit. Opening this link is not proof of completion. No Gimkit score is required to submit this lesson report.','small');
+      }
       if(card.game){
         add('Reactor Rush is a practice break. CPS measures presses per second, not computing attainment. Charging presses are input events, not loop repetitions.','small');
         const rounds=window.CrewReactor.safeRounds(s.reactorRounds);

@@ -1,6 +1,6 @@
 /* Lesson content and guides. Each card has a single practical subgoal. */
 window.LESSON = (() => {
-  const links = { model:'https://makecode.com/_R5tA5xE2JJJE', student:'https://makecode.com/_ioxHMeYpd4Wg', reactor:'https://makecode.com/_2sPdRM1ejWfR', editor:'https://arcade.makecode.com/' };
+  const links = { model:'https://makecode.com/_R5tA5xE2JJJE', student:'https://makecode.com/_ioxHMeYpd4Wg', reactor:'https://makecode.com/_2sPdRM1ejWfR', editor:'https://arcade.makecode.com/', gimkit:'https://www.gimkit.com/join/6ac722b617bcb7c0ba8d43e9' };
   const stages = ['Mission briefing','Do Now','Types of Learning','Main Task 1','Main Task 2','Learning Pit Stop','Go Further','Plenary','Save & submit'];
   const guide = (src,alt,notes,marks=[]) => ({src:'assets/guides/'+src,alt,notes,marks});
   const guides = {
@@ -149,5 +149,26 @@ window.LESSON = (() => {
     ms:'Cuba pusingan 5 saat, buat ramalan, kemudian cuba pusingan lebih pantas. Kedua-duanya mengulang 5 kali; jeda berubah daripada 1000 ms kepada 500 ms. Ketikan ialah input, bukan ulangan gelung. Kelajuan bukan markah; anda boleh terus ke Tugasan Utama 2.'
   };
   Object.entries(support).forEach(([language,words])=>languageHelp[language].splice(reactorIndex,0,words));
-  return {id:'year8-arcade-countdown-v1',contentRevision:2,legacyCardIds,reactorIndex,title:'Countdown Crew',topic:'Countdown games using while loops',wagba:'We are getting better at modifying and testing a while loop to control a game countdown.',ksu:['I know the purpose of a counter, a condition and a pause.','I can open an Arcade project, change one value at a time and test the result.','I can explain how the counter changes and why the loop eventually stops.'],challenge:'Adapt a loop to meet a new mission requirement and explain why it stops safely.',links,stages,guides,cards,languageHelp,vocab};
+  // Preserve both earlier card orders, including numeric-only lesson backups.
+  const previousCardIds=cards.map(c=>c.id);
+  const gimkitStage=stages.indexOf('Save & submit');
+  const gimkitIndex=cards.findIndex(c=>c.stage===gimkitStage);
+  stages.splice(gimkitStage,0,'Gimkit');
+  cards.forEach(c=>{if(c.stage>=gimkitStage)c.stage++;});
+  cards.splice(gimkitIndex,0,{
+    id:'gimkit-review',stage:gimkitStage,externalQuiz:true,
+    title:'Join the Countdown Crew quiz',tag:'After Plenary · Gimkit review',
+    intro:'Use your counter, condition and pause knowledge in a self-paced Gimkit game. The quiz opens in a new tab.',
+    where:'Gimkit game tab',link:'gimkit',linkLabel:'▶ Join Countdown Crew on Gimkit ↗',
+    steps:['Select the large <strong>Join Countdown Crew</strong> button above. Gimkit opens in a new tab.','Enter your recognisable first name and class, such as <strong>Aisha 8T</strong>. No student account is required for this assignment.','Answer the loop questions while playing. The game finishes at <strong>15 correct answers or $50,000</strong>, whichever comes first. Questions can repeat.','Return to this lesson tab and select <strong>Next</strong> to save your project and submit your PDF.'],
+    expected:'Available until 15 October 2026 at 11 p.m. (Malaysia time).',fields:[],
+    help:'If class time is ending, save and submit your lesson work first, then return to Gimkit before the deadline. You do not need a Gimkit score to export your PDF. Results are held in Gimkit; this lesson records opening the link, not your game answers or completion.'
+  });
+  const quizSupport={
+    zh:'完成课堂总结后，点击 Join Countdown Crew 打开 Gimkit。输入名字和班级，例如 Aisha 8T，无需学生账户。答对 15 次或达到 $50,000 时游戏结束，题目可能重复。截止时间：2026 年 10 月 15 日晚上 11 点（马来西亚时间）。返回课程标签页，点击 Next 保存并提交 PDF。游戏成绩保存在 Gimkit，不会自动加入本课程报告。',
+    ko:'마무리 후 Join Countdown Crew를 눌러 Gimkit을 여세요. Aisha 8T처럼 이름과 반을 입력하세요. 학생 계정은 필요하지 않습니다. 정답 15개 또는 $50,000에 먼저 도달하면 끝납니다. 문제가 반복될 수 있습니다. 마감: 2026년 10월 15일 오후 11시(말레이시아 시간). 수업 탭으로 돌아와 Next를 눌러 저장하고 PDF를 제출하세요. 결과는 Gimkit에만 저장됩니다.',
+    ms:'Selepas plenari, tekan Join Countdown Crew untuk membuka Gimkit. Masukkan nama dan kelas seperti Aisha 8T; akaun murid tidak diperlukan. Permainan tamat selepas 15 jawapan betul atau $50,000, mana-mana dahulu. Soalan boleh berulang. Tarikh akhir: 15 Oktober 2026, 11 malam (waktu Malaysia). Kembali ke tab pelajaran dan tekan Next untuk menyimpan serta menyerahkan PDF. Keputusan disimpan dalam Gimkit, bukan laporan pelajaran ini.'
+  };
+  Object.entries(quizSupport).forEach(([language,words])=>languageHelp[language].splice(gimkitIndex,0,words));
+  return {id:'year8-arcade-countdown-v1',contentRevision:3,legacyCardIds,previousCardIds,reactorIndex,title:'Countdown Crew',topic:'Countdown games using while loops',wagba:'We are getting better at modifying and testing a while loop to control a game countdown.',ksu:['I know the purpose of a counter, a condition and a pause.','I can open an Arcade project, change one value at a time and test the result.','I can explain how the counter changes and why the loop eventually stops.'],challenge:'Adapt a loop to meet a new mission requirement and explain why it stops safely.',links,stages,guides,cards,languageHelp,vocab};
 })();

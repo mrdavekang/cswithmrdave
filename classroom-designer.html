@@ -100,8 +100,8 @@
   .rel-block label{font-weight:700;font-size:12px;display:block;margin:10px 0 4px}
   .filebox{border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--muted)}
   textarea{width:100%;min-height:90px}
-  .exp-choices{display:flex;gap:14px;margin-top:6px}
-  .exp-card{flex:1;border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fff}
+  .exp-choices{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .exp-card{flex:1;min-width:140px;border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fff}
   .exp-card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(37,99,235,.15)}
   .exp-card .ic{font-size:30px}.exp-card .t{font-weight:700;margin-top:6px}.exp-card .d{font-size:12px;color:var(--muted);margin-top:3px}
   .hide{display:none!important}
@@ -211,7 +211,7 @@
       <button class="sm" id="zoomInBtn">+</button>
       <button class="sm" id="zoomFitBtn">Fit</button>
       <span style="border-left:1px solid var(--line);height:22px;margin:0 4px"></span>
-      <button class="primary" id="exportLayoutBtn" title="Export an A4 landscape JPEG or PDF for students">⬇ Export</button>
+      <button class="primary" id="exportLayoutBtn" title="Export a clear widescreen seating plan for the projector or an A4 printout">⬇ Export</button>
       <span class="grow"></span>
       <div class="scorebar" id="scoreBar"></div>
     </div>
@@ -238,12 +238,20 @@
 <div id="tooltip"></div>
 
 <!-- Export modal -->
-<div class="modal-bg" id="exportModal"><div class="modal" style="max-width:520px">
+<div class="modal-bg" id="exportModal"><div class="modal" style="max-width:760px">
   <h3>Export seating plan</h3>
-  <p class="hint">A4 landscape, title centred above the room. Pupil names only — CAT, grade, gender, EAL and conflict marks are hidden.</p>
+  <p class="hint">Large, bold pupil names and clear seat outlines. CAT, grade, gender, EAL and conflict marks are hidden.</p>
+  <label for="exportSize" style="font-size:13px;font-weight:700">Display / page size</label>
+  <select id="exportSize" style="margin:0 0 12px 8px;max-width:100%">
+    <option value="projector">Projector — widescreen 16:9 (4K)</option>
+    <option value="a4">Print — A4 landscape</option>
+  </select>
+  <canvas id="exportPreview" aria-label="Seating plan export preview" style="display:block;width:100%;height:auto;border:1px solid #cbd5e1;border-radius:8px"></canvas>
+  <p id="exportHint" class="hint" role="status" style="margin:10px 0 0"></p>
   <div class="exp-choices">
-    <div class="exp-card" id="expPdfBtn"><div class="ic">📄</div><div class="t">PDF</div><div class="d">A4 landscape · for printing</div></div>
-    <div class="exp-card" id="expJpgBtn"><div class="ic">🖼️</div><div class="t">JPEG</div><div class="d">A4 landscape image</div></div>
+    <button class="exp-card" id="expPngBtn"><div class="ic">🖼️</div><div class="t">PNG</div><div class="d">Sharp text · best for projecting</div></button>
+    <button class="exp-card" id="expPdfBtn"><div class="ic">📄</div><div class="t">PDF</div><div class="d">Matches the selected size</div></button>
+    <button class="exp-card" id="expJpgBtn"><div class="ic">📷</div><div class="t">JPEG</div><div class="d">Smaller image file</div></button>
   </div>
   <div class="row-actions"><button class="sm" id="exportCancelBtn">Cancel</button></div>
 </div></div>
@@ -298,7 +306,6 @@
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ============================ STATE ============================ */
@@ -943,34 +950,123 @@ function loadPlan(pid){
 /* ============================ EXPORT ============================ */
 function currentClassName(){ const c=state.classes[state.currentClassId]; return c?c.name:'class'; }
 function exportFileBase(){ const t=(getTitle().trim()||currentClassName()||'seating-plan'); return t.replace(/[^\w\d\- ]+/g,'').replace(/\s+/g,'_').slice(0,60)||'seating-plan'; }
-async function renderExportCanvas(){
-  const title=getTitle().trim(); const L=curLayout();
-  const holder=document.createElement('div');
-  holder.style.cssText='position:fixed;left:-10000px;top:0;background:#fff;padding:34px 40px;box-sizing:border-box;width:'+(L.width+80)+'px';
-  if(title){ const h=document.createElement('div'); h.textContent=title; h.style.cssText='text-align:center;color:#0f172a;font:800 42px/1.15 "Segoe UI",system-ui,Arial,sans-serif;letter-spacing:-.01em;margin:2px 0 26px'; holder.appendChild(h); }
-  const clone=document.getElementById('canvas').cloneNode(true);
-  clone.style.transform='none'; clone.style.boxShadow='none'; clone.style.margin='0 auto';
-  clone.querySelectorAll('.item.selected').forEach(n=>n.classList.remove('selected'));
-  clone.querySelectorAll('.rhandle,.delbtn').forEach(n=>n.remove());
-  clone.querySelectorAll('.occupied .sub').forEach(n=>n.remove());
-  clone.querySelectorAll('.ealtag,.dot').forEach(n=>n.remove());
-  clone.querySelectorAll('.badbg,.warnbg,.ealbg').forEach(n=>n.classList.remove('badbg','warnbg','ealbg'));
-  holder.appendChild(clone); document.body.appendChild(holder);
-  let shot; try{ shot=await html2canvas(holder,{scale:2,backgroundColor:'#ffffff'}); } finally{ document.body.removeChild(holder); }
-  return shot;
+const EXPORT_SIZES={
+  projector:{width:3840,height:2160,pdf:[384,216],suffix:'projector'},
+  a4:{width:3508,height:2480,pdf:'a4',suffix:'a4'}
+};
+function exportProfile(){ return document.getElementById('exportSize').value; }
+function exportBounds(L){
+  if(!L.items.length)return {x:0,y:0,w:L.width,h:L.height};
+  const left=Math.min(...L.items.map(i=>i.x)), top=Math.min(...L.items.map(i=>i.y));
+  const right=Math.max(...L.items.map(i=>i.x+i.w)), bottom=Math.max(...L.items.map(i=>i.y+i.h));
+  // Keep every room feature and the exact seat positions; trim only unused outer space.
+  return {x:left-24,y:top-24,w:right-left+48,h:bottom-top+48};
 }
-function fitToA4(src){ const PW=3508,PH=2480,M=70; const out=document.createElement('canvas'); out.width=PW; out.height=PH; const ctx=out.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,PW,PH); const r=Math.min((PW-M*2)/src.width,(PH-M*2)/src.height); const w=src.width*r,h=src.height*r; ctx.drawImage(src,(PW-w)/2,(PH-h)/2,w,h); return out; }
+function exportTextLines(ctx,text,width){
+  const lines=[];
+  let line='';
+  for(const word of String(text).trim().split(/\s+/).filter(Boolean)){
+    const candidate=line?line+' '+word:word;
+    if(ctx.measureText(candidate).width<=width){line=candidate;continue;}
+    if(line){lines.push(line);line='';}
+    if(ctx.measureText(word).width<=width){line=word;continue;}
+    // Unusually long single words still retain every character.
+    for(const char of Array.from(word)){
+      if(line&&ctx.measureText(line+char).width>width){lines.push(line);line='';}
+      line+=char;
+    }
+  }
+  if(line)lines.push(line);
+  return lines;
+}
+function drawExportText(ctx,text,x,y,w,h,maxFont,color='#0f172a',weight=800){
+  if(!String(text).trim()||w<=0||h<=0)return;
+  let font=Math.min(maxFont,h/1.1),lines;
+  // Measure actual glyph widths so wide surnames stay together on one line.
+  ctx.font=weight+' '+font+'px "Segoe UI", Arial, sans-serif';
+  const wordWidth=Math.max(...String(text).trim().split(/\s+/).map(word=>ctx.measureText(word).width));
+  if(wordWidth>w*0.98)font*=w/wordWidth*0.98;
+  for(let attempt=0;attempt<100;attempt++){
+    ctx.font=weight+' '+font+'px "Segoe UI", Arial, sans-serif';
+    lines=exportTextLines(ctx,text,w);
+    if(lines.length*font*1.1<=h&&lines.every(l=>ctx.measureText(l).width<=w))break;
+    font*=0.9;
+  }
+  ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';
+  const lineHeight=font*1.1;
+  lines.forEach((line,i)=>ctx.fillText(line,x+w/2,y+h/2+(i-(lines.length-1)/2)*lineHeight));
+}
+function exportRect(ctx,x,y,w,h,r,fill,stroke,lineWidth){
+  ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));
+  ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lineWidth;ctx.stroke();}
+}
+function renderExportCanvas(profile=exportProfile()){
+  const size=EXPORT_SIZES[profile]||EXPORT_SIZES.projector;
+  const out=document.createElement('canvas');out.width=size.width;out.height=size.height;
+  const ctx=out.getContext('2d'),L=curLayout(),bounds=exportBounds(L);
+  const margin=80,header=180,footer=100;
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,out.width,out.height);
+  drawExportText(ctx,getTitle().trim()||currentClassName(),margin,28,out.width-margin*2,120,96);
+  const scale=Math.min((out.width-margin*2)/bounds.w,(out.height-header-footer)/bounds.h);
+  const ox=(out.width-bounds.w*scale)/2-bounds.x*scale;
+  const oy=header+(out.height-header-footer-bounds.h*scale)/2-bounds.y*scale;
+  // Draw from room data so editor handles and private pupil details cannot enter the image.
+  const assignments=state.assign[assignKey()]||{};
+  L.items.forEach(it=>{
+    const x=ox+it.x*scale,y=oy+it.y*scale,w=it.w*scale,h=it.h*scale;
+    const seatable=SEATABLE.includes(it.kind),computer=it.kind==='desktop';
+    const student=seatable?state.students[assignments[it.id]]:null;
+    let fill='#e5e7eb',stroke='#64748b',color='#0f172a';
+    if(seatable){fill=computer?'#fff0a3':'#eef4ff';stroke=computer?'#805b00':'#1e40af';}
+    else if(it.kind==='wall'){fill='#334155';stroke=null;}
+    else if(it.kind==='door'){fill='#c08a4a';stroke='#784b19';}
+    else if(it.kind==='window'){fill='#bae6fd';stroke='#0369a1';}
+    else if(it.kind==='label'){fill=null;stroke=null;}
+    if(fill)exportRect(ctx,x,y,w,h,Math.min(7*scale,20),fill,stroke,Math.max(3,1.8*scale));
+    const padding=seatable?Math.min(6*scale,w*0.1,h*0.1):Math.min(3*scale,w*0.08,h*0.08);
+    const text=seatable?(student?student.name:'Empty'):it.label||'';
+    if(seatable&&!student)color='#475569';
+    if(it.kind!=='wall')drawExportText(ctx,text,x+padding,y+padding,w-padding*2,h-padding*2,
+      (seatable?(student?30:17):22)*scale,color,student?800:700);
+  });
+  const legendY=out.height-64,legendX=out.width/2-350;
+  exportRect(ctx,legendX,legendY-18,42,36,6,'#eef4ff','#1e40af',3);
+  drawExportText(ctx,'Student desk',legendX+58,legendY-26,260,52,36);
+  exportRect(ctx,legendX+390,legendY-18,42,36,6,'#fff0a3','#805b00',3);
+  drawExportText(ctx,'Computer',legendX+448,legendY-26,220,52,36);
+  return out;
+}
+function updateExportPreview(){
+  const shot=renderExportCanvas(),preview=document.getElementById('exportPreview');
+  preview.width=1280;preview.height=Math.round(1280*shot.height/shot.width);
+  preview.getContext('2d').drawImage(shot,0,0,preview.width,preview.height);
+  const assigned=state.assign[assignKey()]||{};
+  const seated=new Set(seatItems().map(i=>assigned[i.id]).filter(Boolean));
+  const unseated=classStudents().filter(s=>!seated.has(s.id)).length;
+  document.getElementById('exportHint').textContent=(exportProfile()==='projector'
+    ?'Widescreen 16:9 · 3840 × 2160 · use PNG and display full screen.'
+    :'A4 landscape · high-resolution printout.')+(unseated?' '+unseated+' student'+(unseated===1?' is':'s are')+' not seated yet.':'');
+}
+function openExport(){updateExportPreview();document.getElementById('exportModal').classList.add('show');}
 function downloadDataUrl(url,filename){ const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); }
 async function exportLayout(fmt){
-  if(typeof html2canvas==='undefined'||(fmt==='pdf'&&!(window.jspdf&&window.jspdf.jsPDF))){ alert('The export tools could not load. Connect to the internet once so they download, then try again.'); return; }
-  const btn=document.getElementById('exportLayoutBtn'); const old=btn.textContent; btn.textContent='Exporting…'; btn.disabled=true; closeModals();
-  const prevSel=selectedId; selectedId=null; renderCanvas();
+  if(fmt==='pdf'&&!(window.jspdf&&window.jspdf.jsPDF)){ alert('The PDF tool could not load. Connect to the internet and reload, or export a PNG image instead.'); return; }
+  const btn=document.getElementById('exportLayoutBtn'),old=btn.textContent,profile=exportProfile();
+  btn.textContent='Exporting…';btn.disabled=true;closeModals();
   try{
-    const shot=await renderExportCanvas(); const a4=fitToA4(shot);
-    if(fmt==='jpeg') downloadDataUrl(a4.toDataURL('image/jpeg',0.95),exportFileBase()+'.jpg');
-    else { const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); pdf.addImage(a4.toDataURL('image/jpeg',0.95),'JPEG',0,0,297,210); pdf.save(exportFileBase()+'.pdf'); }
-  }catch(e){ console.error(e); alert('Export failed: '+e.message); }
-  finally{ selectedId=prevSel; renderCanvas(); btn.textContent=old; btn.disabled=false; }
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const shot=renderExportCanvas(profile),filename=exportFileBase()+'_'+EXPORT_SIZES[profile].suffix;
+    if(fmt==='png')downloadDataUrl(shot.toDataURL('image/png'),filename+'.png');
+    else if(fmt==='jpeg')downloadDataUrl(shot.toDataURL('image/jpeg',0.95),filename+'.jpg');
+    else {
+      const {jsPDF}=window.jspdf,size=EXPORT_SIZES[profile];
+      const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:size.pdf});
+      pdf.addImage(shot.toDataURL('image/png'),'PNG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+      pdf.save(filename+'.pdf');
+    }
+  }catch(e){console.error(e);alert('Export failed: '+e.message);}
+  finally{btn.textContent=old;btn.disabled=false;}
 }
 
 /* ============================ RENDER ALL ============================ */
@@ -1024,7 +1120,9 @@ window.addEventListener('keydown',e=>{ const tag=(e.target.tagName||'').toLowerC
 document.getElementById('canvas').addEventListener('mousedown',e=>{ if(e.target.id==='canvas'){ selectedId=null; swapSeatId=null; renderCanvas(); } });
 
 document.getElementById('planTitle').addEventListener('input',e=>{ setTitle(e.target.value); save(); });
-document.getElementById('exportLayoutBtn').onclick=()=>document.getElementById('exportModal').classList.add('show');
+document.getElementById('exportLayoutBtn').onclick=openExport;
+document.getElementById('exportSize').onchange=updateExportPreview;
+document.getElementById('expPngBtn').onclick=()=>exportLayout('png');
 document.getElementById('expPdfBtn').onclick=()=>exportLayout('pdf');
 document.getElementById('expJpgBtn').onclick=()=>exportLayout('jpeg');
 document.getElementById('exportCancelBtn').onclick=closeModals;

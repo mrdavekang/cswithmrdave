@@ -5,14 +5,16 @@ START
 Open index.html in a modern browser. No build, installation or student account is
 needed for this lesson app. GitHub Pages or a school HTTPS web server is preferred.
 Keep index.html, styles.css, lesson.js, app.js, report.js, assets and vendor together.
-Saving this folder locally does not publish it. No changes to the repository home
-page, Git history, GitHub Pages configuration or Teams have been made.
+Saving this folder locally does not publish it. The repository home page, GitHub
+Pages configuration and Teams are not changed by this lesson app.
 
 STUDENT ROUTE
 Enter a name and class, choose Blocks or Arcade Python, and select language support.
 Continue through the cards using the fixed Next button. Back returns one card;
 the left-hand stage menu opens visited stages. Go Further appears after Learning
 Pit Stop. Its Go to plenary button allows the teacher to end challenge time.
+Gimkit appears immediately after Plenary, before Save & submit. The large Join
+button opens the student assignment in a separate tab. Return here to submit.
 There is no minimum quiz score or keyword-based writing gate. Blank responses
 remain unfinished in the report. Opening a card does not prove mastery.
 
@@ -161,3 +163,28 @@ are retained. English instructions have Mandarin, Korean and Malay support.
 Earlier saved progress and backups migrate by card identity without losing
 answers or evidence. The lesson and teacher testing stores remain separate.
 New local files: reactor.js and reactor.css. No libraries or services added.
+
+GIMKIT REVIEW (8 October 2026)
+Public kit: https://www.gimkit.com/view/6ac7202017bcb7c0ba89ceeb
+Student assignment: https://www.gimkit.com/join/6ac722b617bcb7c0ba8d43e9
+Available until 15 October 2026 at 11 p.m., Malaysia time. Assignment mode is
+Cash Tycoon, using the Y8 Countdown Crew While Loops kit (15 questions, five
+matching MakeCode visuals). Completion: 15 correct answers OR $50,000, whichever
+comes first. Randomised questions can repeat; this is not a guarantee of seeing
+all 15 unique questions. Game currency is not a computing grade.
+
+Allow early finishers to play after Plenary, or finish this review at home before
+the deadline. It must not delay PDF/Teams submission: Next remains available.
+No student account is required for this unlinked assignment. Students enter a
+recognisable first name and class; their game responses are sent to Gimkit, not
+stored by this lesson app. Gimkit results are reviewed in the teacher's assignment
+dashboard. The lesson PDF and backup record opening the link only, never claim
+to contain the external game's answers, score or verified completion.
+
+Creating assignments and uploading question images use Gimkit Pro, currently
+provided by the new account's 14-day trial. No subscription was purchased.
+Before using this in another teaching week, create an available assignment and
+replace links.gimkit and its deadline/support text in lesson.js. The public kit
+link is for viewing questions, NOT the student assignment entry link.
+Older revision 1 and 2 saved work/backups continue by card identity or their
+original numeric order. Mandarin, Korean and Malay card support remains aligned.
