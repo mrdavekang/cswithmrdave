@@ -127,5 +127,27 @@ window.LESSON = (() => {
   languageHelp.ko.splice(2,0,'조건은 참 또는 거짓인 확인입니다. countdown > 0은 카운터가 0보다 큰지 확인합니다.','카운터가 바뀌지 않는다고 상상하세요. 값이 계속 5라면 조건은 계속 참일까요? 잘못된 코드는 실행하지 마세요.');
   languageHelp.ms.splice(2,0,'Syarat ialah semakan benar atau palsu. countdown > 0 menyemak sama ada nilai pembilang lebih besar daripada sifar.','Bayangkan nilai pembilang tidak berubah. Jika kekal pada 5, adakah syarat masih benar? Jangan jalankan versi yang salah.');
   cards.find(c=>c.id==='starter').pythonGuide='pythonLoop';
-  return {id:'year8-arcade-countdown-v1',title:'Countdown Crew',topic:'Countdown games using while loops',wagba:'We are getting better at modifying and testing a while loop to control a game countdown.',ksu:['I know the purpose of a counter, a condition and a pause.','I can open an Arcade project, change one value at a time and test the result.','I can explain how the counter changes and why the loop eventually stops.'],challenge:'Adapt a loop to meet a new mission requirement and explain why it stops safely.',links,stages,guides,cards,languageHelp,vocab};
+  // Keep the old card order so saved work and earlier backups resume correctly.
+  const legacyCardIds=cards.map(c=>c.id);
+  const reactorIndex=cards.findIndex(c=>c.stage===4);
+  stages.splice(4,0,'Reactor Rush');
+  cards.forEach(c=>{if(c.stage>=4)c.stage++;});
+  const prediction=choice('rush-predict','Before the faster round: start stays 5, but pause changes from 1000 ms to 500 ms. What changes?',[
+    'Still 5 repetitions, but less time to charge.',
+    '10 repetitions because the pause is shorter.',
+    'The counter now starts at 500.'
+  ],0,'The counter still goes 5, 4, 3, 2, 1. The loop repeats 5 times. A 500 ms pause halves the intended round time; it does not change the starting counter.');
+  prediction.required=false;
+  cards.splice(reactorIndex,0,{
+    id:'reactor-rush',stage:4,game:true,title:'Reactor Rush: charge before launch',tag:'Crew break · 3–4 minutes',
+    intro:'Try the 5-second round, make a prediction, then try the faster round. Each tap is an input; the while loop controls how long charging stays open.',
+    fields:[prediction],help:'Tap Charge, or focus it and press Space or Enter. Holding a key does not earn extra presses. Your speed is not a grade. You may go straight to Main Task 2.'
+  });
+  const support={
+    zh:'先玩 5 秒回合，再预测并尝试快回合。两轮都重复 5 次；等待从 1000 毫秒变为 500 毫秒。点击是输入，不是循环重复次数。速度不计入成绩；你可以直接继续主任务 2。',
+    ko:'먼저 5초 라운드를 하고, 예측한 뒤 빠른 라운드를 해 보세요. 두 라운드 모두 5번 반복합니다. 대기 시간만 1000ms에서 500ms로 바뀝니다. 누르기는 입력이지 반복 횟수가 아닙니다. 속도는 성적이 아니며 바로 주요 과제 2로 가도 됩니다.',
+    ms:'Cuba pusingan 5 saat, buat ramalan, kemudian cuba pusingan lebih pantas. Kedua-duanya mengulang 5 kali; jeda berubah daripada 1000 ms kepada 500 ms. Ketikan ialah input, bukan ulangan gelung. Kelajuan bukan markah; anda boleh terus ke Tugasan Utama 2.'
+  };
+  Object.entries(support).forEach(([language,words])=>languageHelp[language].splice(reactorIndex,0,words));
+  return {id:'year8-arcade-countdown-v1',contentRevision:2,legacyCardIds,reactorIndex,title:'Countdown Crew',topic:'Countdown games using while loops',wagba:'We are getting better at modifying and testing a while loop to control a game countdown.',ksu:['I know the purpose of a counter, a condition and a pause.','I can open an Arcade project, change one value at a time and test the result.','I can explain how the counter changes and why the loop eventually stops.'],challenge:'Adapt a loop to meet a new mission requirement and explain why it stops safely.',links,stages,guides,cards,languageHelp,vocab};
 })();

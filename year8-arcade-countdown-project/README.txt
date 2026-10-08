@@ -138,3 +138,26 @@ document overflow and footer controls remained inside the viewport.
 Physical tablets, direct local-file behaviour, native print dialogs and Clipboard
 API image paste still need school-device checks. Uploaded evidence is not an
 automatic verification of the code running in the external MakeCode tab.
+# Reactor Rush addition (October 2026)
+
+Between Main Task 1 and Main Task 2, students now see one Reactor Rush game
+card. Round 1 has five iterations with a 1000 ms pause; Round 2 keeps five
+iterations but uses 500 ms. Taps are input events, NOT loop iterations.
+The adjacent prediction has corrective feedback and never blocks progression.
+
+Mouse, touch, Space and Enter are supported. Holding a key does not add extra
+presses. Sound starts off, uses quiet locally generated tones only when enabled,
+and is not needed. Reduced-motion settings remove pulses and launch movement.
+There is no leaderboard, required score, screenshot or extra written task.
+
+The real asynchronous while loop yields between iterations. Its final check is
+0 > 0 (false). It stops accepting input at the deadline, cancels on navigation,
+and pauses if the tab is hidden. Timer precision can vary between browsers;
+CPS uses measured elapsed time, not assumed duration. Speed is never a grade.
+
+Round records and the prediction are included in the PDF, print report and
+JSON backup. Incomplete plays are clearly labelled. The most recent 40 plays
+are retained. English instructions have Mandarin, Korean and Malay support.
+Earlier saved progress and backups migrate by card identity without losing
+answers or evidence. The lesson and teacher testing stores remain separate.
+New local files: reactor.js and reactor.css. No libraries or services added.

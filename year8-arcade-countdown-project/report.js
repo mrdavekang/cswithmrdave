@@ -8,6 +8,7 @@ window.CrewReport = (() => {
     return String(v);
   };
   function cardStatus(card,s,images) {
+    if(card.game)return (s.reactorRounds||[]).some(r=>r.status==='complete')?'Played - not graded':s.visited[card.id]?'Visited - play not required':'Not played - play not required';
     if(!s.visited[card.id]) return 'Not completed';
     const complete = card.fields.filter(f=>f.required).every(f=>f.id==='stop-explain'&&s.answers['spoken-proof']===true ? true : f.type==='check' ? s.answers[f.id]===true : s.answers[f.id]!==undefined && String(s.answers[f.id]).trim()!=='');
     const evidence = !card.evidence || images[card.evidence] || s.answers['teacher-evidence']===true;
@@ -30,6 +31,7 @@ window.CrewReport = (() => {
     add('Progress summary','heading');
     L.stages.forEach((name,i)=>{
       const cc=L.cards.filter(c=>c.stage===i&&!c.review);
+      if(cc[0]?.game){add(name+': '+cardStatus(cc[0],s,images),'small');return;}
       const completed=cc.filter(c=>cardStatus(c,s,images).startsWith('Responses recorded')).length;
       add(name+': '+completed+' / '+cc.length+' cards with required responses recorded','small');
     });
@@ -37,6 +39,15 @@ window.CrewReport = (() => {
     L.cards.filter(c=>!c.review).forEach(card=>{
       add(L.stages[card.stage]+' - '+card.title,'subheading');
       add(cardStatus(card,s,images),'small');
+      if(card.game){
+        add('Reactor Rush is a practice break. CPS measures presses per second, not computing attainment. Charging presses are input events, not loop repetitions.','small');
+        const rounds=window.CrewReactor.safeRounds(s.reactorRounds);
+        if(!rounds.length)add('No rounds played. Playing is not required to continue.','small');
+        rounds.forEach((r,i)=>{
+          const cps=r.elapsed>0?r.presses/r.elapsed:0;
+          add('Play '+(i+1)+': '+(r.type==='normal'?'Round 1':'Round 2')+' | pause '+r.pause+' ms | '+r.iterations+' / 5 repetitions finished | '+r.presses+' presses | '+r.elapsed.toFixed(2)+' s | '+(r.status==='complete'?cps.toFixed(1)+' CPS (not graded)':'Incomplete round; CPS not reported'),'small');
+        });
+      }
       if(!s.visited[card.id]&&!card.fields.some(f=>s.answers[f.id]!==undefined)) return;
       card.fields.forEach(f=>{
         const v=s.answers[f.id];
