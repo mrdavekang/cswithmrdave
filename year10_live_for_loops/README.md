@@ -4,11 +4,13 @@ A static GitHub Pages lesson for OxfordAQA International GCSE Computer Science 9
 
 ## Before the online class
 
-1. Open this lesson, select **Teacher**, and sign in with your existing approved Classroom teacher account. The Supabase dashboard login is separate from this teacher login.
-2. Select **Start / resume lesson**, then copy the student invitation shown on your board. Share that invitation in Teams, not just the base lesson address. It contains a room identifier, never your password or pupil credentials.
-3. Admit only the expected pupil names. Apply a stage with **Work** when students should answer. **Demonstrate** makes a released stage read-only; **Pause** protects drafts and blocks saving. Earlier released stages remain available in Work mode. Individual unlocks do not bypass Pause/Demonstrate.
-4. Open **Live coding demonstration** to share a model, line pointer and actual run output. Enable automatic sharing if you want edits to appear after a short pause. Your demonstration never replaces a pupil's program.
-5. Select a pupil to read their latest saved code, responses and actual run evidence, unlock an appropriate task, or send a private written next step.
+1. Open this lesson, select **Teacher**, and sign in with your existing approved Classroom teacher account. The Supabase dashboard login is separate from this teacher login. You see the same linear lesson pages as pupils, with a compact teacher control strip.
+2. Select **Start lesson**, open **Students**, and copy the student invitation. Share that invitation in Teams, not just the base lesson address. Admit only expected pupil names. Close the private panel before screen-sharing; **Share-safe view** closes it and blocks reopening until you exit that view.
+3. **Previous / Preview next step** and the optional lesson outline browse your own view only. **Release this step** explicitly opens your viewed step to the class in **Watch** mode and clears the previous demonstration. Select **Work** when pupils should answer, or **Pause** to protect drafts. Mode buttons act on the current class step, not a different step you are previewing. Pupils use **Go to class step** when ready; they are never forcibly moved away from typing.
+4. On a programming step, open **Teach with a live code demonstration**. Use your workspace code or load a prepared model, then share it, run it or move the line pointer. During Watch, pupils see the separate model instead of their editable workspace; Work restores their own saved program. Optional automatic sharing never replaces a pupil's program. Changing your preview step cancels pending automatic shares.
+5. Open **Students** privately to inspect saved code, responses, run evidence and help requests, unlock a task, or send an individual written next step. Your own rehearsal answers and code stay in a separate local teacher notebook and are never saved as pupil work.
+
+The lesson has ten steps, displayed one at a time. The outline is optional and distinguishes the current, visited, available and unreleased steps; visited does not mean completed. Earlier released steps remain available, and individual unlocks still respect Watch/Pause.
 
 Entering `teacher` as a pupil name opens all lesson pages for preview only. It cannot reveal the roster or grant teacher controls. Teacher credentials are not included in this repository.
 

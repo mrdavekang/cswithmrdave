@@ -41,13 +41,18 @@
     <button id="preview" class="quiet">Preview all lesson pages without signing in</button><button id="login-back" class="quiet">Back to student entry</button>
     <p class="small">Preview does not reveal students, start a classroom or send feedback.</p>
   </section>
-  <section id="workspace" hidden><nav id="route" aria-label="Lesson stages"></nav>
+  <section id="teacher-controls" class="teacher-controls" hidden aria-label="Teacher lesson controls"></section>
+  <section id="workspace" hidden><nav id="route" aria-label="Lesson stages">
+    <div class="route-bar"><span id="step-position" role="status"></span><details id="lesson-outline"><summary>Lesson outline</summary><ol id="route-list"></ol></details></div>
+    <div id="class-location" class="class-location" hidden><span id="class-step-label"></span><button id="join-current" class="quiet">Go to class step</button></div>
+  </nav>
     <div class="workspace-meta"><span id="learner"></span><span id="save-status" role="status">Saved on this device</span><span id="lesson-mode"></span></div>
+    <section id="teacher-model-tools" class="teacher-model-tools" hidden aria-label="Teacher demonstration controls"></section>
     <section id="demo" class="demo-panel" hidden aria-label="Teacher live demonstration"></section>
     <main id="main" tabindex="-1"></main>
     <nav class="stage-footer" aria-label="Move between stages"><button id="previous">Previous</button><button id="next">Next stage</button><button id="help" class="quiet">Ask for written help</button><button id="pause" class="quiet">I need a pause</button></nav>
   </section>
-  <section id="teacher-board" class="teacher-board" hidden></section>
+  <dialog id="teacher-board" class="teacher-board" aria-labelledby="private-panel-title"></dialog>
   <footer class="site-footer">Tenby International School · Year 10 · Save your work before changing devices. <button id="download-backup" class="quiet">Download notebook backup</button><button id="return-entry" class="quiet" hidden>Return to entry / change student</button><label for="restore-backup">Restore a downloaded notebook backup</label><input id="restore-backup" type="file" accept="application/json,.json"></footer>
 </body>
 </html>
