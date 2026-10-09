@@ -6,7 +6,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Year 10 · Live Python Classroom</title>
   <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
-  <link rel="stylesheet" href="styles.css?v=20261009-linear">
+  <link rel="stylesheet" href="styles.css?v=20261009-responses">
   <script defer src="vendor/codemirror/codemirror.js"></script>
   <script defer src="vendor/codemirror/mode-python.js"></script>
   <script defer src="vendor/codemirror/addon-matchbrackets.js"></script>
@@ -15,7 +15,7 @@
   <script defer src="vendor/jspdf.umd.min.js"></script>
   <script defer src="config.js"></script><script defer src="lesson.js"></script>
   <script defer src="python-runtime.js"></script><script defer src="cloud.js"></script>
-  <script defer src="app.js?v=20261009-linear"></script>
+  <script defer src="app.js?v=20261009-responses"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the lesson</a>
@@ -42,6 +42,7 @@
     <p class="small">Preview does not reveal students, start a classroom or send feedback.</p>
   </section>
   <section id="teacher-controls" class="teacher-controls" hidden aria-label="Teacher lesson controls"></section>
+  <div id="teaching-layout" class="teaching-layout">
   <section id="workspace" hidden><nav id="route" aria-label="Lesson stages">
     <div class="route-bar"><span id="step-position" role="status"></span><details id="lesson-outline"><summary>Lesson outline</summary><ol id="route-list"></ol></details></div>
     <div id="class-location" class="class-location" hidden><span id="class-step-label"></span><button id="join-current" class="quiet">Go to class step</button></div>
@@ -52,7 +53,8 @@
     <main id="main" tabindex="-1"></main>
     <nav class="stage-footer" aria-label="Move between stages"><button id="previous">Previous</button><button id="next">Next stage</button><button id="help" class="quiet">Ask for written help</button><button id="pause" class="quiet">I need a pause</button></nav>
   </section>
-  <dialog id="teacher-board" class="teacher-board" aria-labelledby="private-panel-title"></dialog>
+  <aside id="teacher-board" class="teacher-board" hidden aria-labelledby="private-panel-title"></aside>
+  </div>
   <footer class="site-footer">Tenby International School · Year 10 · Save your work before changing devices. <button id="download-backup" class="quiet">Download notebook backup</button><button id="return-entry" class="quiet" hidden>Return to entry / change student</button><label for="restore-backup">Restore a downloaded notebook backup</label><input id="restore-backup" type="file" accept="application/json,.json"></footer>
 </body>
 </html>
