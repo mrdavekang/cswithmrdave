@@ -30,7 +30,7 @@
         : code === '42501'
           ? String(error?.message || 'This action is not allowed. Your local work has been preserved.')
           : code === 'P0002'
-            ? String(error?.message || 'The classroom invite is unavailable. Ask your teacher for the current link.')
+            ? String(error?.message || 'No live class is running yet. Your teacher needs to start the lesson.')
             : code === 'invalid_credentials'
               ? 'The teacher email or password was not accepted. Use the classroom teacher account.'
               : ['TypeError','AbortError','TimeoutError','connection_error'].includes(code)
@@ -216,9 +216,15 @@
   }
   async function joinStudent(name, roomId) {
     if (!initialized) await init();
-    const target = roomId || inviteRoom() || studentRoom?.id;
-    if (!UUID.test(target || '')) throw failure('Use the current lesson invite shared by your teacher.','invite_required');
-    const state = await rpc('y10_for_join',{p_class_id:CLASS_ID,p_room_id:target,p_name:String(name || '').trim(),p_token:privateToken()});
+    // The permanent URL always resolves the current class on the server. Never
+    // route a new visit to a stale room merely because it is saved on a device.
+    // Existing session-specific bookmarks remain supported for compatibility.
+    const target = roomId || inviteRoom();
+    if (target && !UUID.test(target)) throw failure('This session link is not valid. Open the permanent lesson link.','invalid_invite');
+    const params={p_class_id:CLASS_ID,p_name:String(name || '').trim(),p_token:privateToken()};
+    const state = target
+      ? await rpc('y10_for_join',{...params,p_room_id:target})
+      : await rpc('y10_for_open_lesson',params);
     state.room = acceptRoom(state.room,false);
     return state;
   }

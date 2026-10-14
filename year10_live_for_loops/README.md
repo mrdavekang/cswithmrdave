@@ -1,6 +1,6 @@
 # Year 10 live lesson: Book-Donation Drive
 
-Static GitHub Pages lesson. No build step or student account signup. Existing Supabase classroom functions and access rules are unchanged.
+Static GitHub Pages lesson. No build step or student account signup. The permanent entry update is scoped to this lesson; existing teacher accounts, class ownership and other lessons are unchanged.
 
 ## 60-minute teaching flow
 
@@ -37,13 +37,13 @@ Interactive synchronous stdin needs SharedArrayBuffer. `isolation.js` registers 
 ## Live teacher workflow
 
 1. Sign in through Teacher using the existing approved Classroom account. Typing `teacher` as a pupil name opens preview only, never class access.
-2. For a new delivery choose Lesson setup -> Start fresh book-donation lesson. This ends the previous room but retains its database work. Copy the new invitation; students enter a name and wait for admission.
+2. Share the same permanent lesson URL each time. For a new delivery choose Lesson setup -> Start fresh book-donation lesson. This ends the previous room but retains its database work. Students choose Start lesson, enter their name and wait for admission. If no class is running, the entry page checks again every eight seconds; they can stop waiting or choose independent practice. A fresh room still requires fresh admission.
 3. Preview a page, select Bring class to this page, then Work. Watch and Pause protect pupil drafts. Prior released pages remain available; Bring recalls the class, including to the same page.
 4. Show class responses beside the lesson; click a card for full code, answers, Shell snapshot and run evidence. Private feedback gives one written next step. A snapshot is not an assertion that a student is typing or understands the task.
 5. In coding activities, open the optional live demonstration, choose a clearly named prepared model or use workspace code. Share code / Run and share. Students see the read-only model and streamed Shell directly, without opening a dropdown; their source is never overwritten.
 6. Share-safe hides private pupil information but leaves teaching controls and the demonstration available. Do not share the private response pane on screen.
 
-Transport still polls at 2.5-second intervals. Demo updates are batched briefly, so it is live classroom synchronization, not zero-latency keystroke streaming. No new Supabase tables, teacher grants or sign-in settings are required.
+Transport still polls at 2.5-second intervals. Demo updates are batched briefly, so it is live classroom synchronization, not zero-latency keystroke streaming. Install `supabase/02-student-permalink.sql` after the original setup: it adds a fixed-class entry RPC and masks live code/released pages for pending or declined pupils in both join and poll. No new tables, teacher grants or sign-in settings are required. Legacy room-specific bookmarks still work, but distribute the permanent URL without query parameters. Previously saved room metadata does not override permanent-link routing to the current class.
 
 ## Evidence and notebook safety
 

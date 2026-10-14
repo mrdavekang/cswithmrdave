@@ -15,8 +15,8 @@
   <script defer src="vendor/supabase.js"></script>
   <script defer src="vendor/jspdf.umd.min.js"></script>
   <script defer src="config.js"></script><script defer src="lesson.js?v=books-v2"></script>
-  <script defer src="python-runtime.js?v=books-v2"></script><script defer src="shell-ui.js?v=books-v2"></script><script defer src="cloud.js"></script>
-  <script defer src="app.js?v=books-v2"></script>
+  <script defer src="python-runtime.js?v=books-v2"></script><script defer src="shell-ui.js?v=books-v2"></script><script defer src="cloud.js?v=permalink-v1"></script>
+  <script defer src="app.js?v=permalink-v1"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the lesson</a>
@@ -31,9 +31,11 @@
   <div id="notice" class="notice" role="status" hidden></div>
   <section id="join" class="join-panel"><div class="join-copy"><p class="eyebrow">ONE NAME. YOUR OWN WORKSPACE.</p><h2>Welcome to the book-donation drive</h2>
     <p>Help the school library total four groups’ donations and count groups meeting a six-book target. Build one program in manageable steps, using a Python Editor and interactive Shell.</p>
-    <form id="join-form"><label for="student-name">Your name as your teacher knows it</label><input id="student-name" autocomplete="name" maxlength="60" required><button type="submit">Join live lesson</button></form>
+    <p>Bookmark this page: it is your permanent lesson link. Enter your name and choose Start lesson. When your teacher starts the class, this page finds it for you—no new invitation is needed.</p>
+    <form id="join-form"><label for="student-name">Your name as your teacher knows it</label><input id="student-name" autocomplete="name" minlength="2" maxlength="60" required><button type="submit">Start lesson</button></form>
+    <div id="class-waiting" hidden><p role="status">Your teacher has not started a live class yet. Keep this page open; it will check again automatically. Your name and saved work are kept.</p><button id="cancel-class-wait" class="quiet">Stop waiting</button></div>
     <p class="small">Your teacher can see your saved code, answers, run evidence and help requests, and can bring the class to a lesson page. Your work stays saved when the page changes. Classmates cannot see your work. Do not put passwords or personal details in your program.</p>
-    <button id="local-start" class="quiet">Use an offline practice notebook</button><p class="small">Offline practice stays on this device and is not visible to your teacher. Export it to keep your evidence. Live students: open the invitation link shared by your teacher.</p>
+    <button id="local-start" class="quiet">Practise independently</button><p class="small">Independent practice is always available. It stays on this device and is not visible to your teacher’s live board. Export your PDF and submit it in Teams to share your evidence.</p>
   </div></section>
   <section id="teacher-login" class="join-panel" hidden><h2>Teacher sign-in</h2><p>Use your existing approved Classroom account. Entering “teacher” as a name opens a preview only; it does not grant classroom control.</p>
     <form id="teacher-form"><label for="teacher-email">Classroom email</label><input type="email" id="teacher-email" autocomplete="username" required>
