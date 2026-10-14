@@ -8,20 +8,20 @@
   if(embedded)document.body.classList.add('embedded');
   document.querySelector('#video-title').textContent='Video '+v.number+' · '+v.title;
   let player=null,ready=false,timer=null,lastStore=0,disposed=false;
-  const send=data=>{
+  const send=(data,force=false)=>{
     const message={type:'y10-video-player-v1',token,videoId:id,...data};
     const target=embedded?window.parent:window.opener;
     try{target?.postMessage(message,location.origin);}catch{}
     // COOP can separate a popup's opener. Same-origin storage events provide a
     // bounded, token-specific fallback, without storing student identities.
-    if(!embedded&&(Date.now()-lastStore>450||data.kind!=='sample'||data.state===0)){lastStore=Date.now();try{localStorage.setItem('y10-video-message:'+token,JSON.stringify(message));}catch{}}
+    if(!embedded&&(force||Date.now()-lastStore>450||data.kind!=='sample'||data.state===0)){lastStore=Date.now();try{localStorage.setItem('y10-video-message:'+token,JSON.stringify(message));}catch{}}
   };
-  function sample(){if(!ready||!player||disposed)return;send({kind:'sample',time:player.getCurrentTime(),duration:player.getDuration(),rate:player.getPlaybackRate(),state:player.getPlayerState(),visible:document.visibilityState==='visible'});}
+  function sample(force=false){if(!ready||!player||disposed)return;send({kind:'sample',time:player.getCurrentTime(),duration:player.getDuration(),rate:player.getPlaybackRate(),state:player.getPlayerState(),visible:document.visibilityState==='visible'},force);}
   function error(code){status.textContent='The video could not load (YouTube '+code+'). Check your connection or ask your teacher to enable embedding. Watching elsewhere cannot be tracked here.';send({kind:'error',code:String(code)});}
   window.onYouTubeIframeAPIReady=()=>{
     player=new YT.Player('player',{width:'100%',height:'100%',videoId:id,host:'https://www.youtube-nocookie.com',playerVars:{origin:location.origin,playsinline:1,controls:1,rel:0},events:{
-      onReady:()=>{ready=true;const iframe=player.getIframe();iframe.className='youtube-frame';iframe.setAttribute('title','Video '+v.number+' - '+v.title);status.textContent='Press Play. Pausing and scrubbing are allowed.';send({kind:'ready'});timer=setInterval(sample,500);sample();},
-      onStateChange:()=>sample(),onPlaybackRateChange:()=>sample(),onError:event=>error(event.data)
+      onReady:()=>{ready=true;const iframe=player.getIframe();iframe.className='youtube-frame';iframe.setAttribute('title','Video '+v.number+' - '+v.title);status.textContent='Press Play. Pausing and scrubbing are allowed.';send({kind:'ready'});timer=setInterval(sample,500);sample(true);},
+      onStateChange:()=>sample(true),onPlaybackRateChange:()=>sample(true),onError:event=>error(event.data)
     }});
   };
   const script=document.createElement('script');script.src='https://www.youtube.com/iframe_api';script.onerror=()=>error('network');document.head.append(script);
