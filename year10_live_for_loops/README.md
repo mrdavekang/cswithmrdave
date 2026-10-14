@@ -1,66 +1,65 @@
-# Year 10 live FOR-loops lesson
+# Year 10 live lesson: Book-Donation Drive
 
-A static GitHub Pages lesson for OxfordAQA International GCSE Computer Science 9210. No Vercel, build process or pupil account registration is needed. Real CPython runs locally in a Web Worker; Supabase stores private classroom work and control state.
+Static GitHub Pages lesson. No build step or student account signup. Existing Supabase classroom functions and access rules are unchanged.
 
-## Before the online class
+## 60-minute teaching flow
 
-1. Open this lesson, select **Teacher**, and sign in with your existing approved Classroom teacher account. The Supabase dashboard login is separate from this teacher login. You see the same linear lesson pages as pupils, with a compact teacher control strip.
-2. Select **Start lesson**. The **Class responses** pane opens beside the lesson; expand **Student invitation and admission** to copy the invitation. Share that invitation in Teams, not just the base lesson address. Admit only expected pupil names. **Share-safe view** hides all pupil responses and prevents reopening them until you exit that view.
-3. **Previous / Preview next step** and the optional lesson outline browse your own view only. **Bring class to this page** opens your viewed page and automatically moves connected, admitted pupils there in **Watch** mode on their next classroom refresh (normally about 2.5 seconds). It also clears the previous demonstration. It can recall pupils to the same class page again after they browse elsewhere. Their previous answers, inputs, programs and run evidence stay in their notebooks; an active Python run is stopped safely before the move. Select **Work** when pupils should answer, or **Pause** to protect drafts. Mode buttons act on the current class step, not a different step you are previewing. Watch updates keep the active class page in view when a pupil is elsewhere. Newly admitted/rejoining pupils start on the current available class page. Offline notebooks and teacher previews are not controlled.
-4. On a programming step, open **Teach with a live code demonstration**. Use your workspace code or load a prepared model, then share it, run it or move the line pointer. Shared code, the line pointer and any output appear directly above the pupil's activity—there is no student dropdown to open, including during Work mode. During Watch, pupils see the separate model instead of their editable workspace; Work restores their own saved program beneath the visible demonstration. Tick **Share edits automatically after a short pause** to send your ongoing edits without repeatedly pressing Share. Changes appear on the next classroom refresh (normally about 2.5 seconds), not instant keystroke streaming. Optional automatic sharing never replaces a pupil's program. Changing your preview step cancels pending automatic shares. Unchanged snapshots do not rebuild the code display; Hide demonstration removes it from the pupil's page.
-5. The class overview shows each pupil's saved response for the lesson step you are viewing. **Response view options** lets you compare another step or show written responses, Python code or actual run output on the cards. Click a pupil for their full response, source and run evidence without hiding the lesson. Use **Back to class responses** to see everyone again. In the individual view you can send a private written next step or unlock a task. Unsent feedback is kept separately per pupil in memory until you sign out, change rooms or close/reload the page; it is not sent automatically. Shared feedback is the latest message, not a conversation history. Your own rehearsal answers and code remain in a separate local teacher notebook and are never saved as pupil work.
-
-The lesson has ten steps, displayed one at a time. The outline is optional and distinguishes the current, visited, available and unreleased steps; visited does not mean completed. Earlier released steps remain available, and individual unlocks still respect Watch/Pause.
-
-Page recalls use the existing teacher-only room-control RPC: a fresh `y10-class-page-v1:<UUID>` nonce is carried in the output of an **empty** demonstration. This is control metadata, never Python output or pupil evidence. Mode-only commands preserve it, allowing a recall followed immediately by Work to reach pupils between polls. Non-empty demonstrations replace this envelope; a new Watch revision also recalls off-page pupils to the active demonstration. No Supabase schema, credentials or access policies change. Hidden/background/disconnected browsers may refresh later; this is lesson pacing, not browser lockdown or a guarantee that every device has acknowledged a command. Pupils who already have the page open must refresh once after deployment to load the updated client.
-
-Entering `teacher` as a pupil name opens all lesson pages for preview only. It cannot reveal the roster or grant teacher controls. Teacher credentials are not included in this repository.
-
-## Suggested 60-minute route
-
-| Stage | Minutes | Purpose |
+| Stage | Minutes | Evidence / teaching move |
 |---|---:|---|
-| Get ready | 2 | Join/admit, introduce the sponsored-run scenario |
-| Starter | 5 | Retrieve integer input and the five-lap comparison |
-| Types of Learning | 3 | Identify current KSU evidence and one small target |
-| Teacher model | 9 | Read, predict and manually trace a running total |
-| Main Task 1 | 13 | Repair the loop bounds, accumulate laps, test and match pseudocode |
-| Main Task 2 | 12 | Add a certificate counter, selection and sponsorship calculation |
-| Extension/core repair | 8 | Choose one of ten original challenges, or repair a core test |
-| Learning Pit Stop | 3 | Reflect on each KSU and choose the next support/challenge |
-| Plenary | 3 | Explain two structural choices using actual evidence |
-| Export/hand in | 2 | Check the PDF and submit separately through Teams |
+| Starter | 5 | Integer input and the inclusive six-book comparison |
+| Types of Learning | 3 | Three KSU starting points; choose one concrete target |
+| Main 1: model | 7 | Predict four group numbers; compare Python and OxfordAQA loop bounds |
+| Main 1: repair | 8 | Fix the excluded stop; verify all four group outputs |
+| Main 2 | 20 | First build the total, then the qualifying-group counter; compare two tests |
+| Optional extension | 7 | Choose one of ten scoped adaptations; unfinished work is acceptable |
+| Learning Pit Stop | 4 | KSU evidence, learning phase, one next step; self-report is not a grade |
+| Plenary | 4 | Explain the two updates and matching pseudocode bounds |
+| Export / Teams | 2 | Check PDF and Turn in separately in Teams |
 
-The ten extensions are a choice bank, not ten compulsory tasks in eight minutes. The organiser already knows the number of runners. Inputs are assumed to be valid positive runner counts and non-negative integer lap counts; the lesson does not introduce WHILE loops, lists, functions or complex validation.
+Get ready is a brief orientation, not an additional timed activity. Readings and questions are original, not textbook or past-paper extracts. Scope follows OxfordAQA 9210 programming concepts (definite iteration, selection and assignment), input/output, and algorithm tracing. References are linked in Finish.
 
-## Python editor and support
+Core Test A: 2, 6, 3, 8 -> 19 books, 2 groups. Test B: 5, 6, 7, 0 -> 18 books, 2 groups. Assume non-negative integer donations. No lists, functions, WHILE loops or new validation algorithms are required.
 
-- Enter input values **one per line before Run**, in the order the program asks for them. This is a real Python interpreter with a queued console, not a simulated answer checker or desktop IDE. Missing inputs produce a clear error rather than an endless wait.
-- The built-in editor has line numbers, bracket matching, adjustable code size, Run, Stop, downloadable `.py` files and preserved run-source snapshots. A ten-second execution limit and an output cap prevent a stuck program blocking the page.
-- The prepared line pointer explains a model at the pupil's own pace. It is explicitly **not** an automatic debugger for arbitrary pupil code.
-- Help and pause requests can be written privately; no microphone response is required. Feedback should identify one line or concept and one small check to try next.
-- Types of Learning/Pit Stop relate to six specific KSU statements. Evidence independence and the four learning phases are separate self-reports, not automatically awarded marks or fixed labels.
+## Editor and Shell
 
-## Saving and evidence
+- Bundled Pyodide executes unchanged Python in a module worker.
+- Run / F5 executes the Editor and creates a fresh module namespace. `>>>` then inspects its variables or evaluates actual Python. Multiline statements use `...` and a blank line, as in a Python console.
+- `input()` waits at its actual prompt. Type in the Shell and press Enter; blank Enter is a genuine empty string, not EOF. There is no pre-filled input queue.
+- Output and typed inputs appear progressively. Stop / Ctrl+C interrupts; hard termination is used only if Python does not respond promptly. Code is preserved.
+- The execution budget is suspended while waiting for human input. Limits: 10 seconds active execution, 100 input calls, 7 KB combined input, 12,000 output characters per execution, 20,000 source characters. Shell display keeps the latest 40,000 characters; individual run records retain each bounded execution.
+- This is an IDLE-style browser experience, not desktop Tk IDLE. tkinter, turtle, operating-system integrations and arbitrary desktop packages are not provided.
+- A prepared, pupil-controlled pointer explains the total through all four repetitions. It is not a debugger for arbitrary pupil code.
 
-Drafts save on the device immediately and sync about 1.4 seconds after an edit when the teacher permits Work. The board refreshes approximately every 2.5 seconds. These are near-live saved snapshots, **not** keystroke surveillance or a guaranteed instantaneous feed. A recently saved indicator is not an assessment of effort.
+## Isolation on GitHub Pages
 
-Each cloud stage keeps its latest answers/source and up to eight recent bounded runs; the device notebook preserves all recorded runs and separate extension drafts. Full screenshots stay on the pupil's device, not in the live board. The PDF includes all stages (unattempted ones are labelled), answers, source used for recorded runs, actual input/output/error evidence, extension work, reflections, complete attached images and available teacher feedback. It also gives Teams instructions. **Exporting or completing this app does not Turn in a Teams assignment.**
+Interactive synchronous stdin needs SharedArrayBuffer. `isolation.js` registers `python-isolation-sw.js` with scope `./`. It adds COOP/COEP response headers to this lesson's same-origin resources without caching or intercepting Supabase. A first-load refresh establishes isolation before Python is used. Upload the complete folder, not just index.html. HTTPS or localhost is required; `file://` cannot run the browser interpreter. Embedded browsers that do not support isolation should open the lesson directly in a current full browser. Written work, PDF export and .py download remain available.
 
-Use **Download notebook backup** before changing devices. The JSON backup includes images but no classroom tokens or teacher login. Restore from the student entry page; a new device must rejoin and be admitted. Only the most recent cloud run history can be recovered without that full backup. If device storage is blocked/full, the app warns to export immediately. On shared devices use separate browser profiles, or download the existing pupil backup before returning to entry and changing the name. Names are display labels, not verified identities.
+## Live teacher workflow
 
-Offline practice is available if instructed. It is not visible to the teacher and still needs a PDF hand-in. It works without the live connection after the page/engine have loaded; this is not a service-worker offline installation and a fresh load still requires the hosted files.
+1. Sign in through Teacher using the existing approved Classroom account. Typing `teacher` as a pupil name opens preview only, never class access.
+2. For a new delivery choose Lesson setup -> Start fresh book-donation lesson. This ends the previous room but retains its database work. Copy the new invitation; students enter a name and wait for admission.
+3. Preview a page, select Bring class to this page, then Work. Watch and Pause protect pupil drafts. Prior released pages remain available; Bring recalls the class, including to the same page.
+4. Show class responses beside the lesson; click a card for full code, answers, Shell snapshot and run evidence. Private feedback gives one written next step. A snapshot is not an assertion that a student is typing or understands the task.
+5. In coding activities, open the optional live demonstration, choose a clearly named prepared model or use workspace code. Share code / Run and share. Students see the read-only model and streamed Shell directly, without opening a dropdown; their source is never overwritten.
+6. Share-safe hides private pupil information but leaves teaching controls and the demonstration available. Do not share the private response pane on screen.
 
-## Deployment and security
+Transport still polls at 2.5-second intervals. Demo updates are batched briefly, so it is live classroom synchronization, not zero-latency keystroke streaming. No new Supabase tables, teacher grants or sign-in settings are required.
 
-Host this complete folder unchanged under the existing GitHub Pages repository; all Python/editor/font/PDF assets are local. Serve via HTTPS (or localhost for tests), rather than opening `index.html` directly with `file://`. No npm build is necessary. The Python bundle is approximately 12 MB on the first visit.
+## Evidence and notebook safety
 
-The separate backend has been installed in the existing classroom Supabase project. Installation instructions and audit-friendly SQL are in [supabase/SETUP.md](supabase/SETUP.md). Do not enable global anonymous Auth or replace existing classroom migrations. Do not publish a service-role key, password, named pupil exports or teacher-board screenshots.
+The new lesson uses a separate `y10-live-for-notebook-books-v2` local key and `_lesson` metadata in cloud answers. Older sponsored-run notebooks are not overwritten or treated as book-donation answers. Keep old backups; restore only matching-version backups into this lesson. Screenshots remain device-local and are included complete in PDF, not sent to the class board.
 
-Live rooms expire after four hours. Named evidence is **not automatically deleted**. Review the school's retention policy; the setup guide recommends private export/review and authorised cleanup within seven days unless policy requires otherwise. No pupil work is public in GitHub. Joining requires the current invitation, an unguessable device token and teacher admission; tokens cannot prove a pupil's real-world identity.
+PDF export includes all visited sections, every recorded local execution's source, actual inputs/output/diagnostics, current Shell, all attempted extension work, KSU reflections, optional screenshots and private feedback. Unattempted sections are labelled. Export during a running program includes its partial execution. Cloud previews retain the latest eight bounded runs; keep PDF/backup for the full device history. Exporting is not Teams submission.
 
-## References and licences
+Support is written, literal and optional: predictable steps, readable numbered code, one-line model pointer, visible test results, private help/pause, and no obligation to speak. Offer smaller tasks and individual support based on pupil needs; do not infer ability from a learning-phase choice.
 
-Original scenarios/readings refer to OxfordAQA 9210 specification v3.4, relevant textbook printed pp.44–45 and p.50, and Python's documented `range` semantics. The textbook is not redistributed; this is not an official examination paper or a claim of endorsement. Optional exercises are original, not copied from Helsinki's question bank.
+## Hosting and references
 
-Vendor licence notices are included for Pyodide, CodeMirror, Supabase, jsPDF and Raleway. Do not remove those notices when hosting.
+Keep `vendor/`, fonts, runtime modules and isolation files alongside the page. No credentials or service-role keys belong in public files. This worker is not a malicious-code sandbox; do not put privileged data in the Python program.
+
+- https://www.oxfordaqa.com/wp-content/uploads/2025/02/oxfordaqa-gcse-computer-science-specification.pdf
+- https://docs.python.org/3/library/idle.html
+- https://pyodide.org/en/stable/usage/streams.html
+- https://pyodide.org/en/stable/usage/keyboard-interrupts.html
+
+Saving local files does not by itself authorize committing, pushing, publishing or posting to Teams. Development tests use synthetic pupils and a private mock classroom; no test data belongs in this public lesson folder.

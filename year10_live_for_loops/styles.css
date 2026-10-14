@@ -238,7 +238,7 @@ code { font-size: .95em; }
 }
 
 /* Screen sharing exposes lesson content and safe pacing controls only. */
-.share-safe .teacher-controls .private-only, .share-safe #teacher-board, .share-safe #teacher-model-tools { display: none !important; }
+.share-safe .teacher-controls .private-only, .share-safe #teacher-board { display: none !important; }
 .share-safe .teacher-controls { border-top-color: #345b43; }
 .share-safe #exit-share-safe { display: inline-flex; align-items: center; border-color: #91b69b; background: var(--pale); color: #075e33; }
 .share-safe .site-footer #return-entry, .share-safe .site-footer label, .share-safe .site-footer input { display: none !important; }
@@ -299,3 +299,24 @@ code { font-size: .95em; }
   pre { break-inside: auto; }
   body { font-size: 11pt; }
 }
+
+/* Calm, sequential Editor → Shell → comparison. */
+.shell-log { background:#fff; border:1px solid #b9c4bd; border-radius:5px; padding:18px; min-height:130px; max-height:420px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:18px/1.6 Menlo,Consolas,monospace; color:#17201b; }
+.shell-entry { display:inline; margin:0; padding:0; }
+.shell-prompt { color:#11643c; }
+.shell-input { display:inline-block; min-width:8ch; width:24ch; max-width:100%; padding:1px 2px; margin:0; border:0; border-bottom:1px solid #879d8e; border-radius:0; background:transparent; color:#1459a0; font:inherit; }
+.shell-input:disabled { opacity:.6; background:transparent; }
+.shell-status { font-size:1rem; margin:.5rem 0; }
+.test-card { margin:1.6rem 0; padding:1rem 0; border-top:1px solid #d7dfda; }
+.test-card h4 { margin:0 0 .5rem; font-size:1.1rem; }
+.ide-actions #code-size { width:80px; margin:0; }
+.ide-actions label { margin:0; }
+.field { margin:1.8rem 0; }
+.field > label { font-size:1.08rem; }
+.field > .small { font-size:1rem; line-height:1.65; }
+.ksu-summary { font-size:.95rem; }
+#main pre, .demo-panel pre { font-size:18px; }
+.reflection-item { margin:1.8rem 0; }
+#main h3 { margin-top:2rem; }
+.share-safe .teacher-model-tools { display:block; }
+@media(max-width:600px) { .shell-log { padding:12px; font-size:17px; } .shell-input { width:18ch; } }

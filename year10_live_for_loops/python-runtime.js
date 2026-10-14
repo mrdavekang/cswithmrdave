@@ -1,213 +1,64 @@
-(function () {
+/* Interactive CPython in a worker. Pupil source is never rewritten. */
+(() => {
   'use strict';
-  const scriptURL = document.currentScript?.src || document.baseURI;
-  const defaultWorkerURL = new URL('python-worker.js', scriptURL).href;
-  const CODE_LIMIT = 32000;
-  const INPUT_LIMIT = 100;
-  const INPUT_CHARACTER_LIMIT = 16000;
-  const OUTPUT_LIMIT = 12000;
-  const DEFAULT_TIMEOUT = 8000;
-
-  function normalizeInputs(inputs) {
-    if (inputs === undefined || inputs === null || inputs === '') return [];
-    if (typeof inputs === 'string') {
-      const lines = inputs.replace(/\r\n?/g, '\n').split('\n');
-      // A trailing line ending finishes the last entry; it is not another input.
-      if (lines[lines.length - 1] === '') lines.pop();
-      return lines;
-    }
-    if (!Array.isArray(inputs)) throw new Error('Enter input values as one line per input() call.');
-    const values = inputs.map(value => String(value));
-    if (values.some(value => /[\r\n]/.test(value))) throw new Error('Each queued input must contain a single line.');
-    return values;
-  }
-
+  const workerURL=new URL('python-worker.js?v=books-v2',document.currentScript.src).href;
   class PythonRunner {
-    constructor(options = {}) {
-      if (typeof options === 'function') options = { onStatus: options };
-      this.onStatus = options.onStatus || null;
-      this.onOutput = options.onOutput || null;
-      this.echoInputs = options.echoInputs !== false;
-      this.workerURL = options.workerURL || defaultWorkerURL;
-      this.timeoutMs = Number.isFinite(options.timeoutMs) ? Math.max(100, Math.min(30000, options.timeoutMs)) : DEFAULT_TIMEOUT;
-      this.version = '';
-      this.state = 'idle';
-      this._worker = null;
-      this._initialising = null;
-      this._initResolve = null;
-      this._initReject = null;
-      this._loadTimer = null;
-      this._runTimer = null;
-      this._pending = null;
-      this._nextId = 0;
-      this._closed = false;
-    }
-
-    _status(state, message) {
-      this.state = state;
-      try { this.onStatus?.({ state, message, version: this.version }); } catch (error) { console.warn('Python status display failed.', error); }
-    }
-
-    init() {
-      if (this._closed) return Promise.reject(new Error('This Python runner has been closed.'));
-      if (this._initialising) return this._initialising;
-      if (location.protocol === 'file:') return Promise.reject(new Error('Real Python needs an HTTP or HTTPS page. Upload the complete lesson folder to GitHub Pages, or open it through a local web server.'));
-      this._status('loading', 'Loading real Python…');
-      this._initialising = new Promise((resolve, reject) => {
-        this._initResolve = resolve;
-        this._initReject = reject;
-      });
-      const initialising = this._initialising;
-      try {
-        const worker = new Worker(this.workerURL, { type: 'module' });
-        this._worker = worker;
-        worker.onmessage = event => {
-          if (this._worker !== worker) return;
-          this._handleMessage(event.data);
+    constructor(options={}){Object.assign(this,options);this.state='idle';this.sequence=0;this.pending=null;this.worker=null;this.ready=null;}
+    status(state,message){this.state=state;this.onStatus?.({state,message});}
+    async init(){
+      if(this.ready)return this.ready;
+      if(window.PythonIsolation)await window.PythonIsolation;
+      if(!crossOriginIsolated||typeof SharedArrayBuffer==='undefined')throw Error('Interactive Python needs an isolated HTTPS page. Open this lesson directly in an up-to-date browser, then refresh. Your written work is kept.');
+      this.control=new Int32Array(new SharedArrayBuffer(16));this.bytes=new Uint8Array(new SharedArrayBuffer(4096));this.signal=new Uint8Array(new SharedArrayBuffer(1));
+      this.status('loading','Loading Python on this device…');
+      this.ready=new Promise((resolve,reject)=>{
+        this.initReject=reject;this.worker=new Worker(workerURL,{type:'module'});
+        this.loadTimer=setTimeout(()=>this.failure('Python could not finish loading. Check the connection and reload.'),45000);
+        this.worker.onerror=e=>{e.preventDefault();this.failure(e.message||'Python could not start.');};
+        this.worker.onmessage=({data:d})=>{
+          if(d.type==='ready'){clearTimeout(this.loadTimer);this.version=d.version;this.initReject=null;this.status('ready','Python '+d.version+' ready');resolve(this);return;}
+          if(d.type==='init-error'){this.failure(d.error);return;}
+          const p=this.pending;if(!p||d.id!==p.id)return;
+          if(d.type==='output'){p[d.stream]+=d.text;p.output+=d.text;this.onOutput?.(d.text,d.stream);}
+          if(d.type==='input-request'){this.request=d.request;this.pauseBudget();this.status('waiting','Python is waiting. Type your answer in the Shell and press Enter.');this.onInput?.();}
+          if(d.type==='input-used'){p.inputs.push(d.value);this.request=null;this.resumeBudget();this.status('running','Running Python…');}
+          if(d.type==='done')this.finish(d.result);
         };
-        worker.onerror = event => {
-          if (this._worker !== worker) return;
-          event.preventDefault?.();
-          const message = event.message || 'The Python worker could not start. Check that every vendor/python file was uploaded.';
-          this._failWorker(message);
-        };
-        this._loadTimer = setTimeout(() => this._failWorker('Python did not finish loading. Check the local runtime files and the browser’s WebAssembly support.'), 30000);
-      } catch (error) {
-        this._failWorker(String(error?.message || error));
-      }
-      return initialising;
+        this.worker.postMessage({type:'init',control:this.control.buffer,bytes:this.bytes.buffer,signal:this.signal.buffer});
+      });return this.ready;
     }
-
-    _handleMessage(data) {
-      if (!data || typeof data.type !== 'string') return;
-      if (data.type === 'ready') {
-        clearTimeout(this._loadTimer);
-        this._loadTimer = null;
-        this.version = String(data.version || '3');
-        const resolve = this._initResolve;
-        this._initResolve = null;
-        this._initReject = null;
-        this._status('ready', 'Python ' + this.version + ' ready.');
-        resolve?.(this);
-        return;
-      }
-      if (data.type === 'init-error') {
-        this._failWorker('Python could not load: ' + String(data.error || 'unknown error'));
-        return;
-      }
-      const pending = this._pending;
-      if (!pending || data.id !== pending.id) return;
-      if (data.type === 'output') {
-        const stream = data.stream === 'stderr' ? 'stderr' : 'stdout';
-        const room = OUTPUT_LIMIT - pending.stdout.length - pending.stderr.length;
-        const text = String(data.text || '').slice(0, Math.max(0, room));
-        pending[stream] += text;
-        if (text) {
-          try { this.onOutput?.(text, stream); } catch (error) { console.warn('Python output display failed.', error); }
-        }
-      } else if (data.type === 'input-used') {
-        if (pending.inputs.length < INPUT_LIMIT) pending.inputs.push(String(data.value || ''));
-      } else if (data.type === 'output-limit') {
-        this.stop(String(data.error || 'The output limit was reached.'), { outputLimited: true });
-      } else if (data.type === 'done') {
-        const result = data.result || { ok: false, error: 'Python returned no result.' };
-        this._finish(result);
-      }
+    failure(message){const reject=this.initReject;this.initReject=null;this.destroy();reject?.(Error(message));this.finish({ok:false,error:message});this.status('error',message);}
+    destroy(){clearTimeout(this.loadTimer);clearTimeout(this.budgetTimer);clearTimeout(this.stopTimer);this.worker?.terminate();this.worker=null;this.ready=null;}
+    pauseBudget(){const p=this.pending;if(!p)return;clearTimeout(this.budgetTimer);if(p.tick){p.remaining-=performance.now()-p.tick;p.tick=0;}}
+    resumeBudget(){const p=this.pending;if(!p)return;clearTimeout(this.budgetTimer);p.tick=performance.now();this.budgetTimer=setTimeout(()=>{if(this.control&&Atomics.load(this.control,0)===0){this.pauseBudget();return;}this.stop('Execution limit reached. Check whether your loop finishes. Your code is kept.',{timedOut:true});},Math.max(1,p.remaining));}
+    execute(code,kind='module',options={}){
+      if(this.pending)return Promise.reject(Error('Stop the current program before running another.'));
+      if(String(code).length>20000)return Promise.reject(Error('Keep this lesson program below 20,000 characters.'));
+      const id=++this.sequence;
+      const result=new Promise(resolve=>{this.pending={id,resolve,code:String(code),kind,stdout:'',stderr:'',output:'',inputs:[],started:performance.now(),remaining:options.timeoutMs||10000,tick:0};});
+      (async()=>{try{await this.init();if(this.pending?.id!==id)return;this.signal[0]=0;Atomics.store(this.control,0,4);this.request=null;this.status('running','Running Python…');this.resumeBudget();this.worker.postMessage({type:'run',id,code:String(code),kind});}catch(e){if(this.pending?.id===id)this.finish({ok:false,error:e.message});}})();return result;
     }
-
-    _terminate() {
-      clearTimeout(this._loadTimer);
-      clearTimeout(this._runTimer);
-      this._loadTimer = null;
-      this._runTimer = null;
-      this._worker?.terminate();
-      this._worker = null;
-      this._initialising = null;
-      this._initResolve = null;
+    run(code,unused=[],options={}){return this.execute(code,'module',options);}
+    repl(line){return this.execute(line,'repl');}
+    provideInput(value){
+      if(!this.pending||this.state!=='waiting'||!this.request||Atomics.load(this.control,0)!==0)return false;
+      const text=String(value),data=new TextEncoder().encode(text);
+      if(text.length>1000||data.length>4096)throw Error('Keep each Shell input below 1,000 characters.');
+      if(new TextEncoder().encode(JSON.stringify([...this.pending.inputs,text])).length>7500)throw Error('This run has reached the saved-input limit. Stop and start a shorter test; your source is kept.');
+      this.bytes.set(data);Atomics.store(this.control,1,data.length);Atomics.store(this.control,2,this.pending.id);Atomics.store(this.control,3,this.request);Atomics.store(this.control,0,1);Atomics.notify(this.control,0);this.request=null;return true;
     }
-
-    _failWorker(message) {
-      const reject = this._initReject;
-      this._initReject = null;
-      this._terminate();
-      reject?.(new Error(message));
-      if (this._pending) this._finish({ ok: false, error: message });
-      this._status('error', message);
+    finish(result={}){
+      const p=this.pending;if(!p)return;this.pauseBudget();clearTimeout(this.stopTimer);this.pending=null;this.request=null;
+      const r={...result,ok:result.ok===true,code:p.code,kind:p.kind,stdout:p.stdout,stderr:p.stderr,output:p.output,inputs:p.inputs,durationMs:Math.round(performance.now()-p.started)};
+      if(p.stopReason){r.stopped=true;r.ok=false;r.error=p.stopReason+(result.reset?' The interpreter restarted; Shell variables were cleared.':'');Object.assign(r,p.stopExtra);}
+      this.status(r.ok?'ready':r.stopped?'stopped':'error',r.ok?(r.more?'Continue your Python block in the Shell.':'Execution finished. Compare with the expected result.'):r.error||'Python reported an error.');p.resolve(r);
     }
-
-    _finish(result) {
-      clearTimeout(this._runTimer);
-      this._runTimer = null;
-      const pending = this._pending;
-      this._pending = null;
-      if (!pending) return;
-      const finished = {
-        ...result,
-        ok: result.ok === true,
-        stdout: pending.stdout,
-        stderr: pending.stderr,
-        inputs: Array.isArray(result.inputs) ? result.inputs.slice(0, INPUT_LIMIT).map(String) : pending.inputs,
-        durationMs: Number.isFinite(result.durationMs) ? result.durationMs : Math.round(performance.now() - pending.startedAt),
-        code: pending.code
-      };
-      if (finished.ok) this._status('ready', 'Run complete.');
-      else if (!finished.stopped) this._status('error', String(finished.error || 'Python encountered an error.'));
-      pending.resolve(finished);
+    stop(message='Interrupted. Your code is kept.',extra={}){
+      const p=this.pending;if(!p)return false;p.stopReason=message;p.stopExtra=extra;
+      if(this.signal){this.signal[0]=2;Atomics.notify(this.control,0);}
+      this.stopTimer=setTimeout(()=>{const reject=this.initReject;this.initReject=null;this.destroy();reject?.(Error(message));this.finish({ok:false,stopped:true,reset:true,error:message+' The interpreter was restarted.'});},1500);return true;
     }
-
-    run(source, inputs = [], options = {}) {
-      const code = String(source ?? '');
-      if (this._pending) return Promise.reject(new Error('A program is already running. Stop it before starting another run.'));
-      let queued;
-      let error;
-      try {
-        queued = normalizeInputs(inputs);
-        if (this._closed) throw new Error('This Python runner has been closed.');
-        if (code.length > CODE_LIMIT) throw new Error('This editor supports programs up to 32,000 characters.');
-        if (queued.length > INPUT_LIMIT) throw new Error('Use no more than 100 queued input lines.');
-        if (queued.reduce((size, value) => size + value.length, 0) > INPUT_CHARACTER_LIMIT) throw new Error('Queued inputs are too long. Keep the combined input below 16,000 characters.');
-      } catch (failure) { error = String(failure?.message || failure); }
-      if (error) {
-        this._status('error', error);
-        return Promise.resolve({ ok: false, stdout: '', stderr: '', error, inputs: [], durationMs: 0, code });
-      }
-      const id = ++this._nextId;
-      const promise = new Promise(resolve => {
-        this._pending = { id, resolve, code, stdout: '', stderr: '', inputs: [], startedAt: performance.now() };
-      });
-      (async () => {
-        try {
-          await this.init();
-          if (!this._pending || this._pending.id !== id) return;
-          const timeoutMs = Number.isFinite(options.timeoutMs) ? Math.max(100, Math.min(30000, options.timeoutMs)) : this.timeoutMs;
-          this._pending.startedAt = performance.now();
-          this._status('running', 'Running Python…');
-          this._runTimer = setTimeout(() => this.stop('Run stopped after ' + (timeoutMs / 1000) + ' seconds. Check that the loop finishes. Your code is kept.', { timedOut: true }), timeoutMs);
-          this._worker.postMessage({ type: 'run', id, code, inputs: queued, echoInputs: options.echoInputs ?? this.echoInputs });
-        } catch (failure) {
-          if (this._pending?.id === id) this._finish({ ok: false, error: String(failure?.message || failure) });
-        }
-      })();
-      return promise;
-    }
-
-    stop(message = 'Program stopped. Your code is kept. Run again when you are ready.', extra = {}) {
-      const wasActive = Boolean(this._worker || this._pending);
-      const reject = this._initReject;
-      this._initReject = null;
-      this._terminate();
-      reject?.(new Error(message));
-      if (this._pending) this._finish({ ok: false, stopped: true, error: message, ...extra });
-      if (!this._closed) this._status('stopped', message);
-      return wasActive;
-    }
-
-    close() {
-      this._closed = true;
-      this.stop('Python runner closed. Your code is kept.');
-      this._status('closed', 'Python runner closed.');
-    }
+    close(){this.stop();this.destroy();this.finish({ok:false,stopped:true,error:'Shell closed. Code kept.'});}
   }
-
-  window.PythonRunner = PythonRunner;
+  window.PythonRunner=PythonRunner;
 })();

@@ -1,475 +1,102 @@
-/* Original lesson content. Reference PDFs remain read-only and are not bundled. */
+/* Original Year 10 questions. No copied examination or textbook passages. */
 (() => {
-  'use strict';
-
-  const loop = `participant_count = int(input("Number of runners: "))
-
-for runner in range(1, participant_count + 1):
-    print("Runner", runner)
-    laps = int(input("Laps completed: "))
-    print("Recorded laps:", laps)`;
-
-  const total = `participant_count = int(input("Number of runners: "))
-total_laps = 0
-
-for runner in range(1, participant_count + 1):
-    print("Runner", runner)
-    laps = int(input("Laps completed: "))
-    total_laps = total_laps + laps
-
-print("Total laps:", total_laps)`;
-
-  const full = `participant_count = int(input("Number of runners: "))
-total_laps = 0
-certificate_count = 0
-rate_per_lap = 2
-
-for runner in range(1, participant_count + 1):
-    print("Runner", runner)
-    laps = int(input("Laps completed: "))
-    total_laps = total_laps + laps
-
-    if laps >= 5:
-        print("Certificate earned")
-        certificate_count = certificate_count + 1
-    else:
-        print("No certificate yet")
-
-funds_raised = total_laps * rate_per_lap
-print("Total laps:", total_laps)
-print("Certificates:", certificate_count)
-print("Funds raised: RM", funds_raised)`;
-
-  const pseudocode = `participantCount ← USERINPUT
-totalLaps ← 0
-certificateCount ← 0
-ratePerLap ← 2
-
-FOR runner ← 1 TO participantCount
-    laps ← USERINPUT
-    totalLaps ← totalLaps + laps
-    IF laps >= 5 THEN
-        OUTPUT "Certificate earned"
-        certificateCount ← certificateCount + 1
-    ELSE
-        OUTPUT "No certificate yet"
+  const loop=`for group in range(1, 5):
+    print("Group", group)
+print("All four groups recorded")`;
+  const total=`total_books = 0
+for group in range(1, 5):
+    print("Group", group)
+    books = int(input("Books donated: "))
+    total_books = total_books + books
+print("Total books:", total_books)`;
+  const full=`total_books = 0
+target_groups = 0
+for group in range(1, 5):
+    print("Group", group)
+    books = int(input("Books donated: "))
+    total_books = total_books + books
+    if books >= 6:
+        target_groups = target_groups + 1
+print("Total books:", total_books)
+print("Groups meeting target:", target_groups)`;
+  const task1=`# Repair the stop value so that Group 4 is included.
+for group in range(1, 4):
+    print("Group", group)
+print("All four groups recorded")`;
+  const task2=`total_books = 0
+for group in range(1, 5):
+    print("Group", group)
+    books = int(input("Books donated: "))
+    # Milestone A: add this group's books to the old total.
+print("Total books:", total_books)`;
+  const pseudocode=`totalBooks ← 0
+targetGroups ← 0
+FOR group ← 1 TO 4
+    books ← USERINPUT
+    totalBooks ← totalBooks + books
+    IF books >= 6 THEN
+        targetGroups ← targetGroups + 1
     ENDIF
 ENDFOR
-
-fundsRaised ← totalLaps * ratePerLap
-OUTPUT totalLaps, certificateCount, fundsRaised`;
-
-  const task1Scaffold = `participant_count = int(input("Number of runners: "))
-total_laps = 0
-
-# Repair the stop value so every runner is processed.
-for runner in range(1, participant_count):
-    print("Runner", runner)
-    laps = int(input("Laps completed: "))
-    # Add this runner's laps to the running total here.
-
-print("Total laps:", total_laps)`;
-
-  const task2Scaffold = `participant_count = int(input("Number of runners: "))
-total_laps = 0
-certificate_count = 0
-rate_per_lap = 2
-
-for runner in range(1, participant_count + 1):
-    print("Runner", runner)
-    laps = int(input("Laps completed: "))
-    total_laps = total_laps + laps
-
-    if laps >= 5:
-        print("Certificate earned")
-        # Increase certificate_count by one here.
-    else:
-        print("No certificate yet")
-
-# Replace 0 with a calculation using total_laps and rate_per_lap.
-funds_raised = 0
-print("Total laps:", total_laps)
-print("Certificates:", certificate_count)
-print("Funds raised: RM", funds_raised)`;
-
-  const test = (id, label, inputs, totalLaps, certificates, funds) => ({
-    id, label, inputs,
-    expected: `Total laps: ${totalLaps}\nCertificates: ${certificates}\nFunds raised: RM ${funds}`,
-    checks: { totalLaps, certificates, funds }
-  });
-
-  const ksu = [
-    {
-      id: 'ksu1', kind: 'Knowledge', title: 'K1: Recognise definite iteration and its bounds',
-      can: 'I can recognise definite iteration and explain that pseudocode includes its final bound but Python range excludes its stop.',
-      evidence: 'Explain why the known runner count suits a FOR loop, and compare FOR 1 TO 3 with range(1, 4).',
-      spec: ['3.1.1', '3.2.2'],
-      support: 'Write the runner numbers 1, 2, 3. Identify the final included value and the excluded Python stop.'
-    },
-    {
-      id: 'ksu2', kind: 'Knowledge', title: 'K2: Distinguish a counter from an accumulator',
-      can: 'I can distinguish a counter that counts events from an accumulator that adds variable values.',
-      evidence: 'Explain why certificate_count adds 1 for a qualifying event but total_laps adds the runner’s lap value.',
-      spec: ['3.2.2', '3.2.3'],
-      support: 'Ask what each variable measures: number of qualifying runners, or number of completed laps?'
-    },
-    {
-      id: 'ksu3', kind: 'Skills', title: 'S1: Write and trace FOR loops and pseudocode',
-      can: 'I can write and trace a definite FOR loop in Python and matching pseudocode.',
-      evidence: 'Process every runner once, trace 2 / 5 / 4 laps, and match the Python bounds to inclusive pseudocode bounds.',
-      spec: ['3.1.1', '3.2.2'],
-      support: 'Trace one runner at a time. In pseudocode use FOR runner ← 1 TO participantCount; in Python add 1 to the stop.'
-    },
-    {
-      id: 'ksu4', kind: 'Skills', title: 'S2: Combine input, selection, updates and testing',
-      can: 'I can combine integer input, selection and updates inside a FOR loop, then test the complete program.',
-      evidence: 'Use int(input(...)), update both variables in the correct places, calculate RM2 per lap, and run the given tests.',
-      spec: ['3.2.1', '3.2.2', '3.2.3', '3.2.4', '3.2.7', '3.2.8'],
-      support: 'Build in stages: input and total first; certificate decision and counter next; final calculation and tests last.'
-    },
-    {
-      id: 'ksu5', kind: 'Understanding', title: 'U1: Explain where initialisation, updates and summaries belong',
-      can: 'I can explain why variables initialise before the loop, update inside it, and appear in a summary after it.',
-      evidence: 'Explain why resetting total_laps inside the loop loses earlier laps, and why the final report is outside the loop.',
-      spec: ['3.1.1', '3.2.2', '3.2.3'],
-      support: 'Use three locations: initialise before; update inside; report after.'
-    },
-    {
-      id: 'ksu6', kind: 'Understanding', title: 'U2: Explain errors and justify boundary tests',
-      can: 'I can explain an off-by-one or comparison error and justify tests that reveal it.',
-      evidence: 'Explain why the single-runner test reveals a skipped final iteration and why 4 / 5 / 6 checks the certificate boundary.',
-      spec: ['3.1.1', '3.2.2', '3.2.4'],
-      support: 'Name the boundary, predict the expected result, compare actual output, and explain the cause before repairing it.'
-    }
+OUTPUT totalBooks, targetGroups`;
+  const codeBlock=code=>'<pre><code>'+code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code></pre>';
+  const field=(id,label,help,type='textarea')=>({id,label,help,type,rows:2});
+  const test=(label,inputs,expected)=>({label,inputs:inputs.map(String),expected});
+  const examples=[test('A · Four group totals',[2,6,3,8],'Total books: 19\nGroups meeting target: 2'),test('B · Check the six-book boundary',[5,6,7,0],'Total books: 18\nGroups meeting target: 2')];
+  const extension=(id,title,scenario,requirements,inputs,expected,hint,scaffold=full)=>({id:'ext'+id,title,scenario,requirements,inputs:inputs.map(String),expected,hint,scaffold,tests:[test('Your example test',inputs,expected)]});
+  const extensions=[
+    extension(1,'One group, not zero','The organiser wants to check a one-group version before collecting all four reports.',['Adapt your loop to process exactly one group.','Keep the same total and six-book target.','Run with 6 books; then explain why range(1, 1) would skip the group.'],[6],'Total books: 6\nGroups meeting target: 1','The Python stop is excluded. A loop from 1 through 1 needs stop 2.'),
+    extension(2,'Exactly six counts','A group donating six books must count as meeting the target. Your organiser is worried that > was used instead of >=.',['Run the four-group version with 5, 6, 7, 0.','If it counts only one group, repair the condition.','Explain which input distinguishes > from >=.'],[5,6,7,0],'Total books: 18\nGroups meeting target: 2','The input 6 is the exact decision boundary.'),
+    extension(3,'Three group trial','A smaller collection has three tutor groups. Each group must be read once.',['Adapt the loop to exactly three groups.','Keep the six-book target and both final reports.'],[6,0,9],'Total books: 15\nGroups meeting target: 2','List the intended group numbers before choosing the stop.'),
+    extension(4,'Read the group count','The number of participating groups changes each day. Ask for that number first, rather than fixing it at four.',['Read a positive integer group_count before the loop.','Process groups 1 through group_count.','Then read each group’s donation and report both summaries. Assume all inputs are valid.'],[3,2,6,8],'Total books: 16\nGroups meeting target: 2','Use range(1, group_count + 1). The first example input is the group count, not a book donation.'),
+    extension(5,'Zero-donation reports','The organiser also wants to know how many groups donated no books. Keep the original reports.',['Initialise zero_groups before the loop.','Increase it only when books == 0.','Print Zero-donation groups after the loop.'],[0,6,0,9],'Total books: 15\nGroups meeting target: 2\nZero-donation groups: 2','This new counter counts groups; add 1, not books.'),
+    extension(6,'Books still needed','For each group below six, display how many more books it needs to meet the target.',['Inside the loop, display Books still needed only when books < 6.','Calculate 6 - books. Keep both final reports.'],[2,6,3,8],'Group 1 needs 4 more; Group 3 needs 3 more.\nTotal books: 19\nGroups meeting target: 2','A selection inside the loop can give each group its own message.'),
+    extension(7,'A running collection board','The librarian wants an updated total after every group as well as the final summary.',['Print Running total immediately after updating total_books.','Keep the final reports after the loop.'],[2,6,3,8],'Running totals, in order: 2, 8, 11, 19.\nFinal total: 19; groups meeting target: 2.','Do not reset total_books inside the loop.'),
+    extension(8,'How many missed the target?','The organiser wants to count groups below six as well as groups meeting the target.',['Add below_target = 0 before the loop.','Use else to increase it for a non-qualifying group.','Print both counts and the total.'],[2,6,3,8],'Total books: 19\nGroups meeting target: 2\nGroups below target: 2','The two counts should add to four when every group is processed.'),
+    extension(9,'Check a class goal','The library’s goal is 20 books across all four groups. Individual group targets are still six.',['After the loop, print Class goal reached if total_books >= 20; otherwise print Keep collecting.','Keep both original reports.','Test once below the class goal and once exactly at 20.'],[5,5,5,5],'Total books: 20\nGroups meeting target: 0\nClass goal reached','The class-goal decision belongs after every donation has been added.'),
+    extension(10,'Two collection days','For each of four groups, ask for Monday’s donation and Tuesday’s donation. A group meets its target when the two-day sum is at least six.',['Read two integers inside each iteration.','Calculate books from their sum, then update the existing total and counter.','Enter the two values for each group before moving to the next group.'],[1,1,3,3,0,3,4,4],'Group totals: 2, 6, 3, 8.\nTotal books: 19\nGroups meeting target: 2','There are eight donation prompts: two for each group. Do not add a new loop type.')
   ];
-
-  const extensions = [
-    {
-      id: 'ext1', title: 'The zero-lap check',
-      scenario: 'A registered runner may finish zero laps. The organiser needs a separate count of these runners, without changing the normal lap total, certificate rule, or RM2 sponsorship rate.',
-      requirements: [
-        'Keep all three original summary results.',
-        'Count a runner as zero-lap only when laps equals 0.',
-        'Print the zero-lap count after processing every runner.'
-      ],
-      inputs: ['4', '0', '5', '0', '2'],
-      expected: 'Total laps: 7\nCertificates: 1\nFunds raised: RM 14\nZero-lap runners: 2',
-      hint: 'Use a new counter, initially 0. Its update belongs inside a separate equality check.',
-      scaffold: full
-    },
-    {
-      id: 'ext2', title: 'Three-lap encouragement badges',
-      scenario: 'The school adds an encouragement badge for everyone completing at least three laps. Certificates still require at least five laps, and every lap still raises RM2.',
-      requirements: [
-        'Keep the original certificate counter and lap total.',
-        'Add a badge counter for laps >= 3.',
-        'A certificate winner may also receive a badge; do not make the two awards mutually exclusive.'
-      ],
-      inputs: ['4', '2', '3', '5', '6'],
-      expected: 'Total laps: 16\nCertificates: 2\nFunds raised: RM 32\nEncouragement badges: 3',
-      hint: 'Two separate IF decisions can both be true for the same runner.',
-      scaffold: full
-    },
-    {
-      id: 'ext3', title: 'Check the certificate register',
-      scenario: 'The organiser wants both the number receiving certificates and the number not yet qualifying. These two counts should account for every registered runner.',
-      requirements: [
-        'Count runners with fewer than five laps in the existing else branch.',
-        'Print both counts after the loop.',
-        'Print the sum of the two counts so the organiser can compare it with the participant count.'
-      ],
-      inputs: ['4', '0', '4', '5', '7'],
-      expected: 'Total laps: 16\nCertificates: 2\nFunds raised: RM 32\nNot yet qualifying: 2\nRunners accounted for: 4',
-      hint: 'Each runner follows exactly one side of the certificate selection.',
-      scaffold: full
-    },
-    {
-      id: 'ext4', title: 'The RM1 matching sponsor',
-      scenario: 'A local sponsor adds RM1 for every completed lap, on top of the school’s original RM2 per lap. The organiser must show the two amounts separately.',
-      requirements: [
-        'Keep the original school funds calculation at RM2 per lap.',
-        'Calculate the extra matching amount at RM1 per lap after the loop.',
-        'Print school funds, matching funds, and their combined amount.'
-      ],
-      inputs: ['3', '2', '5', '4'],
-      expected: 'Total laps: 11\nCertificates: 1\nFunds raised: RM 22\nMatching funds: RM 11\nCombined funds: RM 33',
-      hint: 'One lap total can be used in several different calculations after the loop.',
-      scaffold: full
-    },
-    {
-      id: 'ext5', title: 'Certificate bonus sponsorship',
-      scenario: 'A donor offers an extra RM10 for each certificate winner. The standard sponsorship remains RM2 for every lap, including laps from runners who do not qualify.',
-      requirements: [
-        'Keep the original lap-based funds result.',
-        'Calculate the bonus from the certificate count, not the lap total.',
-        'Print the bonus and the overall amount after the loop.'
-      ],
-      inputs: ['3', '4', '5', '6'],
-      expected: 'Total laps: 15\nCertificates: 2\nFunds raised: RM 30\nCertificate bonus: RM 20\nOverall funds: RM 50',
-      hint: 'Use the quantity that the donor is paying for: winners, not laps.',
-      scaffold: full
-    },
-    {
-      id: 'ext6', title: 'Eight-lap achievement shout-out',
-      scenario: 'The organiser adds a special shout-out for runners completing at least eight laps. These runners must still be included in the normal certificate count.',
-      requirements: [
-        'Keep the five-lap certificate condition unchanged.',
-        'Add a separate counter for laps >= 8.',
-        'Print the shout-out message for qualifying runners and a final shout-out count.'
-      ],
-      inputs: ['4', '4', '5', '8', '9'],
-      expected: 'Total laps: 26\nCertificates: 3\nFunds raised: RM 52\nShout-outs: 2',
-      hint: 'A runner with eight laps meets both conditions. Check both separately.',
-      scaffold: full
-    },
-    {
-      id: 'ext7', title: 'How close to a certificate?',
-      scenario: 'For runners below the certificate threshold, the organiser wants a helpful message showing how many more laps would be needed to reach five.',
-      requirements: [
-        'Keep the certificate message for runners with at least five laps.',
-        'For other runners, calculate 5 - laps and print the number of additional laps needed.',
-        'Do not add imaginary laps to the event total.'
-      ],
-      inputs: ['3', '0', '4', '5'],
-      expected: 'Runner 1 needs 5 more laps.\nRunner 2 needs 1 more lap.\nRunner 3 earns a certificate.\nTotal laps: 9\nCertificates: 1\nFunds raised: RM 18',
-      hint: 'Calculate the shortfall inside the else branch. It is a message, not a contribution to total_laps.',
-      scaffold: full
-    },
-    {
-      id: 'ext8', title: 'Live event scoreboard',
-      scenario: 'After each runner is entered, the announcer wants to see the running lap total and the sponsorship raised so far. The final summary is still required.',
-      requirements: [
-        'Print a running lap total after adding the latest runner’s laps.',
-        'Print the running funds at RM2 per lap inside the loop.',
-        'Keep the normal final lap, certificate, and funds summary after the loop.'
-      ],
-      inputs: ['3', '2', '5', '4'],
-      expected: 'After runner 1: 2 laps, RM 4\nAfter runner 2: 7 laps, RM 14\nAfter runner 3: 11 laps, RM 22\nTotal laps: 11\nCertificates: 1\nFunds raised: RM 22',
-      hint: 'Indentation decides whether a message appears after each runner or only once at the end.',
-      scaffold: full
-    },
-    {
-      id: 'ext9', title: 'The class ten-lap goal',
-      scenario: 'The school’s first event goal is ten laps in total. Once every runner has been processed, the organiser needs to know whether the whole group reached that goal.',
-      requirements: [
-        'Keep all original summary results.',
-        'After the loop, use selection to check total_laps >= 10.',
-        'Print “Group goal reached” when true; otherwise print the number of laps short of ten.',
-        'Test totals of 9 and 10 so the equality boundary is checked.'
-      ],
-      inputs: ['2', '4', '6'],
-      expected: 'Total laps: 10\nCertificates: 1\nFunds raised: RM 20\nGroup goal reached\nAdditional test: inputs 2, 4, 5 give 9 laps and “1 lap short”.',
-      hint: 'This decision concerns the whole event. Put it after the loop, using the accumulated total.',
-      scaffold: full
-    },
-    {
-      id: 'ext10', title: 'Morning and afternoon laps',
-      scenario: 'Each registered runner has a morning lap count and an afternoon lap count. Their two counts are combined before checking the certificate rule. Every completed lap still raises RM2.',
-      requirements: [
-        'Keep a single FOR loop controlled by the known participant count.',
-        'Inside the loop, input the morning count followed by the afternoon count.',
-        'Add the two inputs to obtain that runner’s laps, then use that value for the total and certificate check.',
-        'Do not count morning and afternoon as separate runners.'
-      ],
-      inputs: ['3', '1', '1', '2', '3', '4', '2'],
-      expected: 'Runner totals: 2, 5, 6\nTotal laps: 13\nCertificates: 2\nFunds raised: RM 26',
-      hint: 'Replace the single lap input with two integer inputs and one addition. The existing total and selection can then stay in place.',
-      scaffold: full
-    }
-  ];
-
-  window.LESSON = {
-    id: 'year10-sponsored-run-for-loops',
-    title: 'Sponsored Run: FOR Loops, Totals and Counters',
-    topic: 'FOR loops, counters and running totals',
-    branding: 'Tenby Schools · CS with Mr Dave',
-    duration: 60,
-    timer60: 60,
-    wagba: 'We are getting better at using a definite FOR loop to process a known number of inputs, build a running total, and count outcomes selected by a condition.',
-    keywords: [
-      { word: 'definite iteration', meaning: 'Repetition whose number of iterations is known before the loop begins.' },
-      { word: 'FOR loop', meaning: 'A loop that repeats its body for each value in a specified sequence.' },
-      { word: 'loop body', meaning: 'The indented instructions repeated for each runner.' },
-      { word: 'running total / accumulator', meaning: 'A variable that builds an amount by adding each new value.' },
-      { word: 'counter', meaning: 'A variable that counts occurrences, usually increasing by one.' },
-      { word: 'off-by-one error', meaning: 'A boundary mistake that causes one too many or one too few repetitions.' },
-      { word: 'selection', meaning: 'Choosing a branch of instructions according to a condition.' },
-      { word: 'boundary test', meaning: 'A test at, just below, or just above a decision threshold.' }
+  window.LESSON={
+    id:'year10-book-donation-for-loops',version:'book-donation-v2',title:'Book-Donation Drive',topic:'Book-Donation Drive · FOR loops, totals and counters',branding:'Tenby Schools · CS with Mr Dave',duration:60,
+    wagba:'We are getting better at using a FOR loop to process each group once, total its books and count groups that meet a target.',
+    keywords:['definite iteration','range: stop excluded','loop body: indented instructions','accumulator: adds values','counter: counts events','off-by-one error','boundary: exactly six'],
+    challenge:'Can your program process four groups exactly once and distinguish the total number of books from the number of groups meeting the target?',
+    ksu:[
+      {id:'ksu1',kind:'Knowledge',title:'K · Know the loop and update rules',can:'I can identify the values in a Python range and distinguish a counter from a running total.',evidence:'My range prediction and the difference between + books and + 1.'},
+      {id:'ksu2',kind:'Skills',title:'S · Build and test the donation program',can:'I can use input, a FOR loop and selection to report the book total and qualifying-group count.',evidence:'My saved source and both completed Shell tests.'},
+      {id:'ksu3',kind:'Understanding',title:'U · Explain why the structure works',can:'I can explain initialisation before the loop, updates inside it and an inclusive six-book boundary.',evidence:'My explanation of resetting a total or testing exactly six books.'}
     ],
-    challenge: 'Can you process every runner exactly once, total all completed laps, and count only the runners who earn certificates?',
-    assumptions: [
-      'The organiser knows the number of runners before entering their lap counts.',
-      'The participant count is a valid positive whole number.',
-      'Every lap input is a valid non-negative whole number, including 0.',
-      'No input validation, lists, functions, or new loop type is required in this lesson.',
-      'Each completed lap raises RM2; at least 5 laps earns one certificate.'
-    ],
-    ksu,
-    stages: [
-      {
-        id: 'ready', title: 'Get ready: the Sponsored Run', minutes: 2,
-        html: `<p>You are writing a program for the school’s Sponsored Run organiser. The organiser knows how many runners took part. For each runner, enter their completed laps.</p>
-          <p>Every lap raises <strong>RM2</strong>. A runner earns a certificate for <strong>at least 5 laps</strong>. The final report must show total laps, the number of certificates, and funds raised.</p>
-          <p>Use whole-number inputs. Assume the runner count is positive and lap counts are zero or more. We are practising the program’s structure, not input validation.</p>
-          <ol><li>Join using your teacher’s invitation link and keep this page open.</li><li>You will write and run real Python here. Enter each input on its own line before pressing Run.</li><li>Check your name at the top of the workspace. Your class is Year 10.</li></ol>`,
-        fields: []
-      },
-      {
-        id: 'starter', title: 'Starter: input and the five-lap rule', minutes: 5,
-        html: `<p>This is a quick recall check of <strong>input, integers, and comparison</strong>. You do not need to write a new loop yet.</p>
-          <pre><code>laps = int(input("Laps completed: "))
-if laps &gt;= 5:
-    print("Certificate earned")</code></pre>
-          <ol><li>In one short phrase, explain why <code>int</code> is used around <code>input</code>.</li><li>For lap counts <strong>4, 5, and 6</strong>, write whether the condition is true or false.</li><li>Copy the comparison symbol that includes the runner who completes exactly five laps.</li></ol>
-          <p>We will check these together. This starter is evidence for choosing your next learning target, not a test of FOR loops you have not studied yet.</p>`,
-        fields: [
-          { id: 'starterRecall', label: 'My short answers: int; 4 / 5 / 6; the comparison', type: 'textarea', placeholder: 'int is used because …\n4: …  5: …  6: …\nThe comparison is …' }
-        ]
-      },
-      {
-        id: 'types', title: 'Choose a learning target', minutes: 3,
-        html: `<p>Now use your starter evidence and the six KSU statements to choose a useful target. <strong>K = knowledge, S = skill, U = understanding.</strong> A target should say what you will be able to show, not just “get better at Python”.</p>
-          <p>Identify what you can already show. The starter checks input and comparisons, not the new loop concepts: choose “Not yet / not sure” for a concept you have not met. That is a starting point, not a low grade.</p>
-          <p><strong>Knowledge:</strong> remember and distinguish the rules. <strong>Skills:</strong> practise writing and testing code. <strong>Understanding:</strong> explain why the structure and tests work. You may be developing all three; choose one small priority.</p>
-          <p>Choose one priority KSU below and name the evidence that will show progress by the end. It is fine to change your target after the model.</p>`,
-        ksuReflection: true,
-        fields: [
-          { id: 'learningFocus', label: 'My learning focus and evidence', type: 'text', placeholder: 'For example: U2 — pass the one-runner test and explain the range stop.' }
-        ]
-      },
-      {
-        id: 'model', title: 'Read, trace and build with the teacher', minutes: 9,
-        html: `<p><strong>Original reading:</strong> A definite loop is suitable when we know how many times a set of instructions should repeat. Here, the organiser enters the number of runners first. Each repetition then handles one runner.</p>
-          <p>In Python, <code>range(1, 4)</code> supplies <strong>1, 2, 3</strong>: the start is included, but the stop is excluded. To include the last runner, use <code>range(1, participant_count + 1)</code>.</p>
-          <p>A running total starts at zero <strong>before</strong> the loop. Inside the loop, add the latest lap count to the old total. Show the final total <strong>after</strong> the loop, once all runners are processed.</p>
-          <p>Follow the model line by line using the manual step buttons. The input sequence is <strong>3 runners, then 2, 5, 4 laps</strong>. Read what changes before moving on. You may explain in writing; speaking is optional.</p>
-          <table><thead><tr><th>Moment</th><th>New laps</th><th>Running total</th></tr></thead><tbody><tr><td>Before the loop</td><td>—</td><td>0</td></tr><tr><td>After runner 1</td><td>2</td><td>2</td></tr><tr><td>After runner 2</td><td>5</td><td>7</td></tr><tr><td>After runner 3</td><td>4</td><td>11</td></tr></tbody></table>
-          <p>For the complete event report, only the five-lap runner earns a certificate. So this same example must eventually give <strong>11 total laps, 1 certificate, and RM22</strong>. Task 1 builds the lap total; Task 2 adds that decision and counter.</p>
-          <details><summary>Pseudocode bounds and Python bounds</summary><p>Our pseudocode <code>FOR runner ← 1 TO participantCount</code> includes the final runner. Python’s <code>range</code> excludes its stop, so its stop expression is one higher. Do not transfer the bounds unchanged.</p><pre><code>FOR runner ← 1 TO participantCount
-    laps ← USERINPUT
-    totalLaps ← totalLaps + laps
-ENDFOR</code></pre><p><code>totalLaps ← 0</code> belongs before this pseudocode loop.</p></details>
-          <p class="source-note">Reading is paraphrased in original wording. Textbook reference: printed pp. 44–45 (PDF pp. 48–49) and printed p. 50 (PDF p. 54). OxfordAQA 9210 specification v3.4: 3.1.1, 3.2.1, 3.2.2, 3.2.3, 3.2.4, 3.2.7 and 3.2.8.</p>`,
-        fields: [
-          { id: 'modelExplain', label: 'One explanation from the model', type: 'text', placeholder: 'Why does participant_count + 1 include the final runner?' }
-        ],
-        code: total,
-        inputs: ['3', '2', '5', '4'],
-        expected: 'Total laps: 11',
-        guidedSteps: [
-          { line: 1, explanation: 'Read the known number of runners before any repetition. int converts the entered text into a whole number.', values: 'participant_count = 3' },
-          { line: 2, explanation: 'Create the running total once. No laps have been entered yet.', values: 'total_laps = 0' },
-          { line: 4, explanation: 'range(1, 3 + 1) supplies runner numbers 1, 2 and 3. Each number starts one repetition.', values: 'runner = 1 → 2 → 3' },
-          { line: 5, explanation: 'This indented print runs once for each runner. It helps the organiser enter the right runner’s laps.', values: 'Runner 1; Runner 2; Runner 3' },
-          { line: 6, explanation: 'Read a fresh lap count inside each repetition. Reusing the variable is enough; no list is needed.', values: 'laps = 2, then 5, then 4' },
-          { line: 7, explanation: 'Add the current runner’s laps to the amount already accumulated. Do not replace the total with laps alone.', values: '0 + 2 = 2; 2 + 5 = 7; 7 + 4 = 11' },
-          { line: 9, explanation: 'The indentation has ended, so this final report runs once after all three runners.', values: 'Total laps: 11' }
-        ],
-        tests: [{ id: 'model-three', label: 'Teacher example: 3 runners', inputs: ['3', '2', '5', '4'], expected: 'Total laps: 11', checks: { totalLaps: 11 } }]
-      },
-      {
-        id: 'task1', title: 'Task 1: repair the bounds and build the total', minutes: 13,
-        html: `<p>The organiser’s starter program has <strong>two unfinished parts</strong>: its loop misses the final runner, and it does not add lap inputs to the total yet. Repair it to report total laps only.</p>
-          <ol><li>Read the runner count before the loop and keep the total initialised at zero.</li><li>Change the loop bounds so runner numbers go from 1 through the participant count.</li><li>Inside the loop, add each new lap input to the existing total.</li><li>Keep the final total print after the loop.</li><li>Run both tests below. Compare expected and actual results before moving on.</li></ol>
-          <p><strong>Test A:</strong> inputs <code>3, 2, 5, 4</code> must give <code>Total laps: 11</code>. <strong>Test B:</strong> inputs <code>1, 5</code> must give <code>Total laps: 5</code>. The one-runner case catches a missing final iteration.</p>
-          <details><summary>Small-step support</summary><ol><li>List the values in <code>range(1, 3)</code>, then in <code>range(1, 4)</code>.</li><li>For the update, read “new total equals old total plus this runner’s laps”.</li><li>Check that the update is indented inside the loop, but initialisation is not.</li></ol></details>`,
-        fields: [
-          { id: 'task1Evidence', label: 'Task 1 evidence', type: 'textarea', placeholder: 'Three-runner result: …\nOne-runner result: …\nI repaired the stop because …' },
-          { id: 'task1Pseudocode', label: 'Write the matching loop in OxfordAQA pseudocode', type: 'textarea', help: 'Write the total initialisation, FOR bounds, input, total update, ENDFOR and final output. Use the model’s pseudocode panel for support. Remember: TO includes the final runner; Python’s range stop does not.', placeholder: 'totalLaps ← …\nFOR runner ← … TO …\n    …\nENDFOR\nOUTPUT …' }
-        ],
-        code: task1Scaffold,
-        inputs: ['3', '2', '5', '4'],
-        tests: [
-          { id: 'task1-three', label: 'A: 3 runners, 2 / 5 / 4 laps', inputs: ['3', '2', '5', '4'], expected: 'Total laps: 11', checks: { totalLaps: 11 } },
-          { id: 'task1-one', label: 'B: 1 runner, 5 laps', inputs: ['1', '5'], expected: 'Total laps: 5', checks: { totalLaps: 5 } }
-        ]
-      },
-      {
-        id: 'task2', title: 'Task 2: certificates, a counter and RM2 per lap', minutes: 12,
-        html: `<p>Now complete the same Sponsored Run program. The organiser needs a certificate decision for each runner and three final summary values.</p>
-          <p><strong>Total and counter have different jobs.</strong> <code>total_laps</code> adds the number of laps on every repetition. <code>certificate_count</code> adds <strong>1</strong> only for a runner whose laps are at least 5.</p>
-          <ol><li>Keep the correct loop and lap-total update from Task 1.</li><li>Start <code>certificate_count</code> at zero before the loop.</li><li>Inside the <code>if laps &gt;= 5</code> branch, increase that counter by one. Keep non-qualifying runners out of this counter.</li><li>After the loop, calculate funds as total laps multiplied by the rate per lap.</li><li>Print total laps, certificate count, and funds raised after the loop.</li><li>Predict each result, run the tests, and compare.</li></ol>
-          <p><strong>Worked check:</strong> 2, 5 and 4 laps add to 11; just one runner qualifies; <code>11 × 2 = RM22</code>. With a single five-lap runner, the report is 5 laps, 1 certificate and RM10.</p>
-          <p><strong>Boundary check:</strong> 4, 5 and 6 laps total 15. The four-lap runner does not qualify; the five- and six-lap runners do. Expected report: <strong>15 laps, 2 certificates, RM30</strong>.</p>
-          <details><summary>Small-step support</summary><p>First get the certificate count right, then add the funds calculation. If the total is right but certificates are wrong, inspect the condition and the counter’s indentation. If only the funds are wrong, inspect the calculation after the loop.</p></details>`,
-        fields: [
-          { id: 'task2Evidence', label: 'Task 2 test evidence', type: 'textarea', placeholder: '2 / 5 / 4 → total …, certificates …, funds …\nSingle 5 → …\n4 / 5 / 6 → …\nOne change I made, and why: …' }
-        ],
-        code: task2Scaffold,
-        modelCode: full,
-        guidedSteps: [
-          { line: 2, explanation: 'The lap accumulator starts at zero once, before the loop. This variable measures laps, not runners.', values: 'total_laps = 0' },
-          { line: 3, explanation: 'The certificate counter also starts at zero before the loop. It counts qualifying runners.', values: 'certificate_count = 0' },
-          { line: 6, explanation: 'For three registered runners, range(1, 4) processes runners 1, 2 and 3 exactly once each.', values: 'runner: 1 → 2 → 3' },
-          { line: 9, explanation: 'Every runner’s lap count is added, including lap counts below the certificate threshold.', values: 'Inputs 2, 5, 4: total_laps becomes 2 → 7 → 11' },
-          { line: 11, explanation: 'Compare this runner’s laps with five. The >= includes exactly five laps.', values: '2 >= 5: False; 5 >= 5: True; 4 >= 5: False' },
-          { line: 13, explanation: 'Increase by one only inside the qualifying branch. The value counts people receiving certificates, not laps completed.', values: 'certificate_count: 0 → 1 → 1' },
-          { line: 17, explanation: 'The loop has finished. Multiply the accumulated lap total by RM2 per lap once.', values: 'funds_raised = 11 * 2 = 22' },
-          { line: 18, explanation: 'The three final summary prints are outside the loop, so the complete event report is displayed once.', values: 'Total laps: 11; Certificates: 1; Funds raised: RM 22' }
-        ],
-        inputs: ['3', '2', '5', '4'],
-        tests: [
-          test('task2-three', 'A: worked example, 2 / 5 / 4', ['3', '2', '5', '4'], 11, 1, 22),
-          test('task2-one', 'B: single runner on the threshold', ['1', '5'], 5, 1, 10),
-          test('task2-boundary', 'C: boundary values, 4 / 5 / 6', ['3', '4', '5', '6'], 15, 2, 30)
-        ]
-      },
-      {
-        id: 'extension', title: 'Choose one original practice extension', minutes: 8,
-        html: `<p>When the core tests pass, choose <strong>one</strong> extension. These are ten original, small programming exercises in an explicit requirements-and-example style. They are not copied from a course exercise bank.</p>
-          <ol><li>Read the organiser’s new requirement and its example input order.</li><li>Use your working Task 2 program as the starting point.</li><li>Write a one-sentence plan identifying the new variable, calculation, or decision.</li><li>Make the smallest useful change. Stay with integer input, FOR, selection, arithmetic, totals and counters.</li><li>Run the example and compare it with the required results.</li></ol>
-          <p>If a core test is not passing yet, return to Task 1 or Task 2 and use this time to repair it with the support steps. A correct, explained core program is stronger evidence than an unfinished extension.</p>`,
-        fields: [
-          { id: 'extensionEvidence', label: 'My extension plan and evidence, or core repair', type: 'textarea', placeholder: 'Chosen task: …\nMy plan: …\nExpected and actual results: …\nIf repairing the core: the issue and the test I reran …' }
-        ],
-        code: full,
-        inputs: ['3', '2', '5', '4'],
-        extensionChooser: true
-      },
-      {
-        id: 'pit', title: 'Learning Pit Stop: what can you do now?', minutes: 3,
-        html: `<p>Pause <strong>after practice</strong>. For each KSU statement, distinguish evidence of what you can do from how this learning currently feels. These are personal reflections, not automatically awarded marks.</p>
-          <ul><li><strong>New learning:</strong> I am learning something new with manageable challenge and making progress.</li><li><strong>Consolidating:</strong> I am strengthening and using what I already know.</li><li><strong>Treading water:</strong> This feels easy and is not stretching me; I need a suitable next challenge.</li><li><strong>Drowning / needing help:</strong> This feels too hard right now; I need a smaller step and support. Asking for help is useful.</li></ul>
-          <p>Choose honestly, then name a precise success or sticking point. Useful evidence names a line, a test, or a concept: “my one-runner test skips the input” is more actionable than “it does not work”.</p>`,
-        fields: [
-          { id: 'nextStep', label: 'My precise next step or support request', type: 'text', placeholder: 'For example: my counter counts 4 laps; I need help locating its update.' }
-        ]
-      },
-      {
-        id: 'plenary', title: 'Plenary: explain the structure', minutes: 3,
-        html: `<p>Return to your chosen KSU target. Use your actual program and test results as evidence.</p>
-          <ol><li>Why does this event use a definite FOR loop?</li><li>Why is the Python stop expression one greater than the final runner number?</li><li>What is the difference between adding <code>laps</code> to a total and adding <code>1</code> to a counter?</li><li>Why are the final reports outside the loop?</li></ol>
-          <p>Answer any <strong>two</strong> prompts briefly, then identify one piece of evidence that shows progress towards your target. If you still need help, name the smallest next step.</p>`,
-        ksuReflection: true,
-        fields: [
-          { id: 'plenaryExplain', label: 'Two explanations and my target evidence', type: 'textarea', placeholder: 'Prompt …: …\nPrompt …: …\nMy target evidence / next step: …' }
-        ]
-      },
-      {
-        id: 'submit', title: 'Check and hand in your evidence', minutes: 2,
-        html: `<p>Check that your saved work identifies you, includes your latest core program, and records the tests you actually ran.</p>
-          <ol><li>Save your latest Task 1 and Task 2 code.</li><li>Check your name and class, target, test evidence and learning-pit response.</li><li>Export or download your response using the page’s hand-in controls.</li><li>Submit that response in the place your teacher specifies. A local download alone is not a submission to your teacher.</li></ol>
-          <p>Keep any unfinished issue visible and describe it honestly. Do not claim an expected result as an actual test result unless you ran the program.</p>`,
-        fields: []
-      }
-    ],
-    extensions,
-    models: { loop, total, full, pseudocode, main1: total, main2: full },
-    sources: [
-      {
-        title: 'OxfordAQA International GCSE Computer Science 9210 specification, v3.4',
-        url: 'https://www.oxfordaqa.com/wp-content/uploads/2026/06/oxfordaqa-gcse-computer-science-specification.pdf',
-        note: 'Sections 3.1.1 (algorithms), 3.2.1 (data types), 3.2.2 (programming concepts), 3.2.3 (arithmetic), 3.2.4 (comparisons), 3.2.7 (input/output) and 3.2.8 (string conversion).'
-      },
-      {
-        title: 'Oxford AQA International GCSE Computer Science textbook — project reference',
-        note: 'Printed pp. 44–45 (PDF pp. 48–49) and printed p. 50 (PDF p. 54). Used as a read-only reference; explanations and exercises here are original paraphrases. The textbook PDF is not redistributed.'
-      },
-      {
-        title: 'Python documentation: the range type',
-        url: 'https://docs.python.org/3/library/stdtypes.html#ranges',
-        note: 'For a positive step, generated values remain below the stop value; the stop is excluded.'
-      }
+    models:{loop,total,full},modelLabels:{loop:'1 · Four group numbers (no input)',total:'2 · Add each donation to a total',full:'3 · Count groups meeting the target'},
+    stages:[
+      {id:'ready',title:'Get ready',minutes:'brief orientation',html:`<p>Our school library is holding a <strong>book-donation drive</strong>. Four tutor groups report their donations. The librarian needs two different answers: <strong>how many books were donated in total</strong>, and <strong>how many groups donated at least six books</strong>.</p><p>We will build one program in small steps. First make it visit all four groups. Then add their donations. Finally count qualifying groups.</p><ol><li>Use Run / F5 to execute code in the Editor.</li><li>When the Shell asks <code>Books donated:</code>, type one whole number there and press Enter. It will then ask for the next group.</li><li>Use Stop if you need to interrupt. Your source is kept. Asking for written help or a pause is always allowed.</li></ol><p>Assume valid whole-number donations, zero or more. No lists, functions or new validation routines are needed today. This is browser Python with an IDLE-style Editor and Shell, not the desktop IDLE application.</p>`},
+      {id:'starter',title:'Starter · recall and predict',minutes:5,html:`<p>Before the new loop, recall what happens for <strong>one group</strong>. <code>input()</code> gives text; <code>int()</code> converts suitable text into a whole number. <code>&gt;=</code> means “greater than or equal to”, so it includes the exact target.</p>${codeBlock('books = int(input("Books donated: "))\nif books >= 6:\n    print("Target met")')}<p>Read the program. Answer the three short questions below. You do not need to write a loop yet. We will check your predictions together.</p>`,fields:[field('recallInt','1 · Why is int used around input?','Write one sentence about converting the input text to a whole number.'),field('recallBoundary','2 · For 5, 6 and 7 books, will Target met appear?','Write three answers: 5 → yes/no; 6 → yes/no; 7 → yes/no.'),field('recallSymbol','3 · Which comparison includes exactly six?','Write > or >= and a short reason.','text')]},
+      {id:'types',title:'Types of Learning · choose a target',minutes:3,html:`<p>Use the starter to identify what you already know about integers and comparisons. The FOR loop is new learning if you have not met it: “not yet” is a useful starting point, not a low grade.</p><p><strong>Knowledge:</strong> recall the range and counter rules. <strong>Skills:</strong> practise building and testing the program. <strong>Understanding:</strong> explain why the structure works.</p><p>For each KSU statement, choose the evidence you can currently show. Then choose <strong>one</strong> priority and a small target. You can change it after the model. Your totals below measure self-reported independence, not marks or learning ability.</p>`},
+      {id:'model',title:'Main 1 · read the four-group model',minutes:7,html:`<p>The librarian must visit groups <strong>1, 2, 3 and 4</strong>, exactly once each. This is <strong>definite iteration</strong>: we know the number of repetitions before the loop starts.</p><p><code>range(1, 5)</code> supplies 1, 2, 3, 4. Python includes the start and excludes the stop. The indented instruction <code>print("Group", group)</code> run for each value. The last print is outside the loop, so it appears once at the end.</p><p><strong>Before Run:</strong> predict the group numbers. <strong>Then:</strong> run the unchanged model and compare. There are no input prompts in this first model.</p><h3>Same four repetitions in OxfordAQA pseudocode</h3>${codeBlock('FOR group ← 1 TO 4\n    OUTPUT "Group", group\nENDFOR')}<p><code>TO 4</code> includes 4. Python uses a stop of 5 to include 4. These are two representations of the same algorithm, not different tasks.</p>`,code:loop,fields:[field('modelPrediction','4 · Before running, predict the group numbers','List the numbers in order.','text'),field('modelCompare','5 · After running, compare your prediction','Write “matched” or name one difference. Explain why 5 is not printed.')]},
+      {id:'task1',title:'Main 1 · repair an off-by-one error',minutes:8,html:`<p>The program below claims to record all four groups, but its loop stops too early. The final message alone does not prove it has processed everyone.</p><ol><li>Read the <code>range</code> line and predict which group will be missing.</li><li>Change <strong>only the stop value</strong> so groups 1–4 are all printed.</li><li>Run it. Check all four group lines, not just the final message.</li><li>Explain your correction below. Your source and Shell output are recorded automatically.</li></ol><details><summary>One small hint</summary><p>Write the required values: 1, 2, 3, 4. The stop must be the next number, which is excluded.</p></details>`,code:task1,tests:[test('Required group sequence',[],'Group 1\nGroup 2\nGroup 3\nGroup 4\nAll four groups recorded')],fields:[field('boundsRepair','6 · Which group was missing, and what did you change?','Name the missing group, the old stop and the new stop. Explain Python’s excluded stop.')]},
+      {id:'task2',title:'Main 2 · build the donation report',minutes:20,html:`<p>Now the loop will collect the <strong>number of books</strong> for each of the same four groups. Keep the four-group loop you repaired. We have added input prompts and a total starting at zero; you will complete the updates.</p><h3>Study the total before changing it</h3><p>A total is an <strong>accumulator</strong>. Start at zero before the loop. For inputs 2, 6, 3, 8 the totals become <strong>2 → 8 → 11 → 19</strong>. The update reads “new total equals old total plus this group’s books”.</p>${codeBlock('total_books = total_books + books')}<p>The indented update happens four times. The final print is unindented and happens once. Use the optional pointer below to trace every group in this prepared example.</p><h3>Milestone A · report the total</h3><ol><li>Replace the comment inside the loop with the total update shown above. Keep it indented.</li><li>Press Run. Type <strong>2</strong> at the first Books donated prompt, then <strong>6, 3, 8</strong> at the next three prompts. Press Enter each time.</li><li>Check <code>Total books: 19</code>. Do not type the group count first: this program already processes four groups.</li></ol><h3>Milestone B · count qualifying groups</h3><p>The target is <strong>at least six</strong>. For 2, 6, 3, 8, two groups qualify: 6 and 8. A <strong>counter</strong> adds 1 per qualifying group, not the number of books.</p><ol><li>Add <code>target_groups = 0</code> before the loop.</li><li>After the total update, inside the loop, add <code>if books &gt;= 6:</code>. Inside that branch add <code>target_groups = target_groups + 1</code> with another four spaces of indentation.</li><li>After the loop add <code>print("Groups meeting target:", target_groups)</code>.</li><li>Run Test A and Test B below. Keep each run; compare both summary values and record the comparison in the two answer fields.</li></ol><details><summary>Written support · where does each line go?</summary>${codeBlock('total_books = 0\ntarget_groups = 0             # before the loop\nfor group in range(1, 5):\n    # existing input and total update\n    if books >= 6:            # inside the loop\n        target_groups = target_groups + 1\n# both final prints go here, outside the loop')}<p>A comment is not a working instruction. Keep your existing input and total-update lines where the comment indicates. Request written help if you need one line at a time.</p></details><p><strong>Evidence:</strong> your code, actual inputs and output are saved automatically on every run. Below, state whether the actual values matched each expected pair. The app does not automatically mark your program correct.</p>`,code:task2,modelCode:total,tests:examples,guidedSteps:[
+        {line:1,explanation:'Initialise once before collecting any donations.',values:'total_books = 0'},
+        {line:2,explanation:'First repetition begins for group 1.',values:'group = 1; total_books = 0'},
+        {line:4,explanation:'At the first prompt enter 2.',values:'group = 1; books = 2'},
+        {line:5,explanation:'Add the first donation to the old total.',values:'0 + 2 = 2; total_books = 2'},
+        {line:2,explanation:'Return to the loop for group 2. The total is not reset.',values:'group = 2; total_books = 2'},
+        {line:4,explanation:'At the second prompt enter 6.',values:'group = 2; books = 6'},
+        {line:5,explanation:'Add six to the two books already counted.',values:'2 + 6 = 8; total_books = 8'},
+        {line:2,explanation:'Third repetition: keep the accumulated value.',values:'group = 3; total_books = 8'},
+        {line:4,explanation:'Enter the third donation, 3.',values:'group = 3; books = 3'},
+        {line:5,explanation:'Add the third donation.',values:'8 + 3 = 11; total_books = 11'},
+        {line:2,explanation:'Fourth and final repetition begins.',values:'group = 4; total_books = 11'},
+        {line:4,explanation:'Enter the fourth donation, 8.',values:'group = 4; books = 8'},
+        {line:5,explanation:'Add the last donation.',values:'11 + 8 = 19; total_books = 19'},
+        {line:6,explanation:'The range is exhausted. Print the summary once, after the loop.',values:'Total books: 19'}
+      ],fields:[field('testA','7 · Test A: did your actual summaries match 19 books and 2 groups?','Write your actual total and count, then “matched” or the difference. If you corrected code, say which line changed.'),field('testB','8 · Test B: did 5, 6, 7, 0 give 18 books and 2 groups?','Write the actual total and count. Explain why exactly 6 must qualify; this tests >= rather than >.'),field('totalReason','9 · Why must total_books = 0 be before the loop?','Explain what would happen to previous donations if the total reset at each group. One or two sentences are enough.')]},
+      {id:'extension',title:'Extension · choose one useful challenge',minutes:7,html:`<p>If you have not finished both core tests, continue Main 2 first. Otherwise choose <strong>one</strong> of the ten optional challenges. Begin with 1–3 for bounds and boundaries; choose 4–10 for adapting your working program.</p><p>Each challenge starts from the complete donation model in a separate workspace; it will not replace your Main 2 evidence. Read the changed requirement and example test before editing. No lists, functions or WHILE loops are required. You may stop at the end of the lesson and keep an unfinished attempt.</p>`},
+      {id:'pit',title:'Learning Pit Stop · evidence and next step',minutes:4,html:`<p>Return to the same three KSU statements. Identify what you can now show independently, with a model, or not yet. Then choose how each part feels: <strong>new learning, consolidating, treading water, or drowning / needing help</strong>.</p><p>These are not permanent labels or grades. “Needing help” means we should make the next step smaller. Use one specific code line or test result as evidence, then choose a useful next action. You can write instead of explaining aloud.</p>`},
+      {id:'plenary',title:'Plenary · explain your progress',minutes:4,html:`<p>Before looking back at your program, answer the two short exit questions. Use the donation context, not just “because it works”. These answers help your teacher choose the next lesson’s support.</p>`,fields:[field('exitCounter','10 · Explain total_books + books versus target_groups + 1','Which adds a quantity and which counts a qualifying event? Use a group donating 8 books as an example.'),field('exitBounds','11 · Match the Python and pseudocode bounds','OxfordAQA FOR group ← 1 TO 4 includes 4. What Python range matches it, and why?','text')]},
+      {id:'submit',title:'Finish · export and submit',minutes:2,html:`<ol><li>Press <strong>Export PDF</strong> at the top. You can export even if some tasks are unfinished.</li><li>Open the PDF. Check your name, answers, code, actual Shell tests, reflections and any complete screenshots.</li><li>Go to <strong>Teams → Year 10 Computer Science → this lesson’s assignment</strong>. Choose Add work, upload the PDF and any requested .py file, then choose <strong>Turn in</strong>.</li><li>Check that Teams shows your submission. An in-app completion message is separate from Teams submission.</li></ol><p>Use Download notebook backup before changing devices. Your teacher can see saved live answers and run evidence, not private offline notebooks.</p>`}
+    ],extensions,sources:[
+      {title:'OxfordAQA International GCSE Computer Science (9210)',url:'https://www.oxfordaqa.com/qualification/international-gcse-computer-science-9210/',note:'Course scope: algorithms; programming concepts, definite iteration, selection, variables and input/output. Lesson questions are original practice, not past-paper extracts.'},
+      {title:'Python: for statements and range',url:'https://docs.python.org/3/tutorial/controlflow.html#the-range-function'},
+      {title:'Python IDLE: Editor and Shell',url:'https://docs.python.org/3/library/idle.html',note:'This browser version models Run, prompts and Shell inspection. It is not desktop IDLE and does not support tkinter or turtle.'}
     ]
   };
 })();

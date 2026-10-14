@@ -1,164 +1,65 @@
-/* Local CPython/Pyodide execution, always off the page's main thread. */
-import { loadPyodide } from './vendor/python/pyodide.mjs';
-
-const OUTPUT_LIMIT = 12000;
-const CODE_LIMIT = 32000;
-const OUTPUT_LIMIT_MESSAGE = 'Output stopped after 12,000 characters. Check for a print statement that repeats too often.';
-let python = null;
-let current = null;
-let queuedInputs = [];
-let consumedInputs = [];
-let inputIndex = 0;
-let totalOutput = 0;
-let outputLimited = false;
-let echoInputs = true;
-let streamBuffers = { stdout: '', stderr: '' };
-let decoders = { stdout: new TextDecoder(), stderr: new TextDecoder() };
-
-function flush(stream) {
-  const text = streamBuffers[stream];
-  if (text && current !== null) postMessage({ type: 'output', id: current, stream, text });
-  streamBuffers[stream] = '';
+import {loadPyodide} from './vendor/python/pyodide.mjs';
+let python,control,bytes,signal,current=null,request=0,inputs=0,size=0;
+let decoders={stdout:new TextDecoder(),stderr:new TextDecoder()};
+function write(stream,data){const text=decoders[stream].decode(data,{stream:true}),room=Math.max(0,12000-size);size+=text.length;if(current!==null&&room>0&&text)postMessage({type:'output',id:current,stream,text:text.slice(0,room)});if(size>12000&&room>0){signal[0]=2;python.checkInterrupt();}return data.length;}
+function stdin(){
+  if(++inputs>100)throw Error('This run reached the 100-input lesson limit.');
+  const req=++request;Atomics.store(control,1,0);Atomics.store(control,2,current);Atomics.store(control,3,req);Atomics.store(control,0,0);
+  postMessage({type:'input-request',id:current,request:req});
+  while(true){python.checkInterrupt();const state=Atomics.load(control,0);if(state===1&&Atomics.load(control,2)===current&&Atomics.load(control,3)===req){const value=new TextDecoder().decode(bytes.slice(0,Atomics.load(control,1)));Atomics.store(control,0,4);postMessage({type:'input-used',id:current,value});write('stdout',new TextEncoder().encode(value+'\n'));return value;}Atomics.wait(control,0,0,50);}
 }
-
-function flushAll() {
-  flush('stdout');
-  flush('stderr');
-}
-
-function capture(stream, text, stopOnLimit = true) {
-  if (current === null || !text) return;
-  const remaining = Math.max(0, OUTPUT_LIMIT - totalOutput);
-  const accepted = text.slice(0, remaining);
-  totalOutput += accepted.length;
-  streamBuffers[stream] += accepted;
-  if (streamBuffers[stream].includes('\n') || streamBuffers[stream].length >= 512) flush(stream);
-  if (text.length > remaining) {
-    outputLimited = true;
-    flushAll();
-    if (stopOnLimit) {
-      postMessage({ type: 'output-limit', id: current, error: OUTPUT_LIMIT_MESSAGE });
-      throw new Error(OUTPUT_LIMIT_MESSAGE);
-    }
-  }
-}
-
-function writeStream(stream, bytes) {
-  capture(stream, decoders[stream].decode(bytes, { stream: true }));
-  return bytes.length;
-}
-
-// Returning one queued line to CPython preserves the actual built-in input(),
-// including use inside functions. No source rewriting or simulated output.
-function readInput() {
-  flushAll();
-  if (inputIndex >= queuedInputs.length) return null;
-  const value = queuedInputs[inputIndex++];
-  consumedInputs.push(value);
-  postMessage({ type: 'input-used', id: current, value });
-  if (echoInputs) capture('stdout', value + '\n');
-  return value;
-}
-
-const setup = String.raw`
-import builtins as _runner_builtins
-import json as _runner_json
-import linecache as _runner_linecache
-import sys as _runner_sys
-import traceback as _runner_traceback
-
-_runner_standard_streams = (_runner_sys.stdin, _runner_sys.stdout, _runner_sys.stderr)
-
-def _runner_execute(source):
-    namespace = {'__name__': '__main__', '__builtins__': dict(vars(_runner_builtins))}
-    filename = 'student.py'
-    _runner_linecache.cache[filename] = (len(source), None, source.splitlines(True), filename)
-    _runner_sys.stdin, _runner_sys.stdout, _runner_sys.stderr = _runner_standard_streams
+const setup=String.raw`
+import builtins as _b, json as _j, traceback as _tb, linecache as _lc, sys as _sys, code as _code
+_streams = (_sys.stdin, _sys.stdout, _sys.stderr)
+_ns = {'__name__': '__main__', '__builtins__': dict(vars(_b))}
+class _LessonConsole(_code.InteractiveConsole):
+    failed = False
+    def showsyntaxerror(self, filename=None):
+        self.failed = True
+        super().showsyntaxerror(filename)
+    def showtraceback(self):
+        self.failed = True
+        super().showtraceback()
+_console = _LessonConsole(locals=_ns, filename='<Shell>')
+def _execute(source, kind):
+    global _ns, _console
+    _sys.stdin, _sys.stdout, _sys.stderr = _streams
     try:
-        compiled = compile(source, filename, 'exec')
-        exec(compiled, namespace)
+        if kind == 'repl':
+            _console.failed = False
+            more = _console.push(source)
+            return {'ok': not _console.failed, 'more': more, 'error': 'Shell error: see the diagnostic above.' if _console.failed else ''}
+        if kind == 'cancel':
+            _console.resetbuffer()
+            print('KeyboardInterrupt')
+            return {'ok': False, 'stopped': True, 'error': 'Interrupted. Your variables are kept.'}
+        _ns = {'__name__': '__main__', '__builtins__': dict(vars(_b))}
+        _console = _LessonConsole(locals=_ns, filename='<Shell>')
+        _lc.cache['student.py'] = (len(source), None, source.splitlines(True), 'student.py')
+        exec(compile(source, 'student.py', 'exec'), _ns, _ns)
         return {'ok': True}
-    except BaseException as error:
-        name = type(error).__name__
-        line = getattr(error, 'lineno', None)
-        if line is None:
-            frames = _runner_traceback.extract_tb(error.__traceback__)
-            student_frames = [frame for frame in frames if frame.filename == filename]
-            if student_frames:
-                line = student_frames[-1].lineno
-        message = str(error)
-        if isinstance(error, EOFError):
-            explanation = 'The queued input lines ran out. Add one line for every input() call, then run again.'
-        elif isinstance(error, SyntaxError):
-            explanation = getattr(error, 'msg', message)
+    except BaseException as e:
+        line = getattr(e, 'lineno', None)
+        frames = [f for f in _tb.extract_tb(e.__traceback__) if f.filename == 'student.py']
+        if frames: line = frames[-1].lineno
+        if isinstance(e, KeyboardInterrupt):
+            print('\nKeyboardInterrupt')
+        elif isinstance(e, SyntaxError):
+            _sys.stderr.write(''.join(_tb.format_exception_only(type(e), e)))
         else:
-            explanation = message or name
-        prefix = ('Line ' + str(line) + ': ') if line else ''
-        full_traceback = ''.join(_runner_traceback.format_exception(type(error), error, error.__traceback__))
-        return {'ok': False, 'error': prefix + name + ' — ' + explanation,
-                'line': line, 'errorType': name, 'traceback': full_traceback[:12000]}
+            _sys.stderr.write('Traceback (most recent call last):\n')
+            _sys.stderr.write(''.join(_tb.format_list(frames)))
+            _sys.stderr.write(''.join(_tb.format_exception_only(type(e), e)))
+        return {'ok': False, 'error': type(e).__name__ + ': ' + str(e), 'line': line, 'stopped': isinstance(e, KeyboardInterrupt)}
     finally:
-        # A final print(..., end='') may still be buffered by CPython. Flush
-        # before the worker sends its result, including after an exception.
-        for stream in _runner_standard_streams[1:]:
-            try:
-                stream.flush()
-            except Exception:
-                pass
-        _runner_sys.stdin, _runner_sys.stdout, _runner_sys.stderr = _runner_standard_streams
+        for stream in _streams[1:]: stream.flush()
+        _sys.stdin, _sys.stdout, _sys.stderr = _streams
 `;
-
-async function initialise() {
-  try {
-    python = await loadPyodide({ indexURL: new URL('./vendor/python/', import.meta.url).href });
-    python.setStdout({ write: bytes => writeStream('stdout', bytes) });
-    python.setStderr({ write: bytes => writeStream('stderr', bytes) });
-    python.setStdin({ stdin: readInput, autoEOF: true });
-    python.runPython(setup);
-    postMessage({ type: 'ready', version: python.runPython('_runner_sys.version.split()[0]'), engineVersion: python.version });
-  } catch (error) {
-    postMessage({ type: 'init-error', error: String(error?.message || error) });
+self.onmessage=async({data:d})=>{
+  if(d.type==='init'){
+    try{if(!crossOriginIsolated)throw Error('Python worker isolation is unavailable. Refresh this lesson directly in your browser.');control=new Int32Array(d.control);bytes=new Uint8Array(d.bytes);signal=new Uint8Array(d.signal);python=await loadPyodide({indexURL:new URL('./vendor/python/',import.meta.url).href});python.setStdout({write:b=>write('stdout',b)});python.setStderr({write:b=>write('stderr',b)});python.setInterruptBuffer(signal);python.setStdin({stdin,autoEOF:true});python.runPython(setup);postMessage({type:'ready',version:python.runPython('_sys.version.split()[0]')});}catch(e){postMessage({type:'init-error',error:String(e.message||e)});}return;
   }
-}
-
-self.onmessage = ({ data }) => {
-  if (data?.type !== 'run' || !python || current !== null) return;
-  const code = String(data.code || '');
-  if (code.length > CODE_LIMIT) {
-    postMessage({ type: 'done', id: data.id, result: { ok: false, error: 'This editor supports programs up to 32,000 characters.', inputs: [] } });
-    return;
-  }
-  current = data.id;
-  queuedInputs = Array.isArray(data.inputs) ? data.inputs.map(String) : [];
-  consumedInputs = [];
-  inputIndex = 0;
-  totalOutput = 0;
-  outputLimited = false;
-  echoInputs = data.echoInputs !== false;
-  streamBuffers = { stdout: '', stderr: '' };
-  decoders = { stdout: new TextDecoder(), stderr: new TextDecoder() };
-  const started = performance.now();
-  try {
-    // Reset the input stream as well as the namespace: no buffered entries leak
-    // into the next independent classroom run.
-    python.setStdin({ stdin: readInput, autoEOF: true });
-    python.globals.set('_runner_source', code);
-    const result = JSON.parse(python.runPython('_runner_json.dumps(_runner_execute(_runner_source), ensure_ascii=False)'));
-    if (result.traceback) {
-      capture('stderr', result.traceback, false);
-      delete result.traceback;
-    }
-    flushAll();
-    postMessage({ type: 'done', id: current, result: { ...result, inputs: consumedInputs.slice(), outputLimited, durationMs: Math.round(performance.now() - started) } });
-  } catch (error) {
-    flushAll();
-    postMessage({ type: 'done', id: current, result: { ok: false, error: String(error?.message || error), inputs: consumedInputs.slice(), outputLimited, durationMs: Math.round(performance.now() - started) } });
-  } finally {
-    python.globals.delete('_runner_source');
-    current = null;
-    queuedInputs = [];
-    consumedInputs = [];
-  }
+  if(d.type!=='run'||!python||current!==null)return;
+  current=d.id;inputs=size=0;decoders={stdout:new TextDecoder(),stderr:new TextDecoder()};signal[0]=0;
+  try{python.setStdin({stdin,autoEOF:true});python.globals.set('_source',d.code);python.globals.set('_kind',d.kind);const result=JSON.parse(python.runPython('_j.dumps(_execute(_source, _kind))'));postMessage({type:'done',id:current,result});}catch(e){postMessage({type:'done',id:current,result:{ok:false,error:String(e.message||e)}});}finally{python.globals.delete('_source');python.globals.delete('_kind');current=null;}
 };
-
-initialise();
