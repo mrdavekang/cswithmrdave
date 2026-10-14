@@ -1,5 +1,15 @@
 # Year 10 live lesson: Book-Donation Drive
 
+## Required coding videos
+
+- Video 1 (`osLY-6WvJnw`) comes before the Main 1 model and repair.
+- Video 2 (`xy_ZGwhNjk4`) comes before Main 2 Milestone A. Video 3 (`YlBcr7ZddBY`) comes before Milestone B. The same program, source, Shell tests and answers are retained between milestones.
+- Students may pause, replay, scrub and change playback speed. The app credits distinct, continuous played segments, not a clicked checkbox or a seek-to-end event. Completion requires the playthrough to reach the end and cover the video, allowing at most two seconds of player timing tolerance (less for short clips). Skipped sections are identified for replay.
+- Next and outline links cannot bypass the required videos in student mode, including independent practice. Teacher presentation/preview remains unrestricted. A teacher page recall still protects pupil drafts and shows any outstanding prerequisite video before the task.
+- Choose **Work** for individual video watching. Progress is device-saved in Watch/Pause and reaches the live board when normal Work-mode saving is permitted. The teacher sees playback summaries in the class cards and individual view; PDF and notebook backup include playback evidence. Playback is not proof of attention or mastery and this is not an exam lockdown.
+- The main Python page retains cross-origin isolation. A credentialless, same-origin wrapper embeds YouTube without sharing student names, answers, classroom keys or notebook data. Its one public player document is excluded from the lesson's COEP header; no other lesson, worker, permission or database schema is changed. Browsers without credentialless iframe support can use the tracked video window while keeping the lesson open. If YouTube is blocked or embedding is disabled, show an error rather than falsely marking the video complete.
+- Classroom stage IDs and `book-donation-v2` notebook compatibility are unchanged. Video metadata is saved under `_videos` in the existing stage answers, with no new database grants. These normal-interface checks can be manipulated with developer tools and must not be described as secure proctoring.
+
 Static GitHub Pages lesson. No build step or student account signup. The permanent entry update is scoped to this lesson; existing teacher accounts, class ownership and other lessons are unchanged.
 
 ## 60-minute teaching flow
