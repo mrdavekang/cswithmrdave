@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Year 10 OxfordAQA 9210: learn WHILE loops and input validation, one clear step at a time.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script>
+    window.addEventListener('error',function(event){console.error('Lesson error',event.error||event.message);var el=document.getElementById('notice');if(el){el.hidden=false;el.className='notice error';el.textContent='A lesson component could not load. Your saved notebook is kept. Refresh, or tell your teacher: '+String(event.message||'resource unavailable');}});
+    window.addEventListener('unhandledrejection',function(event){console.error('Lesson request',event.reason);var el=document.getElementById('notice');if(el){el.hidden=false;el.className='notice error';el.textContent='This action did not finish. Your saved work is kept. '+String(event.reason&&event.reason.message||event.reason||'Please refresh and try again.');}});
+  </script>
+  <title>WHILE loops · Keep asking until it is valid</title>
+  <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="isolation.js"></script>
+  <script defer src="vendor/codemirror/codemirror.js"></script>
+  <script defer src="vendor/codemirror/mode-python.js"></script>
+  <script defer src="vendor/codemirror/addon-matchbrackets.js"></script>
+  <script defer src="vendor/codemirror/addon-activeline.js"></script>
+  <script defer src="vendor/supabase.js"></script>
+  <script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="config.js"></script><script defer src="lesson.js"></script><script defer src="core.js"></script>
+  <script defer src="python-runtime.js"></script><script defer src="shell-ui.js"></script><script defer src="cloud.js"></script>
+  <script defer src="report.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to current lesson page</a>
+  <header class="topbar"><a class="brand" href="./">TENBY <span>YEAR 10 · COMPUTER SCIENCE</span></a><div class="top-actions"><span id="connection" role="status">Independent practice available</span><button id="export-pdf" class="quiet" disabled>Export PDF</button><button id="teacher-entry" class="quiet">Teacher</button></div></header>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <section id="landing" class="entry">
+    <p class="eyebrow">OXFORDAQA 9210 · 60-MINUTE PROGRAMMING LESSON</p>
+    <h1>Keep asking until<br>it is valid.</h1>
+    <p class="entry-intro">Learn how a <code>WHILE</code> loop repeats, then build a book-donation input check. One clear step at a time.</p>
+    <p>We already used a <code>FOR</code> loop to visit a fixed number of groups. Today, we do not know how many attempts someone will need to enter a valid donation.</p>
+    <form id="entry-form"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required minlength="2" maxlength="60" placeholder="The name your teacher knows"><label for="class-name">Your class</label><input id="class-name" name="class" required maxlength="30" placeholder="For example, 10T"><div class="entry-buttons"><button type="submit">Start with my class</button><button id="independent" type="button" class="secondary">Practise independently</button></div></form>
+    <p class="small">Your teacher approves live access and can see your saved answers, code, run evidence and private help requests. Independent practice stays on this device until you export it. Do not enter personal details or passwords into your code.</p>
+    <p id="waiting-message" class="coach" hidden></p>
+    <div class="entry-route" aria-label="Lesson sequence"><span>Starter</span><span>Types of Learning</span><span>Main 1</span><span>Main 2</span><span>Extension</span><span>Pit Stop</span><span>Plenary</span></div>
+  </section>
+  <section id="login" class="entry" hidden><p class="eyebrow">PRIVATE CLASSROOM CONTROLS</p><h1>Teach the same page.</h1><p>Sign in with your existing approved Classroom account. Preview is available without signing in, but cannot access students or control their devices.</p><form id="login-form"><label for="email">Teacher email</label><input id="email" type="email" autocomplete="username" required><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required><button type="submit">Sign in</button></form><div class="entry-buttons"><button id="preview" class="secondary">Preview all pages</button><button id="back-entry" class="quiet">Back to student entry</button></div></section>
+  <section id="teacher-controls" class="teacher-controls" aria-label="Private teacher controls" hidden></section>
+  <div id="lesson-layout" class="lesson-layout" hidden>
+    <aside class="goals" aria-label="WAGBA and knowledge, skills and understanding"><p class="eyebrow">OUR LEARNING TODAY</p><h2>WHILE loops &amp; validation</h2><h3>WAGBA</h3><p>Control repetition and explain how a program accepts valid input.</p><div id="ksu-goals"></div><h3>Keywords</h3><p class="keywords">condition · iteration · validation · Boolean · boundary · infinite loop</p><h3>Challenge</h3><p>Explain why the boundaries are accepted and why invalid checks use OR.</p></aside>
+    <section class="lesson-column"><nav class="progress-nav" aria-label="Lesson navigation"><div><span id="activity-label"></span><p id="page-position"></p></div><button id="outline-toggle" class="quiet" aria-expanded="false" aria-controls="outline">Lesson outline</button></nav><div id="outline" hidden></div><div class="save-row"><span id="identity"></span><span id="saved-status" role="status"></span></div><div id="class-status" class="class-status" role="status" hidden></div><section id="live-demo" class="live-demo" hidden aria-label="Live teacher demonstration"></section><main id="main" tabindex="-1"></main><nav class="page-footer" aria-label="Page controls"><button id="previous" class="secondary">Back</button><div class="support-buttons"><button id="help" class="quiet">Written help</button><button id="pause-request" class="quiet">I need a pause</button></div><button id="next">Continue</button></nav><div id="private-feedback" class="private-feedback" hidden></div><footer class="notebook-tools"><button id="backup" class="quiet">Download notebook backup</button><label class="file-control">Restore backup<input id="restore" type="file" accept="application/json,.json"></label><button id="change-student" class="quiet">Return to entry</button></footer></section>
+    <aside id="responses" class="responses" aria-label="Private student responses" hidden></aside>
+  </div>
+  <dialog id="support-dialog"><form method="dialog"><button class="dialog-close quiet" aria-label="Close support">Close</button></form><h2>Ask for one small next step.</h2><form id="support-form"><label for="help-note">What would help you now?</label><select id="help-note"><option>I need help reading the condition.</option><option>Please show me which line to change.</option><option>I need help with the Shell or a Python error.</option><option>I would like a quiet pause before continuing.</option><option>Please check my test evidence.</option></select><button type="submit">Send private request</button></form><p class="small">You do not need to explain aloud. If the live connection is unavailable, use Teams chat or your agreed classroom support signal.</p></dialog>
+  <dialog id="image-dialog"><form method="dialog"><button class="quiet">Close image</button></form><img id="large-image" alt=""></dialog>
+</body>
+</html>
