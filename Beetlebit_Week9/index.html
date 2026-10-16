@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#185a51">
+  <meta name="description" content="A small step at a time: build, inspect and program your BEETLE:BIT. Microbit Inventors, Week 9.">
+  <title>BEETLE:BIT · Week 9 Workshop</title>
+  <link rel="icon" href="assets/beetle.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="build-data.js"></script><script defer src="cards.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to learning card</a>
+  <header class="topbar"><button id="brand" aria-label="Workshop home"><span class="brandmark">B:</span><span>BEETLE:BIT<small>MICROBIT INVENTORS · WEEK 09</small></span></button><div class="top-actions"><span id="who"></span><button id="finish" hidden>Finish session</button></div></header>
+  <div class="workbar" id="workbar" hidden><div class="goal"><span class="live-dot"></span><span id="goal">Build, check, make your first move.</span></div><button id="safety-link">Power off unless teacher-led testing</button></div>
+  <main id="main" tabindex="-1"><div id="app"></div></main>
+  <nav id="utilities" aria-label="Workshop tools" hidden><button data-view="hub">My route</button><button data-view="parts">Find a fixing</button><button id="report-tool">Missing or faulty part</button><button data-view="help">I'm stuck</button><button data-view="pack">Save & pack</button></nav>
+  <p id="notice" role="status" aria-live="polite"></p>
+  <dialog id="zoom"><form method="dialog"><button aria-label="Close enlarged image">Close ×</button></form><div id="zoom-body"></div></dialog>
+  <input id="restore-file" type="file" accept="application/json,.json" hidden>
+  <noscript>This workshop needs JavaScript. Ask Mr Kang for the printed booklet; keep your robot power disconnected.</noscript>
+</body>
+</html>
