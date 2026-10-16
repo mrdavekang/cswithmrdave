@@ -4,13 +4,61 @@
   const stages=[["read", "Read first", "先读一读", 4], ["starter", "Do now", "课前练习", 3], ["learning", "Types of Learning", "学习重点", 3], ["inspire", "Main Task 1 · Explore", "主任务 1 · 探索", 11], ["design", "Main Task 2 · Create", "主任务 2 · 创作", 22], ["setup", "Start in MIT", "开始 MIT 项目", 9], ["challenge", "Further challenge", "进一步挑战", 3], ["pitstop", "Learning Pit Stop", "学习加油站", 2], ["finish", "Showcase & save", "展示与保存", 3]];
   const pages=[{"group": "read", "id": "read-welcome", "en": "Your first app idea", "zh": "你的第一个应用创意"}, {"group": "read", "id": "read-tap", "en": "Tap and see", "zh": "点击，看看会发生什么"}, {"group": "starter", "id": "quiz-0", "en": "Quick check 1", "zh": "小检查 1"}, {"group": "starter", "id": "quiz-1", "en": "Quick check 2", "zh": "小检查 2"}, {"group": "starter", "id": "quiz-2", "en": "Quick check 3", "zh": "小检查 3"}, {"group": "learning", "id": "learn-K1", "en": "K · My starting point · 1", "zh": "知识 · 我的起点 · 1"}, {"group": "learning", "id": "learn-K2", "en": "K · My starting point · 2", "zh": "知识 · 我的起点 · 2"}, {"group": "learning", "id": "learn-S1", "en": "S · My starting point · 1", "zh": "技能 · 我的起点 · 1"}, {"group": "learning", "id": "learn-S2", "en": "S · My starting point · 2", "zh": "技能 · 我的起点 · 2"}, {"group": "learning", "id": "learn-U1", "en": "U · My starting point · 1", "zh": "理解 · 我的起点 · 1"}, {"group": "learning", "id": "learn-U2", "en": "U · My starting point · 2", "zh": "理解 · 我的起点 · 2"}, {"group": "inspire", "id": "gallery", "en": "An app idea wall", "zh": "应用创意墙"}, {"group": "inspire", "id": "play", "en": "Try a tiny app", "zh": "试试迷你应用"}, {"group": "inspire", "id": "anatomy", "en": "What makes a clear homepage?", "zh": "怎样的主页更清楚？"}, {"group": "inspire", "id": "notice", "en": "A homepage that makes sense", "zh": "清楚的主页"}, {"group": "inspire", "id": "topic", "en": "What are you into?", "zh": "你对什么感兴趣？"}, {"group": "design", "id": "name", "en": "Give it a name", "zh": "给它起个名字"}, {"group": "design", "id": "purpose", "en": "One thing your app will do", "zh": "应用要做的一件事"}, {"group": "design", "id": "audience", "en": "Who is it for?", "zh": "为谁设计？"}, {"group": "design", "id": "brand", "en": "Make it yours", "zh": "做出你的风格"}, {"group": "design", "id": "method", "en": "Paper or digital?", "zh": "纸上还是数字草图？"}, {"group": "design", "id": "sketch", "en": "Create your homepage", "zh": "创作你的主页"}, {"group": "design", "id": "tap-1", "en": "What does this tap do?", "zh": "这次点击会做什么？"}, {"group": "design", "id": "tap-2", "en": "A second tap", "zh": "第二次点击"}, {"group": "design", "id": "try-home", "en": "Try your planned homepage", "zh": "试试你计划的主页"}, {"group": "setup", "id": "setup-0", "en": "Open MIT’s school-email login", "zh": "打开 MIT 的学校邮箱登录页面"}, {"group": "setup", "id": "setup-1", "en": "Request the email code", "zh": "申请邮箱验证码"}, {"group": "setup", "id": "setup-2", "en": "Enter the code and finish registration", "zh": "输入验证码并完成注册"}, {"group": "setup", "id": "setup-3", "en": "Move past the welcome notice", "zh": "关闭欢迎通知"}, {"group": "setup", "id": "setup-4", "en": "Start a project for your own app", "zh": "为自己的应用新建项目"}, {"group": "setup", "id": "setup-5", "en": "Save your starting project", "zh": "保存起始项目"}, {"group": "challenge", "id": "challenge-choice", "en": "Keep creating", "zh": "继续创作"}, {"group": "challenge", "id": "challenge-work", "en": "Your next screen", "zh": "你的下一个界面"}, {"group": "pitstop", "id": "pit-K", "en": "K · My confidence now", "zh": "知识 · 我现在的信心"}, {"group": "pitstop", "id": "pit-S", "en": "S · My confidence now", "zh": "技能 · 我现在的信心"}, {"group": "pitstop", "id": "pit-U", "en": "U · My confidence now", "zh": "理解 · 我现在的信心"}, {"group": "pitstop", "id": "pit-summary", "en": "Your learning phase", "zh": "你的学习状态"}, {"group": "finish", "id": "showcase", "en": "Your design showcase", "zh": "你的设计展示"}, {"group": "finish", "id": "finish-save", "en": "Save your design", "zh": "保存你的设计"}];
   const checks=[
-    {id:'k1',area:'K',en:'Identify an interface.',zh:'识别什么是界面。',evidence:'Do now 1'},
-    {id:'k2',area:'K',en:'Identify a user event and an app response.',zh:'识别用户事件和应用的回应。',evidence:'Do now 2–3'},
-    {id:'s1',area:'S',en:'Show what happens when a user taps a control.',zh:'展示用户点击控件后会发生什么。',evidence:'Main Task 1'},
-    {id:'s2',area:'S',en:'Create a homepage with two labelled tap targets.',zh:'设计有两个带标签点击项目的主页。',evidence:'Main Task 2'},
-    {id:'u1',area:'U',en:'Explain why a clear control label helps a user.',zh:'解释清楚的控件标签为什么能帮助用户。',evidence:'Do now 4 / Main Task 1'},
-    {id:'u2',area:'U',en:'Connect my app’s content and controls to its audience.',zh:'让应用的内容和控件适合目标用户。',evidence:'Main Task 2'}
-  ];
+  {
+    "id": "k1",
+    "area": "K",
+    "en": "I can point out an app’s interface.",
+    "zh": "我能指出应用的界面。",
+    "hintEn": "Think about the parts of the screen that a person sees and uses.",
+    "hintZh": "想一想：用户看到和使用的是界面的哪些部分？",
+    "evidence": "Do now 1"
+  },
+  {
+    "id": "k2",
+    "area": "K",
+    "en": "I can tell the user’s tap from the app’s response.",
+    "zh": "我能分清用户的点击和应用的回应。",
+    "hintEn": "For example: tap Play → a song starts.",
+    "hintZh": "例如：点击播放 → 歌曲开始。",
+    "evidence": "Do now 2–3"
+  },
+  {
+    "id": "s1",
+    "area": "S",
+    "en": "I can show what happens when someone taps a button.",
+    "zh": "我能展示点击按钮后会发生什么。",
+    "hintEn": "Think about the mini app you tried in Read first.",
+    "hintZh": "想一想你在“先读一读”中试用的迷你应用。",
+    "evidence": "Read first / Main Task 1"
+  },
+  {
+    "id": "s2",
+    "area": "S",
+    "en": "I can sketch a homepage with two clearly labelled buttons.",
+    "zh": "我能画出主页，并为两个按钮写上清楚的文字。",
+    "hintEn": "You will try this in Main Task 2. It is fine if this is your first time.",
+    "hintZh": "你会在主任务 2 中尝试。第一次做也没关系。",
+    "evidence": "Main Task 2"
+  },
+  {
+    "id": "u1",
+    "area": "U",
+    "en": "I can explain why a button needs a clear label.",
+    "zh": "我能解释按钮为什么需要清楚的文字。",
+    "hintEn": "Compare “Go” with “View camera details”. Which tells you what will happen?",
+    "hintZh": "比较“开始”和“查看相机介绍”。哪个能告诉你点击后会发生什么？",
+    "evidence": "Main Task 1"
+  },
+  {
+    "id": "u2",
+    "area": "U",
+    "en": "I can explain how my app helps the people using it.",
+    "zh": "我能解释我的应用如何帮助使用它的人。",
+    "hintEn": "Think about who it is for and what they want to do.",
+    "hintZh": "想一想应用为谁设计，以及他们想做什么。",
+    "evidence": "Main Task 2"
+  }
+];
   const optionIds={'quiz-0':[0,1,2],'quiz-1':[0,1,2],'quiz-2':[0,1,2],notice:['go','detail']};
   function shuffled(values,random=Math.random){
     const order=values.slice();
@@ -39,7 +87,7 @@
     const s=initial();s.optionOrders=restoreOptionOrders(raw.optionOrders);s.migrated=raw.version===1||!!raw.migrated;
     s.student={name:text(raw.student?.name,90),form:text(raw.student?.form,50)};s.joined=!!raw.joined;s.lang=raw.lang==='bi'?'bi':'en';s.guided=!!raw.guided;s.stage=stages.some(x=>x[0]===raw.stage)?raw.stage:'read';s.done=Array.isArray(raw.done)?raw.done.filter(x=>stages.some(y=>x===y[0])):[];
     for(let i=0;i<4;i++)if(Number.isInteger(raw.answers?.[i])&&raw.answers[i]>=0&&raw.answers[i]<3)s.answers[i]=raw.answers[i];s.checked=!!raw.checked;
-    checks.forEach(x=>{if(['secure','focus','untried'].includes(raw.learning?.[x.id]))s.learning[x.id]=raw.learning[x.id];});
+    checks.forEach(x=>{if(['secure','first','focus','untried'].includes(raw.learning?.[x.id]))s.learning[x.id]=raw.learning[x.id];});
     s.slide=raw.version===1?'read-welcome':pages.some(p=>p.id===raw.slide)?raw.slide:'read-welcome';s.maxUnlocked=raw.version===1?0:Math.max(0,Math.min(pages.length-1,Number(raw.maxUnlocked)||0));s.maxUnlocked=Math.max(s.maxUnlocked,pages.findIndex(p=>p.id===s.slide));s.visited=Array.isArray(raw.visited)?raw.visited.filter(x=>pages.some(p=>p.id===x)):[];s.flags=Array.isArray(raw.flags)?raw.flags.filter(x=>pages.some(p=>p.id===x)):[];s.demo=['fashion','gaming','camera','weather','booking','planner'].includes(raw.demo)?raw.demo:'fashion';s.demoTaps=Array.isArray(raw.demoTaps)?raw.demoTaps.filter(x=>typeof x==='string').slice(-20):[];s.notice=text(raw.notice,100);for(let i=0;i<3;i++)s.quizChecked[i]=!!raw.quizChecked?.[i];
     s.setup={route:raw.setup?.route==='existing'?'existing':'new',step:Math.max(0,Math.min(5,Number(raw.setup?.step)||0)),status:['not-started','waiting','ready','help'].includes(raw.setup?.status)?raw.setup.status:'not-started'};
     const pairs=v=>[0,1].map(i=>({action:text(v?.[i]?.action,350),response:text(v?.[i]?.response,700),effect:text(v?.[i]?.effect,30),node:text(v?.[i]?.node,50)}));
@@ -50,7 +98,7 @@
     s.plenary={event:text(raw.plenary?.event,900),reason:text(raw.plenary?.reason,900)};s.updated=text(raw.updated,60);return s;
   }
   function dominance(values){const counts={};values.filter(Boolean).forEach(x=>counts[x]=(counts[x]||0)+1);const max=Math.max(0,...Object.values(counts));return {counts,max,winners:max?Object.keys(counts).filter(x=>counts[x]===max):[],total:values.filter(Boolean).length};}
-  function learningFocus(s){return dominance(checks.filter(c=>s.learning[c.id]==='focus').map(c=>c.area));}
+  function learningFocus(s){return dominance(checks.filter(c=>['first','focus'].includes(s.learning[c.id])).map(c=>c.area));}
   function completeness(s){const d=s.design;return {idea:!!(d.title.trim()&&d.topic.trim()&&d.feature.trim()&&d.audience.trim()),sketch:d.method==='digital'?d.nodes.length>0:!!(d.paper||d.photo),taps:d.pairs.every(p=>p.action.trim()&&p.response.trim())};}
   function canVisit(s,id,teacher=false){const i=pages.findIndex(p=>p.id===id);return i>=0&&(teacher||i<=s.maxUnlocked);}
   function nextPage(s){let i=pages.findIndex(p=>p.id===s.slide)+1;while(s.setup.route==='existing'&&['setup-1','setup-2'].includes(pages[i]?.id))i++;return pages[Math.min(pages.length-1,i)].id;}

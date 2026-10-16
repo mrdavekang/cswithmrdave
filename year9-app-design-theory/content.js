@@ -1,4 +1,9 @@
 window.LessonContent={
+ "learningChoices": {
+  "secure": ["I understand this", "我明白这个"],
+  "first": ["This is new to me", "这是我第一次学习"],
+  "focus": ["I need help understanding this", "我需要帮助才能理解这个"]
+ },
  "wagba": [
   "Explore app ideas, then design your own homepage and show what two taps will do.",
   "探索应用创意，设计自己的主页，并展示两次点击会做什么。"

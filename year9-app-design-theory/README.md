@@ -65,3 +65,7 @@ Motion starts from an action and is finite. Reading, navigation, KSU checks and 
 ## Answer-choice order
 
 The three starter MCQs and the two-choice label check shuffle their answer choices for each new notebook. The order stays fixed on revisit, reload, language change and backup restore. Existing answers retain their meaning because marking and reports use the original answer ID, independently of the displayed position. English and Mandarin remain paired. Confidence scales and other ordered learning controls keep their original order.
+
+## Clear starting-point checks
+
+Each of the six Types of Learning slides opens with the specific “I can…” statement in a large learning card, followed by three plain-language choices: “I understand this”, “This is new to me”, and “I need help understanding this”. Mandarin uses the same meanings. New learning and requests for help contribute to the K/S/U focus counts; neither is an incorrect answer. Missing choices remain “Not selected”. Earlier “Not tried yet” responses are retained separately until the student chooses again. Main reading instructions and question text use larger type; learning choices stack when the available width is narrower.
