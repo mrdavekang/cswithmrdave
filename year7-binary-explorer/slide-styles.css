@@ -19,4 +19,5 @@
 @media(min-width:1500px){.reading p{font-size:22px}.feedback{font-size:18px}.slide-body{gap:35px}.number-path span{font-size:50px;width:90px;height:110px}}
 @media(max-width:1100px){.reading p{font-size:18px}.reading{padding:14px 16px}.feedback{font-size:16px}.answer-actions{margin-top:10px}}
 @media(max-width:750px){.reading p{font-size:17px}.feedback{font-size:16px}.answer-actions button{min-height:44px}.pattern-explanation{font-size:24px}}
+.arcade-card.teacher-hosted{display:flex;flex-direction:column}.teacher-hosted .game-link+.game-link{margin-top:10px}
 @media print{body{background:#fff;color:#000;font-size:11pt;height:auto}#app,dialog,#toast,.skip-link{display:none!important}.print-report{display:block!important}.print-report h1{font-size:22pt}.print-report h2{font-size:14pt;margin-bottom:8px}.report-question{break-inside:avoid;border-bottom:1px solid #888;padding:15px 0}.report-question p{margin:6px 0}@page{size:A4;margin:18mm}}

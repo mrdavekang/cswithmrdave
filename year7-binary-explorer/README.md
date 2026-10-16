@@ -18,6 +18,8 @@ Open `index.html` through GitHub Pages or any static web server. No build step, 
 - Learning Pitstop and plenary
 - Binary Arcade: links to further binary games after the plenary
 
+Binary Arcade also saves the [20-question BlastRoom set](https://blastroom.net/sets/876f142a-4140-4c29-a4b2-50dfe686ad7b) on data, information, bits, bytes and four-bit binary. It is explicitly labelled teacher-hosted: a teacher must start a game and supply the room code. The separate join link does not create a persistent homework room. Independent practice games remain available without a host.
+
 Students answer one question at a time. Feedback and hints help them improve without requiring exact written keywords. English and Mandarin support, touch-friendly controls and visible progress are provided.
 
 Enter `teacher` as the name to preview all lesson pages without a class. Teacher preview has separate local storage; it is not authentication or a teacher monitoring service.

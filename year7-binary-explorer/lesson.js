@@ -39,7 +39,10 @@ window.BINARY_LESSON = {
     {id:'bit-lit',title:'Beat the clock',zhTitle:'挑战计时',name:'Bit & Lit',url:'https://parallaxdepth.itch.io/bit-lit',symbol:'◉ ◉ ◉ ◉',
       instruction:'Choose English. Try the beginner mode first, then Challenge → Easy (4-bit). Tap bulbs to make the target.',zhInstruction:'选择英语。先试初学者模式，再选 Challenge → Easy（4-bit）。点亮灯泡，组成目标数字。'},
     {id:'binary-grid',title:'Solve a bigger puzzle',zhTitle:'解开更大的谜题',name:'Binary Grid Puzzle',url:'https://binary.leonkohli.dev/play/',symbol:'▦',
-      instruction:'Choose the 4 × 4 grid. Flip squares to match the targets for both rows and columns. Extra challenge: more thinking needed.',zhInstruction:'选择 4 × 4 方格。翻转方格，同时满足每行和每列的目标。这是需要更多思考的额外挑战。'}
+      instruction:'Choose the 4 × 4 grid. Flip squares to match the targets for both rows and columns. Extra challenge: more thinking needed.',zhInstruction:'选择 4 × 4 方格。翻转方格，同时满足每行和每列的目标。这是需要更多思考的额外挑战。'},
+    {id:'blastroom',title:'Class quiz with Mr Dave',zhTitle:'和 Dave 老师一起做课堂测验',name:'BlastRoom · 20 questions',url:'https://blastroom.net/sets/876f142a-4140-4c29-a4b2-50dfe686ad7b',symbol:'20',teacherHosted:true,
+      instruction:'Ask Mr Dave to host our data and binary quiz. When your teacher gives you a room code, choose Join the class game and enter the code. This is not a homework room: it needs a teacher to start it.',zhInstruction:'请 Dave 老师主持数据与二进制测验。老师提供房间代码后，点击“加入课堂游戏”并输入代码。这不是可以随时进入的作业房间，需要老师先开始游戏。',
+      linkLabel:'View our question set ↗',zhLinkLabel:'查看我们的题目集 ↗',joinUrl:'https://blastroom.app/join'}
   ],
   slides: [
     {id:'welcome',stage:0,title:'Your mission starts here',visual:'hero',kind:'choice',
