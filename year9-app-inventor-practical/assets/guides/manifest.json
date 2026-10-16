@@ -1,0 +1,255 @@
+[
+  {
+    "id": "01",
+    "stage": "Start here",
+    "title": "Build the first version of YOUR app",
+    "mandarin_title": "制作你自己的应用程序第一个版本",
+    "file": "guides/01.png",
+    "page": 1,
+    "alt": "Build the first version of YOUR app / 制作你自己的应用程序第一个版本",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "02",
+    "stage": "Quick start - only if you missed theory",
+    "title": "Choose something you care about",
+    "mandarin_title": "如果你还没有设计草图，先选一个自己感兴趣的主题",
+    "file": "guides/02.png",
+    "page": 2,
+    "alt": "Choose something you care about / 如果你还没有设计草图，先选一个自己感兴趣的主题",
+    "type": "Bilingual teaching card"
+  },
+  {
+    "id": "03",
+    "stage": "MIT setup",
+    "title": "Sign in with your MIT account",
+    "mandarin_title": "使用你的 MIT 账户登录",
+    "file": "guides/03.png",
+    "page": 3,
+    "alt": "Sign in with your MIT account / 使用你的 MIT 账户登录",
+    "type": "Annotated teaching card using genuine MIT screenshot crops",
+    "action_url": "https://login.appinventor.mit.edu/login/"
+  },
+  {
+    "id": "04",
+    "stage": "MIT setup",
+    "title": "Download and import the starter",
+    "mandarin_title": "下载并导入起始项目",
+    "file": "guides/04.png",
+    "page": 4,
+    "alt": "Download and import the starter / 下载并导入起始项目",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "05",
+    "stage": "MIT setup",
+    "title": "Choose MyApp_W9.aia",
+    "mandarin_title": "选中刚下载的起始项目文件",
+    "file": "guides/05.png",
+    "page": 5,
+    "alt": "Choose MyApp_W9.aia / 选中刚下载的起始项目文件",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "06",
+    "stage": "Main Task 1 - personalise your homepage",
+    "title": "Find the parts before you edit",
+    "mandarin_title": "先认识页面，再开始修改",
+    "file": "guides/06.png",
+    "page": 6,
+    "alt": "Find the parts before you edit / 先认识页面，再开始修改",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "07",
+    "stage": "Main Task 1 - personalise your homepage",
+    "title": "Give your app a title",
+    "mandarin_title": "修改应用首页的标题",
+    "file": "guides/07.png",
+    "page": 7,
+    "alt": "Give your app a title / 修改应用首页的标题",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "08",
+    "stage": "Main Task 1 - personalise your homepage",
+    "title": "Say what your app is about",
+    "mandarin_title": "用简短文字介绍你的应用",
+    "file": "guides/08.png",
+    "page": 8,
+    "alt": "Say what your app is about / 用简短文字介绍你的应用",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "09",
+    "stage": "Main Task 1 - personalise your homepage",
+    "title": "Choose an image for your topic",
+    "mandarin_title": "为你的主题选择图片",
+    "file": "guides/09.png",
+    "page": 9,
+    "alt": "Choose an image for your topic / 为你的主题选择图片",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "10",
+    "stage": "Main Task 1 - personalise your homepage",
+    "title": "Give the button a clear action",
+    "mandarin_title": "让按钮文字告诉用户能做什么",
+    "file": "guides/10.png",
+    "page": 10,
+    "alt": "Give the button a clear action / 让按钮文字告诉用户能做什么",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "11",
+    "stage": "Main Task 2 - make the button respond",
+    "title": "Read the button program",
+    "mandarin_title": "阅读按钮程序：事件发生后，会有什么响应？",
+    "file": "guides/11.png",
+    "page": 11,
+    "alt": "Read the button program / 阅读按钮程序：事件发生后，会有什么响应？",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "12",
+    "stage": "Main Task 2 - make the button respond",
+    "title": "Write the message your button will show",
+    "mandarin_title": "修改点击按钮后显示的信息",
+    "file": "guides/12.png",
+    "page": 12,
+    "alt": "Write the message your button will show / 修改点击按钮后显示的信息",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "13",
+    "stage": "Main Task 2 - live test",
+    "title": "Connect to MIT App Inventor Companion",
+    "mandarin_title": "连接 Companion，运行你的应用",
+    "file": "guides/13.png",
+    "page": 13,
+    "alt": "Connect to MIT App Inventor Companion / 连接 Companion，运行你的应用",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "14",
+    "stage": "Main Task 2 - live test",
+    "title": "Enter YOUR current code",
+    "mandarin_title": "输入你自己屏幕上的六位连接码",
+    "file": "guides/14.png",
+    "page": 14,
+    "alt": "Enter YOUR current code / 输入你自己屏幕上的六位连接码",
+    "type": "Annotated teaching card using genuine MIT screenshot crops",
+    "reference_source": "https://www.youtube.com/watch?v=u0ry5xwtR9Q"
+  },
+  {
+    "id": "15",
+    "stage": "Main Task 2 - live test",
+    "title": "Tap, read, reset",
+    "mandarin_title": "点击按钮，阅读结果，再重置",
+    "file": "guides/15.png",
+    "page": 15,
+    "alt": "Tap, read, reset / 点击按钮，阅读结果，再重置",
+    "type": "Bilingual teaching card"
+  },
+  {
+    "id": "16",
+    "stage": "Keep your work",
+    "title": "Save the project in your MIT account",
+    "mandarin_title": "把项目保存到你的 MIT 账户",
+    "file": "guides/16.png",
+    "page": 16,
+    "alt": "Save the project in your MIT account / 把项目保存到你的 MIT 账户",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "17",
+    "stage": "Keep your work",
+    "title": "Download YOUR edited project",
+    "mandarin_title": "下载你修改后的项目备份",
+    "file": "guides/17.png",
+    "page": 17,
+    "alt": "Download YOUR edited project / 下载你修改后的项目备份",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "18",
+    "stage": "Keep your work",
+    "title": "Reopen and check the same project",
+    "mandarin_title": "重新打开同一个项目，确认作品还在",
+    "file": "guides/18.png",
+    "page": 18,
+    "alt": "Reopen and check the same project / 重新打开同一个项目，确认作品还在",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "A1",
+    "stage": "Access help - new account only",
+    "title": "Request a code using school email",
+    "mandarin_title": "新用户：用学校邮箱申请验证码",
+    "file": "guides/A1.png",
+    "page": 19,
+    "alt": "Request a code using school email / 新用户：用学校邮箱申请验证码",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "A2",
+    "stage": "Access help - new account only",
+    "title": "Use the email code and finish setup",
+    "mandarin_title": "输入邮件验证码，完成账户设置",
+    "file": "guides/A2.png",
+    "page": 20,
+    "alt": "Use the email code and finish setup / 输入邮件验证码，完成账户设置",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "I1",
+    "stage": "iPad help - files",
+    "title": "Find and select the .aia file",
+    "mandarin_title": "iPad：查找并选择 .aia 项目文件",
+    "file": "guides/I1.png",
+    "page": 21,
+    "alt": "Find and select the .aia file / iPad：查找并选择 .aia 项目文件",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "I2",
+    "stage": "iPad help - editing",
+    "title": "Edit one field at a time",
+    "mandarin_title": "iPad：每次专注修改一个输入框",
+    "file": "guides/I2.png",
+    "page": 22,
+    "alt": "Edit one field at a time / iPad：每次专注修改一个输入框",
+    "type": "Annotated teaching card using genuine MIT screenshot crops"
+  },
+  {
+    "id": "I3",
+    "stage": "iPad help - one device",
+    "title": "Use the editor and Companion on one iPad",
+    "mandarin_title": "只用一台 iPad：同时保留编辑器和 Companion",
+    "file": "guides/I3.png",
+    "page": 23,
+    "alt": "Use the editor and Companion on one iPad / 只用一台 iPad：同时保留编辑器和 Companion",
+    "type": "Annotated teaching card using genuine MIT screenshot crops",
+    "reference_source": "https://www.youtube.com/watch?v=u0ry5xwtR9Q"
+  },
+  {
+    "id": "H1",
+    "stage": "Help - use the row that matches your screen",
+    "title": "Find your next useful action",
+    "mandarin_title": "遇到问题时，按画面找到下一步",
+    "file": "guides/H1.png",
+    "page": 24,
+    "alt": "Find your next useful action / 遇到问题时，按画面找到下一步",
+    "type": "Bilingual teaching card"
+  },
+  {
+    "id": "R",
+    "stage": "Reference",
+    "title": "Sources and what has been checked",
+    "mandarin_title": "资料来源与检查范围",
+    "file": "guides/R.png",
+    "page": 25,
+    "alt": "Sources and what has been checked / 资料来源与检查范围",
+    "type": "Bilingual teaching card"
+  }
+]
