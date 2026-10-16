@@ -61,3 +61,7 @@ Taps now show the response on the example phone and in the event–response pane
 - Student work: newly added sketch elements receive a short placement cue, and planned-tap previews use an icon matching the chosen effect.
 
 Motion starts from an action and is finite. Reading, navigation, KSU checks and Pit Stop remain visually stable. Reduced-motion preferences disable movement and particles while preserving the visible saved state, selections and text feedback. No audio, new external requests or extra student questions were added.
+
+## Answer-choice order
+
+The three starter MCQs and the two-choice label check shuffle their answer choices for each new notebook. The order stays fixed on revisit, reload, language change and backup restore. Existing answers retain their meaning because marking and reports use the original answer ID, independently of the displayed position. English and Mandarin remain paired. Confidence scales and other ordered learning controls keep their original order.

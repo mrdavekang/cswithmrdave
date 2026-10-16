@@ -11,7 +11,21 @@
     {id:'u1',area:'U',en:'Explain why a clear control label helps a user.',zh:'解释清楚的控件标签为什么能帮助用户。',evidence:'Do now 4 / Main Task 1'},
     {id:'u2',area:'U',en:'Connect my app’s content and controls to its audience.',zh:'让应用的内容和控件适合目标用户。',evidence:'Main Task 2'}
   ];
-  function initial(){return {version:VERSION,student:{name:'',form:''},joined:false,slide:'read-welcome',maxUnlocked:0,visited:[],flags:[],quizChecked:{},demo:'fashion',demoTaps:[],notice:'',migrated:false,lang:'en',guided:false,stage:'read',done:[],answers:{},checked:false,learning:{},setup:{route:'new',step:0,status:'not-started'},investigate:{source:'own',app:'',pairs:[{action:'',response:''},{action:'',response:''}],label:'',reason:''},reset:{index:0,answers:{}},design:{step:0,title:'',topic:'',audience:'',feature:'',method:'',logo:'✦',theme:'mint',nodes:[],photo:'',paper:false,pairs:[{action:'',response:'',effect:'',node:''},{action:'',response:'',effect:'',node:''}],review:[false,false],changeArea:'',change:''},challenge:{choice:'',note:'',nodes:[],photo:'',paper:false},pitstop:{},plenary:{event:'',reason:''},updated:''};}
+  const optionIds={'quiz-0':[0,1,2],'quiz-1':[0,1,2],'quiz-2':[0,1,2],notice:['go','detail']};
+  function shuffled(values,random=Math.random){
+    const order=values.slice();
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    return order;
+  }
+  function restoreOptionOrders(raw,random=Math.random){
+    const orders={};
+    for(const [id,ids] of Object.entries(optionIds)){
+      const saved=raw?.[id];
+      orders[id]=Array.isArray(saved)&&saved.length===ids.length&&new Set(saved).size===ids.length&&saved.every(value=>ids.includes(value))?saved.slice():shuffled(ids,random);
+    }
+    return orders;
+  }
+  function initial(){return {version:VERSION,optionOrders:restoreOptionOrders(),student:{name:'',form:''},joined:false,slide:'read-welcome',maxUnlocked:0,visited:[],flags:[],quizChecked:{},demo:'fashion',demoTaps:[],notice:'',migrated:false,lang:'en',guided:false,stage:'read',done:[],answers:{},checked:false,learning:{},setup:{route:'new',step:0,status:'not-started'},investigate:{source:'own',app:'',pairs:[{action:'',response:''},{action:'',response:''}],label:'',reason:''},reset:{index:0,answers:{}},design:{step:0,title:'',topic:'',audience:'',feature:'',method:'',logo:'✦',theme:'mint',nodes:[],photo:'',paper:false,pairs:[{action:'',response:'',effect:'',node:''},{action:'',response:'',effect:'',node:''}],review:[false,false],changeArea:'',change:''},challenge:{choice:'',note:'',nodes:[],photo:'',paper:false},pitstop:{},plenary:{event:'',reason:''},updated:''};}
   const text=(v,n=2500)=>typeof v==='string'?v.slice(0,n):'';
   function guidedName(name){
     const value=text(name).normalize('NFKC').toLowerCase().replace(/[^a-z]/g,'');
@@ -22,7 +36,7 @@
   function cleanNode(v){if(!v||!['text','button','image','input','menu'].includes(v.type))return null;return {id:text(v.id,50)||'node',type:v.type,image:/^data:image\/(png|jpeg|webp);base64,/.test(v.image||'')&&v.image.length<900000?v.image:'',width:[25,39,82].includes(Number(v.width))?Number(v.width):82,art:['fashion','gaming','camera','weather','booking','planner'].includes(v.art)?v.art:'',label:text(v.label,120),x:Math.max(0,Math.min(100-([25,39,82].includes(Number(v.width))?Number(v.width):82),Number(v.x)||0)),y:Math.max(0,Math.min(v.type==='image'?68:86,Number(v.y)||0))};}
   function restore(raw){
     if(!raw||![1,VERSION].includes(raw.version)||typeof raw!=='object')throw new Error('This is not a backup for this lesson.');
-    const s=initial();s.migrated=raw.version===1||!!raw.migrated;
+    const s=initial();s.optionOrders=restoreOptionOrders(raw.optionOrders);s.migrated=raw.version===1||!!raw.migrated;
     s.student={name:text(raw.student?.name,90),form:text(raw.student?.form,50)};s.joined=!!raw.joined;s.lang=raw.lang==='bi'?'bi':'en';s.guided=!!raw.guided;s.stage=stages.some(x=>x[0]===raw.stage)?raw.stage:'read';s.done=Array.isArray(raw.done)?raw.done.filter(x=>stages.some(y=>x===y[0])):[];
     for(let i=0;i<4;i++)if(Number.isInteger(raw.answers?.[i])&&raw.answers[i]>=0&&raw.answers[i]<3)s.answers[i]=raw.answers[i];s.checked=!!raw.checked;
     checks.forEach(x=>{if(['secure','focus','untried'].includes(raw.learning?.[x.id]))s.learning[x.id]=raw.learning[x.id];});
@@ -41,5 +55,5 @@
   function canVisit(s,id,teacher=false){const i=pages.findIndex(p=>p.id===id);return i>=0&&(teacher||i<=s.maxUnlocked);}
   function nextPage(s){let i=pages.findIndex(p=>p.id===s.slide)+1;while(s.setup.route==='existing'&&['setup-1','setup-2'].includes(pages[i]?.id))i++;return pages[Math.min(pages.length-1,i)].id;}
   const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const API={VERSION,KEY,stages,pages,checks,canVisit,nextPage,initial,restore,dominance,learningFocus,completeness,guidedName,escape};if(typeof module==='object'&&module.exports)module.exports=API;else root.LessonCore=API;
+  const API={VERSION,KEY,stages,pages,checks,canVisit,nextPage,initial,restore,restoreOptionOrders,dominance,learningFocus,completeness,guidedName,escape};if(typeof module==='object'&&module.exports)module.exports=API;else root.LessonCore=API;
 })(typeof window==='undefined'?globalThis:window);
