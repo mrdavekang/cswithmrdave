@@ -1,0 +1,111 @@
+VISUAL PLACEMENT — YEAR 6 WEEK 9 — 16 OCTOBER 2026
+
+30 core cards. Essential pictures are inline, not image popups or Show guide /
+Show result buttons. This is the current app map; the original visual-pack
+provenance JSON remains a historical source record.
+
+STARTER
+mission: original classroom scene beside a ready/help communication problem.
+meetButtons: teaching/buttons.svg, newly captured blank two-button starter.
+  Arrows identify A left/B right. No extra A+B or lit prediction answer.
+predictA: large authentic A/Happy code; no simulator result yet.
+
+TYPES OF LEARNING / WAGBA
+Today's goal and example come FIRST, followed directly by the Understand / New /
+Need help self-check and next-step feedback. Original Knowledge/Skills/Understanding
+school poster crops remain inline BELOW these, as supporting content (v1.3.1).
+The next card recalls choices and lets the pupil choose a focus.
+
+MAIN TASK 1
+launch: prominent real MakeCode action; open editor, keep tab, return for guidance.
+simulator: teaching/editor-areas.png, focused real three-part orientation crop.
+input: teaching/press-a.svg, actual A button; practical action and typed observation.
+process: same authentic A stack models input -> instruction -> LED output.
+output: teaching/led-output.svg frames real LED grid; one recognition MCQ.
+predictB: authentic B/Confused stack; pupil types before testing.
+testStarter: teaching/press-b.svg, actual B button; recalls prediction and asks
+  what happened in the pupil's simulator. Static example is labelled.
+change: teaching/choose-icon.svg, 1 small triangle in blue show icon; 2 menu heart.
+  Top two complete menu rows shown so the relevant controls remain readable.
+changeTest: annotated blank board, not a fabricated picture of the pupil's program.
+  Test changed B first, then retained A.
+changeReason: unchanged A code; short explanation about separate instructions.
+
+MAIN TASK 2
+purpose: three named scenario selectors. The selected short story appears above its
+  new black-and-white illustration and two authentic A/B display captures, inline.
+  Classroom Happy/Confused, library Heart/No, exhibition Heart/East arrow. Figure
+  labels connect each output to a specific message; agreed meanings are explicit.
+plan: chosen A/B examples stay beside the pupil's own messages. Live guidance
+  distinguishes typing a plan from changing MakeCode code.
+build: own messages beside the icon-menu method for classroom/library. Exhibition
+  uses scenarios/arrow-block.png, the real B/show arrow East stack, plus specific
+  Basic-category and direction-selection steps. No extra A+B input is shown.
+designSymbol: optional teaching/draw-symbol.svg; 1 Basic, 2 show leds, 3 editable
+  grid. Corrected frame encloses all five columns. H is not compulsory.
+testCreate: visible A/B location guide; own plan, separate test results, test diary.
+  Static example outputs are never presented as pupil evidence.
+
+LEARNING PITSTOP — IMMEDIATELY AFTER MAIN TASK 2
+Original school four-phase poster inline; short live phase descriptions; own focus
+recalled; supportive next step. A learning moment is not a label for a person.
+
+PLENARY / REFLECTION
+Own agreed messages; explain one input/output to a visitor. Oral option remains.
+
+SAVE & SHARE
+save: teaching/save-project.svg, 1 project-name box, 2 disk Save icon.
+reopenHome: teaching/import-home.svg and import-file.svg, numbered 1 and 2.
+reopenFile: teaching/choose-file.svg, 3 Choose File, 4 Go ahead.
+  Reopen steps are for next time/home, not compulsory re-importing today.
+submit: live file silhouettes distinguish PDF report, real HEX program and
+  progress JSON. Submit PDF + HEX to Teams; retain JSON for continuation.
+
+EXTENSIONS
+1: annotated LED-grid method + genuine H result; make a different useful symbol.
+2: real connected B/picture/pause/picture code + both observed output frames.
+3: real A+B/clear screen stack + teaching/reset-button.svg; arrow points to the
+   extra A+B simulator button BELOW B. Show a picture, clear it, recheck A/B.
+All have visible instructions and a pupil-designed variant, not just a challenge
+statement. No code/result images are hidden behind reveal buttons.
+
+PROVENANCE AND ACCESS
+All code, editor and simulator pixels come from Microsoft MakeCode screenshots.
+Only frames, numbers and arrows were added deterministically. School posters are
+reused, not regenerated. Existing classroom artwork remains the original AI image.
+New v1.4.0 scenario illustrations use built-in image generation, then visual review;
+all micro:bit outputs/code remain authentic MakeCode screenshots. Source originals,
+prompts and anatomy/physics review are in the source project's SCENARIO-VISUALS.txt.
+See assets/teaching/README.txt and the historical assets/visual-provenance.json.
+
+Live instructions/captions support English + Mandarin or Korean. Authentic English
+UI labels remain unchanged. Images are static guides; programming is in MakeCode.
+Longer/bilingual cards scroll internally; navigation stays outside that area.
+
+CHECKS
+Correct target; no overlapping callouts; no premature prediction result; readable
+crop; no horizontal overflow; prominent coding action; honest pupil evidence.
+REAL BOARD FOLLOW-THROUGH — v1.5.3
+After testCreate, before pitstop/plenary/reflection: hardware card, five image steps.
+1 hardware/usb.png: actual MakeCode Connect Device USB wizard screenshot.
+2 hardware/connect-menu.svg: actual three-dot Download menu, numbered 1/2.
+3 hardware/dialog.png: actual MakeCode Pair window, purple Pair button.
+4 hardware/select-device.svg: official example browser device chooser;
+  select only the micro:bit, then Connect.
+5 hardware/send-code.svg: official example connected window, Download callout.
+All are screenshot-based, not AI-generated UI. Source and labels are recorded in
+assets/hardware/README.txt. Text instructions are live with Mandarin and Korean.
+Examples do not claim the pupil's hardware is connected. Physical button A/B
+tests and resend-after-change instructions accompany the last step.
+
+CABLE DEMONSTRATION — v1.6.2
+Hardware card substep 0, before the five screenshot steps and reflections:
+YouTube HL6S4-QJr2c, Microbit - First Steps, Dave Leemino, about 21 seconds.
+Purpose: recognise the micro-USB board end and the USB-A computer end shown.
+Live pointing prompt plus English/Mandarin/Korean summary, no extra MCQ.
+Explicit limit: the clip does not show pairing or sending a program.
+Privacy-enhanced inline player, autoplay off, creator credit, watch-on-YouTube
+fallback. Source and analysis saved outside public folder in VIDEO-REVIEW.txt.
+Three random early/middle/late targets were reviewed, with actual frame samples
+5.000, 8.464 and 19.044 seconds. QA frame/contact sheets are NOT delivery assets.
+

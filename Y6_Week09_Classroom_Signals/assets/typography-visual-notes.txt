@@ -1,0 +1,14 @@
+LARGER CLASSROOM EXAMPLES — 15 October 2026
+
+code-a-large.jpg and code-b-large.jpg are new screenshots of the real MakeCode
+Blocks workspace, using the existing verified Classroom Signal Starter:
+https://makecode.microbit.org/#pub:38075-59035-40567-08101
+
+The simulator was hidden, the workspace zoom increased, and Format Code used to
+fit the same two stacks visibly. No program instructions were changed. Each crop
+includes the complete event and nested icon block, with a small background margin.
+A = Happy. B = Confused. These are static guide images, not live simulators.
+
+They replace the smaller code crops on the prediction/process/check-A cards so
+the enlarged examples remain clearer. Original screenshots are retained.
+No generated imitation blocks, new AI images, or GPT Sites updates were used.
