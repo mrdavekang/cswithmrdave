@@ -47,3 +47,17 @@ The lesson adapts creative ideation, manageable features and attention to user n
 - [MIT Designer and Blocks](https://appinventor.mit.edu/explore/designer-blocks)
 
 The gallery illustrations and phone mock-ups were created for this lesson. Setup uses genuine, previously reviewed MIT Neo screenshots. MIT public login content specifies CC BY-SA 4.0. Raleway uses the included SIL Open Font License. No private pupil work, test exports or account credentials belong in this public lesson folder.
+
+## Visible simulation feedback
+
+Taps now show the response on the example phone and in the event–response panel:
+
+- Fashion saving: a brief heart pop and floating hearts settle into a saved state. Tap again to remove the favourite.
+- Camera favourites: a star appears or is removed.
+- Browsing and details: example cards are revealed; gaming comparison places two controllers side by side.
+- Weather: sample city choices change the visible temperature; rain is a brief cue only for a rainy sample forecast. These are not live readings.
+- Booking: choosing a sample time highlights it and shows a check. No booking is made.
+- Planner: a real ten-second demonstration countdown supports pause, resume, reset and restart; the ring follows the remaining time. It pauses when leaving the slide, changing example or hiding the page.
+- Student work: newly added sketch elements receive a short placement cue, and planned-tap previews use an icon matching the chosen effect.
+
+Motion starts from an action and is finite. Reading, navigation, KSU checks and Pit Stop remain visually stable. Reduced-motion preferences disable movement and particles while preserving the visible saved state, selections and text feedback. No audio, new external requests or extra student questions were added.

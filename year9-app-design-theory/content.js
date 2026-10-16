@@ -449,8 +449,8 @@ window.LessonContent={
    ],
    "responses": [
     [
-     "A page shows outfit pictures, colours and sizes.",
-     "新页面显示服装图片、颜色和尺码。"
+     "An outfit gallery appears with two sample looks.",
+     "出现穿搭画廊，显示两个示例造型。"
     ],
     [
      "A heart appears: this look is saved.",
@@ -523,8 +523,8 @@ window.LessonContent={
    ],
    "responses": [
     [
-     "A camera page opens with sample pictures and facts.",
-     "打开相机页面，显示样片和资料。"
+     "A camera details card opens.",
+     "打开相机介绍卡片。"
     ],
     [
      "A star marks this camera as a favourite.",
@@ -638,8 +638,8 @@ window.LessonContent={
      "示例计时器从“就绪”变成“计时中”。"
     ],
     [
-     "A sample timetable opens with today’s lessons.",
-     "打开示例时间表，显示今天的课程。"
+     "A sample timetable opens.",
+     "打开示例时间表。"
     ]
    ]
   }
