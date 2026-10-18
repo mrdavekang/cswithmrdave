@@ -1,0 +1,13 @@
+{
+  "name": "01 Memory Crew - Working Demonstration",
+  "description": "A playable Year 8 memory game demonstrating ordered list data and indexed retrieval.",
+  "dependencies": {
+    "device": "*"
+  },
+  "files": [
+    "main.blocks",
+    "main.ts",
+    "engine.ts"
+  ],
+  "preferredEditor": "tsprj"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "02 Memory Crew - Student Starter",
+  "description": "A runnable Year 8 starter: edit the three route values, replace the empty answer with indexed retrieval, then change the B update.",
+  "dependencies": {
+    "device": "*"
+  },
+  "files": [
+    "main.blocks",
+    "main.ts",
+    "engine.ts"
+  ],
+  "preferredEditor": "tsprj"
+}
