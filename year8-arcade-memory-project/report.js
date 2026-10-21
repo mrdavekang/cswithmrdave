@@ -3,6 +3,7 @@
 'use strict';let exporting=false;
 const app=()=>window.MemoryApp;
 const labels={choice:'Response',r0:'Clue 1 / index 0',r1:'Clue 2 / index 1',r2:'Clue 3 / index 2',direction:'B replacement direction',g0:'Knowledge',g1:'Skills',g2:'Understanding',feeling:'Learning state',test0:'Changed-route test',test1:'Wrong-direction test',observation:'Teacher observation requested',cartridge:'Arcade cartridge saved separately',caption:'Caption / code excerpt',challenge:'Challenge result',opened:'Editor link opened at',editor:'Chosen editor'};
+Object.assign(labels,{videoVersion:'Video edition',position:'Last video position (seconds)',duration:'Video duration (seconds)',startedAt:'Video first played at',reachedEndAt:'Video end reached at',completionMethod:'End check method'});
 function display(c,k,v){if(k==='choice')return c.options?.[Number(v)]??v;if(k==='challenge')return ['Built and tested successfully','Attempted; still improving','Not attempted yet'][Number(v)]??v;return typeof v==='boolean'?(v?'Yes':'No'):String(v);}
 function heading(){const A=app(),s=A.state,e=A.escape;return `<h1>Memory Crew · Year 8</h1><p><strong>${e(s.name)} · ${e(s.cls)}</strong> | ${e(s.editor==='blocks'?'Blocks':'Arcade Python')} | ${new Date().toLocaleDateString()}</p>`;}
 function blocks(){const A=app(),L=A.lesson,s=A.state,e=A.escape;
