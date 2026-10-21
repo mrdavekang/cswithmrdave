@@ -4,7 +4,7 @@ A buildless, 60-minute introduction to a real Excel workbook. No Python, formula
 
 ## Open and deploy
 
-Serve this folder on a static web host, or place its contents in a GitHub Pages subfolder. Keep `assets/` and `downloads/` beside `index.html`. No build or package installation is needed. A local HTTP server is recommended over `file://`, especially on iPads.
+Serve this folder on a static web host, or place its contents in a GitHub Pages subfolder. Keep `assets/`, `downloads/` and `videos/` beside `index.html`. No build or package installation is needed. A local HTTP server is recommended over `file://`, especially for video subtitles and iPads.
 
 For a local preview: `python3 -m http.server 8823` from this folder, then open the printed local address. Another device cannot access the laptop's `127.0.0.1` address; use the deployed school-approved URL for pupils.
 
@@ -29,6 +29,29 @@ The supplied ZIP is GitHub-ready, but creating it does not push to the user's Gi
 ## Teacher preview
 
 Enter `teacher` as the name, case-insensitive. No class is required. Every stage opens immediately, in a separate local preview record. Next also allows previewing cards without entering pupil answers; merely previewing a card does not complete it. Use a different test-pupil name to test pupil validation. This is a convenience for lesson review, not authentication or a protected teacher dashboard.
+
+## Narrated lesson videos
+
+Six local MP4s contain the teacher's English narration, quiet original sound effects, and English / Simplified Mandarin subtitle tracks. External WebVTT captions are also supplied, with an always-visible subtitle selector in each player. Videos never autoplay. Native controls allow pause, seeking and full screen; `playsinline` supports staying on the lesson page on iPad. Completed guides collapse to Watch again so the activity stays the main focus.
+
+| Card | Video | Requirement |
+|---|---|---|
+| Welcome | Our Eco-Budget mission (3:34) | Not mandatory: pupils can continue without playing it |
+| Do now: tiny grid warm-up | Guide 1: Find a cell (0:48) | Required on laptop and iPad before the grid activity |
+| Main task 2: open workbook | Guide 2: Open starter (1:02) | Required for the laptop route |
+| Main task 2: own copy | Guide 4: Give the workbook a home (1:04) | Required for the laptop route |
+| Main task 2: first B2 edit | Guide 6: Edit and confirm (1:00) | Required for the laptop route |
+| Main task 2: save check | Guide 8: Save and reopen (1:16) | Required for the laptop route |
+
+Pupils first see the required video alone, with a clear next action. Once the player reaches the end, Start activity is enabled and reveals the original activity. This does **not** demand uninterrupted playback or a particular wall-clock viewing time. Seeking to the final moment counts, as requested. An `ended` event or a seek/playback position within the final fraction of a second records completion. It does not prove attention, comprehension or full-length viewing. Existing answer checks still require an attempted response and feedback, not a perfect answer.
+
+The four laptop demonstrations are genuine Excel-for-web guides, not iPad footage. On the iPad route those four cards retain the written iPad-app instructions and a visible explanation that iPad videos are pending. Pupils are not blocked by missing files or forced to watch an inappropriate laptop guide. Do not replace this note with simulated iPad footage.
+
+Video position, version, end status, completion method and activity-unlock status save per local pupil profile and in JSON backups. A refresh resumes progress; completed guides do not need repeating. Earlier backups remain compatible. Stage navigation and restored older progress cannot bypass an uncompleted required video. Choosing a different device applies the appropriate guide requirements. Teacher preview bypasses gates without completing any pupil record.
+
+Video help offers retry, a separate player and an explicit **teacher-confirmed classroom viewing** route for playback/access problems. It requires a teacher confirmation checkbox and is logged as `teacher-alternative`, not as a player end event. Like the teacher-preview shortcut, this is a local classroom convenience, not authenticated access control. It prevents technical failures from permanently trapping pupils. There is no central watching dashboard or secure exam proctoring.
+
+Deploy all six MP4 files, the six posters and the twelve `.vtt` files under `videos/`. No Korean subtitle option or track is included. No pupil records, audio editing files, Blender projects or private screenshots belong in the public lesson folder.
 
 ## Real Excel workbook
 
