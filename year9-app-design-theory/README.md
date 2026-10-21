@@ -69,3 +69,7 @@ The three starter MCQs and the two-choice label check shuffle their answer choic
 ## Clear starting-point checks
 
 Each of the six Types of Learning slides opens with the specific “I can…” statement in a large learning card, followed by three plain-language choices: “I understand this”, “This is new to me”, and “I need help understanding this”. Mandarin uses the same meanings. New learning and requests for help contribute to the K/S/U focus counts; neither is an incorrect answer. Missing choices remain “Not selected”. Earlier “Not tried yet” responses are retained separately until the student chooses again. Main reading instructions and question text use larger type; learning choices stack when the available width is narrower.
+
+## Tablet font rendering
+
+Use full Unicode Raleway regular and bold fonts with separate static 400/700 CSS faces. The previous bold file was a PDF subset with only a Macintosh character map; iPad browsers could omit letters in headings, labels and buttons. Both installed faces now cover the same 936 Unicode characters, with Arial and Chinese system-font fallbacks. Versioned stylesheet, report and font URLs refresh cached assets without changing the notebook storage key or student work. The downloadable HTML report uses the same two font faces.
