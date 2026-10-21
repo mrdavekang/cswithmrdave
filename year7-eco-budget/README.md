@@ -32,7 +32,7 @@ Enter `teacher` as the name, case-insensitive. No class is required. Every stage
 
 ## Narrated lesson videos
 
-Six local MP4s contain the teacher's English narration, quiet original sound effects, and English / Simplified Mandarin subtitle tracks. External WebVTT captions are also supplied, with an always-visible subtitle selector in each player. Videos never autoplay. Native controls allow pause, seeking and full screen; `playsinline` supports staying on the lesson page on iPad. Completed guides collapse to Watch again so the activity stays the main focus.
+Six local MP4s contain the teacher's English narration, quiet original sound effects, and English / Simplified Mandarin subtitle tracks. External WebVTT captions are also supplied, with an always-visible subtitle selector in each player. **English + Mandarin is the default:** each cue shows English above Simplified Mandarin at the same time. English-only, Mandarin-only and Off remain available. One combined native caption track avoids overlapping independent tracks and also works with native full-screen video. Existing profiles switch to the bilingual default once; subsequent choices are remembered, without resetting answers or video end checks. Videos never autoplay. Native controls allow pause, seeking and full screen; `playsinline` supports staying on the lesson page on iPad. Completed guides collapse to Watch again so the activity stays the main focus.
 
 | Card | Video | Requirement |
 |---|---|---|
@@ -51,7 +51,7 @@ Video position, version, end status, completion method and activity-unlock statu
 
 Video help offers retry, a separate player and an explicit **teacher-confirmed classroom viewing** route for playback/access problems. It requires a teacher confirmation checkbox and is logged as `teacher-alternative`, not as a player end event. Like the teacher-preview shortcut, this is a local classroom convenience, not authenticated access control. It prevents technical failures from permanently trapping pupils. There is no central watching dashboard or secure exam proctoring.
 
-Deploy all six MP4 files, the six posters and the twelve `.vtt` files under `videos/`. No Korean subtitle option or track is included. No pupil records, audio editing files, Blender projects or private screenshots belong in the public lesson folder.
+Deploy all six MP4 files, the six posters and the eighteen `.vtt` files under `videos/`. No Korean subtitle option or track is included. No pupil records, audio editing files, Blender projects or private screenshots belong in the public lesson folder.
 
 ## Real Excel workbook
 
