@@ -60,3 +60,7 @@ Single-iPad import, touch editing and simultaneous browser/Companion use still n
 Private raw captures, test-account exports, learner test records, QA outputs and delivery ZIPs are kept outside this public lesson folder.
 
 This is prepared for the repository's static/GitHub Pages workflow. No commit, push, publication or Teams post is performed by saving this lesson.
+
+## Tablet font rendering
+
+The regular and bold Raleway files use full Unicode character maps and separate static 400/700 CSS faces. The former bold file was a PDF subset with only a Macintosh character map, causing missing letters on iPad browsers. Versioned stylesheet and font URLs refresh cached assets; Arial and Chinese system fonts provide fallbacks. The learning record shares these fonts. This change preserves lesson content, the browser storage key and saved student progress.
