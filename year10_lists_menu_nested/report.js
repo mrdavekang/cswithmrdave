@@ -58,6 +58,8 @@
       text('KSU: '+p.ksu+' | Specification: '+p.syllabus.join(', ')+' | '+(statusLabels[r?.status]||'Not visited'),{size:8.5,color:[88,101,93],gap:3});
       if(p.prompt)text('Task: '+p.prompt,{size:10,bold:true});
       if(r?.visitedAt&&p.context)text('Context: '+p.context,{size:9.5});
+      if(r?.visitedAt&&p.requirements)text('Requirements:\n'+p.requirements.map((v,i)=>(i+1)+'. '+v).join('\n'),{size:9.5});
+      if(r?.visitedAt&&(p.test||p.exampleInputs)){const inputs=p.test?.inputs||p.exampleInputs;const lines=p.test?.lines||p.exampleOutput;text('Expected inputs: '+(inputs.length?inputs.join(' -> '):'None')+'\nExpected printed output:\n'+lines.join('\n'),{mono:true,size:9});}
       if(r?.visitedAt&&p.code){text('Question code',{size:9.5,bold:true});text(p.code,{mono:true,size:9.5});}
       if(r?.visitedAt&&p.image)text('Visual reference: '+p.image.alt,{size:9.5});
       if(p.kind==='info'){text(r?.visitedAt?'Reading page visited. Visiting is not proof of understanding.':'Reading page not visited.',{size:9.5});if(p.reading)text(p.reading,{size:9});}
@@ -69,6 +71,7 @@
         else if(!['code','test'].includes(p.kind))text('No response saved.');
         if(r.submittedAnswer&&r.answer!==r.submittedAnswer)text('The current response was edited after its last check; it is an unchecked draft.',{size:9.5});
         if(r.evidence)text('Student evidence / note: '+r.evidence);
+        if(r.supportLevel)text('Student-reported support: '+({independent:'completed independently',hint:'used a written hint',model:'followed a worked example'}[r.supportLevel]||r.supportLevel)+'. This is separate from correctness.',{size:9.5});
         if(r.hintUsed)text('Written hint or scaffold used. This is support, not a deduction.',{size:9});
         if(r.help)text('Help request: '+r.help,{size:9.5});
         if(r.attempts?.length){text('Submitted attempts (in order)',{bold:true,size:9.5});for(let i=0;i<r.attempts.length;i++){const a=r.attempts[i];text((i+1)+'. '+readable(p,a.answer)+' ['+(a.marked?(a.correct?'checked correct':'checked; revise'):'not automatically marked')+']',{size:9.5});}}
