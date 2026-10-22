@@ -2,6 +2,11 @@ YEAR 8 PYTHON LISTS — RESCUE KIT
 ==============================
 
 START
+Breast Cancer Awareness Day theme: pink-theme.css supplies the blush/rose palette
+and a small vector ribbon. It changes presentation only; tracking, activities,
+saved work and feedback meanings are unchanged. Remove its stylesheet link and
+the awareness labels in index.html when returning to the standard presentation.
+
 Extract the complete ZIP. Open index.html in a modern browser, or upload this
 folder unchanged to a static host such as GitHub Pages. No build step is needed.
 Prefer a hosted link for a class: browser storage and workers are more reliable
