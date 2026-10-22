@@ -1,48 +1,34 @@
 WEBVTT
 
-00:00:00.410 --> 00:00:04.315
-Guide 6. Make and confirm an edit on the
-laptop.
+00:00:00.410 --> 00:00:04.315 position:50% size:94% align:center
+<c.caption-en>Guide 6. Make and confirm an edit on the laptop.</c>
 
-00:00:04.330 --> 00:00:06.775
-Let's make our first change together.
+00:00:04.330 --> 00:00:06.775 position:50% size:94% align:center
+<c.caption-en>Let's make our first change together.</c>
 
-00:00:06.790 --> 00:00:13.495
-The starter has 30 cups, but our pretend
-class has 28 students.
+00:00:06.790 --> 00:00:13.495 position:50% size:94% align:center
+<c.caption-en>The starter has 30 cups, but our pretend class has 28 students.</c>
 
-00:00:13.510 --> 00:00:17.835
-We're going to change the cups quantity to
-28. First I'll find the row label Reusable
-cups
+00:00:13.510 --> 00:00:17.835 position:50% size:94% align:center
+<c.caption-en>We're going to change the cups quantity to 28. First I'll find the row label Reusable cups</c>
 
-00:00:17.850 --> 00:00:24.975
-and find the Quantity column. The cell I
-need is B2. I'll select it and check the
-address box says B2.
+00:00:17.850 --> 00:00:24.975 position:50% size:94% align:center
+<c.caption-en>and find the Quantity column. The cell I need is B2. I'll select it and check the address box says B2.</c>
 
-00:00:24.990 --> 00:00:30.515
-Now, with the cell selected, I'll type 28 to
-replace 30. Then I'll press
+00:00:24.990 --> 00:00:30.515 position:50% size:94% align:center
+<c.caption-en>Now, with the cell selected, I'll type 28 to replace 30. Then I'll press</c>
 
-00:00:30.530 --> 00:00:35.675
-Enter to confirm my change. Now the
-selection might move to another cell.
+00:00:30.530 --> 00:00:35.675 position:50% size:94% align:center
+<c.caption-en>Enter to confirm my change. Now the selection might move to another cell.</c>
 
-00:00:35.690 --> 00:00:41.545
-I still need to look back at B2 and check
-its content. There it is: 28.
+00:00:35.690 --> 00:00:41.545 position:50% size:94% align:center
+<c.caption-en>I still need to look back at B2 and check its content. There it is: 28.</c>
 
-00:00:41.560 --> 00:00:45.200
-I've changed the quantity, not the label
-Reusable cups.
+00:00:41.560 --> 00:00:45.200 position:50% size:94% align:center
+<c.caption-en>I've changed the quantity, not the label Reusable cups.</c>
 
-00:00:45.215 --> 00:00:52.135
-Now you try. Change B2 to 28, confirm the
-edit and check the cell again.
+00:00:45.215 --> 00:00:52.135 position:50% size:94% align:center
+<c.caption-en>Now you try. Change B2 to 28, confirm the edit and check the cell again.</c>
 
-00:00:52.150 --> 00:00:58.800
-When you're sure B2 shows 28, return to the
-web page and select I checked B2. Continue.
-The next cards will guide your other
-changes.
+00:00:52.150 --> 00:00:58.800 position:50% size:94% align:center
+<c.caption-en>When you're sure B2 shows 28, return to the web page and select I checked B2. Continue. The next cards will guide your other changes.</c>
