@@ -19,15 +19,18 @@ window.ListsReport = (() => {
     add('p','WAGBA: We are getting better at using Python lists to store, display and update related values.');
     add('p','Knowledge: lists store related values; elements have indexes.\nSkills: create, print, read and update a list.\nUnderstanding: indexes start at 0; an update replaces rather than adds an element.\nKeywords: list, element, index, string, assignment, update.\nChallenge: repair a list update and explain the correct element.');
     add('p','This report records attempts and support, not an automatically awarded grade. Open reflections and explanations require teacher judgement.');
+    add('p',`Guidance at export: ${state.guidance==='independent'?'Independent':'Steps and starter gaps'}. Language and guidance can change without restricting challenge access.\nSix core coding practices; fifteen further challenges. Unattempted challenges are not failures or missing compulsory work.`);
     add('h2','Completion summary');
     for(const [id,title]of LESSON.stages){const group=LESSON.cards.filter(c=>c.stage===id&&c.type!=='review');if(!group.length)continue;const attempted=group.filter(c=>state.responses[c.id]?.checkedAt).length;add('p',`${title}: ${attempted}/${group.length} cards attempted${group.every(c=>!state.responses[c.id]?.checkedAt)?' — Not completed':''}`);}
     add('p','Teams submission: '+(state.teamsSubmitted?'Student confirmed Turn in at '+new Date(state.teamsSubmittedAt).toLocaleString():'Not yet confirmed by the student. The app cannot verify Teams.'));
     for(const card of LESSON.cards){
       if(card.type==='review')continue;const r=state.responses[card.id]||{};
+      if(card.tier&&card.tier!=='core'&&!r.checkedAt&&!r.code&&!r.helpRequested){add('p',card.title+' — Not attempted (challenge bank).');continue;}
       // Keep a question heading with its task and response, rather than stranding
       // a heading or a single status line at a page boundary.
       if(currentBody.scrollHeight>650)newPage();
       add('h2',card.title);add('p','Status: '+label(r.status));chunks('p','Task: '+english(card.question));
+      if(r.previousEdition)add('p','An earlier draft/attempt was retained from the previous version of this question. Re-check against this revised task.');
       if(state.language!=='en'&&card.question?.[state.language])chunks('p',card.question[state.language]);
       if(card.code&&card.type!=='coding'){add('h3','Given code');chunks('pre',card.code,950);}
       if(card.prefix)chunks('pre','Supplied starting data:\n'+card.prefix,950);
@@ -39,12 +42,16 @@ window.ListsReport = (() => {
         chunks('p','Response: '+(answer||'No goals selected'));
       }
       if(r.feedback)chunks('p','Feedback: '+r.feedback.message);
+      if(state.language!=='en'&&r.feedback?.support?.[state.language])chunks('p',r.feedback.support[state.language]);
       if(r.hintShown||r.helpRequested)add('p',(r.hintShown?'Hint opened: Yes. ':'')+(r.helpRequested?'Help requested: '+new Date(r.helpRequested).toLocaleString():''));
       const attempts=r.attempts||[];if(attempts.length){add('h3',`Attempt history (${attempts.length})`);for(const [index,a]of attempts.entries()){
         add('p',`Attempt ${index+1} · ${new Date(a.time).toLocaleString()} · ${a.ok?'Check met':'Review needed'}`);
         if(a.code)chunks('pre',a.code,950);if(a.stdout)chunks('pre','Output:\n'+a.stdout,950);if(a.error)chunks('p','Error: '+a.error);
         if(a.answer!==undefined){let answer=a.answer;if(card.type==='choice')answer=english(card.options[a.answer]);else if(Array.isArray(a.answer))answer=a.answer.map(i=>english(card.options?.[i])||i).join('; ');chunks('p','Answer: '+String(answer));}
         if(a.message)chunks('p',a.message);
+        if(a.guidance)add('p',`Support used: ${a.guidance}; hints opened: ${a.hints||0}.`);
+        if(!a.edition&&r.previousEdition)add('p','Earlier-version attempt: requirements may differ from this revised task.');
+        for(const t of a.tests||[]){chunks('p',`Published data test ${t.test}: ${t.ok?'Check met':'Review needed'}`);chunks('pre','Starting data:\n'+t.input+'\nExpected:\n'+t.expected+'\nActual:\n'+(t.actual||'(no output)')+(t.error?'\nError: '+t.error:''),950);}
       }}
       if(card.evidence&&evidence){add('h3','Uploaded evidence');const img=document.createElement('img');img.alt=evidence.caption||'Student screenshot';await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=evidence.data;});currentBody.append(img);if(currentBody.scrollHeight>900){img.remove();newPage();currentBody.append(img);}chunks('p','Caption: '+(evidence.caption||'(no caption)'));}
     }
