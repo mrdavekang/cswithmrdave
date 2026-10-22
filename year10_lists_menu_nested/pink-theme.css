@@ -1,0 +1,76 @@
+/* Breast Cancer Awareness Day · presentation only; no tracking/control changes. */
+:root {
+  --ink:#351c2b;
+  --muted:#6d4a5d;
+  --green:#9f245d; /* Existing accent token, intentionally rose for this theme. */
+  --light:#fce4ef;
+  --line:#e8c9d8;
+  --paper:#fffafd;
+  --amber:#872045;
+  --soft:#fff1f7;
+  --danger:#9a1744;
+}
+body { background:var(--soft); }
+.topbar { background:#ffe3ef; border-bottom-color:#e6b6ce; flex-wrap:wrap; }
+.brand,h1,h2 { color:#7e174a; }
+.brand span { color:#713e59; }
+.awareness-label {
+  display:inline-block;
+  padding:5px 13px;
+  border:1px solid #dda9c3;
+  border-radius:100px;
+  background:#fff5fa;
+  color:#82194e;
+  font-size:12px;
+  font-weight:750;
+  line-height:1.5;
+}
+main,.records-page,#outline,.option,.secondary { background:var(--paper); }
+main { box-shadow:0 3px 15px #82234d08; }
+button { background-color:var(--green); }
+.secondary { color:var(--ink); border-color:var(--line); }
+.quiet,.extension-menu button { background:transparent; color:var(--green); }
+.quiet:hover { background:var(--light); }
+input,textarea,select { background:#fffafd; border-color:#b9809c; color:var(--ink); }
+:focus-visible { outline-color:#861650; }
+input { accent-color:var(--green); }
+.notice,.hint,.phase-evidence { background:#ffe6f0; border-color:#deabc2; }
+.notice.error,.top-actions [data-problem=true] { color:var(--danger); }
+.feedback.retry { background:#fff0f5; border-color:#b52d5d; }
+.instruction { border-left-color:#c479a1; }
+p code,li code { background:#f8dce9; }
+.code-sample,.numbered-code,.expected-run pre,.test-spec,.records-page pre {
+  background:#fff2f8;
+  color:var(--ink);
+  border-color:var(--line);
+}
+.numbered-code .ln { color:#795769; }
+.numbered-code li.current { background:#f7cfe1; }
+.test-spec { border-left-color:#c479a1; }
+.ide { border-color:#ce9ab3; }
+.ide-toolbar,.shell-heading { background:#f9d9e8; }
+.CodeMirror,.shell-log { background:#fffbfd; color:#351c2b; }
+.CodeMirror-gutters { background:#fff0f7; border-right-color:var(--line); }
+.CodeMirror-linenumber { color:#795769; }
+.CodeMirror-activeline-background { background:#fce5f0; }
+.CodeMirror-selected { background:#edbad1; }
+.CodeMirror-focused .CodeMirror-selected { background:#edbad1; }
+.CodeMirror-cursor { border-left-color:#82194e; }
+.cm-s-default .cm-keyword,.cm-s-default .cm-builtin { color:#8b1c62; }
+.cm-s-default .cm-string,.cm-s-default .cm-string-2 { color:#a32552; }
+.cm-s-default .cm-number,.cm-s-default .cm-atom { color:#7b2d65; }
+.cm-s-default .cm-comment { color:#725365; }
+.cm-s-default .cm-def,.cm-s-default .cm-property { color:#7c2456; }
+.cm-s-default .cm-variable,.cm-s-default .cm-operator { color:#35202c; }
+.shell-status { background:#fff0f7; }
+.shell-input { background:transparent; }
+dialog { background:var(--paper); border-color:#ce9ab3; }
+dialog::backdrop { background:#49102d70; }
+.visual img { border:1px solid var(--line); }
+@media(max-width:800px) {
+  .awareness-label { font-size:11px; padding:4px 10px; }
+  .topbar { gap:8px 12px; }
+}
+@media print {
+  body,main { background:white; color:#351c2b; }
+}

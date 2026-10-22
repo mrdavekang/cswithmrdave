@@ -24,7 +24,7 @@
     const margin=16,width=178,bottom=278;let y=20;
     function newPage(){doc.addPage();y=20;}
     function ensure(h){if(y+h>bottom)newPage();}
-    function text(value,{size=10.5,bold=false,mono=false,gap=3,color=[31,43,35]}={}){
+    function text(value,{size=10.5,bold=false,mono=false,gap=3,color=[53,28,43]}={}){
       doc.setFont(mono?'courier':bodyFont,bold?'bold':'normal');doc.setFontSize(size);doc.setTextColor(...color);
       const lineHeight=size*.3528*1.48;
       const paragraphs=printable(value).split('\n');
@@ -33,9 +33,9 @@
         for(const line of lines){ensure(lineHeight);doc.text(line,margin,y);y+=lineHeight;}
       }y+=gap;
     }
-    function heading(label){ensure(18);y+=4;text(label,{size:15,bold:true,color:[0,92,63],gap:4});}
-    function rule(){ensure(5);doc.setDrawColor(203,216,207);doc.line(margin,y,194,y);y+=7;}
-    text('TENBY · YEAR 10 COMPUTER SCIENCE',{size:10,bold:true,color:[0,92,63]});
+    function heading(label){ensure(18);y+=4;text(label,{size:15,bold:true,color:[145,30,83],gap:4});}
+    function rule(){ensure(5);doc.setDrawColor(232,201,216);doc.line(margin,y,194,y);y+=7;}
+    text('TENBY · YEAR 10 COMPUTER SCIENCE',{size:10,bold:true,color:[145,30,83]});
     text('Lists, traversal and nested menus',{size:21,bold:true,gap:6});
     text(n.name+' | '+n.className,{size:14,bold:true});
     text('Exported: '+new Date().toLocaleString('en-GB',{timeZone:'Asia/Kuala_Lumpur'})+' (Malaysia)',{size:9});
@@ -55,7 +55,7 @@
       const r=n.pages[p.id];if(p.optional&&!r)continue;
       if(group!==p.group){if(y>35)newPage();group=p.group;heading(L.groups.find(g=>g.id===p.group)?.name||p.group);}
       ensure(25);text(p.title,{size:12,bold:true,gap:2});
-      text('KSU: '+p.ksu+' | Specification: '+p.syllabus.join(', ')+' | '+(statusLabels[r?.status]||'Not visited'),{size:8.5,color:[88,101,93],gap:3});
+      text('KSU: '+p.ksu+' | Specification: '+p.syllabus.join(', ')+' | '+(statusLabels[r?.status]||'Not visited'),{size:8.5,color:[109,74,93],gap:3});
       if(p.prompt)text('Task: '+p.prompt,{size:10,bold:true});
       if(r?.visitedAt&&p.context)text('Context: '+p.context,{size:9.5});
       if(r?.visitedAt&&p.requirements)text('Requirements:\n'+p.requirements.map((v,i)=>(i+1)+'. '+v).join('\n'),{size:9.5});
@@ -106,7 +106,7 @@
     if(n.feedback.length){newPage();heading('Private teacher feedback');for(const f of n.feedback)text(f.text+'\n'+f.at,{size:10});}
     heading('Study references');
     for(const source of L.sources){text(source.title,{size:9.5,bold:true});if(source.note)text(source.note,{size:9});if(source.url){ensure(8);doc.setFont(bodyFont,'normal');doc.setFontSize(9);doc.setTextColor(0,92,63);doc.textWithLink('Open reference',margin,y,{url:source.url});y+=8;}}
-    const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFont(bodyFont,'normal');doc.setFontSize(8);doc.setTextColor(100,110,103);doc.text('Lists and menus · '+n.name+' · '+i+' / '+pages,margin,289);}
+    const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFont(bodyFont,'normal');doc.setFontSize(8);doc.setTextColor(110,82,97);doc.text('Lists and menus · '+n.name+' · '+i+' / '+pages,margin,289);}
     const filename='Y10_LISTS_'+C.safeName(n.name)+'_'+C.safeName(n.className)+'_'+new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kuala_Lumpur'})+'.pdf';
     doc.save(filename);onStatus('PDF saved. Open it, then attach and Turn in separately in Teams.');return {filename,pages};
   }
