@@ -10,7 +10,7 @@
   </script>
   <title>Lists and menus · Visit, change and repeat</title>
   <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
-  <link rel="stylesheet" href="styles.css?v=records-20261022">
+  <link rel="stylesheet" href="styles.css?v=preview-20261023">
   <link rel="stylesheet" href="pink-theme.css?v=awareness-20261023">
   <script defer src="isolation.js"></script>
   <script defer src="vendor/codemirror/codemirror.js"></script>
@@ -20,7 +20,7 @@
   <script defer src="vendor/jspdf.umd.min.js"></script>
   <script defer src="config.js"></script><script defer src="lesson.js?v=records-20261022"></script><script defer src="core.js?v=records-20261022"></script>
   <script defer src="python-runtime.js"></script><script defer src="shell-ui.js?v=records-20261022"></script><script defer src="records-cloud.js?v=records-20261022"></script>
-  <script defer src="report.js?v=awareness-20261023"></script><script defer src="app.js?v=records-20261022"></script>
+  <script defer src="report.js?v=awareness-20261023"></script><script defer src="app.js?v=preview-20261023"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to current lesson page</a>
@@ -32,10 +32,12 @@
     <p class="entry-intro">Help the library organise its donated books. Read one explanation and tackle one question at a time.</p>
     <p>Week 9 · Session 3. Use familiar <code>FOR</code> and <code>WHILE</code> loops in a new setting. Written examples, line pointers and quiet help are available throughout.</p>
     <form id="entry-form" onsubmit="return false"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required minlength="2" maxlength="60" placeholder="The name your teacher knows"><label for="class-name">Your class</label><input id="class-name" name="class" required pattern="10[A-Za-z0-9 -]{0,28}" title="Enter your Year 10 class, for example 10T" maxlength="30" placeholder="For example, 10T"><div class="entry-buttons"><button type="submit" disabled>Loading lesson…</button></div></form>
+    <p><button id="teacher-preview" type="button" class="secondary" disabled>Teacher preview · no login</button></p>
     <p class="small">Your lesson answers, short-paused code drafts, attempts, Shell inputs and outputs, reflections and screenshots are saved privately for your teacher to review. No account or teacher admission is needed. Use the same name and class on this browser to resume. Names are self-entered, not verified logins; another device starts a separate record.</p>
-    <p class="small">If offline, keep this browser’s data: changes wait here until school saving reconnects. Check the save indicator before closing. Do not enter passwords or private personal information in your answers or code. Teacher preview: enter Teacher as your name.</p>
+    <p class="small">If offline, keep this browser’s data: changes wait here until school saving reconnects. Check the save indicator before closing. Do not enter passwords or private personal information in your answers or code. Teacher preview opens all pages without answers or sign-in; it does not record pupil work or grant access to private records.</p>
     <div class="entry-route" aria-label="Lesson sequence"><span>Starter</span><span>Types of Learning</span><span>Main 1</span><span>Main 2</span><span>Extension</span><span>Pit Stop</span><span>Plenary</span></div>
   </section>
+  <section id="preview-navigation" class="preview-navigation" aria-label="Teacher preview navigation" hidden><div class="preview-intro"><strong>Teacher preview · no login</strong><p>All pages are open. Skip questions or jump to any activity, including extensions. This rehearsal is not saved as student work.</p></div><div class="preview-jump"><label for="preview-page">Jump to page</label><select id="preview-page"></select><button id="preview-go">Go to page</button><button id="preview-exit" class="secondary">Exit teacher preview</button></div></section>
   <div id="lesson-layout" class="lesson-layout" hidden>
     <aside class="goals" aria-label="WAGBA and knowledge, skills and understanding"><p class="eyebrow">OUR LEARNING TODAY</p><h2>Lists &amp; nested menus</h2><h3>WAGBA</h3><p>Use list positions accurately and explain how nested loops organise a menu.</p><div id="ksu-goals"></div><h3>Keywords</h3><p class="keywords">list · element · index · update · traversal · nested iteration</p><h3>Challenge</h3><p>Keep a changed title when the menu repeats. Explain the separate jobs of WHILE and FOR.</p></aside>
     <section class="lesson-column"><nav class="progress-nav" aria-label="Lesson navigation"><div><span id="activity-label"></span><p id="page-position"></p></div><button id="outline-toggle" class="quiet" aria-expanded="false" aria-controls="outline">Lesson outline</button></nav><div id="outline" hidden></div><div class="save-row"><span id="identity"></span><span id="saved-status" role="status"></span></div><main id="main" tabindex="-1"></main><nav class="page-footer" aria-label="Page controls"><button id="previous" class="secondary">Back</button><div class="support-buttons"><button id="help" class="quiet">Written help</button><button id="pause-request" class="quiet">I need a pause</button></div><button id="next">Continue</button></nav><footer class="notebook-tools"><button id="backup" class="quiet">Download notebook backup</button><label class="file-control">Restore backup<input id="restore" type="file" accept="application/json,.json"></label><button id="change-student" class="quiet">Return to entry</button></footer></section>

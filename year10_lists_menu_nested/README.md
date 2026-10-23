@@ -8,7 +8,9 @@ Enter Name and Class, then Start lesson. Work opens immediately and saves on the
 
 The loading gate prevents the entry form sending names in URL query strings before JavaScript loads. Existing Teams links, including old `classId`/`room` query parameters, still open this same self-paced lesson; those parameters no longer select a live room.
 
-Enter Teacher as the name (with a Year 10 class) to preview every page without recording pupil work. This is not authentication and grants no access to pupil records. The separate **Teacher records** page is `records.html`; sign in with the existing verified teacher account to review privately. No live controls remain on that page. Refresh records manually; do not project private pupil records.
+Choose **Teacher preview · no login** on the landing page to open every page without answering, including all optional extensions. Use **Jump to page**, select a page, then **Go to page**; Continue and Back do not require answers in preview. **Exit teacher preview** returns to student entry. Preview uses a separate local rehearsal notebook and never records a pupil session. Entering Teacher as the name still works.
+
+Bookmark `?preview=1` to open teacher preview directly, or `?preview=1&page=m2-build` to open a specific page. The old `?teacher=1` convenience route also opens preview, not a login screen. This is not authentication: anyone with access to the app can use preview. It grants no access to pupil records. The separate **Teacher records** page is `records.html`; sign in with the existing verified teacher account to review privately. No live controls remain on that page. Refresh records manually; do not project private pupil records.
 
 ## Sixty-minute learning route
 

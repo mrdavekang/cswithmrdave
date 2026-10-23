@@ -11,6 +11,7 @@
   let activeRun=null,navigating=0,exporting=false;
   const editors=new Map();
   if(window.ResizeObserver)new ResizeObserver(()=>document.documentElement.style.setProperty('--lesson-bar-height',Math.ceil($('.topbar').getBoundingClientRect().height)+'px')).observe($('.topbar'));
+  if(window.ResizeObserver)new ResizeObserver(()=>document.documentElement.style.setProperty('--preview-bar-height',Math.ceil($('#preview-navigation').getBoundingClientRect().height)+'px')).observe($('#preview-navigation'));
   const pythonBusy=()=>[...editors.values()].some(b=>b.busy);
   function notice(message,kind=''){const n=$('#notice');n.textContent=message;n.className='notice '+kind;n.hidden=!message;}
   function saveKey(name,className,mode){return L.id+':'+mode+':'+name.trim().toLowerCase()+':'+className.trim().toLowerCase();}
@@ -61,6 +62,7 @@
     const p=page(current),siblings=L.pages.filter(x=>x.group===p.group&&!x.optional);
     $('#activity-label').textContent=group(p.group).name;$('#page-position').textContent=p.optional?'Optional challenge · return to the extension menu when ready':'Step '+(siblings.findIndex(x=>x.id===current)+1)+' of '+siblings.length+' in this activity';
     $('#identity').textContent=role==='preview'?'Teacher preview · no pupil tracking':notebook.name+' · '+notebook.className;
+    if(role==='preview')$('#preview-page').value=current;
     renderGoals(p);const prev=prevId(),next=nextId();$('#previous').disabled=!prev||!accessible(prev)||pythonBusy();
     $('#next').disabled=!next||!accessible(next)||pythonBusy()||!(role==='preview'||answered(p));
     $('#next').textContent=p.optional?'Return to extensions':!next?'End of lesson':'Continue';
@@ -220,6 +222,7 @@
     for(const b of editors.values()){const active=page(current)?.workspace===b.workspace;b.cm.setOption('readOnly',!edit||!active);b.shell.setEditable(edit&&active);b.root.querySelector('.run-code').disabled=!edit||!!activeRun||b.busy;b.root.querySelector('.stop-code').disabled=!b.busy;}
     $('#previous').disabled=pythonBusy()||!prevId()||!accessible(prevId());$('#next').disabled=pythonBusy()||!nextId()||!accessible(nextId())||!(role==='preview'||answered(page(current)));
     $('#change-student').disabled=pythonBusy();$('#restore').disabled=pythonBusy();
+    $('#preview-page').disabled=$('#preview-go').disabled=$('#preview-exit').disabled=pythonBusy();
   }
   async function navigate(id,{force=false}={}){
     if(!page(id)||!notebook)return;if(!force&&!accessible(id)){notice('Complete or flag the current question first.');return;}
@@ -254,10 +257,16 @@
     notebook.name=name;notebook.className=className;notebook.role=role;current=page(notebook.stage)?notebook.stage:'ready';
     await ListsRecords.start(notebook);showLesson();await saveLocal(true);
   }
-  function showLesson(){$('#landing').hidden=true;$('#lesson-layout').hidden=false;$('#export-pdf').disabled=false;$('#records-link').hidden=role!=='preview';renderPage();}
+  function showLesson(){$('#landing').hidden=true;$('#lesson-layout').hidden=false;$('#export-pdf').disabled=false;$('#records-link').hidden=role!=='preview';$('#preview-navigation').hidden=role!=='preview';renderPage();}
+  async function openTeacherPreview(){
+    const button=$('#teacher-preview');button.disabled=true;
+    try{await begin('Teacher preview','Year 10','preview');notice('Teacher preview: use Continue without answering, or choose any page above. No pupil records are opened or recorded.');
+      const target=new URL(location.href).searchParams.get('page');if(page(target))await navigate(target,{force:true});
+    }catch(e){notice(e.message,'error');}finally{button.disabled=false;}
+  }
   async function returnEntry(){
     if(pythonBusy()){notice('Stop the Python run before returning to entry.');return;}
-    snapshot();await saveLocal(true);await ListsRecords.flush();ListsRecords.stop();session++;role='student';$('#landing').hidden=false;$('#lesson-layout').hidden=true;$('#records-link').hidden=true;$('#export-pdf').disabled=true;notice('Your work is kept. Use the same name and class on this browser to return.');
+    snapshot();await saveLocal(true);await ListsRecords.flush();ListsRecords.stop();session++;role='student';$('#landing').hidden=false;$('#lesson-layout').hidden=true;$('#preview-navigation').hidden=true;$('#records-link').hidden=true;$('#export-pdf').disabled=true;notice('Your work is kept. Use the same name and class on this browser to return.');
   }
   $('#entry-form').onsubmit=async event=>{event.preventDefault();if(!$('#entry-form').reportValidity())return;const name=$('#name').value.trim(),cls=$('#class-name').value.trim().toUpperCase();const button=$('#entry-form button');button.disabled=true;try{await begin(name,cls,name.toLowerCase()==='teacher'?'preview':'student');}catch(e){notice(e.message,'error');}finally{button.disabled=false;}};
   $('#previous').onclick=()=>{const id=prevId();if(id)navigate(id,{force:role==='preview'});};
@@ -272,5 +281,10 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&notebook){snapshot();saveLocal(true);flush();}});
   window.addEventListener('beforeunload',()=>{snapshot();saveLocal(true);});
   $('#entry-form button').disabled=false;$('#entry-form button').textContent='Start lesson';
+  $('#preview-page').innerHTML=L.groups.map(g=>'<optgroup label="'+esc(g.name)+'">'+L.pages.filter(p=>p.group===g.id).map((p,i)=>'<option value="'+esc(p.id)+'">'+(i+1)+'. '+esc(p.title)+(p.optional?' · optional':'')+'</option>').join('')+'</optgroup>').join('');
+  $('#teacher-preview').onclick=openTeacherPreview;$('#teacher-preview').disabled=false;
+  $('#preview-go').onclick=()=>{if(role==='preview')navigate($('#preview-page').value,{force:true});};
+  $('#preview-exit').onclick=returnEntry;
+  const route=new URL(location.href).searchParams;if(route.get('preview')==='1'||route.get('teacher')==='1')openTeacherPreview();
 
 })();
