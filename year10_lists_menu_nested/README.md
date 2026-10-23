@@ -14,6 +14,8 @@ Bookmark `?preview=1` to open teacher preview directly, or `?preview=1&page=m2-b
 
 ## Sixty-minute learning route
 
+When the teacher calls time, students can use **Go to plenary** at the bottom of any earlier lesson page. Their answers, code and output are saved before moving. Earlier unfinished tasks are not marked complete. The two plenary questions still require an attempt (or a help flag) before continuing to PDF export; missing earlier work does not block that final route. If Python is running, use Stop first. The shortcut remains usable after returning to earlier work, and the plenary route survives reload and notebook restore.
+
 | Stage | Minutes | Evidence |
 | --- | ---: | --- |
 | Starter | 5 | FOR stop values and WHILE exit behaviour |

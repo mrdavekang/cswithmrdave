@@ -46,6 +46,8 @@
   function accessible(id){
     if(role==='preview')return true;
     if(id===current||notebook.pages[id]?.visitedAt)return true;
+    const plenaryStart=coreIds.indexOf('exit-index'),target=coreIds.indexOf(id);
+    if(target>=plenaryStart&&notebook.pages['exit-index']?.visitedAt)return C.core.slice(plenaryStart,target).every(p=>answered(p));
     if(page(id).optional)return notebook.pages['extension-menu']?.visitedAt&&released(id);
     const idx=coreIds.indexOf(id);if(idx<=0)return true;
     return C.core.slice(0,idx).every(p=>answered(p));
@@ -67,6 +69,8 @@
     $('#next').disabled=!next||!accessible(next)||pythonBusy()||!(role==='preview'||answered(p));
     $('#next').textContent=p.optional?'Return to extensions':!next?'End of lesson':'Continue';
     $('#help').hidden=$('#pause-request').hidden=role!=='student';
+    $('#time-call').hidden=['plenary','finish'].includes(p.group);
+    $('#go-plenary').disabled=pythonBusy();
     $('#outline').querySelectorAll('[data-page]').forEach(b=>{b.disabled=!accessible(b.dataset.page)||pythonBusy();if(b.dataset.page===current)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
 
   }
@@ -222,6 +226,7 @@
     for(const b of editors.values()){const active=page(current)?.workspace===b.workspace;b.cm.setOption('readOnly',!edit||!active);b.shell.setEditable(edit&&active);b.root.querySelector('.run-code').disabled=!edit||!!activeRun||b.busy;b.root.querySelector('.stop-code').disabled=!b.busy;}
     $('#previous').disabled=pythonBusy()||!prevId()||!accessible(prevId());$('#next').disabled=pythonBusy()||!nextId()||!accessible(nextId())||!(role==='preview'||answered(page(current)));
     $('#change-student').disabled=pythonBusy();$('#restore').disabled=pythonBusy();
+    $('#go-plenary').disabled=pythonBusy();
     $('#preview-page').disabled=$('#preview-go').disabled=$('#preview-exit').disabled=pythonBusy();
   }
   async function navigate(id,{force=false}={}){
@@ -271,6 +276,11 @@
   $('#entry-form').onsubmit=async event=>{event.preventDefault();if(!$('#entry-form').reportValidity())return;const name=$('#name').value.trim(),cls=$('#class-name').value.trim().toUpperCase();const button=$('#entry-form button');button.disabled=true;try{await begin(name,cls,name.toLowerCase()==='teacher'?'preview':'student');}catch(e){notice(e.message,'error');}finally{button.disabled=false;}};
   $('#previous').onclick=()=>{const id=prevId();if(id)navigate(id,{force:role==='preview'});};
   $('#next').onclick=()=>{const id=nextId();if(id)navigate(id,{force:role==='preview'});};
+  $('#go-plenary').onclick=async()=>{
+    if(!notebook||pythonBusy()){notice('Select Stop in the Python Shell first. Your code and output will stay saved.');return;}
+    await navigate('exit-index',{force:true});
+    notice('You are at the plenary. Your earlier answers and code are kept; skipped tasks remain unfinished. Answer the two final questions, then export your PDF.');
+  };
   $('#outline-toggle').onclick=()=>{const open=$('#outline').hidden;$('#outline').hidden=!open;$('#outline-toggle').setAttribute('aria-expanded',String(open));if(open)renderOutline();};
   $('#export-pdf').onclick=exportPDF;$('#change-student').onclick=returnEntry;
   $('#backup').onclick=()=>{snapshot();download('Y10_LISTS_'+C.safeName(notebook.name)+'_notebook.json',JSON.stringify(notebook,null,2),'application/json');};
