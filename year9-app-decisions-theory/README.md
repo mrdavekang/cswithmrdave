@@ -6,7 +6,7 @@ A 60-minute app development theory lesson, following the homepage design and fir
 
 Open `index.html` directly, or serve this folder with a local static web server. All lesson scripts, illustrations, complete Raleway fonts, screenshot guides and downloads are local. No build, account or network connection is needed for the core activities. MIT and Teams links need an internet connection.
 
-Append `?teacher=1` for unlocked navigation and teacher notes. This is a presentation convenience, not a secure answer-protection mechanism. Student navigation unlocks one step at a time. Students can revisit unlocked steps; unanswered checks are kept separate from incorrect responses.
+Open `teacher.html` separately for the protected live dashboard. It has no link in the student lesson. The old `?teacher=1` address redirects to this sign-in page. Student navigation unlocks one step at a time. Students can revisit unlocked steps; unanswered checks are kept separate from incorrect responses.
 
 ## Lesson sequence
 
@@ -45,9 +45,15 @@ MCQ answer positions are randomised and balanced across the question set. Stable
 
 ## Saving and privacy
 
-Work is stored only in this browser under `mrdave-year9-app-decisions-theory-v1`. There is no dashboard, analytics or automatic upload. Use the PDF as the main hand-in and manually submit it in Teams. JSON backup restores the interactive record; the readable HTML copy displays the record. Changing a choice, message or button clears stale preview results and route-tried flags.
+The public HTTPS lesson saves the learner’s name, selected class (9E or 9T), current step, answers, checks, app-feature drafts, preview attempts, KSU reflections and help requests to the existing school Supabase service. A bilingual notice explains this before entry. There is no student sign-in. It does not monitor other websites, devices or MIT projects. The teacher page refreshes every five seconds while visible and offers class/name/support filters, individual responses, question patterns and downloads. Quiz correctness never determines confidence phases; unanswered and unchecked responses remain separate.
 
-Avoid shared-device records mixing learners. The landing page has a confirmed “Start a new learner record” action. Download a backup before replacing a record or clearing browser data. Opening from a different address creates a separate browser-storage location.
+The dashboard uses the existing approved lesson-teacher email/password account, not the Supabase administration account. Authentication alone is insufficient: each teacher function checks the configured owner’s user ID. The SDK session is in tab memory, and signing out clears private responses from the page. The student page has no teacher-login link. Hiding the link is not the security control: anonymous and unrelated authenticated users cannot retrieve class responses.
+
+Local progress remains under `mrdave-year9-app-decisions-theory-v1`. A durable IndexedDB outbox stores the private per-record resume key and unsent changes before network calls. The database stores its hash. Changes upload after a short pause; typing is grouped rather than recording each keystroke. Failed or offline uploads retry, with the save status reporting whether the school copy was acknowledged. Lost acknowledgements reuse the same write ID, preventing duplicate history. Concurrent-tab revision conflicts pause saving and offer restoration of the school-saved copy after a backup warning. A browser-storage failure is shown instead of claiming a successful school save.
+
+Names/classes are self-entered labels, not verified student identities. A new device or learner record creates a separate dashboard entry. On shared devices use the confirmed “Start a new learner record” action. Keep one lesson tab open. Download a backup before replacing a record or clearing browser data; JSON backups omit the private resume key and tracking ID. Restoring on another device creates a new live record. PDF remains the main Teams hand-in, with readable HTML and JSON backup retained.
+
+`supabase/01-live-learning.sql` documents the isolated lesson schema and narrowly granted functions. Raw tables have RLS and no pupil/teacher direct grants. Anonymous functions require a random private record key for own-record load/save/presence; teacher list/detail/review functions require the approved owner. No service-role secret is shipped. The public publishable key is intentionally public. Existing lessons and teacher grants are unchanged. Administrator-archived test records remain recoverable in the private database and do not appear in the roster.
 
 ## Included MIT materials
 
@@ -64,4 +70,4 @@ MIT App Inventor: https://appinventor.mit.edu/ . The starter remains a separate 
 
 Student link: https://mrdavekang.github.io/cswithmrdave/year9-app-decisions-theory/
 
-Teacher view: append `?teacher=1`. Students can open the lesson without signing in. MIT and Teams still require their own sign-in when used. QA scripts, screenshots and test records are kept outside the public folder.
+Teacher view: https://mrdavekang.github.io/cswithmrdave/year9-app-decisions-theory/teacher.html . Students can open the lesson without signing in. Refresh previously open student tabs once to load live saving. MIT and Teams still require their own sign-in when used. QA scripts, screenshots and test records are kept outside the public folder.
