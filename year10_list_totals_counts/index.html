@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Year 10 OxfordAQA 9210: revisit list values, update and traversal, then calculate totals and counts. One clear question per page, with private school saving.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script>
+    window.addEventListener('error',function(event){console.error('Lesson error',event.error||event.message);var el=document.getElementById('notice');if(el){el.hidden=false;el.className='notice error';el.textContent='A lesson component could not load. Your saved notebook is kept. Refresh, or tell your teacher: '+String(event.message||'resource unavailable');}});
+    window.addEventListener('unhandledrejection',function(event){console.error('Lesson request',event.reason);var el=document.getElementById('notice');if(el){el.hidden=false;el.className='notice error';el.textContent='This action did not finish. Your saved work is kept. '+String(event.reason&&event.reason.message||event.reason||'Please refresh and try again.');}});
+  </script>
+  <title>List values, totals and counts · Year 10</title>
+  <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+  <link rel="stylesheet" href="styles.css?v=totals-20261026">
+  <script defer src="isolation.js"></script>
+  <script defer src="vendor/codemirror/codemirror.js"></script>
+  <script defer src="vendor/codemirror/mode-python.js"></script>
+  <script defer src="vendor/codemirror/addon-matchbrackets.js"></script>
+  <script defer src="vendor/codemirror/addon-activeline.js"></script>
+  <script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="config.js"></script><script defer src="lesson.js?v=totals-20261026"></script><script defer src="core.js?v=totals-20261026"></script>
+  <script defer src="python-runtime.js"></script><script defer src="shell-ui.js?v=totals-20261026"></script><script defer src="records-cloud.js?v=totals-20261026"></script>
+  <script defer src="report.js?v=totals-20261026"></script><script defer src="app.js?v=totals-20261026"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to current lesson page</a>
+  <header class="topbar"><a class="brand" href="./">TENBY <span>YEAR 10 · COMPUTER SCIENCE</span></a><div class="top-actions"><span id="connection" role="status">School save starts after entry</span><button id="sync-retry" class="quiet" hidden>Retry school save</button><button id="export-pdf" class="quiet" disabled>Export PDF</button><a id="records-link" href="records.html" hidden>Teacher records</a></div></header>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <section id="landing" class="entry">
+    <p class="eyebrow">OXFORDAQA 9210 · 60-MINUTE PROGRAMMING LESSON</p>
+    <h1>Follow the values.<br>Build a total.<br>Count what qualifies.</h1>
+    <p class="entry-intro">Make sense of the school’s book donations. Revisit one list skill at a time, then use it for a new calculation.</p>
+    <p>Week 9 · Sessions 2 and 3 merged · revised 60-minute lesson. Start with a short check, use written models when useful, and choose counting or further consolidation when your total is ready.</p>
+    <form id="entry-form" onsubmit="return false"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required minlength="2" maxlength="60" placeholder="The name your teacher knows"><label for="class-name">Your class</label><input id="class-name" name="class" required pattern="10[A-Za-z0-9 -]{0,28}" title="Enter your Year 10 class, for example 10T" maxlength="30" placeholder="For example, 10T"><div class="entry-buttons"><button type="submit" disabled>Loading lesson…</button></div></form>
+    <p><button id="teacher-preview" type="button" class="secondary" disabled>Teacher preview · no login</button></p>
+    <p class="small">Your lesson answers, short-paused code drafts, attempts, Shell inputs and outputs, reflections and screenshots are saved privately for your teacher to review. No account or teacher admission is needed. Use the same name and class on this browser to resume. Names are self-entered, not verified logins; another device starts a separate record.</p>
+    <p class="small">If offline, keep this browser’s data: changes wait here until school saving reconnects. Check the save indicator before closing. Do not enter passwords or private personal information in your answers or code. Teacher preview opens all pages without answers or sign-in; it does not record pupil work or grant access to private records.</p>
+    <div class="entry-route" aria-label="Lesson sequence"><span>Starter</span><span>Types of Learning</span><span>Main 1</span><span>Main 2</span><span>Extension</span><span>Pit Stop</span><span>Plenary</span></div>
+  </section>
+  <section id="preview-navigation" class="preview-navigation" aria-label="Teacher preview navigation" hidden><div class="preview-intro"><strong>Teacher preview · no login</strong><p>All pages are open. Skip questions or jump to any activity, including extensions. This rehearsal is not saved as student work.</p></div><div class="preview-jump"><label for="preview-page">Jump to page</label><select id="preview-page"></select><button id="preview-go">Go to page</button><button id="preview-exit" class="secondary">Exit teacher preview</button></div></section>
+  <div id="lesson-layout" class="lesson-layout" hidden>
+    <aside class="goals" aria-label="WAGBA and knowledge, skills and understanding"><p class="eyebrow">OUR LEARNING TODAY</p><h2>List values, totals &amp; counts</h2><h3>WAGBA</h3><p>Explain what changes during a loop and use that understanding to process a list accurately.</p><div id="ksu-goals"></div><h3>Keywords</h3><p class="keywords">index · value · traversal · initialisation · running total · accumulator · counter · length</p><h3>Challenge</h3><p>Calculate a total and a qualifying count in one traversal. Explain why their updates differ and test the exact boundary.</p></aside>
+    <section class="lesson-column"><nav class="progress-nav" aria-label="Lesson navigation"><div><span id="activity-label"></span><p id="page-position"></p></div><button id="outline-toggle" class="quiet" aria-expanded="false" aria-controls="outline">Lesson outline</button></nav><div id="outline" hidden></div><div class="save-row"><span id="identity"></span><span id="saved-status" role="status"></span></div><main id="main" tabindex="-1"></main><nav class="page-footer" aria-label="Page controls"><button id="previous" class="secondary">Back</button><div class="support-buttons"><button id="help" class="quiet">Written help</button><button id="pause-request" class="quiet">I need a pause</button></div><button id="next">Continue</button></nav><section id="time-call" class="time-call" aria-label="Move to plenary"><div><strong>Has your teacher called time?</strong><p>Use this only when asked to move to the plenary. Your earlier work stays saved; skipped tasks stay unfinished. If Python is running, select Stop first.</p></div><button id="go-plenary" class="secondary">Go to plenary</button></section><footer class="notebook-tools"><button id="backup" class="quiet">Download notebook backup</button><label class="file-control">Restore backup<input id="restore" type="file" accept="application/json,.json"></label><button id="change-student" class="quiet">Return to entry</button></footer></section>
+  </div>
+  <dialog id="support-dialog"><form method="dialog"><button class="dialog-close quiet" aria-label="Close support">Close</button></form><h2>Ask for one small next step.</h2><form id="support-form"><label for="help-note">What would help you now?</label><select id="help-note"><option>Please help me find an index or value.</option><option>Please show me which line or indentation to change.</option><option>I need help with the Shell or a Python error.</option><option>I would like a quiet pause before continuing.</option><option>Please check my test evidence.</option></select><button type="submit">Save my support request</button></form><p class="small">You do not need to explain aloud. Your request is stored for later review, not an instant alert. For help now, use Teams chat or your agreed classroom support signal.</p></dialog>
+  <dialog id="image-dialog"><form method="dialog"><button class="quiet">Close image</button></form><img id="large-image" alt=""></dialog>
+</body>
+</html>
