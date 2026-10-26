@@ -1,0 +1,152 @@
+[
+  {
+    "id": "camera",
+    "title": "Frame Finder",
+    "zh_title": "相机指南",
+    "image": "camera",
+    "prompt": "Choose a view",
+    "choices": [
+      "Quick summary",
+      "More detail"
+    ],
+    "zh_choices": [
+      "简短介绍",
+      "更多详情"
+    ],
+    "outputs": [
+      "Compact camera. Easy to carry.",
+      "Zoom lens and a rechargeable battery."
+    ],
+    "zh_outputs": [
+      "小巧相机，方便携带。",
+      "变焦镜头和充电电池。"
+    ],
+    "button": "Show information",
+    "zh_button": "显示信息"
+  },
+  {
+    "id": "fashion",
+    "title": "Style Studio",
+    "zh_title": "穿搭工作室",
+    "image": "fashion",
+    "prompt": "Choose a style",
+    "choices": [
+      "Casual",
+      "Smart"
+    ],
+    "zh_choices": [
+      "休闲",
+      "正式"
+    ],
+    "outputs": [
+      "Try a T-shirt, jeans and trainers.",
+      "Try a shirt, trousers and smart shoes."
+    ],
+    "zh_outputs": [
+      "试试 T 恤、牛仔裤和运动鞋。",
+      "试试衬衫、长裤和正式鞋。"
+    ],
+    "button": "Show an outfit",
+    "zh_button": "显示穿搭"
+  },
+  {
+    "id": "gaming",
+    "title": "Gear Room",
+    "zh_title": "游戏装备室",
+    "image": "gaming",
+    "prompt": "Choose a setup",
+    "choices": [
+      "Portable",
+      "Desk setup"
+    ],
+    "zh_choices": [
+      "便携",
+      "桌面"
+    ],
+    "outputs": [
+      "Try a compact controller and a carry case.",
+      "Try a full-size keyboard and a mouse mat."
+    ],
+    "zh_outputs": [
+      "试试小型手柄和便携包。",
+      "试试标准键盘和鼠标垫。"
+    ],
+    "button": "Show some gear",
+    "zh_button": "显示装备"
+  },
+  {
+    "id": "photo",
+    "title": "Photo Coach",
+    "zh_title": "摄影小教练",
+    "image": "camera",
+    "prompt": "Choose a subject",
+    "choices": [
+      "People",
+      "Scenery"
+    ],
+    "zh_choices": [
+      "人物",
+      "风景"
+    ],
+    "outputs": [
+      "Find soft light and focus on the person.",
+      "Keep the horizon level and hold the camera steady."
+    ],
+    "zh_outputs": [
+      "寻找柔和光线，对准人物对焦。",
+      "保持地平线水平，拿稳相机。"
+    ],
+    "button": "Show a photo tip",
+    "zh_button": "显示摄影提示"
+  },
+  {
+    "id": "planner",
+    "title": "Break Planner",
+    "zh_title": "课间计划",
+    "image": "planner",
+    "prompt": "Choose an activity",
+    "choices": [
+      "Quiet",
+      "Active"
+    ],
+    "zh_choices": [
+      "安静",
+      "活动"
+    ],
+    "outputs": [
+      "Try drawing, reading or a quiet puzzle.",
+      "Try a walk or a teacher-approved ball game."
+    ],
+    "zh_outputs": [
+      "试试画画、阅读或安静的益智游戏。",
+      "试试散步或老师允许的球类活动。"
+    ],
+    "button": "Show an idea",
+    "zh_button": "显示建议"
+  },
+  {
+    "id": "weather",
+    "title": "Sky Window",
+    "zh_title": "天气窗口",
+    "image": "weather",
+    "prompt": "Choose sample data",
+    "choices": [
+      "Sunny sample",
+      "Rainy sample"
+    ],
+    "zh_choices": [
+      "晴天示例",
+      "雨天示例"
+    ],
+    "outputs": [
+      "Sample forecast: sunny, 30 C. Take water.",
+      "Sample forecast: rain, 25 C. Take an umbrella."
+    ],
+    "zh_outputs": [
+      "示例预报：晴，30 摄氏度。带上水。",
+      "示例预报：雨，25 摄氏度。带上雨伞。"
+    ],
+    "button": "Show sample forecast",
+    "zh_button": "显示示例预报"
+  }
+]
