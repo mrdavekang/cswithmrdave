@@ -4,8 +4,9 @@ Term 1.2 Robotics & Control Systems · 60 minutes
 LOCAL STATIC / GITHUB PAGES ONLY
 Open index.html in a normal browser, or serve this folder with a static server.
 Upload the complete folder to the existing cswithmrdave GitHub repository when
-ready. No npm, account, database, build process or ChatGPT Sites is required.
-This delivery does not commit, push, publish or post anything to Teams.
+ready. No npm, build process or pupil sign-in is required. Live school saving uses
+Supabase; the private teacher dashboard uses the existing approved account.
+Hosting remains GitHub Pages, not ChatGPT Sites. This setup does not post to Teams.
 
 LESSON FLOW
 0–5     Do Now: exhibition purpose; retrieve input/output; predict a total
@@ -52,7 +53,8 @@ SUPPORT AND ACCESS
   the step was completed successfully.
 - Plenary can be explained aloud. No pupil screenshots or evidence uploads here.
 - Back/Next/help controls remain visible. Images are inline, not hidden in pop-ups.
-- Name teacher opens all pages for review. This is open preview, not authentication.
+- Name teacher opens lesson pages only, never private class records.
+  The private teacher dashboard needs the approved account sign-in.
 
 MAKECODE IS THE PRACTICAL WORKSPACE
 The prominent MakeCode button opens/reuses a separate named coding tab.
@@ -86,7 +88,8 @@ vary between browsers, so download JSON before moving device or changing where
 the app is hosted. There is one current record per browser/origin. Back up before
 starting a different pupil. A new record asks before replacing an existing one.
 Storage can be cleared by the browser; downloaded JSON is the portable copy.
-This app uses no analytics, credentials, remote fonts or server collection.
+This app uses no remote fonts, student credentials or cross-website analytics.
+Lesson data saves privately to the school Supabase project after entry.
 MakeCode and Teams are separate services and require network access.
 
 VISUAL PROVENANCE
@@ -115,3 +118,48 @@ in the browser; JSON schema/restore is tested. The testing browser blocked file:
 navigation by policy. Use a normal browser or a static/GitHub Pages preview.
 
 Keep delivery archives, QA outputs and pupil data outside this public lesson folder.
+
+LIVE TRACKING
+Student: https://mrdavekang.github.io/cswithmrdave/Y6_Week10_Visitor_Counter/
+Teacher: https://mrdavekang.github.io/cswithmrdave/Y6_Week10_Visitor_Counter/teacher.html
+
+Before entry, the notice explains that names/classes, optional partner names,
+answers, progress, tests, KSU checks, pitstop, reflections and help requests save
+to school. Other tabs, MakeCode, USB devices and Teams are not monitored.
+Teacher preview is excluded from learner tracking.
+
+The teacher view refreshes every five seconds while visible. It provides class
+and name filters, support flags, all responses, test notes, question patterns,
+confidence checks, change history, help review and CSV/JSON export.
+Identity and practical work are self-reports. Missing answers are not incorrect
+answers; confidence is not inferred from a quiz score.
+
+Use the existing approved classroom teacher account, NOT the Supabase admin login.
+Teacher sessions stay in tab memory; sign-out clears private responses. The server
+checks the exact approved user ID. Knowing the URL or typing teacher cannot grant
+access to class data.
+
+The y6_week10_private schema isolates records, events and idempotent save receipts.
+All tables have RLS and no anonymous/ordinary authenticated raw reads. Pupil calls
+need the owning private record key. Teacher calls need the approved signed-in
+owner. Only the intentionally public publishable key is shipped, never an admin
+or service-role key. Other lessons, existing Auth users and project keys are unchanged.
+
+IndexedDB holds the private keys and durable pending changes. Typing is grouped.
+The pupil status distinguishes device saves from acknowledged school saves.
+Offline/lost-ack retries reuse write IDs to prevent duplication. Conflicting
+revisions pause saving and offer school-copy restoration after a backup warning.
+There is no automatic conflict overwrite. School saving needs HTTPS/local preview.
+
+JSON downloads omit cloud IDs and keys. Importing a backup creates a fresh school
+record and supports continuing alone. New devices/records can produce duplicate
+learner labels in the dashboard. Use one current tab; back up before changing
+learner on a shared device. No automatic deletion schedule is added; follow school
+retention policy.
+
+Setup source: supabase/01-live-learning.sql. Real API and SQL-role tests confirmed
+cross-record denial, unrelated-account denial, owner-only access, RLS, conflicts
+and replay-safe saves. Browser tests confirmed acknowledged saves and stored
+answers, help, language and solo-mode changes. Owner-password sign-in was not
+completed in QA; approved-account permissions were verified through database roles.
+Fictitious QA records are archived, not erased, and hidden from the live roster.

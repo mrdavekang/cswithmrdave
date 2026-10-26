@@ -1,12 +1,14 @@
 (function(root){
  'use strict';
  const LESSON='y6-week10-visitor-counter',VERSION=1;
- const fresh=()=>({lesson:LESSON,version:VERSION,started:false,startedAt:'',profile:{name:'',className:'',mode:'solo',partner:''},lang:'en',card:0,furthest:0,values:{},checks:{},orders:{},visited:[],skipped:[],events:[]});
+ const fresh=()=>({lesson:LESSON,version:VERSION,started:false,startedAt:'',liveId:'',support:{open:false,at:'',page:'mission'},profile:{name:'',className:'',mode:'solo',partner:''},lang:'en',card:0,furthest:0,values:{},checks:{},orders:{},visited:[],skipped:[],events:[]});
  const clean=v=>typeof v==='string'?v.slice(0,3000):'';
  const record=(s,type,key,value)=>{s.events.push({at:new Date().toISOString(),type:clean(type),key:clean(key),value:clean(String(value))});s.events=s.events.slice(-600);};
  function restore(x,max){
   if(!x||x.lesson!==LESSON||x.version!==VERSION||!x.started||!x.profile||!clean(x.profile.name).trim())throw Error('Not a Week 10 backup');
   const s=fresh();s.started=true;s.startedAt=clean(x.startedAt);s.lang=['en','zh','ko'].includes(x.lang)?x.lang:'en';
+  s.liveId=typeof x.liveId==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(x.liveId)?x.liveId:'';
+  if(x.support&&typeof x.support==='object')s.support={open:x.support.open===true,at:clean(x.support.at).slice(0,64),page:typeof x.support.page==='string'&&/^[a-z0-9-]{1,50}$/.test(x.support.page)?x.support.page:'mission'};
   for(const k of ['name','className','partner'])s.profile[k]=clean(x.profile[k]).slice(0,100);
   s.profile.mode=x.profile.mode==='pair'?'pair':'solo';
   s.card=Number.isInteger(x.card)?Math.max(0,Math.min(max-1,x.card)):0;
