@@ -8,26 +8,41 @@
   const numeric=x=>String(x??'').normalize('NFKC').trim().replace(/[\s,]/g,'').replace(/(?:points?|bits?|分|位)$/i,'');
   const hash=s=>{let h=2166136261;for(const c of s){h^=c.codePointAt(0);h=Math.imul(h,16777619);}return(h>>>0).toString(36);};
   const key=(name,cls)=>'binary-arcade:'+L.id+':'+hash(name.trim().toLowerCase()+'|'+cls.trim().toLowerCase());
-  let state=null,storageKey='',storageOkay=true,toastTimer,importPurpose='resume',reportStudent=null;
+  let state=null,storageKey='',storageOkay=true,toastTimer,reportStudent=null;
   const current=()=>cards[state.p];
-  const teacher=()=>state?.identity.name.toLowerCase()==='teacher';
   const zh=()=>state?.lang==='zh';
   const tr=(en,cn)=>esc(en)+(zh()&&cn?`<span class="zh" lang="zh-Hans">${esc(cn)}</span>`:'');
   const t=(en,cn)=>zh()&&cn?en+' / '+cn:en;
   const core=c=>!['extra','break','games'].includes(c.stage);
   const rec=(id=current().id)=>state.records[id]||(state.records[id]={answer:'',attempts:[],hint:false,checked:false});
   const isDone=c=>Boolean(state.done[c.id]);
-  const event=(type,value)=>{state.events.push({at:stamp(),card:current().id,type,value});if(state.events.length>1500)state.events.shift();};
+  const event=(type,value)=>{state.events.push({at:stamp(),card:current().id,type,value});if(state.events.length>1500)state.events.shift();window.BinaryCloud?.event(type,value);};
   function fresh(identity,lang,theme){return {lesson:L.id,version:1,identity,lang,theme,rainbow:false,p:0,records:{},done:{},events:[],practice:{level:'steady',index:0,records:{}},modelStep:0,created:stamp(),updated:stamp()};}
-  function save(){
+  function save(track=true){
     if(!state)return;state.updated=stamp();
     try{localStorage.setItem(storageKey,JSON.stringify(state));storageOkay=true;}catch{storageOkay=false;}
     const s=$('#saved');if(s){s.textContent=storageOkay?t('Saved on this device','已保存在本设备'):t('Not saved — download backup','未保存，请下载备份');s.classList.toggle('warning-text',!storageOkay);}
+    if(track)window.BinaryCloud?.changed(state);return storageOkay;
+  }
+  function cloudStatus(){
+    const v=window.BinaryCloud?.status();if(!v)return;
+    const node=$('#school-save');if(node){node.textContent=zh()?v.zh:v.en;node.dataset.kind=v.kind;}
+    const retry=$('[data-action="sync-retry"]'),restore=$('[data-action="cloud-restore"]');
+    if(retry)retry.hidden=!['error','offline','conflict'].includes(v.kind);
+    if(restore)restore.hidden=v.kind!=='conflict';
+  }
+  function attachCloud(){
+    window.BinaryCloud?.attach(state,{persist:()=>save(false),status:cloudStatus,remote:(snapshot,cloud)=>{
+      const restored={...snapshot,events:state.events||[],cloud};delete restored.role;delete restored.currentId;
+      if(!valid(restored)){toast('The saved copy could not be opened. Keep a backup and tell your teacher.');return;}
+      state=restored;save(false);render(true);attachCloud();
+    }}).catch(()=>toast('School saving is interrupted. Your device copy is kept.'));
   }
   function toast(msg){$('#notice').textContent=msg;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#notice').textContent='',6500);}
   function valid(s){
     if(!s||s.lesson!==L.id||s.version!==1||!s.identity||typeof s.identity.name!=='string'||typeof s.identity.cls!=='string')return false;
-    if(s.identity.name.length>100||s.identity.cls.length>50||!s.identity.name.trim())return false;
+    if(s.identity.name.length>100||s.identity.cls.length>50||!s.identity.name.trim()||s.identity.name.toLowerCase()==='teacher')return false;
+    if(s.cloud&&!window.BinaryCloud?.validCloud(s.cloud))return false;
     if(!Number.isInteger(s.p)||s.p<0||s.p>=cards.length)return false;
     if(!s.records||Array.isArray(s.records)||typeof s.records!=='object'||!s.done||Array.isArray(s.done)||typeof s.done!=='object')return false;
     if(!Array.isArray(s.events)||s.events.length>1500||!s.practice||typeof s.practice!=='object')return false;
@@ -48,26 +63,26 @@
       <fieldset><legend>Choose a calm colour style</legend><div class="themes">${[['garden','Garden'],['ocean','Ocean'],['arcade','Arcade'],['paper','Paper']].map(([id,label],i)=>`<label class="theme-choice ${id}"><input type="radio" name="theme" value="${id}" ${i===0?'checked':''}> ${label}</label>`).join('')}</div></fieldset>
       <p id="entry-error" class="error-text" role="alert"></p><button class="primary wide" type="submit">Start / resume my lesson →</button></form>
       <div class="entry-tools"><button data-action="restore">Restore a JSON backup</button><button data-action="device">iPad / laptop help</button></div>
-      <p class="privacy">Progress stays in this browser on this device. This is not a school login or an online teacher tracker. Use your own details so another pupil’s work is not overwritten.</p><p class="small">Teacher preview: enter <strong>teacher</strong> as the name to open every card. Leave class blank.</p></section></main>`;
+      <p class="privacy">Your name, class, answers and learning reflections are saved for your teacher in the school’s lesson database. There is no public pupil list. A device copy is also kept if the internet drops. This is not a school account login: use your own name and keep your backup private. Anyone using the same browser profile could reopen its saved work.</p><p class="small" lang="zh-Hans">姓名、班级、答案和学习反思会保存给老师，不公开学生名单。离线时仍保留设备副本。同一浏览器的使用者可能重新打开该副本，请使用自己的姓名并妥善保管备份。</p></section></main>`;
     $('#entry-form').onsubmit=e=>{
-      e.preventDefault();const name=$('#name').value.trim(),cls=$('#class').value.trim(),isTeacher=name.toLowerCase()==='teacher';
-      if(!name||(!isTeacher&&!cls)){const missing=!name?$('#name'):$('#class');$('#entry-error').textContent=!name?'Type your name first. / 请先输入姓名。':'Type your class, for example 7T. / 请输入班级，例如7T。';missing.setAttribute('aria-invalid','true');missing.focus();return;}
+      e.preventDefault();const name=$('#name').value.trim(),cls=$('#class').value.trim().replace(/\s+/g,'').toUpperCase();
+      if(!name||!/^7[A-Z0-9-]{1,28}$/.test(cls)||name.toLowerCase()==='teacher'){const missing=!name||name.toLowerCase()==='teacher'?$('#name'):$('#class');$('#entry-error').textContent=!name||name.toLowerCase()==='teacher'?'Type your own pupil name. / 请输入自己的姓名。':'Type your Year 7 class, for example 7T. / 请输入七年级班级，例如7T。';missing.setAttribute('aria-invalid','true');missing.focus();return;}
       const lang=$('input[name="language"]:checked').value,theme=$('input[name="theme"]:checked').value;
-      storageKey=key(name,isTeacher?'preview':cls);let loaded;
+      storageKey=key(name,cls);let loaded;
       try{const raw=localStorage.getItem(storageKey);if(raw)loaded=JSON.parse(raw);}catch{}
-      state=valid(loaded)?loaded:fresh({name:isTeacher?'teacher':name,cls:isTeacher?'Preview':cls},lang,theme);
-      state.lang=lang;state.theme=theme;save();render(true);
+      state=valid(loaded)?loaded:fresh({name,cls},lang,theme);
+      state.identity.cls=cls;state.lang=lang;state.theme=theme;save(false);render(true);attachCloud();
     };
   }
   function headline(){
     const c=current(),completed=cards.filter(x=>core(x)&&isDone(x)).length,total=cards.filter(core).length;
     return `<header class="top"><div class="top-line"><a class="brand" href="#" data-action="home"><span class="logo" aria-hidden="true">01</span> BINARY ARCADE <small>YEAR 7 · WEEK 10</small></a><div class="top-controls"><label class="language-label"><span>Language / 语言</span><select id="language" aria-label="Language support"><option value="en" ${!zh()?'selected':''}>English</option><option value="zh" ${zh()?'selected':''}>English + 中文</option></select></label><button data-action="backup" class="backup">↓ ${t('Download backup','下载备份')}</button></div></div>
       <div class="goal-strip"><strong>WAGBA</strong><span>${tr(L.wagba,L.zhWagba)}</span><button data-action="goals">${t('K · S · U','学习目标')}</button></div>
-      <div class="progress-heading"><span>${teacher()?'<strong class="teacher-badge">Teacher preview · all cards open</strong>':esc(state.identity.name)+' · '+esc(state.identity.cls)}</span><span id="saved" role="status">${storageOkay?t('Saved on this device','已保存在本设备'):t('Not saved — download backup','未保存，请下载备份')}</span><span>${completed}/${total} ${t('core steps attempted','核心步骤已尝试')}</span></div>
+      <div class="progress-heading"><span>${esc(state.identity.name)} · ${esc(state.identity.cls)}</span><div class="save-group"><span id="saved" role="status">${storageOkay?t('Device copy saved','设备副本已保存'):t('Device save unavailable','设备保存不可用')}</span><span id="school-save" role="status"></span><button data-action="sync-retry" hidden>${t('Retry school save','重试学校保存')}</button><button data-action="cloud-restore" hidden>${t('Load saved class copy','载入学校副本')}</button></div><span>${completed}/${total} ${t('core steps attempted','核心步骤已尝试')}</span></div>
       <div class="progress-line" role="progressbar" aria-label="Core lesson progress" aria-valuenow="${completed}" aria-valuemin="0" aria-valuemax="${total}"><span style="width:${completed/total*100}%"></span></div>
       <nav class="stage-nav" aria-label="Lesson stages">${L.stages.map(([id,name,time],i)=>{const inStage=cards.filter(x=>x.stage===id),done=inStage.filter(isDone).length;return `<button data-stage="${id}" class="stage ${c.stage===id?'active':''}" ${c.stage===id?'aria-current="step"':''} title="${esc(time)} · ${done}/${inStage.length} steps"><span class="stage-n">${i+1}</span><span>${esc(name)}${done===inStage.length?' ✓':''}</span></button>`;}).join('')}</nav></header>`;
   }
-  function tools(){return `<div class="tool-strip"><div class="word-strip"><strong>${t('Keywords','关键词')}</strong> ${['binary','denary','bit','byte','place value'].map(w=>`<button data-word="${w}">${esc(w)}</button>`).join('')}</div><div class="support-tools"><button data-action="vocabulary">${t('All words','全部词汇')}</button><button data-action="device">${t('iPad / laptop help','设备帮助')}</button>${teacher()?'<button data-action="teacher-plan">Teacher guide</button>':''}</div></div>`;}
+  function tools(){return `<div class="tool-strip"><div class="word-strip"><strong>${t('Keywords','关键词')}</strong> ${['binary','denary','bit','byte','place value'].map(w=>`<button data-word="${w}">${esc(w)}</button>`).join('')}</div><div class="support-tools"><button data-action="vocabulary">${t('All words','全部词汇')}</button><button data-action="device">${t('iPad / laptop help','设备帮助')}</button></div></div>`;}
   function image(key,src){
     const a=L.art[key];if(!a)return '';
     return `<figure class="visual"><img src="assets/${src||a[0]}" alt="${esc(a[1])}" width="1600" height="1200"><button class="zoom" data-zoom="${esc(src||a[0])}" data-alt="${esc(a[1])}">${t('Enlarge image','放大图片')} ↗</button></figure>`;
@@ -127,7 +142,7 @@
     if(c.kind==='model')return model(c);
     if(c.kind==='practice')return practice();
     if(c.kind==='games')return readBox(c)+games();
-    if(c.kind==='finish')return readBox(c)+finish();
+    if(c.kind==='finish')return readBox(c)+`<p class="school-save-note">${tr('Your teacher can review the answers saved to school. Check the save status above. Keep a backup if it says offline or waiting.','老师可以查看已保存到学校的答案。请查看上方保存状态；如果显示离线或等待，请保留备份。')}</p>`+finish();
     if(c.kind==='break')return `<div class="simple-card">${readBox(c)}<div class="break-action"><p class="eyebrow">8-BIT · NO TIMER</p><h2>${t('Make three targets, then come back.','组成三个目标数字，然后回来。')}</h2><a class="primary external" data-external="practice-break" href="${L.links.practice}" target="_blank" rel="noopener noreferrer">${t('Open Binary Game','打开Binary Game')} ↗</a><p>${tr('If it is not game time, continue to the learning pitstop. You do not have to open this link to move on.','如果现在不是游戏时间，请继续到学习反思。不打开游戏也可以继续。')}</p></div></div>`;
     if(c.kind==='read')return `<div class="${c.image?'content-grid':'simple-card'}">${c.image?image(c.image):''}<section>${c.definition?`<div class="definition-block"><p class="eyebrow">${t('School definition of learning','学校学习定义')}</p><blockquote>${tr(c.read,c.zhRead)}</blockquote></div>`:readBox(c)}${c.overview?`<div class="ksu-cards">${L.KSU.map(([label,en,cn])=>`<div><strong>${label}</strong><p>${tr(en,cn)}</p></div>`).join('')}</div><div class="expectations">${tr('Work independently. Read the goal, try an answer, check the feedback. When Mr Dave says “Pause and look”, stop tapping and look at the teacher.','独立完成。先读目标，再尝试作答并看反馈。老师说“暂停，看这里”时，停止点击，看老师。')}</div>`:''}${c.visual==='repair-steps'?'<ol class="repair-sequence"><li>Read the stored score.</li><li>Compare with the target.</li><li>Change the needed bit.</li><li>Add the values to check.</li></ol>':''}${c.aside?`<div class="meaning-box"><p class="eyebrow">${t(c.definition?'What this means today':'A small example',c.definition?'今天如何应用':'小示例')}</p><p>${tr(c.aside,c.zhAside)}</p></div>`:''}</section></div>`;
     if(c.kind==='build'&&!c.image)return `<div class="content-grid build-grid"><section>${readBox(c)}</section><section class="question-box" aria-labelledby="question-title">${field(c,r)}${checkArea(c,r)}<label class="rainbow-choice drawing-style"><input type="checkbox" id="rainbow" ${state.rainbow?'checked':''}> ${t('Rainbow bit tiles','彩虹数字方框')}</label></section></div>`;
@@ -144,6 +159,7 @@
     $('#language').onchange=e=>{state.lang=e.target.value;save();render();};
     const n=$('#number-answer');if(n){n.oninput=()=>answer(n.value,false);n.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();if(current().kind==='practice'){const {c,r}=practiceProblem();if(check(c,r))render();}else next();}};}
     const rainbow=$('#rainbow');if(rainbow)rainbow.onchange=e=>{state.rainbow=e.target.checked;save();render();};
+    cloudStatus();
     $('.stage.active')?.scrollIntoView({block:'nearest',inline:'nearest'});
     if(focus){$('#lesson-main').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
   }
@@ -166,16 +182,16 @@
   }
   function next(){
     const c=current(),r=rec();
-    if(c.kind==='reflect'&&!r.checked&&!teacher()){if(!check(c,r))return;}
-    else if(['choice','number','build'].includes(c.kind)&&!r.checked&&!teacher()){if(check(c,r)){render();$('#feedback')?.scrollIntoView({block:'nearest',behavior:'smooth'});}return;}
+    if(c.kind==='reflect'&&!r.checked){if(!check(c,r))return;}
+    else if(['choice','number','build'].includes(c.kind)&&!r.checked){if(check(c,r)){render();$('#feedback')?.scrollIntoView({block:'nearest',behavior:'smooth'});}return;}
     else if(['read','model','break','practice','finish','games'].includes(c.kind)){state.done[c.id]=true;save();}
     if(state.p===cards.length-1){go(cards.findIndex(x=>x.id==='finish'),true);return;}
     go(state.p+1);
   }
   function go(index,force=false){
     if(index<0||index>=cards.length)return;
-    if(!teacher()&&!force&&index>state.p){const missing=cards.slice(0,index).find(c=>core(c)&&!isDone(c));if(missing){state.p=cards.indexOf(missing);save();render(true);toast(t(`Next unfinished step: ${missing.title}. Read it, make an attempt and check. A wrong answer will not lock you out.`,`下一步尚未完成：${missing.title}。阅读、尝试并检查，答错也不会锁住进度。`));return;}}
-    state.p=index;save();render(true);
+    if(!force&&index>state.p){const missing=cards.slice(0,index).find(c=>core(c)&&!isDone(c));if(missing){state.p=cards.indexOf(missing);save();render(true);toast(t(`Next unfinished step: ${missing.title}. Read it, make an attempt and check. A wrong answer will not lock you out.`,`下一步尚未完成：${missing.title}。阅读、尝试并检查，答错也不会锁住进度。`));return;}}
+    if(state.p!==index)event('navigate',{from:current().id,to:cards[index].id});state.p=index;save();render(true);
   }
   function download(data,type,filename){const blob=new Blob([data],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
   const filename=()=>`Year7_${state.identity.cls}_${state.identity.name}_Week10_Binary`.replace(/[^\p{L}\p{N}_-]/gu,'_');
@@ -183,23 +199,19 @@
   function modal(html){$('#support-body').innerHTML=html;const d=$('#support');if(!d.open)d.showModal();$('#close-support').textContent=t('Back to my lesson','回到课程');}
   function goals(){modal(`<p class="eyebrow">${t('Today’s learning','今天的学习')}</p><h1>WAGBA</h1><p class="large">${tr(L.wagba,L.zhWagba)}</p><div class="ksu-cards">${L.KSU.map(([k,en,cn])=>`<div><h2>${k}</h2><p>${tr(en,cn)}</p></div>`).join('')}</div><h2>${t('Challenge','挑战')}</h2><p>${esc(L.challenge)}</p>`);}
   function vocab(word){const list=word?L.vocabulary.filter(x=>x[0]===word):L.vocabulary;modal(`<h1>${t('Computing words','计算机词汇')}</h1><p>${tr('Use the English computing word. The Mandarin meaning is here to help you connect the idea.','使用英语计算机术语，中文解释帮助你理解和联系概念。')}</p><dl class="vocab">${list.map(([term,cn,en,zhText])=>`<div><dt>${esc(term)} <span lang="zh-Hans">${esc(cn)}</span></dt><dd>${esc(en)}<span class="zh" lang="zh-Hans">${esc(zhText)}</span></dd></div>`).join('')}</dl>`);}
-  function device(){modal(`<h1>iPad / laptop help · 设备帮助</h1><div class="help-grid"><section><h2>iPad / tablet</h2><ol><li>Use Safari or Chrome in landscape if the screen feels narrow.</li><li>Tap a digit tile to switch 0 and 1. No dragging is needed.</li><li>For a number answer, tap the box to open the keyboard. Tap Done to close it.</li><li>Language / 语言 stays at the top. Choose English + 中文 whenever you need it.</li><li>For a backup, tap Download backup. Look in <strong>Files → Downloads</strong>. If you see a preview instead, tap <strong>Share → Save to Files</strong>.</li><li>To resume on a different device: move the JSON file to that device, choose Restore a JSON backup and select the file.</li></ol><p lang="zh-Hans">点击数字方框切换0和1，不需要拖动。语言支持在顶部。备份后查看“文件→下载”；如果打开预览，用“共享→存储到文件”。</p></section><section><h2>Laptop / Mac</h2><ol><li>Click a choice or bit tile. Tab moves between controls; Space selects a focused tile.</li><li>Type numbers in the answer box. Press Enter or Check my answer.</li><li>Use Continue after reading the feedback. You can move on after a genuine attempt, even if it was incorrect.</li><li>Download backup saves a JSON file to your browser’s download location.</li><li>Print / save PDF opens your device’s print options. Choose Save as PDF if available. It does not silently save to a folder.</li></ol></section></div><h2>No screenshot or file upload needed for the lesson</h2><p>Your answer, bit choices, checks and extra-practice attempts are saved automatically on this device. Nothing is sent to a teacher dashboard. If your teacher asks for evidence, use Review my evidence, a JSON backup or Print / save PDF.</p><p>On iPad, a PDF may open as a preview. Use Share → Save to Files. In a print preview, expand the preview if needed, then Share → Save to Files. To send a file to Teams, open the assignment your teacher names, choose Add work / Attach, select the saved file, and check that it appears before selecting Turn in. Downloading is not the same as submitting.</p>`);}
+  function device(){modal(`<h1>iPad / laptop help · 设备帮助</h1><div class="help-grid"><section><h2>iPad / tablet</h2><ol><li>Use Safari or Chrome in landscape if the screen feels narrow.</li><li>Tap a digit tile to switch 0 and 1. No dragging is needed.</li><li>For a number answer, tap the box to open the keyboard. Tap Done to close it.</li><li>Language / 语言 stays at the top. Choose English + 中文 whenever you need it.</li><li>For a backup, tap Download backup. Look in <strong>Files → Downloads</strong>. If you see a preview instead, tap <strong>Share → Save to Files</strong>.</li><li>To resume on a different device: move the JSON file to that device, choose Restore a JSON backup and select the file.</li></ol><p lang="zh-Hans">点击数字方框切换0和1，不需要拖动。语言支持在顶部。备份后查看“文件→下载”；如果打开预览，用“共享→存储到文件”。</p></section><section><h2>Laptop / Mac</h2><ol><li>Click a choice or bit tile. Tab moves between controls; Space selects a focused tile.</li><li>Type numbers in the answer box. Press Enter or Check my answer.</li><li>Use Continue after reading the feedback. You can move on after a genuine attempt, even if it was incorrect.</li><li>Download backup saves a JSON file to your browser’s download location.</li><li>Print / save PDF opens your device’s print options. Choose Save as PDF if available. It does not silently save to a folder.</li></ol></section></div><h2>No screenshot or file upload needed for the lesson</h2><p>Your answers, checks and reflections save to your teacher when the school-save status confirms it. A device copy is also kept. If you are offline, keep working here; saving retries when you reconnect. No screenshot or compulsory PDF is needed. Keep JSON backups private: they contain the key to reopen your own work.</p><p>On iPad, a PDF may open as a preview. Use Share → Save to Files. In a print preview, expand the preview if needed, then Share → Save to Files. To send a file to Teams, open the assignment your teacher names, choose Add work / Attach, select the saved file, and check that it appears before selecting Turn in. Downloading is not the same as submitting.</p>`);}
   const friendly=(c,r)=>!r?'Not attempted':(['choice','reflect'].includes(c.kind)?c.options.find(o=>o[0]===r.answer)?.[1]||r.answer:r.answer)||'No response';
   function evidence(s=state){return `<h1>Year 7 · Week 10 · Binary Arcade</h1><p><strong>${esc(s.identity.name)} · ${esc(s.identity.cls)}</strong><br>Saved: ${esc(new Date(s.updated).toLocaleString('en-GB',{timeZone:'Asia/Kuala_Lumpur'}))} MYT</p><h2>WAGBA</h2><p>${esc(L.wagba)}</p>${L.KSU.map(([k,en])=>`<p><strong>${k}:</strong> ${esc(en)}</p>`).join('')}<h2>Learning record</h2>${cards.filter(c=>!['games','finish','practice','break'].includes(c.kind)).map(c=>{const r=s.records[c.id];return `<section class="report-item"><h3>${esc(c.title)}</h3><p>${esc(c.prompt||'Read / follow the example')}</p><p><strong>Response:</strong> <code>${esc(friendly(c,r))}</code></p><p><strong>Status:</strong> ${r?.checked?(c.kind==='reflect'?'Self-assessment saved':r.correct?'Correct on latest check':'Attempt saved — revisit'):s.done[c.id]?'Reading completed':'Not attempted'} · Checks: ${r?.attempts?.length||0} · Hint used: ${r?.hint?'Yes':'No'}</p>${r?.attempts?.length?`<details open><summary>Check history</summary><ul>${r.attempts.map(a=>`<li><code>${esc(a.answer)}</code> — ${a.correct===null?'reflection':a.correct?'correct':'not yet correct'}${a.hintUsed?' (with hint)':''}</li>`).join('')}</ul></details>`:''}</section>`;}).join('')}<h2>Extra practice</h2>${Object.entries(s.practice.records).map(([id,r])=>`<p>${esc(id)}: <code>${esc(r.answer)}</code> · ${r.attempts?.length||0} checks · ${r.checked?(r.correct?'correct':'revisit'):'not checked'}</p>`).join('')||'<p>No extra-practice rounds attempted.</p>'}<h2>External game links opened</h2><p>Opening a link is not proof that a game was played or completed.</p><ul>${s.events.filter(e=>e.type==='external-link').map(e=>`<li>${esc(e.value)} · ${esc(e.at)}</li>`).join('')||'<li>No game link opened.</li>'}</ul>`;}
   function printReport(s=state){
     if(!s)return;save();let output=$('#print-report');if(!output){output=document.createElement('section');output.id='print-report';document.body.append(output);}output.innerHTML=evidence(s);window.print();
   }
   function showReport(s=state){reportStudent=s;modal(`<div class="button-row"><button class="primary" data-action="print-report">Print / save PDF</button></div><p class="small">PDF is a backup choice, not a compulsory step. Your device chooses whether to download, show a preview or open print options.</p><div class="evidence">${evidence(s)}</div>`);}
-  function teacherPlan(){modal(`<h1>Teacher guide · 60 minutes</h1><p>Typing <strong>teacher</strong> opens all cards. Preview work is stored separately. This is a static lesson, not a central monitoring system.</p><table class="plan-table"><thead><tr><th>Time</th><th>Stage</th><th>Teaching / assessment focus</th></tr></thead><tbody>${[
-    ['0–2','Welcome','Read the goal and set independent working routines.'],['2–7','Do now','Retrieve four-bit 1001, zero contribution and doubling 8 to 16.'],['7–10','Types of learning','Separate the school definition from today’s KSU. Ratings are not scored.'],['10–16','Read first','Model the eight places, count all eight bits, then reveal 22 in six steps.'],['16–30','Main task 1','Seven rounds: decode, build, decode, build, decode, build and compare. Pause after 45 to sample explanations.'],['30–32','Read first','Model read → compare → change → check on 8 to 9.'],['32–47','Main task 2','Read stored 36; repair to 38; check labels; compare leading zeros, size and position.'],['47–51','Extra challenges','One-bit change 41 to 57; largest unsigned eight-bit value; repeatable levelled practice. Pupils need not finish all extras.'],['51–53','Practice break','Teacher-controlled short Linguaholic game. Can be skipped without blocking plenary.'],['53–56','Learning pitstop','Phase and topic-specific next step. Drowning is not an ability label.'],['56–60','Plenary','Fresh build 70, decode 129 and distinguish zero’s value from its eight-bit length.'],['After plenary','Games / evidence','Independent Blooket and Don’t Look Down. Use actual assignment deadlines. No screenshot or compulsory PDF.']
-  ].map(row=>`<tr>${row.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table><h2>Progression and feedback</h2><p>Core steps require an attempt, not a perfect score. Wrong answers show an amber explanation, preserve the first response and allow progress. Extra challenges and the game break are not prerequisites. Navigation redirects to the earliest unfinished core step and names it.</p><h2>Review pupil evidence</h2><p>Ask for a pupil’s JSON backup only if needed. Open it here to review, without overwriting teacher work. This does not provide live class monitoring.</p><button data-action="teacher-import">Open pupil JSON for review</button><h2>Curriculum and pedagogy</h2><p>This lesson adapts KS3 binary-number representation and conversion objectives for Year 7 after four-bit work. NCCE places its source unit in Year 8; this is not a claim of NCCE Year 7 year-by-year alignment. Scope is unsigned whole-number values only: no binary arithmetic, negative representation, text encoding, Python or spreadsheet launch.</p><ul><li><a href="https://teachcomputing.org/curriculum/key-stage-3/representations-from-clay-to-silicon/numbers-in-binary" target="_blank" rel="noopener">NCCE: Numbers in binary</a></li><li><a href="https://teachcomputing.org/curriculum/key-stage-3/representations-from-clay-to-silicon/binary-digits" target="_blank" rel="noopener">NCCE: Binary digits</a></li><li><a href="https://www.raspberrypi.org/blog/how-to-design-and-present-clear-computing-lessons-mayers-principles/" target="_blank" rel="noopener">Raspberry Pi Foundation: clear computing lessons</a></li></ul><p>Use short teacher modelling, gradually faded support, retrieval and worked examples. Pair talk is not required. Mandarin is selectable, and pupils can use it to rehearse the idea without a second written task.</p>`);}
   $('#close-support').onclick=()=>$('#support').close();
   $('#restore-file').onchange=async e=>{
     const f=e.target.files[0];e.target.value='';if(!f)return;if(f.size>2000000){toast('That file is too large. Choose a Week 10 JSON backup smaller than 2 MB.');return;}
     try{const imported=JSON.parse(await f.text());if(!valid(imported))throw Error('invalid');
-      if(importPurpose==='review'&&teacher()){showReport(imported);return;}
       if(!confirm(`Restore the Week 10 backup for ${imported.identity.name}, ${imported.identity.cls}? This replaces only this pupil’s saved copy for this lesson on this device.`))return;
-      state=imported;storageKey=key(state.identity.name,state.identity.name.toLowerCase()==='teacher'?'preview':state.identity.cls);save();$('#support').close();render(true);toast('Backup restored. / 备份已恢复。');
+      window.BinaryCloud?.detach();state=imported;storageKey=key(state.identity.name,state.identity.cls);save(false);$('#support').close();render(true);attachCloud();toast('Backup restored. Keep this private: it contains the key to your own work. / 备份已恢复，请妥善保管。');
     }catch{toast('This is not a valid Week 10 Binary Arcade backup. No saved work was changed. / 备份不适用于本课，原记录没有改变。');}
   };
   document.addEventListener('click',e=>{
@@ -213,9 +225,11 @@
     if(b.dataset.bit!==undefined){const r=current().kind==='practice'?practiceProblem().r:rec(),index=Number(b.dataset.bit),p=[...r.answer];p[index]=p[index]==='1'?'0':'1';answer(p.join(''));$(`[data-bit="${index}"]`)?.focus({preventScroll:true});return;}
     if(b.dataset.level){state.practice.level=b.dataset.level;state.practice.index=0;save();render();return;}
     const a=b.dataset.action;if(!a)return;if(b.tagName==='A')e.preventDefault();
-    if(a==='device')return device();if(a==='restore'||a==='teacher-import'){importPurpose=a==='teacher-import'?'review':'resume';$('#restore-file').click();return;}
-    if(a==='backup')return backup();if(a==='vocabulary')return vocab();if(a==='goals')return goals();if(a==='teacher-plan')return teacherPlan();
-    if(a==='home'){save();state=null;landing();return;}if(!state)return;
+    if(a==='device')return device();if(a==='restore'){$('#restore-file').click();return;}
+    if(a==='backup')return backup();if(a==='vocabulary')return vocab();if(a==='goals')return goals();
+    if(a==='home'){save();window.BinaryCloud?.flush();window.BinaryCloud?.detach();state=null;landing();window.scrollTo(0,0);return;}if(!state)return;
+    if(a==='sync-retry')return window.BinaryCloud?.retry();
+    if(a==='cloud-restore')return window.BinaryCloud?.loadSaved().catch(()=>toast('The saved copy is unavailable. Keep your backup and tell your teacher.'));
     if(a==='next')return next();if(a==='back')return go(state.p-1,true);if(a==='hint'){rec().hint=true;event('hint-opened',current().id);save();render();return;}
     if(a==='model-next')state.modelStep=Math.min(5,state.modelStep+1);
     if(a==='model-back')state.modelStep=Math.max(0,state.modelStep-1);

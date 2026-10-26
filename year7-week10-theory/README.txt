@@ -1,13 +1,13 @@
 YEAR 7 · WEEK 10 THEORY · BINARY ARCADE
 
 OPEN THE LESSON
-Open dist/index.html. Keep the whole dist folder together.
-The downloadable ZIP contains these same files at its top level, so extract it
-before opening index.html. No build, installation, account or paid API is needed.
-A static web server or ordinary GitHub Pages hosting is also supported.
-This lesson is prepared for the existing cswithmrdave GitHub Pages repository.
+Use the public lesson link for school saving. Keep the whole dist folder together
+when testing locally. No build, pupil account, installation or paid-plan change
+is needed. A local file can be used for device-only work, but school saving needs
+HTTPS hosting or a local HTTP preview. This lesson uses the existing cswithmrdave
+GitHub Pages repository and its existing Supabase project.
 Public route: https://mrdavekang.github.io/cswithmrdave/year7-week10-theory/
-Publication must be verified before sharing the route as live.
+Teacher route: https://mrdavekang.github.io/cswithmrdave/year7-week10-theory/teacher.html
 If your browser blocks direct local-file opening, use a local static server for
 the dist folder. For example, run python3 -m http.server 8000 --bind 127.0.0.1
 from dist, then open http://127.0.0.1:8000/. The managed preview browser was tested
@@ -19,10 +19,19 @@ calm colour styles. Entering the same name and class in the same browser resumes
 that local copy. This is a profile selector, NOT authentication or a unique
 identity across devices. Two pupils must not share the same name/class profile.
 
-TEACHER PREVIEW
-Enter teacher as the name; class can be blank. All cards are then accessible.
-Preview storage is separate from pupil storage. The Teacher guide button explains
-the timings, assessment checks, adaptations and evidence review.
+PRIVATE TEACHER REVIEW
+Open teacher.html separately; no teacher link is shown in the pupil lesson.
+Use the existing approved classroom Auth account, not the Supabase dashboard's
+GitHub sign-in. There is no signup and a typed pupil name never grants access.
+Teacher authentication stays in tab memory only. Reloading or closing the tab
+requires sign-in again. Sign out clears private responses from the view.
+An authenticated lesson preview lets the teacher inspect all cards and answers.
+The dashboard refreshes every five seconds while visible, unless paused.
+Choose a class, search a name, use Support to check, then View responses.
+Review drafts, first/current answers, checks, hints, corrections, KSU ratings,
+pitstop phase, extra practice and recent meaningful actions. Flags are formative
+conversation prompts, not diagnoses or formal grades. A heartbeat is not proof
+of attention. Game-link launches are not proof of play or completion.
 
 LESSON STRUCTURE · 60 MINUTES
 0–2   Welcome: WAGBA, KSU and independent working routines.
@@ -69,18 +78,43 @@ Mandarin glyphs. Keyboard focus, large touch targets and reduced motion supporte
 Layout is responsive; browser-sized checks are not a physical iPad test.
 
 SAVING AND BACKUPS
-All progress is in localStorage on the pupil's browser/device. There is no
-Supabase connection, central teacher dashboard or automatic Teams submission.
-No pupil name or response is sent anywhere by this app. External games are
-separate services and open only when selected by the user.
+The device keeps a localStorage copy and a durable queue of pending changes.
+Name/class, answers, checks, attempts, progress and learning reflections save to
+restricted Week 10 records in the existing Supabase project after a short pause.
+The school-save status says Saved to teacher only after the server acknowledges
+the save. Offline work remains local; reconnecting retries. Saving trouble does
+not block lesson progress. No screenshots or image uploads are collected.
+There is no automatic Teams submission. External games are separate services.
 Records include responses, check history, hint use, model steps, practice rounds,
 self-reflections and game-link launches. Opening a game is NOT proof of completion.
 
 Download backup is always visible at top right. It creates a JSON file. Restore a
 JSON backup returns to that pupil's saved work. If storage is blocked or full,
 the status warns that the work is not saved; the app remains usable in memory.
-The teacher can review a pupil JSON from Teacher guide without replacing the
-teacher profile. No public pupil list is provided.
+Each record uses a random 256-bit private device key; the server stores its hash.
+A name alone cannot retrieve another device's record. The pupil JSON contains
+the private key, so it must not be posted publicly or shared with classmates.
+Restoring the pupil's own backup on another device preserves that record.
+Without the backup, a second device creates a new record, even for the same name.
+Names are self-entered, not verified school identities. The same name/class in
+the same browser reopens that local profile: shared-device users must not open
+another pupil's profile. No public pupil list is exposed.
+
+SECURITY, RETENTION AND RECOVERY
+Only the already-approved teacher account may read class responses. Unapproved
+authenticated accounts and anonymous callers are denied by database functions.
+Private tables have RLS enabled, no public table permissions, and are in an
+unexposed schema. Only narrow capability-protected pupil functions are public.
+The browser contains a publishable key only, never a service-role or secret key.
+Snapshot/event limits, a registration cap and idempotent writes bound normal use.
+Drafts are captured at save boundaries, not as a raw keystroke stream.
+Another tab's newer revision causes a warning rather than silent overwriting:
+download a backup, then Load saved class copy. Device-only work remains usable.
+Archive duplicate/test records to hide them from the normal dashboard. Archived
+responses remain recoverable and still occupy storage; this is not deletion.
+No automatic retention/purge policy or billing/plan settings were changed.
+The school should set its retention period and review Supabase usage as classes
+accumulate. Text-only does not mean unlimited storage.
 
 PDF IS A BACKUP, NOT A BARRIER
 At the debrief, Review my evidence shows answers and check history.
@@ -128,7 +162,13 @@ competition is required for the core lesson.
 
 EDITING
 lesson.js: content, WAGBA, KSU, vocabulary, stages and game links.
-app.js: saving, progression, interactions, teacher guide, backup/report tools.
+app.js: device saving, progression, interactions and pupil backup/report tools.
+cloud-config.js: public project configuration and lesson permalink.
+cloud.js / tracking-core.js: private-capability transport and formative summaries.
+teacher.html / teacher.js / teacher.css: separate authenticated response review.
+vendor/: locally bundled official Supabase browser library and licence.
+The database migration and security-test scripts are outside dist and are not
+copied to the public lesson folder. They affect only this Week 10 lesson.
 styles.css: theme, responsive layouts and print styling.
 assets/: pupil-facing images and local font only. Teacher QA answers/contact
 sheets from the original visual pack are deliberately not copied here.
