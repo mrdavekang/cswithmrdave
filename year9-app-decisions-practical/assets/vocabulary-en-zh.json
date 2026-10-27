@@ -1,0 +1,86 @@
+[
+  {
+    "term_en": "choice",
+    "term_zh": "选项",
+    "meaning_en": "An option the user can select.",
+    "meaning_zh": "用户可以选择的一个选项。"
+  },
+  {
+    "term_en": "selected value",
+    "term_zh": "所选的值",
+    "meaning_en": "The option currently chosen by the user.",
+    "meaning_zh": "用户当前选择的内容。"
+  },
+  {
+    "term_en": "event",
+    "term_zh": "事件",
+    "meaning_en": "An action, such as a button tap, that starts a set of instructions.",
+    "meaning_zh": "例如点击按钮，会触发一组指令。"
+  },
+  {
+    "term_en": "condition",
+    "term_zh": "条件",
+    "meaning_en": "A comparison that gives TRUE or FALSE.",
+    "meaning_zh": "一个会得到 TRUE 或 FALSE 结果的比较。"
+  },
+  {
+    "term_en": "THEN",
+    "term_zh": "满足条件时的分支",
+    "meaning_en": "Instructions followed when the condition is TRUE.",
+    "meaning_zh": "条件为 TRUE 时执行的指令。"
+  },
+  {
+    "term_en": "ELSE",
+    "term_zh": "否则分支",
+    "meaning_en": "Instructions followed when the condition is FALSE.",
+    "meaning_zh": "条件为 FALSE 时执行的指令。"
+  },
+  {
+    "term_en": "response / output",
+    "term_zh": "回应／输出",
+    "meaning_en": "What the app displays after following its instructions.",
+    "meaning_zh": "应用程序执行指令后显示的结果。"
+  },
+  {
+    "term_en": "component",
+    "term_zh": "组件",
+    "meaning_en": "An app part such as a Label, Button or Spinner.",
+    "meaning_zh": "应用的一个部分，例如 Label、Button 或 Spinner。"
+  },
+  {
+    "term_en": "property",
+    "term_zh": "属性",
+    "meaning_en": "A setting of a component, such as Text or Picture.",
+    "meaning_zh": "组件的设置，例如 Text 或 Picture。"
+  },
+  {
+    "term_en": "Text",
+    "term_zh": "显示文字",
+    "meaning_en": "A property controlling the words a component displays.",
+    "meaning_zh": "控制组件显示哪些文字的属性。"
+  },
+  {
+    "term_en": "Designer",
+    "term_zh": "设计界面",
+    "meaning_en": "Where you change the app layout and component properties.",
+    "meaning_zh": "修改应用外观与组件属性的地方。"
+  },
+  {
+    "term_en": "Blocks",
+    "term_zh": "积木界面",
+    "meaning_en": "Where you read and change the app instructions.",
+    "meaning_zh": "阅读与修改应用指令的地方。"
+  },
+  {
+    "term_en": "Companion",
+    "term_zh": "Companion 运行应用",
+    "meaning_en": "The app used to run and try the project on a supported device.",
+    "meaning_zh": "在支持的设备上运行和试用项目所用的应用。"
+  },
+  {
+    "term_en": ".aia project file",
+    "term_zh": ".aia 项目文件",
+    "meaning_en": "The editable app project that you can import into MIT App Inventor.",
+    "meaning_zh": "可以导入 MIT App Inventor 并继续编辑的项目文件。"
+  }
+]

@@ -1,0 +1,794 @@
+[
+  {
+    "id": "C01-two-results",
+    "file": "concepts/C01-two-results.png",
+    "kind": "illustrated_expected_result",
+    "title_en": "One app, two useful results",
+    "title_zh": "一个应用，两种实用结果",
+    "caption_en": "Gear Room changes its useful message when Portable or Desk setup is selected and its button is tapped.",
+    "caption_zh": "选择 Portable 或 Desk setup 并点击按钮，Gear Room 会显示相应的实用信息。",
+    "alt_en": "Gear Room changes its useful message when Portable or Desk setup is selected and its button is tapped.",
+    "alt_zh": "选择 Portable 或 Desk setup 并点击按钮，Gear Room 会显示相应的实用信息。",
+    "dimensions": [
+      1900,
+      1120
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false,
+    "responsive_detail_files": [
+      "concepts/details/C01-portable.png",
+      "concepts/details/C01-desk-setup.png"
+    ]
+  },
+  {
+    "id": "C02-your-app-possibilities",
+    "file": "concepts/C02-your-app-possibilities.png",
+    "kind": "concept_illustration",
+    "title_en": "Your topic, same pattern",
+    "title_zh": "你的主题，相同的模式",
+    "caption_en": "Fashion, gaming and photography examples are possibilities; the fourth card invites an appropriate original topic.",
+    "caption_zh": "穿搭、游戏装备和摄影只是例子；第四张卡鼓励选择自己的合适主题。",
+    "alt_en": "Fashion, gaming and photography examples are possibilities; the fourth card invites an appropriate original topic.",
+    "alt_zh": "穿搭、游戏装备和摄影只是例子；第四张卡鼓励选择自己的合适主题。",
+    "dimensions": [
+      2200,
+      1130
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false,
+    "responsive_detail_files": [
+      "concepts/details/C02-fashion.png",
+      "concepts/details/C02-gaming.png",
+      "concepts/details/C02-photography.png",
+      "concepts/details/C02-your-idea.png"
+    ]
+  },
+  {
+    "id": "C03-choice-event-condition-output",
+    "file": "concepts/C03-choice-event-condition-output.png",
+    "kind": "concept_diagram",
+    "title_en": "Choice, tap, decision, response",
+    "title_zh": "选择、点击、判断、回应",
+    "caption_en": "The chosen value is read when the Click event starts the condition; the matching message is displayed.",
+    "caption_zh": "Click 事件触发后，程序读取所选的值、检查条件，再显示相应信息。",
+    "alt_en": "The chosen value is read when the Click event starts the condition; the matching message is displayed.",
+    "alt_zh": "Click 事件触发后，程序读取所选的值、检查条件，再显示相应信息。",
+    "dimensions": [
+      2200,
+      640
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false,
+    "responsive_detail_files": [
+      "concepts/details/C03-input.png",
+      "concepts/details/C03-event.png",
+      "concepts/details/C03-condition.png",
+      "concepts/details/C03-output.png"
+    ]
+  },
+  {
+    "id": "C04-two-paths",
+    "file": "concepts/C04-two-paths.png",
+    "kind": "concept_diagram",
+    "title_en": "Two valid paths",
+    "title_zh": "两条正常的路径",
+    "caption_en": "Quick summary matches the condition and follows THEN. More detail does not match and follows ELSE. Both are intended results.",
+    "caption_zh": "Quick summary 满足条件，执行 THEN；More detail 不满足条件，执行 ELSE。两种结果都符合设计。",
+    "alt_en": "Quick summary matches the condition and follows THEN. More detail does not match and follows ELSE. Both are intended results.",
+    "alt_zh": "Quick summary 满足条件，执行 THEN；More detail 不满足条件，执行 ELSE。两种结果都符合设计。",
+    "dimensions": [
+      1800,
+      1100
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "C05-exact-match",
+    "file": "concepts/C05-exact-match.png",
+    "kind": "concept_diagram",
+    "title_en": "Same words in both places",
+    "title_zh": "两处使用完全相同的文字",
+    "caption_en": "Portable is both the first menu choice and the comparison text. Its spelling, capitals and spaces match.",
+    "caption_zh": "第一个菜单选项和比较文字都为 Portable；拼写、大小写和空格保持一致。",
+    "alt_en": "Portable is both the first menu choice and the comparison text. Its spelling, capitals and spaces match.",
+    "alt_zh": "第一个菜单选项和比较文字都为 Portable；拼写、大小写和空格保持一致。",
+    "dimensions": [
+      1800,
+      640
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "C06-mismatch-and-repair",
+    "file": "concepts/C06-mismatch-and-repair.png",
+    "kind": "troubleshooting_diagram",
+    "title_en": "Mismatch and repair",
+    "title_zh": "发现并修复不一致",
+    "caption_en": "An intentionally labelled mismatch compares Portable with the old Quick summary text. The repaired example compares Portable with Portable.",
+    "caption_zh": "明确标注的错误示例把 Portable 与旧文字 Quick summary 比较；修复后，两处都使用 Portable。",
+    "alt_en": "An intentionally labelled mismatch compares Portable with the old Quick summary text. The repaired example compares Portable with Portable.",
+    "alt_zh": "明确标注的错误示例把 Portable 与旧文字 Quick summary 比较；修复后，两处都使用 Portable。",
+    "dimensions": [
+      1800,
+      760
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "C07-three-workspaces",
+    "file": "concepts/C07-three-workspaces.png",
+    "kind": "concept_diagram",
+    "title_en": "Three places, three jobs",
+    "title_zh": "三个界面，三种作用",
+    "caption_en": "Designer changes the layout, Blocks changes instructions, and Companion runs the app. The Spinner may show add items... in Designer; this preview does not run the button code.",
+    "caption_zh": "Designer 修改外观，Blocks 修改指令，Companion 运行应用。Designer 中的下拉框可能显示 add items...；这个预览不会执行按钮代码。",
+    "alt_en": "Designer changes the layout, Blocks changes instructions, and Companion runs the app. The Spinner may show add items... in Designer; this preview does not run the button code.",
+    "alt_zh": "Designer 修改外观，Blocks 修改指令，Companion 运行应用。Designer 中的下拉框可能显示 add items...；这个预览不会执行按钮代码。",
+    "dimensions": [
+      1950,
+      780
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "C09-project-name-and-title",
+    "file": "concepts/C09-project-name-and-title.png",
+    "kind": "concept_diagram",
+    "title_en": "Project name and visible title",
+    "title_zh": "项目名称与屏幕标题",
+    "caption_en": "The saved project can remain MyChoice_W10 while TitleLabel.Text shows Gear Room. Find the saved project name when reopening.",
+    "caption_zh": "保存的项目仍可名为 MyChoice_W10，而 TitleLabel.Text 显示 Gear Room。重新打开时，要找保存的项目名称。",
+    "alt_en": "The saved project can remain MyChoice_W10 while TitleLabel.Text shows Gear Room. Find the saved project name when reopening.",
+    "alt_zh": "保存的项目仍可名为 MyChoice_W10，而 TitleLabel.Text 显示 Gear Room。重新打开时，要找保存的项目名称。",
+    "dimensions": [
+      1800,
+      700
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "S01-designer-overview",
+    "file": "screenshots/S01-designer-overview.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Find the preview, components and properties.",
+    "title_zh": "找到外观预览、组件和属性。",
+    "caption_en": "A is the Designer layout preview, B the component list and C the editable properties. This is not a running Companion app.",
+    "caption_zh": "A 是 Designer 外观预览，B 是组件列表，C 是可修改的属性。这里不是运行中的 Companion 应用。",
+    "alt_en": "A is the Designer layout preview, B the component list and C the editable properties. This is not a running Companion app.",
+    "alt_zh": "A 是 Designer 外观预览，B 是组件列表，C 是可修改的属性。这里不是运行中的 Companion 应用。",
+    "dimensions": [
+      2505,
+      1600
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/14-designer-reviewed.png",
+      "crop": [
+        525,
+        335,
+        2930,
+        1550
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S01-designer-overview.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "外观预览"
+      },
+      {
+        "marker": "B",
+        "label_en": "B",
+        "label_zh": "组件列表"
+      },
+      {
+        "marker": "C",
+        "label_en": "C",
+        "label_zh": "属性"
+      }
+    ]
+  },
+  {
+    "id": "S02-blocks-overview",
+    "file": "screenshots/S02-blocks-overview.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Find the event and the supplied helpers.",
+    "title_zh": "找到点击事件和已提供的辅助积木。",
+    "caption_en": "A is ActionButton.Click and contains the two-response decision. B is the supplied Reset helper. C is the selection-change helper.",
+    "caption_zh": "A 是 ActionButton.Click，里面有两种回应的判断；B 是已提供的重置事件；C 是选项改变时的辅助事件。",
+    "alt_en": "A is ActionButton.Click and contains the two-response decision. B is the supplied Reset helper. C is the selection-change helper.",
+    "alt_zh": "A 是 ActionButton.Click，里面有两种回应的判断；B 是已提供的重置事件；C 是选项改变时的辅助事件。",
+    "dimensions": [
+      2990,
+      1630
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/17-blocks-final.png",
+      "crop": [
+        30,
+        335,
+        2920,
+        1580
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S02-blocks-overview.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "主要点击事件"
+      },
+      {
+        "marker": "B",
+        "label_en": "B",
+        "label_zh": "重置事件"
+      },
+      {
+        "marker": "C",
+        "label_en": "C",
+        "label_zh": "选项改变时的辅助事件"
+      }
+    ]
+  },
+  {
+    "id": "S03-title-property",
+    "file": "screenshots/S03-title-property.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "TitleLabel → Text",
+    "title_zh": "TitleLabel → Text（标题文字）",
+    "caption_en": "Select TitleLabel and edit its Text property. This changes the visible title without changing the component name.",
+    "caption_zh": "选择 TitleLabel，修改 Text 属性。这会改变用户看到的标题，不会改变组件名称。",
+    "alt_en": "Select TitleLabel and edit its Text property. This changes the visible title without changing the component name.",
+    "alt_zh": "选择 TitleLabel，修改 Text 属性。这会改变用户看到的标题，不会改变组件名称。",
+    "dimensions": [
+      1800,
+      760
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/15-title-text-visible.png",
+      "component_crop": [
+        2110,
+        440,
+        2460,
+        700
+      ],
+      "property_crop": [
+        2510,
+        1065,
+        2870,
+        1205
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false
+  },
+  {
+    "id": "S04-choice-property",
+    "file": "screenshots/S04-choice-property.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "ChoiceSpinner → ElementsFromString",
+    "title_zh": "ChoiceSpinner → ElementsFromString（选项）",
+    "caption_en": "The full starter value is Quick summary,More detail. One English comma separates two choices. The narrow MIT field may show only part of the value.",
+    "caption_zh": "完整起始值为 Quick summary,More detail。一个英文逗号分隔两个选项；MIT 的窄输入框可能只显示部分文字。",
+    "alt_en": "The full starter value is Quick summary,More detail. One English comma separates two choices. The narrow MIT field may show only part of the value.",
+    "alt_zh": "完整起始值为 Quick summary,More detail。一个英文逗号分隔两个选项；MIT 的窄输入框可能只显示部分文字。",
+    "dimensions": [
+      1800,
+      890
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/12-choice-list-visible.png",
+      "component_crop": [
+        2110,
+        710,
+        2460,
+        1010
+      ],
+      "property_crop": [
+        2510,
+        1180,
+        2870,
+        1320
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false
+  },
+  {
+    "id": "S05-button-property",
+    "file": "screenshots/S05-button-property.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "ActionButton → Text",
+    "title_zh": "ActionButton → Text（按钮文字）",
+    "caption_en": "Change ActionButton.Text to describe the information the button will show. Keep its component name ActionButton.",
+    "caption_zh": "修改 ActionButton 的 Text，说明按钮会显示什么信息；保留组件名称 ActionButton。",
+    "alt_en": "Change ActionButton.Text to describe the information the button will show. Keep its component name ActionButton.",
+    "alt_zh": "修改 ActionButton 的 Text，说明按钮会显示什么信息；保留组件名称 ActionButton。",
+    "dimensions": [
+      1800,
+      760
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/16-button-text-visible.png",
+      "component_crop": [
+        2110,
+        790,
+        2460,
+        1110
+      ],
+      "property_crop": [
+        2510,
+        1200,
+        2870,
+        1350
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false
+  },
+  {
+    "id": "S06-event-and-condition",
+    "file": "screenshots/S06-event-and-condition.png",
+    "kind": "annotated_genuine_MIT_blocks",
+    "title_en": "A tap starts this comparison.",
+    "title_zh": "点击按钮后，开始进行这个比较。",
+    "caption_en": "A marks the Click event. B compares ChoiceSpinner.Selection with Quick summary.",
+    "caption_zh": "A 标出 Click 事件；B 把 ChoiceSpinner.Selection 与 Quick summary 进行比较。",
+    "alt_en": "A marks the Click event. B compares ChoiceSpinner.Selection with Quick summary.",
+    "alt_zh": "A 标出 Click 事件；B 把 ChoiceSpinner.Selection 与 Quick summary 进行比较。",
+    "dimensions": [
+      1800,
+      900
+    ],
+    "source": "Genuine handler.png crop from MIT-exported MyChoice_W10, captured 2026-10-26",
+    "live_device_capture": false,
+    "hotspots": [
+      {
+        "box": [
+          17,
+          3,
+          446,
+          55
+        ],
+        "marker": "A",
+        "label_zh": "Click 事件"
+      },
+      {
+        "box": [
+          240,
+          55,
+          1173,
+          129
+        ],
+        "marker": "B",
+        "label_zh": "读取并比较所选的值"
+      }
+    ]
+  },
+  {
+    "id": "S07-first-response",
+    "file": "screenshots/S07-first-response.png",
+    "kind": "annotated_genuine_MIT_blocks",
+    "title_en": "The first message is inside THEN.",
+    "title_zh": "第一条信息位于 THEN 分支中。",
+    "caption_en": "Only the pink text is highlighted: Compact camera. Easy to carry. It is the response for the matching first choice.",
+    "caption_zh": "只突出粉红色文字：Compact camera. Easy to carry.。它回应与条件一致的第一个选项。",
+    "alt_en": "Only the pink text is highlighted: Compact camera. Easy to carry. It is the response for the matching first choice.",
+    "alt_zh": "只突出粉红色文字：Compact camera. Easy to carry.。它回应与条件一致的第一个选项。",
+    "dimensions": [
+      1800,
+      900
+    ],
+    "source": "Genuine handler.png crop from MIT-exported MyChoice_W10, captured 2026-10-26",
+    "live_device_capture": false,
+    "hotspots": [
+      {
+        "box": [
+          721,
+          134,
+          1251,
+          188
+        ],
+        "marker": "A",
+        "label_zh": "第一条回应文字"
+      }
+    ]
+  },
+  {
+    "id": "S08-other-response",
+    "file": "screenshots/S08-other-response.png",
+    "kind": "annotated_genuine_MIT_blocks",
+    "title_en": "The other message is inside ELSE.",
+    "title_zh": "另一条信息位于 ELSE 分支中。",
+    "caption_en": "The pink ELSE message is Zoom lens and a rechargeable battery. It is used when the selected value does not match Quick summary.",
+    "caption_zh": "ELSE 中的粉红色信息为 Zoom lens and a rechargeable battery.。所选的值不等于 Quick summary 时，显示这条信息。",
+    "alt_en": "The pink ELSE message is Zoom lens and a rechargeable battery. It is used when the selected value does not match Quick summary.",
+    "alt_zh": "ELSE 中的粉红色信息为 Zoom lens and a rechargeable battery.。所选的值不等于 Quick summary 时，显示这条信息。",
+    "dimensions": [
+      1800,
+      900
+    ],
+    "source": "Genuine handler.png crop from MIT-exported MyChoice_W10, captured 2026-10-26",
+    "live_device_capture": false,
+    "hotspots": [
+      {
+        "box": [
+          721,
+          214,
+          1334,
+          272
+        ],
+        "marker": "B",
+        "label_zh": "另一条回应文字"
+      }
+    ]
+  },
+  {
+    "id": "S09-editable-text",
+    "file": "screenshots/S09-editable-text.png",
+    "kind": "annotated_genuine_MIT_blocks",
+    "title_en": "Personalise these three text values.",
+    "title_zh": "把这三处文字改成你自己的内容。",
+    "caption_en": "1 must match the first menu choice; 2 is its useful response; 3 is the other choice’s useful response. Keep the connected block structure.",
+    "caption_zh": "1 必须与第一个菜单选项一致；2 是它的实用回应；3 是另一个选项的实用回应。保留现有积木结构。",
+    "alt_en": "1 must match the first menu choice; 2 is its useful response; 3 is the other choice’s useful response. Keep the connected block structure.",
+    "alt_zh": "1 必须与第一个菜单选项一致；2 是它的实用回应；3 是另一个选项的实用回应。保留现有积木结构。",
+    "dimensions": [
+      1800,
+      900
+    ],
+    "source": "Genuine handler.png crop from MIT-exported MyChoice_W10, captured 2026-10-26",
+    "live_device_capture": false,
+    "hotspots": [
+      {
+        "box": [
+          828,
+          64,
+          1150,
+          122
+        ],
+        "marker": "1",
+        "label_zh": "与第一个选项一致"
+      },
+      {
+        "box": [
+          721,
+          134,
+          1251,
+          188
+        ],
+        "marker": "2",
+        "label_zh": "第一个选项的回应"
+      },
+      {
+        "box": [
+          721,
+          214,
+          1334,
+          272
+        ],
+        "marker": "3",
+        "label_zh": "另一个选项的回应"
+      }
+    ]
+  },
+  {
+    "id": "S10-same-starter-value",
+    "file": "screenshots/S10-same-starter-value.png",
+    "kind": "annotated_genuine_MIT_crops",
+    "title_en": "Same first choice in two places",
+    "title_zh": "两处使用相同的第一个选项",
+    "caption_en": "Two genuine crops show the first starter choice Quick summary in ElementsFromString and in the pink comparison text.",
+    "caption_zh": "两处真实截图显示：ElementsFromString 的第一个选项和粉红色比较文字都为 Quick summary。",
+    "alt_en": "Two genuine crops show the first starter choice Quick summary in ElementsFromString and in the pink comparison text.",
+    "alt_zh": "两处真实截图显示：ElementsFromString 的第一个选项和粉红色比较文字都为 Quick summary。",
+    "dimensions": [
+      1900,
+      840
+    ],
+    "source": "Crops from 12-choice-list-visible.png and genuine handler.png; no UI text replaced",
+    "live_device_capture": false
+  },
+  {
+    "id": "S11-import-menu",
+    "file": "screenshots/S11-import-menu.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Import the .aia starter.",
+    "title_zh": "导入 .aia 起始项目。",
+    "caption_en": "In Projects, Import project (.aia) from my computer opens the supplied starter. Do not start a blank project for this activity.",
+    "caption_zh": "在 Projects 中，Import project (.aia) from my computer 会打开提供的起始项目；本活动不从空白项目开始。",
+    "alt_en": "In Projects, Import project (.aia) from my computer opens the supplied starter. Do not start a blank project for this activity.",
+    "alt_zh": "在 Projects 中，Import project (.aia) from my computer 会打开提供的起始项目；本活动不从空白项目开始。",
+    "dimensions": [
+      1500,
+      895
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/11-save-export-menu.png",
+      "crop": [
+        1110,
+        245,
+        1785,
+        850
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S11-import-menu.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "导入项目"
+      }
+    ]
+  },
+  {
+    "id": "S12-save-menu",
+    "file": "screenshots/S12-save-menu.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Save the current project.",
+    "title_zh": "保存当前项目。",
+    "caption_en": "Save project saves the current MIT project; the separate export command downloads its .aia file.",
+    "caption_zh": "Save project 保存当前 MIT 项目；另一个导出命令才会下载 .aia 文件。",
+    "alt_en": "Save project saves the current MIT project; the separate export command downloads its .aia file.",
+    "alt_zh": "Save project 保存当前 MIT 项目；另一个导出命令才会下载 .aia 文件。",
+    "dimensions": [
+      1500,
+      895
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/11-save-export-menu.png",
+      "crop": [
+        1110,
+        245,
+        1785,
+        850
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S12-save-menu.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "保存项目"
+      }
+    ]
+  },
+  {
+    "id": "S13-export-project",
+    "file": "screenshots/S13-export-project.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Export the editable .aia file.",
+    "title_zh": "导出可编辑的 .aia 项目文件。",
+    "caption_en": "Export selected project (.aia) to my computer downloads the editable project for backup or Teams submission.",
+    "caption_zh": "Export selected project (.aia) to my computer 下载可编辑的项目，用于备份或提交到 Teams。",
+    "alt_en": "Export selected project (.aia) to my computer downloads the editable project for backup or Teams submission.",
+    "alt_zh": "Export selected project (.aia) to my computer 下载可编辑的项目，用于备份或提交到 Teams。",
+    "dimensions": [
+      1500,
+      895
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/11-save-export-menu.png",
+      "crop": [
+        1110,
+        245,
+        1785,
+        850
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S13-export-project.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "导出 .aia 文件"
+      }
+    ]
+  },
+  {
+    "id": "S14-reopen-project",
+    "file": "screenshots/S14-reopen-project.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Reopen the same saved project.",
+    "title_zh": "重新打开同一个已保存的项目。",
+    "caption_en": "The genuine project-list row shows MyChoice_W10. Select your saved project name to reopen it and check that your changes remain.",
+    "caption_zh": "真实项目列表中显示 MyChoice_W10；选择你保存的项目名称，重新打开并检查修改是否保留。",
+    "alt_en": "The genuine project-list row shows MyChoice_W10. Select your saved project name to reopen it and check that your changes remain.",
+    "alt_zh": "真实项目列表中显示 MyChoice_W10；选择你保存的项目名称，重新打开并检查修改是否保留。",
+    "dimensions": [
+      1825,
+      435
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/18-project-list.png",
+      "crop": [
+        25,
+        420,
+        1750,
+        565
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S14-reopen-project.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "项目名称"
+      }
+    ]
+  },
+  {
+    "id": "S15-connect-companion",
+    "file": "screenshots/S15-connect-companion.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Connect → AI Companion",
+    "title_zh": "Connect → AI Companion（连接）",
+    "caption_en": "Use Connect, then AI Companion. Use the fresh code shown by your own project. The screenshot does not supply a reusable code.",
+    "caption_zh": "选择 Connect，再选择 AI Companion；使用自己项目刚生成的连接码。截图不提供可重复使用的连接码。",
+    "alt_en": "Use Connect, then AI Companion. Use the fresh code shown by your own project. The screenshot does not supply a reusable code.",
+    "alt_zh": "选择 Connect，再选择 AI Companion；使用自己项目刚生成的连接码。截图不提供可重复使用的连接码。",
+    "dimensions": [
+      1500,
+      935
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/19-connect-menu.png",
+      "crop": [
+        1340,
+        245,
+        1890,
+        890
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S15-connect-companion.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "连接 Companion"
+      }
+    ]
+  },
+  {
+    "id": "S16-supplied-picture",
+    "file": "screenshots/S16-supplied-picture.png",
+    "kind": "annotated_genuine_MIT_crops",
+    "title_en": "AppImage and supplied pictures",
+    "title_zh": "AppImage 与已提供的图片",
+    "caption_en": "The genuine image picker lists supplied pictures. gaming.png is outlined as an example choice; camera.png is still the selected item in this capture. Select a file and confirm with OK.",
+    "caption_zh": "真实图片选择器列出已提供的图片。gaming.png 的边框表示一个示例选项；截图中当前选中的仍是 camera.png。选择所需文件后，点击 OK。",
+    "alt_en": "The genuine image picker lists supplied pictures. gaming.png is outlined as an example choice; camera.png is still the selected item in this capture. Select a file and confirm with OK.",
+    "alt_zh": "真实图片选择器列出已提供的图片。gaming.png 的边框表示一个示例选项；截图中当前选中的仍是 camera.png。选择所需文件后，点击 OK。",
+    "dimensions": [
+      1800,
+      1040
+    ],
+    "source": "09-picture-choices.png, genuine component and picture-picker crops; no UI text replaced",
+    "live_device_capture": false
+  },
+  {
+    "id": "S17-import-dialog",
+    "file": "screenshots/S17-import-dialog.png",
+    "kind": "annotated_genuine_MIT_screenshot",
+    "title_en": "Choose the downloaded .aia file.",
+    "title_zh": "选择已下载的 .aia 项目文件。",
+    "caption_en": "A opens file selection for MyChoice_W10.aia. After choosing the file, B confirms import. On iPad the file is normally in Files / Downloads.",
+    "caption_zh": "A 打开文件选择，选择 MyChoice_W10.aia 后，B 确认导入；iPad 上的文件通常位于“文件／下载”。",
+    "alt_en": "A opens file selection for MyChoice_W10.aia. After choosing the file, B confirms import. On iPad the file is normally in Files / Downloads.",
+    "alt_zh": "A 打开文件选择，选择 MyChoice_W10.aia 后，B 确认导入；iPad 上的文件通常位于“文件／下载”。",
+    "dimensions": [
+      1500,
+      675
+    ],
+    "source": {
+      "file": "year9-app-decisions-pack/raw-screens/02-import-file.png",
+      "crop": [
+        1110,
+        730,
+        1840,
+        1115
+      ],
+      "capture_date": "2026-10-26"
+    },
+    "live_device_capture": false,
+    "clean_file": "clean-crops/S17-import-dialog.png",
+    "annotation_key": [
+      {
+        "marker": "A",
+        "label_en": "A",
+        "label_zh": "选择文件"
+      },
+      {
+        "marker": "B",
+        "label_en": "B",
+        "label_zh": "确认导入"
+      }
+    ]
+  },
+  {
+    "id": "D01-computer-and-ipad",
+    "file": "devices/D01-computer-and-ipad.png",
+    "kind": "device_route_illustration",
+    "title_en": "Computer and school iPad",
+    "title_zh": "电脑与学校 iPad",
+    "caption_en": "Build in the computer browser and run the app in Companion on a school iPad, using the required Wi-Fi connection. No phone is required in school.",
+    "caption_zh": "在电脑浏览器制作，在学校 iPad 的 Companion 中运行，并使用所需的 Wi-Fi 连接。在校不需要手机。",
+    "alt_en": "Build in the computer browser and run the app in Companion on a school iPad, using the required Wi-Fi connection. No phone is required in school.",
+    "alt_zh": "在电脑浏览器制作，在学校 iPad 的 Companion 中运行，并使用所需的 Wi-Fi 连接。在校不需要手机。",
+    "dimensions": [
+      1900,
+      760
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "D02-one-ipad",
+    "file": "devices/D02-one-ipad.png",
+    "kind": "device_route_illustration",
+    "title_en": "One iPad: browser and Companion",
+    "title_zh": "一台 iPad：浏览器与 Companion",
+    "caption_en": "The same school iPad switches between the browser for building and Companion for running. This is a route diagram, not an iPad screenshot or a completed device trial.",
+    "caption_zh": "同一台学校 iPad 在制作所用的浏览器和运行所用的 Companion 之间切换。这是路线示意图，不是 iPad 截图，也不表示已完成设备测试。",
+    "alt_en": "The same school iPad switches between the browser for building and Companion for running. This is a route diagram, not an iPad screenshot or a completed device trial.",
+    "alt_zh": "同一台学校 iPad 在制作所用的浏览器和运行所用的 Companion 之间切换。这是路线示意图，不是 iPad 截图，也不表示已完成设备测试。",
+    "dimensions": [
+      1700,
+      850
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "D03-project-file-journey",
+    "file": "devices/D03-project-file-journey.png",
+    "kind": "concept_diagram",
+    "title_en": "The project-file journey",
+    "title_zh": "项目文件的保存与提交",
+    "caption_en": "Save the MIT project, reopen it to check the changes, export its editable .aia, then attach that file to the practical assignment in Teams.",
+    "caption_zh": "先保存 MIT 项目，重新打开检查修改，再导出可编辑的 .aia，并把文件附加到 Teams 实践作业中。",
+    "alt_en": "Save the MIT project, reopen it to check the changes, export its editable .aia, then attach that file to the practical assignment in Teams.",
+    "alt_zh": "先保存 MIT 项目，重新打开检查修改，再导出可编辑的 .aia，并把文件附加到 Teams 实践作业中。",
+    "dimensions": [
+      1900,
+      670
+    ],
+    "source": "Original classroom illustration using supplied project content",
+    "live_device_capture": false
+  },
+  {
+    "id": "C08-two-response-animation",
+    "file": "concepts/C08-two-response-animation.gif",
+    "kind": "animated_expected_behaviour_illustration",
+    "title_en": "Choose, tap, read",
+    "title_zh": "选择、点击、阅读",
+    "caption_en": "Illustrated expected behaviour: changing a choice clears the old response; tapping the button shows the matching message. This is not a recording of MIT or an iPad.",
+    "caption_zh": "预期行为示意：改变选项后清除旧回应，点击按钮后显示相应信息。这不是 MIT 或 iPad 的实际录屏。",
+    "alt_en": "An animated Gear Room example follows both choices and their different responses.",
+    "alt_zh": "Gear Room 动画展示两个选项及其不同回应。",
+    "live_device_capture": false,
+    "dimensions": [
+      1000,
+      1100
+    ]
+  }
+]
