@@ -1,0 +1,102 @@
+{
+  "title": "BEETLE:BIT · Week 9 · Build, Check & Code",
+  "date": "Week 9 session · date not specified",
+  "timezone": "Asia/Kuala_Lumpur",
+  "appUrl": "https://mrdavekang.github.io/cswithmrdave/Beetlebit_Week9/",
+  "wagba": "Complete one secure assembly step OR upload and explain a working program.",
+  "objective": "Knowledge: micro:bit inputs, outputs and the REKA:BIT motor controller.\nSkills: match parts, check joints, read blocks, upload and observe.\nUnderstanding: pause waits while motors run; brake stops them. An app tick is not permission to power a robot.",
+  "keywords": "inspect · input · output · upload · pause · brake",
+  "challenge": "Explain one real result, then predict the effect of changing just one thing.",
+  "rows": [
+    {
+      "start": 510, "end": 515, "stage": "Find your next step", "screen": "Own labelled box · all power disconnected", "poster": "workflow", "seated": false,
+      "students": ["Open Week 9. Match your actual robot to the right route.", "Keep loose parts in your own working tray."],
+      "build": "Choose your assembly and exact booklet step. Do not restart automatically.",
+      "code": "Open Coding Lab. Keep motor power disconnected, including the twin cable’s barrel plug.",
+      "teacher": "Welcome pupils, open the Week 9 app and sort the room into Build Bench or Coding Lab. Ask each pair to point to their actual next step.",
+      "check": "No assumed completion: inspect the real build. A simulator program or a finished-looking robot is not proof of readiness for power.",
+      "support": "Before pupils arrive: bench-test the forward 100 / pause 500 ms / brake example on your kit; prepare known data cables, labelled parts trays, correct batteries, a secure raised-wheel support and a marked floor lane. Swap builder/checker roles at the next work block."
+    },
+    {
+      "start": 515, "end": 520, "stage": "Safety & parts check", "screen": "Tools down · point before touching", "poster": "safety", "seated": false,
+      "students": ["Show where power is disconnected before adjusting anything.", "Show Mr Kang any missing or faulty screws or bolts."],
+      "build": "Match the fixing to the photo and measure the real part. Never force a poor fit.",
+      "code": "Buttons A/B are inputs; LEDs and motors are outputs. Teacher approval comes before motor power.",
+      "teacher": "Model power-off handling and one correct fixing. Triage missing or damaged parts now; pupils show you their report and the actual part or empty fixing position.",
+      "check": "Record part type, quantity, booklet step and kit label so replacements or purchases can be arranged. The long motor fixing size is unconfirmed; a smooth brass hex body alone is not a fault.",
+      "support": "Reports stay on each pupil’s browser: saving one does not notify you. Keep a teacher parts list without publishing pupil data. No borrowing from another kit, no force-tightening and no powered wiring changes."
+    },
+    {
+      "start": 520, "end": 525, "stage": "Launch independent work", "screen": "One card · one careful action", "poster": "workflow", "seated": false,
+      "students": ["Read or watch the guide for your current step.", "Predict what should happen before you test."],
+      "build": "Find → Watch if helpful → Build → physically Check. Keep the battery and USB out.",
+      "code": "Make the display project: start = square, A = heart, B = tick. Test in the simulator.",
+      "teacher": "Circulate once to unblock starts. Help builders identify the correct fixing; point coders to the actual MakeCode screenshots rather than building the program for them.",
+      "check": "Every pair can name one achievable goal and find the relevant guide. Stop and flag an uncertain fixing instead of improvising.",
+      "support": "Booklet fixing mismatches are flagged in the app. Use the matching image and actual components; do not tell the whole class to use an unverified substitute. While awaiting help, compare pictures or practise code with motor power off."
+    },
+    {
+      "start": 525, "end": 535, "stage": "Work block · seated supervision", "screen": "Motor power OFF · work independently", "poster": "workflow", "seated": true, "rest": true,
+      "students": ["Keep working on your own small goal.", "If stuck, check the photo or use Parking Lab while waiting."],
+      "build": "Complete and inspect one joint. Keep unused fixings in the labelled box.",
+      "code": "Finish the LED program. Use the app’s USB upload guide; leave all motor barrel plugs out.",
+      "teacher": "Sit where you can see the room. Take a quieter supervision window; keep the powered-test area closed and avoid starting a help queue. Respond immediately to safety concerns.",
+      "check": "Only assembly and display/screen practice. Pupils waiting for inspection use the simulator or Parking Lab; nobody self-authorises motor power.",
+      "support": "This is seated supervision, not leaving the class unsupervised. Invite only urgent safety or trapped-part concerns now. Bring non-urgent questions to the 08:55 check station. Micro:bit USB may run an old program, so wheels remain clear and motor supply disconnected."
+    },
+    {
+      "start": 535, "end": 545, "stage": "Check station · first window", "screen": "One robot at a time · teacher-led tests only", "poster": "safety", "seated": true,
+      "students": ["Bring the actual joint or exact code question to the check station.", "Keep working without motor power while you wait."],
+      "build": "Show the joint, orientation and clearance on your actual robot.",
+      "code": "Prove the real micro:bit shows heart on A and tick on B. Only inspected robots try motor checks.",
+      "teacher": "Stay seated at the check station. Inspect one robot at a time: fixings, wiring, battery polarity and cable clearance. Supervise raised-wheel motor checks only when you can give full attention.",
+      "check": "Compare M1A, M1B, M2A and M2B with booklet p.38. Stop for a jam, wrong direction or unexpected behaviour; disconnect all power before correction.",
+      "support": "Do not open a second powered station or run a floor test while helping a builder. Do not rush all coders to motors: a successful display upload is a valid outcome. This is a seated teaching window, not a rest break."
+    },
+    {
+      "start": 545, "end": 550, "stage": "Reset & choose one improvement", "screen": "Stop · inspect · swap roles", "poster": "workflow", "seated": false,
+      "students": ["Show your partner one piece of evidence.", "Swap builder/checker or driver/navigator roles."],
+      "build": "Choose the next unfinished step or repair the joint that failed its check.",
+      "code": "Read the movement stacks: startup brake; A = move 100 → pause 500 ms → brake; B = brake.",
+      "teacher": "Make a short room sweep and reset the test area to closed. Ask for one precise check or observation, then assign each pair a manageable next step.",
+      "check": "Check code comprehension: pause does not stop the motors; the brake after it does. B is a programmed brake, not a safety-rated emergency switch.",
+      "support": "New movement project: Beetlebit-W9-MoveStop, with Cytron’s ZOOMBIT extension added to that project too. REKA:BIT is the red controller; do not mix this lesson’s blocks with an older direct-REKA:BIT example."
+    },
+    {
+      "start": 550, "end": 560, "stage": "Improve · seated supervision", "screen": "Test area closed · motor supply disconnected", "poster": "workflow", "seated": true, "rest": true,
+      "students": ["Use one example to improve one thing.", "Record a prediction before your next test."],
+      "build": "Build or repair one small section, then compare it with the photo.",
+      "code": "Build and save the movement program without motor power, or play the screen-only Parking Lab.",
+      "teacher": "Sit and observe the whole room for a second quieter window. Keep robot motor power off and defer non-urgent hands-on help until the 09:20 station.",
+      "check": "No unattended motor or gripper test. The Parking Lab is a virtual programming game; its distances do not predict real robot travel.",
+      "support": "Pupils save their MakeCode .hex and keep a known-working display project. If a pupil has an unresolved hardware fault, move them to LED/simulator work; do not make a power test the reward for finishing early."
+    },
+    {
+      "start": 560, "end": 570, "stage": "Check station · controlled movement", "screen": "Teacher checks code · press A once · wait for stop", "poster": "safety", "seated": true,
+      "students": ["Show all three code stacks before connecting motor power.", "Observe one short movement, then switch off before adjustments."],
+      "build": "Continue your actual assembly. A secure step is a successful checkpoint.",
+      "code": "Teacher-led raised-wheel test first. Floor lane only with permission; unplug the computer tether.",
+      "teacher": "Supervise one test at a time. Inspect startup brake, A’s timed move and B’s brake; test raised wheels first. Open the marked floor lane only if you can supervise it directly.",
+      "check": "Starting settings: speed 100/255, pause 500 ms, brake. Use your bench-tested kit settings; stop a stall or unexpected movement. Keep physical power control available and hands away from moving parts.",
+      "support": "The station is seated if the setup allows a clear view and safe reach; stand for a floor test when needed. After a successful checked test, approve changing only 500 → 750 ms and ask for a prediction. Gripper is video preview only until you have calibrated it; no unchecked 0°/180° commands."
+    },
+    {
+      "start": 570, "end": 580, "stage": "Show one useful result", "screen": "Stop motors · explain evidence, not speed", "poster": "workflow", "seated": true,
+      "students": ["Show one secure build check or working program.", "Explain what happened and name your next step."],
+      "build": "Point to the actual joint you checked and any unfinished section.",
+      "code": "Explain the real LED or movement result. Early finishers improve a Parking Lab program.",
+      "teacher": "Sit at the evidence station and listen to short pair explanations. Accept a secure assembly, a real display upload or a checked motor result; students need not all reach the same milestone.",
+      "check": "Distinguish simulator evidence from a real-board upload. Collect any unresolved part type, quantity, step and kit label for replacement or purchasing follow-up.",
+      "support": "No new powered test during this explanation window. A curved drive is useful evidence, not automatic failure: battery, surface and motor differences matter. Extension planning may continue on screen without powered autonomous driving."
+    },
+    {
+      "start": 580, "end": 590, "stage": "Save · switch off · pack", "screen": "All power disconnected · own labelled box", "poster": "workflow", "seated": false,
+      "students": ["Switch off and unplug motor power and USB. Save your work.", "Pack your own parts and leave a precise note for next time."],
+      "build": "Save the actual next booklet step. Put loose fixings in the labelled tray or box.",
+      "code": "Save the MakeCode .hex and separate Week 9 progress backup in school files.",
+      "teacher": "Check all robots are off and disconnected. Confirm labelled boxes, protected cables and grippers, saved files and a clear floor. Finish by 09:50.",
+      "check": "Each pair can state one next action. Make sure pupils have actually shown you their missing-parts report; the app does not send it automatically.",
+      "support": "Keep pupil backups and teacher parts lists private, outside the public GitHub folder. Browser progress and the MakeCode .hex are different things. Do not manually force servo jaws into a packing position."
+    }
+  ]
+}

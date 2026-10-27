@@ -27,6 +27,10 @@
  function order(s,key,n){const a=s.orders[key];if(!a||a.length!==n||a.some(i=>i>=n))s.orders[key]=shuffle(n);return s.orders[key];}
  function missing(s,c){return (c.required||[]).filter(k=>!s.checks[k]&&!String(s.values[k]||'').trim());}
  function advance(s,cards,skip=false){if(skip&&!s.skipped.includes(s.card))s.skipped.push(s.card);if(!skip)s.skipped=s.skipped.filter(i=>i!==s.card);record(s,skip?'help-skip':'continue',cards[s.card].id,skip?'Help requested or step skipped; no completion assumed':'Learner continued');s.card=Math.min(cards.length-1,s.card+1);s.furthest=Math.max(s.furthest,s.card);}
- function route(s,cards,teacher=false){return cards.map((c,i)=>({c,i})).filter(({c})=>teacher||!c.optional||c.type==='extension'&&(s.values.practice==='all'||s.values.practice===c.id)||c.type==='hardware'&&s.values.hardwareRoute==='board'||c.type==='reference'&&s.checks.reopen).map(x=>x.i);}
+ function route(s,cards,teacher=false){const path=cards.map((c,i)=>({c,i})).filter(({c})=>teacher||!c.optional||c.type==='extension'&&(s.values.practice==='all'||s.values.practice===c.id)||c.type==='hardware'&&s.values.hardwareRoute==='board'||c.type==='reference'&&s.checks.reopen).map(x=>x.i);
+  // New cards keep their own storage index so existing lesson backups still open on the same page.
+  for(const i of [...path])if(cards[i].after){const anchor=cards.findIndex(c=>c.id===cards[i].after);if(path.includes(anchor)){path.splice(path.indexOf(i),1);path.splice(path.indexOf(anchor)+1,0,i);}}
+  return path;
+ }
  const api={LESSON,VERSION,fresh,restore,record,shuffle,order,missing,advance,route};root.CounterModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

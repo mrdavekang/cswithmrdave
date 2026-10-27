@@ -5,7 +5,7 @@ window.CounterLesson={
   starter:['Do Now','开始活动','시작 활동'],learning:['Types of Learning · WAGBA','学习类型 · WAGBA','배움의 종류 · WAGBA'],
   main1:['Main Task 1 · Build a counter','主要任务一 · 制作计数器','주요 활동 1 · 계수기 만들기'],main2:['Main Task 2 · Reset and test','主要任务二 · 重置与测试','주요 활동 2 · 초기화와 시험'],
   pit:['Learning Pitstop','学习加油站','배움 점검'],extension:['Extension · Go further','拓展 · 更进一步','추가 도전'],hardware:['Try a real micro:bit','尝试真正的 micro:bit','실제 micro:bit 사용하기'],
-  plenary:['Plenary','课堂总结','마무리'],reflection:['Exit Reflections','离堂反思','배움 돌아보기'],save:['Save & submit','保存与提交','저장하고 제출하기']
+  plenary:['Plenary','课堂总结','마무리'],blooket:['After Plenary · Blooket','总结后 · Blooket','마무리 후 · Blooket'],reflection:['Exit Reflections','离堂反思','배움 돌아보기'],save:['Save & submit','保存与提交','저장하고 제출하기']
  },
  timing:['0–5 Do Now · 5–10 Types of Learning · 10–28 Main Task 1 · 28–42 Main Task 2 · 42–45 Pitstop · 45–52 Challenge / hardware · 52–56 Plenary & reflections · 56–60 Save & submit',
  '0–5 开始 · 5–10 学习类型 · 10–28 任务一 · 28–42 任务二 · 42–45 加油站 · 45–52 挑战／板子 · 52–56 总结与反思 · 56–60 保存提交',
@@ -78,4 +78,11 @@ window.CounterLesson={
   'restore-23c':['Select your HEX, then Go ahead!','选择 HEX，再点 Go ahead!','HEX를 고르고 Go ahead!']
  };
  for(const [id,title] of Object.entries(reopenTitles))L.cards.find(c=>c.id===id).title=title;
+ // Append rather than insert: saved card numbers in existing local/JSON/school records stay valid.
+ L.cards.push({id:'blooket-practice',stage:'blooket',after:'explain',type:'blooket',
+  title:['Visitor Counter Challenge','访客计数器挑战','방문객 계수기 도전'],
+  intro:['You have explained your counter. Now practise the blocks in Blooket. Your target is 60 correct answers.','你已解释计数器。现在到 Blooket 练习积木，目标是答对 60 次。','계수기를 설명했어요. 이제 Blooket에서 블록을 연습해요. 정답 60개가 목표예요.'],
+  url:'https://play.blooket.com/play?hwId=6ae03e3eff32c48fb1c8645d',goal:60,
+  statuses:[['I reached 60 correct answers.','我已答对 60 次。','정답 60개에 도달했어요.'],['I will finish the Blooket homework later.','我会稍后完成 Blooket 作业。','Blooket 과제는 나중에 마칠게요.'],['I need help opening or playing Blooket.','我需要帮助打开或使用 Blooket。','Blooket 열기나 진행에 도움이 필요해요.']]
+ });
 })(window.CounterLesson);

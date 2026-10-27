@@ -1,0 +1,163 @@
+{
+  "lesson": "Year 8 Week 10 Theory - Game Club",
+  "coreLanguage": "Standard Python, not MakeCode Arcade Python",
+  "assets": [
+    {
+      "id": "01-gaming-club-mission",
+      "title": "Gaming Club mission",
+      "png": "assets/images/01-gaming-club-mission.png",
+      "width": 1672,
+      "height": 941,
+      "placement": "Mission briefing",
+      "alt": "Four friendly voxel astronauts organise a gaming-club roster together. This is a fictional mission illustration, not the coding interface.",
+      "caption": {
+        "en": "Organise the players. Display the roster. Choose a captain.",
+        "zh": "整理玩家名单，显示名单，再选出一位队长。",
+        "ko": "플레이어 명단을 정리하고 표시한 뒤 주장을 선택하세요."
+      },
+      "type": "Generated illustration"
+    },
+    {
+      "id": "02-expected-output",
+      "title": "What are we building?",
+      "svg": "assets/images/02-expected-output.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Briefing and final Main Task 2 challenge",
+      "alt": "Expected console output with annotations for count, ordered player names and a possible random captain.",
+      "caption": {
+        "en": "Match the roster and count. Your captain may be a different listed player.",
+        "zh": "名单和人数应相符；你的队长可以是名单中的另一位玩家。",
+        "ko": "명단과 인원수를 맞추세요. 주장은 명단의 다른 플레이어일 수도 있습니다."
+      }
+    },
+    {
+      "id": "03-elements-indexes-length",
+      "title": "Position is not the same as index",
+      "svg": "assets/images/03-elements-indexes-length.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Do Now and Main Task 1 support",
+      "alt": "Three player slots with ordinal positions, zero-based indexes, length three and last index two.",
+      "caption": {
+        "en": "Position counts from first. Python indexes count from 0.",
+        "zh": "位置从第一个开始数；Python 索引从 0 开始。",
+        "ko": "순서는 첫 번째부터 세지만 Python 인덱스는 0부터 시작합니다."
+      }
+    },
+    {
+      "id": "04-replace-versus-append",
+      "title": "Replace, then append",
+      "svg": "assets/images/04-replace-versus-append.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Main Task 1 teaching",
+      "alt": "A two-step before-and-after diagram distinguishes replacing an existing element from appending a new one.",
+      "caption": {
+        "en": "Replace changes an existing value. Append adds an element at the end.",
+        "zh": "替换会改变已有的值；append 会在末尾添加一个元素。",
+        "ko": "대입은 기존 값을 바꾸고 append는 끝에 원소를 추가합니다."
+      }
+    },
+    {
+      "id": "05-gameclub-editor-guide",
+      "title": "Your real Game Club Python Lab",
+      "svg": "assets/images/05-gameclub-editor-guide.svg",
+      "width": 1200,
+      "height": 800,
+      "placement": "Before the first coding task",
+      "alt": "An authentic screenshot of this Game Club lab: type in the numbered code area, press Run and check, and read the console. The snacks example uses different data.",
+      "caption": {
+        "en": "Type in the numbered area, run, then read below. Use your task data, not this reference program.",
+        "zh": "在编号代码区输入，运行，再阅读下方结果。使用任务数据，而非示例数据。",
+        "ko": "줄 번호 옆에 입력하고 실행한 뒤 아래 결과를 읽으세요. 예시가 아닌 과제 데이터를 사용하세요."
+      },
+      "type": "Annotated authentic screenshot",
+      "source": "Actual local Game Club Python Lab, captured 27 October 2026",
+      "referenceOnly": false
+    },
+    {
+      "id": "06-while-loop-anatomy",
+      "title": "Four jobs inside a list-reading loop",
+      "svg": "assets/images/06-while-loop-anatomy.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Main Task 2 loop introduction",
+      "alt": "A Python while loop annotated to identify the start counter, boundary condition, indexed read and increment.",
+      "caption": {
+        "en": "Start at 0. Check the condition. Read one element. Move to the next index.",
+        "zh": "从 0 开始，检查条件，读取一个元素，再移到下一个索引。",
+        "ko": "0에서 시작해 조건을 확인하고 원소 하나를 읽은 뒤 다음 인덱스로 이동합니다."
+      }
+    },
+    {
+      "id": "07-loop-walkthrough",
+      "title": "The counter walks through the roster",
+      "svg": "assets/images/07-loop-walkthrough.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Main Task 2 tracing practice",
+      "alt": "At counter 2, Pixel at index 2 is highlighted, the condition is true and the console has printed Nova, Luna and Pixel.",
+      "caption": {
+        "en": "One step reads one element. The output grows; the list does not change.",
+        "zh": "每一步读取一个元素。输出逐行增加，但列表不变。",
+        "ko": "한 단계에서 원소 하나를 읽습니다. 출력은 늘어나지만 리스트는 바뀌지 않습니다."
+      },
+      "sequenceFrames": 5
+    },
+    {
+      "id": "08-random-captain",
+      "title": "Random does not mean a fixed answer",
+      "svg": "assets/images/08-random-captain.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Main Task 2 random-selection introduction",
+      "alt": "Four valid players, random.choice reference code and three example runs demonstrate valid results and possible repeats.",
+      "caption": {
+        "en": "Check that the captain is in the list. Repeated choices can still be correct.",
+        "zh": "检查队长是否在列表中。重复选中同一个人仍可能是正确的。",
+        "ko": "주장이 리스트에 있는지 확인하세요. 같은 사람이 반복 선택되어도 올바를 수 있습니다."
+      }
+    },
+    {
+      "id": "09-test-changed-rosters",
+      "title": "Will it work with a different roster?",
+      "svg": "assets/images/09-test-changed-rosters.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Main-task stretch and extension",
+      "alt": "Three test cases with roster lengths 1, 3 and 5 and clear requirements for output and random selection.",
+      "caption": {
+        "en": "A general solution still works when the roster changes.",
+        "zh": "名单改变后，通用的解决方法仍应正确运行。",
+        "ko": "명단이 바뀌어도 일반적인 해결 방법은 올바르게 작동해야 합니다."
+      }
+    },
+    {
+      "id": "10-everyone-gets-a-turn",
+      "title": "Everyone gets a turn",
+      "svg": "assets/images/10-everyone-gets-a-turn.svg",
+      "width": 2400,
+      "height": 1500,
+      "placement": "Highest extension challenge",
+      "alt": "An example four-round selection table shows each player chosen once as the remaining waiting list becomes empty.",
+      "caption": {
+        "en": "Remove the chosen player before choosing again. Stop when nobody is waiting.",
+        "zh": "再次选择前，移除已选中的玩家。没有人等待时就停止。",
+        "ko": "다시 선택하기 전에 뽑힌 플레이어를 제외하세요. 기다리는 사람이 없으면 멈춥니다."
+      },
+      "newConcept": "Supply a short remove-by-value reference before this extension; do not assume it was taught in the core lesson."
+    }
+  ],
+  "review": {
+    "contentAssertionsPassed": true,
+    "mainVisuals": 10,
+    "walkthroughFrames": 5,
+    "screenshot": "Authentic screenshot of the actual Game Club app; snacks reference uses different data.",
+    "visualReview": "All ten main visuals reviewed in a contact sheet; editor crop, extension spacing, runnable references and loop indentation corrected and rechecked.",
+    "standardPythonExamplesExecuted": true,
+    "indentedLoopBodyPreservedInSvg": true,
+    "randomCaptainChecks": 12,
+    "scope": "Visuals integrated into the local lesson app."
+  }
+}
