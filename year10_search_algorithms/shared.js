@@ -1,0 +1,20 @@
+window.SearchUI=(()=>{'use strict';
+ const C=SearchCore,L=SEARCH_LESSON,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function school(){return '<div class="eyebrow">Year 10 · OxfordAQA 9210</div><h3>Topic</h3><h2>'+L.title+'</h2><h3>WAGBA (KSU)</h3><p><strong>'+L.wagba+'</strong></p>'+Object.entries(L.ksu).map(([k,v])=>'<p class="ksu-line"><strong>'+k+'</strong> '+v+'</p>').join('')+'<h3>Keywords</h3><p>'+L.keywords+'</p><h3>Challenge</h3><p class="challenge">'+L.challenge+'</p>';}
+ function list(items=C.ITEMS,{current=-1,low=0,high=items.length-1}={}){return '<div class="list-row" role="group" aria-label="Original indexes and stored values"><span class="idx">Index</span>'+items.map((_,i)=>'<span class="idx">'+i+'</span>').join('')+'<span class="idx">Value</span>'+items.map((n,i)=>'<span class="'+(i===current?'current ':'')+(i<low||i>high?'excluded':'')+'">'+n+'</span>').join('')+'</div>';}
+ function code(lines,active=-1){return '<div class="code" role="region" aria-label="Numbered pseudocode">'+lines.map((s,i)=>'<span class="line '+(i===active?'active':'')+'"><span class="number">'+(i+1)+'</span>'+esc(s)+'</span>').join('')+'</div>';}
+ function question(q){return '<div class="eyebrow">Class discussion · '+esc(q.ksu)+'</div><h2>'+esc(q.title)+'</h2>'+list()+'<p class="question-sticky">'+esc(q.prompt)+'</p>';}
+ function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+ function deadline(s){return s?.paused?Number(s.remaining_ms||0):Math.max(0,Date.parse(s?.deadline||'')-(Date.now()+offset));}
+ let offset=0;function sync(server){if(server)offset=Date.parse(server)-Date.now();}
+ const STAGES=[{id:'settle',label:'Settle',title:'Sit at your assigned table.',instruction:'Prepare your paper and device. Open Microsoft Teams and your Searching lesson. Remain quiet until the countdown finishes.',seconds:180},
+ {id:'starter',label:'Starter',title:'Starter: position, value, target',instruction:'Complete the three starter questions. Read the index row separately from the value row.',seconds:240},
+ {id:'types',label:'Types of Learning',title:'Choose one KSU focus',instruction:'Use your starter answers to choose one thing to strengthen. Keep this brief and specific.',seconds:120},
+ {id:'linear',label:'Main 1',title:'Main Activity 1: linear search',instruction:'Study the model and watch the full assigned video. On paper, trace target 13. Explain the stopping rule and correct the mistaken explanation.',seconds:960,nextQuestion:'linear'},
+ {id:'binary',label:'Main 2',title:'Main Activity 2: binary search',instruction:'Watch the full assigned video. Keep the original indexes visible. Trace target 13 and explain why each search area remains possible.',seconds:1200,nextQuestion:'binary'},
+ {id:'independent',label:'Compare',title:'Same target, two methods',instruction:'Search for 42 using both methods. Record checked values, result index and a justified comparison. Complete booklet page 3.',seconds:240},
+ {id:'extension',label:'Extension',title:'Choose a useful challenge',instruction:'Finish an accurate core trace or attempt a counterexample, absent target or boundary error. Explain your reasoning.',seconds:120},
+ {id:'pit',label:'Pit Stop',title:'Learning Pit Stop',instruction:'Judge Knowledge, Skills and Understanding separately. Name one piece of evidence and one next action. Speed is not a learning phase.',seconds:120},
+ {id:'plenary',label:'Plenary',title:'Explain what changed',instruction:'Complete the final checks. Photograph your paper pages, export all evidence as PDF, then attach it in Teams and select Turn in.',seconds:120}];
+ return {esc,school,list,code,question,clock,deadline,sync,STAGES};
+})();
