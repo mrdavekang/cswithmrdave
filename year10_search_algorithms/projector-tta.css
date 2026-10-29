@@ -30,8 +30,8 @@
 .tta-content .tta-question-title{font-size:24px;margin:0 0 8px}.tta-content .tta-question-text{font-size:25px;line-height:1.3;margin:0 0 18px}
 .tta-content .tta-question-help{font-size:24px;line-height:1.4;margin:24px 0 0}.tta-content .tta-private-reminder{font-size:18.666667px;margin:12px 0}
 .tta-slide[data-phase="review"] .tta-content{top:149px;height:439px}.tta-slide[data-phase="review"] .tta-question-title{font-size:22px;margin-bottom:4px}
-.tta-slide[data-phase="review"] .list-row{font-size:22px;margin:6px 0 10px}.tta-slide[data-phase="review"] .list-row span{padding:3px 2px}
-.tta-slide[data-phase="review"] .tta-question-text{font-size:23px;margin-bottom:16px}
+.tta-slide[data-phase="review"] .list-row{font-size:22px;margin:6px 0 6px}.tta-slide[data-phase="review"] .list-row span{padding:3px 2px}
+.tta-slide[data-phase="review"] .tta-question-text{font-size:23px;margin-bottom:8px}
 .tta-review-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
 .tta-response-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-height:255px;overflow:auto;scrollbar-width:thin;padding-right:2px}
 .tta-response{padding:9px 0 10px;border-top:1.333333px solid #aaa;overflow-wrap:anywhere;cursor:pointer}.tta-response strong{font-size:18.666667px}
@@ -42,4 +42,5 @@
 .tta-empty{font-size:24px;margin:0}
 .tta-toolbar{position:fixed;bottom:4px;right:8px;z-index:5;display:flex;gap:8px;align-items:center;max-width:calc(100vw - 16px);font-size:12px;opacity:.16;background:white;padding:2px 6px;transition:opacity .15s}
 .tta-toolbar:hover,.tta-toolbar:focus-within{opacity:1}.tta-toolbar button{font-size:12px;border-radius:2px;padding:4px 7px}#projector-status[data-problem="true"]{color:#9b4035}
+.tta-content .discussion-index-note{font-size:18px;line-height:1.3;margin:4px 0 6px}.tta-model .correct-answer-text{font-size:25px;font-weight:700;margin:0 0 12px}.tta-model h4{font-size:19px;margin:10px 0 6px}.tta-model p{font-size:20px;line-height:1.3}
 @media(prefers-reduced-motion:reduce){#tta-timer-progress,.tta-toolbar{transition:none}}

@@ -17,7 +17,7 @@
  function fit(){document.documentElement.style.setProperty('--tta-scale',Math.min(innerWidth/1280,innerHeight/720));}
  window.addEventListener('resize',fit);fit();
  if(!demo){const p=new URLSearchParams(location.hash.slice(1));if(p.has('key')){creds={room:p.get('room'),key:p.get('key')};sessionStorage.setItem('search-projector',JSON.stringify(creds));history.replaceState(null,'',location.pathname+'#display');}else{try{creds=JSON.parse(sessionStorage.getItem('search-projector'));}catch{}}}
- function question(q){return '<h2 class="tta-question-title">'+esc(q.title)+'</h2>'+U.list()+'<p class="tta-question-text">'+esc(q.prompt)+'</p>';}
+ function question(q){return '<h2 class="tta-question-title">'+esc(q.title)+'</h2>'+U.list(C.ITEMS,{current:q.indexes?.mid??-1})+U.indexLegend(q)+'<p class="tta-question-text">'+esc(q.prompt)+'</p>';}
  function paint(){
   const s=d.state,key=s.revision+':'+s.phase+':'+s.reveal+':'+(s.focus_student||'')+':'+JSON.stringify(d.responses);if(key===last)return;last=key;
   if(lastTeacherFocus!==s.focus_student){focus=undefined;lastTeacherFocus=s.focus_student;}
@@ -28,7 +28,7 @@
   if(normal){body=(s.attention?'<p class="tta-attention">Look at the board for your teacher’s explanation.</p>':'')+'<h2>'+esc(s.title)+'</h2><p class="tta-instructions">'+esc(s.instructions)+'</p>';if(['starter','linear','binary','independent','extension'].includes(s.stage_id))body+=U.list();body+='<p id="projector-attention" class="tta-stage-note"></p>';}
   else if(q){body=question(q);if(s.phase==='question')body+='<p class="tta-question-help">Open the discussion notice on your lesson page. Think through the next step, enter your response and select <strong>Submit</strong>.</p><p class="tta-private-reminder">Your responses stay private until the response window closes.</p><p id="projector-attention" class="tta-stage-note"></p>';
    else{const all=d.responses||[],selected=all.find(r=>r.id===(focus===undefined?s.focus_student:focus)),rows=selected?[selected]:all;
-    body+='<div class="tta-review-layout"><section class="tta-response-grid '+(selected?'single':'')+'" aria-label="Submitted class responses">'+rows.map(r=>'<article class="tta-response" tabindex="0" role="button" data-focus="'+esc(r.id)+'" aria-label="Enlarge anonymous response '+(all.indexOf(r)+1)+'"><strong>Response '+(all.indexOf(r)+1)+'</strong><p>'+esc(q.options?.find(o=>o.id===r.answer)?.text||r.answer)+'</p></article>').join('')+(rows.length?'':'<p class="tta-empty">No submitted responses yet. Discuss the model together.</p>')+'</section><aside class="tta-model"><h3>'+(s.reveal?'Model and reasoning':'Think together first')+'</h3><p>'+esc(s.reveal?q.model:'Your teacher will reveal the model when ready.')+'</p></aside></div>';
+    body+='<div class="tta-review-layout"><section class="tta-response-grid '+(selected?'single':'')+'" aria-label="Submitted class responses">'+rows.map(r=>'<article class="tta-response" tabindex="0" role="button" data-focus="'+esc(r.id)+'" aria-label="Enlarge anonymous response '+(all.indexOf(r)+1)+'"><strong>Response '+(all.indexOf(r)+1)+'</strong><p>'+esc(q.options?.find(o=>o.id===r.answer)?.text||r.answer)+'</p></article>').join('')+(rows.length?'':'<p class="tta-empty">No submitted answers yet. Discuss the correct answer together.</p>')+'</section><aside class="tta-model">'+(s.reveal?U.answer(q,true):'<h3>Correct answer not shown yet</h3><p>Your teacher will reveal it when ready.</p>')+'</aside></div>';
    }
   }
   $('projector-main').innerHTML=body;$('projector-main').scrollTop=0;
