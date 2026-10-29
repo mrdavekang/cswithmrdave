@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#35205d">
+  <title>Route Rescue · Year 8 practical</title>
+  <meta name="description" content="A focused Year 8 Python lists practical. Read, predict, run and repair, with bilingual support and 18 differentiated programming tasks.">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/skulpt.min.js"></script><script defer src="vendor/skulpt-stdlib.js"></script>
+  <script defer src="vendor/html2canvas.min.js"></script><script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="lesson.js"></script><script defer src="checks.js"></script><script defer src="analysis.js"></script><script defer src="runner.js"></script><script defer src="visuals.js"></script><script defer src="reflections.js"></script><script defer src="report.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to activity</a>
+  <header class="topbar"><a href="#" id="home" class="brand"><span class="brand-icon" aria-hidden="true">↗</span> Route Rescue <small>CS with Mr Dave</small></a><div id="header-tools" hidden><span id="student-label"></span><span id="save-status" role="status">Saved on this device</span><button id="export" class="button light">Save report</button><button id="tools" class="button ghost">Work tools</button></div></header>
+  <main id="landing" class="landing">
+    <section class="welcome"><span class="eyebrow">YEAR 8 · PYTHON LISTS · 60 MINUTES</span><h1>Small changes.<br><em>Mission rescued.</em></h1><p class="lead">Read the route. Fix a clue. Show the crew where to go.</p><div class="landing-route"><div><small>INDEX 0</small><b>↑</b>UP</div><div class="changed"><small>INDEX 1</small><b>←</b>LEFT</div><div><small>INDEX 2</small><b>↓</b>DOWN</div></div><p>One familiar Python editor. Clear examples. Challenges when you are ready.</p><div class="feature-row"><span>✓ Work at your pace</span><span>✓ Language support</span><span>✓ No extra account</span></div></section>
+    <form id="entry" class="entry"><span class="eyebrow">YOUR MISSION STARTS HERE</span><h2>Ready, route engineer?</h2><label for="full-name">Full name</label><input id="full-name" autocomplete="name" maxlength="80" required><label for="class-name">Class</label><select id="class-name"><option value="">Choose your class</option><option>8E</option><option>8T</option><option>Other</option></select><label for="entry-language">Language support</label><select id="entry-language"><option value="en">English</option><option value="zh">English + 中文</option><option value="ko">English + 한국어</option></select><p class="subtle">Choose support now. You can change it at any time.<br>现在可以选择语言支持。 / 지금 언어 지원을 선택하세요.</p><button class="button primary wide" type="submit">Start or resume mission →</button><p id="entry-error" role="alert"></p><p class="privacy">Your work stays in this browser. It is not sent to a database. Export a backup before changing device.</p><button type="button" id="import-entry" class="text-button">Restore a progress backup</button></form>
+  </main>
+  <div id="workspace" hidden>
+    <aside class="sidebar" aria-label="Lesson navigation and learning goals"><div class="mission-tag">MISSION CONTROL <span id="teacher-badge" hidden>TEACHER PREVIEW</span></div><nav id="stage-nav" aria-label="Lesson stages"></nav><div class="rail-goals"><h2>Topic</h2><p>Python lists: create, read and update.</p><h2>WAGBA</h2><p>We are getting better at using indexes to read and change values in a Python list.</p><div class="ksu"><p><b>K</b><span><strong>Knowledge</strong>List, element and index.</span></p><p><b>S</b><span><strong>Skills</strong>Create, print, retrieve, update.</span></p><p><b>U</b><span><strong>Understanding</strong>An update replaces one element; the others stay unchanged.</span></p></div><h2>Keywords</h2><p>list · element · index · retrieve · update · output</p><h2>Challenge</h2><p>Repair the route without rewriting the list.</p><p id="goals-language" class="translation"></p></div></aside>
+    <main id="main" class="activity" tabindex="-1"><div class="activity-toolbar"><div><span id="stage-label" class="eyebrow"></span><span id="step-label"></span></div><label class="language-control">Support <select id="language"><option value="en">English</option><option value="zh">English + 中文</option><option value="ko">English + 한국어</option></select></label></div><div class="progress-track"><span id="progress-fill"></span></div><div id="content"></div><footer class="activity-footer"><button id="back" class="button outline">← Back</button><span id="completion-note"></span><div id="next-actions"></div></footer></main>
+  </div>
+  <dialog id="dialog"><button id="close-dialog" aria-label="Close window" class="dialog-close">×</button><div id="dialog-content"></div></dialog>
+  <input type="file" id="backup-file" accept="application/json,.json" hidden>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body></html>

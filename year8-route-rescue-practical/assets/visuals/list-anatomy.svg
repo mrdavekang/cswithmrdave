@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="t d">
+<title id="t">A list has a name, three elements and indexes starting at zero</title><desc id="d">colours equals RED, BLUE, GREEN. First element RED is at index zero, second BLUE at index one, third GREEN at index two. Square brackets contain the list, quotes enclose text and commas separate values.</desc>
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#7050a2" stroke-width="1.5"/></marker></defs>
+<rect width="960" height="360" rx="24" fill="#f7f4fd"/>
+<g font-family="Arial,sans-serif" fill="#272236"><text x="32" y="40" font-size="20" font-weight="700">WORKED EXAMPLE · DIFFERENT DATA</text>
+<rect x="28" y="66" width="904" height="72" rx="12" fill="white" stroke="#d3c8e5"/>
+<text x="50" y="111" font-family="monospace" font-size="30"><tspan fill="#6336aa">colours</tspan> = ["RED", "BLUE", "GREEN"]</text>
+<text x="50" y="174" font-size="22" font-weight="700">List name</text><path d="M107 151V125" stroke="#7050a2" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="326" y="169" font-size="21">Quotes enclose text · Commas separate elements</text><text x="326" y="194" font-size="19">Square brackets [ ] contain the elements</text>
+<g text-anchor="middle"><rect x="45" y="203" width="272" height="125" rx="16" fill="#fff" stroke="#a0c7bc" stroke-width="2"/><rect x="344" y="203" width="272" height="125" rx="16" fill="#fff" stroke="#a0b9da" stroke-width="2"/><rect x="643" y="203" width="272" height="125" rx="16" fill="#fff" stroke="#a0c7bc" stroke-width="2"/>
+<text x="181" y="236" font-size="21">FIRST ELEMENT</text><text x="480" y="236" font-size="21">SECOND ELEMENT</text><text x="779" y="236" font-size="21">THIRD ELEMENT</text>
+<text x="181" y="275" font-size="30" font-weight="700" fill="#9d333b">RED</text><text x="480" y="275" font-size="30" font-weight="700" fill="#234f95">BLUE</text><text x="779" y="275" font-size="30" font-weight="700" fill="#256549">GREEN</text>
+<text x="181" y="308" font-size="23" font-weight="700">INDEX 0</text><text x="480" y="308" font-size="23" font-weight="700">INDEX 1</text><text x="779" y="308" font-size="23" font-weight="700">INDEX 2</text></g></g></svg>
