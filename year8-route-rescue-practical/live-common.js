@@ -47,10 +47,29 @@ window.RouteLive = (() => {
   const kind=r=>r.responseKind||(['retry','follow'].includes(r.phase)?'revision':'initial');
   const time=n=>{n=Math.max(0,Math.floor(n||0));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
   const remaining=r=>r?.pausedSeconds??Math.max(0,Math.ceil((Date.parse(r?.deadline)-Date.now())/1000)||0);
+  function countdown(r,now=Date.now()){
+    const timed=!!r?.connected&&['response','retry'].includes(r.phase),paused=r?.pausedSeconds!=null;
+    const duration=Math.max(1,Number(r?.responseDuration)||(r?.responseKind==='revision'?60:180));
+    const left=paused?r.pausedSeconds:Math.max(0,Math.ceil((Date.parse(r?.deadline)-now)/1000)||0);
+    return {timed,paused,duration,left,urgent:timed&&!paused&&left>0&&left<duration/2,percent:Math.min(100,Math.max(0,left/duration*100))};
+  }
+  function paintCountdown(el,r,now=Date.now()){
+    if(!el)return;const c=countdown(r,now);el.hidden=!c.timed;if(!c.timed)return;
+    const signature=r.id+':'+r.round+':'+kind(r),nudge=c.urgent&&el.dataset.nudged!==signature;
+    if(nudge)el.dataset.nudged=signature;
+    el.classList.toggle('is-urgent',c.urgent);el.classList.toggle('is-paused',c.paused);
+    if(nudge){el.classList.remove('timer-nudge');void el.offsetWidth;el.classList.add('timer-nudge');}
+    const label=c.paused?'Timer paused':c.urgent?'Respond now · less than half the time remains':'Live response time';
+    if(!el.querySelector('.response-clock-value'))el.innerHTML='<div><b class="response-clock-label"></b><strong class="response-clock-value"></strong></div><div class="response-clock-track" aria-hidden="true"><span></span></div>';
+    el.querySelector('.response-clock-label').textContent=label;
+    el.querySelector('.response-clock-value').textContent=time(c.left);
+    el.querySelector('.response-clock-track span').style.width=c.percent+'%';
+    el.setAttribute('aria-label',label+' · '+time(c.left)+' remaining');
+  }
   const cue=seconds=>cues.find(c=>seconds/60>=c[0]&&seconds/60<c[1])||cues[cues.length-1];
   const htmlCache=new WeakMap();
   function paint(el,html){if(htmlCache.get(el)===html)return;el.innerHTML=html;htmlCache.set(el,html);}
   function indent(el,e){if(e.key==='Tab'){e.preventDefault();el.setRangeText('    ',el.selectionStart,el.selectionEnd,'end');el.dispatchEvent(new Event('input',{bubbles:true}));}}
   function download(value,name){const u=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),10000);}
-  return {config,rounds,cues,db,rpc,esc,effective,writable,kind,time,remaining,cue,indent,download,paint,forget:el=>htmlCache.delete(el)};
+  return {config,rounds,cues,db,rpc,esc,effective,writable,kind,time,remaining,countdown,paintCountdown,cue,indent,download,paint,forget:el=>htmlCache.delete(el)};
 })();

@@ -15,7 +15,7 @@ window.RouteProjector=(()=>{
  function automatic(r){const i=RouteLive.cues.indexOf(RouteLive.cue(r.clockSeconds));return ['mission','starter','learning','main1','main1','main2','main2','main2','pit','extension','plenary','report'][i]||'mission';}
  function stage(r){return ['invite','response','discuss','retry','follow'].includes(r.phase)?(r.round===1?'main1':'main2'):(r.boardStage||automatic(r));}
  function render(r,language='en'){
-  const id=stage(r),s=stages.find(x=>x[0]===id)||stages[0],live=r.connected&&r.phase!=='work',c=RouteLive.rounds[r.round],timed=['response','retry'].includes(r.phase),left=RouteLive.remaining(r),duration=r.responseKind==='revision'?60:180;
+  const id=stage(r),s=stages.find(x=>x[0]===id)||stages[0],live=r.connected&&r.phase!=='work',c=RouteLive.rounds[r.round],count=RouteLive.countdown(r),timed=count.timed,left=count.left,duration=count.duration;
   const activeCue=RouteLive.cue(r.clockSeconds),stageDuration=r.boardStage?(r.boardStageDuration||180):(activeCue[1]-activeCue[0])*60;
   const stageLeft=r.boardStage?Math.max(0,stageDuration-(r.clockSeconds-(r.boardStageAnchor||0))):Math.max(0,activeCue[1]*60-r.clockSeconds);
   const seconds=timed?left:stageLeft,percent=timed?Math.min(1,left/duration):Math.min(1,seconds/stageDuration);
@@ -34,7 +34,7 @@ window.RouteProjector=(()=>{
    '<section class="tta-box tta-wagba"><h2>WAGBA (KSU)</h2><p>We are getting better at using indexes to read and change values in a Python list.</p></section>'+
    '<section class="tta-box tta-keywords"><h2>Keywords</h2><p>list · element · index · retrieve · update · output</p><div class="tta-ksu"><p><b>Knowledge</b><br>List, element and index.</p><p><b>Skills</b><br>Create, print, retrieve, update.</p><p><b>Understanding</b><br>An update replaces one element. The others stay unchanged.</p></div></section>'+
    '<h1 class="tta-title">'+E(s[1])+'</h1><p class="tta-state">'+E(live?'Live '+r.round+' · '+label:label)+'</p>'+
-   '<div class="tta-timer '+(timed&&left<=5?'warning':'')+'"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="55"/><circle class="tta-ring" cx="60" cy="60" r="55" pathLength="100" stroke-dasharray="100" stroke-dashoffset="'+(100-percent*100)+'"/></svg><div><strong>'+E(clock)+'</strong><small>'+E(timed?'Response time':r.phase==='work'?'This stage':label==='Eyes to the board'?'Look up':'Live coding')+'</small></div></div>'+
+   '<div class="tta-timer '+(count.urgent?'warning':'')+'"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="55"/><circle class="tta-ring" cx="60" cy="60" r="55" pathLength="100" stroke-dasharray="100" stroke-dashoffset="'+(100-percent*100)+'"/></svg><div><strong>'+E(clock)+'</strong><small>'+E(timed?count.urgent?'Respond now':'Response time':r.phase==='work'?'This stage':label==='Eyes to the board'?'Look up':'Live coding')+'</small></div></div>'+
    '<div class="tta-content '+(live?'tta-live':'')+'">'+content+'</div>'+
    '<section class="tta-box tta-challenge"><h2>Challenge Task</h2><p>Repair the route without rewriting the list.</p></section>'+
    '<img class="tta-logo" src="assets/tenby-isp-logo.png" alt="Tenby Schools and International Schools Partnership">'+

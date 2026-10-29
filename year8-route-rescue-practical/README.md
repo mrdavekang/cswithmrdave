@@ -161,7 +161,29 @@ No matching Route Rescue intro video has been supplied yet.
 
 ## Live database and recovery
 
-Apply `supabase/01-live-coding.sql`, then `supabase/02-automatic-registration.sql`.
+Apply `supabase/01-live-coding.sql`, then `supabase/02-automatic-registration.sql`,
+then `supabase/03-live-feedback.sql`.
+
+### Quick house points and visible response time
+
+Each registered pupil tile has a **★ +1 House point** button, available without
+opening their response. It records one point for a useful learning contribution.
+The detailed response view still supports a custom reason and 1–5 points.
+The house-point ledger retains **Undo**. These are classroom records, not iSAMS awards.
+
+The pupil sees a short celebration with the private award reason. The safe
+projector shows only the awarded pupil's first name and points, for about 4.5 seconds.
+It receives only awards from the last 30 seconds, never the roster or private reasons.
+Seen awards do not repeat on polling or refresh. Undo clears an active celebration.
+Reduced-motion settings replace movement with a static recognition card.
+
+The connected notification hides after 5 seconds during normal practical work.
+A live invitation or response timer still appears when needed. The live dock and
+the response workspace both display the remaining time. Below **50%** of the
+allotted time, the countdown turns red and gives one brief shake with **Respond now**.
+Pausing suppresses urgency; extra time updates the total duration. The timer does
+not force students into a question or discard their practical work.
+The question brief and expected output are shown as two equally prominent panels.
 They create only Route Rescue objects in `y8_route_private` and bounded lesson
 RPCs. Automatic registration locates the matching class's latest open session,
 checks its teacher heartbeat and registers only that browser's own identity.
