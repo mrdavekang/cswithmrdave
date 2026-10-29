@@ -15,7 +15,10 @@ After the third exit check, Next opens a Blooket/Gimkit choice page, then a
 separate Minecraft Education build page, then Save & finish. These extension
 pages do not add compulsory checklist items or block the core lesson.
 Both platforms contain the same 15 Pixel Art Studio MCQs, created 29 October 2026.
-Blooket solo: https://play.blooket.com/solo?id=6ae2cce84677586dc3efd56a
+Blooket assignment: https://play.blooket.com/play?hwId=6ae2cecb20e1c100f014d488
+Blooket: 15 correct-answer goal, all modes available, student-account options
+hidden; due 12 November 2026, 11:59am (as shown in the teacher account).
+Reusable Blooket solo: https://play.blooket.com/solo?id=6ae2cce84677586dc3efd56a
 Gimkit: https://www.gimkit.com/join/6ae2ce06fc59c5ba6deeb64d
 Gimkit Don't Look Down: Summit 3 or 15 correct answers; checkpoints On;
 due 12 November 2026 at 12pm (as shown in the teacher account).
