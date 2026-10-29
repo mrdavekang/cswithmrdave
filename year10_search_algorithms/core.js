@@ -19,5 +19,6 @@
   if(ended&&duration>1&&s.frontier>=duration-.1&&time>=duration-.1){complete=true;s.done=true;}
   return {state:s,seek,complete};
  }
- const api={ITEMS,LINEAR,BINARY,VIDEOS,QUESTIONS,linear,binary,shuffle,videoGate};root.SearchCore=api;if(typeof module!=='undefined')module.exports=api;
+ function entryCheck(name,className){const n=String(name||'').trim(),c=String(className||'').trim().toUpperCase();return {name:n,className:c,nameValid:n.length>=2&&n.length<=60&&n.toLowerCase()!=='teacher',classValid:/^10[A-Z0-9 -]{0,28}$/.test(c)};}
+ const api={ITEMS,LINEAR,BINARY,VIDEOS,QUESTIONS,linear,binary,shuffle,videoGate,entryCheck};root.SearchCore=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window==='undefined'?globalThis:window);

@@ -41,7 +41,10 @@ window.SearchRecords=(()=>{
  async function drain(force=false){
   if(busy||!cfg?.url||!navigator.onLine||(!force&&Date.now()<retryAt))return;busy=true;
   try{await writes;if(failedWrites.length)throw Error('Local save queue needs retry. Keep this page open.');for(const saved of await read('profiles')){
-   let p=await read('profiles',saved.id);const images=(await read('images')).filter(i=>i.session_id===p.id);const events=(await read('events')).filter(e=>e.session_id===p.id&&(force||e.readyAt<=Date.now())).sort((a,b)=>a.client_at.localeCompare(b.client_at));
+   let p=await read('profiles',saved.id);const identity=SearchCore.entryCheck(p.name,p.className);
+   // Preserve legacy invalid local notebooks, but never let one block another pupil's valid save.
+   if(!identity.nameValid||!identity.classValid){if(p.id===active?.id)throw Error('Check your name and Year 10 class. Use a class such as 10E or 10T.');continue;}
+   const images=(await read('images')).filter(i=>i.session_id===p.id);const events=(await read('events')).filter(e=>e.session_id===p.id&&(force||e.readyAt<=Date.now())).sort((a,b)=>a.client_at.localeCompare(b.client_at));
    if(!events.length&&!images.length&&!p.needsSnapshot)continue;
    const batch=[];let size=0;for(const e of events){if(batch.length===40||size+bytes(e)>1800000)break;batch.push(e);size+=bytes(e);}
    // New edits get new IDs while these drafts are in flight; acknowledgements
