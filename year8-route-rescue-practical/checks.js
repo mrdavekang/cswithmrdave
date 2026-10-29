@@ -23,6 +23,10 @@ window.RouteChecks=(()=>{
     if(r.updates&&updates.length<r.updates)return miss('Use an indexed update: route[index] = replacement. Keep your original list above it.');
     if(r.exactUpdates!=null&&updates.length!==r.exactUpdates)return miss('This challenge needs exactly '+r.exactUpdates+' indexed update'+(r.exactUpdates===1?'':'s')+'. Check the assignments to route[index].');
     if(r.updateSequence&&!same(updates.map(u=>[u.index,u.value]),r.updateSequence))return miss('Keep the requested updates in order. Compare each destination index and replacement value before printing.');
+    if(r.printAfterEachUpdate){
+      const wholePrints=a.prints.filter(p=>p.args.length===1&&p.args[0].type==='whole'&&p.args[0].name==='route');
+      if(!updates.every((u,i)=>wholePrints.some(p=>p.line>u.line&&(i===updates.length-1||p.line<updates[i+1].line))))return miss('Print the whole list after each change: update to LEFT, print(route), update to UP, then print(route) again. The two output lines show the two stages.');
+    }
     if(r.copy&&!(updates.length===1&&updates[0].index===0&&updates[0].source?.name==='route'&&updates[0].source.index===2))return miss('Read route’s third stored element on the right of = and update its first element on the left. Do not type a fixed replacement direction.');
     if(r.backwards){
       if(lists.length!==2||!lists.every(l=>l.elements.length===3&&l.elements[0]==='UP'&&l.elements[2]==='DOWN')||lists[0].elements[1]===lists[1].elements[1])return miss('Keep two different starting lists in the code. They must differ only in their original middle value; both start with UP and end with DOWN.');

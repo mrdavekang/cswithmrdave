@@ -40,6 +40,7 @@ window.RouteVisual = (() => {
   function target(c,r,ui){
     const final=targetValues(c,r),creating=c.id==='m1-1',reading=c.stage==='main1'&&!creating||c.id==='e3',initial=c.rule.start||c.values;
     let body='<div><h4>'+(creating?'Route to create':c.id==='e2'?'Starting routes · choose different middle values':'Starting data')+'</h4>'+list(initial,c.highlight)+'</div>';
+    if(c.id==='m2-5')return '<section class="task-picture study-reference" data-no-copy aria-label="Two updates and two output stages"><span class="eyebrow">LOOK AT YOUR TARGET · TWO CHANGES · TWO PRINTED LINES</span>'+body+'<h4>1 · After changing the second element to LEFT</h4>'+list(['UP','LEFT','DOWN'],1)+'<h4>2 · After changing that same element to UP</h4>'+list(['UP','UP','DOWN'],1)+translations('先改为 LEFT 并输出；再改为 UP 并输出。两行结果都要出现。','먼저 LEFT로 바꾸고 출력, 다음에 UP으로 바꾸고 출력하세요. 두 결과 줄이 모두 보여야 해요.',ui)+'</section>';
     if(final&&!reading&&!creating)body+='<div><h4>'+(c.id==='e2'?'Both examples must reach this target':c.id==='e5'?'Test 1 target · Test 2 is shown below':'Target stored list')+'</h4>'+list(final)+'</div>';
     else if(reading)body+='<p class="unchanged-note">READ ONLY · Keep the stored list unchanged.</p>'+translations('只读取，不修改列表。把输出顺序和存储顺序分开看。','읽기만 하세요. 저장 리스트는 바꾸지 않아요. 출력 순서와 저장 순서는 다를 수 있어요.',ui);
     if(c.id==='e2')body+='<p>Two different starting lists → one final target. Only the original middle values differ.</p>'+translations('两个不同的起始列表得到同一个目标。只有原来的中间值不同。','서로 다른 시작 리스트가 같은 목표에 도달해요. 원래 가운데 값만 서로 다르게 하세요.',ui);
@@ -50,7 +51,8 @@ window.RouteVisual = (() => {
   }
   function screenshotFor(c){return c.id==='m1-1'?'create':c.id==='m1-2'?'read':c.id==='m2-1'?'update':null;}
   function smallPattern(c,ui){
-    if(['m2-5','m2-6','e1'].includes(c.id))return figure('trace','Follow each instruction in order','Worked example with colours — adapt the idea to your route.',ui);
+    if(c.id==='m2-5')return '';
+    if(['m2-6','e1'].includes(c.id))return figure('trace','Follow each instruction in order','Worked example with colours — adapt the idea to your route.',ui);
     if(['e4','e5'].includes(c.id))return figure('copy','Read the source; replace the destination','Worked example with colours — this is copying, not swapping.',ui);
     if(c.stage==='main2')return '<div class="update-model study-reference" data-no-copy><b>REFERENCE · DIFFERENT DATA</b><h4>Before</h4>'+list(['RED','BLUE','GREEN'],1)+'<code>colours[1] = "GOLD"</code><h4>After</h4>'+list(['RED','GOLD','GREEN'],1)+'<p>One replacement. Still three elements.</p>'+translations('只替换一项，仍然是三项。','하나만 바꾸고 요소는 여전히 세 개예요.',ui)+'</div>';
     return '';
@@ -67,6 +69,7 @@ window.RouteVisual = (() => {
       const pane=content.querySelector('.instruction-pane'),old=pane.querySelector('.route-visual');if(old)old.remove();
       const taskHeading=pane.querySelector('h3');taskHeading.insertAdjacentHTML('beforebegin',target(c,r,ui));
       const expected=pane.querySelector('.expected');expected.classList.add('console-target');
+      if(c.id==='m2-5'){taskHeading.nextElementSibling.outerHTML='<ol class="instruction-list"><li>Replace the second element with <b>LEFT</b>. Then <b>print the whole list</b>.</li><li>Replace that same element with <b>UP</b>. Then <b>print the whole list again</b>.</li></ol><p>Predict both output lines before running. Keep the starting list and the other two elements unchanged.</p>';expected.querySelector('b').textContent='Expected output · TWO LINES';expected.insertAdjacentHTML('beforeend','<p>Line 1: after LEFT. Line 2: after UP.</p>'+translations('第一行：改为 LEFT 后。第二行：改为 UP 后。','첫 줄: LEFT로 바꾼 뒤. 둘째 줄: UP으로 바꾼 뒤.',ui));}
       expected.insertAdjacentHTML('beforeend','<p class="type-reminder">Look here. Type Python in <b>Your code</b> — not in this target.</p>'+translations('这里是输出目标，不是要粘贴的代码。请在 Your code 里输入 Python。','여기는 출력 목표예요. 붙여 넣을 코드가 아니에요. Your code에 Python을 입력하세요.',ui));
       const ref=pane.querySelector('.reference'),shot=screenshotFor(c);
       if(shot)ref.insertAdjacentHTML('beforeend',figure(shot,'Real Python example · colours','Compare its code with its output. Use your own route values for the task.',ui));
