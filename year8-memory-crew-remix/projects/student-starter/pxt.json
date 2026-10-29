@@ -1,0 +1,13 @@
+{
+  "name": "Memory Lab - Student Starter",
+  "description": "Year 8 Week 10: random indexed prompts and a while loop generating a new memory route.",
+  "dependencies": {
+    "device": "*"
+  },
+  "files": [
+    "main.blocks",
+    "main.ts",
+    "engine.ts"
+  ],
+  "preferredEditor": "tsprj"
+}
