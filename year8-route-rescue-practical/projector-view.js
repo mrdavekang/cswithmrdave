@@ -19,14 +19,14 @@ window.RouteProjector=(()=>{
   const activeCue=RouteLive.cue(r.clockSeconds),stageDuration=r.boardStage?(r.boardStageDuration||180):(activeCue[1]-activeCue[0])*60;
   const stageLeft=r.boardStage?Math.max(0,stageDuration-(r.clockSeconds-(r.boardStageAnchor||0))):Math.max(0,activeCue[1]*60-r.clockSeconds);
   const seconds=timed?left:stageLeft,percent=timed?Math.min(1,left/duration):Math.min(1,seconds/stageDuration);
-  const label=!r.connected?'Teacher connection paused':r.phase==='invite'?'Join live coding when you are ready':r.phase==='response'?'Your first attempt':r.phase==='discuss'?'Eyes to the board':r.phase==='retry'?'Your correction':r.phase==='follow'?'Watch, edit and Run your own code':'Work in the lesson app';
+  const label=!r.connected?'Teacher connection paused':r.phase==='invite'?'Open the live question when you are ready':r.phase==='response'?'Your first attempt':r.phase==='discuss'?'Eyes to the board':r.phase==='retry'?'Your correction':r.phase==='follow'?'Watch, edit and Run your own code':'Work in the lesson app';
   const clock=timed?r.pausedSeconds!=null?'Paused':RouteLive.time(left):r.phase==='invite'?'Ready':r.phase==='discuss'?'Discuss':r.phase==='follow'?'Try it':RouteLive.time(seconds);
   const translated=language==='zh'?c.zh:language==='ko'?c.ko:'';
   let content;
   if(live){
    const show=r.revealed&&r.demo,featured=r.featured;
    content='<p class="tta-live-prompt">'+E(c.prompt)+'</p>'+(translated?'<p class="tta-eal">'+E(translated)+'</p>':'')+
-    '<section class="tta-code-area"><h2>'+(featured?'Anonymous class example':show?'Teacher example · live':'Starting code')+'</h2><pre class="tta-code">'+E(featured?featured.code:show?r.demo.code:c.starter)+'</pre>'+((featured||show)?'<div class="tta-output"><b>Output</b><pre>'+E(featured?featured.output+(featured.error?'\n'+featured.error:''):r.demo.output)+'</pre></div>':'<p class="tta-response-reminder">Join live coding at the bottom of your lesson. Type in Your Python code.</p>')+'</section>';
+    '<section class="tta-code-area"><h2>'+(featured?'Anonymous class example':show?'Teacher example · live':'Starting code')+'</h2><pre class="tta-code">'+E(featured?featured.code:show?r.demo.code:c.starter)+'</pre>'+((featured||show)?'<div class="tta-output"><b>Output</b><pre>'+E(featured?featured.output+(featured.error?'\n'+featured.error:''):r.demo.output)+'</pre></div>':'<p class="tta-response-reminder">Choose Open live question at the bottom of your lesson. Type in Your Python code.</p>')+'</section>';
   }else content='<ol class="tta-instructions">'+s[2].map(t=>'<li>'+E(t)+'</li>').join('')+'</ol>';
   return '<nav class="tta-progress" aria-label="Current lesson stage">'+stages.map((x,i)=>'<span class="'+(id===x[0]?'active':'')+'" '+(id===x[0]?'aria-current="step"':'')+'>'+String(i+1).padStart(2,'0')+' '+E(x[1])+'</span>').join('')+'</nav>'+
    '<article class="tta-slide" aria-label="TTA lesson cue: '+E(s[1])+'">'+

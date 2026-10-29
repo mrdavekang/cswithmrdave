@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const R=RouteLive,$=id=>document.getElementById(id),E=R.esc;
-  let profile='',member=null,room=null,own=null,lastSeen=0,offset=0,polling=false,joinedRound=null,viewKey='',context=null,saveTimer,pending=false,serial=Promise.resolve(),failure='',dismissed=false;
+  let profile='',member=null,room=null,own=null,lastSeen=0,lastDiscovery=0,offset=0,polling=false,joinedRound=null,viewKey='',context=null,saveTimer,pending=false,serial=Promise.resolve(),failure='',blocked=false,dismissed=false;
   const root=document.createElement('div');root.id='route-live-root';document.body.append(root);
   root.innerHTML='<div id="live-dock" class="live-dock" hidden></div><section id="live-layer" class="live-layer" aria-label="Live coding workspace" hidden><div class="live-shell" id="live-shell"></div></section><div id="live-attention" class="live-screen-lock" hidden><div><h2>Eyes to the board</h2><p>Your practical is saved. We are comparing our code together.</p><p class="live-language" id="attention-language"></p><button id="see-discussion" class="button primary">See the live demonstration</button><p class="live-note">Your teacher will open Follow along when it is time to edit.</p><button id="attention-recovery" class="text-button">Connection problem? Return to my saved work</button></div></div>';
   const getStore=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}};
@@ -20,21 +20,67 @@
   function persist(){RouteApp.saveLive();}
   function token(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('');}
   function credentialsKey(){return 'route-live-member:'+profile;}
-  function attach(){const s=state(),next=s?s.name.trim().toLowerCase()+':'+s.className:'';if(next!==profile){leaveView(false);profile=next;room=null;own=null;member=getStore(credentialsKey());lastSeen=0;failure='';dismissed=false;}
+  function attach(){
+    const s=state(),next=s?s.name.trim().toLowerCase()+':'+s.className:'';
+    if(next!==profile){
+      leaveView(false);profile=next;room=null;own=null;lastSeen=0;lastDiscovery=0;failure='';blocked=false;dismissed=false;
+      member=getStore(credentialsKey());
+      if(s&&!s.teacher&&(!member||!/^[a-f0-9]{64}$/.test(member.token||'')))member={token:token()};
+      if(member)putStore(credentialsKey(),member);
+    }
     if(!s){$('live-dock').hidden=true;return;}
-    if(!member){dock();return;}poll();
+    if(s.teacher){dock();return;}
+    dock();poll(true);
   }
-  async function call(action,data={}){if(!member)throw Error('Join the classroom first');return R.rpc('student',{p_action:action,p_code:member.code,p_token:member.token,p_data:data});}
-  function accept(data){if(!data?.room||room?.id===data.room.id&&data.room.revision<room.revision)return;const oldPhase=room?.phase;room=data.room;own=data;offset=Date.parse(room.serverNow)-Date.now();lastSeen=Date.now();failure='';if(oldPhase!=='discuss'&&room.phase==='discuss')dismissed=false;if(own.student?.status==='admitted')record();}
-  async function poll(){if(polling||!member||!state())return;polling=true;try{accept(await call('read'));}catch(e){failure=e.message;}finally{polling=false;paint();}}
-  function dock(){const s=state(),d=$('live-dock');if(!s){d.hidden=true;return;}d.hidden=false;document.body.classList.add('live-bottom-space');
-    if(s.teacher){R.paint(d,'<span class="live-pill">Teacher preview</span><p>This entry does not grant access to student records.</p><a class="button primary" href="teacher.html" target="_blank" rel="noopener">Open teacher dashboard ↗</a>' );return;}
-    if(!member){R.paint(d,'<div><b>Live coding with your class</b><p>Keep working until your teacher gives a classroom code.</p></div><button id="open-join" class="button outline">Join classroom</button>' );return;}
+  async function call(action,data={}){
+    if(!member?.code)throw Error('Your live class is connecting automatically.');
+    try{return await R.rpc('student',{p_action:action,p_code:member.code,p_token:member.token,p_data:data});}
+    catch(e){if(/current code|Classroom is not open|different class/i.test(e.message))throw Error('This live session has closed. Your work is saved; reconnecting automatically.');throw e;}
+  }
+  function accept(data){
+    if(!data?.room||room?.id===data.room.id&&data.room.revision<room.revision)return;
+    const oldPhase=room?.phase;room=data.room;own=data;offset=Date.parse(room.serverNow)-Date.now();lastSeen=Date.now();failure='';blocked=false;
+    if(oldPhase!=='discuss'&&room.phase==='discuss')dismissed=false;
+    if(own.student?.status==='admitted')record();
+  }
+  function disconnected(){
+    if(room||context)leaveView(true);
+    room=null;own=null;lastSeen=0;
+    if(member?.code){member={token:member.token};putStore(credentialsKey(),member);}
+  }
+  async function poll(force=false){
+    const s=state();if(polling||!s||s.teacher||!['8T','8E'].includes(s.className))return;
+    polling=true;const identity=profile,credentials=member;
+    try{
+      if(force||!room||!member?.code||Date.now()-lastDiscovery>=12000){
+        lastDiscovery=Date.now();
+        const data=await R.rpc('autojoin',{p_token:credentials.token,p_name:s.name,p_class:s.className});
+        if(identity!==profile||credentials!==member)return;
+        if(data.waiting||data.blocked){disconnected();blocked=!!data.blocked;failure='';return;}
+        if(room&&room.id!==data.room.id)leaveView(true);
+        if(member.code!==data.room.code){member={token:credentials.token,code:data.room.code};putStore(credentialsKey(),member);}
+        accept(data);
+      }else{
+        const data=await call('read');if(identity===profile&&credentials===member)accept(data);
+      }
+    }catch(e){
+      if(identity===profile){failure='Live connection unavailable. Your practical is saved. Retrying automatically.';
+        if(/closed|not admitted|not open/i.test(e.message)){disconnected();lastDiscovery=0;}
+      }
+    }finally{polling=false;paint();}
+  }
+  function dock(){
+    const s=state(),d=$('live-dock');if(!s){d.hidden=true;return;}d.hidden=false;document.body.classList.add('live-bottom-space');
+    if(s.teacher){R.paint(d,'<span class="live-pill">Teacher preview</span><p>This entry does not grant access to student records.</p><a class="button primary" href="teacher.html" target="_blank" rel="noopener">Open teacher dashboard ↗</a>');return;}
+    if(!room||!member?.code){
+      const title=blocked?'Speak to your teacher':failure?'Reconnecting to your class':'Ready for your live class';
+      const text=blocked?'Your teacher has paused your live access. Your practical work remains available.':!['8T','8E'].includes(s.className)?'Choose 8T or 8E on the entry page for a live class.':failure||tr('You will connect automatically when your teacher opens the live class. Keep working on your practical.','老师开启实时课堂后，你会自动连接。现在可以继续练习。','선생님이 실시간 수업을 열면 자동으로 연결됩니다. 실습을 계속하세요.');
+      R.paint(d,'<span class="live-pill">'+E(s.className)+'</span><div><b>'+E(title)+'</b><p>'+E(text)+'</p></div><button id="live-retry" class="button outline">Check live connection</button>');return;
+    }
     const r=currentRoom(),admitted=own?.student?.status==='admitted';
-    let title=failure?'Connection needs attention':!admitted?'Waiting for teacher admission':!r?.connected?'Practical work · classroom paused':r.phase==='work'?'Practical work':r.phase==='invite'?'Live coding invitation':r.phase==='discuss'?'Class discussion':r.phase==='follow'?'Follow along with your teacher':'Live coding is open';
-    R.paint(d,'<span class="live-pill">'+E(room?.className||s.className)+'</span><div><b>'+E(title)+'</b><p>'+E(failure||(!admitted?'Your name is on the waiting list. Your practical remains available.':r?.phase==='invite'?'Save your place and join when ready.':r?.phase==='work'?'Your saved practical is ready.':R.rounds[r?.round||1].title))+'</p></div>'+(admitted&&r?.connected&&r.phase!=='work'?'<button id="join-round" class="button primary">'+E(joinedRound===r.round?'Open live coding':'Join live coding')+'</button>':'')+(context&&r?.phase==='work'?'<button id="resume-practical" class="button primary">Resume my practical →</button>':'')+'<button id="live-leave" class="text-button">Leave classroom</button>' );
+    const title=failure?'Reconnecting to your class':!admitted?'Connecting to your class':!r?.connected?'Practical work · live connection paused':r.phase==='work'?'Live class connected':r.phase==='invite'?'Live question ready':r.phase==='discuss'?'Class discussion':r.phase==='follow'?'Follow along with your teacher':'Live coding is open';
+    R.paint(d,'<span class="live-pill">'+E(room.className)+'</span><div><b>'+E(title)+'</b><p>'+E(failure||(r?.phase==='invite'?'Open the question when you are ready. Your practical is saved.':r?.phase==='work'?'You are registered with your teacher. Continue your practical.':R.rounds[r?.round||1].title))+'</p></div>'+(admitted&&r?.connected&&r.phase!=='work'?'<button id="join-round" class="button primary">Open live question</button>':'')+(context&&r?.phase==='work'?'<button id="resume-practical" class="button primary">Resume my practical →</button>':''));
   }
-  function joinForm(){const d=$('live-dock');R.forget(d);d.innerHTML='<form id="live-join-form" class="live-top"><label for="live-code">Classroom code from your teacher</label><input id="live-code" maxlength="12" required pattern="[A-Za-z0-9]{12}" autocomplete="off"><button class="button primary">Join</button><button type="button" id="cancel-join" class="button outline">Cancel</button><small>Your name, live code attempts and corrections are shared with your teacher. Independent tasks stay on this device.</small><span id="join-error" role="alert"></span></form>';$('live-code').focus();$('live-join-form').onsubmit=async e=>{e.preventDefault();const code=$('live-code').value.trim().toUpperCase(),s=state();const fresh={code,token:token()};try{const result=await R.rpc('student',{p_action:'join',p_code:code,p_token:fresh.token,p_data:{name:s.name,className:s.className}});member=fresh;putStore(credentialsKey(),member);accept(result);paint();}catch(err){$('join-error').textContent=err.message;}};}
   function savePosition(){if(!context)context=RouteApp.capture();RouteApp.suspend();}
   async function enter(){const r=currentRoom();if(!r?.connected||own?.student?.status!=='admitted')return;savePosition();joinedRound=r.round;dismissed=false;viewKey='';paint();try{accept(await call('ready'));}catch(e){status(e.message,true);}}
   function leaveView(restore=true){$('live-layer').hidden=true;$('live-attention').hidden=true;$('workspace').inert=false;if(restore&&context)RouteApp.restore(context);context=null;joinedRound=null;viewKey='';}
@@ -70,8 +116,8 @@
     if(!rec)return;const packet={round:rec.round,kind:rec.kind,code:rec.code,output:rec.output||'',error:rec.error||'',eventId:crypto.randomUUID()};pending=true;
     serial=serial.catch(()=>{}).then(async()=>{if(identity!==profile||credentials!==member)return;try{const data=await call(action,packet);accept(data);const item=state()?.live?.[target];if(item&&item.code===rec.code){item.synced=true;item.submitted=action==='submit';item.savedAt=new Date().toISOString();persist();}if(key()===target)status(action==='submit'?'Response sent to your teacher.':'Saved to classroom.');}catch(e){failure=e.message;status('Not sent: '+e.message+' Keep this draft or export your report.',true);}finally{pending=false;}});return serial;
   }
-  root.addEventListener('click',e=>{const id=e.target.closest('button')?.id;if(id==='open-join')joinForm();if(id==='cancel-join')dock();if(id==='join-round'||id==='see-discussion')enter();if(id==='resume-practical'){leaveView();paint();}if(id==='attention-recovery'){dismissed=true;leaveView();paint();}if(id==='live-leave'){if(confirm('Leave live classroom? Your saved practical and live drafts stay on this device.')){member=null;try{localStorage.removeItem(credentialsKey());}catch{}leaveView();room=null;own=null;paint();}}});
+  root.addEventListener('click',e=>{const id=e.target.closest('button')?.id;if(id==='live-retry')poll(true);if(id==='join-round'||id==='see-discussion')enter();if(id==='resume-practical'){leaveView();paint();}if(id==='attention-recovery'){dismissed=true;leaveView();paint();}});
   document.addEventListener('route-profile',attach);document.addEventListener('route-language',()=>{viewKey='';paint();});
-  setInterval(()=>{if(member&&state())poll();},3000);setInterval(()=>{if(room)paint();},1000);
+  setInterval(()=>{if(state()&&!state().teacher)poll();},3000);setInterval(()=>{if(room)paint();},1000);
   window.addEventListener('online',poll);window.addEventListener('beforeunload',()=>{if(pending)persist();});attach();
 })();

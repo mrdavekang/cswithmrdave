@@ -85,7 +85,7 @@ reflections save to localStorage under a lesson/name/class key. Paused typing is
 recorded as draft-edit history; it is not a keylogger. Separate student profiles
 do not intentionally overwrite each other. Shared-browser users can access its
 storage, so this is not secure private school storage. Clear profiles according
-to school policy. Joining a teacher's classroom shares the student's name and
+to school policy. Automatic registration in the teacher's open classroom shares the student's name and
 live-round drafts, Run/Send attempts, output/errors, help flag and corrections
 with that teacher in Supabase. Independent-task history remains local. There is
 no external analytics or automatic verification of Teams submission.
@@ -109,7 +109,9 @@ No publishing, commits, GitHub pushes or Teams posts are performed by saving.
 ## Teaching with the live classroom
 
 1. Open `teacher.html`, sign in with the existing approved teacher account and
-   choose 8T or 8E. Create one classroom for the lesson. Teacher sign-in is
+   choose 8T or 8E. Select **Open live class**. Opening another session for that
+   same class closes the previous session while retaining all its records.
+   Teacher sign-in is
    tab-scoped; sign out before sharing the computer. Never project the private
    dashboard or place its downloaded class record in GitHub.
 2. Open **Open safe projector** in another tab/window for the board. This view
@@ -122,10 +124,13 @@ No publishing, commits, GitHub pushes or Teams posts are performed by saving.
    projector header. Pausing the lesson clock also pauses stage time. The private
    **TTA projector stage** selector overrides the clock cue without navigating
    pupils' devices. Live rounds temporarily show their matching main task.
-3. Give students the random 12-character code. They use **Join classroom** at
-   the bottom of the lesson. Admit recognised names. Names are self-entered,
-   not verified pupil identities. A token identifies this browser/profile only.
-4. Invite Round 1 after list retrieval. Students click **Join live coding** when
+3. Students open the normal public lesson link and enter their name and class.
+   They register automatically in the matching open live class, without a code,
+   Join button or manual admission. If no live class is open, they keep working
+   and connect automatically when it opens. Names are self-entered, not verified
+   pupil identities. Review the roster and remove unfamiliar entries. A private
+   browser token identifies this profile; it is not an account or classroom code.
+4. Invite Round 1 after list retrieval. Students click **Open live question** when
    ready; their card, code, caret and scroll position are preserved. This marks
    them ready. Start the 3-minute timer manually. Drafts save after a short pause
    in typing. Students Run and Send their code. A missing Send remains a draft,
@@ -156,8 +161,11 @@ No matching Route Rescue intro video has been supplied yet.
 
 ## Live database and recovery
 
-`supabase/01-live-coding.sql` creates only `y8_route_private` and three lesson
-RPCs. The existing teacher UUID is checked server-side. All tables have RLS;
+Apply `supabase/01-live-coding.sql`, then `supabase/02-automatic-registration.sql`.
+They create only Route Rescue objects in `y8_route_private` and bounded lesson
+RPCs. Automatic registration locates the matching class's latest open session,
+checks its teacher heartbeat and registers only that browser's own identity.
+The existing teacher UUID is checked server-side. All tables have RLS;
 browser roles have no direct private-schema/table access. Student capabilities
 are random 256-bit tokens stored hashed in Supabase and separately from local
 lesson backups. They are not student accounts. The projector receives no roster,
@@ -178,7 +186,7 @@ and live writes close. A visible recovery control also returns to saved work.
 This is classroom guidance, not device lockdown. Rooms expire after eight hours;
 evidence remains until an authorised retention/deletion decision. Follow school
 privacy and retention policy. Clearing browser storage loses the capability and
-requires joining again; use a backup for practical work and ask the teacher to
+creates a new automatic connection; use a backup for practical work and ask the teacher to
 identify duplicate entries. Other lessons' tables and records are untouched.
 
 ## Visual guides and typing practice
