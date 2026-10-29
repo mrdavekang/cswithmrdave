@@ -29,8 +29,10 @@ window.RouteChecks=(()=>{
     }
     if(r.copy&&!(updates.length===1&&updates[0].index===0&&updates[0].source?.name==='route'&&updates[0].source.index===2))return miss('Read route’s third stored element on the right of = and update its first element on the left. Do not type a fixed replacement direction.');
     if(r.backwards){
+      if(r.startingRoutes&&!same(lists.map(l=>l.elements),r.startingRoutes))return miss('Keep the two supplied starting lists: Route 1 is UP, RIGHT, DOWN; Route 2 is UP, DOWN, DOWN. Add each repair underneath its own starting line.');
       if(lists.length!==2||!lists.every(l=>l.elements.length===3&&l.elements[0]==='UP'&&l.elements[2]==='DOWN')||lists[0].elements[1]===lists[1].elements[1])return miss('Keep two different starting lists in the code. They must differ only in their original middle value; both start with UP and end with DOWN.');
       if(!same(updates.map(u=>[u.index,u.value]),[[1,'LEFT'],[1,'LEFT']]))return miss('Each example needs its own update of index 1 to LEFT, followed by a print.');
+      if(r.startingRoutes){const whole=a.prints.filter(p=>p.args.length===1&&p.args[0].type==='whole'&&p.args[0].name==='route');if(!(updates[0].line<lists[1].line&&updates[1].line>lists[1].line&&whole.some(p=>p.line>updates[0].line&&p.line<lists[1].line)&&whole.some(p=>p.line>updates[1].line)))return miss('Complete Route 1 first: repair it, then print(route). Below the Route 2 starting list, repair it and print(route) again. Keep the two sections in that order.');}
     }
     let target=r.custom?["['"+custom.first+"', 'RIGHT', '"+custom.third+"']"]:card.expected;
     if(!r.twoTests){
