@@ -1,0 +1,77 @@
+/* Live rounds are an additional workspace. Polling never rebuilds the practical card. */
+(() => {
+  'use strict';
+  const R=RouteLive,$=id=>document.getElementById(id),E=R.esc;
+  let profile='',member=null,room=null,own=null,lastSeen=0,offset=0,polling=false,joinedRound=null,viewKey='',context=null,saveTimer,pending=false,serial=Promise.resolve(),failure='',dismissed=false;
+  const root=document.createElement('div');root.id='route-live-root';document.body.append(root);
+  root.innerHTML='<div id="live-dock" class="live-dock" hidden></div><section id="live-layer" class="live-layer" aria-label="Live coding workspace" hidden><div class="live-shell" id="live-shell"></div></section><div id="live-attention" class="live-screen-lock" hidden><div><h2>Eyes to the board</h2><p>Your practical is saved. We are comparing our code together.</p><p class="live-language" id="attention-language"></p><button id="see-discussion" class="button primary">See the live demonstration</button><p class="live-note">Your teacher will open Follow along when it is time to edit.</p><button id="attention-recovery" class="text-button">Connection problem? Return to my saved work</button></div></div>';
+  const getStore=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}};
+  const putStore=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true;}catch{return false;}};
+  const state=()=>RouteApp.getState();
+  const tr=(en,zh,ko)=>state()?.language==='zh'?zh:state()?.language==='ko'?ko:en;
+  const support=(zh,ko)=>state()?.language==='en'?'':'<p class="live-language">'+E(state()?.language==='zh'?zh:ko)+'</p>';
+  function status(text,bad=false){const e=$('live-status');if(e){e.textContent=text;e.classList.toggle('live-error',bad);}}
+  function currentRoom(){const r=R.effective(room,Date.now()+offset);if(r&&Date.now()-lastSeen>15000){r.connected=false;r.phase='work';}return r;}
+  const key=(round=room?.round,kind=R.kind(room||{}))=>room?.id+':'+round+':'+kind;
+  function record(){const s=state();if(!s||!room)return null;s.live=s.live||{};const k=key();if(!s.live[k]){
+    const prior=s.live[key(room.round,'initial')],server=own?.responses?.find(x=>x.round_no===room.round&&x.kind===R.kind(room));
+    s.live[k]={roomId:room.id,round:room.round,kind:R.kind(room),code:server?.code??(R.kind(room)==='revision'?prior?.code:null)??R.rounds[room.round].starter,output:server?.output||'',error:server?.error||'',runs:[],synced:!!server,submitted:!!server?.submitted_at};
+  }return s.live[k];}
+  function persist(){RouteApp.saveLive();}
+  function token(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('');}
+  function credentialsKey(){return 'route-live-member:'+profile;}
+  function attach(){const s=state(),next=s?s.name.trim().toLowerCase()+':'+s.className:'';if(next!==profile){leaveView(false);profile=next;room=null;own=null;member=getStore(credentialsKey());lastSeen=0;failure='';dismissed=false;}
+    if(!s){$('live-dock').hidden=true;return;}
+    if(!member){dock();return;}poll();
+  }
+  async function call(action,data={}){if(!member)throw Error('Join the classroom first');return R.rpc('student',{p_action:action,p_code:member.code,p_token:member.token,p_data:data});}
+  function accept(data){if(!data?.room||room?.id===data.room.id&&data.room.revision<room.revision)return;const oldPhase=room?.phase;room=data.room;own=data;offset=Date.parse(room.serverNow)-Date.now();lastSeen=Date.now();failure='';if(oldPhase!=='discuss'&&room.phase==='discuss')dismissed=false;if(own.student?.status==='admitted')record();}
+  async function poll(){if(polling||!member||!state())return;polling=true;try{accept(await call('read'));}catch(e){failure=e.message;}finally{polling=false;paint();}}
+  function dock(){const s=state(),d=$('live-dock');if(!s){d.hidden=true;return;}d.hidden=false;document.body.classList.add('live-bottom-space');
+    if(s.teacher){R.paint(d,'<span class="live-pill">Teacher preview</span><p>This entry does not grant access to student records.</p><a class="button primary" href="teacher.html" target="_blank" rel="noopener">Open teacher dashboard ↗</a>' );return;}
+    if(!member){R.paint(d,'<div><b>Live coding with your class</b><p>Keep working until your teacher gives a classroom code.</p></div><button id="open-join" class="button outline">Join classroom</button>' );return;}
+    const r=currentRoom(),admitted=own?.student?.status==='admitted';
+    let title=failure?'Connection needs attention':!admitted?'Waiting for teacher admission':!r?.connected?'Practical work · classroom paused':r.phase==='work'?'Practical work':r.phase==='invite'?'Live coding invitation':r.phase==='discuss'?'Class discussion':r.phase==='follow'?'Follow along with your teacher':'Live coding is open';
+    R.paint(d,'<span class="live-pill">'+E(room?.className||s.className)+'</span><div><b>'+E(title)+'</b><p>'+E(failure||(!admitted?'Your name is on the waiting list. Your practical remains available.':r?.phase==='invite'?'Save your place and join when ready.':r?.phase==='work'?'Your saved practical is ready.':R.rounds[r?.round||1].title))+'</p></div>'+(admitted&&r?.connected&&r.phase!=='work'?'<button id="join-round" class="button primary">'+E(joinedRound===r.round?'Open live coding':'Join live coding')+'</button>':'')+(context&&r?.phase==='work'?'<button id="resume-practical" class="button primary">Resume my practical →</button>':'')+'<button id="live-leave" class="text-button">Leave classroom</button>' );
+  }
+  function joinForm(){const d=$('live-dock');R.forget(d);d.innerHTML='<form id="live-join-form" class="live-top"><label for="live-code">Classroom code from your teacher</label><input id="live-code" maxlength="12" required pattern="[A-Za-z0-9]{12}" autocomplete="off"><button class="button primary">Join</button><button type="button" id="cancel-join" class="button outline">Cancel</button><small>Your name, live code attempts and corrections are shared with your teacher. Independent tasks stay on this device.</small><span id="join-error" role="alert"></span></form>';$('live-code').focus();$('live-join-form').onsubmit=async e=>{e.preventDefault();const code=$('live-code').value.trim().toUpperCase(),s=state();const fresh={code,token:token()};try{const result=await R.rpc('student',{p_action:'join',p_code:code,p_token:fresh.token,p_data:{name:s.name,className:s.className}});member=fresh;putStore(credentialsKey(),member);accept(result);paint();}catch(err){$('join-error').textContent=err.message;}};}
+  function savePosition(){if(!context)context=RouteApp.capture();RouteApp.suspend();}
+  async function enter(){const r=currentRoom();if(!r?.connected||own?.student?.status!=='admitted')return;savePosition();joinedRound=r.round;dismissed=false;viewKey='';paint();try{accept(await call('ready'));}catch(e){status(e.message,true);}}
+  function leaveView(restore=true){$('live-layer').hidden=true;$('live-attention').hidden=true;$('workspace').inert=false;if(restore&&context)RouteApp.restore(context);context=null;joinedRound=null;viewKey='';}
+  function renderWorkspace(r){const c=R.rounds[r.round],rec=record(),editable=R.writable(r),discuss=r.phase==='discuss',model=r.revealed&&r.demo;
+    $('live-shell').innerHTML='<header class="live-top"><span class="live-pill">LIVE '+r.round+' · '+E(r.phase==='follow'?'FOLLOW ALONG':R.kind(r)==='revision'?'CORRECTION':'FIRST ATTEMPT')+'</span><h1>'+E(c.title)+'</h1><span class="spacer"></span><label>Support <select id="live-language"><option value="en">English</option><option value="zh">中文</option><option value="ko">한국어</option></select></label><strong id="live-timer" class="live-count"></strong><button id="live-minimise" class="button outline">Keep my place</button></header><div id="live-phase-note" class="live-banner"></div><p>'+E(c.prompt)+'</p>'+support(c.zh,c.ko)+'<div class="live-grid">'+
+      '<section class="live-panel"><h2>'+E(R.kind(r)==='revision'?'Your correction':'Your response')+'</h2><p class="live-note">'+E(R.kind(r)==='revision'?'Try the improvement yourself. Your original attempt is kept.':'Type below. Run to see the result, then send your response.')+'</p><label for="live-code-editor">Your Python code</label><textarea id="live-code-editor" class="live-editor" spellcheck="false" autocapitalize="off" maxlength="8000">'+E(rec.code)+'</textarea><div class="live-actions"><button id="live-run" class="button run">▶ Run</button><button id="live-stop" class="button outline">■ Stop</button><button id="live-submit" class="button primary">Send my response</button><button id="live-help" class="button outline">I need help</button></div><pre id="live-output" class="live-output" aria-label="Your Python output">'+E(rec.output+(rec.error?'\n'+rec.error:''))+'</pre><p id="live-status" class="live-status" role="status">'+E(rec.synced?'Latest response saved to classroom.':'Draft saved on this device.')+'</p></section>'+
+      '<section class="live-panel live-model"><h2>'+(model?'Teacher’s live demonstration':'Look for the important index')+'</h2><div id="live-demo"></div><p class="live-note">Teacher example and your work are separate. Follow the change, then try it yourself.</p></section></div>';
+    const editor=$('live-code-editor');editor.disabled=!editable;editor.onkeydown=e=>{R.indent(editor,e);if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}};
+    editor.oninput=()=>{const a=record();a.code=editor.value;a.output='';a.error='';a.synced=false;a.submitted=false;a.editedAt=new Date().toISOString();persist();$('live-output').textContent='Code changed. Run this version.';status('Saved on this device · sending…');clearTimeout(saveTimer);saveTimer=setTimeout(()=>queue('save'),650);};
+    $('live-run').onclick=run;$('live-stop').onclick=()=>RouteRunner.stop();$('live-submit').onclick=()=>queue('submit');$('live-help').onclick=async()=>{try{accept(await call('help',{help:true}));status('Your teacher can see your help signal.');}catch(e){status(e.message,true);}};
+    $('live-language').value=state().language;$('live-language').onchange=e=>RouteApp.setLanguage(e.target.value);
+    $('live-minimise').onclick=()=>{RouteApp.suspend();$('live-layer').hidden=true;viewKey='';dismissed=true;paint();};updateWorkspace(r);
+  }
+  function updateWorkspace(r){const rec=record(),editable=R.writable(r);$('live-code-editor').disabled=!editable;$('live-run').disabled=!editable||RouteRunner.busy();$('live-submit').disabled=!editable;
+    document.querySelector('#live-shell .live-model h2').textContent=r.revealed?'Teacher’s live demonstration':'Look for the important index';
+    $('live-timer').textContent=r.phase==='follow'?'Follow along':r.pausedSeconds!=null?'Paused':r.phase==='invite'?'Get ready':r.phase==='discuss'?'Discuss':R.time(R.remaining({...r,deadline:r.deadline?new Date(Date.parse(r.deadline)-offset).toISOString():null}));
+    $('live-phase-note').textContent=r.phase==='invite'?tr('Ready? Keep the starter line. Your teacher starts the timer when the class is ready.','保留开头的列表。全班准备好后，老师开始计时。','시작 리스트를 유지하세요. 준비되면 선생님이 타이머를 시작합니다.'):r.phase==='discuss'?tr('Eyes to the board. Compare ideas; your teacher will open Follow along for corrections.','先看前面的讲解。老师开启“跟着做”后，你就可以修改代码。','앞의 설명을 보세요. 선생님이 따라 하기를 열면 코드를 수정할 수 있어요.'):r.phase==='follow'?tr('Follow along: watch the teacher’s code change here, then edit and Run your own version.','跟着做：观察老师的代码变化，再修改并运行自己的代码。','따라 하기: 선생님의 코드 변화를 보고 자신의 코드를 수정하고 실행하세요.'):r.pausedSeconds!=null?'Timer paused. Your draft is safe.':'Try it yourself. A mistake is useful evidence, not a lost house point.';
+    const model=r.demo,html=model?'<span class="live-pill">TEACHER EXAMPLE · LIVE</span><pre>'+E(model.code)+'</pre><b>Teacher’s output</b><pre class="live-output">'+E(model.output||'Teacher is editing. Run will show the output.')+'</pre><p>'+E(R.rounds[r.round].explain)+'</p>':'<pre>'+E(R.rounds[r.round].starter)+'</pre><p>Use the index, then compare your output with the question.</p>';
+    R.paint($('live-demo'),html);
+    if(rec.submitted)status('Response sent. Later edits need sending again.');
+  }
+  function paint(){dock();const r=currentRoom(),admitted=own?.student?.status==='admitted';
+    if(!admitted||!r?.connected||r.phase==='work'){
+      if(!$('live-layer').hidden){$('live-layer').hidden=true;viewKey='';}
+      $('live-attention').hidden=true;$('workspace').inert=false;return;
+    }
+    if(joinedRound===r.round&&!dismissed){$('workspace').inert=true;$('live-layer').hidden=false;$('live-attention').hidden=true;const k=r.round+':'+R.kind(r);if(viewKey!==k){viewKey=k;RouteApp.suspend();renderWorkspace(r);}else updateWorkspace(r);}
+    else if(r.phase==='discuss'&&!dismissed){RouteApp.suspend();$('live-attention').hidden=false;$('workspace').inert=true;$('attention-language').textContent=tr('','你的代码已保存。现在看老师的讲解。','코드가 저장됐어요. 지금은 선생님의 설명을 보세요.');}
+    else{$('live-attention').hidden=true;$('workspace').inert=false;}
+  }
+  async function run(){const r=currentRoom();if(!R.writable(r)||RouteRunner.busy())return;const rec=record(),code=rec.code,k=key();$('live-run').disabled=true;$('live-output').textContent='';const result=await RouteRunner.run(code,null,()=>Promise.resolve(''));rec.runs=rec.runs||[];const attempt={at:new Date().toISOString(),code,output:result.stdout||'',error:result.error||'',kind:rec.kind};rec.runs.push(attempt);if(rec.code===code){rec.output=attempt.output;rec.error=attempt.error;rec.synced=false;}persist();if(key()===k&&$('live-output')){$('live-output').textContent=rec.output+(rec.error?'\n'+rec.error:'');$('live-run').disabled=!R.writable(currentRoom());}queue('run',attempt,k);}
+  function queue(action,snapshot,recordKey){clearTimeout(saveTimer);const rec=snapshot?{...snapshot,round:Number((recordKey||key()).split(':')[1]),kind:(recordKey||key()).split(':')[2]}:{...record()},target=recordKey||key(),identity=profile,credentials=member;
+    if(!rec)return;const packet={round:rec.round,kind:rec.kind,code:rec.code,output:rec.output||'',error:rec.error||'',eventId:crypto.randomUUID()};pending=true;
+    serial=serial.catch(()=>{}).then(async()=>{if(identity!==profile||credentials!==member)return;try{const data=await call(action,packet);accept(data);const item=state()?.live?.[target];if(item&&item.code===rec.code){item.synced=true;item.submitted=action==='submit';item.savedAt=new Date().toISOString();persist();}if(key()===target)status(action==='submit'?'Response sent to your teacher.':'Saved to classroom.');}catch(e){failure=e.message;status('Not sent: '+e.message+' Keep this draft or export your report.',true);}finally{pending=false;}});return serial;
+  }
+  root.addEventListener('click',e=>{const id=e.target.closest('button')?.id;if(id==='open-join')joinForm();if(id==='cancel-join')dock();if(id==='join-round'||id==='see-discussion')enter();if(id==='resume-practical'){leaveView();paint();}if(id==='attention-recovery'){dismissed=true;leaveView();paint();}if(id==='live-leave'){if(confirm('Leave live classroom? Your saved practical and live drafts stay on this device.')){member=null;try{localStorage.removeItem(credentialsKey());}catch{}leaveView();room=null;own=null;paint();}}});
+  document.addEventListener('route-profile',attach);document.addEventListener('route-language',()=>{viewKey='';paint();});
+  setInterval(()=>{if(member&&state())poll();},3000);setInterval(()=>{if(room)paint();},1000);
+  window.addEventListener('online',poll);window.addEventListener('beforeunload',()=>{if(pending)persist();});attach();
+})();

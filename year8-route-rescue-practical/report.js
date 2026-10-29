@@ -1,7 +1,7 @@
 window.RouteReport=(()=>{
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function lines(state,L){
-    const out=['YEAR 8 · ROUTE RESCUE · PYTHON LISTS PRACTICAL',state.name+' | Class '+state.className,'Created: '+state.createdAt,'Latest save: '+state.updatedAt,'Language support: '+state.language+' | Practice route: '+state.route,'Storage: this browser only. No database connection.','',
+    const out=['YEAR 8 · ROUTE RESCUE · PYTHON LISTS PRACTICAL',state.name+' | Class '+state.className,'Created: '+state.createdAt,'Latest save: '+state.updatedAt,'Language support: '+state.language+' | Practice route: '+state.route,'Storage: independent work on this device; joined live-round responses shared privately with teacher.','',
       'TOPIC: Creating, reading and updating Python lists.','WAGBA: We are getting better at using indexes to read and change values in a Python list.','KNOWLEDGE: Identify lists, elements and indexes.','SKILLS: Create, print, retrieve and update.','UNDERSTANDING: An indexed update replaces one element; the others stay unchanged.','KEYWORDS: list, element, index, retrieve, update, output.','CHALLENGE: Repair a route without rewriting the whole list.',''];
     for(const c of L.cards){const r=state.responses[c.id];out.push('────────────────────────────────────────',L.stages.find(s=>s[0]===c.stage)[1].toUpperCase()+' · '+c.title,c.type==='mission'&&r?.readingViewed?'Status: Viewed — reading comprehension not verified':r?.passed?'Status: Achieved / response recorded':'Status: Not completed');
       if(c.type==='coding'){
@@ -18,6 +18,8 @@ window.RouteReport=(()=>{
       else if(c.type==='report')out.push('Student confirms Teams turn-in: '+(state.uploaded?'Yes — self-reported, not verified':'Not confirmed'));
       out.push('');
     }
+    out.push('LIVE CODING RESPONSES','Original attempts and model-supported corrections are separate. Downloaded drafts may include work not yet sent to the classroom.');
+    for(const r of Object.values(state.live||{})){out.push('Round '+r.round+' · '+r.kind,'Code:',r.code,'Output:',r.output||'(No output)',r.error||'','Classroom sync: '+(r.synced?'Saved':'Not confirmed'),'Student sent this version: '+(r.submitted?'Yes':'No'));for(const a of r.runs||[])out.push('Run '+a.at,a.code,a.output,a.error||'');}
     out.push('RESPONSE HISTORY','Draft edits are retained in the JSON backup. Other recorded input changes follow.');
     for(const e of state.events.filter(e=>!['code-edit','navigate','run'].includes(e.type)))out.push(e.at+' | '+e.card+' | '+e.type+' | '+JSON.stringify(Object.fromEntries(Object.entries(e).filter(([k])=>!['at','card','type','previousCode'].includes(k)))));
     return out.flatMap(s=>String(s).split('\n'));

@@ -13,12 +13,16 @@ directly with an execution limit because browsers usually block file-URL workers
 HTTP/GitHub Pages is recommended for the strongest Stop/timeout isolation.
 
 Enter a full name and class. Enter `teacher` for a separate local teacher-preview
-profile; no class is required. This is not authentication or a class dashboard.
-There are no locked pages, required accounts, leaderboards, timers or scoring races.
+profile; no class is required. This preview is not authentication. The private
+live dashboard is `teacher.html`, protected by the existing approved Supabase
+teacher account. Students need no account. Independent tasks remain unlocked.
+There are no speed rankings or automated points.
 
-60 minutes: mission 4, Do Now 5, Types of Learning 3, Main Task 1 15,
-Main Task 2 16, pit stop 3, further practice 8, plenary 4, submission 2.
-The teacher may adjust pacing. The lesson does not automatically move students.
+The live-classroom running order totals 60 minutes: mission 0–3, Do Now 3–7,
+Types of Learning 7–9, Main Task 1 9–16, live round 1 16–22, practical 22–36,
+live round 2 36–42, finish repair 42–47, Pitstop 47–50, Go Further 50–55,
+Plenary 55–58, submission 58–60. Timings are suggestions. Clock cues never move
+students or start a live round automatically. The teacher may adjust pacing.
 
 ## Differentiation
 
@@ -81,8 +85,10 @@ reflections save to localStorage under a lesson/name/class key. Paused typing is
 recorded as draft-edit history; it is not a keylogger. Separate student profiles
 do not intentionally overwrite each other. Shared-browser users can access its
 storage, so this is not secure private school storage. Clear profiles according
-to school policy. No Supabase connection, class-wide tracking, external analytics
-or real Teams submission verification is included.
+to school policy. Joining a teacher's classroom shares the student's name and
+live-round drafts, Run/Send attempts, output/errors, help flag and corrections
+with that teacher in Supabase. Independent-task history remains local. There is
+no external analytics or automatic verification of Teams submission.
 
 Backups contain the full local record. Export before changing browser/device or
 clearing storage. Imports validate lesson/version and ask before replacing a
@@ -99,6 +105,81 @@ teacher-designated Teams assignment and select Turn in. The final checkbox is
 explicitly a student self-confirmation, not verification from Microsoft.
 
 No publishing, commits, GitHub pushes or Teams posts are performed by saving.
+
+## Teaching with the live classroom
+
+1. Open `teacher.html`, sign in with the existing approved teacher account and
+   choose 8T or 8E. Create one classroom for the lesson. Teacher sign-in is
+   tab-scoped; sign out before sharing the computer. Never project the private
+   dashboard or place its downloaded class record in GitHub.
+2. Open **Open safe projector** in another tab/window for the board. This view
+   reproduces the TTA white 16:9 layout, green Raleway heading, bordered Topic,
+   WAGBA and Keywords/KSU areas, bottom Challenge and original school logo.
+   Nominal text sizes at 1280×720 are 14 pt side text, 13 pt KSU and 24 pt stage
+   instructions. Like a slide deck, the canvas scales proportionally to fit.
+   The progress strip shows Mission through Save and submit. The main clock
+   shows time left for the current stage; total lesson time remains in the
+   projector header. Pausing the lesson clock also pauses stage time. The private
+   **TTA projector stage** selector overrides the clock cue without navigating
+   pupils' devices. Live rounds temporarily show their matching main task.
+3. Give students the random 12-character code. They use **Join classroom** at
+   the bottom of the lesson. Admit recognised names. Names are self-entered,
+   not verified pupil identities. A token identifies this browser/profile only.
+4. Invite Round 1 after list retrieval. Students click **Join live coding** when
+   ready; their card, code, caret and scroll position are preserved. This marks
+   them ready. Start the 3-minute timer manually. Drafts save after a short pause
+   in typing. Students Run and Send their code. A missing Send remains a draft,
+   not a falsely labelled submission. Add 30/60 seconds or pause when needed.
+5. Finish responses, then reveal the model. **Eyes to the board** pauses the
+   practical coding area. **Follow along** opens an untimed correction workspace:
+   teacher edits and Run output appear beside each pupil's editable code and on
+   the projector. Updates take approximately 1–3 seconds, not a screen-share
+   video. A 1-minute correction timer is also available after discussion.
+6. Select **Resume practical for everyone**. Pupils use **Resume my practical**
+   to return to their saved location. Repeat Round 2 during list updates. Each
+   round keeps its first attempt and model-supported correction separate.
+7. Open a pupil tile to review either round and all Run/Send attempts. You can
+   feature an answer anonymously, return to the teacher model, record manual
+   house points with a reason and undo an award. This ledger does not enter
+   iSAMS. **Help discussed** clears a pupil's help flag after support. Download
+   the private class record if needed. End the classroom after
+   teaching; ending retains evidence rather than deleting it.
+
+The projector's sound starts muted. Click **Sound off · enable** once there.
+Soft cues signal response start, final-five-second ticks, discussion and return
+to practical. Volume, test, mute, fullscreen and reduced motion are available.
+No pupil device plays these sounds. Browser audio restrictions may require a
+fresh click; visual timings remain available. The supplied Quiet Classroom
+Timer was a layout/sound reference. Its embedded **Memory Crew Remix** video
+belongs to a different activity and is deliberately not copied into Route Rescue.
+No matching Route Rescue intro video has been supplied yet.
+
+## Live database and recovery
+
+`supabase/01-live-coding.sql` creates only `y8_route_private` and three lesson
+RPCs. The existing teacher UUID is checked server-side. All tables have RLS;
+browser roles have no direct private-schema/table access. Student capabilities
+are random 256-bit tokens stored hashed in Supabase and separately from local
+lesson backups. They are not student accounts. The projector receives no roster,
+token hashes or private attempt history. No service-role key, password, global
+Auth setting or Realtime publication change is used. Only the public publishable
+key is present in the client. API polling provides live updates.
+
+Student drafts stay local if a save fails or the timer closes. Unsynced drafts
+are labelled and remain in backups/PDFs; they are not silently submitted into a
+later round. The latest successfully saved draft stays available to the teacher
+at timeout. No keystroke timing or speed grade is recorded. Client-run output is
+formative evidence, not tamper-proof server marking. Full independent-task
+history is not uploaded by this feature.
+
+After 15 seconds without a pupil connection, attention controls release locally.
+After 120 seconds without the teacher heartbeat, server snapshots return to work
+and live writes close. A visible recovery control also returns to saved work.
+This is classroom guidance, not device lockdown. Rooms expire after eight hours;
+evidence remains until an authorised retention/deletion decision. Follow school
+privacy and retention policy. Clearing browser storage loses the capability and
+requires joining again; use a backup for practical work and ask the teacher to
+identify duplicate entries. Other lessons' tables and records are untouched.
 
 ## Visual guides and typing practice
 
