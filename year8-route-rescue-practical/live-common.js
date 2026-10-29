@@ -16,18 +16,19 @@ window.RouteLive = (() => {
       explain:'The assignment replaces index 1. It does not add an element. The first and third values stay unchanged.'}
   };
   const cues=[
-    [0,3,'Mission overview','Show the mission and a finished example.','Read what you will make.'],
-    [3,7,'Do Now','Check indexes; notice who needs an example.','Answer the three short questions.'],
-    [7,9,'Types of Learning','Connect starter evidence to K, S and U.','Choose a useful starting strategy.'],
-    [9,16,'Main Task 1','Model where to type and Run.','Create and read your route.'],
-    [16,22,'Live coding 1','Invite → ready → 3 min response → discuss → follow along.','Join when ready; read one element.'],
-    [22,36,'Practical work','Circulate; support code rather than extra writing.','Finish essentials; begin list updates.'],
-    [36,42,'Live coding 2','Invite → 3 min response → compare → revise.','Replace one element; keep the rest.'],
-    [42,47,'Finish the repair','Check students can point to the changed index.','Run and compare your output.'],
-    [47,50,'Learning Pit Stop','Use evidence, not speed, to discuss learning.','Review what changed in your understanding.'],
-    [50,55,'Go Further','Use deeper tasks for ready learners.','Try the next repair challenge.'],
-    [55,58,'Plenary','Check read versus replace misconceptions.','Complete the two exit questions.'],
-    [58,60,'Save and submit','Name the Teams assignment. Check Turn in.','Save report, attach in Teams, Turn in.']
+    [0,3,'Setup','Open the safe projector. Enable automatic intro once; start the lesson clock.','Open Teams and prepare your lesson tab.','mission'],
+    [3,7,'Overview video','Watch the 3:43 introduction together. Pause the lesson clock if playback needs longer.','Watch the model, goals and where to begin.','overview'],
+    [7,11,'Do Now','Check indexes; notice who needs an example.','Answer the three short questions.','starter'],
+    [11,13,'Types of Learning','Connect starter evidence to K, S and U.','Choose a useful starting strategy.','learning'],
+    [13,20,'Main Task 1','Model where to type and Run.','Create and read your route.','main1'],
+    [20,26,'Live coding 1','Invite → ready → 3 min response → discuss → follow along.','Join when ready; read one element.','main1'],
+    [26,39,'Practical work','Circulate; support code rather than extra writing.','Finish essentials; begin list updates.','main2'],
+    [39,45,'Live coding 2','Invite → 3 min response → compare → revise.','Replace one element; keep the rest.','main2'],
+    [45,49,'Finish the repair','Check students can point to the changed index.','Run and compare your output.','main2'],
+    [49,52,'Learning Pit Stop','Use evidence, not speed, to discuss learning.','Review what changed in your understanding.','pit'],
+    [52,56,'Go Further','Use deeper tasks for ready learners.','Try the next repair challenge.','extension'],
+    [56,58,'Plenary','Check read versus replace misconceptions.','Complete the two exit questions.','plenary'],
+    [58,60,'Save and submit','Name the Teams assignment. Check Turn in.','Save report, attach in Teams, Turn in.','report']
   ];
   let client;
   function db(){if(client)return client;

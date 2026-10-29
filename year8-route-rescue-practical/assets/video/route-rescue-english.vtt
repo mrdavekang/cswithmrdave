@@ -1,0 +1,145 @@
+WEBVTT
+
+00:00:00.650 --> 00:00:06.740
+Good morning, Year 8. We have a navigation problem.
+
+00:00:06.740 --> 00:00:09.450
+Imagine a spaceship…
+
+00:00:09.450 --> 00:00:14.760
+…with its directions stored. One wrong instruction could send…
+
+00:00:14.760 --> 00:00:18.170
+…everyone the wrong way. Your job is to…
+
+00:00:18.170 --> 00:00:23.300
+…read the route, find the right position and repair it using a Python list.
+
+00:00:23.300 --> 00:00:30.820
+Our WAGBA: getting better at using indexes to read and change values…
+
+00:00:30.820 --> 00:00:33.750
+…in a Python list. Here is what that means.
+
+00:00:33.750 --> 00:00:38.490
+Knowledge: recognise a list and identify its elements.
+
+00:00:38.490 --> 00:00:42.800
+Remember that indexes always start at zero.
+
+00:00:42.800 --> 00:00:45.690
+In Python, a list starts with square brackets.
+
+00:00:45.690 --> 00:00:50.830
+Skills: create a list and learn how to print it.
+
+00:00:50.830 --> 00:00:53.690
+Create it, read one element…
+
+00:00:53.690 --> 00:00:58.810
+…and replace a value using its index.
+
+00:00:58.810 --> 00:01:01.130
+Always remember: indexes start at zero.
+
+00:01:01.130 --> 00:01:05.660
+Understanding: explain what your code changed and what it left alone.
+
+00:01:05.660 --> 00:01:11.180
+Success is not just getting something onto the screen.
+
+00:01:11.180 --> 00:01:17.750
+Explain which position you changed, its index, and the output that proves it.
+
+00:01:17.750 --> 00:01:24.120
+Watch a small example. Let’s practise with colours before the spaceship’s route.
+
+00:01:24.120 --> 00:01:26.730
+Here is a list containing RED, BLUE and GREEN.
+
+00:01:26.730 --> 00:01:31.460
+BLUE is the second element, but its index is one.
+
+00:01:31.460 --> 00:01:35.350
+Python starts counting before most of us do: at zero.
+
+00:01:35.350 --> 00:01:41.610
+This print instruction reads index one, so the output is BLUE.
+
+00:01:41.610 --> 00:01:46.090
+Nothing has been removed or changed. Now replace that same…
+
+00:01:46.090 --> 00:01:48.250
+…element with GOLD, and print the…
+
+00:01:48.250 --> 00:01:52.920
+…whole list again: RED, GOLD and GREEN.
+
+00:01:52.920 --> 00:01:55.690
+Only the middle value changed. We still have three…
+
+00:01:55.690 --> 00:02:02.570
+…elements. That is the difference between reading and updating a value.
+
+00:02:02.570 --> 00:02:07.190
+In Main Task 1, create and read a route. In Main Task 2, repair it.
+
+00:02:07.190 --> 00:02:14.020
+Compare the task instructions with the expected output. Investigate and try again.
+
+00:02:14.020 --> 00:02:21.610
+Ready for more? The deeper tasks and Go Further challenges develop your skills.
+
+00:02:21.610 --> 00:02:27.780
+Type in the white Your Code area. Use square brackets to hold the list…
+
+00:02:27.780 --> 00:02:30.010
+…and quotation marks…
+
+00:02:30.010 --> 00:02:34.680
+…around text to make a string. Commas separate the elements.
+
+00:02:34.680 --> 00:02:41.360
+Press Run in the Python editor. Your result appears in the dark output area.
+
+00:02:41.360 --> 00:02:46.500
+Change your code? Run it again. During our live coding session…
+
+00:02:46.500 --> 00:02:52.670
+…choose Open live question. You will have your own editor…
+
+00:02:52.670 --> 00:02:54.250
+…and a countdown to work with.
+
+00:02:54.250 --> 00:02:59.010
+Try your code, press Run, then Send my response.
+
+00:02:59.010 --> 00:03:01.210
+Afterwards, we will compare ideas and improve together.
+
+00:03:01.210 --> 00:03:04.870
+I may award house points when you get it correct.
+
+00:03:04.870 --> 00:03:10.970
+Find the lesson in Teams: choose Year 8E Computer Science, then Classwork.
+
+00:03:10.970 --> 00:03:17.370
+Find Week 10 Practical - Route Rescue - Python Lists. Open the resource…
+
+00:03:17.370 --> 00:03:21.850
+…and get started by entering your name. Choose your class, 8E.
+
+00:03:21.850 --> 00:03:26.570
+If you need language support, select it and let me know whether it helps.
+
+00:03:26.570 --> 00:03:32.810
+Press Start or resume mission, then begin Do Now.
+
+00:03:32.810 --> 00:03:36.810
+At the end, remember to save your report and upload the PDF…
+
+00:03:36.810 --> 00:03:40.090
+…to assignment 02 in Teams…
+
+00:03:40.090 --> 00:03:41.600
+…then choose Turn in.

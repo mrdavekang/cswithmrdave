@@ -3,6 +3,7 @@ window.RouteProjector=(()=>{
  'use strict';const E=RouteLive.esc;
  const stages=[
   ['mission','Mission overview',['Open Route Rescue from your Teams Classwork link.','Read the mission. You will create, read and repair a Python route.','Enter your name and class. Choose language support if you need it.']],
+  ['overview','Overview video',['Watch the teacher overview together. Notice the code and its output.','Our goal: create, read and repair a list using indexes.','After the video, open Do Now. Keep the lesson tab ready.']],
   ['starter','Do Now',['Open Do Now in the lesson menu.','Answer the three questions. Use the index labels to check each position.','Read the feedback before you move to Types of Learning.']],
   ['learning','Types of Learning',['Look at your starter answer and the example on your screen.','Choose what helped you find the index. Notice your next practice step.','Knowledge: name the index. Skills: read or update. Understanding: explain what stays unchanged.']],
   ['main1','Main Task 1',['Type the requested route in Your code. Use the example to check punctuation.','Predict, then press Run. Compare your output with the target.','Complete the three essentials. Try the deeper reading tasks when ready.']],
@@ -12,7 +13,7 @@ window.RouteProjector=(()=>{
   ['plenary','Plenary',['Open Plenary. Work on the two exit questions independently.','Read the short program from top to bottom. Predict before choosing.','Explain which element changes and which elements stay the same.']],
   ['report','Save and submit',['Choose Save report to download your PDF. Check your name and class.','Attach the PDF to the Teams assignment your teacher names.','Choose Turn in. Downloading alone does not submit your work.']]
  ];
- function automatic(r){const i=RouteLive.cues.indexOf(RouteLive.cue(r.clockSeconds));return ['mission','starter','learning','main1','main1','main2','main2','main2','pit','extension','plenary','report'][i]||'mission';}
+ function automatic(r){return RouteLive.cue(r.clockSeconds)[5]||'mission';}
  function stage(r){return ['invite','response','discuss','retry','follow'].includes(r.phase)?(r.round===1?'main1':'main2'):(r.boardStage||automatic(r));}
  function render(r,language='en'){
   const id=stage(r),s=stages.find(x=>x[0]===id)||stages[0],live=r.connected&&r.phase!=='work',c=RouteLive.rounds[r.round],count=RouteLive.countdown(r),timed=count.timed,left=count.left,duration=count.duration;

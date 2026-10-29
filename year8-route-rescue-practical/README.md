@@ -18,10 +18,10 @@ live dashboard is `teacher.html`, protected by the existing approved Supabase
 teacher account. Students need no account. Independent tasks remain unlocked.
 There are no speed rankings or automated points.
 
-The live-classroom running order totals 60 minutes: mission 0–3, Do Now 3–7,
-Types of Learning 7–9, Main Task 1 9–16, live round 1 16–22, practical 22–36,
-live round 2 36–42, finish repair 42–47, Pitstop 47–50, Go Further 50–55,
-Plenary 55–58, submission 58–60. Timings are suggestions. Clock cues never move
+The live-classroom running order totals 60 minutes: setup 0–3, overview video 3–7,
+Do Now 7–11, Types of Learning 11–13, Main Task 1 13–20, live round 1 20–26,
+practical 26–39, live round 2 39–45, finish repair 45–49, Pitstop 49–52,
+Go Further 52–56, Plenary 56–58, submission 58–60. Timings are suggestions. Clock cues never move
 students or start a live round automatically. The teacher may adjust pacing.
 
 ## Differentiation
@@ -157,7 +157,24 @@ No pupil device plays these sounds. Browser audio restrictions may require a
 fresh click; visual timings remain available. The supplied Quiet Classroom
 Timer was a layout/sound reference. Its embedded **Memory Crew Remix** video
 belongs to a different activity and is deliberately not copied into Route Rescue.
-No matching Route Rescue intro video has been supplied yet.
+The matching Route Rescue overview is now supplied locally in `assets/video/`.
+It is 3:43, 1920×1080 H.264/AAC with fast-start playback, approximately 8 MB.
+Your edited narration is accompanied by real editor demonstrations and annotated
+lesson/Year 8E Classwork screenshots. Demonstrations use fictional names and
+different colour-list data; private pupil responses are not included.
+
+On the safe projector, click **Enable automatic intro** once during setup to
+authorise audible playback in the browser, then start the lesson clock from the
+private teacher dashboard. The video opens once at 3:00 while the clock is running
+and the projector follows the automatic cue. If the browser blocks autoplay, a
+large **Play video** button appears. **Play / replay overview** also works manually.
+English and Mandarin subtitles are burned into a separate lower safe band;
+optional VTT tracks are included. Leave native caption tracks off to avoid
+duplicating the visible subtitles. The video names Year 8E and its actual module.
+Pause the lesson clock if buffering needs extra time. Return to classroom cue
+closes playback; opening a live coding phase takes priority and pauses the video.
+The video player is outside the polling content so updates never restart it.
+The original audio recording remains unchanged outside the public repository.
 
 ## Live database and recovery
 
