@@ -9,6 +9,8 @@ Static HTML/CSS/JavaScript for GitHub Pages. No build, Vercel, pupil email accou
 - `teacher.html`: existing approved teacher account for live controls and private records. **Rehearse controls** uses clearly labelled sample data and never reads school pupil records.
 - Open the projector from teacher controls. Share only that projector window. The Topic, WAGBA/KSU, Keywords and Challenge remain visible while content changes. The read-only projector link uses a private, revocable four-hour capability; do not share it with students.
 
+The projector follows the supplied TTA Lesson Template PowerPoint frame: a white 16:9 slide, the original square outlined Topic/WAGBA/Keywords boxes, the wide bottom Challenge Task box, Raleway type, green stage heading and the original Tenby/ISP logo at its original position. The starter keeps its taller WAGBA box. A shared timer occupies the template’s top-right timer area. The entire slide scales together and letterboxes on other screen ratios; school boxes never rearrange into a website sidebar. Long class responses can scroll or be enlarged without moving the branding frame. This changes only projector presentation, not lesson questions, records or permissions.
+
 ## Teacher workflow
 
 1. Sign in, open the school-template projector, and click **Enable classroom sound** once if wanted. Sound comes from the teacher device; use the classroom audio output.
