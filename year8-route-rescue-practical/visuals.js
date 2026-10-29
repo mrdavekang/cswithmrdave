@@ -22,7 +22,8 @@ window.RouteVisual = (() => {
     anatomy:['列表名是 colours。元素是 RED、BLUE、GREEN，索引依次为 0、1、2。引号包住文本，逗号分隔元素，方括号包住整个列表。','리스트 이름은 colours예요. RED, BLUE, GREEN의 인덱스는 0, 1, 2예요. 따옴표는 문자열을 감싸고, 쉼표는 요소를 나누고, 대괄호는 리스트를 감싸요.'],
     trace:['从上到下读代码。第一次 print 显示更新前的列表；第二次显示更新后的列表。后来的更新不会改变已经输出的第一行。','위에서 아래로 읽으세요. 첫 print는 갱신 전, 다음 print는 갱신 후 리스트를 보여 줘요. 나중에 바꿔도 이미 출력한 첫 줄은 바뀌지 않아요.'],
     copy:['先读取等号右边的索引 2，再把这个值存到左边的索引 0。来源位置不变，这叫复制，不是交换。','먼저 = 오른쪽 인덱스 2의 값을 읽고 왼쪽 인덱스 0에 넣어요. 읽은 원래 값은 유지돼요. 교환이 아니라 복사예요.'],
-    report:['点击 Download full PDF report。下载后还需要在 Teams 作业中附加 PDF 并点击 Turn in。','Download full PDF report를 누르세요. 내려받은 뒤 Teams 과제에 PDF를 첨부하고 Turn in을 눌러야 해요.']
+    report:['点击 Download full PDF report。下载后还需要在 Teams 作业中附加 PDF 并点击 Turn in。','Download full PDF report를 누르세요. 내려받은 뒤 Teams 과제에 PDF를 첨부하고 Turn in을 눌러야 해요.'],
+    teams:['这是微软示例界面，不是本班作业。在自己的班级作业中，先点击 Attach 附加 PDF，再点击 Turn in 提交。','이 화면은 Microsoft 예시이며 내 반 과제가 아니에요. 내 과제에서 Attach로 PDF를 첨부하고 Turn in을 눌러 제출하세요.']
   };
   function marks(key){
     if(['create','read','update'].includes(key))return '<svg class="screenshot-outlines" viewBox="0 0 510 472" aria-hidden="true"><rect x="40" y="51" width="458" height="99" rx="5"/><rect x="5" y="275" width="78" height="44" rx="7"/><rect x="6" y="362" width="493" height="89" rx="6"/></svg><span class="screenshot-mark code-mark">1</span><span class="screenshot-mark run-mark">2</span><span class="screenshot-mark output-mark">3</span>';
@@ -56,7 +57,7 @@ window.RouteVisual = (() => {
   }
   function enhance(c,r,ui){
     const content=document.getElementById('content');
-    content.querySelectorAll('.expected,.reference,.route-visual,#hint pre,#hint p').forEach(el=>{el.dataset.noCopy='';el.classList.add('study-reference');});
+    content.querySelectorAll('.expected,.reference,.demo-grid,.learning-type code,.route-visual,#hint pre,#hint p').forEach(el=>{el.dataset.noCopy='';el.classList.add('study-reference');});
     if(c.type==='mission'){
       content.querySelector('.wide-reading').insertAdjacentHTML('afterbegin','<figure class="mission-art"><img src="assets/visuals/route-rescue-mission.png" alt="A friendly astronaut checks three direction tiles on a spaceship navigation console." draggable="false"><figcaption>Mission story · Your Python program prints instructions. It does not move this spaceship.</figcaption></figure>');
       content.querySelector('.instruction-list').insertAdjacentHTML('afterend',figure('create','Where you will type and run','Real editor screenshot · the colours program is an example, not your route task.',ui));
