@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="theme-color" content="#176849">
+ <meta name="description" content="Year 7 Pixel Art Studio: decode, investigate, create and improve binary pictures. Explore picture data, resolution and four-colour pixels. English and Mandarin support for tablets and laptops.">
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+ <title>Pixel Art Studio · Year 7</title>
+ <link rel="icon" href="favicon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="styles.css">
+ <link rel="stylesheet" href="more.css">
+ <script defer src="more-core.js"></script>
+ <script defer src="core.js"></script>
+ <script defer src="lesson.js"></script>
+ <script defer src="workings.js"></script>
+ <script defer src="after-plenary.js"></script>
+ <script defer src="more.js"></script>
+ <script defer src="app.js"></script>
+</head>
+<body>
+ <a class="skip" href="#workspace">Skip to my activity</a>
+ <div id="app"><main class="boot"><h1>Opening Pixel Art Studio…</h1><p>Keep the lesson folder together. This app works without an account or an internet connection.</p></main></div>
+ <noscript><p>This studio needs JavaScript. Ask your teacher for help turning it on.</p></noscript>
+ <dialog id="modal"><button type="button" class="close" id="close-modal">Close / 关闭</button><div id="modal-body"></div></dialog>
+ <input type="file" accept=".json,application/json" id="restore-file" hidden>
+ <div id="toast" role="status" aria-live="polite"></div>
+ <section id="print-report"></section>
+</body>
+</html>
