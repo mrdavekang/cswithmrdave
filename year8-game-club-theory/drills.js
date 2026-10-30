@@ -17,6 +17,10 @@ window.GameActivities=(()=>{
    grid.className='type-run-grid';heading.before(grid);model.className='type-model';own.className='type-own';model.append(heading,targetEl,change);own.append(label,el,actions);grid.append(model,own);
   }
   r.typing||={inserted:0,pasted:false};delete r.typing.errors;
+  if(!typeRun&&!r.typing.finishedAt&&r.status==='correct'){
+   const finish=[...(r.attempts||[])].reverse().find(a=>a.kind==='typing');
+   if(finish?.at)r.typing.finishedAt=finish.at;
+  }
   const stats=TypingStats.mount(document.querySelector('.typing-summary'),{typeRun,language:api.language,calm:!!r.calmStats,onCalm:value=>{r.calmStats=value;api.record('action',{action:'calm-typing-effects',value});api.save();}});
   let firstPaint=true;
   const target=()=>typeRun&&r.drillPhase?c.target.replace('"'+c.original+'"','"'+c.changed+'"'):c.target;
