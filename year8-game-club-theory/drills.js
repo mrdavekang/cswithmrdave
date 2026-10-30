@@ -17,18 +17,19 @@ window.GameActivities=(()=>{
    grid.className='type-run-grid';heading.before(grid);model.className='type-model';own.className='type-own';model.append(heading,targetEl,change);own.append(label,el,actions);grid.append(model,own);
   }
   r.typing||={inserted:0,pasted:false};delete r.typing.errors;
+  const stats=TypingStats.mount(document.querySelector('.typing-summary'),{typeRun,language:api.language,calm:!!r.calmStats,onCalm:value=>{r.calmStats=value;api.record('action',{action:'calm-typing-effects',value});api.save();}});
+  let firstPaint=true;
   const target=()=>typeRun&&r.drillPhase?c.target.replace('"'+c.original+'"','"'+c.changed+'"'):c.target;
   const paint=()=>{
    const value=el.value,t=target(),matches=Array.from(value).filter((ch,i)=>ch===t[i]).length;
    document.getElementById('typing-target').innerHTML=Array.from(t).map((ch,i)=>`<span class="${i<value.length?(value[i]===ch?'typed-right':'typed-wrong'):i===value.length?'typing-caret':''}">${ch==='\n'?'\n':esc(ch)}</span>`).join('');
-   document.getElementById('typing-accuracy').textContent='Matching characters: '+Math.round(100*matches/Math.max(value.length,1))+'%';
-   document.getElementById('typing-position').textContent=matches+' / '+t.length+' characters match';
-   const seconds=r.typing.startedAt?Math.max(1,(Date.now()-Date.parse(r.typing.startedAt))/1000):0;
-   document.getElementById('typing-speed').textContent=typeRun?'Code accuracy, not a race':r.typing.pasted?'Pasted text · speed not scored':seconds?Math.round(matches/5/(seconds/60))+' WPM · personal practice':'No speed target';
+   const seconds=r.typing.startedAt?Math.max(1,((Date.parse(r.typing.finishedAt)||Date.now())-Date.parse(r.typing.startedAt))/1000):0;
+   stats.update({matches,total:t.length,accuracy:Math.round(100*matches/Math.max(value.length,1)),wpm:seconds?Math.round(matches/5/(seconds/60)):0,pasted:r.typing.pasted,hasText:!!value.length},firstPaint);firstPaint=false;
   };
   el.addEventListener('paste',()=>{r.typing.pasted=true;status.textContent='Pasted text is not scored for typing speed. You can still edit and run your program.';});
   el.oninput=e=>{
    r.typing.startedAt||=new Date().toISOString();r.typing.inserted+=Math.max(0,el.value.length-(r.lastTypingLength||0));r.lastTypingLength=el.value.length;
+   if(!typeRun&&el.value===c.target)r.typing.finishedAt=new Date().toISOString();else delete r.typing.finishedAt;
    api.update(typeRun?'code':'typed',el.value);paint();
    if(!typeRun&&el.value===c.target){r.status='correct';r.feedback={message:'✓ Text matched. Your typing practice is saved. Next leads to the next activity.'};status.textContent=r.feedback.message;r.attempts.push({at:new Date().toISOString(),kind:'typing',typed:el.value,...r.typing});api.record('attempt',r.attempts.at(-1));api.save();api.refresh();}
   };
@@ -42,7 +43,7 @@ window.GameActivities=(()=>{
    if(PythonRunner.busy())return;api.busy(true);el.readOnly=true;const code=el.value,phase=r.drillPhase||0,out=document.getElementById('drill-output');out.textContent='';document.getElementById('drill-run').disabled=true;document.getElementById('drill-stop').disabled=false;document.getElementById('drill-change').disabled=true;
    try{const result=await PythonRunner.run(code,s=>out.append(document.createTextNode(s))),expected=phase?c.modifiedExpected:c.expected;
     const valid=canonical(result.stdout)===canonical(expected)&&!result.error&&Array.isArray(result.vars?.players)&&(c.id==='typing-loop-run'?/\bwhile\s/.test(code):/\.append\s*\(/.test(code));
-    r.code=code;r.stdout=result.stdout;r.error=result.error;if(valid){if(phase)r.changedRun=true;else r.modelRun=true;}
+    r.code=code;r.stdout=result.stdout;r.error=result.error;if(valid){if(phase)r.changedRun=true;else r.modelRun=true;stats.celebrate(!!phase);}
    r.status=valid&&phase?'correct':valid?'draft':'revise';r.feedback={message:valid?phase?'✓ Your changed program works. You typed, ran and modified it.':'✓ The model ran. Now choose Try the small change.':'Keep your draft. '+(result.error||'Compare your program with the model and the expected output. Make one correction and Run again.')};
     r.attempts.push({at:new Date().toISOString(),kind:'type-run',phase,code,...result,ok:valid});api.record('attempt',r.attempts.at(-1));status.textContent=r.feedback.message;if(result.error)out.textContent=result.stdout+'\n'+result.error;
    }catch(e){status.textContent='Your draft is kept. '+e.message;}finally{el.readOnly=false;api.busy(false);api.save();api.refresh();document.getElementById('drill-run').disabled=false;document.getElementById('drill-stop').disabled=true;document.getElementById('drill-change').disabled=!r.modelRun;}
