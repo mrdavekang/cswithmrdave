@@ -11,7 +11,8 @@ window.SearchUI=(()=>{'use strict';
  function clock(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
  function deadline(s){return s?.paused?Number(s.remaining_ms||0):Math.max(0,Date.parse(s?.deadline||'')-(Date.now()+offset));}
  let offset=0;function sync(server){if(server)offset=Date.parse(server)-Date.now();}
- const STAGES=[{id:'settle',label:'Settle',title:'Sit at your assigned table.',instruction:'Prepare your paper and device. Open Microsoft Teams and your Searching lesson. Remain quiet until the countdown finishes.',seconds:180},
+ const STAGES=[{id:'settle',label:'Setup',title:'Get ready for the lesson.',instruction:'Prepare your paper and device. Open Teams → Year 10 Computer Science → Classwork → Week 10 Session 2. Get ready to watch the overview when this three-minute setup countdown ends.',seconds:180},
+ {id:'overview',label:'Overview film',title:'Watch the lesson overview.',instruction:'Look at the projector. Watch the search examples, WAGBA and KSU, and the Teams starting route. The starter begins when the film finishes. You may ask for a written next step.',seconds:SearchOverview.seconds},
  {id:'starter',label:'Starter',title:'Starter: position, value, target',instruction:'Complete the three starter questions. Read the index row separately from the value row.',seconds:240},
  {id:'types',label:'Types of Learning',title:'Choose one KSU focus',instruction:'Use your starter answers to choose one thing to strengthen. Keep this brief and specific.',seconds:120},
  {id:'linear',label:'Main 1',title:'Main Activity 1: linear search',instruction:'Study the model and watch the full assigned video. On paper, trace target 13. Explain the stopping rule and correct the mistaken explanation.',seconds:960,nextQuestion:'linear'},
