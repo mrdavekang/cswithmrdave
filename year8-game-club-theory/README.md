@@ -35,6 +35,8 @@ Completion of every challenge is not expected in 60 minutes. The clock is guidan
 
 ## Type-and-run and review
 
+The append drill prints the original list before append and the updated list afterwards. Its visual comparison and two-line expected output distinguish the unchanged first two players from the new final element. Both the Orbit model and Comet variation require those two output lines; existing code drafts and attempt histories are retained.
+
 Typing statistics use three colourful arcade meters with brief number transitions and milestone bursts. Effects are confined to the stats area: no sound, flashing, speed ranking or navigation gates. The Calm effects toggle is saved per drill, and the device's reduced-motion preference is respected. Text matching is not treated as programming success: code drills celebrate execution separately. Warm-up pace freezes when the full text matches; pasted text is not speed-scored.
 
 `practice-content.js` adds the linear activities without replacing the original `lesson.js` questions. `drills.js` supplies character feedback, Backspace correction, four-space Tab indentation and actual Python execution. Warm-up speed is personal practice only; pasted text is not speed-scored. Code correctness is checked by execution/output, not exact spacing or quote style. Each type-and-run drill has two clearly described parts: run the complete model, then modify one name and run the changed version. The counter increment is included in the loop model; Stop and execution limits remain available.

@@ -12,9 +12,25 @@ window.GameActivities=(()=>{
  function bind(c,r,api){
   if(c.type==='review-game')return bindQuiz(r,api);
   const typeRun=c.type==='type-run',el=document.getElementById(typeRun?'drill-code':'typing-input'),status=document.getElementById('drill-feedback');
+  if(c.beforeList&&r.appendOutputVersion!==2){
+   r.appendOutputVersion=2;
+   if(r.code&&canonical(r.stdout)!==canonical(r.drillPhase?c.modifiedExpected:c.expected)){
+    r.status='draft';r.modelRun=false;r.changedRun=false;
+    r.feedback={message:translated('Your earlier code is kept. This example now shows BEFORE and AFTER: add print(players) before append, keep the print after it, then Run again.','之前的代码已保留。现在需要显示修改前后：在 append 前加上 print(players)，保留后面的 print，再运行。','이전 코드는 보관했습니다. 이제 전후를 보여 주세요. append 앞에 print(players)를 추가하고 뒤의 print도 유지한 뒤 다시 실행하세요.',api.language)};
+    status.textContent=r.feedback.message;
+   }
+   api.save();api.refresh();
+  }
   if(typeRun){
    const targetEl=document.getElementById('typing-target'),heading=targetEl.previousElementSibling,change=targetEl.nextElementSibling,label=document.querySelector('label[for="drill-code"]'),actions=el.nextElementSibling,grid=document.createElement('div'),model=document.createElement('section'),own=document.createElement('section');
    grid.className='type-run-grid';heading.before(grid);model.className='type-model';own.className='type-own';model.append(heading,targetEl,change);own.append(label,el,actions);grid.append(model,own);
+   if(c.beforeList){
+    const added=r.drillPhase?c.changed:c.original,comparison=document.createElement('section'),lang=api.language;
+    comparison.className='append-comparison';comparison.setAttribute('aria-label',translated('Before and after append','添加前后对比','append 전후 비교',lang));
+    const panel=(title,values,after)=>`<section><h3>${esc(title)}</h3><div class="append-elements">${values.map((name,i)=>`<span class="append-element ${after&&i===values.length-1?'new-element':''}"><small>index ${i}</small><b>${esc(name)}</b>${after&&i===values.length-1?'<em>'+esc(translated('NEW','新增','새 원소',lang))+'</em>':''}</span>`).join('')}</div></section>`;
+    comparison.innerHTML=panel(translated('Line 1 · Before append · 2 players','第 1 行 · 添加前 · 2 位玩家','1행 · 추가 전 · 2명',lang),c.beforeList,false)+panel(translated('Line 2 · After append · 3 players','第 2 行 · 添加后 · 3 位玩家','2행 · 추가 후 · 3명',lang),[...c.beforeList,added],true)+`<p>${esc(translated('The original players stay in the same order. append adds ONE new element at the end. The two print instructions let you compare before and after.','原来的玩家顺序不变。append 在末尾添加一个新元素。两个 print 让你对比修改前后。','기존 원소의 순서는 그대로입니다. append는 끝에 원소 하나를 추가합니다. print 두 줄로 전후를 비교하세요.',lang))}</p>`;
+    document.querySelector('.drill-results').before(comparison);
+   }
   }
   r.typing||={inserted:0,pasted:false};delete r.typing.errors;
   if(!typeRun&&!r.typing.finishedAt&&r.status==='correct'){
@@ -48,7 +64,7 @@ window.GameActivities=(()=>{
    try{const result=await PythonRunner.run(code,s=>out.append(document.createTextNode(s))),expected=phase?c.modifiedExpected:c.expected;
     const valid=canonical(result.stdout)===canonical(expected)&&!result.error&&Array.isArray(result.vars?.players)&&(c.id==='typing-loop-run'?/\bwhile\s/.test(code):/\.append\s*\(/.test(code));
     r.code=code;r.stdout=result.stdout;r.error=result.error;if(valid){if(phase)r.changedRun=true;else r.modelRun=true;stats.celebrate(!!phase);}
-   r.status=valid&&phase?'correct':valid?'draft':'revise';r.feedback={message:valid?phase?'✓ Your changed program works. You typed, ran and modified it.':'✓ The model ran. Now choose Try the small change.':'Keep your draft. '+(result.error||'Compare your program with the model and the expected output. Make one correction and Run again.')};
+   r.status=valid&&phase?'correct':valid?'draft':'revise';r.feedback={message:valid?phase?'✓ Your changed program works. You typed, ran and modified it.':c.beforeList?'✓ Both lists printed: 2 players before append, then 3 after. Now choose Try the small change.':'✓ The model ran. Now choose Try the small change.':'Keep your draft. '+(result.error||(c.beforeList?'You need TWO output lines. Put print(players) before append AND after append. Compare both lines, then Run again.':'Compare your program with the model and the expected output. Make one correction and Run again.'))};
     r.attempts.push({at:new Date().toISOString(),kind:'type-run',phase,code,...result,ok:valid});api.record('attempt',r.attempts.at(-1));status.textContent=r.feedback.message;if(result.error)out.textContent=result.stdout+'\n'+result.error;
    }catch(e){status.textContent='Your draft is kept. '+e.message;}finally{el.readOnly=false;api.busy(false);api.save();api.refresh();document.getElementById('drill-run').disabled=false;document.getElementById('drill-stop').disabled=true;document.getElementById('drill-change').disabled=!r.modelRun;}
   };paint();
