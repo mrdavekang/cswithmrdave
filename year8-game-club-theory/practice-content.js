@@ -1,6 +1,23 @@
 /* Additive update: original card IDs and saved responses are retained. */
 (()=>{
  const original=[...LESSON.cards],bi=(en,zh,ko)=>({en,zh,ko});
+ const mission=original.find(c=>c.id==='mission');
+ // Keep the complete reading and question; this card does not need decorative art.
+ if(mission){delete mission.visual;mission.emphasis={
+  en:[['repair a roster','action'],['add a late arrival','action'],['display each name','action'],['choose a captain','action'],['lists','concept'],['while loops','concept'],['Python Lab','concept'],['roster changes','check'],['same captain appears again','check']],
+  zh:[['修改名单','action'],['加入迟到者','action'],['逐个显示姓名','action'],['选队长','action'],['列表','concept'],['while 循环','concept'],['Python 实验室','concept'],['名单改变','check'],['同一人','check']],
+  ko:[['명단을 정리','action'],['플레이어를 추가','action'],['이름을 하나씩 표시','action'],['주장을 선택','action'],['리스트','concept'],['while 반복문','concept'],['Python Lab','concept'],['명단이 바뀌어도','check'],['같은 사람이 다시','check']]
+ };}
+ const target=original.find(c=>c.id==='mission-target');
+ if(target){
+  delete target.visual;target.readPriority=true;
+  target.emphasis={
+   en:[['Nova, Echo and Pixel','concept'],['Luna replaces Echo','action'],['Orbit joins last','append'],['four players','check'],['in order','concept'],['random choice','concept'],['any name in that current roster','check'],['small steps','action']],
+   zh:[['Nova、Echo、Pixel','concept'],['Luna 替换 Echo','action'],['Orbit 最后加入','append'],['共四人','check'],['按顺序','concept'],['当前名单中的任何人','check'],['分步完成','action']],
+   ko:[['Nova, Echo, Pixel','concept'],['Echo를 Luna로 바꾸고','action'],['Orbit를 추가해','append'],['4명','check'],['순서대로','concept'],['현재 명단의 누구나','check'],['단계별로','action']]
+  };
+  target.wagoll={before:['Nova','Echo','Pixel'],after:['Nova','Luna','Pixel','Orbit'],captain:'Luna',code:'import random\n\nplayers = ["Nova", "Echo", "Pixel"]\nplayers[1] = "Luna"\nplayers.append("Orbit")\n\nprint("Players ready:", len(players))\nposition = 0\nwhile position < len(players):\n    print(players[position])\n    position = position + 1\n\ncaptain = random.choice(players)\nprint("Captain:", captain)'};
+ }
  const drills=[
   {id:'typing-words',stage:'Starting drill',type:'typing',title:'Crew typing · warm up your fingers',read:bi('Click the large typing area. Type the words you see. Correct mistakes with Backspace. There is no speed target. Try again to improve your own accuracy.','点击大输入区，照着输入单词。用退格键改错。没有最低速度要求，可以重试。','큰 입력 영역을 누르고 보이는 단어를 입력하세요. Backspace로 고치세요. 최소 속도는 없습니다.'),target:'game play team win red blue star moon nova pixel orbit',purpose:bi('Warm up your keyboard skills. This is not Python code.','练习键盘输入，这不是 Python 代码。','키보드 준비 운동입니다. Python 코드는 아닙니다.')},
   {id:'typing-symbols',stage:'Starting drill',type:'typing',title:'Python keys · brackets, quotes and commas',read:bi('Type this one line. Notice the square brackets, straight quotation marks and comma. Choose an English keyboard/input mode for Python.','输入这一行，注意方括号、英文直引号和逗号。编程时请选择英文键盘或输入模式。','이 한 줄을 입력하세요. 대괄호, 곧은 따옴표, 쉼표에 주의하세요. Python에서는 영어 입력 모드를 사용하세요.'),target:'players = ["Nova", "Echo"]',purpose:bi('A list stores two player names. = stores the list in players.','列表存储两个玩家名字，= 把列表赋给 players。','리스트에 두 이름을 저장합니다. =로 players에 저장합니다.')},
