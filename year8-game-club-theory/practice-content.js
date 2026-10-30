@@ -1,6 +1,13 @@
 /* Additive update: original card IDs and saved responses are retained. */
 (()=>{
  const original=[...LESSON.cards],bi=(en,zh,ko)=>({en,zh,ko});
+ const substitute=original.find(c=>c.id==='start-replace');
+ if(substitute){
+  substitute.read=bi('The first line creates the list. The second line replaces the element at index 1 with Luna. Assignment to an existing index changes one value; it does not add a new slot. Read the code, then count the elements that remain.','第一行创建列表。第二行把索引 1 的元素替换为 Luna。对已有索引赋值只改变一个值，不会添加新位置。阅读代码，再数一数替换后有多少个元素。','첫 줄은 리스트를 만듭니다. 둘째 줄은 인덱스 1의 원소를 Luna로 바꿉니다. 기존 인덱스에 대입하면 값 하나만 바뀌고 새 칸은 추가되지 않습니다. 코드를 읽고 변경 후 원소 수를 세어 보세요.');
+  substitute.questionCode='players = ["Nova", "Echo", "Pixel"]\nplayers[1] = "Luna"';
+  substitute.questionCodeLabel=bi('READ THIS CODE · then count the elements','先阅读代码 · 再数元素','코드를 읽고 · 원소 수 세기');
+  substitute.emphasis={en:[['replaces','action'],['index 1','concept'],['one value','action'],['does not add a new slot','check'],['count the elements','action']],zh:[['索引 1','concept'],['替换为 Luna','action'],['一个值','action'],['不会添加新位置','check'],['数一数','action']],ko:[['인덱스 1','concept'],['Luna로 바꿉니다','action'],['값 하나만','action'],['새 칸은 추가되지 않습니다','check'],['원소 수를 세어','action']]};
+ }
  const readOne=original.find(c=>c.id==='start-output');
  if(readOne){
   readOne.read=bi('Read the two-line program below. The first line stores three names in players. The second line prints only one element. Indexes start at 0: index 1 means the second name, not the first. Predict the output, then choose one answer.','阅读下面的两行程序。第一行把三个名字存入 players。第二行只显示一个元素。索引从 0 开始：索引 1 表示第二个名字，不是第一个。先预测输出，再选择一个答案。','아래 두 줄 프로그램을 읽으세요. 첫 줄은 players에 이름 세 개를 저장합니다. 둘째 줄은 원소 하나만 출력합니다. 인덱스는 0부터 시작하므로 인덱스 1은 첫 번째가 아닌 두 번째 이름입니다. 출력을 예상한 뒤 답 하나를 고르세요.');
