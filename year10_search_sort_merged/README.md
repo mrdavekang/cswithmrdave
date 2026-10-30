@@ -1,33 +1,31 @@
-# Year 10 · Search, test & sort
+# Year 10 · Linear and binary search review
 
-Merged Week 10 Session 3 / Week 11 Session 1. Review build: no overview video, no video completion gate, no Teams posting.
+This searching-only revision replaces the unused searching-to-sorting draft at the same review URL. The folder/lesson database identity stays stable to preserve links and saved work. The original year10_search_algorithms lesson is unchanged.
 
-## Open
+## Learning route
 
-- `index.html`: Name and Class (10E/10T). Teacher Preview bypasses question gates, never reads or writes pupil records.
-- `teacher.html`: existing approved teacher sign-in; separate Rehearsal button uses labelled sample data, no school writes.
-- Projector opens from teacher controls, using a revocable, expiring view-only key. Never project the private dashboard.
-- Static HTTP/HTTPS required. Opening the file directly will not run interactive Python.
+One question per page. Starter; Types of Learning; Main 1 (linear search, booklet Questions 1–3); Main 2 (binary search, Questions 4–5); one selected follow-up; optional paper extension; K/S/U Learning Pit Stops; plenary and PDF export. No overview film or compulsory whole-video rewatch. No sorting topic in the active lesson.
 
-## Teaching flow (60 minutes)
+The worked-model pointer is manually controlled, with fixed index labels, explicit stored values and highlighted numbered pseudocode. Every question states the decision and explanation expected. Sentence starters are optional support, not substitutes for questions.
 
-Starter 5; Types of Learning 3; Main 1 20; Main 2 20; Extension 5; Learning Pit Stop 3; Plenary 4.
-Each main task comprises 16 minutes independent work, 2 minutes response time and about 2 minutes teacher-paced review. Teacher moves to the next stage after discussion. Pause, extend or hold the automatic invitation when needed.
+Paper tasks can be attempted on paper without retyping or photographing them. Paper checkboxes record attempts awaiting teacher review, not correctness. Digital trace checks validate numeric fields only; written next actions still need human review.
 
-Main 1: read supplied inline search programs; repair pointer/output expressions; test 31 and 20; compare item checks. Linear stops at a match. Main 2: adjacent comparisons, full-range passes, swap flag, trace passes 2/3. No merge sort or independent full bubble-sort implementation yet.
+Follow-up choices are Question 6, Question 7, Questions 8–10, optional Python, or core completion. Students do not have to traverse every route. Python models are supplied, not deliberately broken. Editor and Shell accept real input() directly; runs, actual inputs, outputs, errors and source are retained. The optional Python model reports an index and check count; the supplied paper pseudocode outputs the found Boolean. This difference is explicitly stated.
 
-Python Editor + Shell supports actual `input()`, numbered lines, F5, Stop/Ctrl+C, adjustable text, .py download, retained code between tests and saved error/run evidence. First interpreter load downloads approximately 25MB; allow a moment. If blocked, use a local Python IDE and explicitly self-reported output. Never describe external output as a verified browser run.
+## Teacher and timing
 
-## Evidence and privacy
+teacher.html uses the existing approved teacher account. Its Rehearsal button uses labelled sample data without school saves. Student Teacher Preview needs no login and does not read or write pupil records.
 
-Short-paused drafts, selections, code, actual Shell inputs, outputs, errors, runs, checked attempts, support use, KSU reflections and live discussion history are queued locally then sent to this lesson's separate Supabase setup. This is periodic syncing, not surveillance of other tabs or a keystroke recorder. Check Saved to school; warnings are not evidence of a completed save. Keep the same browser/device. Name/Class is not verified attendance. No pupil data is committed in this folder.
+11:20 Starter 6 min; 11:26 Types 2; 11:28 brief model 2; 11:30 Main 1 15; 11:45 Main 2 20; 12:05 responses 2 and about 3 min teacher-paced discussion; 12:10 follow-up/extension 3; 12:13 Pit Stop 3; 12:16 plenary/save 4. Total 60 min. Main 1 has no automatic discussion, protecting 11:30–11:45 planning time. Four private individual check-ins can run during Main 2. Main 2 arms the binary boundary discussion at its end; pause/hold/extend are available. Review is manually ended.
 
-PDF export includes attempted sections, code/runs and discussions available on the device. Exporting and automatic school saving do not submit in Teams: attach the PDF and Turn in. Paper can be handed to the teacher for scanning. The optional past-paper extension intentionally has no answer boxes: prepare June 2019 9210/2 Q07.1–07.2, not Q07.3.
+Use only the TTA projector for screen sharing, never the private dashboard. Stable response cards, individual feedback, same-round reinvitation, saved responses, optional countdown sounds and top-right house-point celebrations remain. Lesson house points do not update iSAMS.
 
-## Alignment
+## Evidence and resources
 
-OxfordAQA 9210: 3.1.3 Searching and 3.1.4 Sorting. Textbook printed pp.108–111,114–121 (PDF viewer pp.112–115,118–125). Teaching code is adapted inline; it does not introduce functions/return before the scheme covers them. Item checks count inspected list values, not every low-level comparison operator. Full-range flag-based bubble passes are used consistently, not a shrinking-bound variant.
+Short-paused digital drafts, selections, paper-attempt reports, corrections, optional code, runs and KSU reflections save locally and to the same lesson-only Supabase setup. This is not individual-keystroke surveillance, verified attendance or an exam. Each keyed device can save only its own work; the approved teacher reads the class records. Historical records remain. Do not publish private database exports or QA files.
 
-Support: one question/test per page, explicit inputs and expected output, manual step pointer, written prompts, model labelled separately, no automatic personal phase judgement, no speed-based grades. Quiet-pause/help requests must also use the agreed classroom signal; the app does not guarantee immediate teacher attention.
+Use the same browser/device and check Saved to school. PDF export includes current digital evidence; it does not turn in an assignment. Save as Y10_Search_Review_Name_Class.pdf, attach in Teams and select Turn in. Hand the paper booklet to Mr Dave separately. Go to Learning Pit Stop and Go to Plenary shortcuts preserve unfinished work.
 
-Live features: private stable response cards, individual view/feedback, immediate award buttons, same-round reinvitation and reopening without losing answers, opt-in student notices, continuing practical work after submission, shared answers, top-right award celebration, TTA projector with timer, opt-in sounds during final 15 seconds. Lesson points are not automatically posted to iSAMS.
+resources/Search_Paper_Booklet.pdf is the revised four-page booklet; Search_Teacher_Key.pdf is the matching public teaching key, not a secure assessment. Core Questions 1–5; follow-up 6–10; optional challenge 11.
+
+OxfordAQA 9210 3.1.1/3.1.3. Textbook printed pp.108–111,114–117 (PDF viewer pp.112–115,118–121). Original teaching examples. Live setup keeps previous content identifiers readable and adds the new review identifiers without broadening classroom permissions.

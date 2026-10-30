@@ -6,15 +6,15 @@
   <section class="tta-box tta-wagba"><h2>WAGBA (KSU)</h2><p>${esc(L.wagba)}</p></section>
   <section class="tta-box tta-keywords"><h2>Keywords</h2>
    <p>${esc(L.keywords)}</p>
-   <p class="tta-ksu"><strong>Knowledge:</strong> Index versus value; sorted data, adjacent pairs and a pass.</p>
-   <p class="tta-ksu"><strong>Skills:</strong> Test searches; trace swaps and the flag.</p>
-   <p class="tta-ksu"><strong>Understanding:</strong> Explain search boundaries and the no-swap stopping rule.</p>
+   <p class="tta-ksu"><strong>Knowledge:</strong> Index, value, target, midpoint and sorted data.</p>
+   <p class="tta-ksu"><strong>Skills:</strong> Trace checks and update boundary indexes.</p>
+   <p class="tta-ksu"><strong>Understanding:</strong> Explain the next step, boundaries and stopping rules.</p>
   </section>`;
  $('tta-challenge').innerHTML='<h2>Challenge Task</h2><p>'+esc(L.challenge)+'</p>';
  let responseViewKey='';
  let d=null,last='',awardRound=null,seenAwards=new Map(),focus,lastTeacherFocus,busy=false,timerKey='',timerMaximum=1,activeVideoRun=null,priming=false,playPending=false;
  const hashParams=new URLSearchParams(location.hash.slice(1)),demo=hashParams.has('demo');let creds=null;
- const titles={settle:'Welcome',overview:'Lesson Overview',starter:'Do Now',types:'Types of Learning',search:'Main Task 1',bubble:'Main Task 2',extension:'Extension',pit:'Learning Pitstop',plenary:'Plenary'};
+ const titles={settle:'Welcome',overview:'Lesson Overview',starter:'Do Now',types:'Types of Learning','linear-review':'Main Task 1','binary-review':'Main Task 2',model:'Worked Example',search:'Archived Task',bubble:'Archived Task',extension:'Extension',pit:'Learning Pitstop',plenary:'Plenary'};
  function fit(){document.documentElement.style.setProperty('--tta-scale',Math.min(innerWidth/1280,innerHeight/720));}
  window.addEventListener('resize',fit);fit();
  if(!demo){const p=new URLSearchParams(location.hash.slice(1));if(p.has('key')){creds={room:p.get('room'),key:p.get('key')};sessionStorage.setItem('search-sort-projector',JSON.stringify(creds));history.replaceState(null,'',location.pathname+'#display');}else{try{creds=JSON.parse(sessionStorage.getItem('search-sort-projector'));}catch{}}}
@@ -27,7 +27,7 @@
   document.body.dataset.stage=s.stage_id;$('tta-slide').dataset.stage=s.stage_id;$('tta-slide').dataset.phase=s.phase;$('tta-title').textContent=title;$('tta-title').classList.toggle('long',title.length>14);$('tta-timer').dataset.phase=s.phase;$('clear-focus').hidden=s.phase!=='review';
   const nextTimer=s.stage_id+':'+s.phase+':'+(s.round_id||'');if(nextTimer!==timerKey){timerKey=nextTimer;timerMaximum=Math.max(1,U.deadline(s));}timerMaximum=Math.max(timerMaximum,U.deadline(s));
   let body='';
-  if(normal){body=(s.attention?'<p class="tta-attention">Look at the board for your teacher’s explanation.</p>':'')+'<h2>'+esc(s.title)+'</h2><p class="tta-instructions">'+esc(s.instructions)+'</p>';if(['starter','search','bubble','extension'].includes(s.stage_id))body+=U.list(s.stage_id==='bubble'?[18,5,13,9]:C.ITEMS);body+='<p id="projector-attention" class="tta-stage-note"></p>';}
+  if(normal){body=(s.attention?'<p class="tta-attention">Look at the board for your teacher’s explanation.</p>':'')+'<h2>'+esc(s.title)+'</h2><p class="tta-instructions">'+esc(s.instructions)+'</p>';if(['starter','model','linear-review','binary-review','extension'].includes(s.stage_id))body+=U.list(C.ITEMS);body+='<p id="projector-attention" class="tta-stage-note"></p>';}
   else if(q){body=question(q);if(s.phase==='question')body+='<p class="tta-question-help">Open the discussion notice on your lesson page. Think through the next step, enter your response and select <strong>Submit</strong>.</p><p class="tta-private-reminder">Your responses stay private until the response window closes.</p><p id="projector-attention" class="tta-stage-note"></p>';
    else{const all=[...(d.responses||[])].sort((a,b)=>(a.number||0)-(b.number||0)||a.id.localeCompare(b.id)),selected=all.find(r=>r.id===(focus===undefined?s.focus_student:focus)),rows=selected?[selected]:all;
     body+='<div class="tta-review-layout"><section class="tta-response-grid '+(selected?'single':'')+'" aria-label="Submitted class responses">'+rows.map(r=>'<article class="tta-response" tabindex="0" role="button" data-focus="'+esc(r.id)+'" aria-label="Enlarge anonymous response '+(r.number||all.indexOf(r)+1)+'"><strong>Response '+(r.number||all.indexOf(r)+1)+'</strong>'+(r.point?'<span class="projector-point">★ +1 house point</span>':'')+'<p>'+esc(q.options?.find(o=>o.id===r.answer)?.text||r.answer)+'</p></article>').join('')+(rows.length?'':'<p class="tta-empty">No submitted answers yet. Discuss the correct answer together.</p>')+'</section><aside class="tta-model">'+(s.reveal?U.answer(q,true):'<h3>Correct answer not shown yet</h3><p>Your teacher will reveal it when ready.</p>')+'</aside></div>';
