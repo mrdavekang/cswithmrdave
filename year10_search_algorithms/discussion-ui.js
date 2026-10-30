@@ -24,7 +24,7 @@
    setText(card.querySelector('.response-state'),submitted?'Submitted':attempting?'Draft · not submitted':'Waiting for an answer');
    const answer=submitted?r.answer:r.draft;
    setText(card.querySelector('.response-text'),question?.options?.find(o=>o.id===answer)?.text||answer||'No answer received yet.');
-   card.hidden=filter==='submitted'&&!submitted||filter==='attempting'&&!attempting;
+   const match=filter==='all'||filter==='submitted'&&submitted||filter==='attempting'&&attempting;card.hidden=false;card.classList.toggle('response-filter-muted',!match);card.classList.toggle('response-filter-match',filter!=='all'&&match);
    const detail=card.querySelector('[data-response]');detail.dataset.response=r.session_id;detail.disabled=!submitted&&!attempting;
    const project=card.querySelector('[data-project]');project.dataset.project=r.session_id;project.hidden=!review;project.disabled=!submitted;
    const award=card.querySelector('[data-award]');award.dataset.award=r.session_id;award.disabled=!!r.point||!submitted;award.classList.toggle('is-awarded',!!r.point);
