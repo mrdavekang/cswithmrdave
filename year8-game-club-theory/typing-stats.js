@@ -18,6 +18,8 @@ window.TypingStats=(()=>{
    setTimeout(()=>{particles.replaceChildren();host.classList.remove('stats-impact');},1500);
   }
   function update({matches,total,accuracy,wpm,pasted,hasText},initial=false){
+   // A paste/reset must not be overwritten by an earlier numeric animation.
+   for(const id of ['typing-accuracy','typing-charge','typing-speed'])cancelAnimationFrame(get(id)._statFrame);
    const percent=Math.min(100,Math.round(100*matches/Math.max(total,1)));
    number('typing-accuracy',hasText?accuracy:0);number('typing-charge',percent);
    get('accuracy-fill').style.width=(hasText?accuracy:0)+'%';get('charge-fill').style.width=percent+'%';
