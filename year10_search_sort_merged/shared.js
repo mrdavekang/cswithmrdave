@@ -13,7 +13,7 @@ window.SearchUI=(()=>{'use strict';
  let offset=0;function sync(server){if(server)offset=Date.parse(server)-Date.now();}
  const STAGES=[
 {id:'settle',label:'Welcome',title:'Linear & binary search: review',instruction:'Enter Name and Class. Prepare the clearer four-page booklet. Today is tracing and explaining; full program writing is optional.',seconds:0},
-{id:'starter',label:'Starter · 6m',title:'Do Now: position or value?',instruction:'11:20–11:26. Complete the three starter checks. Read the index row separately from the stored-value row. Check each answer.',seconds:360},
+{id:'starter',label:'Starter · 6m',title:'Do Now: position or value?',instruction:'11:20–11:26. Complete the four starter pages. Separate indexes from stored values; trace one next step; choose a justified search decision. Check each answer.',seconds:360},
 {id:'types',label:'Types · 2m',title:'Choose a useful KSU focus',instruction:'11:26–11:28. Use your starter answers to choose one specific goal. State the step you need to strengthen, not a fixed learner type.',seconds:120},
 {id:'model',label:'Brief model · 2m',title:'Watch one decision, then explain it',instruction:'11:28–11:30. Look at one index and its stored value. Compare with the target. Say what changes next and why. Your teacher will model one step, not give the whole trace.',seconds:120},
 {id:'linear-review',label:'Main 1 · 15m',title:'Main Task 1: linear-search review',instruction:'Study the linear-search model.\nAttempt Questions 1–3 on booklet page 1.\nRecord each checked index and value.\nExplain why this version stops.',seconds:900},

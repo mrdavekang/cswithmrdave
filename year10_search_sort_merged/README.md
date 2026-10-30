@@ -4,7 +4,7 @@ This searching-only revision replaces the unused searching-to-sorting draft at t
 
 ## Learning route
 
-One question per page. Starter; Types of Learning; Main 1 (linear search, booklet Questions 1–3); Main 2 (binary search, Questions 4–5); one selected follow-up; optional paper extension; K/S/U Learning Pit Stops; plenary and PDF export. No overview film or compulsory whole-video rewatch. No sorting topic in the active lesson.
+One question per page. Four starter pages (two index/value checks, a two-component next-step trace and a justified-decision check); Types of Learning; Main 1 (linear search, booklet Questions 1–3); Main 2 (binary search, Questions 4–5); one selected follow-up; optional paper extension; K/S/U Learning Pit Stops; plenary and PDF export. No overview film or compulsory whole-video rewatch. No sorting topic in the active lesson.
 
 The worked-model pointer is manually controlled, with fixed index labels, explicit stored values and highlighted numbered pseudocode. Every question states the decision and explanation expected. Sentence starters are optional support, not substitutes for questions.
 
@@ -29,3 +29,7 @@ Use the same browser/device and check Saved to school. PDF export includes curre
 resources/Search_Paper_Booklet.pdf is the revised four-page booklet; Search_Teacher_Key.pdf is the matching public teaching key, not a secure assessment. Core Questions 1–5; follow-up 6–10; optional challenge 11.
 
 OxfordAQA 9210 3.1.1/3.1.3. Textbook printed pp.108–111,114–117 (PDF viewer pp.112–115,118–121). Original teaching examples. Live setup keeps previous content identifiers readable and adds the new review identifiers without broadening classroom permissions.
+
+## Specific evidence and reflection
+
+The starting-point display separates first checks from corrections and untested areas. It does not award an overall KSU grade or assign a learning phase. A reason-choice question checks recognition, not an independently written explanation. Students select a specific practice target and why it helps; visible word banks support an optional personal sentence. Pit Stops record a student-selected evidence source, support used, self-reported phase and next action. Paper and open explanations remain awaiting teacher review. The new starter uses separate page identifiers so older answers are not reinterpreted. Historical last-index records stay in the database.
