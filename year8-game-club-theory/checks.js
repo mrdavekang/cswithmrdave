@@ -42,6 +42,17 @@ const GameChecks=(()=>{
   return {ok,message:ok?'Your original roster test works. Now checking changed data…':msg};
  }
  async function check(card,code,result,run){
+  if(card.practiceRule){
+   const p=card.practiceRule,src=source(code),tests=[{label:'Your starting data',...result}],updates=(src.match(/^\s*players\s*\[[^\]]+\]\s*=/gm)||[]).length;
+   const ok=!result.error&&equal(result.vars.players,p.players)&&equal(lines(result.stdout).map(canonical),lines(p.output).map(canonical))&&rosterOnce(code)&&(!p.append||hasAppend(code))&&(!p.loop||hasLoop(code))&&(!p.last||/len\s*\(\s*players\s*\)\s*-\s*1/.test(src))&&(p.updates===undefined||updates===p.updates);
+   if(!ok)return {ok:false,message:result.error||'Compare the required changes and every output line. Keep the starting list; use the requested indexed updates, append or while loop. Your draft is saved and you can continue.',tests};
+   if(p.variant)for(const roster of(p.variant==='replace'?[['Ash','Bee'],['Ash','Bee','Dot','Fin','Sun']]:[['Ash'],['Ash','Bee','Dot','Fin','Sun']])){
+    const changed=replaceList(code,'players',roster);if(!changed)return {ok:false,message:'Keep the starting players list on its own line so the changed-data test can read it.',tests};
+    const r=await run(changed),names=[...roster];if(p.variant==='append')names.push('Comet');if(p.variant==='replace')names[1]='Ash';const expected=p.variant==='count'?['Players ready: '+names.length,...names]:names,pass=!r.error&&equal(r.vars.players,names)&&only(r,expected);tests.push({label:'Changed roster',input:roster,...r,ok:pass});
+    if(!pass)return {ok:false,message:'Your first run works. Now make the loop work for this changed roster: '+JSON.stringify(roster)+'. Use len(players), not a fixed number.',tests};
+   }
+   return {ok:true,message:'✓ The program and requested output work.'+(tests.length>1?' Changed-data tests passed too.':''),tests};
+  }
   const first=primary(card.check,code,result),tests=[{label:'Your starting data',...result,ok:first.ok}];if(!first.ok)return {...first,tests};
   const variantKinds=['append','roster','longer','adapt','arrival','last','loop','loopcount','captain','combine','firstlast','reverse','availableprint','availablelist','empty','safechoice','turns'];
   if(variantKinds.includes(card.check)){

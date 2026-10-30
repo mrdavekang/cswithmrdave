@@ -14,17 +14,32 @@ Type `teacher` as the name, or open `?teacher=1`, for unrestricted preview with 
 
 | Minutes | Activity | Teacher / student focus |
 | --- | --- | --- |
-| 0–3 | Mission and target | Read the purpose, inspect final output; captain can vary. |
-| 3–8 | Do Now | Four retrieval checks: index, one value, replacement and boundary. |
-| 8–11 | Types of Learning | One K, S or U check per card; identify a concrete practice target. |
-| 11–25 | Main Task 1 | Four core tasks: append, compare, repair and update a roster. Four further challenges for early finishers. |
-| 25–43 | Main Task 2 | Four core tasks: trace, repair the boundary, write a loop, choose a captain. Four further challenges. |
-| 43–52 | Extension | Nine challenges across three levels; selection and removal taught before required. |
+| 0–7 | Starting drill | Fun word typing, Python punctuation, then type and run a complete list program and change one name. |
+| 7–9 | Mission and target | Inspect the club purpose and final output. |
+| 9–12 | Do Now | Four retrieval checks: index, one value, replacement and boundary. |
+| 12–14 | Types of Learning | One K, S or U check per card; identify a concrete practice target. |
+| 14–28 | Main Task 1 | All original programming questions and guide, followed by four added practices. |
+| 28–31 | Loop typing reset | Type and run a complete, safely stopping while program; change one name and run again. |
+| 31–46 | Main Task 2 | All original trace, repair, loop and captain questions, plus four added programming practices. |
+| 46–52 | Extension | All nine original challenges remain visible in the same sequence. |
 | 52–55 | Learning Pit Stop | Review task evidence and self-report KSU confidence, learning phase, reason and next step. |
 | 55–58 | Plenary | Three fresh transfer questions. |
 | 58–60 | Report / Teams | Export progress, attach PDF and select Turn in. |
+| After submission / at home | Review game | 15 unique questions; Blooket assignment or built-in repetition towards 50 correct answers. |
 
-There are **25 substantive practice tasks** (8 essential, 17 further challenges), excluding starter, diagnostics and plenary. Completion of every challenge is not expected. The clock is guidance, not an enforced time gate. Students can flag help and continue, use Back, or revisit stages. Nothing auto-assigns a learning phase from a score.
+There are **33 substantive programming/interpretation practices** (the original 25 plus four in each main task), excluding the editor guide, starter, diagnostics and plenary. Main Task 1 has 12 questions plus its retained guide; Main Task 2 has 12 questions. The two warm-up exercises and two type-and-run activities are additional and do not replace programming questions. There are 53 total activities including guides, reflections, export and the final review.
+
+The sticky progress strip counts all 53 activities, not only the eight original core checks. Every stage shows its complete count; every activity in the current stage is directly visible with a number, title and honest status. Next always follows the full linear order, including former stretch tasks, the loop reset and extensions. There are no skip-stretch buttons. Back, direct navigation and code drafts are preserved. The clearly labelled lesson-ending Plenary shortcut allows a time-limited wrap-up without falsely completing unfinished work.
+
+Completion of every challenge is not expected in 60 minutes. The clock is guidance, not a gate. Mistakes and help requests never lock navigation. Nothing assigns a learning phase from typing speed or a score. Existing student responses, original IDs and Supabase permissions are unchanged. The new activities use the existing field/attempt/action events and snapshot format; no database migration is needed.
+
+## Type-and-run and review
+
+`practice-content.js` adds the linear activities without replacing the original `lesson.js` questions. `drills.js` supplies character feedback, Backspace correction, four-space Tab indentation and actual Python execution. Warm-up speed is personal practice only; pasted text is not speed-scored. Code correctness is checked by execution/output, not exact spacing or quote style. Each type-and-run drill has two clearly described parts: run the complete model, then modify one name and run the changed version. The counter increment is included in the loop model; Stop and execution limits remain available.
+
+`review-questions.js` contains the 15-question English/Mandarin/Korean bank and verified Blooket link: https://play.blooket.com/play?hwId=6ae434e780592497bc3178ba . Goal: 50 **correct** answers, not attempts. The current free account permits up to 14 days; the published deadline is 13 November 2026, 2:09 p.m. Malaysia time. The question set is https://dashboard.blooket.com/set/6ae433ef06e5602dbefe6b9a . The built-in review remains usable if Blooket is unavailable or the assignment expires. It shows distinct-question coverage separately from the accumulated correct count. Opening Blooket never marks an assignment complete in the app; Blooket records that outcome separately.
+
+Typing drafts, type-and-run attempts/changes and built-in quiz responses are included in existing local saving, lesson tracing, backups and PDF reports. Teacher detail views distinguish typing from programming evidence. After doing further work, export a fresh report if it needs to be submitted too. No pupil records were used in QA or removed.
 
 ## Visuals and EAL
 

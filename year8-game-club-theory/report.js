@@ -12,15 +12,21 @@ const GameReport=(()=>{
   // Split summary into groups to keep tables within an A4 page.
   const summary=out.pop(),rows=summary.match(/<tr><td>.*?<\/tr>/g)||[];
   for(let i=0;i<rows.length;i+=14)out.push('<h3>Completion summary'+(i?' · continued':'')+'</h3><table><thead><tr><th>Stage / task</th><th>Evidence</th></tr></thead><tbody>'+rows.slice(i,i+14).join('')+'</tbody></table>');
-  for(const c of LESSON.cards){const r=s.responses[c.id];if(!r||(!r.code&&r.answer===undefined&&!r.attempts?.length))continue;
+  for(const c of LESSON.cards){const r=s.responses[c.id];if(!r||(!r.code&&!r.typed&&r.answer===undefined&&!r.attempts?.length&&!r.externalOpenedAt))continue;
    push(c.stage+' · '+c.title,`Status: ${r.status}\nTask: ${title(c.question)||title(c.read)}\nHints opened: ${r.hintCount||0}\nHelp requested: ${r.helpRequested?'Yes':'No'}`);
    if(r.answer!==undefined){const a=c.type==='choice'?title(c.options[r.answer])+' (choice '+(r.answer+1)+')':pretty(r.answer);push('Latest response',a);}
+   if(r.typed!==undefined)push('Latest typing draft',r.typed,true);
+   if(r.typing)push('Typing evidence (not programming mastery)',pretty(r.typing));
+   if(c.type==='type-run')push('Type-and-run evidence',`Model run successfully: ${!!r.modelRun}\nChanged version run successfully: ${!!r.changedRun}`);
+   if(c.type==='review-game')push('Review game evidence',`Built-in correct answers: ${r.quizCorrect||0} / 50\nExternal Blooket opened: ${r.externalOpenedAt||'Not opened'}\nExternal completion is recorded in Blooket, not verified here.`);
    if(r.code!==undefined){push('Latest code draft',r.code,true);push('Latest console',r.transcript||r.stdout||'(no output)',true);if(r.error)push('Latest Python error',r.error);}
    if(r.feedback)push('Latest feedback',r.feedback.message);
    for(const [i,a]of(r.attempts||[]).entries()){
     push('Attempt '+(i+1),`${a.at}\n${a.ok===undefined?'Recorded response':a.ok?'Check met':'Needs revision'}\n${a.feedback||''}`);
     if(a.answer!==undefined)push('Attempt response',c.type==='choice'?title(c.options[a.answer]):pretty(a.answer));
     if(a.goal)push('Diagnostic response',pretty(a));
+    if(a.kind==='quiz')push('Review question '+(a.question+1),GAME_REVIEW.questions[a.question].q+'\nChosen: '+GAME_REVIEW.questions[a.question].options[a.answer]+'\n'+(a.ok?'Correct':'Needs review'));
+    if(a.kind==='typing')push('Typed text',a.typed,true);
     if(a.code!==undefined){push('Code in this attempt',a.code,true);push('Console in this attempt',a.transcript||a.stdout||'(no output)',true);if(a.error)push('Error in this attempt',a.error);}
     if(a.tests)for(const t of a.tests)push('Test · '+t.label,`${t.input?'Changed data: '+pretty(t.input)+'\n':''}${t.ok?'Passed':'Not passed'}\n${t.stdout||'(no output)'}${t.error?'\n'+t.error:''}`,true);
    }
