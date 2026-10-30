@@ -18,6 +18,7 @@ const GameReport=(()=>{
    if(r.typed!==undefined)push('Latest typing draft',r.typed,true);
    if(r.typing)push('Typing evidence (not programming mastery)',pretty(r.typing));
    if(c.type==='type-run')push('Type-and-run evidence',`Model run successfully: ${!!r.modelRun}\nChanged version run successfully: ${!!r.changedRun}`);
+   if(c.type==='len-tutor'){push('Supplied len example (not pupil-authored)',c.model,true);push('Example observation',`Example run successfully: ${!!r.exampleRun}\n${r.stdout||'Not run'}`);if(r.explanation)push('Student guided explanation',r.explanation);}
    if(c.type==='review-game')push('Review game evidence',`Built-in correct answers: ${r.quizCorrect||0} / 50\nExternal Blooket opened: ${r.externalOpenedAt||'Not opened'}\nExternal completion is recorded in Blooket, not verified here.`);
    if(r.code!==undefined){push('Latest code draft',r.code,true);push('Latest console',r.transcript||r.stdout||'(no output)',true);if(r.error)push('Latest Python error',r.error);}
    if(r.feedback)push('Latest feedback',r.feedback.message);
@@ -27,7 +28,7 @@ const GameReport=(()=>{
     if(a.goal)push('Diagnostic response',pretty(a));
     if(a.kind==='quiz')push('Review question '+(a.question+1),GAME_REVIEW.questions[a.question].q+'\nChosen: '+GAME_REVIEW.questions[a.question].options[a.answer]+'\n'+(a.ok?'Correct':'Needs review'));
     if(a.kind==='typing')push('Typed text',a.typed,true);
-    if(a.code!==undefined){push('Code in this attempt',a.code,true);push('Console in this attempt',a.transcript||a.stdout||'(no output)',true);if(a.error)push('Error in this attempt',a.error);}
+    if(a.code!==undefined){push(a.suppliedModel?'Supplied example run · not pupil-authored':'Code in this attempt',a.code,true);push('Console in this attempt',a.transcript||a.stdout||'(no output)',true);if(a.error)push('Error in this attempt',a.error);}
     if(a.tests)for(const t of a.tests)push('Test · '+t.label,`${t.input?'Changed data: '+pretty(t.input)+'\n':''}${t.ok?'Passed':'Not passed'}\n${t.stdout||'(no output)'}${t.error?'\n'+t.error:''}`,true);
    }
   }

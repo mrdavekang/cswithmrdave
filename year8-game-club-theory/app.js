@@ -53,7 +53,8 @@
    const label=c.questionCodeLabel||L('READ THIS CODE · then predict the output','先阅读代码 · 再预测输出','코드를 읽고 · 출력 예상하기');
    html+=`<section class="question-code" aria-label="${esc(tr('Code to read before answering','答题前阅读代码','답하기 전에 읽을 코드'))}"><h3>${esc(text(label))}${local(label)?' · '+esc(local(label)):''}</h3><pre><code>${esc(c.questionCode)}</code></pre></section>`;
   }
-  if(['typing','type-run','review-game'].includes(c.type))html+=GameActivities.render(c,r,state.language);
+  if(c.prepCard)html+=`<p class="len-prep"><button id="open-len-intro">${tr('New to len()? Run the short example first →','第一次学 len()？先运行简短示例 →','len()이 처음인가요? 짧은 예시부터 실행하세요 →')}</button></p>`;
+  if(['typing','type-run','review-game','len-tutor'].includes(c.type))html+=GameActivities.render(c,r,state.language);
   else if(c.type==='choice'){
    html+=(c.wagoll?targetPreview(c.wagoll):visual(c.visual,c.sequence))+(c.reference&&!c.sequence?reference(c):'')+rich(c.question,'prompt')+`<fieldset class="choices" style="border:0;padding:0;margin:0"><legend class="skip">${esc(text(c.question))}</legend>${c.options.map((o,i)=>`<label class="choice"><input type="radio" name="answer" value="${i}" ${r.answer===i?'checked':''}>${rich(o)}</label>`).join('')}</fieldset><div class="action-row"><button id="check-answer" class="primary">${tr('Check my answer','检查答案','답 확인')}</button><button id="need-help">${tr('I need help · keep going','我需要帮助 · 继续','도움이 필요해요 · 계속')}</button></div><div id="feedback" class="feedback ${r.status==='correct'?'ok':''}" role="status">${esc(r.feedback?.message||'')}</div>`;
   }else if(c.type==='code'){
@@ -65,7 +66,8 @@
   else if(c.type==='reflection')html+=reflection(r);
   else if(c.type==='report')html+=review();
   $('#card').innerHTML=html;
-  if(['typing','type-run','review-game'].includes(c.type))GameActivities.bind(c,r,{language:state.language,update,record,save,refresh:goals,render,next:()=>move(1),busy:v=>{checking=v;$('#next').disabled=v;$('#back').disabled=v;}});
+  if(c.prepCard)$('#open-len-intro').onclick=()=>navigate(c.prepCard);
+  if(['typing','type-run','review-game','len-tutor'].includes(c.type))GameActivities.bind(c,r,{language:state.language,update,record,save,refresh:goals,render,next:()=>move(1),busy:v=>{checking=v;$('#next').disabled=v;$('#back').disabled=v;}});
   if(c.type==='choice'){
    for(const el of document.querySelectorAll('[name=answer]'))el.onchange=()=>{update('answer',Number(el.value));$('#feedback').textContent='';};
    $('#check-answer').onclick=()=>{if(r.answer===undefined){toast(tr('Choose one answer first.','请先选一个答案。','먼저 답을 선택하세요.'));return;}const ok=r.answer===c.correct;r.status=ok?'correct':'revise';r.feedback={message:(ok?'✓ ':'Try again · ')+text(c.explain)+(local(c.explain)?' · '+local(c.explain):'')};r.attempts.push({at:stamp(),answer:r.answer,ok,feedback:r.feedback.message});record('attempt',r.attempts.at(-1));save();$('#feedback').textContent=r.feedback.message;$('#feedback').classList.toggle('ok',ok);goals();};

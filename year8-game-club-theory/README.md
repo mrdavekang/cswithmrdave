@@ -16,24 +16,26 @@ Type `teacher` as the name, or open `?teacher=1`, for unrestricted preview with 
 | --- | --- | --- |
 | 0–7 | Starting drill | Fun word typing, Python punctuation, then type and run a complete list program and change one name. |
 | 7–9 | Mission and target | Inspect the club purpose and final output. |
-| 9–12 | Do Now | Four retrieval checks: index, one value, replacement and boundary. |
-| 12–14 | Types of Learning | One K, S or U check per card; identify a concrete practice target. |
-| 14–28 | Main Task 1 | All original programming questions and guide, followed by four added practices. |
-| 28–31 | Loop typing reset | Type and run a complete, safely stopping while program; change one name and run again. |
-| 31–46 | Main Task 2 | All original trace, repair, loop and captain questions, plus four added programming practices. |
-| 46–52 | Extension | All nine original challenges remain visible in the same sequence. |
+| 9–16 | Do Now | Four retrieval checks plus a guided len introduction: read, run the supplied example and explain with nearby word banks before the final-index question. |
+| 16–18 | Types of Learning | One K, S or U check per card; identify a concrete practice target. |
+| 18–30 | Main Task 1 | All original programming questions and guide, followed by four added practices. |
+| 30–33 | Loop typing reset | Type and run a complete, safely stopping while program; change one name and run again. |
+| 33–47 | Main Task 2 | All original trace, repair, loop and captain questions, plus four added programming practices. |
+| 47–52 | Extension | All nine original challenges remain visible in the same sequence. |
 | 52–55 | Learning Pit Stop | Review task evidence and self-report KSU confidence, learning phase, reason and next step. |
 | 55–58 | Plenary | Three fresh transfer questions. |
 | 58–60 | Report / Teams | Export progress, attach PDF and select Turn in. |
 | After submission / at home | Review game | 15 unique questions; Blooket assignment or built-in repetition towards 50 correct answers. |
 
-There are **33 substantive programming/interpretation practices** (the original 25 plus four in each main task), excluding the editor guide, starter, diagnostics and plenary. Main Task 1 has 12 questions plus its retained guide; Main Task 2 has 12 questions. The two warm-up exercises and two type-and-run activities are additional and do not replace programming questions. There are 53 total activities including guides, reflections, export and the final review.
+There are **33 substantive programming/interpretation practices** (the original 25 plus four in each main task), excluding the editor guide, starter, diagnostics and plenary. Main Task 1 has 12 questions plus its retained guide; Main Task 2 has 12 questions. The two warm-up exercises, two type-and-run activities and guided len introduction are additional and do not replace programming questions. There are 54 total activities including guides, reflections, export and the final review.
 
-The sticky progress strip counts all 53 activities, not only the eight original core checks. Every stage shows its complete count; every activity in the current stage is directly visible with a number, title and honest status. Next always follows the full linear order, including former stretch tasks, the loop reset and extensions. There are no skip-stretch buttons. Back, direct navigation and code drafts are preserved. The clearly labelled lesson-ending Plenary shortcut allows a time-limited wrap-up without falsely completing unfinished work.
+The sticky progress strip counts all 54 activities, not only the eight original core checks. Every stage shows its complete count; every activity in the current stage is directly visible with a number, title and honest status. Next always follows the full linear order, including former stretch tasks, the loop reset and extensions. There are no skip-stretch buttons. Back, direct navigation and code drafts are preserved. The clearly labelled lesson-ending Plenary shortcut allows a time-limited wrap-up without falsely completing unfinished work.
 
 Completion of every challenge is not expected in 60 minutes. The clock is guidance, not a gate. Mistakes and help requests never lock navigation. Nothing assigns a learning phase from typing speed or a score. Existing student responses, original IDs and Supabase permissions are unchanged. The new activities use the existing field/attempt/action events and snapshot format; no database migration is needed.
 
 ## Type-and-run and review
+
+The new len tutor precedes the original safe-index question. It runs a supplied model (not assessed as pupil-written code) and saves two guided sentence frames. Each blank has an adjacent word bank; ordinary synonyms and Mandarin/Korean equivalents are accepted. Checks give feedback beside each sentence and never block navigation. Original question IDs, responses and histories are retained; the new card adds one unfinished activity for existing pupils. A visible return link on the index question reopens the introduction. Existing field/attempt events and snapshots handle its evidence without new database permissions.
 
 The append drill prints the original list before append and the updated list afterwards. Its visual comparison and two-line expected output distinguish the unchanged first two players from the new final element. Both the Orbit model and Comet variation require those two output lines; existing code drafts and attempt histories are retained.
 
