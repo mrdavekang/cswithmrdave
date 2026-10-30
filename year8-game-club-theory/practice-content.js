@@ -1,6 +1,12 @@
 /* Additive update: original card IDs and saved responses are retained. */
 (()=>{
  const original=[...LESSON.cards],bi=(en,zh,ko)=>({en,zh,ko});
+ const readOne=original.find(c=>c.id==='start-output');
+ if(readOne){
+  readOne.read=bi('Read the two-line program below. The first line stores three names in players. The second line prints only one element. Indexes start at 0: index 1 means the second name, not the first. Predict the output, then choose one answer.','阅读下面的两行程序。第一行把三个名字存入 players。第二行只显示一个元素。索引从 0 开始：索引 1 表示第二个名字，不是第一个。先预测输出，再选择一个答案。','아래 두 줄 프로그램을 읽으세요. 첫 줄은 players에 이름 세 개를 저장합니다. 둘째 줄은 원소 하나만 출력합니다. 인덱스는 0부터 시작하므로 인덱스 1은 첫 번째가 아닌 두 번째 이름입니다. 출력을 예상한 뒤 답 하나를 고르세요.');
+  readOne.questionCode='players = ["Nova", "Echo", "Pixel"]\nprint(players[1])';
+  readOne.emphasis={en:[['two-line program','concept'],['only one element','action'],['start at 0','check'],['index 1','concept'],['second name','check'],['Predict the output','action']],zh:[['两行程序','concept'],['只显示一个元素','action'],['从 0 开始','check'],['索引 1','concept'],['第二个名字','check'],['先预测输出','action']],ko:[['두 줄 프로그램','concept'],['원소 하나만 출력','action'],['0부터 시작','check'],['인덱스 1','concept'],['두 번째 이름','check'],['출력을 예상','action']]};
+ }
  const mission=original.find(c=>c.id==='mission');
  // Keep the complete reading and question; this card does not need decorative art.
  if(mission){delete mission.visual;mission.emphasis={
