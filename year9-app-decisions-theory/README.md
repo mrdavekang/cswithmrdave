@@ -1,3 +1,86 @@
+# Year 9T live app-design discussions (31 October 2026)
+
+## Status and access
+
+The teacher approved activation and publication on 31 October 2026. The school database migration is active: six private tables have RLS enabled, anonymous teacher access is denied, and direct pupil table reads are denied. The Year 9T student entry for GitHub Pages is `/cswithmrdave/year9-app-decisions-theory/9t.html`. The regular student entry remains `9t.html` (or choose 9T on the original landing page); the private dashboard remains `teacher.html`. The original Year 9E student app, all independent lesson records and the English/Mandarin research/drawing tasks and WAGOLL packs are preserved.
+
+Teacher sign-in is still the existing approved Supabase teacher account. Preview URLs never grant access. The dashboard uses the approved independent-record API as its initial access check, so **All lesson answers & progress remains available even before the new classroom migration is activated**. The two main dashboard areas are live class/discussions and existing independent evidence. Do not project the dashboard: use its separate safe TTA projector link.
+
+## Two short discussions inside the existing Main Tasks
+
+The 60-minute plan includes two teacher-controlled five-minute cycles, not two additional Main Tasks. Main Task 1 remains one research workspace (including its discussion); Main Task 2 remains one drawing workspace (including its discussion).
+
+- Minutes 22–27: **A feature worth borrowing**. Suggest clear labels for three colour buttons and explain how they help a new user. K/U focus; short English or Mandarin phrases accepted.
+- Minutes 50–55: **Make the tap and result clear**. Improve a vague music-app plan with a specific button, visible response and user benefit. S/U focus; return the method to the pupil's own drawing.
+- Each cycle offers 3 minutes responding, about 1 minute comparing ideas and about 1 minute improving. The teacher starts every phase; the lesson clock only suggests stages. Discussion and follow-along can be left open or adjusted to the class pace.
+
+This is design theory, so live answers are ordinary text, not Python code. There is no irrelevant Run/Stop step. The teacher can edit and broadcast a worked answer and the app response a user would see. Neither is executable MIT code or a runnable student app.
+
+## Student experience
+
+Students enter their name on the existing 9T route (class is already 9T), or choose 9T on the original landing page. No live join code or pupil account is added. A random device capability joins only the active class. Names remain self-entered and unverified. If no live class is open, they work independently; live errors do not block lesson navigation or the existing save outbox.
+
+An invitation appears at the bottom without moving the student. Joining opens a separate dialog and preserves the exact independent workspace underneath. The response countdown is based on server time. Below half the allotted time it turns red and gives a brief nudge only to unsubmitted students. Submitted students see “Response sent · keep working” and can return immediately. The invitation remains available. Reopening retains answers. The first-response and model-supported improvement workspaces are separate; the teacher example never overwrites a student's draft.
+
+The new prompts, success checks, support controls and examples include Mandarin. The updated English/Mandarin WAGOLL images and printable packs are unchanged by this feature. No school phone, Companion device or block editor is required for these discussions.
+
+## Teacher workflow and evidence
+
+Open/resume 9T; opening the same active session does not wipe it. Previous sessions remain selectable. Invite checkpoint 1 or 2, then start the response window. Pause/resume and +30/+60 seconds are available. Discuss gives an eyes-to-board cue. Reveal a worked model, then open Follow along or a timed one-minute improvement. Release returns pupils to independent work; End class retains the records.
+
+The live grid uses permanent student IDs and joining order. Existing tile DOM nodes are updated instead of rebuilding/reordering the grid on polls. Search hides matches without changing their order. The +1 button is beside each name. Private details show first response, improvement and append-only draft/send events. The independent evidence tab shows actual digital answers, KSU, Pit Stop and help/history. Paper completion remains self-reported: inspect Sections A and B separately. Missing work, completion or typing speed never assigns attainment or a confidence phase.
+
+House points are a classroom ledger, **not automatic iSAMS awards**. Commands have unique IDs; repeated delivery does not double-award. Undo reverses the ledger entry. A brief top-right pupil celebration can appear above the response dialog using the browser top layer. Reduced-motion CSS provides a static celebration. The projector uses anonymous “A learner”; database constraints keep name-sharing off.
+
+## Saving, backup and privacy
+
+Independent work keeps the existing durable IndexedDB outbox. Live text changes are grouped after an 800 ms pause, not keylogged. The dedicated live schema stores all acknowledged response versions and timestamps. Local work keeps up to eight checkpoint workspaces and twelve recent draft revisions per workspace, trimmed further only to keep the school snapshot below its size limit. A live draft is kept locally on errors and can be sent again when the window opens; there is no claim that a failed send reached the teacher.
+
+The student PDF and JSON backup include first answers and improvements, but no membership capability, teacher credential or projector key. Restoring a backup creates fresh access and imports live responses as unsent drafts; it never claims a submission under another device's membership. The private teacher export combines independent events with full dedicated live histories where the stored student/room link is available. The safe projector receives only lesson state, teacher examples and recent anonymous celebrations—no roster, pupil responses or code. Sounds are off until explicitly enabled; mute and volume controls are supplied.
+
+## Activation after approval
+
+1. Review `supabase/02-live-classroom.sql` and apply it as the database owner only after approval. It reuses `y9_app_decisions_private.owner()` from the existing lesson migration.
+2. The additive/idempotent migration creates the lesson-only `y9_app_design_live` schema and six private RLS tables. There are no destructive changes, new teacher accounts, broader teacher grants, Auth changes, exposed-schema changes or Realtime-publication changes. The raw tables have no anonymous/authenticated grants. Narrow RPCs validate teacher ownership and random pupil capabilities.
+3. Sign in as the approved teacher, open/resume 9T, open the safe projector and verify with teacher-approved dummy identities before classroom use.
+4. Commit/push/publish only when separately requested. No QA fixtures, pupil exports or service-role keys belong in GitHub.
+
+## Verification
+
+The implementation was exercised in a separate in-memory PostgreSQL/PGlite database with dummy identities. Checks cover permission denial, class separation, response versions, pause/extension/expiry, duplicate awards and Undo, anonymous projector data, reopen retention and backup sanitation. Browser review used that isolated database, not school records. It covered entry/invitations, sending and exact workspace return, a separate improvement, teacher broadcasts reaching pupil/projector, Mandarin text, refresh recovery, stable joining order/search and the existing evidence view. Responsive CSS stacks discussion cards below 950px; a physical iPad was not tested in this run.
+
+---
+
+# Year 9T theory revision (30 October 2026)
+
+Year 9T entry: `9t.html`, or select 9T on the existing landing page. The `?class=9T` entry also routes to this version. Year 9E keeps the original lesson. Existing browser records are not overwritten. The new edition has a separate local-storage key and durable outbox, and reuses the existing secure lesson RPCs without database or authentication changes.
+
+Seven directly accessible workspaces replace the fragmented Year 9T flow. Two Main Tasks only:
+
+1. **Research**: study original MIT Gallery images/descriptions for two apps. Discuss purpose, controls and feedback. Complete **Section A, page 1**, of the paper pack. There is no block manipulation task.
+2. **Draw**: continue the existing app topic; sketch one useful improvement. Complete **Section B, page 2, boxes 1–3 and the bottom explanation**. Both annotated WAGOLL examples are shown together; pages 3–4 of the pack contain their full versions. Every paper direction says to collect a copy from Mr Dave if missing.
+
+English or English/Mandarin; full Unicode Raleway fonts retained; large text, touch targets and responsive layout. Main Tasks stay in one workspace. KSU starting points share one table; the Pit Stop shares another table. Their summaries use actual selections, not quiz correctness. Three short design MCQs have balanced shuffled positions saved across reload and language changes.
+
+## Gallery and sign-in
+
+Gallery pictures/descriptions are sufficient for the core research. Embedded images are original, small Gallery uploads and are labelled as such. They are not runnable apps. The school-email sign-in guidance explains the existing MIT account and separate MIT password. The signed-in Gallery-to-Designer handoff remains **pending the teacher’s live check**, as requested; the lesson does not claim it was tested. If a load link opens a guest/Google route, pupils return to the pictures and ask for help. No phone, Companion or MIT block editor is required for this theory lesson. A downloaded starter is not the required output.
+
+## Paper and tracking
+
+`assets/studio/Year9T_App_Research_and_Drawing_Pack_EN_ZH.pdf`: four A3 landscape pages. Student work is research plus an annotated drawing on paper. The website saves selection/check/confidence/help metadata. A completion tick is self-reported, **not proof the teacher has seen the drawing**. No paper image, MIT credentials or activity on external sites is captured. The protected dashboard labels this edition separately, uses the correct design questions and shows paper completion statuses. Existing Year 9E records use their original labels and questions.
+
+Open `9t.html?preview=1` for QA. Preview uses separate local storage and never creates a school record or sends live requests. No student data or QA artefacts belong in the public lesson folder. Teacher authentication and database access controls are unchanged.
+
+Original Gallery sources (MIT Gallery CC BY-SA):
+- PaintPot1: https://gallery.appinventor.mit.edu/?galleryid=5486798015823872
+- IHaveADream: https://gallery.appinventor.mit.edu/?galleryid=6405201777917952
+- ColoredDots_with_background: https://gallery.appinventor.mit.edu/?galleryid=5560927104532480
+
+WAGOLL pages are teacher-created concept drawings, not screenshots of a working MIT app.
+
+---
+
 # Year 9 · One Tap, Two Results
 
 A 60-minute app development theory lesson, following the homepage design and first working app lessons. Students follow a supplied MIT if/else decision, then design and preview one two-response feature for their own app.
