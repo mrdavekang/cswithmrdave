@@ -129,6 +129,16 @@ The existing 54-activity lesson and its individual learning-record outbox remain
 - Active classes expire after eight hours. Teacher heartbeat loss pauses live access; no stored pupil work is deleted. Live clients poll every few seconds rather than enabling a global Realtime feed.
 - Private class JSON exports contain pupil work. Keep them outside this public repository, restrict access and follow school retention policy. Do not put service-role keys or passwords into browser files.
 
+## Clear controls and dashboard layout
+
+- **Teach live** and **Review saved work** switch dashboard areas; the fixed **GO TO** links only move within the dashboard. They do not move pupil devices.
+- The lesson clock sits in its own column. It controls the 60-minute cue plan, not the answering deadline. The answering timer is labelled separately inside **Teach a checkpoint**.
+- Invite checkpoint 1 or 2, then follow **Your next action**: start answering time → stop answering and discuss → show the worked answer → let pupils improve → return to lesson activities. Each button states its effect underneath. Reopening an invitation keeps saved work.
+- Purple means the next classroom action, green means run code, blue links open views, gold awards points, and red ends the live session. Words, placement and explanations carry the meaning independently of colour. Ending the session is separated from returning pupils after a discussion.
+- **★ Give +1** stays beside each pupil’s name; **Read answer & history** opens their detail. **Reverse this award** corrects the classroom ledger only, not iSAMS.
+- Pupil live controls distinguish **Run my code** (test/output) from **Send answer to teacher** (submission). Visible Mandarin and Korean explanations support these actions. **Back to my lesson task** returns to the saved activity; it does not advance to a different question.
+- There is one teacher-dashboard entry in lesson preview. **Download report · PDF** and **Save / restore work** name their purpose without opening an ambiguous tools menu. The lesson activities and permissions are unchanged.
+
 ## Verification
 
 The lesson regression suite preserves the 54 activities. The live SQL migration was tested in an isolated in-memory PostgreSQL database for owner checks, anonymous isolation, token scoping, duplicate commands, retained/reopened responses, separate improvements, timer boundaries, award undo and denied direct table access. Real Python runs verify both supplied models and one-player/empty-roster loops. Browser QA uses dummy identities against that isolated database, never real pupils or the production class roster.

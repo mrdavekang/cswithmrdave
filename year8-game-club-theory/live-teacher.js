@@ -21,7 +21,7 @@
     const target=roomId,commandId=crypto.randomUUID();
     chain=chain.catch(()=>{}).then(async()=>{
       if(target!==roomId)throw Error('Class changed. Retry in the selected class.');
-      try{const result=await call(action,{...payload,revision:data.room.revision,commandId},target);receive(result);message(action==='award'?'House point recorded. Student and projector celebration sent.':'Classroom updated.');return result;}
+      try{const result=await call(action,{...payload,revision:data.room.revision,commandId},target);receive(result);if(['invite','start','discuss','reveal','follow','retry','release'].includes(action)){const next=$('round-controls').querySelector('.gc-next-step')||$('round-controls');next.scrollIntoView({block:'center'});}const note=GameControlDesign.outcomes[action]||'Classroom updated.';message(note);if(action!=='demo')$('gc-action-status').textContent=note;return result;}
       catch(e){message(e.message,true);try{receive(await call('read'));}catch{}throw e;}
     });return chain;
   }
@@ -38,27 +38,19 @@
     const students=G.stableStudents(data.students),responses=data.responses.filter(x=>x.round_no===r.round&&x.kind===r.responseKind);
     $('room-stats').innerHTML=[['Registered',students.filter(s=>s.status==='admitted').length],['Ready for this round',students.filter(s=>s.ready_round===r.round).length],[r.responseKind==='revision'?'Improvements sent':'First responses sent',responses.filter(s=>s.submitted_at).length],['Need help',students.filter(s=>s.help).length]].map(([label,n])=>'<div><b>'+n+'</b><span>'+label+'</span></div>').join('');
     $('end-class').disabled=r.ended;
-    $('round-title').textContent='Checkpoint '+r.round+' · '+G.rounds[r.round].title+' · '+r.phase;
+    $('round-title').textContent='Selected: checkpoint '+r.round+' · '+G.rounds[r.round].title;
     $('round-prompt').textContent=G.rounds[r.round].prompt;
-    const button=(a,t,p='')=>'<button data-command="'+a+'" '+(r.ended?'disabled':'')+' '+p+'>'+t+'</button>';
-    let controls='';
-    if(r.phase==='invite')controls+=button('start','Start 3-minute response','class="gc-primary"');
-    if(['response','retry'].includes(r.phase))controls+=button('timer',r.pausedSeconds!=null?'Resume response timer':'Pause response timer')+button('extend','+30 seconds','data-seconds="30"')+button('extend','+60 seconds','data-seconds="60"');
-    if(r.phase!=='work')controls+=button('discuss','Discuss · eyes to board');
-    if(!r.revealed)controls+=button('reveal','Reveal worked model','class="gc-primary"');
-    else controls+=button('follow','Follow along · edit improvements','class="gc-primary"')+button('retry','Start 1-minute improvement');
-    controls+=button('release','Return everyone to independent work');
-    const signature=r.phase+':'+r.revealed+':'+r.pausedSeconds+':'+r.ended;
-    if($('round-controls').dataset.state!==signature){$('round-controls').innerHTML=controls;$('round-controls').dataset.state=signature;}
+    paintHTML($('round-controls'),GameControlDesign.render(r,E));
     for(const b of document.querySelectorAll('[data-invite]'))b.disabled=r.ended;
     $('teacher-demo-panel').hidden=!r.revealed;
+    const demoLink=document.querySelector('a[href="#teacher-demo-panel"]');demoLink.setAttribute('aria-disabled',String(!r.revealed));demoLink.textContent=r.revealed?'Demonstrate code':'Demonstrate code · after answer';
     const demoKey=r.id+':'+r.round;
     if(demoRound!==demoKey){demoRound=demoKey;demoDirty=false;clearTimeout(demoTimer);}
     if(r.revealed&&!demoDirty&&document.activeElement!==$('teacher-code')){$('teacher-code').value=r.demo.code;$('teacher-output').textContent=r.demo.output;}
     if(document.activeElement!==$('board-stage'))$('board-stage').value=r.boardStage||'auto';
     const ids=new Set(students.map(s=>s.id));for(const [id,node]of tiles)if(!ids.has(id)){node.remove();tiles.delete(id);}
     for(const s of students){
-      let tile=tiles.get(s.id);if(!tile){tile=document.createElement('article');tile.className='gc-response-tile';tile.dataset.student=s.id;tile.innerHTML='<div class="gc-tile-heading"><h3></h3><button class="gc-award" data-award="'+s.id+'">★ +1 house point</button></div><p class="gc-tile-status"></p><p class="gc-tile-result"></p><div class="gc-tile-code"><h4>Code</h4><pre></pre><h4>Output / error</h4><pre></pre></div><div class="gc-actions"><button data-detail="'+s.id+'">View history</button></div><span class="gc-points-total"></span>';tiles.set(s.id,tile);$('response-grid').append(tile);}
+      let tile=tiles.get(s.id);if(!tile){tile=document.createElement('article');tile.className='gc-response-tile';tile.dataset.student=s.id;tile.innerHTML='<div class="gc-tile-heading"><h3></h3><button class="gc-award" data-award="'+s.id+'">★ Give +1</button></div><p class="gc-tile-status"></p><p class="gc-tile-result"></p><div class="gc-tile-code"><h4>Code</h4><pre></pre><h4>Output / error</h4><pre></pre></div><div class="gc-actions"><button data-detail="'+s.id+'">Read answer &amp; history</button></div><span class="gc-points-total"></span>';tiles.set(s.id,tile);$('response-grid').append(tile);}
       // Keep the same tile nodes, button positions and focus during every poll.
       const first=data.responses.find(x=>x.student_id===s.id&&x.round_no===r.round&&x.kind==='initial'),improved=data.responses.find(x=>x.student_id===s.id&&x.round_no===r.round&&x.kind==='revision');
       const response=(r.responseKind==='revision'?improved||first:first),help=s.help?' · HELP REQUESTED':'',online=Date.now()+offset-Date.parse(s.last_seen)<22000;
@@ -66,24 +58,24 @@
       tile.querySelector('.gc-tile-result').textContent=(first?.submitted_at?'✓ First sent':first?'First draft saved':'No first response')+(r.responseKind==='revision'?(improved?.submitted_at?' · ✓ improvement sent':improved?' · improvement draft':' · improvement not yet'):'');
       tile.querySelector('.gc-tile-code h4').textContent=response?.kind==='revision'?'Improvement code':'First-response code';
       const pre=tile.querySelectorAll('pre');setText(pre[0],response?.code||'Waiting for this checkpoint.');setText(pre[1],response?(response.output+(response.error?'\n'+response.error:''))||'(No output saved)':'—');
-      const award=tile.querySelector('[data-award]');award.disabled=r.ended||s.status!=='admitted'||awarding.has(s.id);award.textContent=awarding.has(s.id)?'Awarding…':'★ +1 house point';
-      award.setAttribute('aria-label','Award one house point to '+s.name);
+      const award=tile.querySelector('[data-award]');award.disabled=r.ended||s.status!=='admitted'||awarding.has(s.id);award.textContent=awarding.has(s.id)?'Awarding…':'★ Give +1';
+      award.setAttribute('aria-label','Give +1 house point to '+s.name);
       tile.querySelector('.gc-points-total').textContent=data.awards.filter(a=>a.student_id===s.id&&!a.undone_at).reduce((n,a)=>n+a.amount,0)+' house points recorded';tile.classList.toggle('needs-help',s.help);
     }
-    filter();paintHTML($('awards-list'),data.awards.map(a=>'<p>'+E(data.students.find(s=>s.id===a.student_id)?.name||'Student')+' · +'+a.amount+' · '+E(a.reason)+' · '+E(when(a.at))+(a.undone_at?' · reversed':' <button data-undo="'+a.id+'" '+(r.ended?'disabled':'')+'>Undo</button>')+'</p>').join('')||'<p>No house points recorded yet.</p>');
+    filter();paintHTML($('awards-list'),data.awards.map(a=>'<p>'+E(data.students.find(s=>s.id===a.student_id)?.name||'Student')+' · +'+a.amount+' · '+E(a.reason)+' · '+E(when(a.at))+(a.undone_at?' · reversed':' <button data-undo="'+a.id+'" '+(r.ended?'disabled':'')+'>Reverse this award</button>')+'</p>').join('')||'<p>No house points recorded yet.</p>');
     if(selected)paintStudent();tick();
   }
   function filter(){const search=$('student-search').value.trim().toLocaleLowerCase();for(const tile of tiles.values())tile.hidden=!tile.querySelector('h3').textContent.toLocaleLowerCase().includes(search);}
   function tick(){
-    if(!data)return;const r=room(),elapsed=G.elapsed(r,received),c=r.boardStage?G.cues.find(x=>x[2]===r.boardStage)||G.cue(elapsed):G.cue(elapsed);$('lesson-clock').textContent=G.time(elapsed);$('clock-toggle').textContent=r.clockRunning?'Pause lesson clock':'Start / resume lesson clock';$('clock-toggle').disabled=r.ended;
-    $('cue-title').textContent=r.boardStage||c[2];$('cue-teacher').textContent='Teacher: '+c[3];$('cue-student').textContent='Students: '+c[4];$('round-clock').textContent=['response','retry'].includes(r.phase)?(r.pausedSeconds!=null?'Paused · ':'')+G.time(G.remaining(r,Date.now()+offset)):r.phase;
-    $('gc-nav-time').textContent='Checkpoint '+r.round+' · '+$('round-clock').textContent;
+    if(!data)return;const r=room(),elapsed=G.elapsed(r,received),c=r.boardStage?G.cues.find(x=>x[2]===r.boardStage)||G.cue(elapsed):G.cue(elapsed);$('lesson-clock').textContent=G.time(elapsed);$('clock-toggle').textContent=r.clockRunning?'Pause lesson clock':elapsed>0?'Resume lesson clock':'Start lesson clock';$('clock-toggle').disabled=r.ended;
+    $('cue-title').textContent=r.boardStage||c[2];$('cue-teacher').textContent='Teacher: '+c[3];$('cue-student').textContent='Students: '+c[4];$('round-clock').textContent=['response','retry'].includes(r.phase)?(r.pausedSeconds!=null?'Paused · ':'')+G.time(G.remaining(r,Date.now()+offset)):({work:'Not started',invite:'Waiting to start',discuss:'Discussion · editing paused',follow:'Improvements open'}[r.phase]||'Not started');
+    $('gc-nav-time').textContent='Lesson '+G.time(elapsed)+' · CP '+r.round+' · '+$('round-clock').textContent;
   }
   function paintStudent(){
     const s=data.students.find(s=>s.id===selected);if(!s)return;const n=Number($('detail-round').value),responses=data.responses.filter(x=>x.student_id===s.id&&x.round_no===n);
     $('student-detail').hidden=false;$('detail-title').textContent=s.name+' · checkpoint '+n;
     paintHTML($('detail-work'),'<div class="gc-actions"><button data-access="'+s.id+'" data-status="'+(s.status==='admitted'?'rejected':'admitted')+'">'+(s.status==='admitted'?'Pause this entry’s live access':'Restore live access')+'</button>'+(s.help?'<button data-help-resolved="'+s.id+'">Help discussed</button>':'')+'</div><div class="gc-two">'+['initial','revision'].map(k=>{const x=responses.find(x=>x.kind===k);return '<section><h3>'+(k==='initial'?'First response':'Improvement · model-supported')+'</h3>'+(x?'<pre>'+E(x.code)+'</pre><h4>Output / error</h4><pre>'+E(x.output+(x.error?'\n'+x.error:''))+'</pre><p>'+E(x.submitted_at?'Sent '+when(x.submitted_at):'Draft saved '+when(x.saved_at))+'</p>':'<p>Not recorded.</p>')+'</section>';}).join('')+'</div>');
-    paintHTML($('detail-history'),selectedHistory.filter(x=>x.round_no===n).map(x=>'<details><summary>'+E(x.kind+' · '+x.event_type+' · '+when(x.at))+'</summary><pre>'+E(x.code+'\n\n'+x.output+(x.error?'\n'+x.error:''))+'</pre></details>').join('')||'<p>No events loaded. Reopen View history to refresh.</p>');
+    paintHTML($('detail-history'),selectedHistory.filter(x=>x.round_no===n).map(x=>'<details><summary>'+E(x.kind+' · '+x.event_type+' · '+when(x.at))+'</summary><pre>'+E(x.code+'\n\n'+x.output+(x.error?'\n'+x.error:''))+'</pre></details>').join('')||'<p>No events loaded. Reopen Read answer & history to refresh.</p>');
     $('detail-award').disabled=room().ended||s.status!=='admitted';
   }
   async function student(id){selected=id;selectedHistory=[];$('detail-round').value=String(room().round);paintStudent();$('student-detail').scrollIntoView({behavior:'smooth',block:'start'});const result=await call('history',{studentId:id});if(selected===id){selectedHistory=result.attempts;paintStudent();}}
@@ -101,7 +93,7 @@
   async function privateRpc(name,args){const {data,error}=await G.db().rpc(name,args);if(error)throw Error(error.message);return data;}
   async function records(){
     $('records-status').textContent='Loading private lesson work…';const rows=await privateRpc('y8_gameclub_teacher_records',{p_class_name:$('records-class').value||null,p_limit:100,p_offset:recordPage*100});
-    $('records-list').innerHTML='<table><thead><tr><th>Student</th><th>Last save</th><th>Original core checks</th><th>Learning history</th><th>Work</th></tr></thead><tbody>'+rows.slice().sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id)).map(r=>'<tr><td>'+E(r.name+' · '+r.className)+'</td><td>'+E(when(r.updated))+'</td><td>'+r.coreMet+'/8 (not a grade)</td><td>'+r.eventCount+' events</td><td><button data-record="'+r.id+'">View all work</button></td></tr>').join('')+'</tbody></table>';
+    $('records-list').innerHTML='<table><thead><tr><th>Student</th><th>Last save</th><th>Original core checks</th><th>Learning history</th><th>Work</th></tr></thead><tbody>'+rows.slice().sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id)).map(r=>'<tr><td>'+E(r.name+' · '+r.className)+'</td><td>'+E(when(r.updated))+'</td><td>'+r.coreMet+'/8 (not a grade)</td><td>'+r.eventCount+' events</td><td><button data-record="'+r.id+'">Read this pupil’s work</button></td></tr>').join('')+'</tbody></table>';
     $('records-prev').disabled=recordPage===0;$('records-next').disabled=rows.length<100;$('records-status').textContent=rows.length?'Saved sessions · page '+(recordPage+1)+'. Refresh to see the latest school sync.':'No records for this filter.';
   }
   const readable=v=>v&&typeof v==='object'?(v.en||JSON.stringify(v)):String(v??'');
@@ -139,13 +131,16 @@
   $('end-class').onclick=()=>{if(confirm('End this live class and release everyone? All responses, histories and points are kept.'))command('end').then(rooms).catch(()=>{});};
   $('teacher-code').onkeydown=e=>G.indent(e.target,e);$('teacher-code').oninput=()=>{demoDirty=true;demoVersion++;$('teacher-output').textContent='Teacher is editing. Run will show the output.';clearTimeout(demoTimer);demoTimer=setTimeout(()=>broadcast().catch(e=>message(e.message,true)),500);};
   $('demo-run').onclick=()=>{clearTimeout(demoTimer);broadcast(true).catch(e=>message(e.message,true));};$('demo-stop').onclick=()=>PythonRunner.stop();$('demo-reset').onclick=()=>{if(confirm('Restore the supplied example? Pupil work remains unchanged.')){$('teacher-code').value=G.rounds[room().round].model;demoVersion++;demoDirty=true;broadcast(true).catch(e=>message(e.message,true));}};
-  $('student-search').oninput=filter;$('detail-round').onchange=paintStudent;$('close-detail').onclick=()=>{selected='';$('student-detail').hidden=true;};$('detail-award').onclick=()=>award(selected,Number($('point-amount').value),$('point-reason').value).catch(e=>message(e.message,true));
+  $('student-search').oninput=filter;$('detail-round').onchange=paintStudent;$('close-detail').onclick=()=>{selected='';$('student-detail').hidden=true;$('gc-responses').scrollIntoView({block:'start'});$('student-search').focus({preventScroll:true});};$('detail-award').onclick=()=>award(selected,Number($('point-amount').value),$('point-reason').value).catch(e=>message(e.message,true));
   $('export-live').onclick=async()=>{try{const attempts=[];for(const s of data.students){const x=await call('history',{studentId:s.id});attempts.push(...x.attempts);}G.download({lesson:'gameclub-live-v1',...data,attempts,exportedAt:new Date().toISOString()},'Private_GameClub_'+room().className+'_Live_Record.json');}catch(e){message(e.message,true);}};
   function tabs(next){tab=next;$('live-tab').hidden=next!=='live';$('records-tab').hidden=next!=='records';$('tab-live').setAttribute('aria-pressed',String(next==='live'));$('tab-records').setAttribute('aria-pressed',String(next==='records'));if(next==='records')records().catch(e=>message(e.message,true));}
   $('tab-live').onclick=()=>tabs('live');$('tab-records').onclick=()=>tabs('records');$('records-refresh').onclick=()=>records().catch(e=>message(e.message,true));$('records-class').onchange=()=>{recordPage=0;records().catch(e=>message(e.message,true));};$('records-prev').onclick=()=>{recordPage=Math.max(0,recordPage-1);records().catch(e=>message(e.message,true));};$('records-next').onclick=()=>{recordPage++;records().catch(e=>message(e.message,true));};
+  document.querySelector('a[href="#teacher-demo-panel"]').onclick=e=>{if($('teacher-demo-panel').hidden){e.preventDefault();$('gc-round-controls').scrollIntoView({block:'start'});$('gc-action-status').textContent='First start a checkpoint, discuss the responses, then choose Show worked answer to the class. Your demonstration editor will appear here.';}};
   document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.record){openRecord(b.dataset.record).catch(e=>message(e.message,true));return;}if(!data)return;
-    if(b.dataset.invite)command('invite',{round:Number(b.dataset.invite)}).catch(()=>{});
-    if(b.dataset.command){const a=b.dataset.command;command(a,a==='reveal'?{code:G.rounds[room().round].model,output:G.rounds[room().round].output}:a==='extend'?{seconds:Number(b.dataset.seconds)}:{}).catch(()=>{});}
+    if((b.dataset.invite||b.dataset.command)&&b.dataset.pending==='true')return;
+    const perform=(action,payload)=>{b.dataset.pending='true';b.disabled=true;$('gc-action-status').textContent='Sending your classroom action…';command(action,payload).catch(()=>{}).finally(()=>{if(b.isConnected){b.dataset.pending='false';b.disabled=!!room()?.ended;}});};
+    if(b.dataset.invite)perform('invite',{round:Number(b.dataset.invite)});
+    if(b.dataset.command){const a=b.dataset.command;perform(a,a==='reveal'?{code:G.rounds[room().round].model,output:G.rounds[room().round].output}:a==='extend'?{seconds:Number(b.dataset.seconds)}:{});}
     if(b.dataset.detail)student(b.dataset.detail).catch(e=>message(e.message,true));if(b.dataset.award)award(b.dataset.award).catch(e=>message(e.message,true));if(b.dataset.undo)command('undoAward',{awardId:b.dataset.undo}).catch(()=>{});
     if(b.dataset.access&&confirm('Change live access for this entry? All saved work and histories remain.'))command('admit',{studentId:b.dataset.access,status:b.dataset.status}).catch(()=>{});
     if(b.dataset.helpResolved)command('helpResolved',{studentId:b.dataset.helpResolved}).catch(()=>{});
