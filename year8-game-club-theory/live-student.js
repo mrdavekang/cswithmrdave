@@ -61,7 +61,7 @@
     if(!d.hidden){
       $('gc-dock-title').textContent=active?G.rounds[r.round].title:tr('Live class connected','实时课堂已连接','실시간 수업 연결됨');
       $('gc-dock-text').textContent=active?tr('Open when ready. Your current task stays exactly where you left it.','准备好后点击加入。当前任务会保留。','준비되면 여세요. 원래 과제 위치는 그대로 유지됩니다.'):tr('Continue your own work. Invitations appear here.','继续自己的任务。邀请会显示在这里。','자신의 과제를 계속하세요. 초대는 여기에 표시됩니다.');
-      $('gc-join').hidden=!active;G.countdown(d.querySelector('.gc-countdown'),r,now());
+      $('gc-join').hidden=!active;G.countdown(d.querySelector('.gc-countdown'),r?{...r,viewerSubmitted:!!state()?.live?.[key(r)]?.submitted}:r,now());
     }
     if(!r?.connected||r.phase==='work'){
       if($('gc-live-dialog').open)close();$('gc-attention').close();return;
@@ -96,7 +96,7 @@
     const a=rec(),edit=G.writable(r,now());$('gc-live-code').readOnly=!edit||running;
     $('gc-live-run').disabled=!edit||running||busySend;$('gc-send').disabled=!edit||running||busySend;$('gc-live-stop').disabled=!running;
     $('gc-resume').disabled=running;$('gc-work-after-send').hidden=!a.submitted;
-    G.countdown($('gc-live-dialog').querySelector('.gc-countdown'),r,now());
+    G.countdown($('gc-live-dialog').querySelector('.gc-countdown'),{...r,viewerSubmitted:!!a.submitted},now());
     $('gc-phase-note').textContent=r.phase==='invite'?tr('Get ready. Read the task; your teacher starts the timer. Your saved response stays here if this invitation reopens.','先阅读任务，等待老师开始计时。重新邀请时，你的回答仍会保留。','과제를 읽고 선생님이 타이머를 시작할 때까지 기다리세요. 다시 초대돼도 응답은 유지됩니다.'):r.phase==='discuss'?tr('Eyes to the board. Your teacher is discussing the code. Editing opens in Follow along.','看前面的讲解。开启 Follow along 后再修改。','앞의 설명을 보세요. Follow along에서 수정할 수 있습니다.'):r.phase==='follow'||r.phase==='retry'?tr('Watch the live model here, then improve and run your own code. Your first response is kept.','观察实时示范，再改进并运行自己的代码。第一次回答会保留。','실시간 예시를 보고 자신의 코드를 개선해 실행하세요. 첫 응답은 유지됩니다.'):tr('Run, compare, then Send my response. After sending, you may continue your own task while the timer runs.','运行并比较，再发送回答。发送后可以在计时结束前继续自己的任务。','실행하고 비교한 뒤 응답을 보내세요. 보내면 시간이 남아 있어도 자신의 과제를 계속할 수 있습니다.');
     $('gc-demo-code').textContent=r.demo?.code||G.rounds[r.round].starter;$('gc-demo-output').textContent=r.demo?.output||'The worked answer is not revealed yet.';
     $('gc-demo-explain').textContent=r.revealed?G.rounds[r.round].explanation:'Use the question and expected output to try your own idea first.';
