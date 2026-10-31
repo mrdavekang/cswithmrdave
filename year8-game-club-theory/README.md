@@ -89,3 +89,46 @@ Teams guidance is a manual instruction popup. The app cannot inspect Teams, conf
 - Skulpt, jsPDF, html2canvas and Supabase browser SDK are local in `vendor/`; license notices are included.
 - Raleway font and OFL notice are in `assets/fonts/`.
 - Original mission artwork and instructional SVGs were prepared for this lesson. The annotated editor capture shows this local app; it is not a fictional interface mock-up.
+# Live classroom, private dashboard and house points (31 October 2026)
+
+The existing 54-activity lesson and its individual learning-record outbox remain intact. The additional live classroom uses separate lesson-only tables in `y8_gameclub_live`. No Route Rescue or other lesson records are changed.
+
+## Teacher workflow
+
+1. Open `teacher.html` (also linked from teacher preview). Sign in with the existing approved Supabase teacher account. Typing `teacher` on the lesson entry page is **preview only**, never database authentication.
+2. Choose **8E** or **8T**, then **Open / resume live class**. Opening an already-active class resumes it rather than clearing the work. Students use the existing lesson link, enter their own name and class and register automatically—no join code.
+3. Open **safe TTA projector** on the board. Never project the private dashboard. It retains the TTA-style Topic, WAGBA, Keywords, KSU and Challenge boxes, a visible current stage and lesson/response clocks. Enable gentle sounds once if wanted (browser autoplay rules require a click); mute and volume controls are supplied.
+4. Start the lesson clock. Its 60-minute plan suggests stages but does not move students or automatically start a response window. Use the projected-stage selector when teaching at a different pace.
+5. Around minutes **25–30**, invite checkpoint 1, **A late player joins** (print original list, append Orbit, print changed list and length). Around **41–46**, invite checkpoint 2, **Give every player a turn** (complete the while-loop counter). Aim for 3 min responding, 1 min discussion and 1 min improvement; extend or pause when needed.
+6. Pupils click their invitation when ready. Start the response timer when the class is ready. After sending, they can return to precisely the same lesson card while classmates finish. The invitation stays available.
+7. **Discuss** gives an eyes-to-board cue. **Reveal worked model** shares the teacher example. **Follow along** lets students edit an improvement copy while watching live teacher edits/output on their device. The first-response workspace and improvement workspace are separate; the append-only history retains earlier saved versions. This is formative evidence, not a secure independent test.
+8. **Invite / reopen** returns to that checkpoint without clearing its saved answers. **Return everyone to independent work** releases the discussion but keeps the invitation/records available to reopen. **End class** stops the live session, retaining its records. A later class can be opened separately.
+
+## Reading responses and recognising learning
+
+- Student tiles stay in **joining order**, with a stable ID tie-breaker—not answer/heartbeat/score order. Polling updates their contents without rebuilding tiles, stealing button focus or reshuffling names. The sticky dashboard links jump to questions, demonstrations or responses/points.
+- Each tile shows code, output/error, sent/draft state and an obvious **★ +1 house point** button. First responses remain visible while an improvement is still being written. Search hides non-matching tiles but does not reorder the others.
+- **View history** shows first response, model-supported improvement and all live Run/Send/draft events. A custom point amount/reason and live-access/help controls are in the detail panel. Expanded unchanged history is not rebuilt on every poll.
+- The **All lesson answers & progress** tab uses the existing private record functions. It includes all activities, code attempts, hints, support choices, KSU reflections and the input timeline. Page through sessions; view a pupil and refresh or download their complete private trace. Missing work is not evidence of misunderstanding. The eight original core checks are not a grade.
+- House points are a **classroom ledger only**, not an iSAMS transaction. Undo reverses this ledger. Awards show a brief top-right star/confetti celebration on the pupil device, including above the live coding dialog. The safe projector shows anonymous **“A learner +1”** celebrations; it does not expose pupil names. Reduced-motion users receive a static celebration.
+
+## Student behaviour and safety
+
+- The connection notice disappears after five seconds; a compact live status remains in the toolbar. Invitations are a bottom dock and never replace the current lesson card.
+- Both task prompts and expected outputs are prominent. Live prompts, numbered steps and key controls support Mandarin and Korean. Python syntax/names remain unchanged. The live editor is a real Python runner with Stop, Tab indentation and Ctrl/Command+Enter.
+- Response countdowns use the server deadline. Below half the allotted time they turn red and nudge briefly; reduced-motion users get no shake. Paused timers do not accept submissions. Teachers can add time. A stale/lost connection releases the board-attention cue; local work remains available.
+- Live drafts/runs are also included in the local JSON/PDF report and normal school-save snapshot. Typed edits are grouped after short pauses, not keylogged. Pending local drafts are retained on errors; use Send again in an open window. Use **one active live-response tab** per student. A conflicting write from a second tab is rejected rather than silently overwriting a newer server version.
+- Names/classes are self-entered, **not verified school identities**. The teacher can pause unfamiliar live entries. This is not an attendance or high-stakes assessment system.
+
+## Database and privacy
+
+- Apply `supabase/01-learning-records.sql` first if setting up a new project, then `supabase/02-live-classroom.sql` as the database owner after access review. The second migration is additive/idempotent. It reuses the existing approved Game Club owner check and does not alter Auth, Realtime publications or exposed schemas.
+- All six new private tables have RLS enabled and no direct grants to anonymous/authenticated web clients. Narrow security-definer functions validate each operation. Only the approved teacher can list/read class answers or award points. A random device capability permits pupils to read/write **their own** live work only; tokens never enter backups/reports.
+- The safe projector uses an opaque capability URL and receives only lesson state, teacher examples and recent anonymous awards—never the roster or student answers/code. Keep that URL within the classroom.
+- Teacher authentication is scoped to session storage for this lesson; sign out on shared devices. A pupil name/URL preview flag cannot grant teacher rights.
+- Active classes expire after eight hours. Teacher heartbeat loss pauses live access; no stored pupil work is deleted. Live clients poll every few seconds rather than enabling a global Realtime feed.
+- Private class JSON exports contain pupil work. Keep them outside this public repository, restrict access and follow school retention policy. Do not put service-role keys or passwords into browser files.
+
+## Verification
+
+The lesson regression suite preserves the 54 activities. The live SQL migration was tested in an isolated in-memory PostgreSQL database for owner checks, anonymous isolation, token scoping, duplicate commands, retained/reopened responses, separate improvements, timer boundaries, award undo and denied direct table access. Real Python runs verify both supplied models and one-player/empty-roster loops. Browser QA uses dummy identities against that isolated database, never real pupils or the production class roster.

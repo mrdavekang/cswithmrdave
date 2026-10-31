@@ -32,6 +32,11 @@ const GameReport=(()=>{
     if(a.tests)for(const t of a.tests)push('Test · '+t.label,`${t.input?'Changed data: '+pretty(t.input)+'\n':''}${t.ok?'Passed':'Not passed'}\n${t.stdout||'(no output)'}${t.error?'\n'+t.error:''}`,true);
    }
   }
+  for(const r of Object.values(s.live||{})){
+   push('Live checkpoint '+r.round+' · '+(r.kind==='revision'?'Model-supported improvement':'First response'),`Class session: ${r.roomId}\nSubmitted: ${r.submitted?'Yes':'Not sent / draft'}\nBrowser-run evidence, not a server-verified grade.`);
+   push('Live code',r.code||'(no code)',true);push('Live output',r.output||'(no output)',true);if(r.error)push('Live error',r.error);
+   for(const [i,a]of(r.runs||[]).entries()){push('Live run '+(i+1)+' · '+a.at,a.code,true);push('Live run output',a.output+(a.error?'\n'+a.error:''),true);}
+  }
   push('Support and navigation record','The teacher can view the full private input timeline in Teacher records. This PDF includes latest responses/drafts, code attempts, diagnostic choices, help requests, console inputs and meaningful draft revisions. It is not a record of other tabs.');
   for(const e of(s.activity||[])){if(['field','support','console_input'].includes(e.kind))push('Input record · '+e.card+' · '+e.at,pretty(e.data),e.data?.field==='code');}
   return out;
