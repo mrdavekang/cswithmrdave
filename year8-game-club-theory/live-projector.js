@@ -19,7 +19,7 @@
   function ping(type='stage'){
     if(!sound)return;try{audio ||= new (window.AudioContext||window.webkitAudioContext)();const frequencies=type==='end'?[660,440]:type==='urgent'?[523,659]:[660,880];
       frequencies.forEach((freq,i)=>{const o=audio.createOscillator(),gain=audio.createGain(),t=audio.currentTime+i*.18;o.type='sine';o.frequency.value=freq;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(Number($('board-volume').value),t+.02);gain.gain.exponentialRampToValueAtTime(.001,t+.23);o.connect(gain);gain.connect(audio.destination);o.start(t);o.stop(t+.25);});
-    }catch{sound=false;$('board-sound').textContent='Enable gentle timing sounds';}
+    }catch{sound=false;$('board-sound').textContent='Turn timer sounds on';}
   }
   function current(){const r=G.effective(room,Date.now()+offset);if(r&&Date.now()-received>18000){r.connected=false;r.phase='work';}return r;}
   function stage(r){if(r.connected&&r.phase!=='work')return 'Live discussion '+r.round;return r.boardStage||G.cue(G.elapsed(r,received))[2];}
@@ -39,7 +39,8 @@
     if(timed&&r.pausedSeconds==null){const k=r.id+':'+r.round+':'+r.responseEpoch;for(const n of [60,30,0])if(left<=n&&!sounds.has(k+':'+n)){sounds.add(k+':'+n);if(left>=n-2)ping(n===0?'end':'urgent');}}
   }
   async function poll(){if(busy||!key)return;busy=true;try{const next=await G.rpc('board',{p_key:key});if(room&&next.revision<room.revision)return;room=next;received=Date.now();offset=Date.parse(next.serverNow)-Date.now();celebration.observe(next,next.celebrations||[],'projector');render();}catch(e){$('board-status').textContent='Connection paused · '+e.message;}finally{busy=false;}}
-  $('board-language').onchange=render;$('board-sound').onclick=async()=>{sound=!sound;if(sound){audio ||= new (window.AudioContext||window.webkitAudioContext)();await audio.resume();ping();}$('board-sound').textContent=sound?'Mute timing sounds':'Enable gentle timing sounds';};
+  $('board-language').onchange=render;$('board-sound').onclick=async()=>{sound=!sound;if(sound){audio ||= new (window.AudioContext||window.webkitAudioContext)();await audio.resume();ping();}$('board-sound').textContent=sound?'Turn timer sounds off':'Turn timer sounds on';};
+  document.addEventListener('fullscreenchange',()=>{$('board-fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Show full screen';});
   $('board-fullscreen').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();};
   if(key){poll();setInterval(poll,2000);setInterval(render,1000);}else $('board-status').textContent='Open from the teacher dashboard · no private information shown';
 })();
