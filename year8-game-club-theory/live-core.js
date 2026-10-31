@@ -61,12 +61,12 @@ window.GameLive = (() => {
   const kind=r=>r?.responseKind||'initial';
   function countdown(el,r,now=Date.now()){
     if(!el)return;const timed=!!r?.connected&&['response','retry'].includes(r.phase);el.hidden=!timed;if(!timed)return;
-    const left=remaining(r,now),urgent=r.pausedSeconds==null&&left>0&&left<r.responseDuration/2;
+    const left=remaining(r,now),urgent=!r.viewerSubmitted&&r.pausedSeconds==null&&left>0&&left<r.responseDuration/2;
     el.classList.toggle('urgent',urgent);el.classList.toggle('paused',r.pausedSeconds!=null);
     const key=r.id+':'+r.round+':'+kind(r)+':'+r.responseEpoch;
     if(urgent&&el.dataset.nudged!==key){el.dataset.nudged=key;el.classList.remove('nudge');void el.offsetWidth;el.classList.add('nudge');}
     el.querySelector('strong').textContent=time(left);
-    el.querySelector('span').textContent=r.pausedSeconds!=null?'Timer paused':urgent?'Respond now · less than half remains':'Live response time';
+    el.querySelector('span').textContent=r.viewerSubmitted?'Response sent · keep working':r.pausedSeconds!=null?'Timer paused':urgent?'Respond now · less than half remains':'Live response time';
     el.querySelector('progress').max=r.responseDuration||180;el.querySelector('progress').value=left;
   }
   const clockHTML=()=>'<div class="gc-countdown" hidden><span>Live response time</span><strong>3:00</strong><progress aria-label="Response time remaining" max="180" value="180"></progress></div>';
