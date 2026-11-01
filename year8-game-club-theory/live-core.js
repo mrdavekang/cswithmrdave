@@ -45,10 +45,9 @@ window.GameLive = (() => {
   const time = n => {n=Math.max(0,Math.ceil(Number(n)||0));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
   let client,anonymous;
   function db(){return client ||= supabase.createClient(cfg.url,cfg.publishableKey,{auth:{storage:sessionStorage,storageKey:'gameclub-live-teacher-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});}
-  async function rpc(action,args={}){
-    const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),12000);
+  async function rpc(action,args={},options={}){
     const connection=action==='teacher'?db():(anonymous ||= supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'gameclub-live-public'}}));
-    try{const {data,error}=await connection.rpc('y8_gc_live_'+action,args).abortSignal(abort.signal);if(error)throw Error(error.code==='PGRST202'?'Live classroom setup is not active yet. Independent work still saves.':error.message);return data;}finally{clearTimeout(timer);}
+    return GameConnection.request(async signal=>{const {data,error}=await connection.rpc('y8_gc_live_'+action,args).abortSignal(signal);if(error)throw Error(error.code==='PGRST202'?'Live classroom setup is not active yet. Independent work still saves.':error.message);return data;},options);
   }
   function effective(room,now=Date.now()){
     if(!room)return null;const r={...room};
