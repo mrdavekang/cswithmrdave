@@ -140,7 +140,7 @@
  for(const b of document.querySelectorAll('[data-close]'))b.onclick=()=>b.closest('dialog').close();
  window.addEventListener('gameclub-report-progress',e=>{$('#export-pdf').textContent='PDF '+e.detail.page+'/'+e.detail.total;$('#toast').textContent='Building report · page '+e.detail.page+' of '+e.detail.total+'. Keep this page open.';$('#toast').style.display='block';});
  window.addEventListener('lists-cloud-identity',save);window.addEventListener('pagehide',()=>{save();ListsCloud.flush();});document.addEventListener('visibilitychange',()=>{if(document.hidden){save();ListsCloud.flush();}});
- window.GameClubBridge={getState:()=>$('#landing').hidden?state:null,busy:()=>checking,saveLive:(action,data={})=>{if(!state)return;save();ListsCloud.record(action==='edit'?'field':'action',state.current,{live:true,action,...data},action==='edit'?'live-code':null);}};
+ window.GameClubBridge={getState:()=>$('#landing').hidden?state:null,busy:()=>checking,backup,saveLive:(action,data={})=>{if(!state)return;save();ListsCloud.record(action==='edit'?'field':'action',state.current,{live:true,action,...data},action==='edit'?'live-code':null);}};
  const previous=load(false);if(previous){$('#full-name').value=previous.name;$('#class-name').value=previous.className;$('#entry-language').value=previous.language;$('#entry-message').textContent='Saved work found. Start with the same name/class to resume.';}
  $('#entry-language').onchange();
  if(new URLSearchParams(location.search).get('teacher')==='1'){const s=load(true)||fresh('Teacher','Preview','en','steps',true);begin(s);}

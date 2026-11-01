@@ -1,16 +1,16 @@
 (() => {
   'use strict';
   const G=GameLive,E=G.esc,$=id=>document.getElementById(id);
-  let data=null,roomId='',received=0,offset=0,polling=false,chain=Promise.resolve(),demoDirty=false,demoRound='',demoTimer,
+  let data=null,roomId='',received=0,offset=0,chain=Promise.resolve(),demoDirty=false,demoRound='',demoTimer,
     demoVersion=0,selected='',selectedHistory=[],recordPage=0,recordDetail=null,recordEvents=[],recordTotal=0,tab='live';
-  const tiles=new Map(),awarding=new Set();
+  const tiles=new Map(),awarding=new Set(),presence=GameConnection.lane();
   let painted=new WeakMap();
   function paintHTML(el,html){if(painted.get(el)===html)return;el.innerHTML=html;painted.set(el,html);}
   function setText(el,text){if(el.textContent!==text)el.textContent=text;}
   const message=(txt,bad=false)=>{$('teacher-message').textContent=txt;$('teacher-message').classList.toggle('gc-error',bad);};
   const room=()=>G.effective(data?.room,Date.now()+offset);
   const when=x=>x?new Date(x).toLocaleString():'Not recorded';
-  async function call(action,payload={},id=roomId){return G.rpc('teacher',{p_action:action,p_room:id||null,p_data:payload});}
+  async function call(action,payload={},id=roomId,options={}){return G.rpc('teacher',{p_action:action,p_room:id||null,p_data:payload},options);}
   function receive(value){
     if(value.room.id!==roomId)return;
     if(data?.room.id===value.room.id&&(value.room.revision<data.room.revision||Date.parse(value.room.serverNow)<Date.parse(data.room.serverNow)))return;
@@ -26,7 +26,7 @@
     });return chain;
   }
   async function rooms(){const rows=await call('list');$('room-select').innerHTML='<option value="">Choose a class session</option>'+rows.map(r=>'<option value="'+r.id+'">'+E(r.className+' · '+(r.ended?'ended':'open')+' · '+when(r.serverNow===undefined?null:r.createdAt))+'</option>').join('');$('room-select').value=roomId;}
-  async function openRoom(id){clearTimeout(demoTimer);demoVersion++;roomId=id;data=null;demoDirty=false;demoRound='';selected='';tiles.clear();$('response-grid').replaceChildren();$('student-detail').hidden=true;$('room-dashboard').hidden=!id;$('gc-live-nav').hidden=!id;if(id)receive(await call('heartbeat'));}
+  async function openRoom(id){presence.cancel();clearTimeout(demoTimer);demoVersion++;roomId=id;data=null;demoDirty=false;demoRound='';selected='';tiles.clear();$('response-grid').replaceChildren();$('student-detail').hidden=true;$('room-dashboard').hidden=!id;$('gc-live-nav').hidden=!id;if(id)receive(await call('heartbeat'));}
   async function authenticate(){
     const {data:{session}}=await G.db().auth.getSession();$('teacher-login').hidden=!!session;$('teacher-app').hidden=!session;
     if(session){try{await rooms();message('Approved teacher signed in. Choose your class and open or resume it.');}catch(e){$('teacher-login').hidden=false;$('teacher-app').hidden=true;message(e.message,true);}}
@@ -89,7 +89,13 @@
     if(version!==demoVersion||id!==roomId)return;$('teacher-output').textContent=output;
     await command('demo',{code,output});if(version===demoVersion)demoDirty=false;$('demo-status').textContent='Broadcast to the safe projector and joined student screens.';
   }
-  async function poll(){if(polling||!roomId||$('teacher-app').hidden)return;polling=true;try{receive(await call('heartbeat'));}catch(e){message('Live connection paused: '+e.message+' Student drafts stay on their devices.',true);}finally{polling=false;}}
+  async function poll(force=false){
+    if(!roomId||$('teacher-app').hidden||document.hidden&&!force)return;
+    const target=roomId;if(force)message('Reconnecting dashboard. The class and saved responses are kept.');
+    try{const result=await presence.run(signal=>call('heartbeat',{},target,{signal}),{replace:force});
+      if(result.skipped||result.superseded||roomId!==target)return;receive(result.value);if(force)message('Dashboard reconnected. Your existing class, responses and points are kept.');
+    }catch(e){if(roomId===target)message('Live connection paused: '+e.message+' Use Reconnect dashboard. Student drafts stay on their devices.',true);}
+  }
   async function privateRpc(name,args){const {data,error}=await G.db().rpc(name,args);if(error)throw Error(error.message);return data;}
   async function records(){
     $('records-status').textContent='Loading private lesson work…';const rows=await privateRpc('y8_gameclub_teacher_records',{p_class_name:$('records-class').value||null,p_limit:100,p_offset:recordPage*100});
@@ -125,7 +131,7 @@
   $('room-title').closest('.gc-panel').id='gc-overview';$('round-title').closest('.gc-panel').id='gc-round-controls';$('response-grid').closest('.gc-panel').id='gc-responses';
   $('cue-table').innerHTML=G.cues.map(c=>'<tr>'+[c[0]+'–'+c[1],...c.slice(2)].map(x=>'<td>'+E(x)+'</td>').join('')+'</tr>').join('');
   $('teacher-login-form').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;try{const {error}=await G.db().auth.signInWithPassword({email:$('teacher-email').value.trim(),password:$('teacher-password').value});if(error)throw error;await authenticate();}catch(e){message(e.message,true);}finally{$('teacher-password').value='';b.disabled=false;}};
-  $('teacher-signout').onclick=async()=>{clearTimeout(demoTimer);demoVersion++;PythonRunner.stop();roomId='';data=null;recordDetail=null;recordEvents=[];selectedHistory=[];tiles.clear();painted=new WeakMap();for(const id of ['response-grid','records-list','record-detail','detail-work','detail-history','awards-list','room-stats'])$(id).replaceChildren();$('detail-title').textContent='';$('room-select').replaceChildren();$('student-detail').hidden=true;$('room-dashboard').hidden=true;await G.db().auth.signOut({scope:'local'});await authenticate();message('Signed out. Private classroom data cleared from this view.');};
+  $('teacher-signout').onclick=async()=>{presence.cancel();clearTimeout(demoTimer);demoVersion++;PythonRunner.stop();roomId='';data=null;recordDetail=null;recordEvents=[];selectedHistory=[];tiles.clear();painted=new WeakMap();for(const id of ['response-grid','records-list','record-detail','detail-work','detail-history','awards-list','room-stats'])$(id).replaceChildren();$('detail-title').textContent='';$('room-select').replaceChildren();$('student-detail').hidden=true;$('room-dashboard').hidden=true;await G.db().auth.signOut({scope:'local'});await authenticate();message('Signed out. Private classroom data cleared from this view.');};
   $('open-class').onclick=async()=>{try{const value=await call('create',{className:$('teacher-class').value},null);roomId=value.room.id;receive(value);await rooms();message('Class open. Students enter their own name and class at the normal lesson link.');}catch(e){message(e.message,true);}};
   $('room-select').onchange=e=>openRoom(e.target.value).catch(e=>message(e.message,true));$('clock-toggle').onclick=()=>command('clock').catch(()=>{});$('board-stage').onchange=e=>command('stage',{stage:e.target.value}).catch(()=>{});
   $('end-class').onclick=()=>{if(confirm('End this live class and release everyone? All responses, histories and points are kept.'))command('end').then(rooms).catch(()=>{});};
@@ -145,5 +151,9 @@
     if(b.dataset.access&&confirm('Change live access for this entry? All saved work and histories remain.'))command('admit',{studentId:b.dataset.access,status:b.dataset.status}).catch(()=>{});
     if(b.dataset.helpResolved)command('helpResolved',{studentId:b.dataset.helpResolved}).catch(()=>{});
   });
+  $('teacher-reconnect').onclick=()=>poll(true);
+  const resume=()=>{if(!document.hidden)poll(true);};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)presence.cancel();else resume();});
+  window.addEventListener('pageshow',resume);window.addEventListener('focus',resume);window.addEventListener('online',resume);
   authenticate().catch(e=>message(e.message,true));setInterval(poll,3000);setInterval(tick,1000);
 })();
