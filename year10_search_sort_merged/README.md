@@ -51,3 +51,11 @@ Question / instructions and Responses remain separate dashboard tabs. Existing d
 
 ## Clear teacher-control workflow
 The dashboard separates private-view navigation from class-changing controls. Student work, Board instructions and Discussion answers are private tabs. The numbered Board/timer and Discussion groups have effect descriptions and one phase-appropriate primary action. Stage selection alone does not send anything: Show/Restart applies it. Switching stages during a discussion requires confirmation and retains saved answers/points. The current class state and automatic-question status are visible. Previous-discussion actions and sound/manual-reveal settings remain available in clearly named secondary sections. Help with controls explains common teaching intentions. No learning content, database schema or permissions changed.
+
+
+## Attempt-first teaching visuals
+Three linear-search visuals appear before the first main task; five binary-search visuals precede the second. Each has one prediction, optional sentence starter and word bank. Save my prediction and reveal the explanation stores the first attempt before showing the supplied answer. A specific help request is acceptable. The original prediction is read-only after reveal; optional corrections have their own field. Continue requires an attempt and reveal, not correctness. Teacher Preview may skip or use its clearly labelled override and does not create pupil records. Bottom-of-page Pit Stop / Plenary exits remain available.
+
+These steps are nested within the existing `sr-linear-study` and `sr-binary-study` pages. Stable database stage IDs, top-level lesson routes, old answers, classroom permissions, live discussions and house points are unchanged. Each save/event includes the teaching visual ID. Teacher cards identify the active visual and show its prediction; individual records and PDF export include predictions, explanation-use and corrections. No database migration is required. The old reading/check remains after each teaching sequence. Main 1 and Main 2 timers still include their teaching time within the existing lesson pacing.
+
+Lesson scripts now use ordered deferred loading; the optional Python isolation worker waits until the page is loaded before claiming/reloading it. Entry stays disabled until setup finishes, avoiding a half-loaded lesson.
