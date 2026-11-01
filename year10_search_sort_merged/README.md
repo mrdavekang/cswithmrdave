@@ -59,3 +59,11 @@ Three linear-search visuals appear before the first main task; five binary-searc
 These steps are nested within the existing `sr-linear-study` and `sr-binary-study` pages. Stable database stage IDs, top-level lesson routes, old answers, classroom permissions, live discussions and house points are unchanged. Each save/event includes the teaching visual ID. Teacher cards identify the active visual and show its prediction; individual records and PDF export include predictions, explanation-use and corrections. No database migration is required. The old reading/check remains after each teaching sequence. Main 1 and Main 2 timers still include their teaching time within the existing lesson pacing.
 
 Lesson scripts now use ordered deferred loading; the optional Python isolation worker waits until the page is loaded before claiming/reloading it. Entry stays disabled until setup finishes, avoiding a half-loaded lesson.
+
+
+## Projector images and clean student wording
+The dashboard Images section controls eight question/answer image concepts, three before Main Task 1 and five before Main Task 2. Choose an image, then Show selected question on projector; selecting alone has no class effect. Reveal / Hide answer is separate from discussion answer reveals. Previous / Next always hides the answer first. Back to board instructions leaves the timer paused; Return class to independent work resumes its preserved countdown. Active response discussions must be ended first rather than silently replaced. Starting a stage or response discussion clears the projected image. All teacher actions still use the existing owner-checked RPC and control history.
+
+The projector reflows the same diagrams, values and code into the original TTA right-hand content area with readable text; Topic, WAGBA, Keywords/KSU and Challenge retain their existing boxes. Projector image selection/reveal is shared via two lesson-room fields. No pupil records, grants, sign-in or other lessons changed. Student lesson pages are not moved or auto-marked by projector actions.
+
+Student-facing copy uses Images and Answer and explanation. Internal “teaching example only” and booklet-disclaimer captions/footers were removed from the new eight image pairs. Question-first student gating and immutable predictions/corrections still apply independently of the teacher's projector reveal.

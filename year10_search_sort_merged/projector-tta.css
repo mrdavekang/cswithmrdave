@@ -49,3 +49,31 @@
 
 /* Compact projector wording keeps all KSU visible in the unchanged TTA boxes. */
 .tta-keywords p,.tta-slide[data-stage="starter"] .tta-keywords p{font-size:17.333333px;line-height:1.25;margin-bottom:8px}.tta-keywords .tta-ksu{margin-top:8px;margin-bottom:8px}
+
+/* Images are reflowed into the original TTA right-hand box, not shrunk as a whole slide. */
+.tta-content.showing-image{top:155px;height:441px;overflow:hidden}
+.projector-image{height:100%;font-size:23px;line-height:1.2}
+.projector-image .pi-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+.projector-image .pi-heading h2{font-size:26px;line-height:1.15;margin:0;max-width:680px}
+.projector-image .pi-heading>span{font-size:20px;white-space:nowrap;background:#fff3cb;padding:6px 10px;border-radius:4px}
+.projector-image .pi-array{display:grid;grid-template-columns:65px repeat(7,minmax(0,1fr));gap:3px;margin:9px 0}
+.projector-image .pi-array strong{font-size:18px;align-self:center}
+.projector-image .pi-index{font-size:19px;text-align:center;color:#4b5d53}
+.projector-image .pi-value{font-size:28px;font-weight:700;text-align:center;border:1px solid #c2cbc4;padding:4px 0;border-radius:4px}
+.projector-image .pi-value.pi-focus{border:2px solid #196b43;background:#edf5ef;padding:3px 0}
+.projector-image .pi-excluded{color:#78877d;background:#f1f2ef;border-style:dashed;opacity:.65}
+.projector-image .pi-line{font-size:21px;line-height:1.2;margin:6px 0}
+.projector-image pre{font:24px/1.25 Menlo,monospace;background:#edf5ef;border:0;padding:8px 12px;margin:8px 0;white-space:pre-wrap}
+.projector-image .pi-question{margin-top:10px;border-top:1px solid #a9b9ad;padding-top:7px}
+.projector-image .pi-question>strong,.projector-image .pi-answer>strong{font-size:17px;text-transform:uppercase;color:#196b43}
+.projector-image .pi-question p{font-size:24px;font-weight:700;margin:3px 0;line-height:1.2}
+.projector-image .pi-answer{background:#edf5ef;padding:7px 12px;margin-top:8px;border-left:3px solid #196b43}
+.projector-image .pi-answer p{font-size:23px;font-weight:700;margin:3px 0;line-height:1.2}
+.projector-image .pi-answer .pi-reason{font-size:20px;font-weight:400}
+.projector-image .pi-think{font-size:21px;margin:9px 0}
+.projector-image .pi-two>p{font-size:18px;font-weight:700;margin:3px 0}
+.projector-image .pi-two .pi-array{margin:3px 0 6px}
+.projector-image .pi-two .pi-value{font-size:24px;padding:2px 0}
+.projector-image .pi-two .pi-index{font-size:17px}
+
+.projector-image:has(.pi-two) .pi-answer{padding-top:5px;padding-bottom:5px}.projector-image:has(.pi-two) .pi-answer .pi-reason{font-size:19px}.projector-image:has(.pi-two)>.pi-line{margin:4px 0}
