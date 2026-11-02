@@ -4,10 +4,10 @@ window.DesignLive = (() => {
   const cfg = window.DECISION_LIVE_CONFIG;
   const rounds = {
     1: {title:'A feature worth borrowing',titleZh:'值得借鉴的功能',goal:'Explain how a design choice helps a user.',
-      prompt:'You are researching a drawing app. Its three colour buttons are labelled Button 1, Button 2 and Button 3. Suggest clearer labels, then explain how they would help a new user. Use short phrases.',
-      zh:'你正在研究绘画应用。三个颜色按钮名为 Button 1、Button 2、Button 3。建议更清楚的名称，再解释怎样帮助新用户。用短语即可。',
-      steps:['Name what each button does.','Explain one benefit for the user.','Send your answer. Then return to Section A on your paper.'],
-      stepsZh:['说明每个按钮的作用。','解释一个对用户的好处。','发送回答，再继续纸上 A 部分。'],
+      prompt:'Look at the drawing app. Suggest a clearer label for Button 1, Button 2 and Button 3. Explain how your labels would help a new user. Use short phrases.',
+      zh:'观察绘画应用。为 Button 1、Button 2 和 Button 3 各写一个更清楚的名称，再解释这些名称怎样帮助新用户。用短语即可。',
+      steps:['Write a clearer label for each of the three buttons.','Explain one benefit for the user.','Send your answer. Then return to Section A on your paper.'],
+      stepsZh:['为三个按钮分别写一个更清楚的名称。','解释一个对用户的好处。','发送回答，再继续纸上 A 部分。'],
       starter:'Clearer labels: \nThis helps the user because: ',
       model:'Clearer labels: Red, Blue, Green.\nThis helps the user choose a colour without guessing what Button 1 means.',
       modelZh:'更清楚的名称：红色、蓝色、绿色。\n这些名称能让用户直接选择颜色，不用猜 Button 1 的作用。',
@@ -42,6 +42,13 @@ window.DesignLive = (() => {
     [58,60,'Save & hand in','Check the paper hand-in and the digital report.','Keep Sections A and B together. Save your learning-record PDF and follow the Teams hand-in instructions.']
   ];
   const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // One shared, static diagram: the observation is visible without extra taps.
+  function questionVisual(round,bi=false){
+    if(round!==1)return '';
+    const t=(en,zh)=>esc(en)+(bi?'<span class="gc-example-zh" lang="zh-Hans">'+esc(zh)+'</span>':'');
+    const colours=[['#bc333b','red','红色'],['#225eb5','blue','蓝色'],['#287548','green','绿色']];
+    return '<figure class="gc-label-example" aria-label="'+esc(bi?'Drawing app: three buttons and their results · 绘画应用：三个按钮及其结果':'Drawing app: three buttons and their results')+'"><figcaption><strong>'+t('Drawing app · current design','绘画应用：目前的设计')+'</strong><span>'+t('Each button changes the drawing ink.','每个按钮会改变绘画的笔迹颜色。')+'</span></figcaption><div class="gc-example-results">'+colours.map(([colour,en,zh],i)=>'<div class="gc-example-path"><span class="gc-example-button">Button '+(i+1)+'</span><span class="gc-example-arrow" aria-hidden="true">↓</span><svg class="gc-example-drawing" viewBox="0 0 180 90" role="img" aria-label="'+esc('After Button '+(i+1)+': '+en+' drawing ink'+(bi?' · 点击后：'+zh+'笔迹':''))+'"><rect x="1" y="1" width="178" height="88" rx="10" fill="#fff" stroke="#c6d3c0"/><g fill="none" stroke="'+colour+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 64 Q46 11 64 42 T100 44 T151 23"/><path d="M25 77 Q61 67 94 75 T153 71"/></g></svg></div>').join('')+'</div><p class="gc-example-caption">'+t('The arrows show the result after each tap. Improve the button labels.','箭头显示点击各按钮后的结果。请改进按钮名称。')+'</p></figure>';
+  }
   const time = n => {n=Math.max(0,Math.ceil(Number(n)||0));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
   let client,anonymous;
   function db(){return client ||= supabase.createClient(cfg.url,cfg.publishableKey,{auth:{storageKey:'y9design-live-teacher-auth',persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}});}
@@ -75,5 +82,5 @@ window.DesignLive = (() => {
   const stableStudents=students=>[...students].sort((a,b)=>a.joined_at.localeCompare(b.joined_at)||a.id.localeCompare(b.id));
   function indent(el,e){if(e.key==='Tab'){e.preventDefault();el.setRangeText('    ',el.selectionStart,el.selectionEnd,'end');el.dispatchEvent(new Event('input',{bubbles:true}));}}
   function download(data,name){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(data,(key,value)=>/token|credential|password|boardKey|publishableKey/i.test(key)?undefined:value,2)],{type:'application/json'}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
-  return {rounds,cues,esc,time,db,rpc,effective,remaining,writable,kind,countdown,clockHTML,cue,elapsed,stableStudents,indent,download};
+  return {rounds,cues,esc,time,questionVisual,db,rpc,effective,remaining,writable,kind,countdown,clockHTML,cue,elapsed,stableStudents,indent,download};
 })();
