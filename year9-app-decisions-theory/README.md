@@ -187,3 +187,28 @@ The original live-discussion projector and standalone teaching slides remain ava
 The classroom screen now uses the same TTA frame at **all 16 lesson positions**: Topic, WAGBA, Keywords/KSU and Challenge Task remain visible, with the Tenby/ISP logos. Activity positions show the matching TTA instruction slide rather than an embedded student web page. Teaching slides retain their progressive visual reveals. Both live questions and revealed models stay inside the TTA layout, including English–Mandarin support and response timing. Longer custom teacher models scroll within their central content area, keeping the TTA frame fixed.
 
 The dashboard deliberately retains the actual student-content previews requested by the teacher. Its lesson position still drives the projector in the same browser, but the two views use different renderers. The safe screen never loads pupil responses, teacher notes or a student-workspace iframe. The earlier live projector retains a TTA startup screen and now uses the actual school/ISP logos. No database or student-work changes are required.
+
+## Per-slide projector timer (60 minutes)
+
+The linear teacher dashboard and `lesson-screen.html` share a visible, pausable stage countdown in the same browser. It works before a live class is opened and uses only local timing state; no school database permissions or student records are involved. Every one of the 16 positions has its own budget, including teaching models and both discussions.
+
+| Lesson minutes | Position | Duration |
+| --- | --- | --- |
+| 0:00–5:00 | Read first & Do now | 5:00 |
+| 5:00–7:00 | Types of Learning | 2:00 |
+| 7:00–8:00 | Clear labels model | 1:00 |
+| 8:00–9:00 | Visible response model | 1:00 |
+| 9:00–11:00 | Gallery research model | 2:00 |
+| 11:00–22:00 | Main Task 1 research | 11:00 |
+| 22:00–27:00 | Discussion 1 | 5:00 |
+| 27:00–30:00 | Quiz break | 3:00 |
+| 30:00–30:45 | Choose one improvement | 0:45 |
+| 30:45–32:00 | Draw before the tap | 1:15 |
+| 32:00–33:30 | Draw result and Reset | 1:30 |
+| 33:30–35:00 | Partner check model | 1:30 |
+| 35:00–50:00 | Main Task 2 drawing | 15:00 |
+| 50:00–55:00 | Discussion 2 | 5:00 |
+| 55:00–58:00 | Learning Pit Stop | 3:00 |
+| 58:00–60:00 | Save & hand in | 2:00 |
+
+Press **Start timer** on the right of the teacher dashboard. Previous/Next switches to the corresponding countdown; returning preserves time already used. Language changes and reveals do not reset it. Pause stops both stage and lesson clocks; resuming or refreshing preserves elapsed time. **Reset stage** grants that stage its full budget again while keeping total lesson elapsed time. The collapsed plan includes **Restart the 60-minute lesson** for the next class; this affects timing only. Reaching zero shows overtime without advancing slides, ending discussion or submitting student work. The existing live-response timer remains separate. Projected timer labels include Mandarin in bilingual mode and sit outside the TTA frame.
