@@ -41,3 +41,7 @@ The Canvas recipe uses real component/event/method names: Touched → DrawCircle
 The edition reuses the already approved `y9_decisions_*` and live-class APIs for class **9E**, with no schema, authentication or permission changes. It has a separate localStorage key, IndexedDB database, backup kind, lesson-position channel and timing channel from 9T. Evidence uses the existing supported page IDs. Research route/device choice and paper ticks are self-reported, not proof that an app was successfully tested or the teacher saw a drawing. The protected record view makes this explicit. Setup and feature guides do not collect names, logins, AI conversations or other-site activity.
 
 New setup/extension instructions have been reviewed against official documentation. Actual Windows emulator, Intel Mac compatibility and Mac Companion testing still require the school's physical devices. No user software is installed by this change.
+
+
+### Teacher slide view
+The teacher centre shows the same TTA slide as the classroom screen at all 16 positions, including task instructions. Use Previous slide, Next slide or Go to slide below. The right panel names the selected slide and its countdown. Press Start this slide once; a running timer follows navigation automatically. Pausing keeps elapsed time, and returning to a slide keeps its earlier time. Reveal and Replay change the example only. Student responses and the student lesson preview open separately.

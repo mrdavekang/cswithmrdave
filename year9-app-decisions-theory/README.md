@@ -212,3 +212,7 @@ The linear teacher dashboard and `lesson-screen.html` share a visible, pausable 
 | 58:00–60:00 | Save & hand in | 2:00 |
 
 Press **Start timer** on the right of the teacher dashboard. Previous/Next switches to the corresponding countdown; returning preserves time already used. Language changes and reveals do not reset it. Pause stops both stage and lesson clocks; resuming or refreshing preserves elapsed time. **Reset stage** grants that stage its full budget again while keeping total lesson elapsed time. The collapsed plan includes **Restart the 60-minute lesson** for the next class; this affects timing only. Reaching zero shows overtime without advancing slides, ending discussion or submitting student work. The existing live-response timer remains separate. Projected timer labels include Mandarin in bilingual mode and sit outside the TTA frame.
+
+
+### Teacher slide view
+The teacher centre shows the same TTA slide as the classroom screen at all 16 positions, including task instructions. Use Previous slide, Next slide or Go to slide below. The right panel names the selected slide and its countdown. Press Start this slide once; a running timer follows navigation automatically. Pausing keeps elapsed time, and returning to a slide keeps its earlier time. Reveal and Replay change the example only. Student responses and the student lesson preview open separately.
