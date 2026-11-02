@@ -33,10 +33,10 @@ window.DesignLive = (() => {
   const cues = [
     [0,5,'Read first & Do now','Connect purpose, audience, control and feedback.','Read the examples and answer the short design check.'],
     [5,7,'Types of Learning','Recognise prior knowledge and choose support.','Choose your starting point for each KSU check.'],
-    [7,22,'Main Task 1 · Research','Discuss two Gallery designs. Check paper Section A.','Study TWO app pictures. Record a useful feature and one improvement in Section A.'],
+    [7,22,'Main Task 1 · Research','First teach slides 1–3 (4 min), then research. Check paper Section A.','Study TWO app pictures. Record a useful feature and one improvement in Section A.'],
     [22,27,'Live discussion 1','Invite → 3-minute response → 1-minute discussion → 1-minute improvement.','Explain a helpful design choice. Send, then return to Section A.'],
     [27,30,'Quick quiz break','Use feedback, without speed ranking.','Answer two short design questions and read the feedback.'],
-    [30,50,'Main Task 2 · Draw','Use WAGOLL purposes. Keep the existing app topic.','On Section B draw before the tap, after the tap and another choice or Reset.'],
+    [30,50,'Main Task 2 · Draw','First teach slides 4–7 (5 min), then draw. Keep the existing app topic.','On Section B draw before the tap, after the tap and another choice or Reset.'],
     [50,55,'Live discussion 2','Invite → discuss a vague plan → model a clearer response.','Name a button, its visible response and why it helps. Then improve your own drawing.'],
     [55,58,'Learning Pit Stop','Use students’ confidence reports, not a quiz score.','Choose a learning phase for Knowledge, Skills and Understanding.'],
     [58,60,'Save & hand in','Check the paper hand-in and the digital report.','Keep Sections A and B together. Save your learning-record PDF and follow the Teams hand-in instructions.']

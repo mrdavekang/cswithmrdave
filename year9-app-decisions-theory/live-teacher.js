@@ -2,7 +2,7 @@
   'use strict';
   const G=DesignLive,E=G.esc,$=id=>document.getElementById(id);
   let data=null,roomId='',received=0,offset=0,polling=false,chain=Promise.resolve(),demoDirty=false,demoRound='',demoTimer,
-    demoVersion=0,selected='',selectedHistory=[],recordPage=0,recordDetail=null,recordEvents=[],recordTotal=0,tab='live';
+    demoVersion=0,selected='',selectedHistory=[],recordPage=0,recordDetail=null,recordEvents=[],recordTotal=0,tab='live',teacherApproved=false;
   const tiles=new Map(),awarding=new Set();
   let painted=new WeakMap();
   function paintHTML(el,html){if(painted.get(el)===html)return;el.innerHTML=html;painted.set(el,html);}
@@ -15,7 +15,7 @@
     if(value.room.id!==roomId)return;
     if(data?.room.id===value.room.id&&(value.room.revision<data.room.revision||Date.parse(value.room.serverNow)<Date.parse(data.room.serverNow)))return;
     if(data?.room.id!==value.room.id){tiles.clear();$('response-grid').replaceChildren();selected='';$('student-detail').hidden=true;}
-    data=value;received=Date.now();offset=Date.parse(value.room.serverNow)-Date.now();render();
+    data=value;received=Date.now();offset=Date.parse(value.room.serverNow)-Date.now();render();document.dispatchEvent(new Event('y9-live-update'));
   }
   function command(action,payload={}){
     const target=roomId,commandId=crypto.randomUUID();
@@ -28,8 +28,8 @@
   async function rooms(){const rows=await call('list');$('room-select').innerHTML='<option value="">Choose a class session</option>'+rows.map(r=>'<option value="'+r.id+'">'+E(r.className+' · '+(r.ended?'ended':'open')+' · '+when(r.serverNow===undefined?null:r.createdAt))+'</option>').join('');$('room-select').value=roomId;}
   async function openRoom(id){clearTimeout(demoTimer);demoVersion++;roomId=id;data=null;demoDirty=false;demoRound='';selected='';tiles.clear();$('response-grid').replaceChildren();$('student-detail').hidden=true;$('room-dashboard').hidden=!id;$('gc-live-nav').hidden=!id;if(id)receive(await call('heartbeat'));}
   async function authenticate(){
-    const {data:{session}}=await G.db().auth.getSession();$('teacher-login').hidden=!!session;$('teacher-app').hidden=!session;
-    if(session){try{await privateRpc('y9_decisions_teacher_list',{p_class:null,p_limit:1,p_offset:0});message('Approved teacher signed in. Choose a live class or inspect saved lesson work.');try{await rooms();}catch(e){message('Live setup awaits activation. Existing lesson answers remain available. '+e.message,true);}}catch(e){$('teacher-login').hidden=false;$('teacher-app').hidden=true;await G.db().auth.signOut({scope:'local'});message(e.message,true);}}
+    teacherApproved=false;const {data:{session}}=await G.db().auth.getSession();$('teacher-login').hidden=!!session;$('teacher-app').hidden=true;
+    if(session){try{await privateRpc('y9_decisions_teacher_list',{p_class:null,p_limit:1,p_offset:0});teacherApproved=true;$('teacher-app').hidden=false;message(document.body.classList.contains('teacher-presenter')?'Ready. Follow the lesson using Previous and Next below.':'Approved teacher signed in. Choose a class session to view responses.');try{await rooms();}catch(e){message('Live setup awaits activation. Existing lesson answers remain available. '+e.message,true);}}catch(e){$('teacher-login').hidden=false;$('teacher-app').hidden=true;await G.db().auth.signOut({scope:'local'});message(e.message,true);}}document.dispatchEvent(new Event('y9-teacher-auth'));
   }
   function render(){
     const r=room();if(!r)return;$('room-dashboard').hidden=false;$('gc-live-nav').hidden=false;$('room-title').textContent=r.className+' · '+(r.ended?'Saved session':'Live classroom');
@@ -56,6 +56,8 @@
     if(demoRound!==demoKey){demoRound=demoKey;demoDirty=false;clearTimeout(demoTimer);}
     if(r.revealed&&!demoDirty&&document.activeElement!==$('teacher-code')){$('teacher-code').value=r.demo.code;$('teacher-output').value=r.demo.output;}
     if(document.activeElement!==$('board-stage'))$('board-stage').value=r.boardStage||'auto';
+    // The presenter keeps learner responses out of its DOM. The private window renders them.
+    if(document.body.classList.contains('teacher-presenter')){tick();return;}
     // Seats are retained for the whole session. Search only hides tiles.
     for(const s of students){
       let tile=tiles.get(s.id);if(!tile){tile=document.createElement('article');tile.className='gc-response-tile';tile.dataset.student=s.id;tile.innerHTML='<div class="gc-tile-heading"><h3></h3><button class="gc-award" data-award="'+s.id+'">★ +1 house point</button></div><p class="gc-tile-status"></p><p class="gc-tile-result"></p><div class="gc-tile-code"><h4>Answer</h4><pre></pre><h4>Saved status</h4><pre></pre></div><div class="gc-actions"><button data-detail="'+s.id+'">View history</button></div><span class="gc-points-total"></span>';tiles.set(s.id,tile);$('response-grid').append(tile);}
@@ -111,8 +113,8 @@
   $('demo-run').onclick=()=>{clearTimeout(demoTimer);broadcast(true).catch(e=>message(e.message,true));};$('teacher-output').oninput=()=>{demoDirty=true;demoVersion++;clearTimeout(demoTimer);demoTimer=setTimeout(()=>broadcast().catch(e=>message(e.message,true)),500);};$('demo-reset').onclick=()=>{if(confirm('Restore the supplied example? Pupil work remains unchanged.')){$('teacher-code').value=G.rounds[room().round].model;$('teacher-output').value=G.rounds[room().round].output;demoVersion++;demoDirty=true;broadcast(true).catch(e=>message(e.message,true));}};
   $('student-search').oninput=filter;$('detail-round').onchange=paintStudent;$('close-detail').onclick=()=>{selected='';$('student-detail').hidden=true;};$('detail-award').onclick=()=>award(selected,Number($('point-amount').value),$('point-reason').value).catch(e=>message(e.message,true));
   $('export-live').onclick=async()=>{try{const attempts=[];for(const s of data.students){const x=await call('history',{studentId:s.id});attempts.push(...x.attempts);}G.download({lesson:'year9-app-design-live',room:data.room,students:data.students,responses:data.responses,awards:data.awards,attempts,exportedAt:new Date().toISOString()},'Private_GameClub_'+room().className+'_Live_Record.json');}catch(e){message(e.message,true);}};
-  function tabs(next){tab=next;$('live-tab').hidden=next!=='live';$('records-tab').hidden=next!=='records';$('tab-live').setAttribute('aria-pressed',String(next==='live'));$('tab-records').setAttribute('aria-pressed',String(next==='records'));if(next==='records')records().catch(e=>message(e.message,true));}
-  $('tab-live').onclick=()=>tabs('live');$('tab-records').onclick=()=>tabs('records');$('records-refresh').onclick=()=>records().catch(e=>message(e.message,true));$('records-class').onchange=()=>DesignRecords.reset().catch(e=>message(e.message,true));$('records-prev').onclick=()=>DesignRecords.previous().catch(e=>message(e.message,true));$('records-next').onclick=()=>DesignRecords.next().catch(e=>message(e.message,true));
+  function tabs(next){tab=next;$('live-tab').hidden=next!=='live';$('records-tab').hidden=next!=='records';$('teaching-tab').hidden=next!=='teaching';$('tab-teaching').setAttribute('aria-pressed',String(next==='teaching'));$('tab-live').setAttribute('aria-pressed',String(next==='live'));$('tab-records').setAttribute('aria-pressed',String(next==='records'));if(next==='records')records().catch(e=>message(e.message,true));}
+  document.addEventListener('y9-open-teaching',()=>tabs('teaching'));$('tab-teaching').onclick=()=>tabs('teaching');$('tab-live').onclick=()=>tabs('live');$('tab-records').onclick=()=>tabs('records');$('records-refresh').onclick=()=>records().catch(e=>message(e.message,true));$('records-class').onchange=()=>DesignRecords.reset().catch(e=>message(e.message,true));$('records-prev').onclick=()=>DesignRecords.previous().catch(e=>message(e.message,true));$('records-next').onclick=()=>DesignRecords.next().catch(e=>message(e.message,true));
   document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.record){openRecord(b.dataset.record).catch(e=>message(e.message,true));return;}if(!data)return;
     if(b.dataset.invite)command('invite',{round:Number(b.dataset.invite)}).catch(()=>{});
     if(b.dataset.command){const a=b.dataset.command;command(a,a==='reveal'?{code:G.rounds[room().round].model,output:G.rounds[room().round].output}:a==='extend'?{seconds:Number(b.dataset.seconds)}:{}).catch(()=>{});}
@@ -120,5 +122,6 @@
     if(b.dataset.access&&confirm('Change live access for this entry? All saved work and histories remain.'))command('admit',{studentId:b.dataset.access,status:b.dataset.status}).catch(()=>{});
     if(b.dataset.helpResolved)command('helpResolved',{studentId:b.dataset.helpResolved}).catch(()=>{});
   });
+  window.DesignTeacherSession={snapshot:()=>{if(!teacherApproved||!room())return null;const r=room(),responses=data.responses.filter(x=>x.round_no===r.round&&x.kind===r.responseKind);return {...r,registered:data.students.filter(s=>s.status==='admitted').length,submitted:responses.filter(x=>x.submitted_at).length,help:data.students.filter(s=>s.help).length};}};
   authenticate().catch(e=>message(e.message,true));setInterval(poll,3000);setInterval(tick,1000);
 })();

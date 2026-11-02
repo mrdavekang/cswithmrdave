@@ -1,8 +1,9 @@
 (()=>{'use strict';
 const C=StudioCore,D=C.D,e=C.esc,root=document.querySelector('#studio'),dialog=document.querySelector('#studio-dialog');
-const preview=new URLSearchParams(location.search).has('preview'),key=C.KEY+(preview?'-preview':'');
+const params=new URLSearchParams(location.search),preview=params.has('preview')||location.pathname.endsWith('/9t-preview.html'),presenter=location.pathname.endsWith('/9t-preview.html')||(preview&&params.has('presenter')),key=C.KEY+(presenter?'-presenter':preview?'-preview':'');
 let s=C.initial(),storageOK=true,modalReturn=null,timer;
-try{const raw=localStorage.getItem(key);if(raw)s=C.restore(JSON.parse(raw));const hand=sessionStorage.getItem('y9t-studio-entry');if(hand&&!s.joined){const h=JSON.parse(hand);s.student.name=String(h.name||'').slice(0,90);s.lang=h.lang==='bi'?'bi':'en';sessionStorage.removeItem('y9t-studio-entry');}}catch(_){storageOK=false;}
+if(!presenter)try{const raw=localStorage.getItem(key);if(raw)s=C.restore(JSON.parse(raw));const hand=sessionStorage.getItem('y9t-studio-entry');if(hand&&!s.joined){const h=JSON.parse(hand);s.student.name=String(h.name||'').slice(0,90);s.lang=h.lang==='bi'?'bi':'en';sessionStorage.removeItem('y9t-studio-entry');}}catch(_){storageOK=false;}
+if(presenter){s=C.initial();s.joined=true;s.student.name='Teacher preview';s.lang=params.get('lang')==='bi'?'bi':'en';}
 let recordName=s.joined?s.student.name:'';
 const t=(en,zh='')=>e(en)+(s.lang==='bi'&&zh?'<span class="zh" lang="zh-Hans">'+e(zh)+'</span>':''),pair=a=>t(...a);
 const page=()=>D.pages.find(p=>p.id===s.slide)||D.pages[0];
@@ -12,7 +13,7 @@ const image=(file,alt)=>`<button class="image-button" data-image="assets/studio/
 const wagollFile=kind=>`wagoll-${kind}-explained-${s.lang==='bi'?'bi':'en'}.png`;
 const paperUrl=()=>s.lang==='en'?D.paperEnglish:D.paper;
 function designPurposes(kind){const pairs=kind==='fashion'?[['Title and short description: explain that this app helps users find an outfit.','标题和简介：说明应用帮助用户寻找穿搭。'],['Labelled choice: shows the style selected before the tap.','带标签的选项：点击前能看到所选风格。'],['Specific button name: tells the user what will happen.','明确的按钮名称：告诉用户点击后会发生什么。'],['Matching picture: helps the user imagine the outfit.','匹配的图片：帮助用户想象穿搭效果。'],['Matching message: confirms which outfit is shown.','匹配的信息：确认显示的是哪套穿搭。'],['Fixed Reset position: easy to find; restores Casual, the blank picture and the start prompt.','固定位置的重置按钮：容易找到，恢复 Casual、空白图片和开始提示。']]:[['Title and short description: explain that this app helps users choose gaming gear.','标题和简介：说明应用帮助用户选择游戏设备。'],['Keep existing controls: users can still choose and view their gear.','保留已有控件：用户仍能选择并查看设备。'],['Help button: makes help easy to find.','帮助按钮：让用户容易找到帮助。'],['Instructions in the message area: tell the user which two actions to take.','信息区域的说明：告诉用户应采取的两个步骤。'],['Fixed Reset position: easy to find and return to the start.','固定位置的重置按钮：容易找到，并能回到开始状态。'],['Restored prompt: clears the Help text so the user can start again.','恢复提示：清除帮助文字，让用户重新开始。']];return `<ol class="design-purposes">${pairs.map(p=>`<li>${pair(p)}</li>`).join('')}</ol>`;}
-function save(kind='update',data={}){C.sync(s);s.updated=new Date().toISOString();window.DecisionTracking?.identify(s);try{localStorage.setItem(key,JSON.stringify(s));}catch(_){storageOK=false;}window.DecisionTracking?.capture(s,kind,data);}
+function save(kind='update',data={}){if(presenter)return;C.sync(s);s.updated=new Date().toISOString();window.DecisionTracking?.identify(s);try{localStorage.setItem(key,JSON.stringify(s));}catch(_){storageOK=false;}window.DecisionTracking?.capture(s,kind,data);}
 window.addEventListener('pagehide',()=>{if(s.joined)save();});
 
 let independentPosition=null,lastIndependentFocus='';

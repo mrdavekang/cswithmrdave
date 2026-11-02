@@ -154,3 +154,29 @@ MIT App Inventor: https://appinventor.mit.edu/ . The starter remains a separate 
 Student link: https://mrdavekang.github.io/cswithmrdave/year9-app-decisions-theory/
 
 Teacher view: https://mrdavekang.github.io/cswithmrdave/year9-app-decisions-theory/teacher.html . Students can open the lesson without signing in. Refresh previously open student tabs once to load live saving. MIT and Teams still require their own sign-in when used. QA scripts, screenshots and test records are kept outside the public folder.
+
+
+## TTA teaching slides and private speaker notes (2 November 2026)
+
+The teacher dashboard has a **Teaching slides & speaker notes** tab. Three visual teaching slides precede Main Task 1, and four precede Main Task 2. The ordered 14-slide teaching flow also retains Read first, Types of Learning, both task instruction slides, the quiz break, Learning Pit Stop and hand-in. Each reveal pauses for a student prediction. English and English–Mandarin modes cover the explanations, questions and visual labels. Both tasks keep their existing student workspaces and paper references.
+
+Open **safe teaching screen** from that tab in the same browser and share only that tab/window. The dashboard preview, safe screen and private notes follow the same slide/reveal. Synchronisation uses BroadcastChannel plus browser storage for only slide ID, reveal index and language. It does not use the school database, carry student data, move students, or synchronise across devices/browsers. If browser storage is unavailable, the teaching screen still has its own slide controls.
+
+`teaching-notes.js` is loaded only in the teacher dashboard. Answers, timing, narration and misconception notes never render on `teaching.html`, which loads no database client or pupil records. Notes are ordinary static teaching content, not confidential access-controlled files. Class records remain protected by the existing teacher authentication and database permissions. No database migration is needed. The original safe **live discussion** projector is separate and unchanged.
+
+TTA layout follows the supplied Main Task template: Topic, WAGBA and Keywords/KSU down the left; Challenge Task below; Tenby/ISP logos lower right. The Gear Room phones are labelled teaching demonstrations/plans, not screenshots of a running MIT project. The PaintPot picture is the original existing Gallery asset.
+
+The 4-minute and 5-minute teaching sequences fit inside the existing 20-minute and 25-minute Main Task allocations, including their existing live discussions. They add no required writing or additional student navigation.
+
+
+## Linear teacher dashboard (2 November 2026)
+
+`teacher.html` now opens as a single presenter workspace after the approved teacher signs in. Its 16-step sequence places the seven teaching slides before their Main Tasks and includes the actual student workspaces, both live discussions, quiz break, reflection and hand-in. Previous/Next, the position selector and staged reveals remain along the bottom. Contextual guidance, expandable speaker notes, live discussion controls and class settings stay on the right. Learner response tiles are not rendered in the presenter DOM.
+
+At activity steps, `9t-preview.html` uses the SAME `9t-app.js` content renderer as students. The presenter-only preview starts with a fresh in-memory record and never reads/writes pupil storage, joins a class or loads tracking/database scripts. Trying an MCQ in the preview does not create pupil evidence. It does not navigate or overwrite any student's lesson.
+
+**Student responses** opens `responses.html` in a separate private window. It retains the existing teacher authentication, stable response grid, complete lesson records, house points and history/export tools. Sign in there if asked; the windows do not copy credentials or share authentication tokens. Opening from an active class preselects its session after authorisation.
+
+**Open classroom screen** opens `lesson-screen.html`, which follows the presenter's lesson position in the same browser. It contains only slides, a fresh student-content preview, or the current safe discussion prompt/model. It never loads speaker notes or learner response lists. Only validated lesson position is stored locally. Safe discussion state and teacher-written examples travel in memory between same-origin browser tabs. Keep private details out of teacher models. There is no cross-device presenter sync or new database permission. The existing database checks still protect all class records.
+
+The original live-discussion projector and standalone teaching slides remain available. The new main dashboard is the recommended entry. GitHub publishing requires a separate request.
