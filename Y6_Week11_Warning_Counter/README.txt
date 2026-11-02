@@ -1,7 +1,8 @@
 YEAR 6 WEEK 11 — WARNING COUNTER
 
 A buildless, static HTML lesson for GitHub Pages. Open index.html directly or
-serve this directory. No npm install, build service or account is needed.
+serve this directory. No npm install or build service is needed. Pupils do not
+need a lesson account. Private teacher records use the existing approved account.
 MakeCode requires internet; actual code is made in that separate editor.
 
 PEDAGOGY
@@ -24,8 +25,10 @@ English stays visible with optional Mandarin or Korean support alongside it.
 Authentic English MakeCode block labels stay unchanged for editor matching.
 The original school KSU and pitstop posters are reused unchanged.
 Normal students follow a linear route and can revisit visited steps.
-Type teacher as the name to preview any step; this is NOT authentication.
-It never exposes another pupil's responses. There are no teacher passwords.
+Type teacher as the name to open teacher.html, the separate TTA slide dashboard.
+Slides are visible without signing in. Private records are server-authorised
+for the existing approved teacher; typing teacher is NOT authentication.
+Student preview has isolated storage and cannot overwrite normal pupil work.
 No strict keyword matching or requirement to get an MCQ right to proceed.
 Help / skip remains available and is not recorded as practical success.
 
@@ -33,7 +36,13 @@ DATA / FILES
 Responses, shuffled choice order and progress save to this browser's local
 storage. Backup JSON can be loaded on the welcome page on another device.
 Only this lesson's validated Week 11 backup format is accepted.
-No Supabase project or class-tracking database is connected by this app.
+Protected Week 11 cloud tracking is prepared for the existing Supabase project.
+Activation is gated by trackingEnabled in live-config.js and requires approval
+of the additive Week 11 database migration. Local lessons still work meanwhile.
+See TEACHER-GUIDE.md for the live classroom, privacy and timer workflow.
+Do not enable tracking until the protected migration has been activated.
+JSON backups now carry a private key for only that pupil's own cloud record;
+keep JSON private. Older local-only backups remain compatible.
 Do not include private pupil backups or response exports in the public repo.
 The PDF downloads directly using bundled jsPDF. Text is rendered locally to
 page images so English, Mandarin and Korean keep their visible script. It is
@@ -57,5 +66,11 @@ https://files.seeedstudio.com/wiki/Grove_kit_for_microbit/res/Guide_Grove_kit_fo
 Core screenshots captured in Microsoft MakeCode; visual pack reviewed before
 placement. Starter/import/save/hardware references include Week 10 captures.
 
-Run teacher preview for the full 60-minute timing guide. A teacher can choose
+Open teacher.html for the full 60-minute TTA slide sequence, or
+teacher.html?demo=1 for a synthetic class that never writes school records.
+Teacher preview and projector use the same slides.js renderer. Private pupil
+responses open in a separate approved-teacher window, never in the projector.
+Slide timers follow navigation and preserve time. Student response time is a
+separate deliberate control; Reveal and Replay do not reset either timer.
+A teacher can choose
 when to end extension time; pupils can continue to plenary without a kit.
