@@ -180,3 +180,10 @@ At activity steps, `9t-preview.html` uses the SAME `9t-app.js` content renderer 
 **Open classroom screen** opens `lesson-screen.html`, which follows the presenter's lesson position in the same browser. It contains only slides, a fresh student-content preview, or the current safe discussion prompt/model. It never loads speaker notes or learner response lists. Only validated lesson position is stored locally. Safe discussion state and teacher-written examples travel in memory between same-origin browser tabs. Keep private details out of teacher models. There is no cross-device presenter sync or new database permission. The existing database checks still protect all class records.
 
 The original live-discussion projector and standalone teaching slides remain available. The new main dashboard is the recommended entry. GitHub publishing requires a separate request.
+
+
+## Projector always uses TTA (2 November 2026)
+
+The classroom screen now uses the same TTA frame at **all 16 lesson positions**: Topic, WAGBA, Keywords/KSU and Challenge Task remain visible, with the Tenby/ISP logos. Activity positions show the matching TTA instruction slide rather than an embedded student web page. Teaching slides retain their progressive visual reveals. Both live questions and revealed models stay inside the TTA layout, including English–Mandarin support and response timing. Longer custom teacher models scroll within their central content area, keeping the TTA frame fixed.
+
+The dashboard deliberately retains the actual student-content previews requested by the teacher. Its lesson position still drives the projector in the same browser, but the two views use different renderers. The safe screen never loads pupil responses, teacher notes or a student-workspace iframe. The earlier live projector retains a TTA startup screen and now uses the actual school/ISP logos. No database or student-work changes are required.
