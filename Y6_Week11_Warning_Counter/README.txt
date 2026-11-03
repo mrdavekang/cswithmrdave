@@ -74,3 +74,29 @@ Slide timers follow navigation and preserve time. Student response time is a
 separate deliberate control; Reveal and Replay do not reset either timer.
 A teacher can choose
 when to end extension time; pupils can continue to plenary without a kit.
+
+GUIDED PUPIL PATH — 3 NOVEMBER 2026
+The core pupil route now has 23 cards, with optional Finishers after save/submit.
+The teacher's shared TTA presentation remains 22 slides / 60 minutes.
+Practical cards name the specific work to check before Next is enabled.
+Opening MakeCode is not completion. An already-open project is supported.
+Help opens an inline guide; Continue with help records a skipped/incomplete step.
+Short answers, oral explanations, partner-to-solo continuation and version-1
+JSON backups remain supported. There are no timers or keyword-matching locks.
+English stays visible with Mandarin or Korean support. Helpful word buttons add
+words to the answer; different-case examples do not give the same answer away.
+
+Finishers unlock after the pupil confirms the core builds, practical checks,
+plenary, saved HEX, checked PDF and PDF+HEX Turn in in Teams. Missing items have
+direct repair links, followed by Return to my finish checklist. These are
+self-reports, NOT automatic MakeCode / Teams checks or secure exam controls.
+Quiz links open only when clicked. The lesson cannot verify game completion.
+
+Blooket: https://play.blooket.com/play?hwId=6ae963bb933aa5acff42cb9d
+50 correct answers; 15 repeated questions; pupil selects mode.
+Closes 17 November 2026 at 12:29 pm Malaysia time.
+Gimkit: https://www.gimkit.com/join/6ae964946c360e633c1cdc4c
+Don't Look Down: 50 correct OR The Very Top, checkpoints on.
+Teacher trial ends 5 November 2026 (may end earlier than the configured 11 pm
+deadline). Blooket is the fallback. Closed assignments are labelled closed.
+No paid plan was purchased. Replace expired links before reusing this lesson.

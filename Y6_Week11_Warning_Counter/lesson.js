@@ -88,4 +88,7 @@ window.WarningLesson={
  add('exit-focus','exit','exit',['One last check-in','最后的小回顾','마지막 짧은 확인'],['Which part would you like your teacher to look at? Choose one. No written goal is needed.','你希望老师看哪一部分？选一个。不用写目标。','선생님이 무엇을 봐 주면 좋을까요? 하나만 골라요. 글로 목표를 쓰지 않아요.']);
  add('save-program','save','save-code',['Keep your real MakeCode program','保存真正的 MakeCode 程序','실제 MakeCode 프로그램 저장하기'],['The lesson saves your answers, not your code. Download your actual program from MakeCode too.','课程页面保存回答，不保存代码。也要从 MakeCode 下载真正的程序。','수업은 답을 저장하지만 코드는 저장하지 않아요. MakeCode에서 실제 프로그램도 받아요.'],{guide:'SAVE'});
  add('submit','save','submit',['Save your report. Submit both files.','保存报告，提交两个文件。','보고서를 저장하고 두 파일 제출하기'],['Save this report as PDF, then upload your PDF and MakeCode HEX to the assignment your teacher set in Teams. Downloading is not submitting.','把报告存为 PDF，再把 PDF 和 MakeCode HEX 上传到老师在 Teams 布置的作业。下载不等于提交。','보고서를 PDF로 저장한 뒤 Teams에서 선생님이 낸 과제에 PDF와 MakeCode HEX를 올려요. 다운로드는 제출이 아니에요.']);
+ L.cards.find(c=>c.id==='explain-a').guide='S02';
+ L.stages.bonus=['Finished? Choose a quiz','完成了？选择测验','끝났나요? 퀴즈 고르기'];L.shortStages.bonus='Finishers';
+ add('bonus-quiz','bonus','bonus',['Your program first. Then a game!','先完成程序，再来游戏！','프로그램을 마친 뒤 게임해요!'],['Finished your MakeCode work and turned in both files? Choose ONE quiz. The questions practise the blocks you used today.','完成 MakeCode 并提交两个文件后，选一个测验，练习今天用过的积木。','MakeCode 작품과 두 파일 제출을 마쳤나요? 오늘 쓴 블록을 퀴즈 하나로 연습해요.']);
 })(window.WarningLesson);

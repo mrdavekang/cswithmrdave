@@ -61,3 +61,15 @@ English is always visible; Mandarin and Korean support can be selected. Actual M
 Open teacher.html and select **Teacher sign-in** in the header. The sign-in panel is also open at the top of the right-hand controls. Use the same approved Year 6 email/password as Week 10; this is a Supabase teacher account, not automatically a Teams account. Choose 6T or 6E and select **Open / resume class**. Then open **Student responses** in a private window, not on the projector.
 
 Tracking saves pupil identity, lesson answers, progress and help requests to the protected Week 11 database. Pupils can access only their own capability-protected lesson record. Teacher records require the approved signed-in account. Existing lessons and their permissions are unchanged. No new account or password is created by the app.
+
+## Guided practical steps and finishers
+
+The student route now ends with **Finishers**, after plenary, exit, saving and submission. The shared teacher presentation remains 22 slides / 60 minutes. Use the quiz only after pupils have completed their practical work and submitted both **PDF and HEX** with **Turn in** in Teams. They choose one platform, not both.
+
+Amber practical checks and a brief, reduced-motion-aware cue point to the MakeCode action. The named completion check enables Next; returning to an existing MakeCode tab does not replace its project. An already-open project can be confirmed without launching a fresh editor. There are no reading-time locks. Help opens on the same card; **Continue with help recorded** leaves it incomplete and preserves a route to saving/submitting partial work. It does not unlock a finishers game. The checklist links back to any missing practical step and offers a direct return afterwards.
+
+Written explanations keep short responses and oral alternatives. Clickable vocabulary and different-case models support pupils without requiring a fixed phrase. Version-1 backups and first-answer preservation are unchanged. New action-check flags use the existing protected snapshot fields; no database/authentication configuration has been changed.
+
+Assignments: Blooket closes **17 November 2026, 12:29 pm Malaysia** (50 correct; repeated bank of 15). Gimkit **Don't Look Down** ends with 50 correct **or The Very Top**. Its configured deadline is 5 November, 11 pm, but the teacher trial ends that day and may expire earlier. The student page warns about this and offers Blooket. Both are marked closed once their configured deadline passes. See README.txt for the links. This update neither buys a subscription nor changes the assignments.
+
+These checks are age-appropriate guidance, not proof that code runs or that Teams received a file. Review the actual submitted HEX. Opening a game is not recorded as completing it. For a full isolated content preview, use `index.html?preview=1`; normal pupil mode does not offer the unrestricted teacher jump menu.
