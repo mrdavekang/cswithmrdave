@@ -1,0 +1,10 @@
+/* Concrete question translations next to the English, never replacing computing terms. */
+(()=>{const support={
+pixel:['放大这个 16 × 16 的图像后，什么改变了？',['方格看起来更大，但设计仍是 16 × 16。','图像自动增加更多像素。','每个方格变成一个新图层。']],
+silhouette:['什么最能帮助玩家快速认出小小的植物助手？',['一片明显改变外轮廓的叶子。','把很长的名字挤在脸上。','加入尽可能多的不相关细节。']],
+contrast:['角色在浅色背景上不明显。首先可以怎样改进？',['加深轮廓或增强颜色对比。','加入与背景相同的浅色。','只放大视图，认为问题已解决。']],
+'exit-resolution':['导出的角色图像分辨率是多少？',['16 × 16 像素。','因为编辑器很大，所以是 512 × 512。','每个图层只有一个像素。']],
+'exit-layers':['如果只想移动眼睛，首先应该怎么做？',['选择 Face 图层，再移动或编辑。','擦掉所有图层并重新开始。','改变网格分辨率。']]};
+let timer;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(paint,70);}).observe(document.querySelector('#content'),{childList:true});
+function paint(){const article=document.querySelector('article.card');if(!article)return;const lang=document.querySelector('#language').value;if(lang!=='zh')return;const card=PixelLesson.cards.find(c=>c.title===article.querySelector('h1')?.textContent),data=support[card?.id];if(data){const h=article.querySelector('.answer-zone h2');if(h&&!h.nextElementSibling?.classList.contains('question-translation')){const p=document.createElement('p');p.className='translation question-translation';p.lang='zh-Hans';p.textContent=data[0];h.after(p);}article.querySelectorAll('.option').forEach((o,i)=>{if(!o.querySelector('.option-translation')){const t=document.createElement('span');t.className='option-translation';t.style.cssText='display:block;font-size:15px;font-weight:400;color:#5d4c72';t.textContent=data[1][i];const text=document.createElement('span');for(const n of [...o.childNodes].filter(n=>n.nodeType===3)){text.append(n);}text.append(t);o.append(text);}});}if(card?.kind==='types'){article.querySelectorAll('.ksu-check').forEach((box,i)=>{if(box.querySelector('.goal-translation'))return;const p=document.createElement('p');p.className='translation goal-translation';p.textContent=['知识：一个像素是什么？先试选答案，再选择是否需要示范。','技能：想擦掉眼睛上的一个错误像素，应选择 Face 图层和橡皮。','理解：身体和脸部分开成图层，便可修改脸部而保留身体。'][i];box.append(p);});}}
+document.querySelector('#language').addEventListener('change',()=>setTimeout(paint,0));})();

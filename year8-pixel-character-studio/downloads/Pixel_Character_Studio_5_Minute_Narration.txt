@@ -1,0 +1,56 @@
+PIXEL CHARACTER STUDIO — FIVE-MINUTE TEACHER NARRATION
+Read only the narration. Allow short pauses for the visible demonstrations. This is the script, not a finished video.
+
+0:00–1:00 — THE CHARACTER WE ARE MAKING
+
+All right, game designers. Today we are taking a break from writing programs and giving a game something worth looking at: your own character.
+
+Here is the catch. You have sixteen pixels across and sixteen pixels down. That is the entire canvas. Every square has to earn its place.
+
+Look at our garden helper. Make it tiny, and you can still spot the leaf. Hide the colours, and the outline still tells you something. That is the kind of thinking we are practising.
+
+Yours could be a robot that repairs a space station, an explorer who guides lost players, or a creature that protects a garden. Choose your own idea. Do not copy the example. Make a small character with a clear job and a personality we can recognise.
+
+1:00–2:00 — WHAT WE ARE GETTING BETTER AT
+
+Our WAGBA is: we are getting better at designing and refining a readable sixteen-by-sixteen game character using pixels, colour and layers.
+
+For knowledge, a pixel is one square of colour. Resolution tells us the width and height in pixels. A palette is our chosen set of colours. A sprite is an image used for something in a game.
+
+For skills, you will plan, draw, edit and export. You will choose a tool and choose the right layer before using it.
+
+For understanding, explain one choice that helps a player. Not just, “I like blue.” Try, “My dark outline makes the pale body stand out.”
+
+Point to the feature. A few clear words can explain a strong idea. You do not need a long paragraph.
+
+2:00–3:00 — MAIN TASK ONE: PAPER FIRST
+
+In Teams, open Year Eight T Computer Science, then Classwork. Find Week Eleven Theory, Pixel Character Studio, and open the first resource, Start Here.
+
+Enter your full name and class. Choose Mandarin or Korean support if it helps. Work through the short Do Now examples, then try the three Types of Learning checks. These show us where a demonstration would help.
+
+For Main Task One, use your A4 grid. One square is one pixel. Choose your helper's job. Sketch the outline, leaving empty space around it. Add one memorable feature, then the face. Choose about four to six colours.
+
+Study the references for ideas, but make your own character. Keep the paper beside you. It is your map for the digital version.
+
+3:00–4:00 — MAIN TASK TWO: YOUR PIXEL STUDIO
+
+Now build it inside this website. No extra account, MakeCode tab or micro:bit today.
+
+Try the separate practice canvas first. Select Body, choose Pencil and a colour, then draw a small shape. Select Face and add two eyes. Hide Face. The eyes disappear, but the body stays. That is why separate layers are useful.
+
+For your own character, keep the body on Body and the eyes and mouth on Face. The selected layer is highlighted. Eraser removes pixels from that layer. Fill changes a connected area. Dropper picks a colour you already used. Made a mistake? Use Undo.
+
+Check the tiny preview. A drawing can look impressive when it is huge but become a mystery at game size. Improve one feature so yours stays clear.
+
+4:00–5:00 — CHALLENGE, REFLECT AND SUBMIT
+
+We will pause for two short design discussions. An invitation appears at the bottom. Join when ready, send your response, then return to your work. My demonstration never replaces your drawing.
+
+At the Learning Pit Stop, show what you can identify, do and explain. If you are stuck, tell me the exact step you need help with.
+
+Have time left? Go Further has three levels: improve contrast, create a new expression, or make snow and cave versions. Save a named version before changing things.
+
+Complete the plenary. Download your PNG, editable backup and PDF report. The PNG is a flat picture; the backup keeps layers; the report shows learning.
+
+Upload the PDF to the Teams assignment and select Turn in. Downloaded is not submitted. Keep that backup safe. Your character has a future game to appear in.
