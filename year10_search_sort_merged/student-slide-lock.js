@@ -1,0 +1,22 @@
+(function(root){
+'use strict';
+function model(state,held){const slide=root.SearchTeaching.slides.find(x=>x.id===state?.teaching_visual);if(slide&&state.phase==='work')return {id:slide.id,answer:!!state.teaching_answer};if(held&&state?.phase==='work'&&state.attention)return held;return null;}
+function create({record=()=>{},storage=root.sessionStorage}={}){
+ const key='y10-search-review-class-slide',dialog=document.createElement('div');dialog.id='class-slide-lock';dialog.hidden=true;dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','class-slide-heading');dialog.setAttribute('aria-describedby','class-slide-help');dialog.innerHTML='<header><p class="class-slide-kicker">Class explanation · look at the board</p><h1 id="class-slide-heading" tabindex="-1">Pause and listen attentively to the front.</h1><p id="class-slide-help">Your teacher will release this screen when it is time to continue. Your unfinished work is kept.</p><p id="class-slide-state" role="status"></p></header><figure><img id="class-slide-image" alt=""></figure><p id="class-slide-connection" role="status"></p>';
+ document.body.append(dialog);let held=null,lastKey='',focus=null,selection=null;
+ dialog.addEventListener('cancel',e=>e.preventDefault());
+ dialog.addEventListener('close',()=>{if(held)show();});
+ document.addEventListener('keydown',e=>{if(held&&(e.key==='Escape'||e.key==='Tab')){e.preventDefault();e.stopImmediatePropagation();}},true);
+ document.addEventListener('focusin',e=>{if(held&&!dialog.contains(e.target))dialog.querySelector('h1').focus({preventScroll:true});},true);
+ document.addEventListener('click',e=>{if(held&&!dialog.contains(e.target)){e.preventDefault();e.stopImmediatePropagation();}},true);
+ function remember(){try{held?storage.setItem(key,JSON.stringify(held)):storage.removeItem(key);}catch{}}
+ function show(){const slide=root.SearchTeaching.slides.find(x=>x.id===held?.id);if(!slide)return;const signature=held.id+':'+held.answer;if(signature!==lastKey){dialog.querySelector('img').src=root.SearchTeaching.source(slide,held.answer);dialog.querySelector('img').alt=(held.answer?'Answer and explanation: '+slide.answer+' '+slide.reason:'Question: '+slide.prompt);dialog.querySelector('#class-slide-state').textContent=slide.title+' · '+(held.answer?'Answer and explanation':'Question');lastKey=signature;}
+ if(!dialog.hasAttribute('open')){focus=document.activeElement;selection=focus&&typeof focus.selectionStart==='number'?{start:focus.selectionStart,end:focus.selectionEnd}:null;document.getElementById('lesson').inert=true;dialog.hidden=false;dialog.setAttribute('open','');document.body.classList.add('class-slide-active');dialog.querySelector('h1').focus({preventScroll:true});} }
+ function release(log=true){const was=held;held=null;lastKey='';remember();dialog.hidden=true;dialog.removeAttribute('open');document.body.classList.remove('class-slide-active');const lesson=document.getElementById('lesson');if(lesson)lesson.inert=false;if(was&&log){record('evidence',{type:'class-slide-released',visual:was.id});if(focus?.isConnected){focus.focus({preventScroll:true});if(selection)focus.setSelectionRange?.(selection.start,selection.end);}}focus=null;selection=null;}
+ function sync(s){if(!s||!['work','question','review','closed'].includes(s.phase)){disconnected();return;}const next=model(s,held);if(!next){release();return;}const before=held;held=next;remember();show();dialog.querySelector('#class-slide-connection').textContent='Connected · waiting for your teacher to release the class.';if(!before||before.id!==held.id||before.answer!==held.answer)record('support',{type:!before?'class-slide-entered':before.id!==held.id?'class-slide-changed':'class-slide-answer-changed',visual:held.id,answerShown:held.answer});}
+ function restore(){try{const saved=JSON.parse(storage.getItem(key));if(root.SearchTeaching.slides.some(x=>x.id===saved?.id)){held={id:saved.id,answer:!!saved.answer};show();disconnected();}}catch{}}
+ function disconnected(){if(held)dialog.querySelector('#class-slide-connection').textContent='Connection paused. Stay on this slide while we reconnect. Tell your teacher if you need help.';}
+ return {sync,restore,disconnected,reset:()=>release(false),isLocked:()=>!!held};
+}
+const api={model,create};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SearchStudentSlideLock=api;
+})(typeof window!=='undefined'?window:globalThis);

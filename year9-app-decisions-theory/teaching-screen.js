@@ -1,0 +1,10 @@
+(()=>{'use strict';const V=DesignTeachingView,C=DesignTeachingChannel,$=id=>document.getElementById(id),params=new URLSearchParams(location.search),embedded=params.get('embedded')==='1';
+document.body.classList.toggle('embedded',embedded);
+const select=$('teaching-slide');select.innerHTML=V.slides.map((s,i)=>'<option value="'+s.id+'">'+(i+1)+'. '+s.title[0]+'</option>').join('');
+let state=C.get();const initial=V.slides.find(s=>s.id===params.get('slide'));if(initial)state=C.set({id:initial.id,reveal:0});
+function paint(s){state=s;const slide=V.slides.find(x=>x.id===s.id),index=V.slides.indexOf(slide);$('teaching-canvas').innerHTML=V.render(s);select.value=s.id;$('teaching-language').value=s.lang;$('teaching-position').textContent=(index+1)+' / '+V.slides.length;$('teaching-prev').disabled=index===0;$('teaching-next').disabled=index===V.slides.length-1;$('teaching-reveal').hidden=!slide.reveals;$('teaching-reveal').disabled=s.reveal>=slide.reveals;$('teaching-reveal').textContent=s.reveal<slide.reveals?slide.revealLabels[s.reveal][s.lang==='bi'?1:0]:(s.lang==='bi'?'已全部显示':'All revealed');document.title=slide.title[0]+' · TTA teaching screen';}
+const move=n=>{const i=V.slides.findIndex(x=>x.id===state.id);C.set({id:V.slides[Math.max(0,Math.min(V.slides.length-1,i+n))].id,reveal:0});};
+select.onchange=e=>C.set({id:e.target.value,reveal:0});$('teaching-language').onchange=e=>C.set({lang:e.target.value});$('teaching-prev').onclick=()=>move(-1);$('teaching-next').onclick=()=>move(1);$('teaching-reveal').onclick=()=>C.set({reveal:state.reveal+1});$('teaching-reset').onclick=()=>C.set({reveal:0});$('teaching-fullscreen').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+document.addEventListener('keydown',e=>{if(['SELECT','INPUT','TEXTAREA','BUTTON'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();move(1);}if(e.key==='ArrowLeft'){e.preventDefault();move(-1);}if(e.key===' '){e.preventDefault();C.set({reveal:state.reveal+1});}});
+C.on(paint);paint(state);
+})();

@@ -1,0 +1,4 @@
+/* A separate worker for each runner; Stop always resolves the current attempt. */
+window.FitnessRunner={create(){let worker,timer,finish;function stop(){if(finish)finish({error:'Stopped by user.'});}
+ return {stop,run(code){stop();return new Promise(resolve=>{let output='';try{worker=new Worker('python-worker.js');}catch{return resolve({output:'',error:'Browser Python is unavailable. Keep your code and use your IDE.'});}finish=result=>{if(!finish)return;clearTimeout(timer);worker.terminate();worker=null;finish=null;resolve({output,...result});};worker.onmessage=e=>{if(e.data.type==='output')output+=e.data.text;else finish(e.data.type==='error'?{error:e.data.text}:{error:''});};worker.onerror=()=>finish({error:'Browser Python is unavailable. Keep your code and use your IDE.'});timer=setTimeout(()=>finish({error:'Stopped after 5 seconds. Check for an infinite loop.'}),5000);worker.postMessage({code});});}};
+}};

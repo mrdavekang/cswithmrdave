@@ -1,0 +1,25 @@
+{
+  "checked": "2026-10-30",
+  "galleryLicense": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "images": [
+    {
+      "file": "paintpot.png",
+      "gallery": "https://gallery.appinventor.mit.edu/?galleryid=5486798015823872",
+      "originalImage": "https://storage.googleapis.com/mitai2gallery/gallery/apps/5486798015823872/image"
+    },
+    {
+      "file": "soundboard.png",
+      "gallery": "https://gallery.appinventor.mit.edu/?galleryid=6405201777917952",
+      "originalImage": "https://storage.googleapis.com/mitai2gallery/gallery/apps/6405201777917952/image"
+    },
+    {
+      "file": "colored-dots.png",
+      "gallery": "https://gallery.appinventor.mit.edu/?galleryid=5560927104532480",
+      "originalImage": "https://storage.googleapis.com/mitai2gallery/gallery/apps/5560927104532480/image"
+    }
+  ],
+  "wagoll": "Teacher-created concept drawings; not working MIT screenshots",
+  "accountRoute": "School-account Gallery-to-Designer handoff still pending a signed-in teacher check",
+  "wagollEnglish": "2026-10-31: two teacher-created plans with six numbered design choices and purposes; English-only pack and examples. Existing bilingual paper retained.",
+  "wagollBilingual": "2026-10-31: revised English-Mandarin drawings with translated controls, instructions, WAGBA and all six numbered design choices and purposes. Mandarin mode uses the revised bilingual images and PDFs."
+}

@@ -1,0 +1,14 @@
+/* One viewer for the presenter and safe classroom screen. Never renders a roster. */
+(()=>{'use strict';const F=DesignLessonFlow,E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function mount(el){let key='',state=F.get(),live=F.getLive();const t=(en,zh)=>E(en)+(state.lang==='bi'&&zh?'<span class="flow-zh" lang="zh-Hans">'+E(zh)+'</span>':'');
+ function paint(s=state){state=s;const step=F.steps.find(x=>x.id===s.id),signature=step.id+':'+s.lang;
+  if(step.mode==='teaching'){el.className='flow-view flow-slide-view';el.innerHTML=DesignTeachingView.render(s);key=signature;return;}
+  if(step.mode==='student'){if(key!==signature){el.className='flow-view flow-student-view';el.innerHTML='<iframe title="Student workspace preview" src="9e-preview.html?preview=1&amp;presenter=1&amp;lang='+s.lang+'#'+step.page+'"></iframe>';key=signature;}return;}
+  el.className='flow-view flow-discussion-view';const q=DesignLive.rounds[step.round],active=live?.connected&&live.round===step.round&&live.phase!=='work',show=active&&live.revealed;
+  el.innerHTML='<article class="flow-discussion"><p class="flow-kicker">'+t('What students see when invited','学生受邀后看到的内容')+'</p><h2>'+t(q.title,q.titleZh)+'</h2><p class="flow-prompt">'+t(q.prompt,q.zh)+'</p><ol>'+q.steps.map((x,i)=>'<li>'+t(x,q.stepsZh[i])+'</li>').join('')+'</ol><div class="flow-live-status">'+t(active?'Class: '+({invite:'ready to start',response:'answering',discuss:'discuss answers',follow:'improve answers',retry:'improvement time',work:'independent work'}[live.phase]):'Preview only. Invite the class using the controls on the right.',active?'课堂状态：'+({invite:'准备',response:'作答',discuss:'讨论',follow:'跟随改进',retry:'改进作答',work:'自主任务'}[live.phase]):'仅预览。老师通过右侧控件邀请全班。')+'<strong id="flow-response-clock"></strong></div>'+(show?'<section class="flow-model"><h3>'+t('Teacher model','老师的示例')+'</h3><p>'+E(live.demo.code).replace(/\n/g,'<br>')+'</p><h3>'+t('Visible app response','看得见的应用响应')+'</h3><p>'+E(live.demo.output)+'</p></section>':'<div class="flow-own-answer">'+t('Students write their own answer first. The model appears after the teacher reveals it.','学生先独立回答，老师揭晓后才显示示例。')+'</div>')+'</article>';key=signature;tick();
+ }
+ function tick(){const clock=el.querySelector('#flow-response-clock');if(clock&&live?.connected&&['response','retry'].includes(live.phase)){const seconds=live.pausedSeconds??Math.max(0,Math.ceil((Date.parse(live.deadline)-Date.now())/1000));clock.textContent=' '+Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0')+(live.pausedSeconds!=null?' · paused':'');}}
+ F.on(paint);F.onLive(r=>{live=r;if(F.steps.find(x=>x.id===state.id)?.mode==='discussion')paint();});setInterval(tick,1000);paint();return {paint};
+}
+window.DesignLessonView={mount};
+})();

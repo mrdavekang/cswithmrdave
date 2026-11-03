@@ -1,4 +1,4 @@
-/* Lesson-only drafts and learning evidence; no live controls or pupil accounts.
+/* Lesson-only drafts, learning evidence and student live-discussion calls; no pupil accounts.
    Records short-paused drafts, not individual keystrokes or other browser tabs. */
 window.SearchRecords=(()=>{
  'use strict';
