@@ -11,33 +11,16 @@ window.LESSON = {
     {id:'setup',label:'Start here',time:'0–5 min'},
     {id:'starter',label:'Do Now',time:'0–5 min'},
     {id:'learning',label:'Types of learning',time:'5–7 min'},
-<<<<<<< Updated upstream
-    {id:'teach1',label:'Reading + teaching 1',time:'7–14 min'},
-    {id:'task1',label:'Main Task 1',time:'14–27 min'},
-    {id:'teach2',label:'Reading + teaching 2',time:'27–34 min'},
-    {id:'task2',label:'Main Task 2',time:'34–52 min'},
-=======
     {id:'teach1',label:'Visual walkthrough 1',time:'7–19 min'},
     {id:'task1',label:'Main Task 1',time:'19–30 min'},
     {id:'teach2',label:'Reading + teaching 2',time:'30–35 min'},
     {id:'task2',label:'Main Task 2',time:'35–52 min'},
->>>>>>> Stashed changes
     {id:'pitstop',label:'Learning Pitstop',time:'52–56 min'},
     {id:'extension',label:'Extension',time:'If ready'},
     {id:'finish',label:'Plenary + submit',time:'56–60 min'}
   ],
   readings: {
     teach1: {
-<<<<<<< Updated upstream
-      title:'Reading the unfamiliar syntax',
-      paragraphs:[
-        'The fitness program stores a person’s details and their exercise activities. A record keeps related fields about one item together. In this Python program, the Exercise class provides a way to organise an activity record. An object created from that class holds its own attribute values, including Type, Duration and Distance. An attribute is a named value belonging to an object. Activity.Duration refers to the Duration attribute of the object named Activity.',
-        'Activity = Exercise() creates a new object. Python calls __init__ to give its attributes starting values. Inside that routine, self refers to the object being initialised. For example, self.Duration = 0 gives this object a starting duration of zero. A later assignment such as Activity.Duration = 12 replaces that attribute’s value. Reading this code does not require you to design a new object-oriented system. Today you need to recognise the structure and follow the values.',
-        'A format string controls the appearance of output. In "{:.2f}".format(Distance), .2f requests two decimal places. The result is a string, so a stored number such as 6.247 can appear as 6.25 without changing Distance itself. In the skeleton, >10 also right-aligns a value in a field at least ten characters wide. Indentation, quotation marks and capital letters matter in Python. Predict a small example’s output, run it, then explain any difference. Keep these experiments in skills_practice.py, separate from the skeleton.'
-      ],
-      zh:'先把一个对象看成一条记录。属性保存这条记录的各项数据。self 指当前对象，__init__ 设置初始值。格式化改变显示方式，但不会自动改变原来的数值。',
-      check:'As you read, find the sentence that explains Activity.Duration. Then point to the assignment that creates an object.',
-=======
       title:'One record, one change, one output',
       paragraphs:[
         'Start with one exercise: Cycling for 12 minutes. A record groups related fields about one item. The program uses an object called Activity to hold this record. Its named values are attributes. Activity.Duration reads the duration stored in Activity.',
@@ -46,7 +29,6 @@ window.LESSON = {
       ],
       zh:'先把一个对象看成一条记录。属性保存这条记录的各项数据。self 指当前对象，__init__ 设置初始值。格式化改变显示方式，但不会自动改变原来的数值。',
       check:'Predict an attribute value, an assignment, the starting values after creation and the difference between stored and formatted values. Check each against its worked answer.',
->>>>>>> Stashed changes
       reference:'OxfordAQA 9210: 3.2.6 data structures and 3.2.8 string-handling operations.'
     },
     teach2: {
@@ -62,31 +44,18 @@ window.LESSON = {
     }
   },
   slides: [
-<<<<<<< Updated upstream
-    {id:'records',set:1,title:'One activity record',asset:'assets/01_activity_record.png',alt:'Complete Exercise class example beside the resulting activity attributes',
-      focus:'A class organises the fields. An object holds one activity’s values.',
-      zh:'类说明记录的结构；对象保存一条具体记录的属性值。',
-      question:'Which value would change if we ran Activity.Duration = 20? Which values would stay the same?',
-      questionZh:'如果执行 Activity.Duration = 20，哪个值会改变？哪些值保持不变？'},
-    {id:'initialise',set:1,title:'Creating and updating an object',
-=======
     {id:'records',set:1,title:'Change one value in a record',visual:'records',
       focus:'Activity already exists. Assigning a new Duration does not replace its other attributes.',
       zh:'Activity 已存在。只改变 Duration，不改变 Type。',
       question:'Which value would change if we ran Activity.Duration = 20? Which values would stay the same?',
       questionZh:'如果执行 Activity.Duration = 20，哪个值会改变？哪些值保持不变？'},
     {id:'initialise',set:1,title:'Create first. Update next.',visual:'initialise',
->>>>>>> Stashed changes
       focus:'Exercise() creates the object. __init__ gives its attributes starting values.',
       zh:'创建对象时，__init__ 设置初始值；self 指当前正在初始化的对象。',
       code:'class Exercise:\n    def __init__(self):\n        self.Type = ""\n        self.Duration = 0\n\nActivity = Exercise()\nActivity.Type = "Cycling"\nActivity.Duration = 12',
       question:'Immediately after line 6, before lines 7 and 8, what do Activity.Type and Activity.Duration contain?',
       questionZh:'执行第 6 行后、执行第 7 和第 8 行之前，这两个属性分别保存什么？'},
-<<<<<<< Updated upstream
-    {id:'format',set:1,title:'Stored value and displayed output',asset:'assets/02_value_and_display.png',alt:'Formatting 6.247 to the string 6.25 while the stored number remains unchanged',
-=======
     {id:'format',set:1,title:'Stored number and displayed text',visual:'format',
->>>>>>> Stashed changes
       focus:'The formatted result is a string. The original numeric value remains available.',
       zh:'格式化的结果是字符串；原变量中的数字保持不变。',
       question:'Why do the two print statements show different values even though neither line reassigns Distance?',
@@ -164,12 +133,9 @@ window.LESSON = {
       finish:'Save and submit the Extension EAD to Teams if you attempt it. Mark it with the answer copy only when I release it.'}
   }
 };
-<<<<<<< Updated upstream
-=======
 window.FITNESS_FIELD_LABELS = {
   starterRead:'Do Now: read mode',starterAppend:'Do Now: append mode',learningFocus:'KSU: chosen focus',learningPlan:'KSU: improvement plan',
   read1Check:'Earlier explanation before Main Task 1',read2Check:'File to list: explanation',
   read1Record:'Visual step 1: read an attribute',read1Update:'Visual step 2: follow an assignment',read1Create:'Visual step 3: explain starting values',read1Format:'Visual step 4: distinguish number and display',
   phase:'Learning Pitstop: current phase',phaseEvidence:'Learning Pitstop: evidence',phaseAction:'Learning Pitstop: next action',exitExplain:'Plenary: data journey',exitEvidence:'Plenary: improvement evidence',exitNext:'Plenary: next target'
 };
->>>>>>> Stashed changes
