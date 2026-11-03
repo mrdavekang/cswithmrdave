@@ -11,6 +11,17 @@
 
 The 22 TTA teaching slides follow the core pupil sequence. Their allowances total exactly 60 minutes. The Learning Pitstop follows Main Task 2. Optional Grove branches remain in the separate student preview, not in the projected workspace.
 
+The projected frames now use the original supplied TTA template artwork and
+measured 1280 × 720 box positions. Do Now and Main Task retain their distinct
+left Topic, WAGBA (KSU) and Keywords boxes, the broad bottom Challenge Task box
+and original lower-right logos. Types of Learning retains the original
+Definition of Learning panel with one active school KSU poster and today's
+goal. Learning Pitstop retains the school wheel and four-phase poster. Plenary
+retains the original background and characters. Teaching text stays live HTML,
+with English, Mandarin and Korean support; the timer controls remain separate
+from the template furniture. The original Do Now timer video placeholder is
+replaced by the actual selected-slide countdown, not a fixed five-minute image.
+
 Use Previous, Next or Go to slide. Once the slide timer is started, it follows navigation; revisiting a slide keeps the time already spent there. Pause freezes slide and lesson clocks. Refresh preserves the clock anchor and teaching position. Reset slide time restores only that slide’s allowance, not total lesson time. Overtime never advances slides or stops pupil programming.
 
 Reveal next part and Replay explanation change only the explanation. Teacher models are deliberately revealed with a separate button. Neither action changes response windows or clocks.
