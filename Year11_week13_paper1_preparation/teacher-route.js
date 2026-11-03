@@ -1,7 +1,12 @@
 window.TEACHER_ROUTE = (()=>{
   const stage=(id,label)=>({id,stage:id,label,time:LESSON.stages.find(s=>s.id===id).time});
+<<<<<<< Updated upstream
   const slides=set=>LESSON.slides.filter(s=>s.set===set).map((s,i)=>({id:s.id,slide:s.id,set,index:i,label:'Teaching '+(i+1)+': '+s.title,time:set===1?'7–14 min':'27–34 min'}));
   const steps=[stage('setup','Start here: files'),stage('starter','Do Now'),stage('learning','Types of learning'),stage('teach1','Read before Main Task 1'),...slides(1),stage('task1','Main Task 1'),stage('teach2','Read before Main Task 2'),...slides(2),stage('task2','Main Task 2'),stage('pitstop','Learning Pitstop'),stage('extension','Extension (optional)'),stage('finish','Plenary + submission')];
+=======
+  const slides=set=>LESSON.slides.filter(s=>s.set===set).map((s,i)=>({id:s.id,slide:s.id,set,index:i,label:'Teaching '+(i+1)+': '+s.title,time:LESSON.stages.find(s=>s.id==='teach'+set).time}));
+  const steps=[stage('setup','Start here: files'),stage('starter','Do Now'),stage('learning','Types of learning'),stage('teach1','Four visual steps before Main Task 1'),stage('task1','Main Task 1'),stage('teach2','Read before Main Task 2'),...slides(2),stage('task2','Main Task 2'),stage('pitstop','Learning Pitstop'),stage('extension','Extension (optional)'),stage('finish','Plenary + submission')];
+>>>>>>> Stashed changes
   const url=(step,zh)=>step.slide?`slides.html?embedded=1&set=${step.set}&slide=${step.index}&zh=${zh?1:0}`:`index.html?preview=1&embed=1&stage=${step.stage}&zh=${zh?1:0}`;
   return {steps,url};
 })();

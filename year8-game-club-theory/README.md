@@ -155,3 +155,34 @@ Recovery verification includes stalled requests that ignore abort, explicit canc
 ## Verification
 
 The lesson regression suite preserves the 54 activities. The live SQL migration was tested in an isolated in-memory PostgreSQL database for owner checks, anonymous isolation, token scoping, duplicate commands, retained/reopened responses, separate improvements, timer boundaries, award undo and denied direct table access. Real Python runs verify both supplied models and one-player/empty-roster loops. Browser QA uses dummy identities against that isolated database, never real pupils or the production class roster.
+
+## Linear teacher workspace · 2 November 2026
+
+Open **teacher.html**, sign in with the existing approved teacher account, choose the class and select **Open selected live class**.
+
+- **Left:** every lesson stage is visible in order.
+- **Centre:** the actual pupil activity, not a rewritten summary. You can rehearse questions, typing, code, hints and multilingual support. Teaching slides appear immediately before each Main Task.
+- **Bottom:** Previous, Next, a complete page selector, current position, visual reveal and the separate safe projector.
+- **Right:** lesson clock, learning goals, the current teaching cue or speaker notes, and contextual live-discussion controls.
+- **Student responses ↗:** a separate private window/tab for the stable pupil grid, code attempts, history, house points and saved lesson work. Reopening focuses that window without resetting it. It follows class changes from the main workspace.
+- **Class settings:** connection recovery, previous sessions, the full timing plan, sign out and the confirmed End session action. These do not crowd the teaching area. The bottom navigation, not an extra stage selector, chooses the projected content.
+
+The teacher route has **64 pages**: all **54 unchanged pupil activities**, **8 teaching slides** and **2 live discussions**. Previous/Next follows this complete route, including transitions triggered inside the embedded pupil activity. The page indicator shows the teacher's position, not pupil completion or mastery. Changing a teacher page does not move pupils or start their response timer. Use the explicit invitation and answering controls.
+
+**Open live question** takes the teacher to the relevant discussion page without inviting pupils. **Invite pupils** sends the invitation; **Start 3-minute answering time** starts the actual response countdown. The separate **LESSON ELAPSED** clock tracks the lesson, not pupil answering time. **Return class to tasks** is always available along the bottom while a discussion is active; it keeps saved answers and allows reopening. Read responses and award house points in the response window, never on the projector. House points remain classroom records, not automatic iSAMS entries.
+
+The separate projector follows the current task, teaching slide or live question. It retains the TTA Topic/WAGBA/Keywords/Challenge structure. It never receives speaker notes or the private pupil roster. Keep it in the same browser as the dashboard. A browser may open a tab rather than a separate physical window; allow the requested popup. Notes and response windows are private teacher screens and must not be projected.
+
+The eight English/Mandarin models cover replacement, append, length versus final index, the real Python Lab, loop tracing, debugging, random selection and the finished console. **Reveal visual** shows one step at a time. Discussion answers, Mandarin answers, delivery cues and misconceptions appear on the right. **Demonstrate this model** provides a runnable teacher example; **Back to teaching slide** restores the slide. The live checkpoint's separate revealed-answer editor still broadcasts through the existing live classroom to joined pupil devices. Examples on teaching slides use Ash, Bo, Cy, Dee and Eli, distinct from pupil-task names.
+
+Teacher rehearsal is isolated: it creates no pupil records and never overwrites the normal pupil/teacher-preview browser storage. Code and answers are retained while navigating in the open workspace, but this rehearsal workspace is not a saved pupil submission: refresh discards its rehearsal edits. The teacher page position is remembered per class session when session storage is available; blocked storage falls back to the open window. Actual pupil progress, cloud tracking, code histories and database permissions are unchanged.
+
+Use HTTP(S), including a local preview server or GitHub Pages. This update does not create database tables, alter permissions or publish itself. Speaker notes are ordinary static teaching resources kept off the projector interface, not encrypted examination material.
+
+### Live-coding line highlights
+
+Both teacher demonstration editors highlight the current edited line/range in yellow with a dark edge and a text label. Clicking or using arrow keys changes the local editing focus; multi-line changes highlight the affected range. Highlights stay aligned when the editor scrolls or resizes. The textarea remains the real editable control—keyboard shortcuts, selection, indentation, Run and Stop keep working.
+
+The live checkpoint's projector and joined pupil demonstration panes number the lines and highlight the latest changed range when a new teacher-code update arrives through the existing live connection. An unchanged poll or Run keeps that highlight; moving the teacher caret without editing does not send a new classroom update. A newly opened view establishes its first snapshot as a baseline and follows subsequent edits. These are visual cues only: pupil code, responses and progress are never replaced.
+
+In the teaching-slide model editor, code changes and focus highlights stream to the associated projector as you type. Output is clearly marked as needing another Run until you run the changed program. No new database fields, permissions or tracking events are added by the highlight feature.

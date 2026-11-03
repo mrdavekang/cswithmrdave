@@ -2,6 +2,10 @@
   const $=s=>document.querySelector(s),E=FitnessUI.esc,books=new Map(),nonce=location.hash.slice(1),origin=location.origin==='null'?'*':location.origin;
   let unlocked=false,epoch=0;
   const labels={starterRead:'Do Now: read mode',starterAppend:'Do Now: append mode',learningFocus:'Learning focus',learningPlan:'How I will improve',read1Check:'Reading before Main Task 1',read2Check:'Reading before Main Task 2',phase:'Current learning phase',phaseEvidence:'Evidence for the learning phase',phaseAction:'Next action',exitExplain:'Plenary: data journey',exitEvidence:'Plenary: evidence of improvement',exitNext:'Plenary: next practice target'};
+<<<<<<< Updated upstream
+=======
+  Object.assign(labels,window.FITNESS_FIELD_LABELS||{});
+>>>>>>> Stashed changes
   function open(){unlocked=true;$('#response-login').hidden=true;$('#response-main').hidden=false;$('#response-lock').hidden=false;$('#response-error').textContent='';$('#response-pass').value='';}
   function lock(){epoch++;unlocked=false;books.clear();$('#response-work').innerHTML='';$('#response-main').hidden=true;$('#response-login').hidden=false;$('#response-lock').hidden=true;$('#response-input').value='';$('#response-message').textContent='';$('#response-student').innerHTML='<option value="">No notebooks imported</option>';}
   $('#response-login').onsubmit=async e=>{e.preventDefault();try{await FitnessTeacherAuth.unlock($('#response-pass').value);open();}catch{$('#response-error').textContent='The teacher passcode did not unlock this window.';}};

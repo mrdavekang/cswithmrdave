@@ -30,6 +30,7 @@
   async function authenticate(){
     const {data:{session}}=await G.db().auth.getSession();$('teacher-login').hidden=!!session;$('teacher-app').hidden=!session;
     if(session){try{await rooms();message('Approved teacher signed in. Choose your class and open or resume it.');}catch(e){$('teacher-login').hidden=false;$('teacher-app').hidden=true;message(e.message,true);}}
+    document.dispatchEvent(new CustomEvent('gameclub-teacher-auth',{detail:{signedIn:!$('teacher-app').hidden}}));
   }
   function render(){
     const r=room();if(!r)return;$('room-dashboard').hidden=false;$('gc-live-nav').hidden=false;$('room-title').textContent=r.className+' · '+(r.ended?'Saved session':'Live classroom');
@@ -46,7 +47,7 @@
     const demoLink=document.querySelector('a[href="#teacher-demo-panel"]');demoLink.setAttribute('aria-disabled',String(!r.revealed));demoLink.textContent=r.revealed?'Demonstrate code':'Demonstrate code · after answer';
     const demoKey=r.id+':'+r.round;
     if(demoRound!==demoKey){demoRound=demoKey;demoDirty=false;clearTimeout(demoTimer);}
-    if(r.revealed&&!demoDirty&&document.activeElement!==$('teacher-code')){$('teacher-code').value=r.demo.code;$('teacher-output').textContent=r.demo.output;}
+    if(r.revealed&&!demoDirty&&document.activeElement!==$('teacher-code')){if($('teacher-code').value!==r.demo.code){$('teacher-code').value=r.demo.code;GameCodeFocus.update($('teacher-code'));}$('teacher-output').textContent=r.demo.output;}
     if(document.activeElement!==$('board-stage'))$('board-stage').value=r.boardStage||'auto';
     const ids=new Set(students.map(s=>s.id));for(const [id,node]of tiles)if(!ids.has(id)){node.remove();tiles.delete(id);}
     for(const s of students){
@@ -63,13 +64,14 @@
       tile.querySelector('.gc-points-total').textContent=data.awards.filter(a=>a.student_id===s.id&&!a.undone_at).reduce((n,a)=>n+a.amount,0)+' house points recorded';tile.classList.toggle('needs-help',s.help);
     }
     filter();paintHTML($('awards-list'),data.awards.map(a=>'<p>'+E(data.students.find(s=>s.id===a.student_id)?.name||'Student')+' · +'+a.amount+' · '+E(a.reason)+' · '+E(when(a.at))+(a.undone_at?' · reversed':' <button data-undo="'+a.id+'" '+(r.ended?'disabled':'')+'>Reverse this award</button>')+'</p>').join('')||'<p>No house points recorded yet.</p>');
-    if(selected)paintStudent();tick();
+    if(selected)paintStudent();tick();document.dispatchEvent(new Event('gameclub-teacher-updated'));
   }
   function filter(){const search=$('student-search').value.trim().toLocaleLowerCase();for(const tile of tiles.values())tile.hidden=!tile.querySelector('h3').textContent.toLocaleLowerCase().includes(search);}
   function tick(){
     if(!data)return;const r=room(),elapsed=G.elapsed(r,received),c=r.boardStage?G.cues.find(x=>x[2]===r.boardStage)||G.cue(elapsed):G.cue(elapsed);$('lesson-clock').textContent=G.time(elapsed);$('clock-toggle').textContent=r.clockRunning?'Pause lesson clock':elapsed>0?'Resume lesson clock':'Start lesson clock';$('clock-toggle').disabled=r.ended;
     $('cue-title').textContent=r.boardStage||c[2];$('cue-teacher').textContent='Teacher: '+c[3];$('cue-student').textContent='Students: '+c[4];$('round-clock').textContent=['response','retry'].includes(r.phase)?(r.pausedSeconds!=null?'Paused · ':'')+G.time(G.remaining(r,Date.now()+offset)):({work:'Not started',invite:'Waiting to start',discuss:'Discussion · editing paused',follow:'Improvements open'}[r.phase]||'Not started');
     $('gc-nav-time').textContent='Lesson '+G.time(elapsed)+' · CP '+r.round+' · '+$('round-clock').textContent;
+    document.dispatchEvent(new Event('gameclub-teacher-clock'));
   }
   function paintStudent(){
     const s=data.students.find(s=>s.id===selected);if(!s)return;const n=Number($('detail-round').value),responses=data.responses.filter(x=>x.student_id===s.id&&x.round_no===n);
@@ -151,9 +153,12 @@
     if(b.dataset.access&&confirm('Change live access for this entry? All saved work and histories remain.'))command('admit',{studentId:b.dataset.access,status:b.dataset.status}).catch(()=>{});
     if(b.dataset.helpResolved)command('helpResolved',{studentId:b.dataset.helpResolved}).catch(()=>{});
   });
+  GameCodeFocus.attach($('teacher-code'));
   $('teacher-reconnect').onclick=()=>poll(true);
   const resume=()=>{if(!document.hidden)poll(true);};
   document.addEventListener('visibilitychange',()=>{if(document.hidden)presence.cancel();else resume();});
   window.addEventListener('pageshow',resume);window.addEventListener('focus',resume);window.addEventListener('online',resume);
-  authenticate().catch(e=>message(e.message,true));setInterval(poll,3000);setInterval(tick,1000);
+  const ready=authenticate().catch(e=>message(e.message,true));
+  window.GameTeacherController={ready,current:room,roomId:()=>roomId,openRoom,command,reconnect:()=>poll(true),tab:tabs};
+  setInterval(poll,3000);setInterval(tick,1000);
 })();

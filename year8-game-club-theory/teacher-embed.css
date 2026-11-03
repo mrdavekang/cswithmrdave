@@ -1,0 +1,13 @@
+/* These rules apply only inside the explicit teacher-only embedded preview. */
+.teacher-embedded{background:#fff!important;min-height:0!important}
+.teacher-embedded .rail,.teacher-embedded .toolbar,.teacher-embedded .journey-bar,.teacher-embedded .breadcrumb,.teacher-embedded #task-map,.teacher-embedded .lesson-controls,.teacher-embedded>.skip,.teacher-embedded .gc-live-connection{display:none!important}
+.teacher-embedded #lesson-shell{display:block!important;min-height:0!important}
+.teacher-embedded .workspace{margin:0!important;padding:0!important;width:100%!important;min-width:0!important}
+.teacher-embedded #main{padding:18px!important;max-width:none!important;margin:0!important}
+.teacher-embedded #card{margin:0!important;border:0!important;box-shadow:none!important;padding:6px!important;max-width:none!important}
+.teacher-embedded #card>h2{font-size:clamp(24px,2.5vw,34px);line-height:1.2;margin-top:0}
+.teacher-embedded .reading,.teacher-embedded .prompt{font-size:18px;line-height:1.55}
+.teacher-embedded .translation{font-size:16px;line-height:1.6}
+.teacher-embedded .code-layout{grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr)}
+.teacher-embedded #toast{max-width:90%}
+@media(max-width:760px){.teacher-embedded .code-layout{grid-template-columns:1fr}}

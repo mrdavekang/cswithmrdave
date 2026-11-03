@@ -28,7 +28,7 @@
  const load=t=>{try{const x=JSON.parse(localStorage.getItem(key(t)));return x?.lessonId===LESSON.id&&typeof x.responses==='object'?x:null;}catch{return null;}};
  function fresh(name,className,language,guidance,teacher){return {lessonId:LESSON.id,schemaVersion:1,contentVersion:LESSON.version,name,className,language,guidance,teacher,current:LESSON.cards[0].id,responses:{},startedAt:stamp(),updatedAt:stamp(),teamsSubmitted:false};}
  function toast(s){$('#toast').textContent=s;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',4500);}
- function save(){if(!state)return;state.updatedAt=stamp();try{localStorage.setItem(key(state.teacher),JSON.stringify(state));$('#local-status').textContent='Saved here · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch{$('#local-status').textContent='Local save failed · download a backup';}ListsCloud.capture(state);}
+ function save(){if(!state)return;state.updatedAt=stamp();try{if(!(state.teacher&&new URLSearchParams(location.search).get('teacherEmbed')==='1'))localStorage.setItem(key(state.teacher),JSON.stringify(state));$('#local-status').textContent='Saved here · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch{$('#local-status').textContent='Local save failed · download a backup';}ListsCloud.capture(state);}
  function record(kind,data={},field=null){
   if(state&&!state.teacher){state.activity||=[];const last=state.activity.at(-1),event={at:stamp(),kind,card:state.current,field,data:JSON.parse(JSON.stringify(data))};if(field&&last?.field===field&&last.card===state.current&&Date.now()-Date.parse(last.at)<1000)state.activity[state.activity.length-1]=event;else state.activity.push(event);save();}
   ListsCloud.record(kind,state?.current,data,field);
@@ -82,6 +82,7 @@
   if(c.type==='report'){$('#report-export').onclick=exportReport;$('#report-backup').onclick=backup;}
   $('#back').disabled=LESSON.cards.indexOf(c)===0;$('#next').textContent=LESSON.cards.indexOf(c)===LESSON.cards.length-1?'End · save progress ✓':'Next activity →';
   $('#navigation-note').textContent=state.teacher?'Teacher preview · all pages open · no pupil tracking':'All activities are visible. Next follows the numbered sequence; a mistake never locks you in.';
+  if(state.teacher&&new URLSearchParams(location.search).get('teacherEmbed')==='1')document.dispatchEvent(new Event('gameclub-preview-rendered'));
  }
  function targetPreview(model){
   const list=values=>'['+values.map(x=>"'"+x+"'").join(', ')+']';
@@ -140,8 +141,8 @@
  for(const b of document.querySelectorAll('[data-close]'))b.onclick=()=>b.closest('dialog').close();
  window.addEventListener('gameclub-report-progress',e=>{$('#export-pdf').textContent='PDF '+e.detail.page+'/'+e.detail.total;$('#toast').textContent='Building report · page '+e.detail.page+' of '+e.detail.total+'. Keep this page open.';$('#toast').style.display='block';});
  window.addEventListener('lists-cloud-identity',save);window.addEventListener('pagehide',()=>{save();ListsCloud.flush();});document.addEventListener('visibilitychange',()=>{if(document.hidden){save();ListsCloud.flush();}});
- window.GameClubBridge={getState:()=>$('#landing').hidden?state:null,busy:()=>checking,backup,saveLive:(action,data={})=>{if(!state)return;save();ListsCloud.record(action==='edit'?'field':'action',state.current,{live:true,action,...data},action==='edit'?'live-code':null);}};
+ window.GameClubBridge={getState:()=>$('#landing').hidden?state:null,busy:()=>checking,backup,previewNavigate:(id,language)=>{if(!state?.teacher||new URLSearchParams(location.search).get('teacherEmbed')!=='1'||checking||!LESSON.cards.some(c=>c.id===id))return false;if(['en','zh','ko'].includes(language)){state.language=language;$('#language').value=language;}navigate(id);return true;},saveLive:(action,data={})=>{if(!state)return;save();ListsCloud.record(action==='edit'?'field':'action',state.current,{live:true,action,...data},action==='edit'?'live-code':null);}};
  const previous=load(false);if(previous){$('#full-name').value=previous.name;$('#class-name').value=previous.className;$('#entry-language').value=previous.language;$('#entry-message').textContent='Saved work found. Start with the same name/class to resume.';}
  $('#entry-language').onchange();
- if(new URLSearchParams(location.search).get('teacher')==='1'){const s=load(true)||fresh('Teacher','Preview','en','steps',true);begin(s);}
+ if(new URLSearchParams(location.search).get('teacher')==='1'){const embedded=new URLSearchParams(location.search).get('teacherEmbed')==='1',s=embedded?fresh('Teacher','Preview','en','steps',true):load(true)||fresh('Teacher','Preview','en','steps',true);begin(s);}
 })();
