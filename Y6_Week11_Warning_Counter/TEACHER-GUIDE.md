@@ -28,9 +28,9 @@ Reveal next part and Replay explanation change only the explanation. Teacher mod
 
 ## Protected live classroom
 
-Live storage requires the additive Week 11 database migration to be approved and activated in the existing Supabase project. If it is unavailable, slides, local saving, MakeCode guides, backups and PDF export still work. No hidden button is treated as a security boundary.
+Protected Week 11 live storage was activated in the existing Supabase project on 3 November 2026. If the connection is unavailable, slides, local saving, MakeCode guides, backups and PDF export still work. No hidden button is treated as a security boundary.
 
-1. Expand **Class settings & approved teacher sign-in**.
+1. Select **Teacher sign-in** in the header, or use the open sign-in panel at the top of the right-hand controls.
 2. Sign in with the existing approved Year 6 Supabase account. This app does not create accounts or passwords.
 3. Choose `6T` or `6E`, then **Open / resume class**. Students use their normal lesson URL and type the matching class. No student password or separate account.
 4. **Open projector** opens the same shared TTA slide renderer with a short-lived, read-only presentation link. Only slides, deliberate models, class phase and timers are available to it.
@@ -55,3 +55,9 @@ The dashboard refreshes live state every 3 seconds; the responses window every 3
 - No passwords, teacher email, pupil data, database scripts or test fixtures belong in public assets. Browser configuration contains only the public publishable key.
 
 English is always visible; Mandarin and Korean support can be selected. Actual MakeCode block labels remain as shown in the editor. School KSU and Pitstop posters are reused unchanged.
+
+## Live tracking — activated 3 November 2026
+
+Open teacher.html and select **Teacher sign-in** in the header. The sign-in panel is also open at the top of the right-hand controls. Use the same approved Year 6 email/password as Week 10; this is a Supabase teacher account, not automatically a Teams account. Choose 6T or 6E and select **Open / resume class**. Then open **Student responses** in a private window, not on the projector.
+
+Tracking saves pupil identity, lesson answers, progress and help requests to the protected Week 11 database. Pupils can access only their own capability-protected lesson record. Teacher records require the approved signed-in account. Existing lessons and their permissions are unchanged. No new account or password is created by the app.
