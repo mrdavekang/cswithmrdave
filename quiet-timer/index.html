@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f4ec">
 <title>Year 6 — Settle In &amp; Warning Counter Video</title>
-<meta name="description" content="Sit anywhere in the middle, face the board and be quiet at zero. Countdown sounds followed by the Year 6 Warning Counter video.">
+<meta name="description" content="Sit in your assigned seat from last week, face the board and be quiet at zero. Countdown sounds followed by the Year 6 Warning Counter video.">
 <style>
 :root{font-family:Inter,Arial,Helvetica,sans-serif;color:#153d38;background:#dcded8;font-synthesis:none;--ink:#153d38;--muted:#526a61;--accent:#2c7665;--paper:#f5f4ec;--red:#bd453b}
 *{box-sizing:border-box}body{margin:0;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;gap:17px}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a66332;outline-offset:5px}button{touch-action:manipulation}button:disabled{opacity:.45;cursor:default}
@@ -70,7 +70,7 @@ body.presenting{padding:0;background:#000;gap:0}body.presenting .projector{width
  <header class="topline"><div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4v8h14V4M5 8h14M7 12v8m10-8v8M3 20h6m6 0h6"/></svg>Year 6 · Settle in</div></header>
 
  <section class="message" aria-label="What to do now">
- <h1><span class="line" id="headline">Sit anywhere</span><span class="line quiet" id="subheadline">in the middle.</span></h1>
+ <h1><span class="line" id="headline">Sit in your assigned seat</span><span class="line quiet" id="subheadline">from last week.</span></h1>
  <p class="arrival-step"><strong>Face the board.</strong></p>
  <p class="arrival-step quiet-rule">When the timer reaches zero,<br><strong>be quiet and watch the video.</strong></p>
  </section>
@@ -117,7 +117,7 @@ function controls(){const run=state==='running';$('start').innerHTML=(run?pauseI
 function formatTime(ms){const sec=Math.max(0,Math.ceil(ms/1000));return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')}
 function render(ms,animate=true){const sec=Math.max(0,Math.ceil(ms/1000)),text=String(Math.floor(sec/60)).padStart(2,'0')+String(sec%60).padStart(2,'0');digits.forEach((el,i)=>{if(el.textContent!==text[i]){el.textContent=text[i];el.classList.remove('flip');if(animate){void el.offsetWidth;el.classList.add('flip')}}});$('time').setAttribute('aria-label',`${Math.floor(sec/60)} minutes ${sec%60} seconds remaining`);$('progress').style.strokeDashoffset=100*(1-Math.min(1,ms/ringDuration));$('time-left').value=sec;$('time-left').setAttribute('aria-valuetext',`${Math.floor(sec/60)} minutes ${sec%60} seconds remaining`);$('less-time').disabled=sec===0;$('more-time').disabled=sec>=MAX_TIME/1000;const warning=sec>0&&sec<=20;slide.classList.toggle('warning',warning);slide.classList.toggle('complete',sec===0);slide.classList.toggle('last-moments',warning&&sec<=5);$('clock').classList.remove('attention-bump');$('clock-center').classList.remove('attention-beat');if(warning&&state==='running'&&animate){void $('clock-center').offsetWidth;$('clock-center').classList.add('attention-beat');if([20,10,5].includes(sec)){void $('clock').offsetWidth;$('clock').classList.add('attention-bump')}}
 if(sec===0){$('headline').textContent='Countdown finished.';$('subheadline').textContent='Be quiet. Face the board.';$('cue').innerHTML=''}
-else{$('headline').textContent='Sit anywhere';$('subheadline').textContent='in the middle.';$('cue').innerHTML=warning?'<strong>Almost time: face the board and get ready to be quiet.</strong>':'';$('time-caption').textContent=state==='paused'?'Paused':'Time left';}}
+else{$('headline').textContent='Sit in your assigned seat';$('subheadline').textContent='from last week.';$('cue').innerHTML=warning?'<strong>Almost time: face the board and get ready to be quiet.</strong>':'';$('time-caption').textContent=state==='paused'?'Paused':'Time left';}}
 function finish(playChime=true, expired=true){
  state='done';remaining=0;lastSecond=0;cancelAnimationFrame(frame);stopAudio();render(0);controls();
  announce('Time is up. Be quiet and face the board.');
@@ -125,7 +125,7 @@ function finish(playChime=true, expired=true){
  else if(playChime)chime();
 }
 function update(){if(state!=='running')return;remaining=Math.max(0,deadline-performance.now());if(remaining<=0){finish();return}const sec=Math.ceil(remaining/1000);if(sec!==lastSecond){render(remaining);if((sec<=20||$('all-ticks').checked)&&sec<lastSecond)tick(sec);if(lastSecond>20&&sec<=20)announce('20 seconds or less remaining. Get ready.');lastSecond=sec}frame=requestAnimationFrame(update)}
-async function toggle(){if(state==='running'){remaining=Math.max(0,deadline-performance.now());if(remaining===0){finish();return}state='paused';cancelAnimationFrame(frame);stopAudio();render(remaining,false);controls();announce('Countdown paused.');return}if(state==='done'){stopLessonVideo();remaining=TOTAL;ringDuration=TOTAL;lastSecond=180;render(TOTAL,false)}state='running';deadline=performance.now()+remaining;stopAudio();controls();render(remaining,false);frame=requestAnimationFrame(update);announce('Countdown started. Sit anywhere in the middle and face the board. Be quiet when the countdown finishes.');if(await unlockAudio()){if(state==='running'&&remaining>0&&remaining<=20000)tick(Math.ceil(remaining/1000))}}
+async function toggle(){if(state==='running'){remaining=Math.max(0,deadline-performance.now());if(remaining===0){finish();return}state='paused';cancelAnimationFrame(frame);stopAudio();render(remaining,false);controls();announce('Countdown paused.');return}if(state==='done'){stopLessonVideo();remaining=TOTAL;ringDuration=TOTAL;lastSecond=180;render(TOTAL,false)}state='running';deadline=performance.now()+remaining;stopAudio();controls();render(remaining,false);frame=requestAnimationFrame(update);announce('Countdown started. Sit in your assigned seat from last week and face the board. Be quiet when the countdown finishes.');if(await unlockAudio()){if(state==='running'&&remaining>0&&remaining<=20000)tick(Math.ceil(remaining/1000))}}
 function reset(){stopLessonVideo();state='ready';remaining=TOTAL;ringDuration=TOTAL;wheelDelta=0;lastSecond=180;cancelAnimationFrame(frame);stopAudio();render(TOTAL,false);controls();announce('Countdown reset to three minutes.')}
 function setRemaining(ms){stopLessonVideo();const wasRunning=state==='running';remaining=Math.max(0,Math.min(MAX_TIME,Math.round(ms)));stopAudio();if(remaining===0){finish(wasRunning,false);return}if(state==='done')state='paused';if(state==='ready')ringDuration=remaining;else ringDuration=Math.max(ringDuration,remaining);if(wasRunning)deadline=performance.now()+remaining;lastSecond=Math.ceil(remaining/1000);render(remaining);controls();if(wasRunning&&remaining<=20000)tick(lastSecond);announce('Time left: '+formatTime(remaining)+'.');activity()}
 function adjustTime(seconds){const current=state==='running'?Math.max(0,deadline-performance.now()):remaining;setRemaining(current+seconds*1000)}
