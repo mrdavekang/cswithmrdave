@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search),c=p.get('class')==='9E'?'9E':'9T';for(const id of ['teacher-class','records-class']){const el=document.getElementById(id);if(el)el.value=c;}});
