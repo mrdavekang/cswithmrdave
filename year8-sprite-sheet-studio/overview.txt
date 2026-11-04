@@ -1,0 +1,22 @@
+SPRITE SHEET STUDIO · WEEK 11 PRACTICAL · YEAR 8T
+Five-minute overview · teacher narration and shot cues
+
+0:00–0:55 · The reveal
+[Show the teacher example. Click Play preview, then stop on Surprised.]
+Yesterday we made a character that a player could recognise even when it was tiny. Today we’re going to give that same character a reaction. Watch this little garden guide. Calm, surprised, happy, and then back to calm. It looks like one character changing its mind. Underneath, though, the computer is just showing three still pictures, one after another. Notice what doesn’t change: the body stays put. That means our eyes notice the expression instead of watching the whole character jump. That’s what we’re getting better at today: making consistent sprite frames and getting a program to play them in order.
+
+0:55–1:45 · Layer, frame, sheet, costume
+[Point to Face and Body, then the selected thumbnail and the sheet preview.]
+These words sound similar, so let’s separate them. A layer is one part of a drawing. My eyes are on Face and the green leaf is part of the body. A frame, which you’ll also hear me call a board, is one complete picture at one moment. Each board has its own layers. A sprite sheet is all those frames packed together in one PNG. The sheet won’t animate by itself. We have to tell a program which picture to show and how long to show it. In Scratch, each of these looks is a costume. One sprite wears three costumes; we’re not making three separate characters.
+
+1:45–2:45 · Main Task 1
+[Show the three starting options. Duplicate Calm, select Face, edit one feature and play the sequence.]
+Open the first link in the Week 11 Practical Classwork module. Enter your name and class. You can turn on Chinese reading support at the top. Go through the quick starter, then open Main Task 1. If you have yesterday’s JSON, use Import so you keep your layers. A native sixteen-by-sixteen PNG also works, but its old layers are already joined together. If you missed yesterday, start with Garden Guide or draw directly in the editor. No paper catch-up. Name your first board Calm. Duplicate it and rename the copy Surprised. I’m selecting Face before changing the mouth. Can you see how the body hasn’t moved? Duplicate once more and make Happy. Play the preview at the bottom. If one look is hard to tell apart, change a few pixels and try again.
+
+2:45–4:05 · Main Task 2
+[Show sheet export and individual costume buttons, then the Scratch block model. Show the optional Python delay line.]
+Now let’s turn that preview into something you control with code. Download your sprite sheet as evidence. If you’re using Scratch, also download the separate costume images. In Scratch, choose one sprite. Go to Costumes and use Upload Costume, not Upload Sprite. Put the frames on that one sprite in the order you want, and remove the original costume. In Code, start with the green flag. Switch to the first costume so every run starts the same way. Then add forever, with a wait and next costume inside it. Try zero point four seconds. What do you predict will happen if you halve it? Change the number, run it again, and compare. If you choose Python instead, keep the sheet next to animate dot py. Run the starter in IDLE on a laptop with Tkinter. Change the delay or the order list, then run it again. Choose one route today, not both.
+
+4:05–5:00 · Show the evidence
+[Show Pit Stop, Plenary & submit, and the review page.]
+Before you finish, watch two loops. Is the body still? Can someone else tell which expression is which? In the Pit Stop, tell me one thing you can do and one thing you still want to practise. If you’re ready for a stretch, make one expression hold for longer and explain why that helps the player. In Teams, attach the sheet, your evidence note and either your Scratch project or edited Python file, and select Turn in. Download the editable backup to keep your separate layers. Finally, try the review: there are fifteen questions, and you’ll revisit them until you reach thirty correct. Take your time. If you miss one, read the feedback before moving on. Right, let’s make that character react.
