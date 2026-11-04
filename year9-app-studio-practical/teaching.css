@@ -10,6 +10,6 @@
 .teach-visual:has(>.states-row){gap:0}.same-screen{margin-top:0!important}.partner-demo .benefit{margin-top:.1cqw}
 .partner-demo .states-row{max-height:none}.partner-demo .gear-art{display:none}
 
-.studio-teach-image{display:block;width:100%;height:100%;object-fit:contain;max-height:100%}.studio-paper-slide{display:grid;grid-template-columns:35% 1fr;gap:2cqw;height:100%;align-items:center}.studio-paper-slide img{width:100%;max-height:25cqw;object-fit:contain}.studio-paper-slide p{font-size:1.3cqw}.studio-paper-slide .instruction-list{font-size:1.65cqw}.projector-tta-view .teach-visual{min-height:0}
+.studio-teach-image{display:block;width:100%;height:100%;object-fit:contain;max-height:100%}.studio-paper-slide{display:grid;grid-template-columns:50% 1fr;gap:2cqw;height:100%;align-items:center}.studio-paper-slide img{width:100%;max-height:25cqw;object-fit:contain}.studio-paper-slide p{font-size:1.3cqw}.studio-paper-slide .instruction-list{font-size:1.65cqw}.projector-tta-view .teach-visual{min-height:0}
 
 .teach-slide:has(.teach-question) .teach-visual{top:18%;height:43%}.teach-question{top:63%;height:21%}

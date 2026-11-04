@@ -43,7 +43,7 @@
     const button=(a,t,p='')=>'<button data-command="'+a+'" '+(r.ended?'disabled':'')+' '+p+'>'+t+'</button>';
     let controls='';
     if(r.phase==='invite')controls+=button('start','Start 2-minute response','class="gc-primary"');
-    if(['response','retry'].includes(r.phase))controls+=button('timer',r.pausedSeconds!=null?'Resume response timer':'Pause response timer')+button('extend','+30 seconds','data-seconds="30"')+button('extend','+60 seconds','data-seconds="60"');
+    if(['response','retry'].includes(r.phase))controls+=button('timer',r.pausedSeconds!=null?'Resume response timer':'Pause response timer')+(document.body.classList.contains('teacher-presenter')?'':button('extend','+30 seconds','data-seconds="30"')+button('extend','+60 seconds','data-seconds="60"'));
     if(r.phase!=='work')controls+=button('discuss','Discuss · eyes to board');
     if(!r.revealed)controls+=button('reveal','Reveal worked model','class="gc-primary"');
     else controls+=button('follow','Follow along · edit improvements','class="gc-primary"')+button('retry','Start 1-minute improvement');
@@ -122,6 +122,6 @@
     if(b.dataset.access&&confirm('Change live access for this entry? All saved work and histories remain.'))command('admit',{studentId:b.dataset.access,status:b.dataset.status}).catch(()=>{});
     if(b.dataset.helpResolved)command('helpResolved',{studentId:b.dataset.helpResolved}).catch(()=>{});
   });
-  window.DesignTeacherSession={snapshot:()=>{if(!teacherApproved||!room())return null;const r=room(),responses=data.responses.filter(x=>x.round_no===r.round&&x.kind===r.responseKind);return {...r,registered:data.students.filter(s=>s.status==='admitted').length,submitted:responses.filter(x=>x.submitted_at).length,help:data.students.filter(s=>s.help).length};}};
+  window.DesignTeacherSession={boardKey:()=>teacherApproved&&!room()?.ended?data?.boardKey:null,extendResponse:seconds=>command('extend',{seconds}),releaseDiscussion:round=>{const r=room();if(r&&!r.ended&&r.round===round&&r.phase!=='work')return command('release').catch(()=>{});},snapshot:()=>{if(!teacherApproved||!room())return null;const r=room(),responses=data.responses.filter(x=>x.round_no===r.round&&x.kind===r.responseKind);return {...r,registered:data.students.filter(s=>s.status==='admitted').length,submitted:responses.filter(x=>x.submitted_at).length,help:data.students.filter(s=>s.help).length};}};
   authenticate().catch(e=>message(e.message,true));setInterval(poll,3000);setInterval(tick,1000);
 })();

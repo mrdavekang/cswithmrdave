@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="410" viewBox="0 0 640 410" role="img" aria-labelledby="title">
+<title id="title">The same app screen before and after moving a picture from the left to the centre</title>
+<rect width="640" height="410" rx="24" fill="#eef3e4"/>
+<g font-family="system-ui,sans-serif" text-anchor="middle" fill="#193d32">
+<text x="157" y="49" font-weight="bold" font-size="28">Now / 现在</text>
+<text x="484" y="49" font-weight="bold" font-size="28">Goal / 目标</text>
+<g stroke="#193d32" stroke-width="4">
+<rect x="28" y="75" width="258" height="300" rx="24" fill="white"/>
+<rect x="355" y="75" width="258" height="300" rx="24" fill="white"/>
+</g>
+<text x="157" y="128" font-weight="bold" font-size="24">My app</text>
+<text x="484" y="128" font-weight="bold" font-size="24">My app</text>
+<g fill="#f7d38a" stroke="#ad7337" stroke-width="3">
+<rect x="46" y="160" width="95" height="85" rx="8"/>
+<rect x="437" y="160" width="95" height="85" rx="8"/>
+</g>
+<g fill="#456f52"><path d="M57 228l20-23 14 10 14-17 25 30z"/><path d="M448 228l20-23 14 10 14-17 25 30z"/></g>
+<path d="M299 200h43m-14-12 14 12-14 12" fill="none" stroke="#193d32" stroke-width="4" stroke-linejoin="round"/>
+<text x="157" y="298" font-size="22">Picture on the left</text>
+<text x="157" y="329" font-size="21">图片靠左</text>
+<text x="484" y="298" font-size="22">Picture in the middle</text>
+<text x="484" y="329" font-size="21">图片居中</text>
+</g></svg>
