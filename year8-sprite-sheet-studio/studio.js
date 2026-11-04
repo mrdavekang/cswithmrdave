@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s), E=window.PixelEngine, S=window.PixelSprites;
-const stages=[['intro','Mission'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['history','Arcade archive'],['model1','Frame model'],['practice','Practice board'],['draw','Main Task 1'],['model2','Loop model'],['code','Main Task 2'],['scratch','Scratch route'],['pythonRoute','Python route'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
+const stages=[['intro','Mission'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['history','Arcade archive'],['model1','Frame model'],['practice','Main Task 1A'],['draw','Main Task 1B'],['model2','Loop model'],['code','Main Task 2'],['scratch','Scratch route'],['pythonRoute','Python route'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
 const oldStages=['intro','learn','draw','code','reflect','finish','review'];
 const key='sprite-sheet-studio-8t-v1', previewMode=new URLSearchParams(location.search).get('preview')==='1';
 const faceColours=['#29233f','#ffffff','#d64472'];
@@ -53,7 +53,7 @@ function render(){
  }
  if(t==='intro'){examples($('#opening'),true);const f=$('#entry');f.elements.pupil.value=state.name;f.elements.group.value=state.group;f.onsubmit=e=>{e.preventDefault();const name=f.elements.pupil.value.trim(),group=f.elements.group.value.trim();if(!name||!group)return;state.name=name;state.group=group;go('before');};}
  if(t==='learn')bindDoNow();
- if(t==='types'){ $('#starterEvidence').textContent=doNowScore()===doNow.length?'You distinguished a layer, a frame, a sprite sheet and a Scratch costume. Now use those ideas to choose an action and explain why it works.':'Use the starter examples to help you choose an action and explain why it works.';checks($('#typeChecks'),learning,'start');}
+ if(t==='types')bindLearning();
  if(t==='history')bindArchive();
  if(t==='model1'){examples($('#modelFrames'));checks($('#frameDiscussion'),[discussion[0]],'discuss');}
  if(t==='practice')bindPractice();
@@ -65,7 +65,7 @@ function render(){
  if(t==='reflect')bindPit();
  if(t==='extend')bindExtensions();
  if(t==='plenary')notes('exitNote');
- if(t==='finish'){$('#finalSheet').onclick=exportSheet;$('#finalBackup').onclick=exportBackup;$('#evidence').onclick=evidence;const b=$('#finalBrowserPy');b.hidden=state.route!=='pythonRoute';b.onclick=()=>{const trials=pythonTrials();file(trials.at(-1)?.source??pythonStarter(),'sprite_animation_browser.py','text/x-python');};}
+ if(t==='finish'){$('#finalSheet').onclick=exportSheet;$('#finalBackup').onclick=exportBackup;$('#evidence').onclick=evidence;$('#evidencePDF').onclick=printEvidence;const b=$('#finalBrowserPy');b.hidden=state.route!=='pythonRoute';b.onclick=()=>{const trials=pythonTrials();file(trials.at(-1)?.source??pythonStarter(),'sprite_animation_browser.py','text/x-python');};}
  if(t==='review') quiz();
 }
 function notes(id){const input=$('#'+id);input.value=state.notes[id]||'';input.oninput=()=>{state.notes[id]=input.value;save();};}
@@ -84,19 +84,9 @@ function bindDoNow(){
  checks($('#starterChecks'),doNow,'doNow',count);
  notes('starterNote');count();
 }
-const learning=[
- ['Knowledge · Remember','One picture shows Garden Guide looking surprised. What do we call that complete picture?','一张表现惊讶的完整图片叫什么？',['A layer','A frame','A sprite sheet'],1,'Point to a single frame, then recall what a sheet contains.'],
- ['Skills · Practise','You want a surprised version without losing Calm. Which action should you try first?','怎样保留平静表情，同时制作惊讶的版本？',['Duplicate the Calm frame','Erase the body','Draw a new character'],0,'In Main Task 1, duplicate first. Select Face and change one feature on the copy.'],
- ['Understanding · Explain','Why leave the body in the same position across frames?','为什么每一帧的身体位置应该保持不变？',['It adds more layers','It makes the file animate by itself','The expression changes without the body jumping'],2,'When you play your preview, watch the edge of the body to check it stays still.']
-];
 const discussion=[
  ['Talk it through','Point to one change and one thing that stays still. If the body jumps sideways, what would you fix?','指出一个变化和一个不变的地方。如果身体跳到一边，怎样修正？',['Line up the body with the original frame','Add a new colour to the mouth','Speed up the preview'],0,'Compare the silhouette on the same grid squares before you edit the face.'],
  ['Predict before you play','Talk to a partner: when the delay changes from 0.8 s to 0.4 s, what changes and what stays the same?','和同伴预测：停顿从 0.8 秒改为 0.4 秒时，什么变了？什么没变？',['The frame order reverses','The same frames play in the same order, faster','There are fewer frames'],1,'Run both buttons below. Count the same three frames and compare how long each stays visible.']
-];
-const pit=[
- ['Knowledge · Identify','The file you exported contains all your frames side by side. What is it?','哪种文件把所有画格并排放在一起？',['One costume','A sprite sheet','One layer'],1,'A sheet stores frames; it does not play them by itself.'],
- ['Skills · Check your work','Run your Scratch or Python project and watch two loops. Compare the frame order with your sheet. Which evidence can you show?','运行 Scratch 或 Python 项目，观察两轮。你能展示什么？',['My coded animation plays in the order I intended','I have a sheet or studio preview, but not a working coded loop yet','I need someone to model one step'],null,'A preview is useful. The skill here is running the animation you programmed.'],
- ['Understanding · Explain','What would you change to hold Surprise longer without changing the order?','要延长惊讶表情的显示时间，但不改变顺序，该改什么？',['Increase the wait for Surprise','Move Surprise to the first position','Duplicate the body layer'],0,'A wait changes how long a frame stays on screen, not its position.']
 ];
 function checks(box,items,prefix,after=()=>{}){
  items.forEach(([title,prompt,zh,choices,correct,advice],i)=>{
@@ -120,18 +110,6 @@ const phases=[
  ['Treading water','I could already do and explain this; I need a harder challenge.','需要更多挑战：我已经会做，也能解释。','Try Timing Director or Trigger a Reaction in Go Further and compare the results.'],
  ['Drowning / need a demo','I’m still stuck after trying and need someone to show me one step.','需要帮助：我尝试过但仍卡住，需要有人示范一步。','Show this page to your teacher. Point to the step you need modelled. This page does not send a help alert.']
 ];
-function bindPit(){
- const update=()=>{
-  const attempted=pit.filter((_,i)=>Number.isInteger(state.notes['pit'+i])).length;
-  const conceptMatches=[0,2].filter(i=>state.notes['pit'+i]===pit[i][4]).length;
-  const skill=['Coded loop reported','Studio preview or sheet only','Needs a demonstration'][state.notes.pit1]||'Not recorded';
-  const p=phases.find(([name])=>name===state.notes.phase);
-  $('#nextAdvice').textContent=attempted+' / 3 checks tried · '+conceptMatches+' / 2 concept answers matched · Skill evidence: '+skill+'. '+(p?'Next step: '+p[3]:'Choose a phase based on your evidence and how the work felt.');
- };
- checks($('#pitChecks'),pit,'pit',update);
- phases.forEach(([name,meaning,zh])=>{const l=document.createElement('label'),r=document.createElement('input'),b=document.createElement('span'),extra=document.createElement('span');r.type='radio';r.name='phase';r.checked=state.notes.phase===name;b.textContent=name+' — '+meaning;extra.className='zh';extra.lang='zh-Hans';extra.textContent=zh;l.append(r,b,extra);$('#phaseOptions').append(l);r.onchange=()=>{state.notes.phase=name;update();save();};});
- notes('reflectNote');update();
-}
 const extensions=[
  ['1 · Timing Director','A player keeps missing the warning face. Make Surprised hold for 0.8 s and the other two for 0.4 s.','延长惊讶表情的显示时间；比较玩家是否更容易看到。','Delay means time on screen, not frame order.','Scratch: inside one loop, explicitly switch to each costume and add its own wait. Python: in tick(), choose the delay for the frame just shown before advancing the counter.','Play both versions. Which one makes the warning easier to spot, and why?'],
  ['2 · Make it readable in a cave','Your character moves into a dark level. Pick one face detail that disappears against a dark backdrop.','在深色背景上比较表情，把看不清的细节改清楚。','Contrast is the difference between neighbouring colours.','In Scratch, try a dark backdrop. In the studio, adjust only two or three pixels on Face, then re-export and compare at game size.','Name the detail, the pixels you changed, and why it is easier to see.'],
@@ -171,7 +149,7 @@ function bindDraw(){
  $('#delay').onchange=e=>{state.delay=normDelay(e.target.value);e.target.value=state.delay;if(clock){halt();$('#play').textContent='▶ Play preview';showPreview(state.index);}save();};
  $('#frameName').oninput=e=>{active().name=e.target.value.trim()||'Frame '+(state.index+1);thumbs();save();};
  $('#frameName').onblur=e=>{e.target.value=active().name;};
- $('#sample').onclick=()=>starting(example());
+ $('#blank').onclick=()=>starting(E.create());
  $('#dup').onclick=()=>{if(state.frames.length>=5)return;const f=make('Frame '+(state.frames.length+1),clean(active().design));state.frames.splice(++state.index,0,f);drawEditor();message('Copied all layers. Change only the expression, then rename this frame.');};
  for(const [id,delta] of [['left',-1],['right',1]])$('#'+id).onclick=()=>{const n=state.index+delta;if(n<0||n>=state.frames.length)return;[state.frames[n],state.frames[state.index]]=[state.frames[state.index],state.frames[n]];state.index=n;drawEditor();};
  $('#remove').onclick=()=>{if(state.frames.length>1&&confirm('Remove this frame? Other frames stay unchanged.')){state.frames.splice(state.index,1);state.index=Math.min(state.index,state.frames.length-1);drawEditor();}};
@@ -228,18 +206,29 @@ def tick():
 tick()
 window.mainloop()
 `;}
-function evidence(){
+function evidenceParts(){
  const answer=(items,prefix,i)=>items[i][3][state.notes[prefix+i]]??'Not answered';
- const results=(items,prefix)=>items.map(([title],i)=>title+': '+answer(items,prefix,i)).join('\n');
- file(['SPRITE SHEET STUDIO · YEAR 8','Name: '+state.name+' | Class: '+state.group,'Frames: '+state.frames.map(f=>f.name).join(' → '),'Preview delay: '+state.delay+' seconds',
+ return ['SPRITE SHEET STUDIO · YEAR 8','Name: '+state.name+' | Class: '+state.group,'Frames: '+state.frames.map(f=>f.name).join(' → '),'Preview delay: '+state.delay+' seconds',
  'Do Now: '+doNowScore()+' / '+doNow.length+' correct\n'+doNow.map(([title,,,choices],i)=>title+': '+(choices[doNowAnswer(i)]??'Not answered')).join('\n')+'\nDiscussion note: '+(state.notes.starterNote||'Not recorded'),
- 'Types of Learning\n'+results(learning,'start'),'Frame model discussion: '+answer([discussion[0]],'discuss',0),'Loop model prediction: '+answer([discussion[1]],'predict',0),'Test: '+(state.notes.testNote||'Not recorded'),
+ 'Frame model discussion: '+answer([discussion[0]],'discuss',0),'Loop model prediction: '+answer([discussion[1]],'predict',0),'Test: '+(state.notes.testNote||'Not recorded'),
  'Archive checks: '+(state.notes.archive0===1?'MCQ correct':'MCQ not complete')+'; one word: '+(state.notes.frameWord||'Not answered'),'Practice board: '+(state.notes.practiceDone?'Completed':'Not completed'),'Studio preview: '+(state.notes.previewStamp===frameStamp()?'Complete cycle recorded':'Not recorded'),
  state.route==='scratch'?'Scratch evidence: '+(state.notes.scratchFile||'No file checked')+'\nObservation: '+(state.notes.scratchObservation||'Not recorded'):state.route==='pythonRoute'?'Python runs (frame index, seconds): '+JSON.stringify(pythonTrials().map(t=>t.timeline))+'\nObservation: '+(state.notes.pythonObservation||'Not recorded'):'Animation route not selected.',
  state.notes.assisted?'Supported attempt (student report, not a verified test): '+state.notes.assisted.value:'',
- 'Pit Stop · Evidence\n'+results(pit,'pit'),'Learning phase (self-report): '+(state.notes.phase||'Not recorded'),'Reflection: '+(state.notes.reflectNote||'Not recorded'),
+ ...reflectionReport(),
  'Go Further\n'+extensions.map(([title],i)=>title+': '+(state.notes['extend'+i]||'Not recorded')).join('\n'),
- 'Exit answer: '+(state.notes.exitNote||'Not recorded'),'Review: '+state.score+' / 30 correct'].join('\n\n'),'sprite_evidence.txt');
+ 'Exit answer: '+(state.notes.exitNote||'Not recorded'),'Review: '+state.score+' / 30 correct'];
+}
+function evidence(){file(evidenceParts().filter(Boolean).join('\n\n'),'sprite_evidence.txt');}
+function printEvidence(){
+ const previous=$('#printEvidence');previous?.remove();
+ const report=document.createElement('article');report.id='printEvidence';
+ const [title,identity,...sections]=evidenceParts();refText(report,'h1',title);refText(report,'p',identity);
+ const picture=sheet();picture.style.width=state.frames.length*52+'px';report.append(picture);
+ sections.filter(Boolean).forEach(section=>refText(report,'p',section));
+ document.body.append(report);
+ const titleBefore=document.title;document.title='Sprite Sheet Studio - Evidence';
+ window.addEventListener('afterprint',()=>{document.title=titleBefore;report.remove();},{once:true});
+ window.print();
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function quiz(){

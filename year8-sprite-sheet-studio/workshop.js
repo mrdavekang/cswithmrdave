@@ -9,19 +9,30 @@ function setupWorkshop(){
  const history=`<article class="card"><span class="kicker">ARCADE ARCHIVE · READ AND CHECK</span><h1>How did a few squares become a character?</h1>
  <p>A screen image is a grid of coloured <b>pixels</b>. In 1973, <b>Richard Shoup</b> and colleagues at Xerox PARC made <b>SuperPaint</b>, an early system for painting and storing digital pictures. Alvy Ray Smith worked on it, too. A <b>frame buffer</b> holds the pixel values for a picture in memory so they can be displayed or changed.</p>
  <p>In 1980, Namco's <b>Pac-Man</b> team, including designer Toru Iwatani and programmer Shigeo Funaki, made a character easy to spot with a strong outline and a changing mouth. Try our original arcade-style practice character below. Only its expression changes.</p>
+ <div class="archive-people">
+ <figure><img src="assets/toru-iwatani-gdc.jpg" alt="Toru Iwatani speaking at the 2011 Game Developers Conference" width="511" height="640"><figcaption><h2>Toru Iwatani</h2><p>Game planning and design</p><small><a href="https://commons.wikimedia.org/wiki/File:Toru_Iwatani,_creator_of_Pac-Man,_at_GDC_2011_(cropped_to_upper_body).jpg">Official GDC / V. Diamante, 2011</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a> · cropped and resized.</small></figcaption></figure>
+ <figure><div class="arcade-diagram"><svg viewBox="0 0 280 180" role="img" aria-label="Illustration: one game character heads for the player, while another heads for a square ahead of the player.">
+ <defs><pattern id="arcadeGrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#423361" stroke-width="1"/></pattern><marker id="arcadeArrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3z" fill="#fff"/></marker></defs>
+ <rect width="280" height="180" fill="#211637"/><rect x="10" y="10" width="260" height="160" fill="url(#arcadeGrid)"/>
+ <path d="M60 57h81v44" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#arcadeArrow)"/><path d="M67 139h139v-15" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#arcadeArrow)"/>
+ <rect x="36" y="45" width="24" height="24" rx="4" fill="#ff9baf"/><rect x="43" y="127" width="24" height="24" rx="4" fill="#7cdbd2"/>
+ <rect x="131" y="103" width="20" height="20" rx="3" fill="#ffd166"/><rect x="196" y="103" width="20" height="20" rx="3" fill="none" stroke="#ffd166" stroke-width="2"/>
+ <text x="126" y="90" fill="#fff" font-size="12" font-family="system-ui,sans-serif">Player</text><text x="186" y="90" fill="#fff" font-size="12" font-family="system-ui,sans-serif">Ahead</text></svg></div>
+ <figcaption><h2>Shigeo Funaki</h2><p>Programmed the game. Iwatani credits him with creating the ghosts’ different movement rules.</p><small>Illustration of his work, not a portrait or game screenshot. <a href="https://openers.jp/en/design/design_features/4CoXi">Iwatani interview</a>.</small></figcaption></figure>
+ </div>
  <div id="historyFrames"></div><p class="zh" lang="zh-Hans">像素是图像中的小色块。SuperPaint 是早期电脑绘画系统。一个画格（frame）是在一个时刻显示的一张完整图像。</p>
  <p class="sources"><a href="https://computerhistory.org/events/recollections-early-paint-systems/" target="_blank" rel="noopener">Computer History Museum</a> · <a href="https://www.pacman.com/en/history/" target="_blank" rel="noopener">Official Pac-Man history</a></p>
  <div id="historyChoice"></div><form id="frameWord"><label>One-word check: What do we call one complete picture in an animation?<input name="word" maxlength="25" autocomplete="off"></label> <button type="submit">Check word</button><p role="status" id="wordFeedback"></p></form>
  <button class="primary next" data-go="model1">See the frame model →</button></article>`;
  add('history',history);
- add('practice',`<article class="card"><span class="kicker">PRACTICE BOARD · NOT YOUR PROJECT</span><h1>Change two pixels without moving the body</h1>
+ add('practice',`<article class="card"><span class="kicker">MAIN TASK 1A · GUIDED SAMPLE</span><h1>Make a practice animation with Garden Guide</h1>
  <p><b>1.</b> Use <b>Duplicate frame</b> in the Animation boards strip. It copies the entire drawing. <b>2.</b> Select <b>Face</b>, the layer that sits above the body. <b>3.</b> Click or tap two of the marked mouth squares to change them, then play. Your own frames are untouched.</p>
  <p class="zh" lang="zh-Hans">复制画格 → 选择 Face（脸）图层 → 点击两个嘴部像素 → 播放。这里的练习不会修改你的作品。</p>
  <div class="practice-grid"><div><div class="sample-strip" id="practiceFrames"></div><div class="actions"><button id="practiceDuplicate">1 · Duplicate frame</button><button id="practiceFace">2 · Select Face layer</button><button id="practicePlay">4 · Play practice</button><button id="practiceReset">Reset practice</button></div></div>
  <div><div class="practice-canvas" id="practiceCanvas"></div><div class="actions" id="practicePixels" aria-label="Mouth pixels"></div></div></div><p id="practiceStatus" role="status"></p>
- <button class="primary next" data-go="draw">Main Task 1: make my frames →</button></article>`);
+ <button class="primary next" data-go="draw">Main Task 1B: draw my own sprite →</button></article>`);
  const model=document.querySelector('#model1').content.querySelector('[data-go]');
- model.dataset.go='practice';model.textContent='Try the practice board →';
+ model.dataset.go='practice';model.textContent='Main Task 1A: animate the practice sprite →';
  const types=document.querySelector('#types').content.querySelector('[data-go]');
  types.dataset.go='history';types.textContent='Open the arcade archive →';
  const lm=document.querySelector('#model2').content.querySelector('[data-go]');
@@ -75,7 +86,7 @@ function currentRouteEvidence(){
 function checkpoint(id){
  const n=state.notes;
  if(id==='learn'&&doNowScore()!==doNow.length)return 'Finish all four Do Now checks. Use the feedback to correct any missed answers.';
- if(id==='types'&&learning.some((_,i)=>!Number.isInteger(n['start'+i])))return 'Try all three Knowledge, Skills and Understanding checks.';
+ if(id==='types'&&!currentStrategy())return 'Choose a starting strategy based on your Do Now evidence.';
  if(id==='history'&&(n.archive0!==1||!n.frameWordOK))return 'Check the archive multiple-choice answer and the one-word answer.';
  if(id==='model1'&&n.discuss0!==0)return 'Answer the alignment question using the frame model.';
  if(id==='practice'&&!n.practiceDone)return 'Duplicate the practice board, change two mouth pixels on Face, and play it.';
@@ -83,7 +94,7 @@ function checkpoint(id){
  if(id==='model2'&&(n.predict0!==1||!n.modelSlow||!n.modelFast))return 'Make a prediction and try both preview speeds.';
  if(id==='code'&&!state.route)return 'Choose a route: Scratch or browser Python.';
  if(id===state.route&&!currentRouteEvidence())return id==='scratch'?'Choose a saved Scratch project that passes the file check, then record what changed.':'Run two different timelines that show every frame, then record what changed.';
- if(id==='reflect'&&(pit.some((_,i)=>!Number.isInteger(n['pit'+i]))||!n.phase||!n.reflectNote?.trim()))return 'Try the three evidence checks, choose a learning phase, and write a short reason.';
+ if(id==='reflect'&&(!pitComparisonSaved()||!n.phase||!meaningful(n.reflectNote)))return 'Compare your evidence, then choose a learning phase and write a short reason.';
  if(id==='plenary'&&!n.exitNote?.trim())return 'Write a short exit answer.';
  return '';
 }

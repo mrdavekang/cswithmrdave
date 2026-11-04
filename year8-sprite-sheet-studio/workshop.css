@@ -11,6 +11,26 @@
 .code-editor{display:block;min-height:12rem;font:1rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}
 #pythonOutput{overflow:auto;white-space:pre-wrap}
 .do-now-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.archive-people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1rem 0}
+.archive-people figure{margin:0;border:1px solid #d8caeb;background:#faf7ff;border-radius:.8rem;overflow:hidden}
+.archive-people img,.archive-people .arcade-diagram{display:block;width:100%;height:clamp(165px,24vw,235px);background:#211637}
+.archive-people img{object-fit:contain}.arcade-diagram svg{display:block;width:100%;height:100%}
+.archive-people figcaption{padding:.8rem 1rem}.archive-people h2,.archive-people p{margin:0 0 .3rem}
+@media(max-width:550px){.archive-people{grid-template-columns:1fr}}
 #starterProgress{font-weight:700}
+.pit-tabs{margin:1rem 0}.pit-tabs button[aria-pressed=true]{background:#6031a0;color:white}
+#pitWork[hidden],#pitFeel[hidden]{display:none}
+#pitPrompt{font-weight:700}.pit-timeline{overflow-wrap:anywhere}
+.pit-run{margin:.3rem 0 .8rem}.pit-run pre{white-space:pre-wrap;overflow-wrap:anywhere}
+#printEvidence{display:none}
+@media print{
+ @page{margin:14mm}
+ body:has(>#printEvidence){background:#fff;color:#111}
+ body:has(>#printEvidence)>:not(#printEvidence){display:none!important}
+ #printEvidence{display:block!important;background:#fff;color:#111;font:11pt/1.38 system-ui,sans-serif;margin:0;padding:0}
+ #printEvidence h1{font-size:20pt;line-height:1.1;margin:0 0 10pt}
+ #printEvidence p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 8pt;orphans:2;widows:2}
+ #printEvidence canvas{display:block;image-rendering:pixelated;max-width:100%;margin:0 0 10pt;break-inside:avoid}
+}
 @media(max-width:620px){.do-now-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.practice-grid{grid-template-columns:1fr}.scratch-steps{padding-left:1rem}}
