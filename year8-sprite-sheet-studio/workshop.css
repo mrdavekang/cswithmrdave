@@ -1,0 +1,13 @@
+#steps button[aria-disabled="true"]{color:#645677;background:#f6f1fb;border-style:dashed}
+#steps button span{color:#24714d}#steps button[aria-current="step"] span{color:#fff}
+.progress-hint,.navigation-alert{background:#fff2d3;border-left:4px solid #9b5a17;padding:.65rem 1rem;margin:1rem 0;color:#442806}
+.navigation-alert:focus{outline:2px solid #9b5a17}
+.scratch-steps{padding-left:1.5rem}.scratch-steps>li{padding:.3rem 0 1.25rem;margin-bottom:1rem;border-bottom:1px solid #dbcce8}
+.scratch-figure{margin:1rem 0}.scratch-figure img{display:block;width:min(100%,1080px);height:auto;border:1px solid #d7c7ea;border-radius:10px}
+.scratch-figure figcaption,.sources{font-size:.9rem;color:#544663}
+.practice-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem}
+.practice-canvas canvas,#browserPreview canvas{image-rendering:pixelated;background:repeating-conic-gradient(#fff 0 25%,#e9dff1 0 50%) 0/16px 16px;max-width:100%}
+#practicePixels [aria-pressed="true"]{color:white;background:#6031a0}
+.code-editor{display:block;min-height:12rem;font:1rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}
+#pythonOutput{overflow:auto;white-space:pre-wrap}
+@media(max-width:620px){.practice-grid{grid-template-columns:1fr}.scratch-steps{padding-left:1rem}}

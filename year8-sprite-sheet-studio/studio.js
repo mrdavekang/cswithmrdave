@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s), E=window.PixelEngine, S=window.PixelSprites;
-const stages=[['intro','Mission'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['model1','Frame model'],['draw','Main Task 1'],['model2','Loop model'],['code','Main Task 2'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
+const stages=[['intro','Mission'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['history','Arcade archive'],['model1','Frame model'],['practice','Practice board'],['draw','Main Task 1'],['model2','Loop model'],['code','Main Task 2'],['scratch','Scratch route'],['pythonRoute','Python route'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
 const oldStages=['intro','learn','draw','code','reflect','finish','review'];
 const key='sprite-sheet-studio-8t-v1', previewMode=new URLSearchParams(location.search).get('preview')==='1';
 const faceColours=['#29233f','#ffffff','#d64472'];
@@ -24,11 +24,17 @@ function validFrames(list){
 let state=fresh(), editor=null, clock=null, quizAnswer=false, iPreview=0;
 if(!previewMode)try{const v=JSON.parse(localStorage.getItem(key));if(v?.name){state={...fresh(),...v,frames:validFrames(v.frames)};state.stage=(typeof v.stage==='number'?oldStages[v.stage]:stages.find(([id])=>id===v.stage)?.[0])||'intro';state.notes=v.notes||{};state.index=Math.max(0,Math.min(state.frames.length-1,state.index|0));state.delay=normDelay(state.delay);}}catch{}
 if(previewMode){state.name='Teacher example';state.frames=['Calm','Surprised','Happy'].map((n,i)=>make(n,example(i)));state.stage=stages.find(([id])=>id===new URLSearchParams(location.search).get('stage'))?.[0]||'draw';}
-function save(){if(previewMode){$('#saveStatus').textContent='Teacher preview · not saved';return;}try{localStorage.setItem(key,JSON.stringify(state));$('#saveStatus').textContent='Saved on this device';}catch{$('#saveStatus').textContent='Not saved · download a backup';}}
+function save(){progress();if(previewMode){$('#saveStatus').textContent='Teacher preview · not saved';return;}try{localStorage.setItem(key,JSON.stringify(state));$('#saveStatus').textContent='Saved on this device';}catch{$('#saveStatus').textContent='Not saved · download a backup';}}
 function flag(){document.body.classList.toggle('bilingual',state.zh);$('#zh').checked=state.zh;}
 $('#zh').onchange=e=>{state.zh=e.target.checked;flag();save();};
 function halt(){clearInterval(clock);clock=null;}
-function go(id){if(!stages.some(([stage])=>stage===id)||(!state.name&&id!=='intro'))return;halt();state.stage=id;render();save();window.scrollTo(0,0);$('h1')?.setAttribute('tabindex','-1');$('h1')?.focus({preventScroll:true});}
+function go(id){
+ if(!stages.some(([stage])=>stage===id)||(!state.name&&id!=='intro'))return;
+ if(id==='scratch'||id==='pythonRoute'){const why=firstBlock('code');if(why){blocked(why);return;}state.route=id;}
+ const why=firstBlock(id);if(why){blocked(why);return;}
+ halt();stopPython();state.stage=id;render();save();window.scrollTo(0,0);$('h1')?.setAttribute('tabindex','-1');$('h1')?.focus({preventScroll:true});
+}
+function blocked(why){const p=$('.navigation-alert');if(p){p.hidden=false;p.textContent='Before moving on: '+why;p.focus();}}
 function art(d,k=1){return S.canvas(E.composite(d),k);}
 function examples(where,first=false){
  const strip=document.createElement('div');strip.className='sample-strip';
@@ -36,23 +42,30 @@ function examples(where,first=false){
 }
 function render(){
  editor?.destroy();editor=null;quizAnswer=false;
- const nav=$('#steps');nav.replaceChildren();stages.forEach(([id,title],i)=>{const b=document.createElement('button');b.textContent=(i+1)+' · '+title;b.disabled=!state.name&&i>0;if(id===state.stage)b.setAttribute('aria-current','step');b.onclick=()=>go(id);nav.append(b);});
+ const nav=$('#steps');nav.replaceChildren();stages.filter(([id])=>journey().includes(id)).forEach(([id,title],i)=>{const b=document.createElement('button');b.textContent=(i+1)+' · '+title;b.append(document.createElement('span'));b.dataset.stage=id;b.disabled=!state.name&&i>0;if(id===state.stage)b.setAttribute('aria-current','step');b.onclick=()=>go(id);nav.append(b);});
  const t=state.stage;
  $('#main').replaceChildren($('#'+t).content.cloneNode(true));
  flag();
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
- if(t!=='intro'){const b=document.createElement('button');b.className='lesson-back';b.textContent='← Back';b.onclick=()=>go(stages[stages.findIndex(([id])=>id===t)-1][0]);$('#main article').append(b);}
+ if(t!=='intro'){
+  const b=document.createElement('button'),p=document.createElement('p'),g=document.createElement('p');b.className='lesson-back';b.textContent='← Back';b.onclick=()=>go(journey()[journey().indexOf(t)-1]||'code');p.className='progress-hint';g.className='navigation-alert';g.setAttribute('role','status');g.tabIndex=-1;g.hidden=true;
+  const card=$('#main article');card.append(b);card.querySelector('h1').after(g);(card.querySelector('.next')||b).before(p);
+ }
  if(t==='intro'){examples($('#opening'),true);const f=$('#entry');f.elements.pupil.value=state.name;f.elements.group.value=state.group;f.onsubmit=e=>{e.preventDefault();const name=f.elements.pupil.value.trim(),group=f.elements.group.value.trim();if(!name||!group)return;state.name=name;state.group=group;go('before');};}
  if(t==='learn'){examples($('#explainer'));const feedback=()=>{$('#feedback').textContent=state.notes.check==='yes'?'Yes: the Face layer is one part of one frame.':state.notes.check==='no'?'Look at the Face layer, not the whole sheet.':'';document.querySelectorAll('[data-check]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.check===state.notes.check)));};document.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{state.notes.check=b.dataset.check;feedback();save();});feedback();}
  if(t==='types'){ $('#starterEvidence').textContent=({yes:'In Do Now you identified the Face layer. Now try choosing the action and explaining why it works.',no:'In Do Now your answer was the whole sheet. Look again: the eye pixels are part of the Face layer in one frame.'})[state.notes.check]||'No Do Now answer recorded. You can go back to try it, or use the examples below.';checks($('#typeChecks'),learning,'start');}
+ if(t==='history')bindArchive();
  if(t==='model1'){examples($('#modelFrames'));checks($('#frameDiscussion'),[discussion[0]],'discuss');}
+ if(t==='practice')bindPractice();
  if(t==='model2'){examples($('#loopFrames'));checks($('#speedDiscussion'),[discussion[1]],'predict');bindLoopModel();}
  if(t==='draw') bindDraw();
- if(t==='code'){sheetTools();notes('testNote');}
+ if(t==='code')bindRouteChoice();
+ if(t==='scratch')bindScratch();
+ if(t==='pythonRoute')bindPython();
  if(t==='reflect')bindPit();
  if(t==='extend')bindExtensions();
  if(t==='plenary')notes('exitNote');
- if(t==='finish'){$('#finalSheet').onclick=exportSheet;$('#finalBackup').onclick=exportBackup;$('#evidence').onclick=evidence;}
+ if(t==='finish'){$('#finalSheet').onclick=exportSheet;$('#finalBackup').onclick=exportBackup;$('#evidence').onclick=evidence;const b=$('#finalBrowserPy');b.hidden=state.route!=='pythonRoute';b.onclick=()=>{const trials=pythonTrials();file(trials.at(-1)?.source??pythonStarter(),'sprite_animation_browser.py','text/x-python');};}
  if(t==='review') quiz();
 }
 function notes(id){const input=$('#'+id);input.value=state.notes[id]||'';input.oninput=()=>{state.notes[id]=input.value;save();};}
@@ -82,8 +95,9 @@ function checks(box,items,prefix,after=()=>{}){
 function bindLoopModel(){
  const frames=['Calm','Surprised','Happy'].map((name,i)=>[name,example(i)]);
  function show(i){const [name,d]=frames[i],p=document.createElement('p');p.textContent='Example · '+name;$('#loopPreview').replaceChildren(art(d,6),p);}
- function start(ms){halt();let i=0;show(i);clock=setInterval(()=>show(i=(i+1)%frames.length),ms);}
- $('#slowModel').onclick=()=>start(800);$('#fastModel').onclick=()=>start(400);$('#stopModel').onclick=()=>{halt();show(0);};show(0);
+ const status=()=>$('#speedStatus').textContent=[state.notes.modelSlow?'0.8 s ✓':'0.8 s still to try',state.notes.modelFast?'0.4 s ✓':'0.4 s still to try'].join(' · ');
+ function start(ms){halt();let i=0;const key=ms===800?'modelSlow':'modelFast';show(i);clock=setInterval(()=>{show(i=(i+1)%frames.length);if(!i&&!state.notes[key]){state.notes[key]=true;status();save();}},ms);}
+ $('#slowModel').onclick=()=>start(800);$('#fastModel').onclick=()=>start(400);$('#stopModel').onclick=()=>{halt();show(0);};show(0);status();
 }
 const phases=[
  ['New learning','This was new and challenging, but I made progress.','新学习：虽然有挑战，但我取得了进步。','Replay the frame or loop model, then try one change without the model.'],
@@ -146,7 +160,7 @@ function bindDraw(){
  $('#dup').onclick=()=>{if(state.frames.length>=5)return;const f=make('Frame '+(state.frames.length+1),clean(active().design));state.frames.splice(++state.index,0,f);drawEditor();message('Copied all layers. Change only the expression, then rename this frame.');};
  for(const [id,delta] of [['left',-1],['right',1]])$('#'+id).onclick=()=>{const n=state.index+delta;if(n<0||n>=state.frames.length)return;[state.frames[n],state.frames[state.index]]=[state.frames[state.index],state.frames[n]];state.index=n;drawEditor();};
  $('#remove').onclick=()=>{if(state.frames.length>1&&confirm('Remove this frame? Other frames stay unchanged.')){state.frames.splice(state.index,1);state.index=Math.min(state.index,state.frames.length-1);drawEditor();}};
- $('#play').onclick=()=>{if(clock){halt();showPreview(state.index);$('#play').textContent='▶ Play preview';return;}if(state.frames.length<2)return message('Duplicate a frame first so the preview has two pictures.');iPreview=0;showPreview(0);$('#play').textContent='■ Stop preview';clock=setInterval(()=>{iPreview=(iPreview+1)%state.frames.length;showPreview(iPreview);},state.delay*1000);};
+ $('#play').onclick=()=>{if(clock){halt();showPreview(state.index);$('#play').textContent='▶ Play preview';return;}if(state.frames.length<2)return message('Duplicate a frame first so the preview has two pictures.');iPreview=0;const stamp=frameStamp();let recorded=false;showPreview(0);$('#play').textContent='■ Stop preview';clock=setInterval(()=>{iPreview=(iPreview+1)%state.frames.length;showPreview(iPreview);if(!iPreview&&!recorded&&stamp===frameStamp()&&distinctFrames()>=3){recorded=true;state.notes.previewStamp=stamp;message('One full cycle previewed with three or more different frames.');save();}},state.delay*1000);};
  $('#json').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{if(f.size>3e6)throw Error('Choose a studio backup under 3 MB.');const j=JSON.parse(await f.text());if(j.format==='pixel-character-studio'&&j.version===1){starting(clean(j.state?.design));return;}if(j.format!=='sprite-sheet-studio'||j.version!==1)throw Error('This is not a supported studio backup.');const frames=validFrames(j.frames);if(!confirm('Replace the current frames with this backup?'))return;state.frames=frames;state.delay=normDelay(j.delay);state.index=0;$('#delay').value=state.delay;drawEditor();message('Animation frames restored.');}catch(err){message(err.message);}};
  $('#png').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;let url;try{if(f.size>3e6)throw Error('Choose a PNG under 3 MB.');url=URL.createObjectURL(f);const im=new Image();im.src=url;await im.decode();if(im.width!==16||im.height!==16)throw Error('Choose yesterday’s native 16 × 16 PNG, not the large preview.');const c=document.createElement('canvas');c.width=c.height=16;const ctx=c.getContext('2d');ctx.drawImage(im,0,0);const px=ctx.getImageData(0,0,16,16).data,d=E.create();d.layers[0].pixels=Array.from({length:256},(_,i)=>px[i*4+3]<128?null:'#'+[0,1,2].map(a=>px[i*4+a].toString(16).padStart(2,'0')).join(''));d.selected='face';starting(d);}catch(err){message(err.message);}finally{if(url)URL.revokeObjectURL(url);}};
  drawEditor();
@@ -199,18 +213,15 @@ def tick():
 tick()
 window.mainloop()
 `;}
-function sheetTools(){
- $('#sheet').onclick=exportSheet;$('#backup').onclick=exportBackup;$('#python').onclick=()=>file(py(),'animate.py','text/x-python');
- const c=sheet();c.style.width=(c.width*6)+'px';
- const p=document.createElement('p');p.textContent=state.frames.length+' frames · native sheet '+c.width+' × 16 pixels';$('#sheetPreview').append(c,p);
- state.frames.forEach((f,i)=>{const b=document.createElement('button');b.textContent='↓ '+(i+1)+'. '+f.name;b.onclick=()=>download(art(f.design,8).toDataURL(),String(i+1).padStart(2,'0')+'-'+(f.name.replace(/[^a-z0-9_-]/gi,'-')||'frame')+'.png');$('#costumes').append(b);});
-}
 function evidence(){
  const answer=(items,prefix,i)=>items[i][3][state.notes[prefix+i]]??'Not answered';
  const results=(items,prefix)=>items.map(([title],i)=>title+': '+answer(items,prefix,i)).join('\n');
  file(['SPRITE SHEET STUDIO · YEAR 8','Name: '+state.name+' | Class: '+state.group,'Frames: '+state.frames.map(f=>f.name).join(' → '),'Preview delay: '+state.delay+' seconds',
  'Do Now: '+(({yes:'A layer within one frame',no:'The entire sprite sheet'})[state.notes.check]||'Not answered'),
  'Types of Learning\n'+results(learning,'start'),'Frame model discussion: '+answer([discussion[0]],'discuss',0),'Loop model prediction: '+answer([discussion[1]],'predict',0),'Test: '+(state.notes.testNote||'Not recorded'),
+ 'Archive checks: '+(state.notes.archive0===1?'MCQ correct':'MCQ not complete')+'; one word: '+(state.notes.frameWord||'Not answered'),'Practice board: '+(state.notes.practiceDone?'Completed':'Not completed'),'Studio preview: '+(state.notes.previewStamp===frameStamp()?'Complete cycle recorded':'Not recorded'),
+ state.route==='scratch'?'Scratch evidence: '+(state.notes.scratchFile||'No file checked')+'\nObservation: '+(state.notes.scratchObservation||'Not recorded'):state.route==='pythonRoute'?'Python runs (frame index, seconds): '+JSON.stringify(pythonTrials().map(t=>t.timeline))+'\nObservation: '+(state.notes.pythonObservation||'Not recorded'):'Animation route not selected.',
+ state.notes.assisted?'Supported attempt (student report, not a verified test): '+state.notes.assisted.value:'',
  'Pit Stop · Evidence\n'+results(pit,'pit'),'Learning phase (self-report): '+(state.notes.phase||'Not recorded'),'Reflection: '+(state.notes.reflectNote||'Not recorded'),
  'Go Further\n'+extensions.map(([title],i)=>title+': '+(state.notes['extend'+i]||'Not recorded')).join('\n'),
  'Exit answer: '+(state.notes.exitNote||'Not recorded'),'Review: '+state.score+' / 30 correct'].join('\n\n'),'sprite_evidence.txt');
@@ -226,5 +237,11 @@ function quiz(){
  box.append(q);
  const options=v.slice(0,4).map((s,i)=>{const b=document.createElement('button');b.textContent=s;b.onclick=()=>{if(quizAnswer)return;quizAnswer=true;const ok=i===v[4];if(ok)state.score++;state.quizQueue.shift();state.quizSeen++;save();score.textContent=state.score+' / 30 correct';options.forEach(x=>x.disabled=true);fb.textContent=(ok?'Correct. ':'Not quite. ')+v[5];next.hidden=false;next.focus();};box.append(b);return b;});
  next.onclick=()=>{quizAnswer=false;quiz();};box.append(fb,next);
+}
+setupWorkshop();
+if(previewMode&&['scratch','pythonRoute'].includes(state.stage))state.route=state.stage;
+if(!previewMode&&state.name&&firstBlock(state.stage)){
+ const order=journey(),index=order.indexOf(state.stage);
+ state.stage=order.slice(0,index<0?order.length:index).find(id=>checkpoint(id))||'code';
 }
 render();save();
