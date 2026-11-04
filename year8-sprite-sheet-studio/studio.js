@@ -52,8 +52,8 @@ function render(){
   const card=$('#main article');card.append(b);card.querySelector('h1').after(g);(card.querySelector('.next')||b).before(p);
  }
  if(t==='intro'){examples($('#opening'),true);const f=$('#entry');f.elements.pupil.value=state.name;f.elements.group.value=state.group;f.onsubmit=e=>{e.preventDefault();const name=f.elements.pupil.value.trim(),group=f.elements.group.value.trim();if(!name||!group)return;state.name=name;state.group=group;go('before');};}
- if(t==='learn'){examples($('#explainer'));const feedback=()=>{$('#feedback').textContent=state.notes.check==='yes'?'Yes: the Face layer is one part of one frame.':state.notes.check==='no'?'Look at the Face layer, not the whole sheet.':'';document.querySelectorAll('[data-check]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.check===state.notes.check)));};document.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{state.notes.check=b.dataset.check;feedback();save();});feedback();}
- if(t==='types'){ $('#starterEvidence').textContent=({yes:'In Do Now you identified the Face layer. Now try choosing the action and explaining why it works.',no:'In Do Now your answer was the whole sheet. Look again: the eye pixels are part of the Face layer in one frame.'})[state.notes.check]||'No Do Now answer recorded. You can go back to try it, or use the examples below.';checks($('#typeChecks'),learning,'start');}
+ if(t==='learn')bindDoNow();
+ if(t==='types'){ $('#starterEvidence').textContent=doNowScore()===doNow.length?'You distinguished a layer, a frame, a sprite sheet and a Scratch costume. Now use those ideas to choose an action and explain why it works.':'Use the starter examples to help you choose an action and explain why it works.';checks($('#typeChecks'),learning,'start');}
  if(t==='history')bindArchive();
  if(t==='model1'){examples($('#modelFrames'));checks($('#frameDiscussion'),[discussion[0]],'discuss');}
  if(t==='practice')bindPractice();
@@ -69,6 +69,21 @@ function render(){
  if(t==='review') quiz();
 }
 function notes(id){const input=$('#'+id);input.value=state.notes[id]||'';input.oninput=()=>{state.notes[id]=input.value;save();};}
+const doNow=[
+ ['1 · Edit a part','You change the eyes in one picture without touching the body. What are you editing?','只改一张图片里的眼睛，不改身体。你在修改什么？',['A layer within one frame','The whole sprite sheet','The order of the frames'],0,'The Face layer is one editable part of one picture.'],
+ ['2 · Count complete pictures','Calm, Surprised and Happy are three complete pictures. How many frames are there?','平静、惊讶和开心是三张完整图片。一共有几个画格？',['One frame','Six frames because each picture has two layers','Three frames'],2,'Count each complete picture once. The layers inside it do not count as extra frames.'],
+ ['3 · Pick the right file','You need one PNG with all three frames side by side. Which export should you choose?','你需要一张把三个画格并排放在一起的 PNG。该选哪种文件？',['One individual frame PNG','A sprite sheet PNG','An editable JSON backup'],1,'A sprite sheet puts the pictures into one image. The JSON is for reopening and editing the project.'],
+ ['4 · Get ready for Scratch','You want one character in Scratch to switch between your three pictures. How should you import them?','让 Scratch 里的同一个角色切换三张图片，该怎样导入？',['Import three new sprites','Use the sheet as a backdrop','Upload three costumes to the same sprite'],2,'Costumes are the different looks of one sprite. Three separate sprites would be three separate characters.']
+];
+function doNowAnswer(i){return state.notes['doNow'+i]??(i===0?({yes:0,no:1})[state.notes.check]:undefined);}
+function doNowScore(){return doNow.filter((item,i)=>doNowAnswer(i)===item[4]).length;}
+function bindDoNow(){
+ examples($('#explainer'));
+ if(state.notes.doNow0==null&&Number.isInteger(doNowAnswer(0)))state.notes.doNow0=doNowAnswer(0);
+ const count=()=>{$('#starterProgress').textContent=doNowScore()+' / '+doNow.length+' correct. '+(doNowScore()===doNow.length?'Ready for Types of Learning.':'Read the feedback and revise any missed answer.');};
+ checks($('#starterChecks'),doNow,'doNow',count);
+ notes('starterNote');count();
+}
 const learning=[
  ['Knowledge · Remember','One picture shows Garden Guide looking surprised. What do we call that complete picture?','一张表现惊讶的完整图片叫什么？',['A layer','A frame','A sprite sheet'],1,'Point to a single frame, then recall what a sheet contains.'],
  ['Skills · Practise','You want a surprised version without losing Calm. Which action should you try first?','怎样保留平静表情，同时制作惊讶的版本？',['Duplicate the Calm frame','Erase the body','Draw a new character'],0,'In Main Task 1, duplicate first. Select Face and change one feature on the copy.'],
@@ -217,7 +232,7 @@ function evidence(){
  const answer=(items,prefix,i)=>items[i][3][state.notes[prefix+i]]??'Not answered';
  const results=(items,prefix)=>items.map(([title],i)=>title+': '+answer(items,prefix,i)).join('\n');
  file(['SPRITE SHEET STUDIO · YEAR 8','Name: '+state.name+' | Class: '+state.group,'Frames: '+state.frames.map(f=>f.name).join(' → '),'Preview delay: '+state.delay+' seconds',
- 'Do Now: '+(({yes:'A layer within one frame',no:'The entire sprite sheet'})[state.notes.check]||'Not answered'),
+ 'Do Now: '+doNowScore()+' / '+doNow.length+' correct\n'+doNow.map(([title,,,choices],i)=>title+': '+(choices[doNowAnswer(i)]??'Not answered')).join('\n')+'\nDiscussion note: '+(state.notes.starterNote||'Not recorded'),
  'Types of Learning\n'+results(learning,'start'),'Frame model discussion: '+answer([discussion[0]],'discuss',0),'Loop model prediction: '+answer([discussion[1]],'predict',0),'Test: '+(state.notes.testNote||'Not recorded'),
  'Archive checks: '+(state.notes.archive0===1?'MCQ correct':'MCQ not complete')+'; one word: '+(state.notes.frameWord||'Not answered'),'Practice board: '+(state.notes.practiceDone?'Completed':'Not completed'),'Studio preview: '+(state.notes.previewStamp===frameStamp()?'Complete cycle recorded':'Not recorded'),
  state.route==='scratch'?'Scratch evidence: '+(state.notes.scratchFile||'No file checked')+'\nObservation: '+(state.notes.scratchObservation||'Not recorded'):state.route==='pythonRoute'?'Python runs (frame index, seconds): '+JSON.stringify(pythonTrials().map(t=>t.timeline))+'\nObservation: '+(state.notes.pythonObservation||'Not recorded'):'Animation route not selected.',

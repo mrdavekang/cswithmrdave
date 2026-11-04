@@ -74,7 +74,7 @@ function currentRouteEvidence(){
 }
 function checkpoint(id){
  const n=state.notes;
- if(id==='learn'&&n.check!=='yes')return 'Try Do Now and correct your answer using the feedback.';
+ if(id==='learn'&&doNowScore()!==doNow.length)return 'Finish all four Do Now checks. Use the feedback to correct any missed answers.';
  if(id==='types'&&learning.some((_,i)=>!Number.isInteger(n['start'+i])))return 'Try all three Knowledge, Skills and Understanding checks.';
  if(id==='history'&&(n.archive0!==1||!n.frameWordOK))return 'Check the archive multiple-choice answer and the one-word answer.';
  if(id==='model1'&&n.discuss0!==0)return 'Answer the alignment question using the frame model.';

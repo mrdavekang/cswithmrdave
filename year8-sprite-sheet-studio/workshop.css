@@ -10,4 +10,7 @@
 #practicePixels [aria-pressed="true"]{color:white;background:#6031a0}
 .code-editor{display:block;min-height:12rem;font:1rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}
 #pythonOutput{overflow:auto;white-space:pre-wrap}
+.do-now-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#starterProgress{font-weight:700}
+@media(max-width:620px){.do-now-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.practice-grid{grid-template-columns:1fr}.scratch-steps{padding-left:1rem}}
