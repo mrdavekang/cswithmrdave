@@ -83,6 +83,7 @@ body.presenting{padding:0;background:#000;gap:0}body.presenting .projector{width
  <select id="lesson-choice">
   <option value="year9-app-studio">Year 9 — App Studio Overview</option>
   <option value="year8-pixel-character-studio">Year 8 — Pixel Character Studio Overview</option>
+  <option value="year11-week11-session2">Year 11 — Week 11 Session 2 Overview</option>
   <option value="year6-warning-counter">Year 6 — Warning Counter</option>
  </select>
  <label class="autoplay-choice">Auto-play <input id="autoplay-video" type="checkbox" checked></label>
@@ -147,7 +148,7 @@ document.addEventListener('keydown',e=>{if(e.target.closest('button,input,select
 document.addEventListener('mousemove',activity);document.addEventListener('pointerdown',activity);document.addEventListener('focusin',activity);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state==='running'){cancelAnimationFrame(frame);update()}});
 
-const lessons=[{"id": "year9-app-studio", "title": "Year 9 — App Studio Overview", "src": "Year9_App_Studio_Overview.mp4"}, {"id": "year8-pixel-character-studio", "title": "Year 8 — Pixel Character Studio Overview", "src": "Year8_Pixel_Character_Studio_Overview_EN_ZH_Original_Speed.mp4"}, {"id": "year6-warning-counter", "title": "Year 6 — Warning Counter", "src": "year6-warning-counter.mp4"}];
+const lessons=[{"id": "year9-app-studio", "title": "Year 9 — App Studio Overview", "src": "Year9_App_Studio_Overview.mp4"}, {"id": "year8-pixel-character-studio", "title": "Year 8 — Pixel Character Studio Overview", "src": "Year8_Pixel_Character_Studio_Overview_EN_ZH_Original_Speed.mp4"}, {"id": "year11-week11-session2", "title": "Year 11 — Week 11 Session 2 Overview", "src": "Year11_Week11_Session2_Overview.mp4"}, {"id": "year6-warning-counter", "title": "Year 6 — Warning Counter", "src": "year6-warning-counter.mp4"}];
 const lessonVideo=$('lesson-video'),lessonPlayer=$('lesson-player');let lessonSession=0,lessonPriming=false,lessonVolume=1;
 function selectLesson(id){
  const lesson=lessons.find(item=>item.id===id)||lessons[0];
