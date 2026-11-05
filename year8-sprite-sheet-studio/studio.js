@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s), E=window.PixelEngine, S=window.PixelSprites;
-const stages=[['intro','Mission'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['history','Arcade archive'],['model1','Frame model'],['practice','Main Task 1A'],['draw','Main Task 1B'],['model2','Loop model'],['code','Main Task 2'],['scratch','Scratch route'],['pythonRoute','Python route'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
+const stages=[['intro','Mission'],['survey','School survey'],['before','Learning goals'],['learn','Do Now'],['types','Types of Learning'],['history','Arcade archive'],['model1','Frame model'],['practice','Main Task 1A'],['draw','Main Task 1B'],['model2','Loop model'],['code','Main Task 2'],['scratch','Scratch route'],['pythonRoute','Python route'],['reflect','Learning Pit Stop'],['extend','Go Further'],['plenary','Plenary'],['finish','Save & submit'],['review','Review']];
 const oldStages=['intro','learn','draw','code','reflect','finish','review'];
 const key='sprite-sheet-studio-8t-v1', previewMode=new URLSearchParams(location.search).get('preview')==='1';
 const faceColours=['#29233f','#ffffff','#d64472'];
@@ -30,6 +30,7 @@ $('#zh').onchange=e=>{state.zh=e.target.checked;flag();save();};
 function halt(){clearInterval(clock);clock=null;}
 function go(id){
  if(!stages.some(([stage])=>stage===id)||(!state.name&&id!=='intro'))return;
+ if(!journey().includes(id)&&id!=='scratch'&&id!=='pythonRoute')return;
  if(id==='scratch'||id==='pythonRoute'){const why=firstBlock('code');if(why){blocked(why);return;}state.route=id;}
  const why=firstBlock(id);if(why){blocked(why);return;}
  halt();stopPython();state.stage=id;render();save();window.scrollTo(0,0);$('h1')?.setAttribute('tabindex','-1');$('h1')?.focus({preventScroll:true});
@@ -46,12 +47,14 @@ function render(){
  const t=state.stage;
  $('#main').replaceChildren($('#'+t).content.cloneNode(true));
  flag();
+ adaptClassroomStage(t);
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
  if(t!=='intro'){
   const b=document.createElement('button'),p=document.createElement('p'),g=document.createElement('p');b.className='lesson-back';b.textContent='← Back';b.onclick=()=>go(journey()[journey().indexOf(t)-1]||'code');p.className='progress-hint';g.className='navigation-alert';g.setAttribute('role','status');g.tabIndex=-1;g.hidden=true;
   const card=$('#main article');card.append(b);card.querySelector('h1').after(g);(card.querySelector('.next')||b).before(p);
  }
- if(t==='intro'){examples($('#opening'),true);const f=$('#entry');f.elements.pupil.value=state.name;f.elements.group.value=state.group;f.onsubmit=e=>{e.preventDefault();const name=f.elements.pupil.value.trim(),group=f.elements.group.value.trim();if(!name||!group)return;state.name=name;state.group=group;go('before');};}
+ if(t==='intro'){examples($('#opening'),true);const f=$('#entry');f.elements.pupil.value=state.name;f.elements.group.value=state.group;f.onsubmit=e=>{e.preventDefault();const name=f.elements.pupil.value.trim(),group=f.elements.group.value.trim();if(!name||!group)return;state.name=name;state.group=group;go(!previewMode&&!surveyConfirmed()?'survey':shortClass?'learn':'before');};}
+ if(t==='survey')bindSurvey();
  if(t==='learn')bindDoNow();
  if(t==='types')bindLearning();
  if(t==='history')bindArchive();
@@ -244,8 +247,12 @@ function quiz(){
 }
 setupWorkshop();
 if(previewMode&&['scratch','pythonRoute'].includes(state.stage))state.route=state.stage;
-if(!previewMode&&state.name&&firstBlock(state.stage)){
- const order=journey(),index=order.indexOf(state.stage);
- state.stage=order.slice(0,index<0?order.length:index).find(id=>checkpoint(id))||'code';
+if(!previewMode&&state.name){
+ const order=journey();
+ if(!surveyConfirmed())state.stage='survey';
+ else if(!order.includes(state.stage)||firstBlock(state.stage)){
+  const index=order.indexOf(state.stage);
+  state.stage=order.slice(0,index<0?order.length:index).find(id=>checkpoint(id))||'learn';
+ }
 }
 render();save();

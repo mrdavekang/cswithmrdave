@@ -68,7 +68,7 @@ function setupWorkshop(){
  document.querySelector('#finish').content.querySelector('#evidence').insertAdjacentHTML('afterend',' <button id="finalBrowserPy" hidden>Download my browser Python</button>');
 }
 
-function journey(){return [...workshopOrder,...(state.route?[state.route]:[]),...routeTail];}
+function journey(){return shortClass?classroomOrder:[...workshopOrder.slice(0,1),...(previewMode?[]:['survey']),...workshopOrder.slice(1),...(state.route?[state.route]:[]),...routeTail];}
 function pictureKey(d){return E.composite(d).map(p=>p?p.colour+':'+p.alpha:'-').join(',');}
 function frameStamp(){
  const s=JSON.stringify(state.frames.map(f=>[f.name,pictureKey(f.design)]));let hash=2166136261;
@@ -85,6 +85,7 @@ function currentRouteEvidence(){
 }
 function checkpoint(id){
  const n=state.notes;
+ if(id==='survey'&&!surveyConfirmed())return 'Submit the school survey in Microsoft Forms, then confirm here.';
  if(id==='learn'&&doNowScore()!==doNow.length)return 'Finish all four Do Now checks. Use the feedback to correct any missed answers.';
  if(id==='types'&&!currentStrategy())return 'Choose a starting strategy based on your Do Now evidence.';
  if(id==='history'&&(n.archive0!==1||!n.frameWordOK))return 'Check the archive multiple-choice answer and the one-word answer.';
@@ -100,6 +101,10 @@ function checkpoint(id){
 }
 function firstBlock(id){
  if(previewMode||id==='intro'||!state.name)return '';
+ if(id==='survey')return '';
+ if(!surveyConfirmed())return checkpoint('survey');
+ if(shortClass&&['reflect','plenary'].includes(id))return '';
+ if(shortClass&&id==='finish')return checkpoint('plenary');
  const order=journey(), i=order.indexOf(id);
  for(const step of order.slice(0,i<0?workshopOrder.length:i)){
   const why=checkpoint(step);if(why)return why;
@@ -109,7 +114,7 @@ function firstBlock(id){
 function progress(){
  const nav=$('#steps');
  for(const b of nav.querySelectorAll('[data-stage]')){
-  const id=b.dataset.stage,why=firstBlock(id),done=Boolean(state.name)&&!why&&!checkpoint(id)&&['learn','types','history','model1','practice','draw','model2','scratch','pythonRoute','reflect','plenary'].includes(id);
+  const id=b.dataset.stage,why=firstBlock(id),done=Boolean(state.name)&&!why&&!checkpoint(id)&&['survey','learn','types','history','model1','practice','draw','model2','scratch','pythonRoute','reflect','plenary'].includes(id);
   b.setAttribute('aria-disabled',String(Boolean(why)||(!state.name&&id!=='intro')));
   const assisted=done&&id===state.route&&state.notes.assisted?.route===id&&state.notes.assisted.stamp===frameStamp();
   b.title=why||(assisted?'Supported attempt, not a verified animation test':'');b.querySelector('span').textContent=assisted?' · supported':done?' ✓':'';

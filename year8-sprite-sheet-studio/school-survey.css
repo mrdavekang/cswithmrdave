@@ -1,0 +1,6 @@
+.school-survey ol{padding-inline-start:1.5em;line-height:1.65;margin-bottom:1.2rem}
+.school-survey .receipt-check{display:flex;align-items:flex-start;gap:.65rem;padding:.85rem 0;font-weight:650}
+.school-survey .receipt-check input{width:1.3rem;height:1.3rem;flex:none;accent-color:#00853e}
+.school-survey #surveyConfirm{margin-top:1rem}
+.school-survey #surveyStatus{min-height:1.5em}
+.school-survey #surveyContinue:disabled{opacity:.55;cursor:not-allowed}

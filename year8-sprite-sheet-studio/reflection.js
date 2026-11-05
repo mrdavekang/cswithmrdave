@@ -34,6 +34,7 @@ function bindLearning(){
 }
 function pitEvidence(){
  const n=state.notes,stamp=frameStamp(),trials=state.route==='pythonRoute'?pythonTrials():[];
+ if(shortClass)return {kind:'studio',stamp,previewed:n.previewStamp===stamp};
  if(trials.length>=2)return {kind:'python',stamp,runs:[trials[0],trials.at(-1)],observation:n.pythonObservation||''};
  const checkedScratch=state.route==='scratch'&&n.scratchStamp===stamp;
  if(checkedScratch&&meaningful(n.scratchObservation))return {kind:'scratch',stamp,file:n.scratchFile||'Scratch project',observation:n.scratchObservation};
@@ -41,7 +42,7 @@ function pitEvidence(){
  return {kind:'example',stamp};
 }
 function pitEvidenceKey(e){
- return JSON.stringify([e.kind,e.stamp,e.runs?.map(r=>r.timeline),e.file,e.observation,e.note]);
+ return JSON.stringify([e.kind,e.stamp,e.runs?.map(r=>r.timeline),e.file,e.observation,e.note,...(e.kind==='studio'?[e.previewed]:[])]);
 }
 function pitComparisonSaved(e){
  return meaningful(state.notes.pitCompare)&&state.notes.pitCompareKey===pitEvidenceKey(e||pitEvidence());
@@ -61,7 +62,10 @@ function renderPitEvidence(e,root){
   refText(skill,'p',previewMode?'Frames in the teacher preview:':'Your current studio boards:');const strip=document.createElement('div');strip.className='sample-strip';
   state.frames.forEach((frame,i)=>{const f=document.createElement('figure');f.append(art(frame.design,5));refText(f,'figcaption',(i+1)+' · '+frame.name);strip.append(f);});skill.append(strip);
  }
- if(e.kind==='python'){
+ if(e.kind==='studio'){
+  refText(skill,'p',e.previewed?'You previewed one complete cycle of your current boards.':'No full preview of your current boards recorded yet. Reflect on the work you have so far.');
+  refChinese(skill,'回顾自己的画格。即使动画还没做完，也可以说说已经完成的部分。');
+ }else if(e.kind==='python'){
   refText(skill,'p','Two Python runs recorded for these boards. The sequence below shows the order and delay actually sent to the preview.');
   e.runs.forEach((run,i)=>{const details=document.createElement('details');details.className='pit-run';refText(details,'summary','Test '+(i+1)+' · View the Python code');refText(details,'pre',run.source||'Code not available.');refText(skill,'p','Test '+(i+1)+': '+timelineText(run.timeline),'pit-timeline');skill.append(details);});
  }else if(e.kind==='scratch'){
@@ -81,7 +85,11 @@ function renderPitEvidence(e,root){
 function bindPit(){
  const e=pitEvidence(),compare=$('#pitCompare'),work=$('#pitWork'),feel=$('#pitFeel'),workButton=$('#pitShowWork'),phaseButton=$('#pitShowPhase'),hint=$('#pitWorkHint');
  renderPitEvidence(e,$('#pitEvidence'));
- if(e.kind==='supported'||e.kind==='example'){
+ if(e.kind==='studio'){
+  $('#pitPrompt').textContent='What changed between your frames? What did you keep in place?';
+  $('#pitStem').textContent='“I changed ___. I kept ___ still.” If you have one frame, say what you would change next.';
+  $('#pitWork .zh').textContent='“我改变了 ___。我让 ___ 保持不动。” 如果只有一张画格，请说出下一步要改什么。';
+ }else if(e.kind==='supported'||e.kind==='example'){
   $('#pitPrompt').textContent='What can you show now, and what would you test next?';
   $('#pitStem').textContent='“I can show ___. Next I would test ___ by ___.” You can use the worked example for ideas, but label your own evidence.';
  }else{
@@ -99,6 +107,11 @@ function bindPit(){
   const target=$('#nextAdvice'),choice=phases.find(([phase])=>phase===state.notes.phase);
   target.replaceChildren();refText(target,'h3','Your next action');
   if(!choice){refText(target,'p','Choose the phase that fits this piece of work.');return;}
+  if(shortClass){
+   const [label,dest]=choice[0]==='Drowning / need a demo'?['Revisit the practice board','practice']:['Revisit your sprite boards','draw'];
+   refText(target,'p',dest==='practice'?'Ask for a demonstration of the step where you got stuck.':'Check one expression and make sure the body stays in place.');
+   const b=refText(target,'button',label);b.onclick=()=>go(dest);return;
+  }
   refText(target,'p',choice[3]);const [label,dest,zh]=phaseActions[choice[0]];
   refChinese(target,zh);const b=refText(target,'button',label);b.onclick=()=>go(dest);
  }
@@ -119,7 +132,7 @@ function reflectionReport(){
  const oldLearning=[0,1,2].map(i=>state.notes['start'+i]);const oldPit=[0,1,2].map(i=>state.notes['pit'+i]);
  return [
   'Types of Learning\nDo Now evidence: '+(starter.answer||'Not answered')+'\nStarting strategy: '+(strategy?.[1]||'Not recorded')+'\nNext action: '+(strategy?.[3]||'Not recorded'),
-  'Pit Stop · Evidence reviewed: '+({python:'Two recorded Python runs',scratch:'Scratch project file check and reported observation',supported:'Supported attempt, not verified',example:'Worked example, not student test evidence'})[e.kind],
+  'Pit Stop · Evidence reviewed: '+({studio:e.previewed?'Own boards with a complete preview':'Own boards or work in progress',python:'Two recorded Python runs',scratch:'Scratch project file check and reported observation',supported:'Supported attempt, not verified',example:'Worked example, not student test evidence'})[e.kind],
   'Comparison / next test: '+(pitComparisonSaved(e)?state.notes.pitCompare:'Not recorded for this evidence'),
   'Learning phase (self-report): '+(state.notes.phase||'Not recorded')+'\nReason: '+(state.notes.reflectNote||'Not recorded'),
   ...(oldLearning.some(Number.isInteger)?['Earlier Types of Learning responses (option numbers, 1-based): '+oldLearning.map(i=>Number.isInteger(i)?i+1:'Not answered').join(', ')]:[]),
