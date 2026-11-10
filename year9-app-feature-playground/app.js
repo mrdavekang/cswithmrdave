@@ -9,6 +9,13 @@ const language = document.querySelector("#language");
 const opening = new Set(["start", "do-now", "types"]);
 const jumps = new Set(["build-steps", "try", "save"]);
 const stageIds = new Set(lesson.stages.map(([id]) => id));
+const lessonMinutes = 60 * 60 * 1000;
+const secondFeatureMinutes = 30 * 60 * 1000;
+const nextFeatureRoute = "choose-next";
+document.querySelector(".language").insertAdjacentHTML("beforebegin",
+  '<div id="lesson-clock" class="lesson-clock" role="timer" aria-label="Time left" hidden>' +
+  '<span id="clock-label">Time left</span><strong id="clock-time">60:00</strong></div>');
+const clock = document.querySelector("#lesson-clock");
 const editorSizes = {
   "add-button-en.png": [1320, 1046], "canvas-palette-en.png": [1320, 1021],
   "draw-blocks.webp": [676, 195], "draw-clear-block.webp": [275, 74], "draw-designer.webp": [619, 289],
@@ -28,7 +35,13 @@ function loadState() {
 }
 
 const stored = loadState();
+const savedStudent = stored.student;
 const state = {
+  student: savedStudent && typeof savedStudent.name === "string" && savedStudent.name.trim() &&
+    typeof savedStudent.form === "string" && savedStudent.form.trim() &&
+    Number.isFinite(savedStudent.startedAt) && savedStudent.startedAt > 0 ? savedStudent : null,
+  secondRound: stored.secondRound === true,
+  nextFeature: lesson.features.some(({ id }) => id === stored.nextFeature) ? stored.nextFeature : "",
   language: stored.language === "bi" ? "bi" : "en",
   feature: lesson.features.some(({ id }) => id === stored.feature) ? stored.feature : "",
   sketch: stored.sketch === true,
@@ -69,8 +82,38 @@ function rich([en, zh]) {
 
 const stage = (id) => lesson.stages.find((item) => item[0] === id);
 const feature = () => lesson.features.find((item) => item.id === state.feature);
-const stageOf = (id) => jumps.has(id) ? "build" : id;
-const workspaceOf = (id) => opening.has(id) ? "opening" : stageOf(id);
+const stageOf = (id) => id === nextFeatureRoute ? "choose" : jumps.has(id) ? "build" : id;
+const workspaceOf = (id) => opening.has(id) ? "opening" : jumps.has(id) ? "build" : id;
+const isLessonRoute = (id) => stageIds.has(id) || jumps.has(id) || id === nextFeatureRoute;
+
+function remainingTime(now = Date.now()) {
+  return state.student ? Math.max(0, Math.min(lessonMinutes, state.student.startedAt + lessonMinutes - now)) : 0;
+}
+
+function completedFeatures() {
+  return lesson.features.filter(({ id }) => state.results[id] === "works").length;
+}
+
+function canBuildAnother(time = remainingTime()) {
+  return time >= secondFeatureMinutes && state.results[state.feature] === "works" && completedFeatures() === 1;
+}
+
+function updateClock() {
+  clock.hidden = !state.student;
+  if (!state.student) return;
+  const time = remainingTime();
+  const seconds = Math.ceil(time / 1000);
+  const digits = [Math.floor(seconds / 60), seconds % 60].map((n) => String(n).padStart(2, "0")).join(":");
+  const label = time ? (state.language === "bi" ? "Time left · 剩余时间" : "Time left")
+    : (state.language === "bi" ? "Time’s up · 时间到" : "Time’s up");
+  const clockLabel = clock.querySelector("#clock-label");
+  const clockTime = clock.querySelector("#clock-time");
+  if (clockLabel.textContent !== label) clockLabel.textContent = label;
+  if (clockTime.textContent !== digits) clockTime.textContent = digits;
+  clock.classList.toggle("clock-ended", !time);
+  const eligible = canBuildAnother(time);
+  for (const element of main.querySelectorAll("[data-second-feature]")) element.hidden = !eligible;
+}
 
 function button(href, en, zh, primary = false, external = false) {
   return '<a class="btn' + (primary ? " primary" : "") + '" href="' + href + '"' +
@@ -79,11 +122,12 @@ function button(href, en, zh, primary = false, external = false) {
 }
 
 function stepsNav(active) {
-  return '<ol class="stage-list">' + lesson.stages.map(([id, label, short], i) =>
-    '<li><a href="#' + id + '"' + (id === active ? ' aria-current="step"' : "") +
-    '><span class="stage-index" aria-hidden="true">' + (i + 1) + '</span><span>' +
-    bilingual(label[0] + (short ? " · " + short[0] : ""), label[1] + (short ? " · " + short[1] : "")) +
-    "</span></a></li>").join("") + "</ol>";
+  return '<ol class="stage-list">' + lesson.stages.map(([id, label, short], i) => {
+    const content = '<span class="stage-index" aria-hidden="true">' + (i + 1) + '</span><span>' +
+      bilingual(label[0] + (short ? " · " + short[0] : ""), label[1] + (short ? " · " + short[1] : "")) + "</span>";
+    if (!state.student && id !== "start") return '<li><span class="stage-label">' + content + "</span></li>";
+    return '<li><a href="#' + id + '"' + (id === active ? ' aria-current="step"' : "") + '>' + content + '</a></li>';
+  }).join("") + "</ol>";
 }
 
 function showNav() {
@@ -120,10 +164,10 @@ function model(item, hero = false) {
       "<strong>设计亮点</strong> " + escapeHtml(item.why[1])]) + "</p></div>";
 }
 
-function tiles(interactive = false) {
-  return '<div class="feature-grid">' + lesson.features.map((item) => {
+function tiles(interactive = false, second = false) {
+  return '<div class="feature-grid">' + lesson.features.filter(({ id }) => !second || state.results[id] !== "works").map((item) => {
     const preview = item.frames[item.frames.length === 3 ? 1 : item.frames.length - 1];
-    const chosen = state.feature === item.id;
+    const chosen = (second ? state.nextFeature : state.feature) === item.id;
     const contents = '<span class="thumbnail">' + asset(preview) + '</span><span class="feature-model">' +
       text(item.model) + '</span><span class="feature-title">' + text(item.title) +
       '</span><span class="finish">' + text(item.finish) + '</span>' +
@@ -142,18 +186,35 @@ function choices(group, items, isPhase = false) {
       '</span><span class="choice-copy">' + text(detail) + "</span></button>").join("") + "</div>";
 }
 
+function landingControls() {
+  if (!state.student) {
+    return '<form class="student-form" id="student-form"><div class="student-fields"><label for="student-name">' +
+      bilingual("Name", "姓名") + '<input id="student-name" name="name" autocomplete="name" maxlength="80" required></label>' +
+      '<label for="student-class">' + bilingual("Class", "班级") +
+      '<input id="student-class" name="form" placeholder="9E" maxlength="20" required></label></div>' +
+      '<p id="start-note">' + bilingual("The 60-minute timer starts when you select Start lesson. Your details stay in this browser.", "点击开始课堂后，60 分钟倒计时开始。你的资料只保存在此浏览器。") +
+      '</p><p id="student-error" class="form-error" role="alert" hidden>' + bilingual("Enter your name and class to begin.", "请输入姓名和班级后再开始。") +
+      '</p><button class="btn primary" type="submit" aria-describedby="start-note"><span>' + bilingual("Start lesson", "开始课堂") + '</span></button></form>';
+  }
+  return '<div class="student-session"><p><strong>' + escapeHtml(state.student.name) + '</strong> · ' + escapeHtml(state.student.form) + '</p>' +
+    button("#do-now", "Go to the Do Now", "前往课堂热身", true) +
+    '<details class="help"><summary>' + bilingual("New student?", "换同学了？") + '</summary><p>' +
+    bilingual("Start a fresh session for a different student. This clears the name, class, timer and lesson choices in this browser.", "为另一位同学开始新课堂。此操作会清除此浏览器中的姓名、班级、倒计时和课堂选择。") +
+    '</p><button id="restart-session" class="btn" type="button"><span>' + bilingual("Start a new student session", "开始新同学的课堂") + '</span></button></details></div>';
+}
+
 function intro() {
   return '<section class="hero" id="start" aria-labelledby="intro-heading"><div class="hero-copy">' +
     '<p class="eyebrow">' + bilingual("Year 9 Practical · 60 minutes", "九年级实践课 · 60 分钟") + '</p>' +
     '<h1 id="intro-heading" tabindex="-1">' + text(lesson.name) + '</h1><p class="lead">' + text(lesson.goal) +
     '</p><div class="goal-note"><p class="eyebrow">WAGBA · ' + bilingual("What we are getting better at", "今天提升的能力") +
     '</p><p>' + text(lesson.wagba) + "</p></div>" +
-    button("#do-now", "Start the Do Now", "开始课堂热身", true) +
+    landingControls() +
     '</div>' + model(lesson.features[0], true) + '</section>' +
     '<section class="section" aria-labelledby="models-heading"><div class="section-top"><h2 id="models-heading">' +
     bilingual("Four ideas you can adapt", "四个可以改用的功能") + '</h2><p>' +
     bilingual("Look at the finished phone screens. In Main Task 1 you’ll choose one feature for your own topic.", "先看完成后的手机画面。在主任务一，为自己的主题选一个功能。") +
-    "</p></div>" + tiles() + '</section>' +
+    "</p></div>" + tiles() + '</section>' + (!state.student ? "" :
     '<section class="activity-card" id="do-now"><div class="do-now-demo"><div><p class="eyebrow">' + bilingual("Read First and Do Now · first 7 minutes", "先看示例和课堂热身 · 前 7 分钟") +
     '</p><h2 tabindex="-1">' + bilingual("Do Now · Spot the action", "现在做 · 找出用户操作") + '</h2><p>' +
     bilingual("Look at the Club Finder screens here. Point to what the user taps and tell a partner what changes. You can say it in English or Mandarin.", "看这里的社团查询画面。指出用户点击哪里，和同伴说说点击后有什么变化。可以用英语或中文。") +
@@ -170,7 +231,7 @@ function intro() {
     bilingual("Types of Learning", "学习类型") + '</h2><p>' +
     bilingual("Which would help you most with today’s feature? Pick one if it helps you get started.", "今天制作功能时，你最需要哪一种帮助？可以选一项。") +
     '</p>' + choices("focus", lesson.ksu) +
-    '<div class="actions">' + button("#choose", "Choose my feature", "选择我的功能", true) + "</div></section>";
+    '<div class="actions">' + button("#choose", "Choose my feature", "选择我的功能", true) + "</div></section>");
 }
 
 function stageHead(label, labelZh, title, titleZh, en, zh) {
@@ -182,9 +243,9 @@ function stageFooter(back, backEn, backZh, next, nextEn, nextZh) {
   return '<div class="stage-footer">' + button(back, backEn, backZh) + button(next, nextEn, nextZh, true) + "</div>";
 }
 
-function selection() {
-  const item = feature();
-  if (!item) {
+function selection(second = false) {
+  const item = second ? lesson.features.find(({ id }) => id === state.nextFeature) : feature();
+  if (!item || (second && state.results[item.id] === "works")) {
     return '<div class="card"><p>' + bilingual("Pick one card above to see your first action.", "选择上方的一张卡片，就能看到第一步。") + "</p></div>";
   }
   return '<div class="card choice-panel"><p class="eyebrow">' + bilingual("My feature", "我的功能") +
@@ -193,12 +254,15 @@ function selection() {
     button("#build", "Build my feature", "制作我的功能", true) + "</div></div>";
 }
 
-function choose() {
-  return stageHead("Main Task 1 · 13 minutes", "主任务一 · 13 分钟", "Choose one feature", "选择一个功能",
-    "Look at your sketch and pick one feature below. Keep your own app’s topic, pictures and words.", "看你的草图，从下方选一个功能。保留你自己的主题、图片和文字。") +
-    '<section class="section" aria-label="Choose one feature">' + tiles(true) +
-    '</section><div id="my-choice" tabindex="-1" aria-live="polite">' + selection() +
-    '</div><div class="stage-footer">' + button("#types", "Back to Types of Learning", "返回学习类型") + "</div>";
+function choose(second = false) {
+  const heading = second ? stageHead("Main Task 1 · Second feature", "主任务一 · 第二个功能", "Choose a second feature", "选择第二个功能",
+    "Keep the first feature in your app. Pick a different one below and add it to the same MIT project.", "保留应用里的第一个功能，再从下方选择另一个功能，加入同一个 MIT 项目。")
+    : stageHead("Main Task 1 · 13 minutes", "主任务一 · 13 分钟", "Choose one feature", "选择一个功能",
+      "Look at your sketch and pick one feature below. Keep your own app’s topic, pictures and words.", "看你的草图，从下方选一个功能。保留你自己的主题、图片和文字。");
+  return heading + '<section class="section" aria-label="Choose one feature">' + tiles(true, second) +
+    '</section><div id="my-choice" tabindex="-1" aria-live="polite">' + selection(second) +
+    '</div><div class="stage-footer">' + (second ? button("#save", "Back to my guide", "返回我的指南")
+      : button("#types", "Back to Types of Learning", "返回学习类型")) + "</div>";
 }
 
 function chooseFirst() {
@@ -245,14 +309,19 @@ function tryFeature(item) {
     '</h2><p>' + how + '</p><p class="prompt">' + text(item.check) + '</p>' +
     (isGallery ? "" : editorShot(picture("test-menu.webp", "Connect menu with Test in Web highlighted", "Connect 菜单中的 Test in Web 已标出"))) +
     fallback + '<details class="help"><summary>' + bilingual("The feature didn’t do what I expected", "功能没有按预期运行") +
-    '</summary><p>' + text(item.fix) + '</p></details>' + results(item) + "</section>";
+    '</summary><p>' + text(item.fix) + '</p></details>' + results(item) +
+    '<div class="notice" data-second-feature hidden><p>' + bilingual("You have at least 30 minutes left. Save this feature, then choose another one to add to the same app.", "你还剩至少 30 分钟。保存这个功能，再为同一个应用选择另一个功能。") +
+    '</p><div class="actions">' + button("#save", "Go to save steps", "前往保存步骤", true) + '</div></div></section>';
 }
 
 function saveSection() {
   return '<section class="activity-card" id="save"><h2 tabindex="-1">' + bilingual("Save your app", "保存你的应用") +
     '</h2><ol class="plain-list"><li>' + bilingual("In MIT App Inventor, choose Projects > Save project.", "在 MIT App Inventor 中，选择 Projects > Save project。") +
     '</li><li>' + bilingual("Choose Projects > Export selected project (.aia) to my computer. Find the .aia file in Downloads and keep it for the next lesson.", "选择 Projects > Export selected project (.aia) to my computer。在 Downloads 找到 .aia 文件，留到下一课使用。") +
-    '</li></ol>' + editorShot(picture("export-menu.webp", "Projects menu with Export selected project (.aia) marked", "Projects 菜单中标出了导出 .aia 的选项")) + "</section>";
+    '</li></ol><div class="notice" data-second-feature hidden><h3>' + bilingual("Build a second feature", "制作第二个功能") +
+    '</h3><p>' + bilingual("Once you’ve saved, choose a different feature and add it to the same MIT project.", "保存后，选择另一个功能，并添加到同一个 MIT 项目。") +
+    '</p><div class="actions">' + button("#" + nextFeatureRoute, "Choose a second feature", "选择第二个功能", true) + '</div></div>' +
+    editorShot(picture("export-menu.webp", "Projects menu with Export selected project (.aia) marked", "Projects 菜单中标出了导出 .aia 的选项")) + '</section>';
 }
 
 function build() {
@@ -306,11 +375,19 @@ function plenary() {
     '</p><div class="actions">' + button("#save", "Go to the save steps", "查看保存步骤", true) + "</div></section>";
 }
 
-const views = { opening: intro, choose, build, extension, pitstop, plenary };
+const views = { opening: intro, choose, [nextFeatureRoute]: () => choose(true), build, extension, pitstop, plenary };
 
 function requestedRoute() {
   const id = location.hash.slice(1);
-  return stageIds.has(id) || jumps.has(id) ? id : "start";
+  if (!state.student) return "start";
+  if (id === nextFeatureRoute) {
+    if (completedFeatures() !== 1 || (!state.secondRound && !canBuildAnother())) return "save";
+    if (!state.secondRound) {
+      state.secondRound = true;
+      storeState();
+    }
+  }
+  return isLessonRoute(id) ? id : "start";
 }
 
 function positionKey(id) {
@@ -346,6 +423,7 @@ function show({ restore = false, force = false, keepPosition = false } = {}) {
   document.querySelector("#skip").textContent = state.language === "bi" ? "Skip to lesson / 跳到课堂内容" : "Skip to lesson";
   showNav();
   if (force || previousGroup !== group) main.innerHTML = views[group]();
+  updateClock();
 
   const target = document.getElementById(route);
   if (keepPosition) {
@@ -367,13 +445,27 @@ function show({ restore = false, force = false, keepPosition = false } = {}) {
 }
 
 document.addEventListener("click", (event) => {
+  if (event.target.closest("#restart-session")) {
+    clearTimeout(scrollTimer);
+    Object.assign(state, { student: null, feature: "", secondRound: false, nextFeature: "", sketch: false, focus: "", phase: "", results: {}, positions: {} });
+    storeState();
+    history.replaceState(null, "", "#start");
+    show({ force: true });
+    document.querySelector("#student-name").focus({ preventScroll: true });
+    return;
+  }
   const link = event.target.closest('a[href^="#"]');
   if (link && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
     const id = link.getAttribute("href").slice(1);
-    if (stageIds.has(id) || jumps.has(id)) {
+    if (isLessonRoute(id)) {
       event.preventDefault();
       rememberPosition();
-      if (location.hash !== "#" + id) history.pushState(null, "", "#" + id);
+      const next = state.student ? id : "start";
+      if (route === nextFeatureRoute && next === "build" && state.nextFeature && state.results[state.nextFeature] !== "works") {
+        state.feature = state.nextFeature;
+        storeState();
+      }
+      if (location.hash !== "#" + next) history.pushState(null, "", "#" + next);
       show();
       return;
     }
@@ -381,16 +473,18 @@ document.addEventListener("click", (event) => {
 
   const pick = event.target.closest("[data-feature]");
   if (pick) {
-    state.feature = pick.dataset.feature;
+    const second = route === nextFeatureRoute;
+    const selected = pick.dataset.feature;
+    state[second ? "nextFeature" : "feature"] = selected;
     storeState();
     for (const card of main.querySelectorAll("[data-feature]")) {
-      const isSelected = card.dataset.feature === state.feature;
+      const isSelected = card.dataset.feature === selected;
       card.setAttribute("aria-pressed", String(isSelected));
       card.querySelector(".select-label").innerHTML = isSelected
         ? bilingual("Selected", "已选择") : bilingual("Choose", "选择");
     }
     const panel = document.querySelector("#my-choice");
-    panel.innerHTML = selection();
+    panel.innerHTML = selection(second);
     panel.focus({ preventScroll: true });
     panel.scrollIntoView({ block: "nearest" });
     return;
@@ -406,7 +500,25 @@ document.addEventListener("click", (event) => {
       sibling.setAttribute("aria-pressed", String(sibling === choice));
     }
     storeState();
+    if (field === "result") updateClock();
   }
+});
+
+document.addEventListener("submit", (event) => {
+  if (event.target.id !== "student-form") return;
+  event.preventDefault();
+  const form = new FormData(event.target);
+  const name = String(form.get("name")).trim();
+  const formName = String(form.get("form")).trim();
+  if (!name || !formName) {
+    document.querySelector("#student-error").hidden = false;
+    document.querySelector(name ? "#student-class" : "#student-name").focus();
+    return;
+  }
+  state.student = { name, form: formName, startedAt: Date.now() };
+  storeState();
+  history.replaceState(null, "", "#do-now");
+  show({ force: true });
 });
 
 document.addEventListener("change", (event) => {
@@ -431,3 +543,4 @@ window.addEventListener("scroll", () => {
 window.addEventListener("pagehide", rememberPosition);
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 show({ restore: true });
+window.setInterval(updateClock, 1000);

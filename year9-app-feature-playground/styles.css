@@ -43,6 +43,10 @@ code { font: .92em ui-monospace, SFMono-Regular, Consolas, monospace; background
 .translation-inline { display: inline; }
 .topbar { position: sticky; top: 0; z-index: 3; background: var(--surface); border-bottom: 1px solid var(--line); }
 .topbar-inner { max-width: 1540px; margin: 0 auto; height: var(--header); padding: 0 clamp(14px, 3vw, 42px); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lesson-clock { margin-left: auto; padding: 5px 10px; border: 1px solid #bed3c2; border-radius: 11px; background: var(--pale); text-align: center; white-space: nowrap; line-height: 1.12; }
+.lesson-clock span { display: block; font-size: .7rem; font-weight: 710; }
+.lesson-clock strong { display: block; margin-top: 3px; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.lesson-clock.clock-ended { background: var(--warm); border-color: #e6d49e; }
 .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; line-height: 1.14; }
 .brand strong { display: block; font-size: 1.04rem; }
 .brand small { display: block; margin-top: .4em; font-size: .66rem; letter-spacing: .13em; color: var(--muted); font-weight: 700; }
@@ -54,7 +58,8 @@ code { font: .92em ui-monospace, SFMono-Regular, Consolas, monospace; background
 .nav-title, .eyebrow { font-size: .75rem; font-weight: 780; letter-spacing: .115em; text-transform: uppercase; color: var(--green); }
 .nav-title { padding: 0 10px 7px; }
 .stage-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
-.stage-list a { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 5px 9px; border-radius: 10px; color: var(--ink); text-decoration: none; font-size: .9rem; font-weight: 620; }
+.stage-list a, .stage-list .stage-label { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 5px 9px; border-radius: 10px; color: var(--ink); text-decoration: none; font-size: .9rem; font-weight: 620; }
+.stage-list .stage-label { color: var(--muted); }
 .stage-list a:hover { background: var(--pale); }
 .stage-list a[aria-current="step"] { background: var(--pale); color: var(--green-dark); box-shadow: inset 0 0 0 1px #bed3c2; font-weight: 760; }
 .stage-index { width: 25px; height: 25px; flex: 0 0 25px; display: grid; place-items: center; border-radius: 50%; background: #e6ebe3; font-size: .72rem; font-variant-numeric: tabular-nums; }
@@ -67,6 +72,14 @@ main { min-width: 0; }
 .hero, .card, .stage-head, .model-panel, .instruction, .activity-card { border: 1px solid var(--line); border-radius: var(--radius); }
 .hero { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 34px); background: var(--surface); padding: clamp(18px, 3.2vw, 34px); align-items: center; }
 .hero-copy { display: grid; justify-items: start; gap: 16px; min-width: 0; }
+.student-form, .student-session { display: grid; justify-items: start; gap: 9px; width: 100%; }
+.student-fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; width: 100%; }
+.student-fields label { display: grid; gap: 3px; font-weight: 700; }
+.student-fields input { width: 100%; min-height: 44px; border: 1px solid #9fb7a6; border-radius: 9px; padding: 7px 9px; font: inherit; font-weight: 450; color: var(--ink); }
+.student-form p { font-size: .9rem; color: var(--muted); }
+.student-form .form-error { color: #972522; font-weight: 700; }
+.student-session .help { margin-top: 0; }
+.student-session .help button { margin-top: 8px; }
 .lead { font-size: clamp(1.02rem, 1.9vw, 1.26rem); line-height: 1.48; }
 .goal-note { border-left: 4px solid var(--green); padding: 6px 12px; background: var(--pale); border-radius: 0 9px 9px 0; }
 .goal-note p { margin-top: .2rem; }
@@ -177,6 +190,10 @@ button.feature-tile[aria-pressed="true"] .select-label .translation { color: #ee
 }
 @media (max-width: 620px) {
   :root { --header: 65px; }
+  .topbar-inner { gap: 7px; }
+  .topbar-inner:has(.lesson-clock:not([hidden])) .brand small { display: none; }
+  .lesson-clock { padding-inline: 6px; }
+  .lesson-clock span { max-width: 4.65rem; white-space: normal; }
   .hero, .build-top, .sketch-grid, .do-now-demo { grid-template-columns: minmax(0, 1fr); }
   .hero-copy { gap: 13px; }
   .build-top .first-action { grid-row: 1; }
@@ -191,6 +208,7 @@ button.feature-tile[aria-pressed="true"] .select-label .translation { color: #ee
 }
 @media (max-width: 365px) {
   .brand-icon { display: none; }
+  .language select { max-width: 115px; }
   .choice-grid.phase { grid-template-columns: 1fr; }
   .feature-title { font-size: .96rem; }
 }
