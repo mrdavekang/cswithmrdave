@@ -174,6 +174,11 @@ button.feature-tile[aria-pressed="true"] .select-label .translation { color: #ee
 .stage-footer .btn { max-width: 100%; }
 .stage-footer .actions { margin-top: 0; }
 .prompt { font-size: 1.08rem; font-weight: 720; padding: 12px 14px; background: var(--pale); border-radius: 9px; margin-top: 13px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 225px), 1fr)); gap: 10px; margin-top: 14px; }
+.gallery-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; background: #f8faf6; }
+.gallery-card h3 + p { margin-top: 0; }
+.gallery-card .actions { margin-top: auto; padding-top: 6px; }
+.activity-card h2 + h3 { margin-top: 10px; }
 @media (max-width: 1110px) {
   .layout { grid-template-columns: 184px minmax(0, 1fr); gap: 16px; }
   .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

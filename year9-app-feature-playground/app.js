@@ -348,12 +348,55 @@ function build() {
     button("#pitstop", "Go to Learning Pit Stop", "前往学习停靠站", true) + "</div></div>";
 }
 
+function galleryExtension() {
+  const projects = [
+    {
+      id: "a97c4135-4078-4e2b-a683-8532e33df233", name: ["Mole Mash", "打地鼠"],
+      status: ["Played in Chrome", "已在 Chrome 中试玩"],
+      task: ["Tap the mole once. Watch it move and check the score.", "点击地鼠一次。看看它移动到哪里，并查看分数。"],
+      idea: ["Move your own target after a hit.", "点中目标后，让你的目标移动。"],
+    },
+    {
+      id: "8e9cbf6b-f559-46e6-a443-59ee046ebfdf", name: ["Drawing App", "图片画板"],
+      status: ["Pictures and dots tested", "已测试换图和点画"],
+      task: ["Choose Next to see the duck. Click on the picture to add dots. Dragging and clearing were unreliable in the Chrome test.", "点击 Next 查看鸭子的图片。点击图片可以画点。在 Chrome 的测试中，拖动画线和清除不稳定。"],
+      idea: ["Use a picture as the background for a drawing pad.", "用一张图片作为画板背景。"],
+    },
+    {
+      id: "556bcee4-ce8f-44a3-8c5b-32834dcfe152", name: ["Memory Game", "记忆配对游戏"],
+      status: ["Preview only in this Chrome test", "本次 Chrome 测试仅能预览"],
+      task: ["The tile grid opened, but tapping the tiles did not reveal a pair. Explore how the app arranges its tiles.", "可以看到卡片网格，但点击后没有翻开配对图案。观察应用怎样排列卡片。"],
+      idea: ["Make a picture in your gallery reveal a detail when tapped.", "点击你展示区里的一张图片，显示更多信息。"],
+      previewOnly: true,
+    },
+  ];
+  return '<section class="activity-card" aria-labelledby="gallery-heading"><h2 id="gallery-heading">' +
+    bilingual("Try one Gallery app", "试一个作品库应用") + '</h2><p>' +
+    bilingual("Pick a card. Try one action and see what changes. Which idea could you use in your own app?", "选一张卡片，试一个操作，看看发生了什么变化。哪一个想法可以用到你自己的应用里？") +
+    '</p><details class="help" open><summary>' + bilingual("How to play in Chrome without an account", "怎样在 Chrome 中免账号试玩") +
+    '</summary><ol class="plain-list"><li>' + bilingual("First time? Open the account-free editor and choose Continue Without An Account if asked. Then return here.", "第一次使用？打开免账号编辑器，如果出现提示，选择 Continue Without An Account。然后回到此页。") +
+    '</li><li>' + bilingual("Open one example in MIT. Choose Connect > Test in Web (Beta). Give the new window time to load.", "在 MIT 中打开一个示例。选择 Connect > Test in Web (Beta)，等待新窗口载入。") +
+    '</li><li>' + bilingual("If the tester stays blank, use the public Gallery listing to explore the idea.", "如果测试窗口一直空白，可以看公开的作品库页面了解这个想法。") +
+    '</li></ol><div class="actions">' + button("https://code.appinventor.mit.edu/", "Open account-free editor ↗", "打开免账号编辑器 ↗", false, true) +
+    '</div></details><div class="gallery-grid">' + projects.map((project) => {
+      const open = button("https://code2.appinventor.mit.edu/?ng=" + project.id,
+        project.previewOnly ? "Preview in MIT ↗" : "Open in MIT ↗", project.previewOnly ? "在 MIT 中预览 ↗" : "在 MIT 中打开 ↗",
+        !project.previewOnly, true);
+      const listing = button("https://gallery.appinventor.mit.edu/?galleryid=" + project.id,
+        "View Gallery listing ↗", "查看作品库页面 ↗", project.previewOnly, true);
+      return '<article class="card gallery-card"><p class="eyebrow">' + text(project.status) + '</p><h3>' + text(project.name) +
+        '</h3><p>' + text(project.task) + '</p><p><strong>' + bilingual("Idea to borrow", "可以借鉴的想法") + '</strong> ' + text(project.idea) +
+        '</p><div class="actions">' + (project.previewOnly ? listing + open : open + listing) + '</div></article>';
+    }).join("") + '</div></section>';
+}
+
 function extension() {
   const item = feature();
-  return stageHead("Extension · If you have time", "拓展挑战 · 有时间再做", "Improve your feature", "改进你的功能",
-    "Keep the same project and make one useful improvement.", "在同一个项目中做一项有用的改进。") +
-    (item ? '<section class="activity-card"><h2>' + text(item.title) + '</h2><p>' + rich(item.extra) +
-      '</p>' + editorShot(item.extraVisual) + '</section>' : chooseFirst()) +
+  return stageHead("Extension · If you have time", "拓展挑战 · 有时间再做", "Explore or improve", "探索或改进",
+    "Try one Gallery example or make one useful improvement to the feature you built.", "试一个作品库示例，或对自己做的功能进行一项有用的改进。") +
+    galleryExtension() +
+    (item ? '<section class="activity-card"><h2>' + bilingual("Improve my feature", "改进我的功能") + '</h2><h3>' + text(item.title) + '</h3><p>' + rich(item.extra) +
+      '</p>' + editorShot(item.extraVisual) + '</section>' : "") +
     stageFooter("#build", "Back to my guide", "返回我的指南", "#pitstop", "Go to Learning Pit Stop", "前往学习停靠站");
 }
 
