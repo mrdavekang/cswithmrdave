@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teacher dashboard · Python Signal Sprint</title>
+<link rel="stylesheet" href="visual-kit.css"><link rel="stylesheet" href="lesson.css"><link rel="stylesheet" href="teacher.css">
+<script defer src="config.js"></script><script defer src="content.js"></script><script defer src="teacher.js"></script>
+<body>
+<header class="top"><div class="brand">Python Signal Sprint <small>YEAR 8T · PRIVATE LEARNING RECORDS</small></div><a class="secondary" href="index.html?teacher=1" target="_blank" rel="noopener">Preview lesson ↗</a></header>
+<main class="teacher"><section id="login" class="card"><h1>Teacher dashboard</h1><p class="prompt">Sign in with your approved school tracking account.</p><form class="join" id="sign-in"><label for="email">Email</label><input type="email" id="email" autocomplete="username" required><label for="password">Password</label><input type="password" id="password" autocomplete="current-password" required><button class="next">Sign in</button></form><p class="quick-note">This sign-in is private. Student preview is separate and does not unlock learning records.</p></section>
+<p role="status" id="teacher-status"></p>
+<section id="dashboard" hidden>
+ <div class="dash-bar"><h1>Class learning records</h1><div class="actions"><button class="secondary" id="refresh">Refresh</button><button class="secondary" id="class-export">Export class JSON</button><button class="secondary" id="sign-out">Sign out</button></div></div>
+ <p class="quick-note">Names are entered by students, not verified. A second device or cleared browser storage can produce a separate record. Refreshing never reorders by most recent.</p>
+ <div class="dash-grid">
+  <aside class="card roster"><h2>Year 8T</h2><label for="filter">Find a student</label><input type="search" id="filter" placeholder="Search by name"><div id="roster"></div></aside>
+  <section class="card" id="student-detail"><p>Choose a student to see their evidence.</p></section>
+ </div>
+</section></main>
+</body></html>
