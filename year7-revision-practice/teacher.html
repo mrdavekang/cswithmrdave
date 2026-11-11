@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Year 7 Revision · Teacher dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="vendor/supabase.js"></script>
+  <script defer src="config.js"></script>
+  <script defer src="lesson.js"></script>
+  <script defer src="cloud.js"></script>
+  <script defer src="teacher.js"></script>
+</head>
+<body>
+  <header class="bar"><div class="bar-inner"><span class="brand"><span class="stamp" aria-hidden="true">01</span><span>COMPUTING STUDIO <small>YEAR 7 / TEACHER DASHBOARD</small></span></span><button id="signout" hidden>Sign out</button></div></header>
+  <main id="content" class="container dashboard">
+    <section class="card" id="login">
+      <div><span class="eyebrow">Teacher access</span><h1>Live revision.</h1></div>
+      <p class="lead">Sign in with your approved Year 7 classroom account.</p>
+      <form id="login-form" class="form teacher-form">
+        <label>Email <input type="email" name="email" autocomplete="username" required></label>
+        <label>Password <input type="password" name="password" autocomplete="current-password" required></label>
+        <button type="submit" class="primary">Sign in</button>
+      </form>
+    </section>
+    <div id="status" class="notice" role="status"></div>
+    <section id="dashboard" class="stack" hidden>
+      <div class="dash-top"><div><span class="eyebrow">Teacher view</span><h1>Live revision.</h1><p class="muted">Refreshes every 10 seconds. Practice feedback is not an assessment grade.</p></div>
+        <form id="class-form" class="action-group"><label class="field">Class <input id="class" value="7T" required maxlength="3" pattern="7[A-Za-z]{1,2}"></label><button type="submit">View class</button></form>
+      </div>
+      <div class="box stack"><h2>Private pupil link</h2><p>Create a link for <strong id="class-label">7T</strong> and share it in the class’s Teams space. It accepts new devices for 14 days. Creating another link replaces the previous link for new devices; existing pupil work stays saved.</p>
+        <div class="action-group"><button id="invite" class="primary">Create class link</button><button id="copy" hidden>Copy pupil link</button></div><label class="field" id="link-label" hidden>Pupil link <input id="link" readonly></label>
+      </div>
+      <div class="intro-foot" id="stats" aria-label="Class summary"></div>
+      <div class="box stack"><div class="dash-top"><div><h2>Pupil work</h2><p class="muted" id="asof"></p></div><div class="action-group"><button id="refresh">Refresh</button><button id="export-csv">Download CSV</button><button id="export-json">Download JSON</button></div></div>
+        <div class="table-wrap"><table class="teacher-table"><thead><tr><th>Pupil</th><th>Current stage</th><th>Main tasks</th><th>Quiz</th><th>Last saved</th><th>Responses</th></tr></thead><tbody id="rows"></tbody></table></div>
+      </div>
+      <div class="box stack"><div><h2>Where pupils may need support</h2><p class="muted">Totals are by question response, not by pupil. Written responses are listed separately for teacher review.</p></div>
+        <div class="table-wrap"><table class="teacher-table"><thead><tr><th>Topic</th><th>Auto-checked</th><th>Correct first time</th><th>Correct on latest check</th><th>Written responses</th></tr></thead><tbody id="topics"></tbody></table></div>
+      </div>
+      <div class="box stack" id="detail" hidden></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Year 7 Revision · Bits, pictures & messages</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="config.js"></script>
+  <script defer src="lesson.js"></script>
+  <script defer src="cloud.js"></script>
+  <script defer src="theme.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to lesson</a>
+  <header class="bar"><div class="bar-inner">
+    <a class="brand" href="./index.html"><span class="stamp" aria-hidden="true">01</span><span>COMPUTING STUDIO <small>YEAR 7 / REVISION 01</small></span></a>
+    <div class="bar-actions">
+      <span id="save" role="status" hidden></span>
+      <details class="theme" id="theme">
+        <summary class="button" id="theme-toggle"><span class="theme-dot" aria-hidden="true"></span><span id="theme-label">Theme</span></summary>
+        <section class="theme-panel" aria-labelledby="theme-heading">
+          <h2 id="theme-heading">Make it yours</h2>
+          <p class="muted" id="theme-help">Choose an accent for buttons and progress. The background stays white.</p>
+          <fieldset class="theme-choices" id="theme-choices"><legend id="theme-legend">Accent colours</legend></fieldset>
+          <label class="theme-custom"><span id="theme-custom-label">Pick any colour</span><input id="theme-colour" type="color" value="#a03624" aria-describedby="theme-help theme-contrast"></label>
+          <p class="muted small" id="theme-contrast" hidden>Light colours are darkened on buttons so the text stays readable.</p>
+          <button type="button" id="theme-done">Done</button>
+        </section>
+      </details>
+      <button id="language" type="button" aria-pressed="false">中文 support</button><button id="backup" type="button" hidden>Backup</button><button id="recover" type="button" hidden>Load school copy</button>
+    </div>
+  </div></header>
+  <main id="content" class="container"></main>
+  <footer class="footer"><span>YEAR 7 COMPUTING</span><span>BITS, PICTURES &amp; MESSAGES</span></footer>
+  <noscript>This lesson needs JavaScript. Ask your teacher to help you open it in a browser.</noscript>
+</body>
+</html>
