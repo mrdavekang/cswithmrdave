@@ -1,6 +1,6 @@
 "use strict";
 
-const { title, wagba, ksu, keywords, challenge, extracts, prompts, demos } = window.LESSON;
+const { title, wagba, ksu, keywords, challenge, traceSequence, extracts, prompts, demos } = window.LESSON;
 const esc = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
 const code = text => '<code>' + esc(text) + '</code>';
 const codeBlock = text => {
@@ -85,10 +85,10 @@ const steps = [
     intro: 'Start a fresh run of the original skeleton so it uses the starting list again.',
     body: () => start(p('Look at the option ' + code('2') + ' extract. The first row in <strong>02.1 Trace</strong> shows what happened to index ' + code('0') + '.')) +
       section('Code to read', codeBlock(extracts.list + '\n\n' + extracts.investigate)) +
-      pause('Predict what the second trace row will show before you enter the choices in the Shell.') +
+      pause('Read the sequence now; run it after your prediction. ' + esc(traceSequence)) +
       ead('trace') +
-      section('Your turn in IDLE', numbered('Run the original module.', 'In the Shell, choose ' + code('2') + ', enter ' + code('7') + ', then choose ' + code('1') + '.', 'Check your trace against the output, then enter ' + code('0') + ' to exit.')) +
-      ead('explain') + done('You’ve checked the trace and used the assignment line to explain why one value stayed the same.')
+      section('Your turn in IDLE', numbered('Run the original module.', 'In the Shell: ' + esc(traceSequence) + ' Enter the whole number shown.', 'Check your trace against the output, then enter ' + code('0') + ' to exit.')) +
+      ead('explain') + done('You’ve checked the trace and used the assignment line to explain the result.')
   },
   {
     id: 'modify', stage: 'Main Task 2', tag: 'Modify', heading: 'Change one output label',

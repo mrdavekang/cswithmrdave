@@ -8,6 +8,7 @@ window.LESSON = {
   ],
   "keywords": "Skeleton program, menu choice, branch, index, value, source code, screen capture",
   "challenge": "Point to the line that explains why one value changed and another stayed the same.",
+  "traceSequence": "Choose 2, enter 7, then choose 1.",
   "extracts": {
     "list": "donations = [4, 6, 2, 9]",
     "predict": "    elif choice == \"3\":\n        print(\"Amounts:\", donations)",
@@ -22,7 +23,7 @@ window.LESSON = {
     "prediction": ["01.1 Prediction", "Before you run the skeleton, predict the one line option 3 will display. Write it as you expect to see it in the Shell.", "Find the print line under choice == \"3\". Look back at the starting list.", "", "My prediction: ___"],
     "check": ["01.2 Check your prediction", "What actually appeared? Which line produced the output, and where did it get the values it displayed?", "Look at the indented print line and the name it uses.", "The program displays ___ because the print line uses ___.", "Actual output: ___\nMy explanation: ___"],
     "trace": ["02.1 Trace", "Start from the original list. Complete the value-after entry for index 1 before you run the sequence.", "A list index is a position, not the number stored at that position.", "", "Index 0: before 4, after 7 (worked row).\nIndex 1: before 6, after ___"],
-    "explain": ["02.2 Explain your trace", "After entering 7, why does the value at index 1 stay the same? Use the assignment line to explain.", "Look at the number in square brackets on the assignment line.", "The assignment changes index ___. Index 1 stays the same because ___.", "My explanation: ___"],
+    "explain": ["02.2 Explain your trace", "After entering 7, did the value at index 1 change? Use the assignment line to explain what you saw.", "Look at the number in square brackets on the assignment line.", "Index 1 ___ because the assignment writes to index ___.", "My explanation: ___"],
     "source": ["03.1 Program source code", "Paste the whole amended option 1 branch from the IDLE Editor. Include its opening if line and the indented lines underneath it. Stop before the next elif.", "Keep the spaces at the start of the lines. Paste as text, not as an image.", "", "[Paste your amended branch here.]"],
     "capture": ["03.2 Screen capture", "Run your edited copy and choose 1. Paste one readable capture from the IDLE Shell showing the menu choice you entered and the output with your new label.", "Capture the relevant prompt and output together. Check they can be read at normal size.", "", "[Replace this line with your IDLE Shell capture.]"],
     "modifyReflection": ["Modify Reflection", "Why did the output label change but the donation values stay the same? Point to the part of the line you edited.", "Compare the text inside quotation marks with the expression that gets a donation value.", "I changed ___. The values stayed the same because ___.", "My explanation: ___"],
