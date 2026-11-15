@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Year 10 Paper 1 practice. Read, trace and test the Book Donation Tracker, using the Word EAD for all answers.">
+  <title>Book Donation Tracker · Session 2</title>
+  <style>:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #202943; background: #f7f8f4; line-height: 1.55;
+  --ink: #202943; --muted: #4c566b; --green: #245747; --border: #d9e1db;
+  --read-bg: #edf7ef; --read-stroke: #cadfd1; --read-ink: #285a45;
+  --question-bg: #f4edf8; --question-ink: #583775; --answer-bg: #eaf4fb; --answer-ink: #184f73;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-bottom: calc(var(--pager-height, 7rem) + 1rem); }
+body { margin: 0; padding-bottom: calc(var(--pager-height, 6rem) + 1rem); }
+a { color: var(--green); text-underline-offset: .2em; }
+:focus-visible { outline: 3px solid #9e5900; outline-offset: 4px; }
+[hidden] { display: none !important; }
+.wrap { width: min(54rem, calc(100% - 2rem)); margin-inline: auto; }
+.site-header { background: #fff; border-bottom: 1px solid var(--border); }
+.header-wrap {
+  width: min(75rem, calc(100% - 2rem)); margin: auto; min-height: 4.75rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+}
+.brand { display: flex; align-items: center; gap: .75rem; color: var(--ink); font-weight: 750; text-decoration: none; line-height: 1.25; }
+.brand small { display: block; color: var(--muted); margin-top: .23rem; font-weight: 550; }
+.year-mark {
+  display: grid; place-items: center; min-width: 2.75rem; min-height: 2.75rem;
+  border-radius: .8rem .8rem .8rem .24rem; background: #244539; color: #fff; font-size: 1.25rem;
+}
+.header-link { font-size: .88rem; font-weight: 750; line-height: 1.3; white-space: nowrap; }
+.step-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.2rem 0 1rem; }
+.progress-wrap { display: flex; align-items: center; gap: .65rem; color: var(--muted); font-size: .9rem; font-weight: 700; }
+progress { width: clamp(3rem, 14vw, 7rem); height: .52rem; accent-color: #378063; border: 0; border-radius: 1rem; overflow: hidden; }
+progress::-webkit-progress-bar { background: #dfebe3; }
+progress::-webkit-progress-value { background: #378063; }
+.stage-menu { position: relative; }
+.stage-menu summary { color: var(--green); font-size: .9rem; font-weight: 750; padding: .45rem .65rem; cursor: pointer; }
+.stage-menu nav {
+  position: absolute; z-index: 2; top: calc(100% + .25rem); right: 0; background: #fff;
+  min-width: min(15rem, 80vw); padding: .45rem; border: 1px solid var(--border); border-radius: .8rem;
+  box-shadow: 0 12px 28px #263c3014;
+}
+.stage-menu a { display: block; padding: .45rem .55rem; border-radius: .4rem; font-size: .92rem; }
+.stage-menu a[aria-current] { font-weight: 750; background: #edf7ef; }
+main { min-width: 0; padding: clamp(1.05rem, 4vw, 2.4rem); background: #fff; border: 1px solid var(--border); border-radius: 1.55rem; }
+main:focus { outline: none; }
+h1, h2, h3 { margin: 0; line-height: 1.16; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5.5vw, 3.45rem); letter-spacing: -.05em; }
+h2 { font-size: clamp(1.12rem, 2.4vw, 1.37rem); letter-spacing: -.02em; }
+p { margin: .65rem 0 0; max-width: 65ch; }
+.eyebrow {
+  color: var(--green); text-transform: uppercase; font-weight: 790; letter-spacing: .085em;
+  font-size: .77rem; margin: 0 0 .65rem;
+}
+.lede { color: var(--muted); font-size: 1.05rem; margin-top: .7rem; }
+.flow { display: grid; gap: 1rem; margin-top: 1.35rem; }
+.card { min-width: 0; padding: clamp(.9rem, 3vw, 1.35rem); }
+.card-heading { display: flex; align-items: center; gap: .7rem; margin-bottom: .7rem; }
+.card-label { display: block; font-size: .74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .055em; margin-bottom: .18rem; }
+.card p, .card li { font-size: clamp(1rem, 1.8vw, 1.095rem); }
+.read { border: 1px solid var(--read-stroke); border-radius: 1.55rem; background: var(--read-bg); }
+.read .card-label { color: var(--read-ink); }
+.question {
+  --corner: 1.05rem;
+  background: var(--question-bg); border-left: 3px solid #cdb5dd;
+  clip-path: polygon(0 0, calc(100% - var(--corner)) 0, 100% var(--corner), 100% 100%, 0 100%);
+  border-radius: .15rem .15rem .6rem .15rem;
+}
+.question .card-label, .marks { color: var(--question-ink); }
+.marks { font-weight: 700; font-size: .83rem; white-space: nowrap; }
+.ead-card {
+  border: 2px solid #a9cce1; border-left: .42rem solid #2d7097;
+  border-radius: .5rem 1.25rem 1.25rem 1.25rem; background: var(--answer-bg);
+}
+.ead-card .card-heading { align-items: flex-start; }
+.ead-card .badge { width: 2.85rem; height: 2.85rem; flex-basis: 2.85rem; }
+.ead-card h2 { color: #123e5d; font-size: clamp(1.45rem, 3.3vw, 1.95rem); font-weight: 850; }
+.ead-card .ead-location {
+  margin-top: .38rem; color: #163f60; font-size: clamp(1.11rem, 2.3vw, 1.35rem);
+  font-weight: 800; line-height: 1.32; overflow-wrap: anywhere;
+}
+.badge { display: grid; width: 2.45rem; height: 2.45rem; flex: 0 0 2.45rem; place-items: center; }
+.badge svg { width: 1.3rem; height: 1.3rem; }
+.badge-read { border-radius: 50%; color: var(--read-ink); background: #d4ebdb; }
+.badge-question { color: var(--question-ink); background: #e8d7f1; clip-path: polygon(21% 0, 79% 0, 100% 21%, 100% 79%, 79% 100%, 21% 100%, 0 79%, 0 21%); }
+.badge-ead { color: var(--answer-ink); background: #cee7f7; border-radius: .15rem .6rem .6rem .6rem; }
+.ead-targets { margin: .45rem 0 0; padding-left: 1.25rem; }
+.ead-targets li + li { margin-top: .42rem; }
+.small-cue { color: var(--muted); }
+.rule { font-weight: 690; }
+.read-points, .step-points { margin: 0; padding-left: 1.25rem; }
+.read-points li + li, .step-points li + li { margin-top: .44rem; }
+.value-map { width: min(100%, 28rem); border-collapse: separate; border-spacing: .25rem; margin: .65rem -.25rem; text-align: center; }
+.value-map th, .value-map td { padding: .33rem .4rem; border-radius: .34rem; background: #fff; }
+.value-map th { background: #dceee2; }
+.value-map th:first-child { text-align: left; }
+pre { margin: .65rem 0; max-width: 100%; padding: .75rem .85rem; overflow-x: auto; background: #fbfcff; border: 1px solid #dce3ed; border-radius: .7rem; }
+code, samp { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+pre code, pre samp { font-size: clamp(.87rem, 2vw, 1.02rem); line-height: 1.55; white-space: pre; }
+.token-word { color: #6b3274; font-weight: 720; }
+.token-number { color: #19528b; }
+.token-text { color: #175f4b; }
+.hero { position: relative; isolation: isolate; padding: clamp(1.15rem, 4vw, 2rem); border-radius: 1.25rem; background: #e8f2ea; }
+.hero-copy { max-width: 30rem; }
+.hero-art { position: absolute; right: .8rem; bottom: .15rem; width: min(29%, 12rem); height: auto; pointer-events: none; }
+.hero .lede { max-width: 35ch; }
+.downloads { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.1rem; }
+.button, button {
+  min-height: 2.8rem; display: inline-flex; align-items: center; justify-content: center; text-align: center;
+  color: #fff; background: #254d40; border: 1px solid #254d40; border-radius: .66rem;
+  padding: .54rem .95rem; font: 750 .93rem/1.2 system-ui, sans-serif; text-decoration: none; cursor: pointer;
+}
+.button.secondary { color: #244c3d; background: #fff; border-color: #a8bcb1; }
+.button:hover, button:hover { box-shadow: inset 0 0 0 1px currentColor; }
+button:disabled { opacity: .65; cursor: wait; }
+.learning { padding: .1rem 0; }
+.learning dl { display: grid; gap: .45rem; margin: .75rem 0 0; }
+.learning dl div { display: grid; grid-template-columns: 8rem 1fr; gap: .5rem; }
+dt { font-weight: 750; color: var(--green); }
+dd { margin: 0; }
+.wagba { font-size: 1.15rem; line-height: 1.45; margin-bottom: 1.05rem; }
+.phase-list { margin: .45rem 0 0; display: grid; gap: .42rem; }
+.phase-list div { display: grid; gap: .12rem; grid-template-columns: 10.5rem 1fr; }
+.demo { border: 1px solid #dce3df; border-radius: .95rem; padding: 1rem 1.15rem; }
+.demo h2 { margin-bottom: .6rem; }
+.demo p:empty { display: none; }
+.demo button { margin-top: .6rem; }
+footer { margin: 1rem .35rem; color: var(--muted); font-size: .88rem; }
+.pager {
+  position: fixed; z-index: 3; bottom: 0; left: 0; right: 0; padding: .62rem 0 max(.62rem, env(safe-area-inset-bottom));
+  background: #fff; border-top: 1px solid var(--border); box-shadow: 0 -5px 24px #263c300a;
+  max-height: 52dvh; overflow-y: auto;
+}
+.pager-inner { display: grid; grid-template-columns: auto minmax(8rem, 1fr) auto; align-items: center; gap: .75rem; }
+.rail-ead {
+  display: block; padding: .55rem .8rem; background: var(--answer-bg); border-radius: .7rem;
+  text-align: center; line-height: 1.26; color: #123e5d; overflow-wrap: anywhere;
+}
+.rail-ead strong { display: block; font-size: clamp(1.12rem, 2.4vw, 1.42rem); font-weight: 850; }
+.rail-ead span { display: block; margin-top: .24rem; font-size: 1rem; font-weight: 700; color: #244b66; }
+.pager .next { justify-self: end; }
+.skip { position: fixed; z-index: 4; top: .5rem; left: .5rem; padding: .55rem; background: #fff; transform: translateY(-200%); }
+.skip:focus { transform: translateY(0); }
+@media (max-width: 43rem) {
+  .wrap, .header-wrap { width: calc(100% - 1.3rem); }
+  .hero-art { width: 8rem; right: .35rem; opacity: .55; }
+  .hero-copy { position: relative; z-index: 1; }
+  .pager-inner { gap: .45rem; }
+  .pager .button { padding-inline: .68rem; }
+}
+@media (max-width: 34rem) {
+  body { padding-bottom: calc(var(--pager-height, 9rem) + 1rem); }
+  .hero-art { display: none; }
+  .pager-inner { grid-template-columns: 1fr 1fr; row-gap: .4rem; }
+  .rail-ead { grid-row: 1; grid-column: 1 / -1; text-align: left; }
+  .pager .prev { grid-row: 2; grid-column: 1; justify-self: start; }
+  .pager .next { grid-row: 2; grid-column: 2; }
+  .phase-list div, .learning dl div { grid-template-columns: 1fr; gap: .1rem; }
+  .header-link { white-space: normal; text-align: right; }
+  .brand small { font-size: .72rem; }
+}
+@media print {
+  body { padding-bottom: 0; }
+  .pager, .header-link, .stage-menu { display: none; }
+  main { border: 0; }
+}
+</style>
+</head>
+<body>
+  <a class="skip" href="#lesson">Skip to this step</a>
+  <header class="site-header">
+    <div class="header-wrap">
+      <a class="brand" href="#start"><span class="year-mark" aria-hidden="true">10</span><span>Computer Science<small>Paper 1 practice · Session 2</small></span></a>
+      <a class="header-link" href="resources/Session_2_Practice_EAD_Shaped_Boxes.docx" download>Get the Word EAD</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="step-bar" id="step-bar"></div>
+    <main id="lesson" tabindex="-1"></main>
+    <footer>All answers, code and screenshots stay in your Word EAD. This guide does not save or submit your work.</footer>
+  </div>
+  <nav id="pager" class="pager" aria-label="Lesson navigation"></nav>
+  <noscript><p>Enable JavaScript to use the guide. You can still download the <a href="resources/Session_2_Practice_EAD_Shaped_Boxes.docx" download>Word EAD</a> and the <a href="resources/Book_Donation_Tracker_Day2_Starter.py" download>Python starter</a>.</p></noscript>
+  <script>const SESSION = {"wagba":"Modify one menu branch and use tests to show that it works at the boundary.","ksu":["Know the difference between a count and the final index.","Follow and change one branch in IDLE, then capture the result.","Explain why the check goes before the loop."],"sections":{"A":"Reading the program","B":"Short programming questions","C":"Longer programming question"},"reading":{"do-now":{"title":"Count or position","before":"01.1","blocks":[{"code":"scores = [7, 14, 21, 28]"},{"label":"Count","text":"The count is how many values are in the list. There are four scores."},{"label":"Index and value","text":"An index is a position. The first index is 0. The value at index 0 is 7. The final index is 3, not 4."},{"label":"Pause","text":"Point to the first value. What is its index? Now use the question’s list."}]},"menu":{"title":"Read a menu choice","before":"01.2","blocks":[{"code":"print(\"7 Show the scores\")"},{"label":"Menu number","text":"In this example, 7 is what you would type to show the scores. It is not a list index. In the practice starter, find the action the question names and read the number next to it."}]},"predict":{"title":"Follow one loop row","before":"01.3 and 01.4","blocks":[{"code":"scores = [7, 14, 21, 28]\nfor index in range(3):\n    print(index, scores[index])"},{"label":"First row","text":"At index 0, scores[0] is 7. The first line printed is 0 7."},{"label":"Stop value","text":"range(3) visits 0, 1 and 2. Index 3 exists, but is not visited."},{"label":"Pause","text":"Point to the stop value in the question’s code. Predict before you run it."}]},"short":{"title":"Count items and read one value","before":"02.1 and 02.2","blocks":[{"code":"tiles = [5, 9, 12, 16]\nprint(len(tiles))\nprint(tiles[1])"},{"label":"Read the output","text":"The first line printed is 4, the number of items. The second line is 9, the value at index 1."},{"label":"Brackets","text":"len(...) counts the items in a list. Square brackets take an index and look up one value."},{"label":"If you get stuck","text":"For 02.2, assume shelf_count already holds the count. You can attempt 02.2 even if you did not finish 02.1."}]},"selection":{"title":"Choose between two actions","before":"02.3","blocks":[{"code":"temperature = 8\nif temperature \u003c 10:\n    print(\"Wear a coat\")\nelse:\n    print(\"No coat needed\")"},{"label":"Read the comparison","text":"8 is less than 10, so only Wear a coat prints. At exactly 10, the comparison is false and the else message prints."},{"label":"Read the layout","text":"The if and else lines end with colons. Their print lines are indented. Put the message text in quotes."},{"label":"Pause","text":"In the question, check what should happen when the number is exactly on the limit."}]},"plan":{"title":"Check the count before using it","before":"03.1","blocks":[{"label":"Example","text":"A cabinet has six trays. A request for 1 or 6 trays is allowed. Requests for 0 or 7 are not allowed. Check the request before opening any trays."},{"label":"Two limits","text":"Both the lower and upper limit must be met. A request for 7 passes the lower limit, but fails the upper limit."},{"label":"Why check first","text":"If the request is too large, the program could try to read an index that does not exist. Work out the rule in words before editing."}]},"modify":{"title":"Find the branch to change","before":"03.2","blocks":[{"label":"Find","text":"In your practice copy, find the line that starts elif and checks choice against \"5\". A branch is the group of indented lines under that condition."},{"label":"Keep","text":"Keep the line that asks how many records to show. Replace the temporary print below it. Do not change options 0 to 4."},{"label":"Pause","text":"Before you run, point to your check and the lines that run only when it passes."},{"label":"Copy the code","text":"Copy from the Editor, where you wrote the code."}]},"test":{"title":"Show the run in the Shell","before":"03.3 and 03.4","blocks":[{"label":"Shell evidence","text":"Capture the entered number and its result from the Shell. One image is fine if it shows both tests."}]}},"rows":[{"id":"do-now","stage":"Do Now","title":"Count and index","minutes":5,"cue":"Screens up","section":"A","marks":2,"text":["Open the Session 2 Practice EAD in Word and save a named copy.","Read the mini list for 01.1. Then open the practice starter and look at the printed menu for 01.2. You do not need to run it yet."],"code":"shelves = [12, 18, 24]","label":"01.1 Count and index","prompt":"How many items are in shelves? What is its final valid index?","help":"Start counting positions at 0.","response":["Number of items","Final valid index"],"items":[{"label":"01.2 Read the menu","marks":1,"prompt":"Which menu option would you choose to replace the first donation amount? Give the option number.","response":["Menu option number"]}]},{"id":"types","stage":"Types of Learning","title":"One focus for this lesson","minutes":3,"cue":"Screens up","text":["Use the Do Now to choose your focus: recall what an index means, trace a loop, or explain why the program checks a count first."],"label":"Types of Learning","prompt":"What will you practise today, and what in your first answer led to that choice?","help":"I chose ___ because in 01.1 I ___.","response":["My focus and reason:"]},{"id":"predict","stage":"Main Task 1","title":"Predict and run a short loop","minutes":10,"cue":"Pause before Run","section":"A","marks":2,"text":["Read the shelf example. Type your two predicted lines in 01.3 before running it.","Run the worked example. Copy the actual output into the second box. Then answer 01.4 without running it again."],"code":"shelves = [12, 18, 24]\nrequested = 2\nfor index in range(requested):\n    print(index, shelves[index])","demo":true,"label":"01.3 Predict and check","prompt":"Before running the code, predict both output lines. Run it and copy the actual output into the second box.","help":"","response":["My prediction","What actually printed"],"items":[{"label":"01.4 Explain the stopping point","marks":2,"prompt":"Explain why the value at index 2 does not print. Refer to the stop value in range(requested) and the indexes the loop visits.","response":["My explanation"]}]},{"id":"short","stage":"Main Task 1","title":"Write short Python answers","minutes":8,"cue":"Screens up · one question at a time","section":"B","marks":1,"text":["Answer 02.1 to 02.3 in the EAD. Use the shelf list for 02.1 and 02.2. Question 02.3 is a separate example.","If you want to run a quick check, use a new IDLE file. Do not edit the starter during this section. No screenshots are needed."],"code":"shelves = [12, 18, 24]","label":"02.1 Count the entries","prompt":"Write one line of Python that uses len to store the number of items in shelves in a variable called shelf_count.","help":"","response":["One line of Python"],"items":[{"label":"02.2 Print the final value","marks":2,"prompt":"Write one line of Python that uses shelf_count to print the final value in shelves. Do not type the index or value as a fixed number.","response":["One line of Python"]},{"label":"02.3 Choose the message","marks":3,"code":"books = 18","prompt":"Write an if and an else. Print Full shelf if books is at least 20. Otherwise, print Space left.","response":["My if and else code"]}]},{"id":"plan","stage":"Main Task 2","title":"Plan the new option","minutes":5,"cue":"Screens up · no edits yet","section":"C","marks":2,"text":["Download the practice starter. It already has option 5, and options 0–4 are unchanged.","In the practice copy only, option 5 must display the first N donation records if N is between 1 and the list length, inclusive. Each row shows the index and its value.","If N is outside that range, display ‘Count out of range.’ once and return to the menu. Assume the input is an integer."],"label":"03.1 Plan","prompt":"What range of requested counts should the program accept? Explain why the program should check the count before the loop.","help":"Think about the first allowed count and the largest allowed count.","response":["Allowed range","Why the check comes first"]},{"id":"modify","stage":"Main Task 2","title":"Modify option 5 in IDLE","minutes":12,"cue":"Screens up","section":"C","marks":5,"text":["Open Book_Donation_Tracker_Day2_Starter.py in the IDLE Editor. Save As Book_Donation_Tracker_Day2_Work.py.","Find the option 5 branch. Leave its input line in place. Replace the placeholder print with your check, loop and out-of-range message.","Copy the whole amended option 5 branch into 03.2 as text. Stop before the final print that finishes the program."],"label":"03.2 Amended source code","prompt":"Paste the whole option 5 branch, including its opening elif and input line. Keep the indentation intact.","help":"Use the print pattern from option 1. Check that the code for a valid count and the code for an invalid count are in separate branches.","response":["Source code from the IDLE Editor"]},{"id":"test","stage":"Main Task 2","title":"Run two tests and capture evidence","minutes":9,"cue":"Screens up · predict before you run","section":"C","marks":4,"text":["In 03.3, predict what option 5 will do for requests of 2 and 0.","Start a fresh run. Choose 5 and enter 2. Choose 5 again and enter 0. Leave the menu visible for your capture, then choose 0 to exit.","Paste one or two readable Shell captures in 03.3. Then use your evidence to answer 03.4."],"label":"03.3 Shell test evidence","prompt":"Predict the index and value pairs for input 2 and the message for input 0. Then run both tests and paste the Shell evidence.","help":"Capture each input and its result. An image of the Editor does not show what the program did.","response":["Prediction for input 2","Prediction for input 0","Shell capture for input 2 or both tests","Shell capture for input 0"],"items":[{"label":"03.4 Check the menu","marks":1,"prompt":"What shows the menu is back after the input 0 test?","response":["What I saw in the Shell"]}]},{"id":"extension","stage":"Extension","title":"Test the upper boundary","minutes":2,"cue":"Screens up · optional","text":["If your two core tests are complete, try option 5 with a request equal to the list length, then one more than that length.","If you need longer, finish 03.3 and 03.4 instead."],"label":"Extension","prompt":"What happened at the upper limit and just above it? What does that tell you about your check?","help":"","response":["My two results and reason:"]},{"id":"pit-stop","stage":"Learning Pit Stop","title":"Evidence of progress","minutes":3,"cue":"Screens up · reflect in Word","text":["Look back at your focus and choose a phase: New Learning, Consolidating, Treading Water, or Drowning (I need support)."],"label":"Learning Pit Stop","prompt":"Name your phase, one EAD answer that supports it and one next step for Session 3.","help":"My evidence is in ___; next time I will ___.","response":["Phase, evidence and next step:"]},{"id":"plenary","stage":"Plenary","title":"One independent check","minutes":3,"cue":"Screens up","text":["Type your answer in Word before checking with anyone. Save the same EAD."],"label":"Plenary","prompt":"If someone replaces range(requested) with range(len(donations)), what would option 5 do when the user asks for two records? Explain why.","help":"","response":["My prediction and reason:"]}]};</script>
+  <script>'use strict';
+
+const {rows, wagba, ksu, reading} = SESSION;
+const row = id => rows.find(entry => entry.id === id);
+const $ = id => document.getElementById(id);
+const esc = val => String(val).replace(/[&<>"']/g, s => ({
+  '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+}[s]));
+const p = val => '<p>' + esc(val) + '</p>';
+const lead = (label, val) => '<p><strong>' + esc(label) + '</strong> ' + esc(val) + '</p>';
+const list = (items, ordered = false) => {
+  const tag = ordered ? 'ol' : 'ul';
+  return '<' + tag + ' class="step-points">' + items.map(s => '<li>' + esc(s) + '</li>').join('') + '</' + tag + '>';
+};
+const icons = {
+  read: '<path d="M12 6.5C9.5 4.8 5.9 4.2 3 5v13c3-.8 6.6-.2 9 1.5 2.4-1.7 6-2.3 9-1.5V5c-2.9-.8-6.5-.2-9 1.5ZM12 7v12"/>',
+  question: '<path d="M8.8 8.7a3.3 3.3 0 1 1 5.1 2.7c-1.4.9-1.9 1.7-1.9 3.1M12 18.3h.01"/>',
+  ead: '<path d="m5 15-1 5 5-1L20 8l-4-4L5 15ZM14 6l4 4M5 15l4 4"/>'
+};
+const badge = kind => '<span class="badge badge-' + kind + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + icons[kind] + '</svg></span>';
+const code = source => {
+  const tokens = /"[^"\n]*"|\b(?:for|in|if|else|elif|print|range|len)\b|\b\d+\b/g;
+  let from = 0, html = '';
+  for (const token of source.matchAll(tokens)) {
+    html += esc(source.slice(from, token.index));
+    const kind = token[0].startsWith('"') ? 'text' : /^\d+$/.test(token[0]) ? 'number' : 'word';
+    html += '<span class="token-' + kind + '">' + esc(token[0]) + '</span>';
+    from = token.index + token[0].length;
+  }
+  return '<pre tabindex="0" aria-label="Python code"><code>' + html + esc(source.slice(from)) + '</code></pre>';
+};
+const card = (kind, label, heading, body, extra = '') => '<section class="card ' +
+  (kind === 'ead' ? 'ead-card' : kind) + '"' + extra + '><div class="card-heading">' + badge(kind) +
+  '<div><span class="card-label">' + esc(label) + '</span><h2>' + esc(heading) + '</h2></div></div>' + body + '</section>';
+const read = (title, body) => card('read', 'Read', title, body);
+const action = (title, body) => card('question', 'Do this', title, body, ' data-action');
+const taskQuestion = (item, snippet = item.code) => card('question', 'Question', item.label,
+  (item.marks ? '<span class="marks">' + item.marks + (item.marks === 1 ? ' mark' : ' marks') + '</span>' : '') +
+  (snippet ? code(snippet) : '') + p(item.prompt), ' data-question');
+const starter = 'resources/Book_Donation_Tracker_Day2_Starter.py';
+const ead = 'resources/Session_2_Practice_EAD_Shaped_Boxes.docx';
+const item = (id, i = 0) => row(id).items[i];
+const model = id => reading[id].blocks.find(block => block.code).code;
+const anchor = (target, label, css = 'button secondary') =>
+  '<a class="' + css + '" href="' + target + '">' + esc(label) + '</a>';
+const downloads = '<div class="downloads"><a class="button" href="' + ead +
+  '" download>Download Word EAD</a><a class="button secondary" href="' + starter +
+  '" download>Download Python starter</a></div>';
+const guideArt = '<svg class="hero-art" viewBox="0 0 184 150" aria-hidden="true" fill="none">' +
+  '<path d="M12 129h156" stroke="#c4d9ca" stroke-width="2"/><rect x="29" y="104" width="111" height="24" rx="6" fill="#577b6b"/>' +
+  '<path d="M40 111h88v10H40z" fill="#edf5ee"/><rect x="42" y="82" width="107" height="22" rx="5" fill="#69a18a"/>' +
+  '<path d="M54 88h82v10H54z" fill="#f4faf4"/><path d="M59 49h66l13 33H45l14-33Z" fill="#dfbb81"/>' +
+  '<path d="M62 52h60l9 14H51l11-14Z" fill="#f0d9ac"/><path d="M79 39h26v15H79z" fill="#b68fbd"/>' +
+  '<path d="M90 13v17m-8-8h16m46 21v13m-6-6h12" stroke="#69a18a" stroke-width="3" stroke-linecap="round"/>' +
+  '</svg>';
+
+const steps = [
+  {
+    id: 'start', stage: 'Start here', title: 'Book Donation Tracker', ref: 'Cover page',
+    fields: ['Name', 'Class'], destination: 'Start in the Word EAD',
+    instructions: ['Download and open the EAD in Word. Fill in Name and Class, then save a copy with your name.'],
+    content: () => '<div class="hero"><div class="hero-copy"><p class="eyebrow">Session 2 of 3 · 25 practice marks</p>' +
+      '<h1>Book Donation<br>Tracker</h1><p class="lede">Read a loop, change one menu option, and test your change in IDLE.</p>' +
+      '</div>' + guideArt + '</div>' + downloads +
+      '<section class="learning"><p class="eyebrow">WAGBA · What are we getting better at?</p><h2 class="wagba">' +
+      esc(wagba) + '</h2><h2>Knowledge, Skills and Understanding</h2><dl>' +
+      ['Knowledge','Skills','Understanding'].map((s, i) => '<div><dt>' + s + '</dt><dd>' + esc(ksu[i]) + '</dd></div>').join('') + '</dl></section>'
+  },
+  {
+    id: 'do-now', stage: 'Do Now', section: 'A', title: 'Count or position', ref: '01.1',
+    fields: ['Number of items', 'Final valid index'], destination: '01.1 · Count and index',
+    instructions: ['Type the count in Number of items and the position in Final valid index.'],
+    content: () => read('Count, index and value', code(model('do-now')) +
+      '<table class="value-map" aria-label="Index and value in the scores list"><tbody><tr><th scope="row">Index</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th scope="row">Value</th><td>7</td><td>14</td><td>21</td><td>28</td></tr></tbody></table>' +
+      p('There are four scores. An index is a position, and the first position is 0.')) + taskQuestion(row('do-now'))
+  },
+  {
+    id: 'menu', stage: 'Do Now', section: 'A', title: 'Read the menu', ref: '01.2',
+    fields: ['Menu option number'], destination: '01.2 · Menu option number',
+    instructions: ['Type the option number only in Menu option number.'],
+    content: () => read('Read the number beside the action', code(model('menu')) +
+      p('In this example you would type 7 to show the scores. Open the practice starter in IDLE and read its menu. You do not need to run it.')) + taskQuestion(item('do-now'))
+  },
+  {
+    id: 'types', stage: 'Types of Learning', title: 'Choose what to practise', ref: 'Types of Learning',
+    fields: ['My focus and reason'], destination: 'Types of Learning · My focus and reason',
+    instructions: ['Type one focus and why you chose it in My focus and reason. Use your first answer as evidence.'],
+    content: () => read('Start with the Do Now', list(['Knowledge: tell an index from a count.', 'Skills: trace a loop one line at a time.', 'Understanding: explain why a program checks a request before using it.'])) +
+      taskQuestion(row('types'))
+  },
+  {
+    id: 'predict', stage: 'Main Task 1', section: 'A', title: 'Trace a loop', ref: '01.3',
+    fields: ['My prediction', 'What actually printed'], destination: '01.3 · Predict and check',
+    instructions: ['Before Run: type both predicted lines in My prediction.', 'After Run: copy the real output into What actually printed. Keep your prediction so you can compare.'],
+    content: () => read('Follow one loop row', code(model('predict')) +
+      lead('First row:', '0 7 means index 0 and value 7.') +
+      lead('Stop value:', 'range(3) visits 0, 1 and 2. It stops before 3.')) + taskQuestion(row('predict')),
+    demo: true
+  },
+  {
+    id: 'explain', stage: 'Main Task 1', section: 'A', title: 'Explain where the loop stops', ref: '01.4',
+    fields: ['My explanation'], destination: '01.4 · My explanation',
+    instructions: ['Type your explanation in My explanation. Refer to the stop value and the indexes visited.'],
+    content: () => read('Look back at 01.3', p('Find requested and see how range uses it. Use the output you already put in your EAD; you do not need to run the code again.')) +
+      taskQuestion(item('predict'), row('predict').code)
+  },
+  {
+    id: 'short', stage: 'Main Task 1', section: 'B', title: 'Count the entries', ref: '02.1',
+    fields: ['One line of Python'], destination: '02.1 · One line of Python',
+    instructions: ['Type your line in the One line of Python box for 02.1. No screenshot is needed.'],
+    content: () => read('Count or look up', code(model('short')) +
+      p('len(tiles) counts 4 items. tiles[1] looks up the value 9. If you check your code in IDLE, use a new file, not the practice starter.')) + taskQuestion(row('short'))
+  },
+  {
+    id: 'print-final', stage: 'Main Task 1', section: 'B', title: 'Print the final value', ref: '02.2',
+    fields: ['One line of Python'], destination: '02.2 · One line of Python',
+    instructions: ['Type your line in the One line of Python box for 02.2, not the one for 02.1. No screenshot is needed.'],
+    content: () => read('You can start here even if 02.1 was tricky', p('Assume shelf_count already holds the count. Square brackets need a position, not a count.')) +
+      taskQuestion(item('short'), row('short').code)
+  },
+  {
+    id: 'selection', stage: 'Main Task 1', section: 'B', title: 'Choose the message', ref: '02.3',
+    fields: ['My if and else code'], destination: '02.3 · My if and else code',
+    instructions: ['Type your if and else in My if and else code. Keep the print lines indented.'],
+    content: () => read('Follow an if and an else', code(model('selection')) +
+      list(['At 8, the condition is true and the first message prints.', 'At exactly 10, the condition is false and the else message prints.', 'Notice the colons, indentation and quotes.'])) + taskQuestion(item('short', 1))
+  },
+  {
+    id: 'plan', stage: 'Main Task 2', section: 'C', title: 'Check the limits first', ref: '03.1',
+    fields: ['Allowed range', 'Why the check comes first'], destination: '03.1 · Plan',
+    instructions: ['Write the rule in Allowed range. Explain why the program checks first in Why the check comes first. Do not edit the program yet.'],
+    content: () => read('Example: a cabinet with six trays',
+      '<table class="value-map" aria-label="Example boundary requests"><thead><tr><th scope="col">Allowed</th><th scope="col">Rejected</th></tr></thead><tbody><tr><td>1 or 6</td><td>0 or 7</td></tr></tbody></table>' +
+      p('Both limits matter: 7 passes the lower limit but fails the upper one. Check before opening trays, so you don’t try to open one that isn’t there.')) +
+      taskQuestion(row('plan')) +
+      '<p class="small-cue"><strong>Option 5 requirements:</strong> Accept a whole-number count from 1 to the list length, inclusive. Show the index and value of each of the first N records. Otherwise print “Count out of range.” once and return to the menu.</p>'
+  },
+  {
+    id: 'find-branch', stage: 'Main Task 2', section: 'C', title: 'Find option 5 in IDLE', ref: '03.2 preparation',
+    fields: ['Source code from the IDLE Editor'], destination: '03.2 · Source code from the IDLE Editor',
+    instructions: ['Nothing to paste yet. Leave the Source code from the IDLE Editor box empty until you have edited the branch.'],
+    content: () => action('Find the branch before you change anything',
+      list(['Open Book_Donation_Tracker_Day2_Starter.py in the IDLE Editor.', 'Use Save As. Name your copy Book_Donation_Tracker_Day2_Work.py.', 'Find the line below, then stop.'], true) +
+      code('    elif choice == "5":'))
+  },
+  {
+    id: 'modify', stage: 'Main Task 2', section: 'C', title: 'Change one menu branch', ref: '03.2',
+    fields: ['Source code from the IDLE Editor'], destination: '03.2 · Source code from the IDLE Editor',
+    instructions: ['Paste the amended branch as text into Source code from the IDLE Editor. Start at elif choice and stop before the program’s final print.'],
+    content: () => read('What stays and what changes',
+      list(['Keep the line that asks for the count.', 'Replace only the temporary print. Check the limits, loop over the requested records, and print one message for an invalid count.', 'Leave options 0 to 4 alone. Before running, point to the lines that run only when the check passes.'], true)) +
+      taskQuestion(row('modify'))
+  },
+  {
+    id: 'test', stage: 'Main Task 2', section: 'C', title: 'Predict both tests', ref: '03.3',
+    fields: ['Prediction for input 2', 'Prediction for input 0'], destination: '03.3 · Prediction for input 2 and Prediction for input 0',
+    instructions: ['Type the predicted index and value pairs in Prediction for input 2.', 'Type the predicted message in Prediction for input 0. Don’t run the tests until both predictions are in Word.'],
+    content: () => read('The option and the input are different',
+      p('In both tests, choose option 5. The count you enter after the prompt is 2 for the first test and 0 for the second.')) + taskQuestion(row('test'))
+  },
+  {
+    id: 'test-two', stage: 'Main Task 2', section: 'C', title: 'Run test 1 with input 2', ref: '03.3 · Test 1',
+    fields: ['Shell capture for input 2 or both tests'], destination: '03.3 · Shell capture for input 2 or both tests',
+    instructions: ['Paste the Shell screenshot in Shell capture for input 2 or both tests. Keep the Shell running for the next test.'],
+    content: () => action('Run the first test in IDLE',
+      list(['Start a fresh run of your amended Python file.', 'At the menu, type 5. When asked for the count, type 2.', 'In the Shell, find the entered count and the result. Capture both.'], true)) +
+      read('Pause before moving on', p('Point to the entered number and the result in your capture. Both should be readable. A screenshot of the Editor only shows the code.'))
+  },
+  {
+    id: 'test-zero', stage: 'Main Task 2', section: 'C', title: 'Run test 2 with input 0', ref: '03.3 · Test 2',
+    fields: ['Shell capture for input 0', 'Shell capture for input 2 or both tests'], destination: '03.3 · Shell capture for input 0',
+    instructions: ['Paste the second screenshot in Shell capture for input 0. If one screenshot shows both tests clearly, put it in Shell capture for input 2 or both tests and leave the second box empty.'],
+    content: () => action('Run the second test in IDLE',
+      list(['At the menu, choose 5 again. When asked for the count, enter 0.', 'Capture the entered count, the result and what the program shows next.', 'After capturing, choose 0 at the menu to exit.'], true))
+  },
+  {
+    id: 'check-menu', stage: 'Main Task 2', section: 'C', title: 'Check that the menu came back', ref: '03.4',
+    fields: ['What I saw in the Shell'], destination: '03.4 · What I saw in the Shell',
+    instructions: ['Type one observation from your screenshot in What I saw in the Shell.'],
+    content: () => read('Use your second capture', p('Look at what appeared after the input 0 result. Use that as evidence in your answer.')) +
+      taskQuestion(item('test'))
+  },
+  {
+    id: 'extension', stage: 'Extension', title: 'Try the upper boundary', ref: 'Extension',
+    fields: ['My two results and reason'], destination: 'Extension · My two results and reason',
+    instructions: ['If you attempt this, write both results and what they tell you in My two results and reason. If your core evidence is unfinished, move on to the Learning Pit Stop when your teacher calls time.'],
+    content: () => read('Optional after the two core tests', p('Run option 5 with the exact list length, then with one more than the list length. Compare what happens.')) +
+      taskQuestion(row('extension'))
+  },
+  {
+    id: 'pit-stop', stage: 'Learning Pit Stop', title: 'Use your work as evidence', ref: 'Learning Pit Stop',
+    fields: ['My phase and evidence', 'My next step'], destination: 'Learning Pit Stop · My phase and evidence / My next step',
+    instructions: ['Type your phase and one EAD question number in My phase and evidence. In My next step, write one thing you will practise for Session 3.'],
+    content: () => read('The four learning phases',
+      '<dl class="phase-list"><div><dt>New Learning</dt><dd>This was new and I’m starting to get it.</dd></div><div><dt>Consolidating</dt><dd>I used something I already knew more accurately.</dd></div><div><dt>Treading Water</dt><dd>The work felt easy and I’m ready to stretch.</dd></div><div><dt>Drowning</dt><dd>I got stuck and need support with a specific step.</dd></div></dl>') +
+      taskQuestion(row('pit-stop'))
+  },
+  {
+    id: 'plenary', stage: 'Plenary', title: 'Make one last prediction', ref: 'Plenary',
+    fields: ['My prediction and reason'], destination: 'Plenary · My prediction and reason',
+    instructions: ['Type your prediction and why in My prediction and reason. Save the same named Word EAD and check your code and screenshots are readable.'],
+    content: () => taskQuestion(row('plenary'))
+  }
+];
+
+const stages = steps.filter((s, i) => i === 0 || s.stage !== steps[i - 1].stage);
+function render(focus = false) {
+  const route = location.hash.slice(1) || 'start';
+  const index = Math.max(0, steps.findIndex(s => s.id === route));
+  const s = steps[index], previous = steps[index - 1], next = steps[index + 1];
+  const label = [s.stage, s.section ? 'Section ' + s.section : '', s.id === 'start' ? '' : s.ref].filter(Boolean);
+  const currentStep = 'Step ' + (index + 1) + ' of ' + steps.length;
+  $('step-bar').innerHTML = '<div class="progress-wrap"><span>' + currentStep + '</span><progress max="' + steps.length +
+    '" value="' + (index + 1) + '" aria-label="Lesson position"></progress></div><details class="stage-menu"><summary>Lesson stages</summary>' +
+    '<nav aria-label="Jump to a lesson stage">' + stages.map(first => '<a href="#' + first.id + '"' +
+      (first.stage === s.stage ? ' aria-current="step"' : '') + '>' + esc(first.stage) + '</a>').join('') + '</nav></details>';
+  const boxPath = s.ref + ' · ' + s.fields.join(' / ');
+  const railPath = s.id === 'find-branch' ? s.ref + ' · Nothing to paste yet' : boxPath;
+  const word = '<section class="card ead-card" data-ead aria-labelledby="ead-title">' +
+    '<div class="card-heading">' + badge('ead') + '<div><h2 id="ead-title">Answer in your Word EAD</h2>' +
+    '<p class="ead-location">' + esc(boxPath) + '</p></div></div>' +
+    (s.instructions.length > 1 ? list(s.instructions, true) : p(s.instructions[0])) + '</section>';
+  const demo = s.demo ? '<section class="demo" aria-labelledby="run-title"><h2 id="run-title">Check after predicting</h2>' +
+    '<p>Write your prediction in Word first. Only this short example runs here.</p>' +
+    '<button id="run" type="button">I’ve written my prediction · Run the code</button>' +
+    '<p id="result-status" role="status"></p><pre id="result" tabindex="0" aria-label="Example output" hidden><samp></samp></pre></section>' : '';
+  const heading = s.id === 'start' ? '' : '<p class="eyebrow">' + esc([...new Set(label)].join(' · ')) +
+    '</p><h1>' + esc(s.title) + '</h1>';
+  $('lesson').innerHTML = heading + '<div class="flow">' + s.content() + word + demo + '</div>';
+  $('pager').innerHTML = '<div class="wrap pager-inner">' +
+    (previous ? anchor('#' + previous.id, '← Back', 'button secondary prev') : '<span class="prev"></span>') +
+    '<div class="rail-ead"><strong>Answer in your Word EAD</strong><span>' + esc(railPath) + '</span></div>' +
+    (next ? anchor('#' + next.id, s.id === 'start' ? 'Start Do Now →' :
+      s.id === 'extension' ? 'Go to Learning Pit Stop →' : 'Next →', 'button next') :
+      anchor('#start', 'Lesson start', 'button secondary next')) + '</div>';
+  document.title = s.title + ' · Session 2';
+  if (s.demo) $('run').onclick = () => runExample(row('predict').code);
+  if (focus) { window.scrollTo(0, 0); $('lesson').focus({preventScroll:true}); }
+}
+
+function load(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => { script.remove(); reject(Error('Local Python files could not be loaded.')); };
+    document.head.append(script);
+  });
+}
+let python, running = false;
+async function runExample(source) {
+  if (running) return;
+  running = true;
+  const button = $('run'), result = $('result'), status = $('result-status');
+  button.disabled = true; result.hidden = true;
+  status.textContent = 'Running the example…';
+  try {
+    python ||= (async () => {
+      if (!window.Sk) await load('vendor/skulpt.min.js');
+      if (!window.Sk.builtinFiles) await load('vendor/skulpt-stdlib.js');
+      return window.Sk;
+    })().catch(error => { python = null; throw error; });
+    const sk = await python;
+    let output = '';
+    sk.configure({__future__:sk.python3, execLimit:2000, output:chunk => { output += chunk; },
+      read:name => sk.builtinFiles.files[name]});
+    await sk.misceval.asyncToPromise(() => sk.importMainWithBody('<example>', false, source, true));
+    result.querySelector('samp').textContent = output;
+    result.hidden = false;
+    status.textContent = 'Copy the output below into 01.3 · What actually printed in your Word EAD.';
+    button.textContent = 'Run the code again';
+  } catch {
+    status.textContent = 'The example could not run here. Copy the question’s code into a new IDLE file and run it there. Record the output in 01.3.';
+  } finally {
+    running = false; button.disabled = false;
+  }
+}
+
+document.querySelector('.skip').onclick = event => {
+  event.preventDefault();
+  $('lesson').focus();
+  $('lesson').scrollIntoView({block:'start'});
+};
+window.addEventListener('hashchange', () => render(true));
+render();
+if (typeof ResizeObserver !== 'undefined') {
+  // Reserve enough space for long destinations when they wrap on smaller screens.
+  const pager = $('pager');
+  new ResizeObserver(() => {
+    document.documentElement.style.setProperty('--pager-height', pager.getBoundingClientRect().height + 'px');
+  }).observe(pager);
+}
+</script>
+</body>
+</html>
