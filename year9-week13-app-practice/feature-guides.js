@@ -29,13 +29,4 @@ const featureGuides = {
     words("Unlock the star door. Aim at the star door and tap Interact, then walk through it.", "解锁星星门。对准星星门再点 Interact，然后走进去。"),
     words("Use the gold switch. Aim at the switch in the exit chamber and tap Interact. Watch the winning animation.", "使用金色开关。对准出口房间的开关，点 Interact，观察胜利动画。"),
   ],
-  library: [
-    words("Find the controls. Spinner holds the choice, the button runs the check, and ResponseLabel shows the result.", "找到组件。Spinner 保存选项，按钮执行判断，ResponseLabel 显示结果。"),
-    words("Test Read. Select Read, tap Show location and check for Fiction shelves.", "测试 Read。选 Read，点 Show location，检查是否显示 Fiction shelves。"),
-    words("Test Study. Select Study and tap the same button. Check for Quiet study tables.", "测试 Study。选 Study 并点同一个按钮，检查是否显示 Quiet study tables。"),
-  ],
-  replay: [
-    words("Finish Circuit Vault. Reach Vault cleared before trying your restart button.", "完成电路密室。在测试重启按钮前先到达 Vault cleared。"),
-    words("Tap your MIT button. Its Click block calls VaultView.GoHome to reload the game. The demo shows the game’s own Play again button returning to the same starting screen.", "点击你在 MIT 添加的按钮。它的 Click 积木调用 VaultView.GoHome 重新加载游戏。演示中游戏自带的 Play again 会回到相同的起点。"),
-  ],
 };

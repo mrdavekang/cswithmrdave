@@ -4,45 +4,16 @@ const stateKey = "csmd-year9-week13-vault-v1";
 const main = document.querySelector("#workspace");
 const language = document.querySelector("#language");
 const mobileStage = document.querySelector("#mobile-stage");
-const practiceFile = "assets/projects/Library_Helper_Practice.aia";
-const vaultFile = "assets/projects/Circuit_Vault.aia";
-const vaultWebFile = "assets/projects/Circuit_Vault_Web.aia";
-const vaultAsset = "assets/projects/circuit-vault.html";
-const mergeFile = "assets/projects/Merge_256.aia";
-const mergeWebFile = "assets/projects/Merge_256_Web.aia";
-const mergeAsset = "assets/projects/merge-256.html";
-const playgroundLink = "playground/index.html#choose";
-const foodProjects = {
-  cafe: {
-    name: words("Café Rush", "食堂冲刺"), file: "cafe-rush.html", starter: "Cafe_Rush",
-    media: [
-      ["cafe-guests.png", "Guest sprites (.png)", "顾客角色图（.png）"],
-      ["cafe-props.png", "Furniture and food sprites (.png)", "家具和食物图（.png）"],
-    ],
-    description: words("Seat guests, take orders and keep the kitchen moving.", "安排顾客入座、点单，并让厨房忙起来。"),
-    target: words("Serve six guests in a shift. Start with Table 1 and cook exactly what its guest orders.", "在一班内为六位顾客上菜。先从 1 号桌开始，按顾客点单烹饪。"),
-    extend: words("Try a wrong dish once. Explain why the order stays on the table and the guest loses patience.", "故意选错一次。解释为什么订单留在桌上，而顾客的耐心会减少。"),
-  },
-  menu: {
-    name: words("Kantin Koala", "考拉食堂"), file: "kantin-koala.html", starter: "Kantin_Koala",
-    media: [["menu-catalog.jpg", "Download menu photos", "下载菜单照片"]],
-    description: words("Browse a café menu, build a basket and track a practice order.", "浏览食堂菜单、添加餐点到购物篮，并追踪模拟订单。"),
-    target: words("Add two items. Change a quantity, compare pickup with delivery and track one practice order.", "添加两件餐点。修改数量，比较自取与配送，再追踪一次模拟订单。"),
-    extend: words("Start a second order and choose the other collection method. Explain what changes in the total and the tracker.", "再下一单，选另一种取餐方式。解释总价和订单进度如何变化。"),
-  },
-  voxel: {
-    name: words("Escape the Voxel Vault · 3D", "逃出方块密室 · 3D"), file: "vault-3d.html", starter: "Voxel_Vault_3D",
-    media: [],
-    description: words("Explore a first-person vault, unlock the star door and flip the exit switch.", "用第一人称探索密室，解锁星星门并打开出口开关。"),
-    target: words("Collect the keycard and reach the exit switch.", "收集钥匙卡，到达并打开出口开关。"),
-    extend: words("Try the star door before you collect the keycard. What has to change before it will open?", "拿到钥匙卡前先试星星门。需要改变什么它才会打开？"),
-  },
-};
-
-let state = { language: "en", stage: "start", route: "", focus: "", phase: "", checked: {}, active: {}, tests: {}, prediction: "" };
+const projectDir = "assets/projects/";
+let state = { language: "en", stage: "start", route: "", focus: "", phase: "", checked: {}, prediction: "", extension: "vault" };
 try {
   const stored = JSON.parse(localStorage.getItem(stateKey));
-  if (stored && typeof stored === "object") state = { ...state, ...stored };
+  if (stored && typeof stored === "object") {
+    for (const key of ["language", "stage", "route", "focus", "phase", "prediction", "extension"]) {
+      if (typeof stored[key] === "string") state[key] = stored[key];
+    }
+    if (stored.checked && typeof stored.checked === "object") state.checked = stored.checked;
+  }
 } catch {
   // The lesson works when storage is unavailable.
 }
@@ -81,21 +52,16 @@ function gallery(shots) {
   }).join("") + "</div>";
 }
 
-function helpPanel(item) {
-  return '<details class="help-panel"><summary>' + t("Show me how", "看步骤示范") +
-    '</summary><div class="help-body"><p class="help-tip">' + tr(item.help) +
-    "</p>" + gallery(item.shots) + "</div></details>";
-}
-
-function screenshotDemo(key, title) {
-  const path = "assets/guides/" + key;
-  return '<figure class="screenshot-demo"><img src="' + path + '-still.webp" width="600" height="480" loading="lazy" alt="' +
-    esc(title[0]) + '"><figcaption><span>' + tr(title) + '</span>' +
-    btn("Play screenshot demo", "播放截图演示", 'data-demo="' + key + '" aria-pressed="false"') + '</figcaption></figure>';
+function screenshotDemo(key, title, { directory = "assets/guides/", poster = key + "-still", width = 600, height = 480 } = {}) {
+  const still = directory + poster + ".webp";
+  const animation = directory + key + ".webp";
+  return `<figure class="screenshot-demo"><img src="${still}" width="${width}" height="${height}" loading="lazy" alt="${esc(title[0])}">
+    <figcaption><span>${tr(title)}</span>
+    ${btn("Play screenshot demo", "播放截图演示", `data-demo="${animation}" data-poster="${still}" aria-pressed="false"`)}</figcaption></figure>`;
 }
 
 function featureGuide(key, title = words("Follow the steps", "跟着步骤做")) {
-  return '<section class="paper-card visual-guide"><div><h2>' + tr(title) + '</h2><ol class="actions-list">' +
+  return '<section class="visual-guide"><div><h3>' + tr(title) + '</h3><ol class="actions-list">' +
     featureGuides[key].map(item => '<li>' + tr(item) + '</li>').join("") +
     '</ol></div>' + screenshotDemo(key, words("Steps in order", "按顺序展示步骤")) + '</section>';
 }
@@ -104,252 +70,218 @@ function starterGuide(webFile, companionFile) {
   return '<section class="starter-guide"><h3>' + t("Test in MIT App Inventor", "在 MIT App Inventor 中测试") + '</h3>' +
     '<ol class="actions-list"><li>' + t("Download the starter for your device. In MIT choose Projects → Import project (.aia) from my computer. Pick the downloaded file and click OK.", "下载适合设备的起始项目。在 MIT 中选 Projects → Import project (.aia) from my computer，选择文件并点 OK。") +
     '</li><li>' + t("Laptop in Chrome or Edge. Import the browser starter and choose Connect → Test in Web. If you see 127.0.0.1 or localhost refused to connect, reopen the project ending in _Web and test that one.", "用电脑的 Chrome 或 Edge。导入浏览器版，再选 Connect → Test in Web。如果看到 127.0.0.1 或 localhost 拒绝连接，请打开名称以 _Web 结尾的项目再测试。") +
-    '</li><li>' + t("Phone or iPad. Import the Companion starter, choose Connect → App Inventor Companion and enter the fresh six-character code in the Companion app.", "用手机或 iPad。导入 Companion 版，选 Connect → App Inventor Companion，然后在 Companion 应用输入新生成的六位连接码。") +
+    '</li><li>' + t("Class iPad. Import the Companion starter, choose Connect → AI Companion and enter the current six-character code in the Companion app.", "课堂 iPad：导入 Companion 版，选 Connect → AI Companion，在 Companion 应用输入当前的六位配对码。") +
     '</li></ol><div class="actions">' + link(webFile, "Browser starter (.aia)", "浏览器版（.aia）", { primary: true, file: true }) +
     link(companionFile, "Companion starter (.aia)", "Companion 版（.aia）", { file: true }) + mit() + '</div>' +
     '<details class="help-panel"><summary>' + t("See the import and Connect menus", "查看导入和连接菜单") + '</summary><div class="help-body">' +
     screenshotDemo("mit", words("Import, then choose where to test", "导入并选择测试方式")) + '</div></details></section>';
 }
 
-function game() {
-  const lang = state.language === "bi" ? "&amp;lang=bi" : "";
-  return '<section class="play-area" aria-label="Playable Circuit Vault example"><iframe class="vault-preview" title="' +
-    esc(label(words("Play Circuit Vault", "试玩电路密室"))) + '" src="' + vaultAsset + "?embed=1" + lang +
-    '"></iframe><a class="vault-fullscreen" href="' + vaultAsset + (lang ? "?lang=bi" : "") +
-    '" target="_blank" rel="noopener noreferrer">' + t("Play in a larger window ↗", "在大窗口玩 ↗") + "</a></section>";
-}
+const modelFile = projectDir + "Year9_Feature_Upgrade_Model.aia";
+const week12Starter = "playground/assets/Year9_WAGOLL_Studio.aia";
+const routes = Object.keys(upgradeRoutes);
+const extensionOptions = {
+  vault: ["Circuit Vault", "电路密室", "Circuit_Vault", "circuit-vault.html", [],
+    words("Clear one room and check when the door opens.", "清空一个房间，观察门什么时候打开。")],
+  voxel: ["3D Voxel Vault", "3D 方块密室", "Voxel_Vault_3D", "vault-3d.html", [],
+    words("Collect the keycard, unlock the door and reach the exit switch.", "收集钥匙卡，解锁房门，再到达出口开关。")],
+  merge: ["Merge 256", "合成 256", "Merge_256", "merge-256.html", [],
+    words("Move left and see two 2s merge. Try New game to reset the board.", "向左移动，观察两个 2 合并。点击 New game 重置棋盘。")],
+  cafe: ["Café Rush", "食堂冲刺", "Cafe_Rush", "cafe-rush.html", ["cafe-guests.png", "cafe-props.png"],
+    words("Take one order, cook it and serve the correct dish.", "接一份订单，烹饪并送上正确的餐点。")],
+  menu: ["Kantin Koala", "考拉食堂", "Kantin_Koala", "kantin-koala.html", ["menu-catalog.jpg"],
+    words("Add a dish and check what changes when you switch from pickup to delivery.", "添加一道菜，从自取切换到配送，观察有什么变化。")],
+};
 
 const questions = [
-  ["choice", words("The door opens when you fire the first pulse.", "发射第一次脉冲后，门就会打开。")],
-  ["response", words("The door opens when every robot in the room is cleared.", "房间里的所有机器人被清除后，门才会打开。")],
-  ["both", words("The door opens as soon as you roll toward it.", "只要向门翻滚，门就会打开。")],
+  ["four", words("On the fourth tap.", "第四次点击。")],
+  ["six", words("On the sixth tap.", "第六次点击。")],
+  ["five", words("On the fifth tap.", "第五次点击。")],
 ];
 
 function predictionFeedback() {
-  if (state.prediction === "response") return t("Exactly. The program checks the robots left. When that reaches zero, it opens the door.", "正确。程序检查剩余机器人数量。数量为零时，门才会打开。");
-  if (state.prediction) return t("Look at the door after the first robot goes down. Check it again after the last robot goes down.", "击败第一个机器人后观察门，再击败最后一个机器人后重新观察。");
+  if (state.prediction === "five") return t("Yes. At 4, the goal is still showing. At 5, it changes to “You win!”", "正确。4 分时仍显示目标，到 5 分时变成“You win!”。");
+  if (questions.some(([key]) => key === state.prediction)) return t("Look at the message under the purple target. Which score changes it to “You win!”?", "看紫色目标下面的提示。分数达到多少时会变为“You win!”？");
   return "";
+}
+
+function screenshot(path, caption) {
+  return `<figure><a href="${path}" target="_blank" rel="noopener" aria-label="${esc(label(words("Enlarge screenshot. " + caption[0], "放大截图。" + caption[1])))}"><img src="${path}" alt="${esc(caption[0])}" loading="lazy"></a><figcaption>${tr(caption)}</figcaption></figure>`;
+}
+
+function phoneStrip(frames) {
+  return '<div class="phone-strip">' + frames.map(([file, en, zh]) =>
+    screenshot(`assets/upgrade/${file}.webp`, words(en, zh))).join("") + '</div>';
+}
+
+function actionsList(items, tag = "ol") {
+  return `<${tag} class="actions-list">${items.map(item => `<li>${tr(item)}</li>`).join("")}</${tag}>`;
+}
+
+function details(title, content, id = "") {
+  return `<details ${id ? `id="${id}" ` : ""}class="help-panel"><summary>${tr(title)}</summary><div class="help-body">${content}</div></details>`;
+}
+
+function upgradeDemo(key) {
+  return details(words("Watch the feature in the MIT tester", "观看 MIT 测试演示"),
+    screenshotDemo(`${key}-play`, words("MIT App Inventor test replay", "MIT App Inventor 测试回放"), {
+      directory: "assets/upgrade/",
+      poster: upgradeRoutes[key].stills[0][0],
+      width: 480,
+      height: 618,
+    }));
 }
 
 function start() {
-  return '<section class="hero"><div class="hero-copy"><p class="eyebrow">' + t("Read First & Do Now", "先看示例与热身") +
-    '</p><h1>' + t("Play Circuit Vault.", "试玩电路密室") +
-    '</h1><p class="hero-lead">' + t("Clear three arcade rooms, dodge incoming shots and reach the extraction gate.", "清空三个街机房间，躲避飞弹，到达撤离门。") +
-    '</p><div class="hero-actions">' + link("#do-now", "Answer the Do Now ↓", "回答热身题 ↓", { primary: true }) +
-    '<span class="hero-note">' + t("Your first goal is to clear the Relay Room.", "第一个目标是清空继电器房。") +
-    '</span></div><div class="guide-line"><img src="assets/art/guide.png" alt="" width="80" height="80"><p>' +
-    t("Move with the arrows. Hold Pulse to aim automatically. Use Dodge when you see an attack warning.", "用方向键移动。按住 Pulse 自动瞄准。看到攻击预警时用 Dodge 翻滚。") + "</p></div></div>" + game() +
-    '</section><section class="paper-card do-now" id="do-now"><p class="eyebrow">' + t("Do Now", "课堂热身") +
-    '</p><h2>' + t("What makes the room door unlock?", "什么条件会让房门解锁？") +
-    '</h2><form id="prediction"><fieldset><legend class="sr-only">Select one answer</legend>' +
-    questions.map(([key, text]) => '<label class="radio-card"><input type="radio" name="prediction" value="' + key + '"' +
-      (state.prediction === key ? " checked" : "") + '><span>' + tr(text) + "</span></label>").join("") +
-    '</fieldset><button class="button" type="submit">' + t("Check my answer", "检查答案") +
-    '</button><p id="prediction-result" class="feedback" role="status">' + predictionFeedback() + "</p></form></section>" +
-    nextStage("types", "Types of Learning", "学习类型");
+  return `<section class="upgrade-intro">
+    <div>${head("Read First & Do Now", "先看示例与热身", "Upgrade your app", "升级你的应用",
+      "Add or improve one feature in your existing app, then show that it works.", "在已有的应用中添加或改进一个功能，并演示它能正常运行。")}
+      <div class="actions">${link("#do-now", "Answer the Do Now ↓", "回答热身题 ↓", { primary: true })}</div>
+    </div>
+    <section class="paper-card wagoll">
+      <h2>${t("What a good one looks like", "优秀示例")}</h2>
+      <p>${t("Mini Arcade already counts taps. The new win message appears when the player reaches 5.", "Mini Arcade 原本就能计算点击次数。玩家达到 5 分时，会显示新的获胜提示。")}</p>
+      ${phoneStrip(upgradeRoutes.arcade.stills)}
+      ${upgradeDemo("arcade")}
+      <div class="actions">${link(modelFile, "Download the finished reference (.aia)", "下载完成的参考项目（.aia）", { file: true })}</div>
+      <p class="subtle">${t("Open the example as a separate project. Make today’s changes in your own app.", "请把示例作为单独的项目打开。今天的改动要做在自己的应用里。")}</p>
+    </section>
+  </section>
+  <section class="paper-card do-now" id="do-now">
+    <p class="eyebrow">${t("Do Now", "课堂热身")}</p>
+    <h2>${t("When does the new message appear?", "新提示在什么时候出现？")}</h2>
+    <form id="prediction"><fieldset><legend class="sr-only">${t("Select one answer", "选择一个答案")}</legend>
+      ${questions.map(([key, text]) => `<label class="radio-card"><input type="radio" name="prediction" value="${key}" ${state.prediction === key ? "checked" : ""}><span>${tr(text)}</span></label>`).join("")}
+    </fieldset><button class="button" type="submit">${t("Check my answer", "检查答案")}</button>
+    <p id="prediction-result" class="feedback" role="status">${predictionFeedback()}</p></form>
+  </section>${nextStage("types", "Types of Learning", "学习类型")}`;
 }
 
 const focusChoices = [
-  ["knowledge", "K", words("Knowledge", "知识"), words("Find the choice, the Click event and the Label that shows the result.", "找出选项、Click 事件和展示结果的 Label。"), words("I want to find the right component or block.", "我想找到正确的组件或积木。")],
-  ["skills", "S", words("Skills", "技能"), words("Connect the button and check both outcomes.", "连接按钮积木并检查两个结果。"), words("I want to practise connecting and checking both results.", "我想练习连接并检查两个结果。")],
-  ["understanding", "U", words("Understanding", "理解"), words("Explain why the same button can show two different messages.", "解释同一个按钮为什么能显示两种不同消息。"), words("I want to explain why the result changes.", "我想解释结果为什么变化。")],
+  ["knowledge", "K", words("Knowledge", "知识"), words("I want to recognise the part the user touches, the event block and the part that changes.", "我想认出用户点击的组件、事件积木和发生变化的部分。")],
+  ["skills", "S", words("Skills", "技能"), words("I want to add a component, connect its blocks and test it.", "我想练习添加组件、连接积木并测试。")],
+  ["understanding", "U", words("Understanding", "理解"), words("I want to explain why a tap or a choice changes what the app shows.", "我想解释为什么点击或选择会改变应用显示的内容。")],
 ];
 
 function types() {
-  return head("Types of Learning", "学习类型", "Choose a focus", "选一个学习重点",
-    "Think about what triggered the door opening. Pick one skill or idea to work on as you build.", "想想是什么触发了开门，选一个制作时想练习的重点。") +
-    '<fieldset class="focus-options"><legend class="sr-only">Choose a learning focus</legend>' +
-    focusChoices.map(([key, code, title, intro, description]) =>
-      '<label class="focus-card"><input type="radio" name="focus" value="' + key + '"' + (state.focus === key ? " checked" : "") +
-      '><span class="focus-letter" aria-hidden="true">' + code + '</span><span><strong>' + tr(title) + "</strong>" +
-      '<span class="focus-intro">' + tr(intro) + '</span><span class="focus-intro">' + tr(description) + "</span></span></label>").join("") +
+  return head("Types of Learning", "学习类型", "Pick one thing to practise", "选一项要练习的内容",
+    "Think about Mini Arcade. Which part of making that change would you like to get better at?", "想想 Mini Arcade。做出那项改动时，你想在哪个方面做得更好？") +
+    '<fieldset class="focus-options"><legend class="sr-only">' + t("Choose a learning focus", "选择学习重点") + '</legend>' +
+    focusChoices.map(([key, code, title, description]) =>
+      `<label class="focus-card"><input type="radio" name="focus" value="${key}" ${state.focus === key ? "checked" : ""}>
+      <span class="focus-letter" aria-hidden="true">${code}</span><span><strong>${tr(title)}</strong><span class="focus-intro">${tr(description)}</span></span></label>`).join("") +
     "</fieldset>" + nextStage("main-1", "Main Task 1", "主任务一");
 }
 
-const features = [
-  ["screen", "Open a new screen", "打开新页面"],
-  ["drawing", "Drawing pad", "画板"],
-  ["gallery", "Three-column gallery", "三列图片"],
-  ["arcade", "Tap the target", "点击目标"],
-];
-
-function routes() {
-  return '<fieldset class="routes"><legend class="sr-only">Choose your route</legend>' +
-    [["playground", "Continue last week’s feature", "继续上周的功能", "Finish your build, or catch up with Club Finder.", "完成原来的功能，或者从 Club Finder 补起。"],
-      ["vault", "Add Circuit Vault", "添加电路密室", "Dodge shots, clear the rooms and beat the Core Keeper.", "躲避飞弹、清空房间并击败核心守卫。"],
-      ["merge", "Add Merge 256", "添加合成 256", "Swipe to combine tiles and try to reach 256.", "滑动合并数字方块，试着合成 256。"],
-      ...Object.entries(foodProjects).map(([id, project]) => [id, ...project.name, ...project.description])].map(([id, en, zh, text, textZH]) =>
-    '<label class="route-card"><input type="radio" name="route" value="' + id + '"' + (state.route === id ? " checked" : "") +
-    '><span><strong>' + t(en, zh) + '</strong><span class="route-copy">' + t(text, textZH) + "</span></span></label>").join("") + "</fieldset>";
+function routePicker() {
+  return '<fieldset class="routes"><legend class="sr-only">' + t("Choose one feature", "选择一项功能") + '</legend>' +
+    routes.map(key => {
+      const route = upgradeRoutes[key];
+      return `<label class="route-card"><input type="radio" name="route" value="${key}" ${state.route === key ? "checked" : ""}>
+        <span><strong>${tr(route.name)}</strong><span class="route-copy">${tr(route.result)}</span></span></label>`;
+    }).join("") + "</fieldset>";
 }
 
-function playground() {
-  const recovery = {
-    help: words("If you missed last week, download the example .aia, import it in MIT, and open the Club Finder example. In the original guide, select Open a new screen. Change the button words and the heading it opens, then show someone the result.", "如果上周缺课，下载并导入示例 .aia，然后打开 Club Finder。回到原指南选择“打开新页面”。改按钮文字和打开后页面的标题，再把结果展示给同伴。"),
-    shots: [mitImages.importMenu, mitImages.importDialog, mitImages.designer, mitImages.button, mitImages.label],
-  };
-  return '<section class="paper-card"><h2>' + t("Continue in the original Playground", "在原来的 Playground 继续") +
-    "</h2><p>" + t("Reopen the project you used last week. Follow the first unfinished step in its guide. If the Playground asks for your name and class, enter them and choose Main Task 1.", "重新打开上周使用的项目，按原指南找到第一个未完成的步骤。如果 Playground 要求姓名和班级，请填写，再选 Main Task 1。") +
-    '</p><div class="playground-demos">' + features.map(([key, en, zh]) => screenshotDemo(key, words(en, zh))).join("") +
-    '</div><div class="actions">' + link(playgroundLink, "Open last week’s Playground ↗", "打开上周 Playground ↗", { primary: true, external: true }) +
-    link("playground/assets/Year9_WAGOLL_Studio.aia", "Download the four examples (.aia)", "下载四个例子（.aia）", { file: true }) + "</div>" +
-    helpPanel(recovery) + '<label class="tick"><input type="checkbox" data-check="catchup"' + (state.checked.catchup ? " checked" : "") +
-    "><span>" + t("I showed one working result in the project.", "我展示了项目中一个能运行的结果。") + "</span></label></section>";
+function catchup(route) {
+  const recap = route?.recap?.map(([image, en, zh]) =>
+    screenshot(`assets/week12/${image}.webp`, words(en, zh))).join("") || "";
+  return details(words("Week 12 catch-up · Find or fix your starting feature", "第 12 周补做：找到或修复起始功能"),
+    `<p>${t("Open last week’s project in MIT. If you only have the saved .aia, import it from Projects. If you missed the lesson and have no copy, use the Week 12 practice project below. Open the example screen for your feature. For Help panel, start on Screen1 or another homepage.", "在 MIT 打开上周的项目。如果只有保存的 .aia 文件，就从 Projects 导入。如果上周缺课且没有项目，可以使用下方的第 12 周练习项目。打开对应功能的示例页面。选择帮助面板的话，从 Screen1 或另一个首页开始。")}</p>
+    <div class="actions">${link("playground/index.html", "Open the Week 12 Playground ↗", "打开第 12 周 Playground ↗", { external: true })}
+    ${link(week12Starter, "Download the Week 12 practice project (.aia)", "下载第 12 周练习项目（.aia）", { file: true })}</div>
+    ${recap ? `<div class="screenshot-list recap-shots">${recap}</div>` : ""}
+    ${details(words("See how to import a project", "查看如何导入项目"), gallery([mitImages.liveImport, mitImages.importDialog]))}`);
 }
 
-function mergeWorkspace() {
-  const lang = state.language === "bi" ? "&amp;lang=bi" : "";
-  const guide = {
-    help: words("Designer shows a globe where the WebViewer sits. Run the app in Companion to try the game.", "Designer 用地球图标标记 WebViewer 的位置。请在 Companion 运行应用来试玩。"),
-    shots: [mitImages.upload, mitImages.liveViewerPalette, mitImages.mergeViewer],
-  };
-  return '<div class="merge-workspace"><section class="paper-card merge-preview"><h2>' +
-    t("Try Merge 256", "试玩合成 256") + '</h2><p>' +
-    t("Start with a left or right move. Watch two 2s become a 4. When you can explain what made them merge, try for 256.", "先向左或向右移动，观察两个 2 合成 4。能解释它们为什么合并后，再挑战 256。") +
-    '</p><iframe class="merge-frame" title="' + esc(label(words("Play Merge 256", "试玩合成 256"))) + '" src="' +
-    mergeAsset + '?embed=1' + lang + '"></iframe><div class="actions">' +
-    link(mergeAsset + (lang ? "?lang=bi" : ""), "Open the game separately ↗", "在新窗口打开游戏 ↗", { external: true }) +
-    '</div></section><section class="paper-card"><h2>' + t("Put it in your MIT app", "把游戏加入你的 MIT 应用") + '</h2>' +
-    '<ol class="actions-list"><li>' +
-    t("Open your existing project. Choose a game screen or add one called MergeGame. In Designer → Media, upload merge-256.html.", "打开已有项目，选一个游戏页面，或新建名为 MergeGame 的页面。在 Designer → Media 上传 merge-256.html。") +
-    '</li><li>' + t("Drag WebViewer from User Interface onto the screen. Set Width and Height to Fill parent. In HomeUrl, enter the address below.", "从 User Interface 拖入 WebViewer，将 Width 和 Height 设为 Fill parent。在 HomeUrl 输入下方地址。") +
-    '<p><code>http://localhost/merge-256.html</code></p></li><li>' +
-    t("Run the game screen in Companion. Move left and check that 2 + 2 makes 4. Tap New game and check that the score returns to 0.", "用 Companion 运行游戏页面。先向左移动，检查两个 2 是否合成 4。再点 New game，检查分数是否归零。") +
-    '</li></ol><div class="actions">' + link(mergeAsset, "Download merge-256.html", "下载 merge-256.html", { primary: true, file: true }) +
-    mit() + '</div>' + helpPanel(guide) +
-    starterGuide(mergeWebFile, mergeFile) + '<label class="tick"><input type="checkbox" data-check="merge"' + (state.checked.merge ? " checked" : "") +
-    '><span>' + t("I showed a merge and restarted the game.", "我演示了一次合并，并重新开始了游戏。") + '</span></label></section></div>';
+function testingGuide() {
+  return details(words("How to test in MIT", "如何在 MIT 中测试"),
+    actionsList([
+      words("Laptop in Chrome or Edge. In MIT, select Connect → Test in Web (Beta). Allow MIT to open its test window. Reconnect if it still shows the old version.", "电脑用 Chrome 或 Edge。在 MIT 中选 Connect → Test in Web (Beta)，允许打开测试窗口。如果仍显示旧版本，请重新连接。"),
+      words("Class iPad. In MIT, select Connect → AI Companion. In MIT AI2 Companion, enter the current six-character code and tap Connect with code. Use the same Wi-Fi.", "课堂 iPad：在 MIT 选择 Connect → AI Companion。在 MIT AI2 Companion 输当前的六位配对码，然后点 Connect with code。两台设备应使用同一个 Wi-Fi。"),
+      words("If the connection fails, show your teacher where you are in Designer or Blocks. Tell them what you expected and what appeared.", "如果连接失败，给老师看你在 Designer 或 Blocks 中进行到哪里，说出预期结果和实际结果。"),
+    ]) + gallery([mitImages.liveTest, mitImages.companion]), "testing");
 }
 
-function diagram(complete) {
-  return '<figure class="diagram"><figcaption>' + t("Block layout for your project", "本项目的积木结构") +
-    '</figcaption><div class="event"><span>when ActionButton.Click</span><div class="event-body">' +
-    '<div class="condition">if <span class="getter">ChoiceSpinner.Selection</span> = <code>Read</code>' +
-    '<div class="branch"><strong>then</strong><div class="setter">set ResponseLabel.Text to <code>Fiction shelves</code></div></div>' +
-    (complete === "first" ? "" : '<div class="branch"><strong>else</strong><div class="setter">set ResponseLabel.Text to <code>Quiet study tables</code></div></div>') +
-    "</div></div></div></figure>";
-}
-
-function tests(group) {
-  const cases = group === "vault" ? [words("Robots still in the room", "房间里仍有机器人"), words("Last robot cleared", "清除最后一个机器人"), words("Extraction gate", "撤离门")] :
-    [words("Read", "阅读"), words("Study", "自习")];
-  const results = group === "vault" ? [words("The top door stays closed.", "上方的门保持关闭。"), words("The door glows and becomes passable.", "门亮起，可以通过。"), words("After the boss, crossing the gate plays the victory animation.", "击败守卫后，穿过门会播放胜利动画。")] :
-    [words("Fiction shelves", "小说书架"), words("Quiet study tables", "安静自习桌")];
-  const choices = [["", "Choose what you saw", "选择观察结果"], ["matches", "Matches the brief", "符合任务要求"],
-    ["different", "Something different appeared", "显示了其他内容"], ["pending", "Tester unavailable", "测试器不可用"]];
-  return '<section class="test-sheet"><h3>' + t("What did you see in MIT?", "你在 MIT 里看到了什么？") + "</h3>" +
-    cases.map((text, i) => {
-      const key = (group === "vault" ? "vault-arcade" : group) + "-" + i;
-      const value = state.tests[key] || "";
-      return '<div class="test-row"><div><strong>' + tr(text) + '</strong><span class="expect">' + t("Expected", "预期") + " · " +
-        tr(results[i]) + '</span></div><div><label class="sr-only" for="' + key + '">' + t("Actual result for ", "实际结果：") +
-        tr(text) + '</label><select id="' + key + '" data-test="' + key + '">' + choices.map(([id, en, zh]) =>
-        '<option value="' + id + '"' + (value === id ? " selected" : "") + ">" + esc(label(words(en, zh))) + "</option>").join("") +
-        '</select><p class="test-feedback" id="' + key + '-feedback" role="status">' + testFeedback(value, group) + "</p></div></div>";
-    }).join("") + "</section>";
-}
-
-function testFeedback(value, group) {
-  if (value === "matches") return t("This choice is checked.", "此选项已检查。");
-  if (group === "vault" && value === "different") return t("Check for a robot hiding behind cover. Once the gate glows, walk straight up through the opening.", "检查箱子后面是否还有机器人。门发光后，向上直走穿过门口。");
-  if (group === "vault" && value === "pending") return t("MIT run pending. Try the controls in the browser example while you wait for help.", "MIT 待测试。等待帮助时，先在浏览器示例里试试操作。");
-  if (value === "different") return t("Look inside this branch. Check the Spinner spelling and the message in the Label setter.", "查看这条分支。检查 Spinner 的拼写和 Label 设置积木中的文字。");
-  if (value === "pending") return t("Run pending. Show your teacher which branch would run and what it should display.", "待测试。告诉老师会运行哪条分支、应显示什么。");
-  return "";
-}
-
-function walk(group, items) {
-  const active = Math.min(Math.max(Number(state.active[group]) || 0, 0), items.length - 1);
-  const stepItem = items[active];
-  const current = group + "-" + active;
-  const isVault = group === "vault";
-  let extra = "";
-  if (isVault && active === 0) extra = '<div class="actions">' + link(vaultAsset, "Download circuit-vault.html", "下载 circuit-vault.html", { primary: true, file: true }) + "</div>";
-  if ((!isVault && active === 4) || (isVault && active === items.length - 1)) extra = tests(group);
-  if (!isVault && active === 0) extra = '<div class="actions">' + link(practiceFile, "Download the Library Helper starter", "下载 Library Helper 起始项目", { primary: true, file: true }) + mit() + "</div>";
-  if (!isVault && (active === 2 || active === 3)) {
-    const complete = active === 2 ? "first" : "two";
-    extra = '<details class="model-panel"><summary>' + (active === 2 ? t("See the worked Read branch", "看 Read 分支示例") :
-      t("Compare your Study branch with the model", "对照 Study 分支示例")) + "</summary>" + diagram(complete) + "</details>";
-  }
-  const advance = active < items.length - 1 ?
-    btn("Next step →", "下一步 →", 'data-step="' + group + ":" + (active + 1) + '"', "primary") :
-    link(isVault ? "#main-2" : "#extension", isVault ? "Main Task 2 →" : "Extension →", isVault ? "主任务二 →" : "拓展挑战 →", { primary: true });
-  return '<div class="workspace-grid"><section class="paper-card step-card" id="current-step" tabindex="-1">' +
-    '<p class="eyebrow">' + t("Step " + (active + 1) + " of " + items.length, "第 " + (active + 1) + " 步，共 " + items.length + " 步") +
-    '</p><h2>' + tr(stepItem.title) + '</h2><p class="step-goal">' + tr(stepItem.goal) + '</p><ol class="actions-list">' +
-    stepItem.actions.map((action) => "<li>" + tr(action) + "</li>").join("") + "</ol>" +
-    '<p class="success"><strong>' + t("It works when", "成功标准") + "</strong>" + tr(stepItem.done) + "</p>" +
-    helpPanel(stepItem) + extra + '<label class="tick"><input type="checkbox" data-check="' + current + '"' +
-    (state.checked[current] ? " checked" : "") + '><span>' + t("I’ve done this step", "我已完成这一步") + "</span></label>" +
-    '<div class="actions step-actions">' + (active > 0 ? btn("← Previous step", "← 上一步", 'data-step="' + group + ":" + (active - 1) + '"') : "") +
-    advance + '</div></section><aside class="step-list"><h3>' + t("Your build", "制作步骤") +
-    '</h3><ol>' + items.map(({ title }, i) => '<li><button type="button" data-step="' + group + ":" + i + '"' +
-    (i === active ? ' aria-current="step"' : "") + '><span class="step-no" aria-hidden="true">' +
-    (state.checked[group + "-" + i] ? "✓" : number(i + 1)) + '</span><span>' + tr(title) + "</span></button></li>").join("") +
-    "</ol></aside></div>";
-}
-
-function foodWorkspace(route) {
-  const { name, file, starter, target, extend, media } = foodProjects[route];
-  const directory = "assets/projects/";
-  const lang = state.language === "bi" ? "&amp;lang=bi" : "";
-  const source = directory + file;
-  const help = {
-    help: words("Use the screenshots to find Media and WebViewer. If Test in Web opens a blank screen after switching projects, refresh the MIT editor tab and try again.", "用截图找出 Media 和 WebViewer。如果切换项目后 Test in Web 打开空白页，请刷新 MIT 编辑器标签页再试。"),
-    shots: [mitImages.upload, mitImages.liveViewerPalette, mitImages.liveTest],
-  };
-  return '<div class="merge-workspace"><section class="paper-card merge-preview"><h2>' + tr(name) + '</h2><p>' + tr(target) +
-    '</p><iframe class="merge-frame food-frame" title="' + esc(label(name)) + '" src="' + source + '?embed=1' + lang + '"></iframe>' +
-    link(source + (lang ? "?lang=bi" : ""), "Open in a larger window ↗", "在大窗口打开 ↗", { external: true }) +
-    '</section><section class="paper-card">' + starterGuide(directory + starter + "_Web.aia", directory + starter + ".aia") +
-    '<details class="help-panel"><summary>' + t("Add it to your own app", "添加到自己的应用") + '</summary><div class="help-body"><ol class="actions-list"><li>' +
-    t("Download every file listed below. Keep the filenames and upload all the files in Designer → Media.", "下载下方列出的每个文件。保留原文件名，并在 Designer → Media 上传全部文件。") +
-    '</li><li>' + t("Add a WebViewer and set Width and Height to Fill parent. Use this HomeUrl when testing on Companion.", "添加 WebViewer，将 Width 和 Height 设为 Fill parent。在 Companion 测试时使用这个 HomeUrl。") +
-    '<p><code>http://localhost/' + file + '</code></p></li></ol><div class="actions">' + link(source, file, "", { file: true }) +
-    media.map(([asset, en, zh]) => link(directory + asset, en, zh, { file: true })).join("") + '</div>' +
-    helpPanel(help) + '</div></details><h3>' + t("Try a second case", "再试一种情况") + '</h3><p>' + tr(extend) + '</p></section></div>';
+function selectedRoute(route, stage) {
+  const key = state.route;
+  const taskOne = stage === 1;
+  const checkpointKey = `${key}-${stage}`;
+  const checkpointLabel = taskOne
+    ? words("I checked the starting version and made the changes above.", "我检查了起始版本并完成了上面的改动。")
+    : words("I ran my app and saw the results listed above.", "我运行了自己的应用，并看到了上面列出的结果。");
+  const propertyShot = key === "gallery" && taskOne
+    ? screenshot("assets/upgrade/gallery-properties.webp", words("2 Scroll to Behavior in Properties and enter your two names.", "2 在 Properties 滚动到 Behavior，输入两个名称。"))
+    : "";
+  return `<article class="paper-card upgrade-task">
+    <p class="eyebrow">${tr(route.name)}</p>
+    <h2>${tr(taskOne ? route.first : route.next)}</h2>
+    <p class="subtle">${tr(route.model)}</p>
+    ${!taskOne && !state.checked[`${key}-1`] ? `<p class="success">${t("If your starting version still needs work, finish Main Task 1 before editing these blocks.", "如果起始版本还没完成，先做完主要任务 1，再编辑这些积木。")}</p>` : ""}
+    ${taskOne ? "" : phoneStrip(route.stills) + upgradeDemo(key)}
+    ${actionsList(taskOne ? route.steps1 : route.steps2)}
+    <div class="screenshot-list upgrade-shots">
+      ${screenshot(`assets/upgrade/${key}-${taskOne ? "design" : "blocks"}.webp`, taskOne ? route.design : route.blocks)}
+      ${propertyShot}
+    </div>
+    ${taskOne ? "" : `<section class="test-sheet"><h3>${t("What you should see when you test", "测试时应该看到的结果")}</h3>${actionsList(route.tests, "ul")}</section>`}
+    ${testingGuide()}
+    <label class="tick"><input type="checkbox" data-check="${checkpointKey}" ${state.checked[checkpointKey] ? "checked" : ""}><span>${tr(checkpointLabel)}</span></label>
+  </article>`;
 }
 
 function mainOne() {
-  return head("Main Task 1", "主任务一", "Build in your own app", "在自己的应用中制作",
-    "Continue last week’s work or add one feature. Show a partner a working interaction before you move on.", "继续上周的项目，或添加一个功能。进入下一任务前，向同伴展示一个可用的互动。") +
-    routes() + (Object.hasOwn(featureGuides, state.route) ? featureGuide(state.route) : "") +
-    (state.route === "playground" ? playground() : "") +
-    (state.route === "merge" ? mergeWorkspace() : "") +
-    (Object.hasOwn(foodProjects, state.route) ? foodWorkspace(state.route) : "") +
-    (state.route === "vault" ? '<div class="paper-card workspace-tools"><div class="actions">' +
-      link(vaultAsset + (state.language === "bi" ? "?lang=bi" : ""), "Play Circuit Vault ↗", "试玩电路密室 ↗", { external: true }) +
-      '</div>' + starterGuide(vaultWebFile, vaultFile) + '</div>' +
-      walk("vault", V) : nextStage("main-2", "Main Task 2", "主任务二"));
+  const route = upgradeRoutes[state.route];
+  return head("Main Task 1", "主要任务 1", "Get your feature ready", "准备你的功能",
+    "Open your own project from last week. Choose one feature below and follow its guide. You’ll improve this same feature in Main Task 2.", "打开上周自己的项目。在下方选择一项功能，按指南操作。主要任务 2 将继续改进同一项功能。") +
+    `<div class="actions workspace-tools">${mit()}</div>
+    <p class="subtle">${t("Use Projects to open your app, then use Screens to select the page you want. If you only have a homepage, try Help panel.", "用 Projects 打开自己的应用，再从 Screens 选页面。如果应用现在只有首页，可以试试帮助面板。")}</p>
+    ${routePicker()}<div class="route-support">${catchup(route)}
+    ${details(words("Find Designer, Screens and Blocks", "找到 Designer、Screens 和 Blocks"),
+      '<div class="screenshot-list">' +
+      screenshot("assets/upgrade/choose-screen.webp", words("Use Screens to open the page you want to edit.", "用 Screens 打开要编辑的页面。")) +
+      screenshot("assets/upgrade/designer-overview.webp", words("1 Palette. 2 Phone preview. 3 Components. 4 Properties. 5 Blocks.", "1 组件库。2 手机预览。3 组件。4 属性。5 积木。")) + "</div>")}
+    </div>
+    ${route ? selectedRoute(route, 1) + nextStage("main-2", "Continue with this feature in Main Task 2", "在主要任务 2 中继续此功能") : ""}`;
 }
 
 function mainTwo() {
-  return head("Main Task 2", "主任务二", "Build a Library Helper", "制作图书馆小助手",
-    "Use the practice starter to rehearse Wednesday’s workflow. Make one screen, build two results, then check and export the project.", "用起始项目演练周三的操作。制作一个界面，完成两种结果，然后检查并导出。") +
-    '<div class="brief"><div><h2>' + t("The brief", "任务要求") + '</h2><p>' + t("Help a user choose where to go in the library. They choose an activity and tap Show location.", "帮用户决定去图书馆的哪里。选活动，然后点击 Show location。") +
-    '</p></div><div class="results-key"><p><strong>Read</strong><span aria-hidden="true">→</span>' + t("Fiction shelves", "小说书架") +
-    '</p><p><strong>Study</strong><span aria-hidden="true">→</span>' + t("Quiet study tables", "安静自习桌") + "</p></div></div>" +
-    '<div class="actions workspace-tools">' + mit() + link(practiceFile, "Library_Helper_Practice.aia ↓", "下载练习项目", { file: true }) + "</div>" +
-    featureGuide("library", words("What both tests should show", "两个测试应显示什么")) + walk("library", L);
+  const route = upgradeRoutes[state.route];
+  return head("Main Task 2", "主要任务 2", "Make your feature do more", "让你的功能再进一步",
+    "Keep the same app, screen and feature from Main Task 1. Add the new behaviour and try the checks below.", "继续使用主要任务 1 中的同一个应用、页面和功能。加入新的行为，再完成下方检查。") +
+    (route
+      ? `<div class="actions workspace-tools">${mit()}${link("#main-1", "Back to your Main Task 1 steps", "返回你的主要任务 1 步骤")}</div>
+        ${selectedRoute(route, 2)}${nextStage("extension", "Extension", "拓展挑战")}`
+      : `<section class="paper-card"><h2>${t("Choose your feature in Main Task 1", "在主要任务 1 选择功能")}</h2>
+        <p>${t("Once you pick it, this page will show its next steps and testing screenshots.", "选好后，这一页会显示该功能的下一步与测试截图。")}</p>
+        <div class="actions">${link("#main-1", "Go to Main Task 1", "前往主要任务 1", { primary: true })}</div></section>`);
 }
 
 function extension() {
-  const steps = {
-    help: words("In Blocks, place call VaultView.GoHome inside when PlayAgainButton.Click. GoHome reloads the arcade game and returns to the start screen.", "在 Blocks 中，把 call VaultView.GoHome 接到 when PlayAgainButton.Click 里。GoHome 重新加载街机游戏并回到开始画面。"),
-    shots: [mitImages.addButton, mitImages.button, mitImages.liveViewer],
-  };
-  return head("Extension", "拓展挑战", "Make the Vault better", "改进方块密室",
-    "When your Library Helper is checked and saved, improve the Vault and try the change with a partner.", "检查并保存图书馆小助手后，改进方块密室，请同伴试试你的改动。") +
-    '<div class="extension-grid"><section class="paper-card"><h2>' + t("Write a better clue", "写更清楚的线索") + '</h2><p>' +
-    t("In Designer, add a Label above VaultView. In Text, write a short hint that explains when to dodge. Ask a partner to play the first room using your hint.", "在 Designer 中，在 VaultView 上方添加 Label。在 Text 写一句提示何时翻滚的话，请同伴用它挑战第一个房间。") +
-    '</p></section><section class="paper-card"><h2>' + t("Add Play again", "添加再玩一次") + "</h2><p>" +
-    t("Add a native MIT Button called PlayAgainButton above VaultView. Inside its Click event, call VaultView.GoHome. Try it after completing the first room.", "在 VaultView 上方添加 MIT 按钮 PlayAgainButton。把 call VaultView.GoHome 放进它的 Click 事件。完成第一个房间后试试按钮。") +
-    "</p>" + helpPanel(steps) + "</section></div>" + featureGuide("replay", words("Check the restart", "检查重新开始功能")) +
-    '<p class="subtle">' + t("Worked on a different feature last week? Use the finished example as a separate practice copy for this challenge.", "上周做了别的功能？可导入完成版示例，单独练习这个挑战。") + "</p>" +
-    '<div class="actions">' + link(vaultWebFile, "Browser tester starter (.aia)", "浏览器测试版（.aia）", { file: true }) +
-    link(vaultFile, "Companion starter (.aia)", "Companion 版（.aia）", { file: true }) + "</div>" +
-    nextStage("pitstop", "Learning Pit Stop", "学习停靠站");
+  const key = state.extension;
+  const [en, zh, starter, file, extra, challenge] = extensionOptions[key];
+  const browserFile = projectDir + file + (state.language === "bi" ? "?lang=bi" : "");
+  return head("Extension", "拓展挑战", "Add a playable extra", "添加一个可玩的功能",
+    "After you’ve tested and saved your feature, explore an extra that could fit your own app.", "测试并保存自己的功能后，探索一个适合加入自己应用的额外功能。") +
+    `<label class="extension-select">${t("Choose an example", "选择一个示例")}<select name="extension">
+      ${Object.entries(extensionOptions).map(([id, [title, titleZh]]) =>
+        `<option value="${id}" ${id === key ? "selected" : ""}>${esc(label(words(title, titleZh)))}</option>`).join("")}</select></label>
+    <section class="paper-card extension-example"><h2>${t(en, zh)}</h2><p>${tr(challenge)}</p>
+      <div class="actions">${link(browserFile, "Play in a browser ↗", "在浏览器中试玩 ↗", { primary: true, external: true })}</div>
+      ${featureGuide(key, words("Try it step by step", "按步骤试玩"))}
+      ${starterGuide(projectDir + starter + "_Web.aia", projectDir + starter + ".aia")}
+      ${details(words("Add this to your existing app", "把它添加到自己的应用"), `
+        ${actionsList([
+          words("On the screen you want to change, drag User Interface → WebViewer into the Viewer. Set Width to Fill parent and give it enough height for the game controls.", "在要改进的页面，从 User Interface 拖入 WebViewer。把 Width 设为 Fill parent，并给控件足够的高度。"),
+          words("For laptop Web Test, import the Web Test example as a separate reference project. Select its WebViewer in Designer and copy the whole HomeUrl value. Paste it into your own project's WebViewer HomeUrl. Reopen your project to test it.", "用电脑网页测试时，把网页测试示例导入为单独的参考项目。在 Designer 中选中它的 WebViewer，复制整个 HomeUrl 值，再粘贴到自己项目的 WebViewer HomeUrl 中。重新打开自己的项目进行测试。"),
+          words("For iPad Companion, upload every file below with Designer → Media → Upload File. Keep the filenames and enter the displayed Companion address in HomeUrl.", "用 iPad Companion 时，从 Designer → Media → Upload File 上传下方全部文件。保留原文件名，在 HomeUrl 中填入显示的 Companion 地址。"),
+          words("Run your app. Try one action in the extra, then check your main feature still works.", "运行自己的应用。在新功能中试一个操作，再确认原来的主要功能仍正常。"),
+        ])}
+        <p><strong>${t("Companion HomeUrl", "Companion 地址")}</strong> <code>http://localhost/${file}</code></p>
+        <div class="actions">${[file, ...extra].map(asset => link(projectDir + asset, asset, "", { file: true })).join("")}</div>
+        ${details(words("See the WebViewer and Media screenshots", "查看 WebViewer 和 Media 截图"),
+          gallery([mitImages.liveViewerPalette, mitImages.liveViewer, mitImages.upload]))}
+      `)}
+    </section>${nextStage("pitstop", "Learning Pit Stop", "学习停靠站")}`;
 }
 
 const phases = [
@@ -360,8 +292,8 @@ const phases = [
 ];
 
 function pitstop() {
-  return head("Learning Pit Stop", "学习停靠站", "How did the two results feel?", "做出两个结果时感觉如何？",
-    "Think about making one button show the right result for each choice. Pick the phase that fits your confidence now.", "想想怎样让一个按钮根据选项显示不同结果。选一个最符合你目前信心的阶段。") +
+  return head("Learning Pit Stop", "学习停靠站", "How did your feature feel to build?", "制作这个功能时感觉如何？",
+    "Think about the feature you worked on today. Pick the phase that fits your confidence now.", "想想今天做的功能，选一个最符合目前信心的阶段。") +
     '<fieldset class="phase-options"><legend class="sr-only">Choose a learning phase</legend>' +
     phases.map(([id, title, intro]) => '<label class="radio-card"><input type="radio" name="phase" value="' + id + '"' +
       (state.phase === id ? " checked" : "") + "><span><strong>" + tr(title) + '</strong><span class="option-copy">' +
@@ -369,16 +301,19 @@ function pitstop() {
 }
 
 function plenary() {
-  return head("Plenary", "课堂总结", "Ready for Wednesday", "为周三做好准备",
-    "Tell a partner how you’ll start, check and hand in your app. Use the practice project to show them if that helps.", "告诉同伴你会如何开始、检查和提交应用。需要时可用练习项目演示。") +
-    '<section class="paper-card exit-card"><div><ol class="actions-list"><li>' +
-    t("Where will you start in Designer when you open the starter?", "打开起始项目后，你会先到 Designer 的哪里？") + "</li><li>" +
-    t("What will you check after you tap the button for each choice?", "每种选项都点按钮后，你会检查什么？") + "</li><li>" +
-    t("Which file will you hand in, and where can you find it?", "你会提交哪个文件？在哪里找？") + '</li></ol><details class="help-panel"><summary>' +
-    t("Check your plan", "核对你的计划") + '</summary><div class="help-body"><p>' +
-    t("Open Designer and find the first edit in the brief. Run both choices and compare both messages with the brief. Export the editable .aia and find it in Downloads or Files.", "打开 Designer，找到任务要求的第一处改动。试两个选项，把结果和要求比较。导出 .aia，并在 Downloads 或 Files 中找到。") +
-    '</p></div></details></div><img class="exit-guide" src="assets/art/success.png" alt="" loading="lazy"></section>' +
-    '<div class="stage-footer">' + link("#main-2", "Review Main Task 2", "复习主任务二") + "</div>";
+  const route = upgradeRoutes[state.route];
+  return head("Plenary", "课堂总结", "Show it, save it, submit it", "演示、保存并提交",
+    route ? "Your feature is " + route.name[0] + ". Show a partner what it does now." : "Show a partner what your feature does before and after a tap or choice.",
+    route ? "展示你对“" + route.name[1] + "”的改动，给同伴演示一次。" : "给同伴演示点击或选择前后，功能有什么变化。") +
+    `<section class="paper-card">
+      <h2>${t("Your final check", "最后检查")}</h2>
+      ${actionsList([
+        words("Show a partner what happens before and after the tap or choice. Say “When the user …, my app now …”", "给同伴演示点击或选择前后的变化。说：“当用户……时，我的应用现在会……”"),
+        words("In your own MIT project, choose Projects → Save project, then Projects → Export selected project (.aia) to my computer.", "在自己的 MIT 项目中，选择 Projects → Save project，再选择 Projects → Export selected project (.aia) to my computer。"),
+        words("Find your .aia in Downloads or Files. Attach it to your Week 13 assignment in Teams and select Turn in.", "到 Downloads 或 Files 找到 .aia 文件，上传到 Teams 的第 13 周作业，并选 Turn in。"),
+      ])}
+      <div class="screenshot-list upgrade-shots">${screenshot("assets/upgrade/export-project.webp", words("1 Open Projects. 2 Export the selected project.", "1 打开 Projects。2 导出选中的项目。"))}</div>
+    </section><div class="stage-footer">${link("#main-2", "Review your feature", "复习你的功能")}</div>`;
 }
 
 const views = { start, types, "main-1": mainOne, "main-2": mainTwo, extension, pitstop, plenary };
@@ -421,46 +356,25 @@ window.addEventListener("hashchange", () => {
 
 main.addEventListener("change", (event) => {
   const control = event.target;
-  if (control.name === "route") {
-    state.route = control.value;
-    render("main-1");
-    main.querySelector('[name="route"]:checked')?.focus({ preventScroll: true });
+  if (control.name === "route" || control.name === "extension") {
+    state[control.name] = control.value;
+    render(state.stage);
+    const selector = control.name === "route" ? '[name="route"]:checked' : '[name="extension"]';
+    main.querySelector(selector)?.focus({ preventScroll: true });
     return;
   }
   if (control.name === "focus" || control.name === "phase") state[control.name] = control.value;
-  if (control.dataset.check) {
-    const key = control.dataset.check;
-    state.checked[key] = control.checked;
-    const stepButton = main.querySelector('.step-list [data-step="' + key.replace(/-(\d+)$/, ":$1") + '"] .step-no');
-    if (stepButton) stepButton.textContent = control.checked ? "✓" : number(Number(key.split("-")[1]) + 1);
-  }
-  if (control.dataset.test) {
-    const key = control.dataset.test;
-    state.tests[key] = control.value;
-    document.getElementById(key + "-feedback").innerHTML = testFeedback(control.value, key.split("-")[0]);
-  }
+  if (control.dataset.check) state.checked[control.dataset.check] = control.checked;
   save();
 });
 
 main.addEventListener("click", (event) => {
   const demo = event.target.closest("[data-demo]");
-  if (demo) {
-    const playing = demo.getAttribute("aria-pressed") === "true";
-    const path = "assets/guides/" + demo.dataset.demo;
-    demo.closest("figure").querySelector("img").src = path + (playing ? "-still.webp" : ".webp");
-    demo.setAttribute("aria-pressed", String(!playing));
-    demo.innerHTML = playing ? t("Play screenshot demo", "播放截图演示") : t("Stop demo", "停止演示");
-    return;
-  }
-  const stepButton = event.target.closest("[data-step]");
-  if (stepButton) {
-    const [group, index] = stepButton.dataset.step.split(":");
-    state.active[group] = Number(index);
-    render(state.stage);
-    const stepCard = document.querySelector("#current-step");
-    stepCard.focus({ preventScroll: true });
-    stepCard.scrollIntoView({ block: "start" });
-  }
+  if (!demo) return;
+  const playing = demo.getAttribute("aria-pressed") === "true";
+  demo.closest("figure").querySelector("img").src = playing ? demo.dataset.poster : demo.dataset.demo;
+  demo.setAttribute("aria-pressed", String(!playing));
+  demo.innerHTML = playing ? t("Play screenshot demo", "播放截图演示") : t("Stop demo", "停止演示");
 });
 
 main.addEventListener("submit", (event) => {
@@ -478,5 +392,8 @@ main.addEventListener("submit", (event) => {
   }
 });
 
+if (!routes.includes(state.route)) state.route = "";
+if (!Object.hasOwn(extensionOptions, state.extension)) state.extension = "vault";
 const initial = stageFromUrl() || (location.hash === "#do-now" ? "start" : state.stage);
 render(Object.hasOwn(views, initial) ? initial : "start");
+if (location.hash === "#do-now") document.querySelector("#do-now")?.scrollIntoView();
