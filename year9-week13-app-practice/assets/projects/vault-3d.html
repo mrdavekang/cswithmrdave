@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escape the Voxel Vault · 3D</title>
+  <style>
+    :root{font:16px/1.45 system-ui,sans-serif;color:#f5f1ea;background:#171617;color-scheme:dark}
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;min-height:100vh} p,h1,h2,ol{margin:0}
+    .vault{display:grid;gap:.7rem;max-width:58rem;margin:auto;padding:clamp(.65rem,2.8vw,1.35rem)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:.55rem;flex-wrap:wrap}
+    h1{font-size:clamp(1.12rem,3vw,1.85rem);letter-spacing:-.035em;line-height:1.18}
+    button{cursor:pointer;font:inherit;font-weight:650;color:#f5f1ea;background:#302e30;border:1px solid #626063;border-radius:.48rem;min-height:44px;padding:.4rem .55rem;touch-action:none}
+    button:hover,button[data-held]{background:#50463a}
+    button:focus-visible{outline:3px solid #f2b777;outline-offset:2px}
+    .language{font-size:.84rem}
+    .zh{display:none}.bilingual .zh{display:block;font-size:.86em}
+    .clue{color:#efc192;margin-top:.16rem;font-size:.91rem}
+    .objectives{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem}
+    .objectives li{padding:.26rem .4rem;background:#2e292e;border:1px solid #514a51;border-radius:.32rem;font-size:.78rem;color:#ddd6d1}
+    .objectives strong{display:block;color:#faf3e9}
+    .objectives li[data-done="true"]{border-color:#71bcaa;background:#223734}
+    .scene-frame{position:relative;width:100%;aspect-ratio:16 / 9;max-height:min(42vh,410px);background:#211f24;border:1px solid #7d7568;border-radius:.62rem;overflow:hidden}
+    canvas{display:block;width:100%;height:100%}
+    .aim{width:12px;height:12px;position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);border:2px solid #fff9;border-radius:50%;box-shadow:0 0 0 1px #1e191b;pointer-events:none}
+    .scene-frame[data-ready="true"] .aim{border-color:#ffd39a}
+    .status{padding:.52rem .65rem;background:#282528;border-left:3px solid #9a8070;border-radius:.3rem;font-size:.91rem}
+    .status[data-tone="escape"]{border-color:#edb764}.status[data-tone="locked"],.status[data-tone="needKey"]{border-color:#f38170}
+    .win{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:.4rem;background:#1a1519a6}
+    .win[hidden]{display:none}
+    .win-card{position:relative;padding:.42rem 1.4rem .56rem;border:1px solid #ecbd73;border-radius:.46rem;background:#242028f2;box-shadow:0 0 2.2rem #f6b75566;animation:arrive .48s ease-out both}
+    .win-icon{display:block;color:#f8cd84;font-size:clamp(1rem,5vw,1.9rem);line-height:1}
+    .win h2{color:#ffe2ab;font-size:clamp(1.06rem,5vw,2rem);line-height:1.2}
+    .win-time{font-variant-numeric:tabular-nums;font-size:.81rem;margin:.25rem 0}
+    .win button{font-size:.8rem;padding:.2rem .55rem}
+    .sparks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .sparks i{position:absolute;left:50%;top:50%;width:5px;height:5px;background:#ffd491;animation:spark .95s ease-out both}
+    @keyframes spark{from{opacity:.9;transform:translate(0,0)}to{opacity:0;transform:translate(var(--x),var(--y)) rotate(120deg)}}
+    @keyframes arrive{from{opacity:0;transform:translateY(.5rem)}to{opacity:1;transform:translateY(0)}}
+    .controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.36rem}
+    .controls button{font-size:.87rem;line-height:1.18;min-width:0}
+    .control-icon{display:block;font-size:1.22rem;margin-bottom:.13rem}
+    .actions{display:grid;grid-template-columns:2fr 1fr;gap:.36rem}
+    .primary{background:#f4c896;color:#251c17;border-color:#f4c896}
+    .primary:hover{background:#ffd8b0}
+    .keys{font-size:.79rem;color:#d1c8c0}
+    .embed .keys,.embed .language{display:none}
+    .embed .vault{padding:.65rem}
+    @media(max-width:370px){.vault{padding:.65rem}.controls button{font-size:.77rem;padding:.35rem .15rem}}
+    @media(prefers-reduced-motion:reduce){.win-card{animation:none}.sparks{display:none}}
+  </style>
+</head>
+<body>
+  <main class="vault">
+    <header>
+      <div><h1>Escape the Voxel Vault <span class="zh" lang="zh-Hans">逃出方块密室</span></h1>
+        <p class="clue" id="clue">The star door needs a keycard. Find it, then reach the exit switch.<span class="zh" lang="zh-Hans">星星门需要钥匙卡。找到卡，再去打开出口开关。</span></p>
+      </div>
+      <button type="button" class="language" id="language" aria-pressed="false">中文 support</button>
+    </header>
+    <ol class="objectives" aria-label="Escape progress">
+      <li id="goal-key"><strong>Keycard<span class="zh" lang="zh-Hans">钥匙卡</span></strong><span class="goal-state">Find it<span class="zh" lang="zh-Hans">寻找</span></span></li>
+      <li id="goal-door"><strong>Star door<span class="zh" lang="zh-Hans">星星门</span></strong><span class="goal-state">Locked<span class="zh" lang="zh-Hans">已锁</span></span></li>
+      <li id="goal-exit"><strong>Exit switch<span class="zh" lang="zh-Hans">出口开关</span></strong><span class="goal-state">Off<span class="zh" lang="zh-Hans">关闭</span></span></li>
+    </ol>
+    <div class="scene-frame" id="frame" data-ready="false">
+      <canvas id="scene" role="img" aria-label="First-person view of the Vault. Look for the teal keycard station, the star door and the exit switch."></canvas>
+      <span class="aim" aria-hidden="true"></span>
+      <section class="win" id="win" aria-labelledby="win-heading" hidden>
+        <div class="sparks" id="sparks" aria-hidden="true"></div>
+        <div class="win-card">
+          <span class="win-icon" aria-hidden="true">✦</span>
+          <h2 id="win-heading">Vault cleared<span class="zh" lang="zh-Hans">成功逃出密室</span></h2>
+          <p class="win-time"><span id="escape-time"></span><span class="zh" lang="zh-Hans">逃脱用时</span></p>
+          <button type="button" id="replay">Play again<span class="zh" lang="zh-Hans">再玩一次</span></button>
+        </div>
+      </section>
+    </div>
+    <p id="status" class="status" role="status"></p>
+    <div class="controls" role="group" aria-label="Movement controls">
+      <button type="button" data-move="left"><span class="control-icon" aria-hidden="true">↶</span>Turn left<span class="zh" lang="zh-Hans">向左转</span></button>
+      <button type="button" data-move="forward"><span class="control-icon" aria-hidden="true">↑</span>Walk<span class="zh" lang="zh-Hans">前进</span></button>
+      <button type="button" data-move="back"><span class="control-icon" aria-hidden="true">↓</span>Back<span class="zh" lang="zh-Hans">后退</span></button>
+      <button type="button" data-move="right"><span class="control-icon" aria-hidden="true">↷</span>Turn right<span class="zh" lang="zh-Hans">向右转</span></button>
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" id="open">Interact<span class="zh" lang="zh-Hans">互动</span></button>
+      <button type="button" id="restart">Restart<span class="zh" lang="zh-Hans">再玩一次</span></button>
+    </div>
+    <p class="keys">Hold the movement buttons or use the arrow keys. Press E to interact.<span class="zh" lang="zh-Hans">按住移动按钮，或用方向键。按 E 互动。</span></p>
+    <noscript>Enable JavaScript to play the Vault.</noscript>
+  </main>
+  <script>
+  (() => {
+    "use strict";
+    const canvas = document.getElementById("scene");
+    const context = canvas.getContext("2d", { alpha: false });
+    const status = document.getElementById("status");
+    const frame = document.getElementById("frame");
+    const win = document.getElementById("win");
+    const replay = document.getElementById("replay");
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    if (!context) {
+      status.textContent = "This browser could not start the 3D view.";
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+    const language = document.getElementById("language");
+    if (params.get("embed") === "1") document.body.classList.add("embed");
+    function setLanguage(bilingual) {
+      document.body.classList.toggle("bilingual", bilingual);
+      language.setAttribute("aria-pressed", String(bilingual));
+    }
+    setLanguage(params.get("lang") === "bi");
+    language.addEventListener("click", () => setLanguage(language.getAttribute("aria-pressed") !== "true"));
+    if (params.has("clue")) document.getElementById("clue").firstChild.nodeValue = params.get("clue").slice(0, 160);
+
+    const entrance = { x: 0, y: 1.57, z: 1.25, angle: 0 };
+    const camera = { ...entrance };
+    const initialGame = { key: false, opened: false, lockSeen: false, slide: 0, escape: null, startedAt: null };
+    const game = { ...initialGame };
+    const doors = [{ name: "star", x: -1.58, z: 7.84 }, { name: "lightning", x: 1.58, z: 7.84 }];
+    const keycard = { name: "key", x: -2.72, z: 4.84, range: 2.05 };
+    const exitSwitch = { name: "switch", x: -1.58, z: 10.57, range: 1.55 };
+    const messages = {
+      start: ["Look left for the teal keycard. Get close, aim the ring at it and tap Interact.", "向左找蓝绿色钥匙卡。走近，让圆环对准卡，然后点 Interact。"],
+      near: ["Move closer and aim at a keycard, door or switch until the ring lights up.", "走近并对准钥匙卡、门或开关，直到圆环亮起。"],
+      locked: ["Lightning door locked. This keycard slot has a different symbol. Try the star door.", "闪电门已锁。卡槽图案不同。试试星星门。"],
+      needKey: ["The star door needs a keycard. Look for the teal panel on the left.", "星星门需要钥匙卡。找左侧的蓝绿色面板。"],
+      key: ["Keycard collected. Find the star door and use Interact to unlock it.", "已取得钥匙卡。找到星星门并点 Interact 解锁。"],
+      opened: ["Star door open. Walk through and use the gold switch in the exit chamber.", "星星门已打开。走进去，启动出口房间里的金色开关。"],
+      escaping: ["Exit switch on. The shutters are opening.", "出口开关已打开。闸门正在开启。"],
+      escape: ["Vault cleared! The exit is open.", "成功逃出密室！出口已打开。"],
+    };
+    const faces = [];
+    const metal = { front: "#33343b", side: "#24242b", top: "#47464e" };
+    const gold = { front: "#b28154", side: "#77604b", top: "#deae79" };
+    const silver = { front: "#9799aa", side: "#646579", top: "#bdbecc" };
+    const trim = { front: "#554c48", side: "#373137", top: "#74675e" };
+    const teal = { front: "#80ddc0", side: "#3d8b7c", top: "#bcebdc" };
+    const amber = { front: "#ffcb70", side: "#b57b4f", top: "#fbc891" };
+    const slot = { left: -2.37, right: -.79, threshold: 7.62 };
+
+    function face(vertices, normal, color, group, edge = true) {
+      faces.push({ vertices, normal, color, group, edge });
+    }
+
+    function box(x0, y0, z0, x1, y1, z1, colors, group) {
+      const a = [x0, y0, z0], b = [x1, y0, z0], c = [x1, y1, z0], d = [x0, y1, z0];
+      const e = [x0, y0, z1], f = [x1, y0, z1], g = [x1, y1, z1], h = [x0, y1, z1];
+      face([a,b,c,d], [0,0,-1], colors.front, group);
+      face([f,e,h,g], [0,0,1], colors.front, group);
+      face([e,a,d,h], [-1,0,0], colors.side, group);
+      face([b,f,g,c], [1,0,0], colors.side, group);
+      face([d,c,g,h], [0,1,0], colors.top, group);
+      face([e,f,b,a], [0,-1,0], colors.side, group);
+    }
+
+    const stone = [
+      { front: "#4b4a50", side: "#45434a", top: "#626069" },
+      { front: "#5c595e", side: "#525058", top: "#747077" },
+      { front: "#514f56", side: "#4b4850", top: "#68656c" },
+      { front: "#636065", side: "#58555e", top: "#7a777d" },
+    ];
+    const tile = (i, j) => stone[Math.abs(i * 17 + j * 11 + i * j) % stone.length];
+    for (let i = -4; i < 4; i++) {
+      for (let j = 0; j < 11; j++) {
+        const x = i * .88, z = j * .86;
+        face([[x,0,z],[x+.88,0,z],[x+.88,0,z+.86],[x,0,z+.86]], [0,1,0], tile(i,j).top);
+      }
+    }
+    for (const side of [-1, 1]) {
+      const wall = side * 3.39;
+      for (let row = 0; row < 5; row++) {
+        for (let j = 0; j < 10; j++) {
+          const y = row * .65, z = j * .86;
+          face([[wall,y,z],[wall,y,z+.86],[wall,y+.65,z+.86],[wall,y+.65,z]],
+            [-side,0,0], tile(side*j,row).side);
+        }
+      }
+      for (const z of [2.8, 5.1, 7.25]) {
+        const x = side * 3.29;
+        box(x - .22, 1.45, z - .19, x + .22, 2.19, z + .19, trim);
+        box(x - .24, 1.55, z - .12, x + .24, 2.06, z + .12,
+          { front: "#f1c18a", side: "#e4aa74", top: "#f5d7a9" });
+      }
+    }
+    for (let row = 0; row < 5; row++) {
+      for (let i = -4; i < 4; i++) {
+        const x = i * .88, y = row * .65;
+        for (const [first, last] of [[x, Math.min(x + .88, -2.46)], [Math.max(x, -.70), x + .88]]) {
+          if (first >= last) continue;
+          face([[first,y,8.28],[last,y,8.28],[last,y+.65,8.28],[first,y+.65,8.28]], [0,0,-1], tile(i,row).front);
+        }
+        face([[x,y,.04],[x+.88,y,.04],[x+.88,y+.65,.04],[x,y+.65,.04]], [0,0,1], tile(i,row).front);
+      }
+    }
+    box(-3.62, 3.25, 0, 3.62, 3.44, 8.65, metal);
+    for (const z of [2, 4.5, 6.85]) {
+      box(-3.58, 3.02, z - .15, 3.58, 3.27, z + .15, trim);
+      box(-.9, 2.99, z - .08, .9, 3.04, z + .08,
+        { front: "#e4d1bd", side: "#e4d1bd", top: "#e4d1bd" });
+    }
+
+    const bolt = [[.08,.39],[-.27,-.03],[-.04,-.03],[-.09,-.39],[.27,.12],[.06,.12]];
+    const star = Array.from({ length: 10 }, (_, i) => {
+      const angle = Math.PI * i / 5;
+      const size = i % 2 ? .17 : .41;
+      return [Math.sin(angle) * size, Math.cos(angle) * size];
+    });
+    for (const door of doors) {
+      const isStar = door.name === "star";
+      const x = door.x;
+      const frameColor = isStar ? gold : silver;
+      for (const edge of [-1, 1]) {
+        box(x + edge * .93 - .09, 0, 7.75, x + edge * .93 + .09, 2.72, 8.13, frameColor);
+      }
+      box(x - 1.02, 2.65, 7.75, x + 1.02, 2.86, 8.13, frameColor);
+      box(x - .82, .04, 7.89, x + .82, 2.63, 8.02, metal, door.name);
+      box(x - .75, .11, 7.86, x + .75, 2.56, 7.89, trim, door.name);
+      box(x - .65, .24, 7.82, x + .65, 2.41, 7.86, metal, door.name);
+      face((isStar ? star : bolt).map(([dx, dy]) => [x + dx, 1.59 + dy, 7.80]),
+        [0,0,-1], isStar ? "#ffcc89" : "#e5e6f5", door.name, false);
+    }
+
+    box(-3.26, 1.20, 4.97, -2.29, 2.06, 5.13, trim);
+    box(-3.12, 1.28, 4.93, -2.39, 1.97, 4.97, metal);
+    face([[-2.72,1.95,4.87],[-2.39,1.60,4.87],[-2.72,1.26,4.87],[-3.05,1.60,4.87]], [0,0,-1], "#58a38b");
+    box(-2.91, 1.47, 4.81, -2.53, 1.74, 4.88, teal, "key");
+    box(-2.86, 1.58, 4.799, -2.59, 1.63, 4.81, metal, "key");
+    box(-3.02, 0, 4.89, -2.48, .02, 5.16, teal);
+    for (const [x0, x1] of [[-2.55, -2.46],[-.70, -.60]]) {
+      box(x0, 0, 8.23, x1, 3.4, 11.85, trim, "airlock");
+    }
+    box(-2.5, -.05, 8.20, -.66, 0, 11.86, metal, "airlock");
+    box(-2.5, 2.95, 8.24, -.66, 3.08, 11.86, metal, "airlock");
+    for (const z of [8.76, 9.49, 10.24, 10.98]) {
+      box(-2.43, 0, z, -2.32, .02, z + .29, amber, "airlock");
+      box(-.85, 0, z, -.74, .02, z + .29, amber, "airlock");
+    }
+    box(-1.77, 0, 10.66, -1.39, 1.94, 10.96, trim, "console");
+    box(-1.88, 1.31, 10.58, -1.28, 1.90, 10.66, metal, "console");
+    box(-1.76, 1.47, 10.51, -1.40, 1.73, 10.58, amber, "console");
+    box(-2.52, 2.60, 11.16, -.64, 2.78, 11.74, gold, "airlock");
+    box(-2.58, 0, 11.67, -.58, 3.20, 11.80, amber, "daylight");
+    box(-2.46, 0, 11.48, -1.58, 2.65, 11.60, gold, "exitLeft");
+    box(-1.58, 0, 11.48, -.70, 2.65, 11.60, gold, "exitRight");
+    for (let i = 0; i < 5; i++) {
+      const x = .85 + i * .36;
+      box(x, .04, 7.70, x + .07, 2.60, 7.77, silver, "gate");
+    }
+    box(.79, 1.1, 7.66, 2.38, 1.23, 7.77,
+      { front: "#cb765e", side: "#925342", top: "#e49a80" }, "gate");
+
+    function clipNear(vertices) {
+      const near = .13;
+      const kept = [];
+      for (let i = 0; i < vertices.length; i++) {
+        const current = vertices[i];
+        const last = vertices[(i + vertices.length - 1) % vertices.length];
+        if ((current[2] >= near) !== (last[2] >= near)) {
+          const part = (near - last[2]) / (current[2] - last[2]);
+          kept.push([last[0] + part * (current[0] - last[0]), last[1] + part * (current[1] - last[1]), near]);
+        }
+        if (current[2] >= near) kept.push(current);
+      }
+      return kept;
+    }
+
+    function visibleFaces(sin, cos) {
+      const visible = [];
+      for (const item of faces) {
+        const group = item.group;
+        if (group === "key" && game.key) continue;
+        if (item.group === "gate" && !game.lockSeen) continue;
+        const rise = group === "star" ? game.slide * 3.1 : 0;
+        if (rise > 2.95) continue;
+        const progress = game.escape ? game.escape.progress : 0;
+        if (progress >= .98 && (group === "exitLeft" || group === "exitRight")) continue;
+        if (group === "console" && progress > 0) continue;
+        if (group === "daylight" && progress === 0) continue;
+        const shift = group === "exitLeft" ? -progress * .99 : group === "exitRight" ? progress * .99 : 0;
+        const [vx, vy, vz] = item.vertices[0];
+        const [nx, ny, nz] = item.normal;
+        if (nx * (camera.x - vx - shift) + ny * (camera.y - vy - rise) + nz * (camera.z - vz) <= 0) continue;
+        const transformed = item.vertices.map(([x, y, z]) => {
+          const dx = x + shift - camera.x, dz = z - camera.z;
+          return [dx * cos - dz * sin, y + rise - camera.y, dx * sin + dz * cos];
+        });
+        const vertices = clipNear(transformed);
+        if (vertices.length < 3) continue;
+        const depth = vertices.reduce((total, vertex) => total + vertex[2], 0) / vertices.length;
+        visible.push({ vertices, depth, color: item.color, edge: item.edge });
+      }
+      return visible.sort((a, b) => b.depth - a.depth);
+    }
+
+    function target() {
+      if (game.escape) return null;
+      const options = camera.z > slot.threshold
+        ? [exitSwitch]
+        : [game.key ? null : keycard, game.opened ? null : doors[0], doors[1]].filter(Boolean);
+      const sin = Math.sin(camera.angle), cos = Math.cos(camera.angle);
+      let focused = null, nearest = Infinity;
+      for (const option of options) {
+        const x = option.x - camera.x, z = option.z - camera.z;
+        const distance = Math.hypot(x, z);
+        if (distance > (option.range || 2.3) || distance >= nearest) continue;
+        if (x * sin + z * cos <= .13 || Math.abs(x * cos - z * sin) > Math.min(.66, distance * .37 + .1)) continue;
+        focused = option;
+        nearest = distance;
+      }
+      return focused;
+    }
+
+    let needsPaint = true;
+    function paint() {
+      const width = canvas.width, height = canvas.height;
+      const focal = Math.min(width * .61, height * .88);
+      context.fillStyle = "#28252b";
+      context.fillRect(0, 0, width, height);
+      for (const item of visibleFaces(Math.sin(camera.angle), Math.cos(camera.angle))) {
+        context.beginPath();
+        item.vertices.forEach(([x, y, z], i) => {
+          const tx = width / 2 + focal * x / z;
+          const ty = height * .52 - focal * y / z;
+          if (i === 0) context.moveTo(tx, ty);
+          else context.lineTo(tx, ty);
+        });
+        context.closePath();
+        context.fillStyle = item.color;
+        context.fill();
+        if (item.edge) {
+          context.strokeStyle = "#1b171983";
+          context.lineWidth = Math.max(.65, width / 900);
+          context.stroke();
+        }
+      }
+      if (game.escape) {
+        const light = context.createRadialGradient(width * .5, height * .51, 0, width * .5, height * .51, width * .56);
+        light.addColorStop(0, "rgba(255,213,132," + game.escape.progress * .35 + ")");
+        light.addColorStop(1, "rgba(255,213,132,0)");
+        context.fillStyle = light;
+        context.fillRect(0, 0, width, height);
+      }
+      frame.dataset.ready = String(Boolean(target()));
+      needsPaint = false;
+    }
+
+    function resize() {
+      const bounds = frame.getBoundingClientRect();
+      const scale = Math.min(window.devicePixelRatio || 1, 900 / Math.max(bounds.width, 1), 1.65);
+      const width = Math.max(1, Math.round(bounds.width * scale)), height = Math.max(1, Math.round(bounds.height * scale));
+      if (width === canvas.width && height === canvas.height) return;
+      canvas.width = width;
+      canvas.height = height;
+      needsPaint = true;
+    }
+
+    function bilingualText(element, english, mandarin) {
+      const translation = document.createElement("span");
+      translation.className = "zh";
+      translation.lang = "zh-Hans";
+      translation.textContent = mandarin;
+      element.replaceChildren(english, translation);
+    }
+
+    function announce(key) {
+      bilingualText(status, ...messages[key]);
+      status.dataset.tone = key;
+    }
+
+    function setGoal(name, done, english, mandarin) {
+      const goal = document.getElementById("goal-" + name);
+      goal.dataset.done = String(done);
+      bilingualText(goal.querySelector(".goal-state"), (done ? "✓ " : "") + english, mandarin);
+    }
+
+    function showVictory() {
+      const seconds = game.escape.seconds;
+      const time = Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0");
+      document.getElementById("escape-time").textContent = "Escape time " + time;
+      if (!reduceMotion.matches) {
+        document.getElementById("sparks").replaceChildren(...Array.from({ length: 18 }, (_, index) => {
+          const spark = document.createElement("i");
+          const angle = index * 2 * Math.PI / 18;
+          const distance = 55 + (index % 3) * 24;
+          spark.style.setProperty("--x", Math.cos(angle) * distance + "px");
+          spark.style.setProperty("--y", Math.sin(angle) * distance * .66 + "px");
+          return spark;
+        }));
+      }
+      win.hidden = false;
+      replay.focus({ preventScroll: true });
+      announce("escape");
+      tellMIT("escaped");
+    }
+
+    function tellMIT(value) {
+      const bridge = window.AppInventor;
+      if (!bridge || typeof bridge.setWebViewString !== "function") return;
+      try {
+        bridge.setWebViewString(value);
+      } catch (error) {
+        console.warn("Could not pass the game result to App Inventor.", error);
+      }
+    }
+
+    function interact() {
+      if (game.escape) return;
+      const focused = target();
+      if (!focused) {
+        announce("near");
+        return;
+      }
+      if (focused.name === "key") {
+        game.key = true;
+        setGoal("key", true, "Collected", "已收集");
+        setGoal("door", false, "Ready to open", "可以解锁");
+        announce("key");
+        tellMIT("key-collected");
+      } else if (focused.name === "lightning") {
+        game.lockSeen = true;
+        announce("locked");
+        tellMIT("locked");
+      } else if (focused.name === "star") {
+        if (!game.key) {
+          announce("needKey");
+          return;
+        }
+        game.opened = true;
+        if (reduceMotion.matches) game.slide = 1;
+        setGoal("door", true, "Open", "已打开");
+        announce("opened");
+        tellMIT("star-opened");
+      } else {
+        game.escape = { progress: 0, seconds: Math.max(1, Math.floor((performance.now() - game.startedAt) / 1000)) };
+        setGoal("exit", true, "On", "已启动");
+        announce("escaping");
+      }
+      needsPaint = true;
+    }
+
+    function restart() {
+      Object.assign(camera, entrance);
+      Object.assign(game, initialGame);
+      win.hidden = true;
+      document.getElementById("sparks").replaceChildren();
+      setGoal("key", false, "Find it", "寻找");
+      setGoal("door", false, "Locked", "已锁");
+      setGoal("exit", false, "Off", "关闭");
+      announce("start");
+      tellMIT("restarted");
+      needsPaint = true;
+    }
+
+    const pressed = new Set();
+    const pointers = new Map();
+    const buttons = [...document.querySelectorAll("[data-move]")];
+    const keyMap = { ArrowUp: "forward", w: "forward", ArrowDown: "back", s: "back",
+      ArrowLeft: "left", a: "left", ArrowRight: "right", d: "right" };
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    function move(steps, direction, delta) {
+      if (game.escape || (steps === 0 && direction === 0)) return;
+      if (game.startedAt === null) game.startedAt = performance.now();
+      camera.angle = (camera.angle + direction * delta * 1.62) % (2 * Math.PI);
+      const distance = steps * delta * 2.62;
+      const inChamber = camera.z > slot.threshold;
+      const nextX = camera.x + Math.sin(camera.angle) * distance;
+      camera.x = inChamber ? clamp(nextX, slot.left, slot.right) : clamp(nextX, -3.16, 3.16);
+      const canPassGate = game.slide === 1 && camera.x > slot.left && camera.x < slot.right;
+      const nextZ = camera.z + Math.cos(camera.angle) * distance;
+      camera.z = clamp(nextZ, .26, inChamber || canPassGate ? 10.28 : slot.threshold);
+      needsPaint = true;
+    }
+
+    function tap(action) {
+      move((action === "forward") - (action === "back"), (action === "right") - (action === "left"), .095);
+    }
+
+    for (const button of buttons) {
+      const action = button.dataset.move;
+      button.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        button.setPointerCapture(event.pointerId);
+        pointers.set(event.pointerId, action);
+        button.dataset.held = "";
+        tap(action);
+      });
+      const release = (event) => {
+        pointers.delete(event.pointerId);
+        delete button.dataset.held;
+      };
+      for (const name of ["pointerup", "pointercancel", "lostpointercapture"]) button.addEventListener(name, release);
+      button.addEventListener("click", (event) => {
+        if (event.detail === 0) tap(action);
+      });
+    }
+    window.addEventListener("keydown", (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const name = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      if (keyMap[name]) {
+        event.preventDefault();
+        if (!pressed.has(name)) tap(keyMap[name]);
+        pressed.add(name);
+      }
+      if (name === "e" && !event.repeat) interact();
+    });
+    window.addEventListener("keyup", (event) => pressed.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key));
+    window.addEventListener("blur", () => {
+      pressed.clear();
+      pointers.clear();
+      buttons.forEach((button) => delete button.dataset.held);
+    });
+    document.getElementById("open").addEventListener("click", interact);
+    document.getElementById("restart").addEventListener("click", restart);
+    replay.addEventListener("click", () => {
+      restart();
+      document.getElementById("open").focus({ preventScroll: true });
+    });
+    window.addEventListener("resize", resize);
+    if ("ResizeObserver" in window) new ResizeObserver(resize).observe(frame);
+
+    function update(now) {
+      const delta = Math.min(.06, (now - lastFrame) / 1000);
+      lastFrame = now;
+      if (pressed.size || pointers.size) {
+        const active = new Set([...Array.from(pressed, (key) => keyMap[key]), ...pointers.values()]);
+        move(active.has("forward") - active.has("back"), active.has("right") - active.has("left"), delta);
+      }
+      if (game.opened && game.slide < 1) {
+        game.slide = Math.min(1, game.slide + delta * 2.3);
+        needsPaint = true;
+      }
+      if (game.escape && game.escape.progress < 1) {
+        game.escape.progress = reduceMotion.matches ? 1 : Math.min(1, game.escape.progress + delta * 1.14);
+        if (game.escape.progress === 1) showVictory();
+        needsPaint = true;
+      }
+      if (needsPaint) paint();
+      requestAnimationFrame(update);
+    }
+
+    let lastFrame = performance.now();
+    resize();
+    announce("start");
+    requestAnimationFrame(update);
+  })();
+  </script>
+</body>
+</html>

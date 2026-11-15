@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Café Rush</title>
+<style>
+:root {
+  font:16px/1.35 system-ui,sans-serif;
+  color:#342925;
+  background:#f6edda;
+  --ink:#342925;
+  --cream:#fff8e8;
+  --teal:#1c584e;
+  --rust:#97452c;
+  --brass:#ffe1a7;
+  --dark-line:#50362d;
+}
+* { box-sizing:border-box }
+body,h1,h2,p,ol { margin:0 }
+[hidden] { display:none!important }
+button { font:inherit; cursor:pointer; color:inherit; touch-action:manipulation }
+button:disabled { cursor:default }
+button:focus-visible { outline:3px solid #1a695a; outline-offset:2px }
+main { max-width:43rem; margin:auto; padding:clamp(.5rem,2vw,1rem); display:grid; gap:.48rem }
+header,.toolbar { display:flex; align-items:center; justify-content:space-between; gap:.4rem }
+header h1 { font:900 clamp(1.85rem,7vw,3rem)/1.03 ui-monospace,monospace; letter-spacing:-.09em }
+header h1 b { color:var(--rust); text-shadow:2px 2px 0 #efbd86 }
+.zh { display:none }
+.bi .zh { display:block; font-family:system-ui,sans-serif; font-size:.86em; letter-spacing:normal }
+.bi h1 .zh { font-size:.49em; margin-top:.2rem }
+.embed #language { display:none }
+.plain,.primary {
+  border:1px solid var(--dark-line);
+  border-radius:.32rem;
+  padding:.38rem .62rem;
+  font-weight:800;
+  min-height:40px;
+  background:var(--cream);
+  box-shadow:0 2px 0 var(--dark-line);
+}
+.primary { background:var(--teal); color:var(--cream) }
+.primary:hover { background:#17463e }
+.plain:hover { background:#ffe6ba }
+.plain:active,.primary:active { transform:translateY(1px); box-shadow:0 1px 0 var(--dark-line) }
+#language,.toolbar { font-size:.78rem }
+.shift-controls { display:flex; align-items:center; justify-content:space-between; gap:.5rem }
+.toolbar { flex:none }
+.hud {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  text-align:center;
+  padding:.32rem 0;
+  border:2px solid #382a29;
+  border-radius:.4rem;
+  background:#382a29;
+  color:var(--cream);
+  font-variant-numeric:tabular-nums;
+}
+.hud div+div { border-left:1px solid #786050 }
+.hud strong { display:block; font-size:.7rem; color:var(--brass) }
+.hud output { display:block; font:800 1.12rem/1.25 ui-monospace,monospace }
+.hud output.urgent { color:#ffc09d }
+h2 { font-size:.86rem }
+.diner { border:2px solid #664535; border-radius:.5rem; overflow:hidden; box-shadow:0 3px 0 #d1b394 }
+.counter {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:.35rem;
+  align-items:center;
+  padding:.32rem .5rem 0;
+  min-height:4.3rem;
+  background:#f5d8a1 repeating-linear-gradient(90deg,#b85138 0 16px,#ffd99c 16px 32px) top/100% 6px no-repeat;
+  border-bottom:4px solid #ac7855;
+}
+.counter h2 { max-width:6em; line-height:1.1 }
+.guest-line { list-style:none; padding:0 .14rem; display:flex; align-items:center; gap:.2rem; overflow-x:auto; min-height:3.7rem }
+.guest-line li { display:grid; flex:none; place-items:center; width:3.35rem; font-size:.63rem; font-weight:750 }
+.guest-line li:first-child:not(.quiet) { color:#6e3423; background:#fff0c7; border-radius:.28rem }
+.guest-line .quiet { width:auto; text-align:center; font-weight:500; font-size:.74rem; color:#5e483a }
+.guest,.prop {
+  display:block;
+  width:var(--size,2.6rem);
+  aspect-ratio:1;
+  image-rendering:pixelated;
+  background-repeat:no-repeat;
+  background-size:400% 200%;
+  background-position:var(--x,0%) var(--y,0%);
+}
+.guest { background-image:url("cafe-guests.png") }
+.prop { background-image:url("cafe-props.png") }
+.guest-line .guest { animation:walk-in .36s steps(5,end) both }
+.floor {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.35rem;
+  padding:.45rem .42rem .55rem;
+  background:#f2e3c6 conic-gradient(#fcf2db 25%,transparent 0 50%,#fcf2db 0 75%,transparent 0) 0 0/30px 30px;
+}
+.table {
+  display:grid;
+  grid-template-rows:auto auto 1fr 5px;
+  justify-items:center;
+  gap:.24rem;
+  min-width:0;
+  padding:.24rem .19rem .37rem;
+  color:var(--ink);
+  background:#fff9eaba;
+  border:1px solid #b99d7d;
+  border-radius:.38rem;
+  text-align:center;
+}
+.table:hover:not(:disabled) { background:var(--cream); border-color:#6c513a }
+.table[aria-pressed=true] { border-color:var(--teal); outline:2px solid var(--teal); outline-offset:0; background:#fff8e8 }
+.table[data-state=ready] { background:#e7efce; border-color:#6c844e }
+.table[data-state=messy] { background:#f7e0cc }
+.table-name { font-size:.72rem; font-weight:800 }
+.table-name .zh { line-height:1 }
+.table-action {
+  display:grid;
+  place-content:center;
+  width:100%;
+  min-height:2.05rem;
+  padding:.18rem .07rem;
+  border-radius:.24rem;
+  background:#edd7b0;
+  font-size:clamp(.68rem,2.75vw,.84rem);
+  font-weight:800;
+  line-height:1.14;
+}
+.table[data-state=ready] .table-action,
+.table[aria-pressed=true] .table-action { background:var(--teal); color:white }
+.table[data-state=messy] .table-action { background:#f4c59e }
+.table:disabled .table-action { background:#e8decc; color:#5e5247 }
+.meal-name { display:block; margin-top:.17rem; font-size:.79em; font-weight:600 }
+.seat-scene { position:relative; width:min(100%,7rem); aspect-ratio:1.14; isolation:isolate }
+.seat-scene > .sprite { position:absolute; left:50%; translate:-50%; pointer-events:none }
+.seat-booth { width:96%; bottom:-6% }
+.seat-guest { width:73%; bottom:21% }
+.seat-table { width:96%; bottom:-29% }
+.seat-meal { width:41%; bottom:7%; animation:plate-down .22s steps(4,end) both }
+.table[data-state=seated] .seat-guest,.table[data-state=eating] .seat-guest { animation:take-seat .27s steps(4,end) both }
+.ticket {
+  position:absolute;
+  top:-8%;
+  right:0;
+  width:40%;
+  max-width:2.7rem;
+  padding:1px;
+  border:1px solid #6e482e;
+  border-radius:.24rem .24rem .24rem 0;
+  background:#fff2ca;
+  box-shadow:2px 2px 0 #c5a47c;
+  animation:take-seat .24s steps(4,end) both;
+}
+.ticket .prop { width:100% }
+.steam { position:absolute; top:23%; right:5%; display:none; gap:4px; pointer-events:none }
+main[data-cooking=true] .steam { display:flex }
+.steam i { width:3px; height:10px; border-radius:3px; background:#fff7df; box-shadow:0 1px 2px #694633; animation:steam .85s steps(5,end) infinite }
+.steam i:nth-child(2) { animation-delay:.2s }
+.steam i:nth-child(3) { animation-delay:.4s }
+.served-tag { position:absolute; top:0; right:6%; color:white; background:var(--teal); padding:.12rem .24rem; font:800 .72rem ui-monospace,monospace; animation:served-pop .45s steps(6,end) both }
+.patience { width:77%; height:100%; border-radius:4px; background:#dfc5a7; overflow:hidden; align-self:end }
+.patience i { display:block; height:100%; background:#337257 }
+.patience i.low { background:#a3462f }
+.kitchen { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:.3rem .5rem; background:#c8d1bd; border-top:4px solid #547667; padding:.35rem .43rem .42rem }
+.griddle { grid-row:span 2; position:relative }
+.cooktop { --size:clamp(2.6rem,10vw,4.2rem) }
+.kitchen-heading { display:flex; flex-wrap:wrap; align-items:baseline; gap:.1rem .4rem }
+#kitchen-note { font-size:.72rem; color:#31473b }
+.recipes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem }
+.recipes button {
+  display:grid;
+  place-items:center;
+  align-content:center;
+  min-height:3rem;
+  padding:.12rem .08rem;
+  border:1px solid #526a58;
+  border-radius:.28rem;
+  background:var(--cream);
+  box-shadow:0 2px 0 #526a58;
+  font-size:clamp(.65rem,2.36vw,.78rem);
+  line-height:1.13;
+  font-weight:800;
+}
+.recipes .prop { --size:2.3rem }
+.recipes button:disabled { color:#504740; background:#eee5d4; box-shadow:none }
+.recipes button:hover:not(:disabled) { background:#ffe3a7 }
+.recipes button:active:not(:disabled) { transform:translateY(2px); box-shadow:none }
+.message { font-size:.81rem; color:#59392d; padding:0 .12rem }
+.results { border:1px solid var(--dark-line); border-radius:.38rem; padding:.5rem .65rem; color:#703724; background:var(--cream) }
+.results h2 { font-size:1.12rem }
+.results p { font-size:.8rem }
+.results[data-won=true] { background:#e5edce; color:#1c5144; border-color:#68865d; animation:take-seat .28s steps(5,end) both }
+main[data-mode=paused] .diner * { animation-play-state:paused!important }
+@keyframes walk-in {
+  0% { transform:translate(-12px,0); opacity:.35 }
+  42% { transform:translate(-6px,-3px) }
+  100% { transform:none; opacity:1 }
+}
+@keyframes take-seat {
+  0% { transform:translateY(5px); opacity:.4 }
+  55% { transform:translateY(-2px) }
+  100% { transform:none; opacity:1 }
+}
+@keyframes plate-down { from { transform:translate(5px,-7px); opacity:.35 } to { transform:none; opacity:1 } }
+@keyframes steam { from { transform:translateY(2px); opacity:.85 } to { transform:translateY(-11px); opacity:0 } }
+@keyframes served-pop {
+  0% { transform:translateY(14px) scale(.6); opacity:.45 }
+  64% { transform:translateY(-6px) scale(1.2) }
+  100% { transform:none; opacity:1 }
+}
+@media(max-width:340px) {
+  .floor,.recipes { gap:.22rem }
+  .floor,.kitchen { padding-inline:.3rem }
+  .cooktop { --size:1.8rem }
+  .kitchen { gap:.25rem }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important } }
+</style>
+</head>
+<body>
+<main>
+  <header><h1>Café <b>Rush</b><span class="zh" lang="zh-Hans">食堂冲刺</span></h1><button type="button" class="plain" id="language" aria-pressed="false">中文 support</button></header>
+  <div class="hud" aria-label="Shift stats">
+    <div><strong>Shift left<span class="zh" lang="zh-Hans">剩余时间</span></strong><output id="clock" aria-live="off">1:05</output></div>
+    <div><strong>Served<span class="zh" lang="zh-Hans">已上菜</span></strong><output id="served" aria-live="off">0 / 6</output></div>
+    <div><strong>Streak<span class="zh" lang="zh-Hans">连胜</span></strong><output id="streak" aria-live="off">×0</output></div>
+  </div>
+  <div class="shift-controls">
+    <p class="message" id="message" role="status"></p>
+    <div class="toolbar"><button type="button" class="primary" id="start">Start shift<span class="zh" lang="zh-Hans">开始营业</span></button><button type="button" class="plain" id="pause" hidden>Pause<span class="zh" lang="zh-Hans">暂停</span></button><button type="button" class="plain" id="restart" hidden>Restart<span class="zh" lang="zh-Hans">重新开始</span></button></div>
+  </div>
+  <div class="diner">
+    <section class="counter" aria-labelledby="queue-title">
+      <h2 id="queue-title">Guest queue<span class="zh" lang="zh-Hans">顾客排队区</span></h2>
+      <ol id="queue" class="guest-line"></ol>
+      <span class="prop" style="--x:100%" aria-hidden="true"></span>
+    </section>
+    <section id="floor" class="floor" aria-label="Three café tables"></section>
+    <section class="kitchen" aria-labelledby="kitchen-title">
+      <div class="griddle" aria-hidden="true">
+        <span class="prop cooktop" style="--x:66.667%"></span>
+        <span class="steam"><i></i><i></i><i></i></span>
+      </div>
+      <div class="kitchen-heading"><h2 id="kitchen-title">Kitchen<span class="zh" lang="zh-Hans">厨房</span></h2><p id="kitchen-note"></p></div>
+      <div class="recipes" id="recipes"></div>
+    </section>
+  </div>
+  <section class="results" id="results" aria-labelledby="result-heading" hidden><h2 id="result-heading" tabindex="-1"></h2><p id="result-text"></p></section>
+</main>
+<script>
+(() => {
+"use strict";
+const by=id=>document.getElementById(id);
+const pair=([en,zh])=>en+'<span class="zh" lang="zh-Hans">'+zh+'</span>';
+const recipes=[
+  {name:["Nasi lemak","椰浆饭"],cook:2400},
+  {name:["Roti canai","印度煎饼"],cook:2100},
+  {name:["Chocolate waffle","巧克力华夫饼"],cook:2700},
+];
+const customers=[
+  ["Aisha",0,0,25000],["Ravi",1,5300,21500],["Mei",2,11100,22000],["Dani",0,16600,19700],
+  ["Maya",2,21000,20100],["Faris",1,25800,19400],["Sofia",0,31000,18500],["Wei",2,35500,18200],
+  ["Ari",1,40900,18100],["Lina",0,46700,16900],["Hana",1,52600,15400],["Jun",2,58200,14400],
+].map(([name,recipe,arrival,patience],index)=>({name,recipe,arrival,patience,index}));
+const totalTime=65000, goal=6;
+const tableActions={
+  empty:["Seat next","安排下一位"],
+  seated:["Take order","点单"],
+  wants:["Choose a dish","选择餐点"],
+  cooking:["Cooking…","烹饪中…"],
+  ready:["Serve dish","上菜"],
+  eating:["Eating…","用餐中…"],
+  messy:["Clear table","清理桌子"],
+};
+const room=document.querySelector("main");
+const queue=by("queue");
+const floor=by("floor");
+const recipePanel=by("recipes");
+const tableViews=Array.from({length:3},(_,i)=>{
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="table";
+  button.dataset.table=i;
+  floor.append(button);
+  return button;
+});
+const spriteColumns=["0%","33.333%","66.667%","100%"];
+function sprite(sheet,index,classes=""){
+  const x=spriteColumns[index%4], y=index<4?"0%":"100%";
+  return '<span class="sprite '+sheet+' '+classes+'" style="--x:'+x+';--y:'+y+'" aria-hidden="true"></span>';
+}
+recipePanel.innerHTML=recipes.map((recipe,i)=>
+  '<button type="button" data-recipe="'+i+'">'+sprite("prop",4+i)+'<span>'+pair(recipe.name)+'</span></button>').join("");
+const recipeButtons=Array.from(recipePanel.children);
+const kitchenNote=by("kitchen-note");
+let queueSignature, kitchenSelection;
+let state, timer;
+function newTable() { return { phase:"empty", guest:null, deadline:0, next:0 }; }
+function say(en,zh){ by("message").innerHTML=pair([en,zh]); }
+function setup() {
+  if(timer) clearInterval(timer);
+  state={mode:"idle",time:0,served:0,streak:0,best:0,lost:0,nextGuest:0,selected:-1,waiting:[],tables:Array.from({length:3},newTable)};
+  queue.replaceChildren();
+  queueSignature=undefined;
+  by("results").hidden=true;
+  by("start").hidden=false;by("pause").hidden=true;by("restart").hidden=true;
+  by("start").innerHTML=pair(["Start shift","开始营业"]);
+  render();
+  say("Seat → take the order → cook → serve → clear. Serve six guests in one shift.","安排座位 → 点单 → 烹饪 → 上菜 → 清桌。一班内为六位顾客上菜。");
+  timer=null;
+}
+function showTimer() {
+  const left=Math.max(0,Math.ceil((totalTime-state.time)/1000));
+  const clock=by("clock");
+  clock.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+  clock.classList.toggle("urgent",left<=15);
+  by("served").textContent=state.served+" / "+goal;
+  by("streak").textContent="×"+state.streak;
+}
+function showQueue() {
+  const waiting=state.mode==="idle"?[customers[0]]:state.waiting;
+  const signature=waiting.map(guest=>guest.index).join(",");
+  if(signature===queueSignature)return;
+  queueSignature=signature;
+  const existing=new Map(Array.from(queue.querySelectorAll("[data-guest]")).map(item=>[Number(item.dataset.guest),item]));
+  const waitingIds=new Set(waiting.map(guest=>guest.index));
+  for(const [id,item] of existing)if(!waitingIds.has(id))item.remove();
+  if(!waiting.length){
+    queue.innerHTML='<li class="quiet">'+pair(["No one waiting","无人排队"])+'</li>';
+    return;
+  }
+  queue.querySelector(".quiet")?.remove();
+  for(const guest of waiting){
+    if(existing.has(guest.index))continue;
+    const item=document.createElement("li");
+    item.dataset.guest=guest.index;
+    item.innerHTML=sprite("guest",guest.index%8)+guest.name;
+    queue.append(item);
+  }
+}
+function paintTable(table,i){
+  const button=tableViews[i];
+  const {phase,guest}=table;
+  const signature=phase+":"+(guest?.index??"");
+  button.setAttribute("aria-pressed",String(state.selected===i));
+  button.disabled=state.mode!=="running"||(phase==="empty"&&!state.waiting.length)||phase==="cooking"||phase==="eating";
+  if(button.dataset.signature===signature)return;
+  button.dataset.signature=signature;
+  button.dataset.state=phase;
+  const plate=guest?4+guest.recipe:null;
+  const ordered=phase==="wants"||phase==="cooking"||phase==="ready";
+  const meal=ordered?recipes[guest.recipe].name:null;
+  const action=tableActions[phase];
+  const occupant=guest&&phase!=="messy"?sprite("guest",guest.index%8,"seat-guest"):"";
+  const dish=phase==="messy"?sprite("prop",7,"seat-meal"):
+    phase==="ready"||phase==="eating"?sprite("prop",plate,"seat-meal"):"";
+  const effect=phase==="wants"||phase==="cooking"?'<span class="ticket">'+sprite("prop",plate)+'</span>':
+    phase==="eating"?'<span class="served-tag" aria-hidden="true">+1</span>':"";
+  button.innerHTML='<span class="table-name">'+pair(["Table "+(i+1),(i+1)+" 号桌"])+'</span>'+
+    '<span class="seat-scene" aria-hidden="true">'+sprite("prop",1,"seat-booth")+occupant+
+    sprite("prop",0,"seat-table")+dish+effect+'</span>'+
+    '<span class="table-action"><span>'+pair(action)+'</span>'+
+    (meal?'<span class="meal-name">'+pair(meal)+'</span>':"")+'</span>'+
+    (guest&&phase!=="eating"&&phase!=="messy"?'<span class="patience" aria-hidden="true"><i data-patience="'+i+'"></i></span>':"");
+}
+function render() {
+  room.dataset.mode=state.mode;
+  room.dataset.cooking=String(state.tables.some(table=>table.phase==="cooking"));
+  showTimer();
+  showQueue();
+  state.tables.forEach(paintTable);
+  for(const button of recipeButtons)button.disabled=state.mode!=="running"||state.selected<0;
+  if(kitchenSelection!==state.selected){
+    kitchenSelection=state.selected;
+    kitchenNote.innerHTML=pair(kitchenSelection<0?["Take an order first","先为顾客点单"]:[
+      "Cook for Table "+(kitchenSelection+1),"为 "+(kitchenSelection+1)+" 号桌做菜"
+    ]);
+  }
+  showPatience();
+}
+function showPatience() {
+  for(const bar of floor.querySelectorAll("[data-patience]")){
+    const table=state.tables[Number(bar.dataset.patience)];
+    const portion=Math.max(0,Math.min(1,(table.deadline-state.time)/table.guest.patience));
+    bar.style.width=(portion*100)+"%";
+    bar.classList.toggle("low",portion<.35);
+  }
+}
+function loseGuest() { state.lost++;state.streak=0; }
+function advance() {
+  const now=performance.now();
+  state.time+=now-state.last;
+  state.last=now;
+  let changed=false;
+  const departed=state.waiting.filter(guest=>state.time>=guest.arrival+guest.patience).length;
+  if(departed){
+    state.waiting=state.waiting.filter(guest=>state.time<guest.arrival+guest.patience);
+    for(let count=0;count<departed;count++) loseGuest();
+    changed=true;
+  }
+  while(state.nextGuest<customers.length&&customers[state.nextGuest].arrival<=state.time){
+    state.waiting.push(customers[state.nextGuest++]);changed=true;
+  }
+  for(const [i,table] of state.tables.entries()){
+    if(table.guest&&["seated","wants","cooking","ready"].includes(table.phase)&&state.time>=table.deadline){
+      state.tables[i]={...newTable(),phase:"messy"};if(state.selected===i)state.selected=-1;
+      loseGuest();changed=true;say("A guest left. Clear that table and seat the next customer.","有顾客离开了。清桌后安排下一位顾客。");
+    } else if(table.phase==="cooking"&&state.time>=table.next){
+      table.phase="ready";changed=true;say("Table "+(i+1)+" is ready to serve.",""+(i+1)+" 号桌可以上菜了。");
+    } else if(table.phase==="eating"&&state.time>=table.next){
+      table.phase="messy";changed=true;
+    }
+  }
+  if(state.time>=totalTime){finish();return;}
+  if(changed) render();
+  else {showTimer();showPatience();}
+}
+function running() {
+  state.mode="running";
+  state.last=performance.now();
+  by("start").hidden=true;by("pause").hidden=false;by("restart").hidden=false;
+  if(!state.time&&!state.nextGuest){state.waiting.push(customers[state.nextGuest++]);}
+  render();
+  timer=setInterval(advance,100);
+}
+function pause() {
+  if(state.mode!=="running") return;
+  clearInterval(timer);timer=null;state.mode="paused";
+  by("pause").hidden=true;by("start").hidden=false;by("start").innerHTML=pair(["Resume shift","继续营业"]);
+  render();say("Shift paused. Resume when you’re ready.","已暂停。准备好后继续营业。");
+}
+function finish() {
+  clearInterval(timer);timer=null;state.mode="finished";
+  const won=state.served>=goal;
+  const results=by("results");
+  results.hidden=false;results.dataset.won=String(won);
+  by("result-heading").innerHTML=pair(won?["Shift cleared!","营业挑战成功！"]:["Shift over","营业结束"]);
+  by("result-text").innerHTML=pair([state.served+" served · "+state.lost+" left · Best streak ×"+state.best,"已上菜 "+state.served+" 位 · 离开 "+state.lost+" 位 · 最佳连胜 ×"+state.best]);
+  by("pause").hidden=true;by("restart").hidden=true;by("start").hidden=false;
+  by("start").innerHTML=pair(["Play again","再玩一次"]);
+  render();by("result-heading").focus({preventScroll:true});
+}
+function tableTapped(index) {
+  if(state.mode!=="running")return;
+  const table=state.tables[index];
+  if(table.phase==="empty"){
+    const guest=state.waiting.shift();
+    if(!guest) return;
+    Object.assign(table,{phase:"seated",guest,deadline:state.time+guest.patience});
+    say(guest.name+" is seated. Tap Take order.",guest.name+" 已入座。点 Take order 点单。");
+  } else if(table.phase==="seated"||table.phase==="wants"){
+    table.phase="wants";state.selected=index;
+    const meal=recipes[table.guest.recipe].name;
+    say("Table "+(index+1)+" wants "+meal[0]+". Tap that dish in the kitchen.",(index+1)+" 号桌要"+meal[1]+"。在厨房点这道餐点。");
+  } else if(table.phase==="ready"){
+    table.phase="eating";table.next=state.time+1650;state.served++;state.streak++;
+    state.best=Math.max(state.best,state.streak);
+    say("Served! Wait for Clear table before seating someone else.","已上菜！显示 Clear table 后清桌，再安排下一位。");
+    if(state.served>=goal){finish();return;}
+  } else if(table.phase==="messy"){
+    state.tables[index]=newTable();
+    say("Table "+(index+1)+" is free.",(index+1)+" 号桌现在空了。");
+  }
+  render();
+}
+function cook(recipeIndex) {
+  if(state.mode!=="running"||state.selected<0)return;
+  const table=state.tables[state.selected];
+  if(table.phase!=="wants")return;
+  if(table.guest.recipe!==recipeIndex){
+    table.deadline-=3500;state.streak=0;
+    const meal=recipes[table.guest.recipe].name;
+    say("Wrong order. This table wants "+meal[0]+".","选错了。这桌要"+meal[1]+"。");
+  }else{
+    table.phase="cooking";table.next=state.time+recipes[recipeIndex].cook;state.selected=-1;
+    say("Cooking. You can seat or take an order at another table.","正在烹饪。可以先安排其他桌或点单。");
+  }
+  render();
+}
+floor.addEventListener("click",event=>{ const button=event.target.closest("[data-table]");if(button)tableTapped(Number(button.dataset.table)); });
+recipePanel.addEventListener("click",event=>{const button=event.target.closest("[data-recipe]");if(button)cook(Number(button.dataset.recipe));});
+by("start").addEventListener("click",()=>{if(state.mode==="finished")setup();running();});
+by("pause").addEventListener("click",pause);
+by("restart").addEventListener("click",()=>{setup();by("start").focus();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)pause();});
+const params=new URLSearchParams(location.search);
+const language=by("language");
+function bilingual(enabled){document.body.classList.toggle("bi",enabled);language.setAttribute("aria-pressed",String(enabled));}
+document.body.classList.toggle("embed",params.get("embed")==="1");
+bilingual(params.get("lang")==="bi");
+language.addEventListener("click",()=>bilingual(language.getAttribute("aria-pressed")!=="true"));
+setup();
+})();
+</script>
+</body>
+</html>

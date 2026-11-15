@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Merge 256</title>
+  <style>
+    :root{font:16px/1.45 system-ui,sans-serif;color:#181719;background:#f5f3ef}
+    *,*::before,*::after{box-sizing:border-box}
+    body,h1,p,ol,dl,dd{margin:0}
+    button{font:inherit;cursor:pointer;color:inherit;border:1px solid #a6a19b;background:#fffdfb;border-radius:.6rem;min-height:44px;padding:.38rem .65rem;touch-action:manipulation}
+    button:hover{background:#f4e7d7}
+    button:focus-visible,.board:focus-visible{outline:3px solid #95561d;outline-offset:3px}
+    main{max-width:27rem;margin:auto;padding:clamp(.6rem,2.8vw,1.15rem);display:grid;gap:.62rem}
+    header{display:flex;align-items:center;justify-content:space-between;gap:.45rem;flex-wrap:wrap}
+    h1{font-size:clamp(1.65rem,8vw,2.25rem);letter-spacing:-.075em;line-height:1.08}
+    .language{font-size:.83rem;font-weight:650}
+    .zh{display:none}.bilingual .zh{display:block;font-size:.85em}
+    h1 .zh{font-size:.5em;letter-spacing:0;margin-top:.22rem}
+    .goal{font-size:.96rem}.goal strong{white-space:nowrap}
+    .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:.38rem}
+    .metrics div{padding:.3rem .6rem .4rem;background:#e8e4dd;border-radius:.44rem;display:flex;align-items:center;justify-content:space-between;gap:.38rem}
+    .metrics dt{font-size:.78rem;font-weight:700}.metrics dd{font-weight:800;font-size:1.18rem;font-variant-numeric:tabular-nums}
+    .board{--gap:clamp(4px,1.4vw,7px);position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);list-style:none;margin:0;padding:var(--gap);border-radius:.7rem;background:#292729;touch-action:none;user-select:none;-webkit-user-select:none}
+    .cell{display:grid;aspect-ratio:1;border-radius:.34rem;background:#494649;place-items:stretch;min-width:0}
+    .tile{display:grid;place-items:center;position:relative;border-radius:inherit;background:#fdfaf4;color:#181719;font-size:clamp(1.1rem,6vw,2.05rem);font-weight:850;letter-spacing:-.055em;font-variant-numeric:tabular-nums;line-height:1;pointer-events:none}
+    .tile[data-value="4"]{background:#e5ded4}
+    .tile[data-value="8"]{background:#eec7ad}
+    .tile[data-value="16"]{background:#efa87b}
+    .tile[data-value="32"]{background:#e9bf70}
+    .tile[data-value="64"]{background:#d9b05b}
+    .tile[data-value="128"]{background:#bfc6d1}
+    .tile[data-value="256"]{background:#ffe197;box-shadow:inset 0 0 0 3px #a26b35}
+    .tile.big{background:#814e35;color:#fff8ee}
+    .tile.slide{z-index:1;animation:slide .12s ease-out both}
+    .tile.spawn{animation:appear .16s .06s ease-out both}
+    .tile.merge{z-index:2;animation:slide .1s ease-out both,pulse .22s .1s ease-out both}
+    @keyframes slide{from{transform:translate(calc(var(--dx) * (100% + var(--gap))),calc(var(--dy) * (100% + var(--gap))))}to{transform:translate(0,0)}}
+    @keyframes appear{from{opacity:0;scale:.75}to{opacity:1;scale:1}}
+    @keyframes pulse{0%,100%{scale:1}50%{scale:1.1}}
+    .controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.38rem}
+    .controls button{font-size:1.3rem;line-height:1;font-weight:800}
+    .footer{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.5rem}
+    .status{line-height:1.28;min-height:2.5rem;font-size:.86rem;align-content:center}
+    .status[data-outcome="win"]{font-weight:750;color:#634000}
+    .status[data-outcome="done"]{font-weight:700;color:#7b3829}
+    #reset{font-size:.86rem;font-weight:700}
+    .embedded .language{display:none}
+    @media(max-width:360px){.goal{font-size:.87rem}.status{font-size:.8rem}main{gap:.48rem}}
+    @media(prefers-reduced-motion:reduce){.tile{animation:none!important}}
+  </style>
+</head>
+<body>
+<main>
+  <header><h1>Merge 256 <span class="zh" lang="zh-Hans">合成 256</span></h1><button type="button" class="language" id="language" aria-pressed="false">中文 support</button></header>
+  <p class="goal">Swipe the board or use the arrow keys. <strong>Match tiles to reach 256.</strong><span class="zh" lang="zh-Hans">滑动棋盘或使用方向键。合并相同方块，得到 256。</span></p>
+  <dl class="metrics">
+    <div><dt>Score<span class="zh" lang="zh-Hans">得分</span></dt><dd id="score">0</dd></div>
+    <div><dt>Biggest tile<span class="zh" lang="zh-Hans">最大方块</span></dt><dd id="biggest">2</dd></div>
+  </dl>
+  <ol class="board" id="board" aria-label="Four by four game board, read left to right" tabindex="0"></ol>
+  <div class="controls" role="group" aria-label="Move tiles">
+    <button type="button" data-direction="left" aria-label="Move left"><span aria-hidden="true">←</span></button>
+    <button type="button" data-direction="up" aria-label="Move up"><span aria-hidden="true">↑</span></button>
+    <button type="button" data-direction="down" aria-label="Move down"><span aria-hidden="true">↓</span></button>
+    <button type="button" data-direction="right" aria-label="Move right"><span aria-hidden="true">→</span></button>
+  </div>
+  <div class="footer"><p class="status" id="status" role="status"></p><button id="reset" type="button">New game<span class="zh" lang="zh-Hans">重新开始</span></button></div>
+  <noscript>Enable JavaScript to play Merge 256.</noscript>
+</main>
+<script>
+"use strict";
+
+const size = 4;
+const target = 256;
+const directions = ["left", "up", "down", "right"];
+
+function lineIndices(direction, line) {
+  return Array.from({ length: size }, (_, index) => {
+    switch (direction) {
+      case "left": return line * size + index;
+      case "right": return line * size + size - 1 - index;
+      case "up": return index * size + line;
+      case "down": return (size - 1 - index) * size + line;
+    }
+  });
+}
+
+function slide(tiles, direction) {
+  const next = Array(size * size).fill(0);
+  const animation = new Map();
+  let points = 0;
+  for (let line = 0; line < size; line++) {
+    const indices = lineIndices(direction, line);
+    const occupied = indices.filter(index => tiles[index] > 0);
+    let position = 0;
+    while (occupied.length > 0) {
+      const origin = occupied.shift();
+      const destination = indices[position++];
+      const value = tiles[origin];
+      const joined = value === tiles[occupied[0]];
+      if (joined) {
+        occupied.shift();
+        points += value * 2;
+      }
+      next[destination] = joined ? value * 2 : value;
+      if (origin !== destination || joined) animation.set(destination, { origin, joined });
+    }
+  }
+  return { next, points, animation, changed: next.some((value, index) => value !== tiles[index]) };
+}
+</script>
+<script>
+(() => {
+  "use strict";
+  const board = document.getElementById("board");
+  const scoreLabel = document.getElementById("score");
+  const biggestLabel = document.getElementById("biggest");
+  const status = document.getElementById("status");
+  const language = document.getElementById("language");
+  const params = new URLSearchParams(location.search);
+  const messages = {
+    ready: ["Try left or right to merge your first two tiles.", "向左或向右移动，合并最初的两个方块。"],
+    slide: ["A new 2 appeared. Plan your next move.", "出现了新的 2。想一想下一步。"],
+    blocked: ["Nothing moved. Try a different direction.", "方块没有移动。换个方向试试。"],
+    win: ["You made 256! Keep playing or start a new game.", "你合成了 256！可以继续玩，也可以重新开始。"],
+    done: ["No moves left. Tap New game to try again.", "没有可移动的方块了。点“重新开始”再试一次。"],
+  };
+  let tiles, score, won, finished, gesture;
+
+  function announce(kind, text = messages[kind]) {
+    const translated = document.createElement("span");
+    translated.className = "zh";
+    translated.lang = "zh-Hans";
+    translated.textContent = text[1];
+    status.replaceChildren(text[0], translated);
+    status.dataset.outcome = kind;
+  }
+
+  function changeLanguage(bilingual) {
+    document.body.classList.toggle("bilingual", bilingual);
+    language.setAttribute("aria-pressed", String(bilingual));
+    const labels = {
+      left: ["Move left","向左移动"], up: ["Move up","向上移动"],
+      down: ["Move down","向下移动"], right: ["Move right","向右移动"],
+    };
+    for (const button of document.querySelectorAll("[data-direction]")) {
+      const [english, mandarin] = labels[button.dataset.direction];
+      button.setAttribute("aria-label", bilingual ? english + " " + mandarin : english);
+    }
+  }
+
+  function draw(animation = new Map(), spawned = -1) {
+    scoreLabel.textContent = score;
+    biggestLabel.textContent = Math.max(...tiles);
+    board.replaceChildren(...tiles.map((value, index) => {
+      const cell = document.createElement("li");
+      cell.className = "cell";
+      if (!value) {
+        cell.setAttribute("aria-label", "Empty");
+        return cell;
+      }
+      const tile = document.createElement("span");
+      tile.className = "tile";
+      tile.dataset.value = value;
+      tile.textContent = value;
+      if (value > target) tile.classList.add("big");
+      if (index === spawned) tile.classList.add("spawn");
+      const moved = animation.get(index);
+      if (moved) {
+        tile.style.setProperty("--dx", moved.origin % size - index % size);
+        tile.style.setProperty("--dy", Math.floor(moved.origin / size) - Math.floor(index / size));
+        tile.classList.add(moved.joined ? "merge" : "slide");
+      }
+      cell.append(tile);
+      return cell;
+    }));
+  }
+
+  function reset() {
+    tiles = Array(size * size).fill(0);
+    tiles[5] = tiles[6] = 2;
+    score = 0;
+    won = finished = false;
+    draw();
+    announce("ready");
+  }
+
+  function move(direction) {
+    if (finished) return;
+    const { next, points, animation, changed } = slide(tiles, direction);
+    if (!changed) {
+      announce("blocked");
+      return;
+    }
+    const reachedTarget = !won && next.includes(target);
+    won ||= reachedTarget;
+    const free = next.flatMap((tile, index) => tile === 0 ? [index] : []);
+    const spawned = free[Math.floor(Math.random() * free.length)];
+    next[spawned] = 2;
+    score += points;
+    tiles = next;
+    finished = !tiles.includes(0) && !directions.some(direction => slide(tiles, direction).changed);
+    draw(animation, spawned);
+    if (reachedTarget) {
+      announce("win", finished ? ["You made 256 on the last move!", "你在最后一步合成了 256！"] : messages.win);
+    } else if (finished) {
+      announce("done");
+    } else if (points) {
+      announce("merge", ["Tiles merged. +" + points + " points.", "方块已合并。加 " + points + " 分。"]);
+    } else {
+      announce("slide");
+    }
+  }
+
+  const keys = { ArrowLeft: "left", ArrowUp: "up", ArrowDown: "down", ArrowRight: "right" };
+  window.addEventListener("keydown", event => {
+    const direction = keys[event.key];
+    if (!direction || event.altKey || event.metaKey || event.ctrlKey || event.shiftKey) return;
+    event.preventDefault();
+    if (!event.repeat) move(direction);
+  });
+  board.addEventListener("pointerdown", event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    gesture = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    board.setPointerCapture(event.pointerId);
+  });
+  board.addEventListener("pointerup", event => {
+    if (gesture?.id !== event.pointerId) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    gesture = undefined;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+    move(Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? "left" : "right") : (dy < 0 ? "up" : "down"));
+  });
+  for (const name of ["pointercancel", "lostpointercapture"]) {
+    board.addEventListener(name, event => {
+      if (gesture?.id === event.pointerId) gesture = undefined;
+    });
+  }
+  for (const button of document.querySelectorAll("[data-direction]")) {
+    button.addEventListener("click", () => move(button.dataset.direction));
+  }
+  document.getElementById("reset").addEventListener("click", reset);
+  document.body.classList.toggle("embedded", params.get("embed") === "1");
+  changeLanguage(params.get("lang") === "bi");
+  language.addEventListener("click", () => changeLanguage(language.getAttribute("aria-pressed") !== "true"));
+  reset();
+})();
+</script>
+</body>
+</html>

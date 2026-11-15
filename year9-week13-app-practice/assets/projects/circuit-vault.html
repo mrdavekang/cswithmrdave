@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Circuit Vault</title>
+<style>
+:root{color-scheme:dark;background:#101017;color:#fbf2e7;font:16px/1.35 system-ui,sans-serif;--cyan:#84efdc;--gold:#ffc982;--orchid:#ff9db9}
+*{box-sizing:border-box}body,h1,h2,p{margin:0}[hidden]{display:none!important}
+.game{max-width:49rem;margin:auto;padding:clamp(.48rem,2vw,1rem);display:grid;gap:.55rem}
+header,.hud,.gamepad,.foot{display:flex;align-items:center;justify-content:space-between;gap:.45rem}
+h1{font-size:clamp(1.15rem,4.1vw,2rem);letter-spacing:-.055em;line-height:1.05}
+h1 span:first-child{color:var(--cyan)}.zh{display:none}.bi .zh{display:block;font-size:.84em}.bi h1 .zh{font-size:.5em;color:#cbcbdb;margin-top:.15rem}
+button{border:1px solid #5c5779;border-radius:.44rem;background:#29273c;color:#fff5ea;font:inherit;font-weight:720;min-height:43px;padding:.24rem .61rem;cursor:pointer;touch-action:manipulation}
+button:focus-visible,canvas:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}button:hover,button[data-down]{background:#44415a}
+.language{font-size:.75rem;min-height:34px;white-space:nowrap}
+.hud{background:#201c30;border:1px solid #4b3f65;border-radius:.48rem;padding:.34rem .5rem}
+.room{min-width:0}.room strong,.power strong{display:block;color:var(--gold);font-size:.69rem;letter-spacing:.075em;text-transform:uppercase}
+.room-name{font-size:.85rem;font-weight:750}.health{white-space:nowrap;font-size:1.03rem;letter-spacing:.04em;color:var(--orchid)}
+.power{text-align:right;min-width:4.1rem}.meter{width:4rem;height:5px;background:#443750;margin:.21rem 0 .15rem auto;border-radius:2px;overflow:hidden}.meter i{display:block;width:100%;height:100%;background:var(--cyan)}
+.stage{position:relative;aspect-ratio:5 / 3;background:#171526;border:1px solid #5e507c;border-radius:.54rem;overflow:hidden;box-shadow:0 .22rem 0 #080910}
+canvas{image-rendering:pixelated;display:block;width:100%;height:100%;touch-action:none}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:.35rem;background:radial-gradient(ellipse at 50% 66%,#171126f5,#17112682 70%,#100e1a42)}
+.panel{display:grid;justify-items:center;gap:.33rem;background:#1b172bec;border:1px solid #776495;border-radius:.51rem;box-shadow:0 .18rem 0 #0b0912,0 0 1.4rem #6d4dad4a;padding:.55rem .9rem;max-width:min(92%,25rem)}
+.panel h2{font-size:clamp(1.12rem,4.8vw,2rem);color:var(--gold);line-height:1.03;letter-spacing:-.035em}
+.panel p{font-size:clamp(.69rem,2.75vw,.92rem)}
+.panel button{background:var(--cyan);color:#152827;border-color:#adfaeb;min-height:40px;padding:.22rem .85rem}
+.panel button:hover{background:#c3fff3}
+.stage[data-phase="won"] .panel{animation:finish .42s ease-out both;border-color:var(--gold)}
+@keyframes finish{from{transform:translateY(.65rem) scale(.94);opacity:.3}to{transform:none;opacity:1}}
+.status{min-height:1.2rem;color:#ded5e8;font-size:.8rem}
+.gamepad button{touch-action:none;user-select:none;-webkit-user-select:none}
+.dpad{display:grid;grid-template-columns:repeat(3,minmax(38px,48px));grid-template-rows:repeat(2,40px);gap:2px}
+.dpad button{min-height:0;font-size:1.08rem;padding:0}
+.up{grid-column:2}.left{grid-column:1}.down{grid-column:2}.right{grid-column:3}.left,.down,.right{grid-row:2}
+.action-pad{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+.action-pad button{min-width:3.7rem;min-height:51px;font-size:.85rem}
+.fire{background:#83e5d3;color:#121e29;border-color:#99f9e6}.fire:hover,.fire[data-down]{background:#c3fff1}
+.roll{border-color:#e4b07a;color:#fedab0}.roll:disabled{opacity:.6}
+.foot{font-size:.76rem;color:#bfb7cc}.foot button{font-size:.74rem;min-height:34px;white-space:nowrap}
+.embed .language{display:none}
+@media(max-width:350px){.dpad{grid-template-columns:repeat(3,39px)}.game{gap:.42rem}.action-pad{gap:.3rem}.action-pad button{min-width:3.2rem}}
+@media(prefers-reduced-motion:reduce){.stage[data-phase="won"] .panel{animation:none}}
+</style>
+</head>
+<body>
+<main class="game">
+  <header><h1><span>Circuit</span> Vault<span class="zh" lang="zh-Hans">电路密室</span></h1><button type="button" id="language" class="language" aria-pressed="false">中文 support</button></header>
+  <div class="hud">
+    <div class="room"><strong id="room-number">Room 1 / 3</strong><p class="room-name" id="room-name"></p></div>
+    <p class="health" id="health" aria-label="Five hearts remaining">♥♥♥♥♥</p>
+    <div class="power"><strong>Roll <span class="zh" lang="zh-Hans">翻滚</span></strong><div class="meter" aria-hidden="true"><i id="roll-meter"></i></div></div>
+  </div>
+  <div class="stage" id="stage" data-phase="ready">
+    <canvas width="480" height="288" id="arena" tabindex="0" role="img" aria-label="Top-down arcade room with a doorway at the top. The turquoise robot is yours."></canvas>
+    <section class="overlay" id="overlay" aria-labelledby="moment-title">
+      <div class="panel">
+        <h2 id="moment-title"></h2><p id="moment-text"></p><button type="button" id="start"></button>
+      </div>
+    </section>
+  </div>
+  <p class="status" id="status" role="status"></p>
+  <div class="gamepad">
+    <div class="dpad" role="group" aria-label="Move your robot">
+      <button type="button" class="up" data-key="up" aria-label="Move up">↑</button>
+      <button type="button" class="left" data-key="left" aria-label="Move left">←</button>
+      <button type="button" class="down" data-key="down" aria-label="Move down">↓</button>
+      <button type="button" class="right" data-key="right" aria-label="Move right">→</button>
+    </div>
+    <div class="action-pad">
+      <button type="button" class="fire" data-key="fire">Pulse<span class="zh" lang="zh-Hans">脉冲</span></button>
+      <button type="button" class="roll" data-key="roll">Dodge<span class="zh" lang="zh-Hans">翻滚</span></button>
+    </div>
+  </div>
+  <div class="foot"><p>WASD / arrows move · hold Space to pulse · Shift dodges<span class="zh" lang="zh-Hans">WASD／方向键移动 · 按住空格发射 · Shift 翻滚</span></p><button type="button" id="pause" disabled>Pause<span class="zh" lang="zh-Hans">暂停</span></button></div>
+  <noscript>Enable JavaScript to play Circuit Vault.</noscript>
+</main>
+<script>
+(() => {
+"use strict";
+const byId = id => document.getElementById(id);
+const arena = byId("arena");
+const ctx = arena.getContext("2d");
+const stage = byId("stage");
+const overlay = byId("overlay");
+const start = byId("start");
+const pause = byId("pause");
+const motion = matchMedia("(prefers-reduced-motion: reduce)");
+const roomSize = { left: 28, right: 452, top: 45, bottom: 266 };
+const gate = { left: 208, right: 272, y: 40 };
+const maxHealth = 5;
+const half = Math.PI;
+const rooms = [
+  { name: ["Relay Room","继电器房"], tint: "#b798ef", floor: "#2a2540",
+    cover: [[100,117,36,34],[344,117,36,34]],
+    enemies: [[145,93,"drone"],[240,88,"drone"],[335,93,"drone"]] },
+  { name: ["Crossfire","交叉火力"], tint: "#ff9da6", floor: "#392735",
+    cover: [[102,91,34,34],[344,91,34,34],[213,162,54,26]],
+    enemies: [[65,91,"drone"],[170,86,"fan"],[310,86,"fan"],[414,91,"drone"]] },
+  { name: ["Core Keeper","核心守卫"], tint: "#ffc578", floor: "#372b36",
+    cover: [[95,149,39,32],[346,149,39,32]],
+    enemies: [[240,99,"boss"]] },
+];
+const enemyTypes = {
+  drone: { hp: 3, radius: 10, speed: 31, range: 107, interval: 2.45, warning: .48, colour: "#ed9ad0" },
+  fan: { hp: 5, radius: 12, speed: 25, range: 126, interval: 2.15, warning: .49, colour: "#ff9d73" },
+  boss: { hp: 24, radius: 21, speed: 20, range: 114, interval: 1.97, warning: .55, colour: "#ffbe76" },
+};
+const labels = {
+  ready: ["Clear three rooms. Hold Pulse to auto-aim. Dodge through incoming shots.","清空三个房间。按住脉冲键可自动瞄准。遇到飞弹就翻滚闪避。"],
+  live: ["Hold Pulse and keep moving. Use crates for cover.","按住脉冲键并保持移动。用箱子作掩护。"],
+  gate: ["Room clear! Walk through the glowing doorway at the top.","房间已清空！走进上方发光的门。"],
+  escape: ["Core down! Walk into the extraction gate.","核心守卫已击败！走进撤离门。"],
+  hit: ["Shield hit. Dodge through the next volley.","护盾被击中。用翻滚躲过下一轮。"],
+};
+const mappings = { w:"up",a:"left",s:"down",d:"right",ArrowUp:"up",ArrowLeft:"left",ArrowDown:"down",ArrowRight:"right"," ":"fire",j:"fire",Shift:"roll",k:"roll" };
+const keys = new Set();
+const touches = new Map();
+let player, state, enemies, pulses, incoming, particles, aim, shake, lastFrame;
+const between = (value,min,max) => Math.min(max,Math.max(min,value));
+const distance = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
+
+function titleText(element,en,zh) {
+  const translation = document.createElement("span");
+  translation.className = "zh";
+  translation.lang = "zh-Hans";
+  translation.textContent = zh;
+  element.replaceChildren(en,translation);
+}
+function status(key) {
+  if (state.status === key) return;
+  state.status = key;
+  titleText(byId("status"), ...labels[key]);
+}
+function clearControls() {
+  keys.clear(); touches.clear(); aim = null;
+  document.querySelectorAll("[data-down]").forEach(button => delete button.dataset.down);
+}
+function displayPhase(phase,title,copy,button) {
+  state.phase = phase;
+  stage.dataset.phase = phase;
+  const playing = phase === "playing";
+  overlay.hidden = playing;
+  pause.disabled = !playing;
+  if (!playing) {
+    titleText(byId("moment-title"),...title);
+    titleText(byId("moment-text"),...copy);
+    titleText(start,...button);
+  }
+}
+function health() {
+  const indicator = byId("health");
+  indicator.textContent = "♥".repeat(player.hp) + "♡".repeat(maxHealth-player.hp);
+  indicator.setAttribute("aria-label",player.hp + " / " + maxHealth + " hearts");
+}
+function loadRoom(index) {
+  state.room = index;
+  state.cleared = false;
+  state.roomClock = 0;
+  Object.assign(player,{x:240,y:234,vx:0,vy:-1,roll:0,cooldown:0,damage:0,fire:0});
+  enemies = rooms[index].enemies.map(([x,y,kind],i) => ({
+    x,y,kind,...enemyTypes[kind], attack:1.6+i*.37, spin:i*.95, hit:0, volley:0, angle:half/2,
+  }));
+  pulses=[]; incoming=[]; particles=[];
+  byId("room-number").textContent = "Room "+(index+1)+" / "+rooms.length;
+  titleText(byId("room-name"),...rooms[index].name);
+  health();
+}
+function ready() {
+  state = { room:0,phase:"ready",status:null,clock:0,cleared:false };
+  player = {hp:maxHealth};
+  shake=0;
+  clearControls();
+  loadRoom(0);
+  displayPhase("ready",["Enter the vault","进入密室"],labels.ready,["Start run","开始"]);
+  status("ready");
+}
+function begin() {
+  if (state.phase !== "paused") ready();
+  displayPhase("playing");
+  status(state.cleared ? (state.room===2 ? "escape" : "gate") : "live");
+  arena.focus({preventScroll:true});
+}
+function end(won) {
+  clearControls();
+  if (won) burst(240,82,"#ffe2a2",42,85);
+  const seconds = Math.max(1,Math.floor(state.clock));
+  const time = Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");
+  displayPhase(won?"won":"lost",won?["Vault cleared!","成功逃出密室！"]:["Run ended","挑战结束"],
+    won?["3 rooms · "+time+" · "+player.hp+" hearts left","3 个房间 · "+time+" · 剩余 "+player.hp+" 颗心"]:
+        ["Try again. Roll when you see the attack warning.","再次尝试。看到攻击预警时就翻滚。"],
+    ["Play again","再玩一次"]);
+  titleText(byId("status"),won?"Extraction complete.":"Shield depleted.",won?"撤离完成。":"护盾耗尽。");
+  start.focus({preventScroll:true});
+}
+function pauseRun() {
+  if(state.phase!=="playing") return;
+  clearControls();
+  displayPhase("paused",["Paused","已暂停"],["The room is waiting.","继续挑战当前房间。"],["Resume","继续"]);
+  start.focus({preventScroll:true});
+}
+function blocked(x,y,r) {
+  return rooms[state.room].cover.some(([a,b,w,h]) => x+r>a && x-r<a+w && y+r>b && y-r<b+h);
+}
+function step(entity,dx,dy,r,canExit=false) {
+  const x = between(entity.x+dx,roomSize.left+r,roomSize.right-r);
+  if (!blocked(x,entity.y,r)) entity.x=x;
+  const through = canExit && state.cleared && entity.x>gate.left+r && entity.x<gate.right-r;
+  const y = between(entity.y+dy,through?28:roomSize.top+r,roomSize.bottom-r);
+  if (!blocked(entity.x,y,r)) entity.y=y;
+}
+function burst(x,y,colour,count,force) {
+  if (motion.matches) count=Math.ceil(count/4);
+  for(let i=0;i<count;i++){
+    const angle=Math.random()*half*2, speed=force*(.3+Math.random()*.7);
+    particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:.18+Math.random()*.52,colour});
+  }
+}
+function addShot(list,x,y,angle,speed,r,colour) {
+  list.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r,colour});
+}
+function visibleTarget(enemy) {
+  const dx=enemy.x-player.x, dy=enemy.y-player.y;
+  const slices=Math.ceil(Math.hypot(dx,dy)/8);
+  for(let i=1;i<slices;i++) if(blocked(player.x+dx*i/slices,player.y+dy*i/slices,2)) return false;
+  return true;
+}
+function fire() {
+  const open=enemies.filter(visibleTarget);
+  const nearest=open.reduce((best,e)=>!best||distance(player,e)<distance(player,best)?e:best,null);
+  const target=aim || nearest;
+  const angle=target?Math.atan2(target.y-player.y,target.x-player.x):Math.atan2(player.vy,player.vx);
+  const x=player.x+Math.cos(angle)*9,y=player.y+Math.sin(angle)*9;
+  addShot(pulses,x,y,angle,324,3,"#9ff8e9");
+  burst(x,y,"#9ff8e9",3,50);
+  player.fire=.18;
+}
+function hitPlayer() {
+  if(player.roll>0||player.damage>0) return;
+  player.hp--;
+  player.damage=1;
+  shake=motion.matches?0:.16;
+  health();
+  burst(player.x,player.y,"#fd929d",13,95);
+  if(player.hp===0) end(false);
+  else status("hit");
+}
+function dodge() {
+  if(player.cooldown>0) return;
+  player.roll=.31;
+  player.cooldown=1.08;
+  burst(player.x,player.y,"#af8af4",9,70);
+}
+function movePlayer(dt) {
+  const held = action => keys.has(action) || [...touches.values()].includes(action);
+  let x=Number(held("right"))-Number(held("left")),y=Number(held("down"))-Number(held("up"));
+  const length=Math.hypot(x,y);
+  if(length){x/=length;y/=length;}
+  if (player.roll<=0 && length) {player.vx=x;player.vy=y;}
+  if (held("roll")) dodge();
+  const speed=player.roll>0?280:126;
+  if(player.roll>0){x=player.vx;y=player.vy;}
+  step(player,x*speed*dt,y*speed*dt,8,true);
+  if (player.roll>0 && Math.random()<.58) burst(player.x,player.y,"#91e7d9",1,32);
+  player.roll=Math.max(0,player.roll-dt);
+  player.cooldown=Math.max(0,player.cooldown-dt);
+  const wasHurt=player.damage>0;
+  player.damage=Math.max(0,player.damage-dt);
+  if(wasHurt && player.damage===0 && !state.cleared) status("live");
+  player.fire=Math.max(0,player.fire-dt);
+  if ((held("fire") || aim) && player.fire<=0 && enemies.length) fire();
+  byId("roll-meter").style.width=(1-player.cooldown/1.08)*100+"%";
+}
+function attack(enemy) {
+  const ring = enemy.kind==="boss" && enemy.volley%2===1;
+  const offsets=ring?Array.from({length:13},(_,i)=>i*half*2/13):enemy.kind==="boss"?[-.45,-.3,-.15,0,.15,.3,.45]:enemy.kind==="fan"?[-.24,0,.24]:[0];
+  for(const offset of offsets) addShot(incoming,enemy.x,enemy.y,enemy.angle+offset,ring?104:129,ring?4:3.5,ring?"#ffcb7a":"#fda1bb");
+  enemy.volley++;
+  enemy.attack=enemy.interval-(enemy.kind==="boss" && enemy.hp<=12?.33:0);
+}
+function moveEnemies(dt) {
+  for(const enemy of enemies) {
+    enemy.hit=Math.max(0,enemy.hit-dt);
+    const dx=player.x-enemy.x,dy=player.y-enemy.y,dist=Math.hypot(dx,dy)||1;
+    enemy.spin+=dt;
+    enemy.attack-=dt;
+    if(enemy.attack>enemy.warning*.7) {
+      enemy.angle=Math.atan2(dy,dx);
+      const forward=dist>enemy.range?1:dist<enemy.range*.64?-.52:.13;
+      const side=Math.sin(enemy.spin*2)*.56;
+      step(enemy,(dx*forward-dy*side)/dist*enemy.speed*dt,(dy*forward+dx*side)/dist*enemy.speed*dt,enemy.radius);
+    }
+    if(enemy.attack<=0) attack(enemy);
+    if(dist<enemy.radius+7) hitPlayer();
+    if(state.phase!=="playing") return;
+  }
+}
+function advanceShots(list,dt,onHit) {
+  return list.filter(shot=>{
+    shot.x+=shot.vx*dt;
+    shot.y+=shot.vy*dt;
+    if(shot.x<roomSize.left||shot.x>roomSize.right||shot.y<roomSize.top||shot.y>roomSize.bottom||blocked(shot.x,shot.y,shot.r)) {
+      burst(shot.x,shot.y,shot.colour,2,28);
+      return false;
+    }
+    return !onHit(shot);
+  });
+}
+function tick(dt) {
+  if(state.phase==="playing"){
+    state.clock+=dt;
+    state.roomClock+=dt;
+    movePlayer(dt);
+    moveEnemies(dt);
+    if(state.phase!=="playing") return;
+    pulses=advanceShots(pulses,dt,shot=>{
+      const enemy=enemies.find(e=>e.hp>0&&distance(shot,e)<e.radius+shot.r);
+      if(!enemy) return false;
+      enemy.hp--;enemy.hit=.1;
+      burst(shot.x,shot.y,enemy.colour,enemy.hp?5:22,enemy.hp?58:101);
+      if(enemy.hp===0) shake=motion.matches?0:.1;
+      return true;
+    });
+    enemies=enemies.filter(enemy=>enemy.hp>0);
+    incoming=advanceShots(incoming,dt,shot=>{
+      if(distance(shot,player)>7+shot.r || player.roll>0) return false;
+      hitPlayer();
+      return true;
+    });
+    if(!enemies.length&&!state.cleared&&state.phase==="playing"){
+      state.cleared=true;
+      incoming=[];
+      status(state.room===2?"escape":"gate");
+      burst(240,46,"#a0f6d8",26,84);
+    }
+    if(state.cleared&&player.y<35&&state.phase==="playing"){
+      if(state.room===rooms.length-1) end(true);
+      else {
+        player.hp=Math.min(maxHealth,player.hp+1);
+        loadRoom(state.room+1);
+        status("live");
+      }
+    }
+  }
+  if(state.phase!=="paused"){
+    for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;}
+    particles=particles.filter(p=>p.life>0);
+    shake=Math.max(0,shake-dt);
+  }
+}
+
+function rect(x,y,w,h,colour){ctx.fillStyle=colour;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
+function line(x,y,tx,ty,colour,width=1){
+  ctx.strokeStyle=colour;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();
+}
+function glow(x,y,r,colour){
+  const gradient=ctx.createRadialGradient(x,y,0,x,y,r);
+  gradient.addColorStop(0,colour);gradient.addColorStop(1,"transparent");
+  ctx.fillStyle=gradient;ctx.fillRect(x-r,y-r,r*2,r*2);
+}
+function roomArt(now) {
+  const room=rooms[state.room], ink="#160f24";
+  rect(0,0,480,288,"#151124");
+  rect(22,42,436,230,room.floor);
+  for(let y=47;y<266;y+=18) for(let x=28;x<452;x+=20){
+    const even=(x/20+y/18)%3>1.3;
+    rect(x,y,19,17,even?"#ffffff08":"#140e2230");
+    if((x*7+y*3)%11<2) rect(x+3,y+13,6,1,"#ffffff14");
+  }
+  rect(20,31,440,16,ink);rect(20,24,440,7,"#4a3a61");
+  rect(14,28,11,246,"#3b2f53");rect(455,28,11,246,"#3b2f53");
+  rect(14,266,452,13,"#241e35");rect(14,265,452,3,"#665278");
+  for(let x=31;x<455;x+=22){rect(x,26,19,2,"#79698c");rect(x,35,20,7,"#332546");}
+  for(let y=46;y<266;y+=24){rect(16,y,7,2,"#6e5c85");rect(457,y,7,2,"#6e5c85");}
+  for(const x of [52,425]){
+    for(const y of [67,229]){
+      glow(x,y,36,room.tint+"55");rect(x-5,y-16,10,10,ink);
+      rect(x-3,y-14,6,5,room.tint);rect(x-1,y-13,2,3,"#fff3cb");
+    }
+  }
+  for(const side of [0,1]){
+    const x=side?431:48;
+    line(x,115,x,192,room.tint+"42",1.5);rect(x-2,114,4,4,room.tint);rect(x-2,190,4,4,room.tint);
+  }
+  ctx.strokeStyle=room.tint+"37";ctx.lineWidth=1.5;ctx.strokeRect(199,91,82,82);
+  ctx.save();ctx.translate(240,132);ctx.rotate(half/4);ctx.strokeRect(-43,-43,86,86);ctx.restore();
+  rect(gate.left-4,14,72,38,ink);
+  rect(gate.left,16,64,30,state.cleared?"#21483d":"#4a3554");
+  if(state.cleared){
+    const pulse=motion.matches ? .5 : (Math.sin(now*.005)+1)/2;
+    glow(240,39,55,"#89efbd"+(55+Math.round(40*pulse)).toString(16));
+    rect(gate.left+4,19,56,22,"#263e3c");rect(gate.left+7,41,50,4,"#9ffacc");
+    line(234,37,240,30,"#d9ffe5",2);line(240,30,246,37,"#d9ffe5",2);
+  }else{
+    rect(218,18,44,23,"#302442");
+    for(let x=221;x<263;x+=8) rect(x,19,3,20,"#84688b");
+    rect(237,24,6,7,"#f4ab9e");
+  }
+  rect(gate.left-1,13,66,3,state.cleared?"#9ffacc":room.tint);
+  for(const [x,y,w,h] of room.cover){
+    rect(x+3,y+7,w,h+3,"#15112391");rect(x,y,w,h,"#171326");
+    rect(x+2,y+2,w-4,h-4,"#4e3959");rect(x+3,y+3,w-6,6,"#7a5c81");
+    line(x+5,y+h-5,x+w-5,y+7,"#937392",2);line(x+5,y+7,x+w-5,y+h-5,"#6a5271",2);
+    rect(x+3,y+h-5,w-6,2,"#281e40");
+    for(const bx of [x+4,x+w-8]) rect(bx,y+4,4,2,room.tint);
+  }
+}
+function sprite(x,y,art,colours,scale=2){
+  for(let j=0;j<art.length;j++){
+    for(let i=0;i<art[j].length;i++){
+      const color=colours[art[j][i]];
+      if(color) rect(x+(i-art[j].length/2)*scale,y+(j-art.length/2)*scale,scale,scale,color);
+    }
+  }
+}
+const runner = [
+ "....kkkk....","...kttttk...","..kttttttk..","..ktddddtk..","..kdwwwwdk..","..kdwddwdk..",
+ "..ktddddtk..","...kttttk...","..kttccttk..","..kktkktkk..","...kk..kk...",
+];
+const sentry = [
+ "...kkkkkk...","..kcccccck..",".kcddddddck.","kcddwddwddck","kcddwddwddck","kcddddddddck",
+ ".kcccoocck..","..kkkkkkkk..","..kk....kk..",
+];
+const core = [
+ "....kkkkkkkkkk....","...kcccccccccck...","..kcccccccccccck..",".kccddddddddddcck.",
+ "kccddwwddddwwddcck","kccddwwddddwwddcck","kccddddooooddddcck",
+ "kccddddooooddddcck",".kccddddddddddcck.","..kcccccccccccck..","..kkkkkkkkkkkkkk..",
+];
+function actors(now){
+  for(const e of enemies){
+    const warning=e.attack<=e.warning;
+    if(warning){
+      const accent=e.kind==="boss"&&e.volley%2===1?"#ffcb7a":"#f6a4bd";
+      ctx.globalAlpha=.32+.37*(1-e.attack/e.warning);
+      if(e.kind==="boss"&&e.volley%2===1){
+        ctx.strokeStyle=accent;ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,33+10*(1-e.attack/e.warning),0,half*2);ctx.stroke();
+      }else line(e.x,e.y,e.x+Math.cos(e.angle)*104,e.y+Math.sin(e.angle)*104,accent,2);
+      ctx.globalAlpha=1;
+      glow(e.x,e.y,e.radius+17,accent+"58");
+    }
+    const y=e.y+(motion.matches?0:Math.sin(now*.008+e.spin)*1.6);
+    rect(e.x-e.radius,y+e.radius*.73,e.radius*2,4,"#100b1aab");
+    sprite(e.x,y,e.kind==="boss"?core:sentry,{k:"#151226",c:e.hit?"#fff4e0":e.colour,d:"#403250",w:"#fff2de",o:warning?"#fff0ac":"#ed8ea1"},e.kind==="boss"?3:2);
+    if(warning) rect(e.x-2,y-e.radius-9,4,6,"#ffdfab");
+    if(e.kind==="boss"){
+      rect(142,55,196,6,"#190f20");
+      rect(143,56,194*e.hp/enemyTypes.boss.hp,4,"#ff9da6");
+    }
+  }
+  if(!player.damage || Math.floor(now/82)%2 || motion.matches){
+    rect(player.x-9,player.y+8,18,4,"#100b1aac");
+    if(player.roll>0){
+      ctx.strokeStyle="#83efcc";ctx.lineWidth=2;ctx.beginPath();ctx.arc(player.x,player.y,12,0,half*2);ctx.stroke();
+    }
+    sprite(player.x,player.y,runner,{k:"#101426",t:player.roll?"#bba0f2":"#66dac8",d:"#274151",w:"#f0ffe4",c:"#fbc984"});
+  }
+}
+function paint(now) {
+  ctx.save();
+  if(shake) ctx.translate(Math.sin(now*.084)*shake*12,Math.cos(now*.076)*shake*10);
+  roomArt(now);
+  actors(now);
+  for(const shot of pulses){
+    line(shot.x-shot.vx*.022,shot.y-shot.vy*.022,shot.x,shot.y,"#81e5d593",2);
+    rect(shot.x-2,shot.y-2,4,4,shot.colour);
+  }
+  for(const shot of incoming){
+    rect(shot.x-shot.r,shot.y-shot.r,shot.r*2,shot.r*2,shot.colour);
+    rect(shot.x-1,shot.y-1,2,2,"#fff7da");
+  }
+  for(const p of particles){
+    ctx.globalAlpha=Math.min(1,p.life*4);
+    rect(p.x-1,p.y-1,3,3,p.colour);
+  }
+  ctx.restore();
+}
+function frame(now){
+  const dt=Math.min(.036,(now-lastFrame)/1000);
+  lastFrame=now;
+  tick(dt);
+  paint(now);
+  requestAnimationFrame(frame);
+}
+
+const buttonActions=[...document.querySelectorAll("[data-key]")];
+for(const button of buttonActions){
+  const action=button.dataset.key;
+  button.addEventListener("pointerdown",event=>{
+    if(event.button!==0||state.phase!=="playing") return;
+    touches.set(event.pointerId,action);
+    button.dataset.down="";
+    button.setPointerCapture(event.pointerId);
+    if(action==="fire"&&player.fire<=0&&enemies.length) fire();
+    if(action==="roll") dodge();
+  });
+  for(const type of ["pointerup","pointercancel","lostpointercapture"]) button.addEventListener(type,event=>{
+    touches.delete(event.pointerId);delete button.dataset.down;
+  });
+  button.addEventListener("click",event=>{
+    if(event.detail!==0||state.phase!=="playing") return;
+    if(action==="fire"&&player.fire<=0&&enemies.length) fire();
+    else if(action==="roll") dodge();
+    else if(action!=="fire"&&action!=="roll"){
+      step(player,action==="left"?-8:action==="right"?8:0,action==="up"?-8:action==="down"?8:0,8,true);
+    }
+  });
+}
+function aimAt(event) {
+  const box=arena.getBoundingClientRect();
+  aim={x:(event.clientX-box.left)*480/box.width,y:(event.clientY-box.top)*288/box.height};
+}
+arena.addEventListener("pointerdown",event=>{
+  if(event.button!==0||state.phase!=="playing") return;
+  aimAt(event);arena.setPointerCapture(event.pointerId);arena.focus({preventScroll:true});
+  if(player.fire<=0&&enemies.length) fire();
+});
+arena.addEventListener("pointermove",event=>{if(aim) aimAt(event);});
+for(const type of ["pointerup","pointercancel","lostpointercapture"]) arena.addEventListener(type,()=>{aim=null;});
+window.addEventListener("keydown",event=>{
+  if(event.altKey||event.ctrlKey||event.metaKey) return;
+  const key=event.key.length===1?event.key.toLowerCase():event.key;
+  if(key==="Escape"||key==="p"){
+    if(state.phase==="playing"){event.preventDefault();pauseRun();}
+    else if(state.phase==="paused"&&!event.repeat){event.preventDefault();begin();}
+    return;
+  }
+  if(state.phase!=="playing"||!mappings[key]) return;
+  if(key===" "&&event.target instanceof HTMLButtonElement) return;
+  event.preventDefault();
+  const action=mappings[key];
+  keys.add(action);
+  if(action==="fire"&&player.fire<=0&&enemies.length) fire();
+  if(action==="roll") dodge();
+});
+window.addEventListener("keyup",event=>{
+  const key=event.key.length===1?event.key.toLowerCase():event.key;
+  keys.delete(mappings[key]);
+});
+window.addEventListener("blur",()=>{if(state.phase==="playing") pauseRun();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden) pauseRun();});
+start.addEventListener("click",begin);
+pause.addEventListener("click",pauseRun);
+const params=new URLSearchParams(location.search);
+document.body.classList.toggle("embed",params.get("embed")==="1");
+const language=byId("language");
+function bilingual(enabled){
+  document.body.classList.toggle("bi",enabled);
+  language.setAttribute("aria-pressed",String(enabled));
+}
+bilingual(params.get("lang")==="bi");
+language.addEventListener("click",()=>bilingual(language.getAttribute("aria-pressed")!=="true"));
+ready();
+lastFrame=performance.now();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
