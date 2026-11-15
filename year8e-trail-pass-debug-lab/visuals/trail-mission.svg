@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" role="img" aria-labelledby="title desc">
+  <title id="title">Trail Pass field map</title>
+  <desc id="desc">A student holds a map beside a route marked Pine, Lake and Ridge. A trail past Ridge leads to the ride's 120 cm gate.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0v24" stroke="#c7dbe3" fill="none"/></pattern>
+    <g id="tree" stroke="#263846" stroke-width="4" stroke-linejoin="round"><path d="M16 38v17" stroke-linecap="round"/><path d="M16 0 2 24h7L0 39h32l-9-15h7z" fill="#8fb3a8"/></g>
+  </defs>
+  <rect width="720" height="470" fill="#f7ebd8"/>
+  <rect x="18" y="18" width="684" height="434" rx="24" fill="#e7f0f3" stroke="#263846" stroke-width="3"/>
+  <path d="M19 107h682v320q0 24-24 24H43q-24 0-24-24z" fill="url(#grid)"/>
+  <path d="M20 342q65-58 149-45t150-42q69-50 149-80t105-23q80-7 127-42v316q0 24-24 24H43q-24 0-24-24z" fill="#b8d0cb"/>
+  <path d="M396 444q50-72-32-111t-72-75q-19-30 26-60" fill="none" stroke="#719aad" stroke-width="35" stroke-linecap="round"/>
+  <path d="M21 108h678" stroke="#263846" stroke-width="2"/>
+  <text x="44" y="52" font-family="Arial,sans-serif" font-size="17" letter-spacing="3" font-weight="700" fill="#784713">TRAIL PASS FIELD MAP</text>
+  <text x="44" y="87" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#263846">From trail to ride</text>
+  <g stroke="#263846" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M215 374q40-20 67-38l81-57q57-48 88-58l135-27" fill="none" stroke="#fff9ea" stroke-width="23"/>
+    <path d="M215 374q40-20 67-38l81-57q57-48 88-58l135-27" fill="none" stroke="#986122" stroke-width="4" stroke-dasharray="4 10"/>
+    <path d="M235 202q32-26 69-5 15 9 29 4-12 24-41 34-45 16-97-4 8-17 40-29z" fill="#729aaf" stroke-width="2"/>
+    <path d="M214 226q23 6 51 0m-18-13q26-5 52-1" fill="none" stroke="#e4eff2" stroke-width="3"/>
+    <path d="m295 327 52-35 13 17-52 36z" fill="#d4984b" stroke-width="3"/>
+    <path d="m307 319 13 17m0-25 13 16m0-24 13 16" fill="none" stroke-width="2"/>
+    <path d="m424 197 24-55 27 48m-12-22 10-27 33 49" fill="#e5eced" stroke-width="4"/>
+    <path d="M584 198v-59h67v60m-75-50h84" fill="none" stroke-width="6"/>
+    <rect x="582" y="128" width="73" height="27" rx="5" fill="#f7cd83" stroke-width="3"/>
+    <path d="m598 162 39 34m-39-18 20 17" fill="none" stroke-width="3"/>
+  </g>
+  <use href="#tree" x="198" y="302"/><use href="#tree" x="238" y="293"/>
+  <g font-family="Arial,sans-serif" font-weight="700" fill="#263846">
+    <text x="618.5" y="147" text-anchor="middle" font-size="18">120 cm</text>
+    <rect x="190" y="365" width="70" height="34" rx="10" fill="#fffaf1" stroke="#263846" stroke-width="2"/><text x="225" y="389" text-anchor="middle" font-size="21">Pine</text>
+    <rect x="331" y="252" width="79" height="34" rx="10" fill="#fffaf1" stroke="#263846" stroke-width="2"/><text x="370.5" y="276" text-anchor="middle" font-size="21">Lake</text>
+    <rect x="434" y="209" width="89" height="34" rx="10" fill="#fffaf1" stroke="#263846" stroke-width="2"/><text x="478.5" y="233" text-anchor="middle" font-size="21">Ridge</text>
+    <circle cx="213" cy="416" r="15" fill="#384b5b"/><text x="213" y="422" text-anchor="middle" fill="#fff" font-size="19">1</text><text x="236" y="423" font-size="20">Route list</text>
+    <circle cx="539" cy="275" r="15" fill="#ab4b46"/><text x="539" y="281" text-anchor="middle" fill="#fff" font-size="19">2</text><text x="562" y="282" font-size="20">Height check</text>
+  </g>
+  <g stroke="#253541" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M52 423q2-77 19-97 19-17 58-11 25 6 35 108" fill="#d4984b"/>
+    <path d="m93 314 12 24 18-22" fill="#fff8e8"/>
+    <path d="M91 283v31q10 11 23 2v-26" fill="#f4c4a6"/>
+    <ellipse cx="101" cy="261" rx="39" ry="45" fill="#fbd3b8"/>
+    <path d="M63 267q-13-23 2-47 16-22 49-19 28 2 34 27l-19 1q-10 19-56 18l-8 18z" fill="#263846"/>
+    <path d="M61 222q21-47 64-24l21 22 20 5q-38 10-65-9z" fill="#789aad"/>
+    <circle cx="91" cy="258" r="12" fill="none"/><circle cx="123" cy="254" r="12" fill="none"/><path d="m103 256 8-1m-28 3h4m35-4h4m-31 28q12 9 23-3" fill="none"/>
+    <path d="m80 351 30 3 35-21 14 63-31 15-35-3z" fill="#fff4da"/>
+    <path d="m110 354 18 56m-26-23 11-7 14 0 13-18" fill="none" stroke="#ad6554" stroke-width="3"/>
+    <path d="M77 380q15-7 21 2t-10 15m66-42q12-5 12 7t-12 15" fill="#fbd3b8"/>
+  </g>
+</svg>

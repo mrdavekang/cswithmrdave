@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 228" role="img" aria-labelledby="title desc">
+  <title id="title">Text in, number out</title>
+  <desc id="desc">The text string 85, shown in quotes, goes through int and becomes the whole number 85, shown without quotes.</desc>
+  <rect width="720" height="228" fill="#f9f0e1"/>
+  <g font-family="Arial,sans-serif" fill="#263846" text-anchor="middle">
+    <text x="360" y="40" font-size="30" font-weight="700">Text in, number out</text>
+    <g stroke="#314453" stroke-width="3">
+      <rect x="29" y="63" width="174" height="132" rx="17" fill="#f1d6ce"/>
+      <rect x="273" y="63" width="174" height="132" rx="17" fill="#f5d091"/>
+      <rect x="516" y="63" width="174" height="132" rx="17" fill="#d8e9ef"/>
+      <path d="M215 130h44l-11-11m11 11-11 11m212-11h44l-11-11m11 11-11 11" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g font-size="21" font-weight="700"><text x="116" y="96">1 · TEXT</text><text x="360" y="96">2 · CONVERT</text><text x="603" y="96">3 · INTEGER</text></g>
+    <g font-family="Menlo,Consolas,monospace" font-size="36" font-weight="700"><text x="116" y="146">"85"</text><text x="360" y="146">int()</text><text x="603" y="146">85</text></g>
+    <g font-size="20"><text x="116" y="176">from input()</text><text x="360" y="176">whole number</text><text x="603" y="176">ready to compare</text></g>
+  </g>
+</svg>

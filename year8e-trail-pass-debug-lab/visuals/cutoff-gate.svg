@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-labelledby="title desc">
+  <title id="title">The demo gate needs at least 5 tokens</title>
+  <desc id="desc">With the rule tokens greater than or equal to 5, 4 tokens means wait; exactly 5 means open; 6 also means open.</desc>
+  <rect width="720" height="280" fill="#e8f0f3"/>
+  <g font-family="Arial,sans-serif" fill="#263846" text-anchor="middle">
+    <text x="360" y="37" font-size="29" font-weight="700">Demo gate · At least 5 tokens</text>
+    <text x="360" y="73" font-family="Menlo,Consolas,monospace" font-size="25" font-weight="700">tokens &gt;= 5</text>
+    <g stroke="#314453" stroke-width="3">
+      <rect x="24" y="94" width="204" height="163" rx="15" fill="#f2d7cf"/>
+      <rect x="258" y="94" width="204" height="163" rx="15" fill="#f6d49a" stroke="#795020" stroke-width="4"/>
+      <rect x="492" y="94" width="204" height="163" rx="15" fill="#fff9ed"/>
+      <path d="M104 189v-38h44v38m-44-24h44m-43 13h42M338 189v-38h44v38m-43-14 28-19M572 189v-38h44v38m-43-14 28-19" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g font-size="23" font-weight="700"><text x="126" y="133">4 tokens</text><text x="360" y="133">5 tokens</text><text x="594" y="133">6 tokens</text></g>
+    <g font-size="24" font-weight="700"><text x="126" y="220" fill="#87322d">WAIT</text><text x="360" y="220">OPEN</text><text x="594" y="220">OPEN</text></g>
+    <g font-size="18"><text x="126" y="244">Below cutoff</text><text x="360" y="244">Exactly at cutoff</text><text x="594" y="244">Above cutoff</text></g>
+  </g>
+</svg>

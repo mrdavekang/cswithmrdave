@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 354" role="img" aria-labelledby="title desc">
+  <title id="title">Replace a value or append a new slot</title>
+  <desc id="desc">Red, Blue, Gold becomes Red, Silver, Gold when the middle value is replaced. Appending White then adds a fourth slot.</desc>
+  <rect width="720" height="354" fill="#e8f0f3"/>
+  <g stroke="#314453" stroke-width="2.5">
+    <rect x="18" y="18" width="684" height="149" rx="18" fill="#fff9ee"/>
+    <rect x="18" y="187" width="684" height="149" rx="18" fill="#fff9ee"/>
+    <path d="M320 118h58l-14-12m14 12-14 12M320 287h58l-14-12m14 12-14 12" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g font-family="Arial,sans-serif" fill="#263846">
+    <g font-size="26" font-weight="700"><text x="39" y="52">Replace a value</text><text x="39" y="221">Append a new slot</text></g>
+    <g font-size="20" font-weight="700" fill="#754412"><text x="678" y="51" text-anchor="end">SAME LENGTH</text><text x="678" y="220" text-anchor="end">ONE MORE</text></g>
+    <g font-size="18" font-weight="700"><text x="41" y="86">BEFORE · 3</text><text x="405" y="86">AFTER · 3</text><text x="41" y="255">BEFORE · 3</text><text x="405" y="255">AFTER · 4</text></g>
+    <g stroke="#314453" stroke-width="2.5">
+      <rect x="41" y="98" width="60" height="43" rx="8" fill="#f5d5cc"/><rect x="107" y="98" width="63" height="43" rx="8" fill="#b9d6e4"/><rect x="176" y="98" width="65" height="43" rx="8" fill="#f5cf8c"/>
+      <rect x="405" y="98" width="60" height="43" rx="8" fill="#f5d5cc"/><rect x="471" y="98" width="68" height="43" rx="8" fill="#e6ebee" stroke="#794715" stroke-width="4"/><rect x="545" y="98" width="65" height="43" rx="8" fill="#f5cf8c"/>
+      <rect x="41" y="267" width="60" height="43" rx="8" fill="#f5d5cc"/><rect x="107" y="267" width="68" height="43" rx="8" fill="#e6ebee"/><rect x="181" y="267" width="65" height="43" rx="8" fill="#f5cf8c"/>
+      <rect x="405" y="267" width="60" height="43" rx="8" fill="#f5d5cc"/><rect x="471" y="267" width="68" height="43" rx="8" fill="#e6ebee"/><rect x="545" y="267" width="65" height="43" rx="8" fill="#f5cf8c"/><rect x="616" y="267" width="65" height="43" rx="8" fill="#fff" stroke="#794715" stroke-width="4" stroke-dasharray="5 3"/>
+    </g>
+    <g font-size="22" font-weight="700" text-anchor="middle">
+      <text x="71" y="127">Red</text><text x="138" y="127">Blue</text><text x="208" y="127">Gold</text>
+      <text x="435" y="127">Red</text><text x="505" y="127">Silver</text><text x="577" y="127">Gold</text>
+      <text x="71" y="296">Red</text><text x="141" y="296">Silver</text><text x="213" y="296">Gold</text>
+      <text x="435" y="296">Red</text><text x="505" y="296">Silver</text><text x="577" y="296">Gold</text><text x="648" y="296">White</text>
+    </g>
+  </g>
+</svg>

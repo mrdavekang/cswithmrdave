@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 238" role="img" aria-labelledby="title desc">
+  <title id="title">Index is the slot; element is the value</title>
+  <desc id="desc">Map is at index 0, Torch at 1, Rope at 2 and Radio at 3. There are four items, but no index 4.</desc>
+  <rect width="720" height="238" fill="#f9f0e1"/>
+  <g font-family="Arial,sans-serif" fill="#263846" text-anchor="middle">
+    <text x="360" y="38" font-size="29" font-weight="700">List slots start at 0</text>
+    <g font-size="22" font-weight="700">
+      <text x="99" y="79">Index 0</text><text x="273" y="79">Index 1</text><text x="447" y="79">Index 2</text><text x="621" y="79">Index 3</text>
+    </g>
+    <g stroke="#263846" stroke-width="3">
+      <rect x="24" y="91" width="150" height="105" rx="14" fill="#e5eff1"/><rect x="198" y="91" width="150" height="105" rx="14" fill="#f6cf94"/>
+      <rect x="372" y="91" width="150" height="105" rx="14" fill="#f4d7ce"/><rect x="546" y="91" width="150" height="105" rx="14" fill="#e5eff1"/>
+      <path d="m75 123 16-6 15 6 16-6v27l-16 6-15-6-16 6z M91 117v27m15-21v27" fill="#fff7ea" stroke-linejoin="round"/>
+      <path d="m269 128-8-11 24-7 3 14-10 6 5 16-9 3z" fill="#fff7ea" stroke-linejoin="round"/>
+      <path d="M436 148c-19-5-14-23 2-28 17-6 32 5 24 18-8 11-24 5-20-3 4-9 21-3 25 7" fill="none" stroke-linecap="round"/>
+      <rect x="604" y="120" width="34" height="30" rx="4" fill="#fff7ea"/><path d="m616 120 11-11m-16 21h20m-20 7h20" fill="none"/>
+    </g>
+    <g font-size="27" font-weight="700">
+      <text x="99" y="180">Map</text><text x="273" y="180">Torch</text><text x="447" y="180">Rope</text><text x="621" y="180">Radio</text>
+    </g>
+    <text x="360" y="223" font-size="21" font-weight="700" fill="#744014">4 elements • Last index: 3</text>
+  </g>
+</svg>
