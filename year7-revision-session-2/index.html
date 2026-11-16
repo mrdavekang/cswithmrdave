@@ -1,0 +1,532 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Year 7 · Revision Studio 02</title><style>@font-face{font-family:Raleway;src:url(../year7-revision-practice/assets/Raleway-VariableFont_wght.ttf)}*{box-sizing:border-box}body{margin:0;background:#fff;color:#171819;font:500 17px/1.55 Raleway,system-ui,sans-serif}header{border-bottom:1px solid #ddd;padding:14px max(4vw,18px);display:flex;align-items:center;justify-content:space-between;gap:12px}header strong{display:block;font-size:1.45rem}header small,small{font-size:.82rem}header span,.eyebrow{color:#205e4e}main{max-width:1320px;margin:auto;padding:18px}nav,.tools,.formula,.foot,.choices{display:flex;gap:8px;flex-wrap:wrap;align-items:center}nav{margin-bottom:14px}button,input,textarea{font:inherit}button{cursor:pointer;background:#fff;color:inherit;border:1px solid #bbb;border-radius:7px;padding:7px 12px;min-height:42px}button:hover{border-color:#205e4e}button[aria-current],.primary{background:#18221e;color:white;border-color:#18221e}:focus-visible{outline:3px solid #287eab;outline-offset:2px}#goal{border-block:1px solid #ddd;padding:10px 0;margin-bottom:16px}h1,h2,p{margin:0 0 12px}h1{font-size:clamp(1.7rem,4vw,2.55rem);line-height:1.15}h2{font-size:1.25rem}.eyebrow{font-size:.8rem;letter-spacing:.1em;font-weight:800;text-transform:uppercase}.panel{border:1px solid #ccc;border-radius:12px;padding:18px;margin-bottom:14px}.work{display:grid;grid-template-columns:minmax(245px,.8fr) minmax(0,1.8fr);gap:16px;align-items:start}.action{border-left:5px solid #25705b;padding:12px;background:#f2f8f5;margin-bottom:12px}.zh{display:none}.bilingual .zh{display:block;color:#415650;font-family:system-ui,sans-serif;font-size:.94em}.hint{margin:12px 0}.feedback{min-height:28px;margin-top:8px}.good{color:#135942}.retry{color:#894510}.foot{margin-top:16px;justify-content:space-between}.sheetbox{min-width:0;border:1px solid #9daaa3;border-radius:8px;overflow:hidden}.tools,.formula{padding:6px;border-bottom:1px solid #bbb}.tools button{padding:4px 9px;min-height:36px}.formula input{min-width:75px;flex:1;font-family:monospace;border:1px solid #aaa;padding:6px}.formula output{min-width:47px;font:700 14px monospace}.sheet-scroll{overflow:auto;max-height:365px}.grid{border-collapse:collapse;table-layout:fixed;width:100%;min-width:475px;user-select:none;touch-action:none}.grid th,.grid td{border:1px solid #d2d7d3;height:36px}.grid th{background:#f5f5f5;font:700 13px system-ui;width:9%}.grid th:first-child{width:35px}.grid td{padding:3px 7px;position:relative;width:11%;font:500 14px/1.2 system-ui;white-space:nowrap}.grid td.label{white-space:normal;width:24%}.grid tr:first-child td{font-weight:700}.grid td.sel{background:#e8f3ee}.grid td.active{box-shadow:inset 0 0 0 2px #236a52}.grid td.target:not(.active){box-shadow:inset 0 0 0 2px #b97415}.handle{position:absolute;right:-1px;bottom:-1px;background:#236a52;width:13px;height:13px;z-index:1;cursor:crosshair}.grid td.err{color:#973909}.sheetnote{padding:8px;font-size:.8rem}.char{width:95px;height:95px;object-fit:contain;float:right}.visual{margin:12px 0;overflow:auto}.bits{display:grid;grid-template-columns:repeat(var(--n), minmax(38px,1fr));gap:4px;max-width:570px;text-align:center}.bits b,.bits span,.bits button{display:block;width:100%;font-family:monospace}.bits span,.bits button{padding:6px;border:1px solid #aaa;border-radius:5px}.pixels{display:grid;grid-template-columns:repeat(4,44px);gap:3px}.pixel{width:44px;height:44px;border:1px solid #777;border-radius:4px;padding:0;display:block;background:white}.pixel.on{background:#202321}.answer{display:block;max-width:100%;padding:7px;margin:8px 0}.progress{height:6px;background:#ddd;margin:7px 0 12px}.progress i{display:block;background:#266753;height:100%}.steps{display:flex;gap:5px;flex-wrap:wrap}.steps button{min-width:38px;padding:4px 7px}.steps .done{border-color:#266753}.steps .tried{border-style:dashed}.ref-table{border-collapse:collapse}.ref-table td,.ref-table th{border:1px solid #aaa;padding:4px 10px}a{color:#205e4e}summary{cursor:pointer}pre,code{font-family:ui-monospace,monospace}button:disabled{opacity:.45;cursor:default}.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}@media(max-width:830px){.work{grid-template-columns:minmax(0,1fr)}.foot{justify-content:flex-start}.panel{padding:12px}}@media(max-width:560px){main{padding:10px}.bits{grid-template-columns:repeat(var(--n),minmax(30px,1fr))}.bits button{min-width:0;padding:4px}.char{width:70px;height:70px}}
+button[data-choice][aria-pressed="true"]{border:2px solid #205e4e;background:#e8f3ee}fieldset label .zh{margin-left:25px}.bits button[aria-pressed="true"]{background:#e8f3ee;border-color:#205e4e}.sheet-scroll{scrollbar-width:auto}.sheetbox .grid td.label{width:auto}.grid th:first-child{width:38px}.grid th:nth-child(2){width:118px}@media(max-width:560px){.grid{min-width:0}.grid th:nth-child(2){width:85px}.grid th:first-child{width:26px}.grid th,.grid td{height:40px}.grid td{padding:2px 3px;font-size:11px}.grid td span{display:block;overflow:hidden;text-overflow:ellipsis}.grid td.label span{white-space:normal}}
+.sheetbox .grid td.draft{background:#f4faf6}.sheetbox .grid td.draft>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:pre;font-family:ui-monospace,monospace}
+
+:root {
+  --page:#fff; --surface:#fff; --soft:#f2f8f5;
+  --accent:#205e4e; --strong:#18221e; --line:#ccc; --selected:#e8f3ee;
+}
+body[data-theme="mint"] {
+  --page:#e1f3e9; --surface:#fafffc; --soft:#eef8f1;
+  --accent:#235e42; --strong:#244a37; --line:#a6c4b3; --selected:#d9efe0;
+}
+body[data-theme="ocean"] {
+  --page:#e3effc; --surface:#fbfdff; --soft:#eef5ff;
+  --accent:#234e81; --strong:#213f62; --line:#a9bdd5; --selected:#e1edfd;
+}
+body[data-theme="sunrise"] {
+  --page:linear-gradient(135deg,#ffe0cd,#fff1cd 58%,#ffdce3); --surface:#fffcf8; --soft:#fff0e5;
+  --accent:#853c2e; --strong:#713428; --line:#d9b1a2; --selected:#fce4d8;
+}
+body[data-theme="aurora"] {
+  --page:linear-gradient(140deg,#d8f6ec,#dfeaff 55%,#eadcff); --surface:#fcfbff; --soft:#f0edfc;
+  --accent:#4d417a; --strong:#433564; --line:#bcafd6; --selected:#eae3fa;
+}
+body[data-theme="rainbow"] {
+  --page:linear-gradient(127deg,#ffdee8,#ffeac9 25%,#f7f4cb 44%,#daf4e5 65%,#dbeaff 83%,#e9dcff);
+  --surface:#fffdf9; --soft:#eef6f6;
+  --accent:#275c64; --strong:#244351; --line:#afc1c5; --selected:#dff1f1;
+}
+body { min-height:100vh; background:var(--page); }
+body[data-theme="sunrise"],body[data-theme="aurora"],body[data-theme="rainbow"] {
+  background-size:240% 240%;
+  background-position:0% 42%;
+}
+@media (prefers-reduced-motion:no-preference) {
+  body[data-theme="sunrise"],body[data-theme="aurora"],body[data-theme="rainbow"] {
+    animation:gradient-drift 58s ease-in-out infinite alternate;
+  }
+}
+@keyframes gradient-drift {
+  from { background-position:0% 42%; }
+  to { background-position:100% 58%; }
+}
+header,.panel,.sheetbox { background:var(--surface); border-color:var(--line); }
+#goal { background:var(--surface); border-color:var(--line); padding-inline:12px; }
+.grid { background:#fff; }
+.grid th,.progress { background:var(--soft); }
+.grid td.sel,.bits button[aria-pressed="true"],button[data-choice][aria-pressed="true"] { background:var(--selected); }
+.grid td.active { box-shadow:inset 0 0 0 2px var(--accent); }
+.sheetbox .grid td.draft { background:var(--selected); }
+.handle,.progress i { background:var(--accent); }
+.action { background:var(--soft); border-color:var(--accent); }
+header span,.eyebrow,a { color:var(--accent); }
+button[aria-current],.primary { background:var(--strong); border-color:var(--strong); }
+button:hover,button[data-choice][aria-pressed="true"],.bits button[aria-pressed="true"],.steps .done { border-color:var(--accent); }
+.header-controls,.theme-control { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.header-controls { justify-content:flex-end; }
+.theme-control { font-size:.85rem; gap:6px; }
+.theme-control select { color:inherit; background:#fff; border:1px solid var(--line); border-radius:7px; min-height:42px; padding:4px 6px; font:inherit; }
+.theme-control i { display:block; width:16px; height:16px; border-radius:50%; border:1px solid var(--accent); background:var(--page); }
+.bilingual .theme-control .zh { display:inline; }
+@media(max-width:600px) { header { flex-wrap:wrap; } .header-controls { justify-content:flex-start; } }
+</style>
+<header>
+  <div><small>YEAR 7 COMPUTING / TERM 1.2</small><strong>Revision Studio <span>02</span></strong></div>
+  <div class="header-controls">
+    <label class="theme-control" for="theme"><i aria-hidden="true"></i><b>Theme <span class="zh" lang="zh-Hans">主题</span></b>
+      <select id="theme">
+        <optgroup label="Solid colours">
+          <option value="paper">Paper</option><option value="mint">Mint</option><option value="ocean">Ocean Blue</option>
+        </optgroup>
+        <optgroup label="Gradients">
+          <option value="sunrise">Peach Sunrise</option><option value="aurora">Aurora</option><option value="rainbow">Soft Rainbow</option>
+        </optgroup>
+      </select>
+    </label>
+    <button id="lang" aria-pressed="false">English + 中文</button>
+  </div>
+</header>
+<main><nav id="nav" aria-label="Lesson stages"></nav><div id="goal"><b>WAGBA</b> Write and test spreadsheet formulas that update when inputs change. <span class="zh" lang="zh-Hans">编写并测试会随输入自动更新的电子表格公式。</span><br><small>Cell reference · input · formula · range · SUM</small></div><section id="stage"></section></main>
+<script>
+(function (root) {
+  'use strict';
+  const ref = /^[A-Z][1-9]\d*$/;
+  const blank = x => x == null || String(x).trim() === '';
+  const numeric = x => /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(String(x).trim());
+  function evaluate(cells, address, overrides = {}) {
+    const path = new Set(), cache = new Map();
+    const fail = message => { throw new Error(message); };
+    const read = a => {
+      if (cache.has(a)) return cache.get(a);
+      if (path.has(a)) fail('This formula refers back to ' + a + '. Use a different cell.');
+      if (!ref.test(a) || +a.slice(1) > 12 || a[0] > 'H') fail(a + ' is outside this worksheet.');
+      const v = String(Object.hasOwn(overrides, a) ? overrides[a] : cells[a] ?? '').trim();
+      if (!v.startsWith('=')) return blank(v) ? null : numeric(v) ? Number(v) : v;
+      path.add(a);
+      const answer = parse(v.slice(1));
+      path.delete(a);
+      cache.set(a, answer);
+      return answer;
+    };
+    const number = v => {
+      if (v === null) return 0;
+      if (typeof v !== 'number') fail('A cell in this calculation contains words. Check the cell references.');
+      return v;
+    };
+    function parse(source) {
+      const s = source.toUpperCase().replace(/[−–]/g, '-').replace(/×/g, '*').replace(/÷/g, '/');
+      if (s.length > 256) fail('Keep this formula under 256 characters.');
+      const tokens = [];
+      let rest = s.trimStart();
+      while (rest.length) {
+        const token = rest.match(/^(?:[A-Z][1-9]\d*|[A-Z]+|\d+(?:\.\d*)?|\.\d+|[+*/(),:\-])/);
+        if (!token) fail('Use numbers, cell names, +, -, *, /, brackets or SUM.');
+        tokens.push(token[0]);
+        rest = rest.slice(token[0].length).trimStart();
+      }
+      let i = 0;
+      const peek = () => tokens[i];
+      const take = t => peek() === t && (++i, true);
+      const need = t => { if (!take(t)) fail('Expected ' + t + '. Check the formula bar.'); };
+      function atom() {
+        if (take('+')) return atom();
+        if (take('-')) return -atom();
+        if (take('(')) { const n = expression(); need(')'); return n; }
+        if (take('SUM')) {
+          need('(');
+          let total = 0;
+          do {
+            if (ref.test(peek() || '') && tokens[i + 1] === ':') {
+              const start = tokens[i++]; i++;
+              const end = tokens[i++];
+              if (!ref.test(end || '') || end[0] > 'H' || start[0] > 'H' ||
+                  Math.max(+start.slice(1), +end.slice(1)) > 12) fail('Use a range on this sheet, for example B2:B4.');
+              for (let c = Math.min(start.charCodeAt(0), end.charCodeAt(0)); c <= Math.max(start.charCodeAt(0), end.charCodeAt(0)); c++) {
+                for (let r = Math.min(+start.slice(1), +end.slice(1)); r <= Math.max(+start.slice(1), +end.slice(1)); r++) {
+                  const v = read(String.fromCharCode(c) + r);
+                  if (typeof v === 'number') total += v;
+                }
+              }
+            } else if (ref.test(peek() || '') && [',', ')'].includes(tokens[i + 1])) {
+              const v = read(tokens[i++]); if (typeof v === 'number') total += v;
+            } else total += expression();
+          } while (take(','));
+          need(')');
+          return total;
+        }
+        const token = tokens[i++];
+        if (ref.test(token || '')) return number(read(token));
+        if (numeric(token)) return Number(token);
+        fail('Enter a number or cell reference here. Example: =B2*C2');
+      }
+      function product() {
+        let n = atom();
+        for (;;) {
+          if (take('*')) n *= atom();
+          else if (take('/')) {
+            const d = atom();
+            if (d === 0) fail('You cannot divide by zero. Check the number you are dividing by.');
+            n /= d;
+          } else return n;
+        }
+      }
+      function expression() {
+        let n = product();
+        for (;;) {
+          if (take('+')) n += product();
+          else if (take('-')) n -= product();
+          else return n;
+        }
+      }
+      const n = expression();
+      if (i !== tokens.length) fail('There is extra text or a missing operator. Check the formula bar.');
+      if (!Number.isFinite(n)) fail('This calculation is too large.');
+      return n;
+    }
+    try { return { value: read(address) }; }
+    catch (e) { return { error: e.message }; }
+  }
+  const shift = (value, delta) => /^\s*=/.test(value) ? value.replace(/\b([A-H])([1-9]\d*)\b/gi, (_, c, r) => c + (+r + delta)) : value;
+  const api = { evaluate, shift, numeric };
+  if (typeof module !== 'undefined') module.exports = api;
+  else root.SheetEngine = api;
+})(globalThis);
+
+</script><script>
+const T=(en,zh)=>[en,zh];
+const Q=(en,zh,opt,answer,why)=>({p:T(en,zh),opt,answer,why});
+const S=(en,zh,expected)=>({p:T(en,zh),...expected});
+const F=(en,zh,cell,f)=>S(en,zh,{cell,f});
+const data={
+ basics:{A1:'Item',B1:'Quantity',C1:'Price',D1:'Cost',A2:'Badges',B2:3,C2:7,A3:'Stickers',B3:5,C3:2,D3:'=B2*C3',A4:'Posters',B4:6,C4:4},
+ ops:{A1:'Measure',B1:'Input 1',C1:'Input 2',D1:'Result',A2:'Tickets AM/PM',B2:18,C2:15,A3:'Stock / sold',B3:42,C3:19,A4:'Packs / price',B4:7,C4:4,A5:'Packs / teams',B5:24,C5:6,A6:'Books / price',B6:8,C6:3,D6:'=B6xC6'},
+ sums:{A1:'Item',B1:'Mon',C1:'Tue',D1:'Cost',A2:'Paper',B2:4,C2:5,D2:9,A3:'Markers',D3:17,A4:'Tape',D4:11,A5:'Total',D5:'=SUM(D2:D3)',A6:'Funding',B6:50,A7:'Balance'},
+ live:{A1:'Measure',B1:'Input A',C1:'Input B',D1:'Result',A2:'Packs / price',B2:3,C2:7,D2:21,A3:'Budget / spent',B3:50,C3:21,D3:'=C3-B3',A4:'Helpers',B4:4},
+ event:{A1:'Item',B1:'Quantity',C1:'RM each',D1:'Cost (RM)',A2:'Game cards',B2:4,C2:12,A3:'Prize packs',B3:6,C3:8,A4:'Total costs',A5:'Starting budget',B5:100,A6:'Donation',B6:20,A7:'Available',A8:'Money left',A9:'Teams',B9:3,A10:'Packs per team'},
+ demo:{A1:'Item',B1:'Quantity',C1:'RM each',D1:'Cost (RM)',A2:'Notebooks',B2:2,C2:9,D2:'=B2*C2',A3:'Pens',B3:4,C3:3,D3:'=B3*C3',A4:'Total',D4:'=SUM(D2:D3)',A5:'Typed number',D5:18}
+};
+const bank1=[
+ S('Tap cell C3 on the grid.','点选 C3。',{select:'C3'}),
+ Q('Which row and column meet at B4?','B4 在哪一行、哪一列？',['Row 4, column B','Row B, column 4','Row 2, column D'],0),
+ Q('Which cell contains the label “Badges”?','哪个单元格包含标签“Badges”（徽章）？',['B2','A2','C2'],1),
+ S('Select the cell you would change to buy more stickers.','点选可以更改贴纸数量的单元格。',{select:'B3'}),
+ F('D3 uses the badge quantity by mistake. Repair D3 using the sticker quantity and price.','D3 错用了徽章数量。用贴纸的数量和单价修正 D3。','D3','=B3*C3'),
+ F('In D2, add the morning and afternoon tickets: B2 and C2.','在 D2 中，将上午和下午的票数 B2、C2 相加。','D2','=B2+C2'),
+ F('In D3, subtract the number sold (C3) from the stock (B3).','在 D3 中，用库存 B3 减去售出数量 C3。','D3','=B3-C3'),
+ F('In D4, multiply packs (B4) by price per pack (C4).','在 D4 中，将数量 B4 乘以单价 C4。','D4','=B4*C4'),
+ F('In D5, divide B5 packs between C5 teams.','在 D5 中，用总包数 B5 除以队数 C5。','D5','=B5/C5'),
+ F('Repair D6. Replace the letter x with the spreadsheet multiplication symbol.','修正 D6，把字母 x 换成电子表格的乘号。','D6','=B6*C6'),
+ F('In D6, use SUM to total all three costs in D2 through D4.','在 D6 中，用 SUM 合计 D2 到 D4 的三笔费用。','D6','=SUM(D2:D4)'),
+ Q('Which cells does D2:D4 cover?','D2:D4 包括哪些格？',['D2 and D4 only','D2, D3 and D4','D2, E2 and F2'],1),
+ F('D5 misses the last item. Fix its SUM range.','D5 漏算最后一项。修正 SUM 的范围。','D5','=SUM(D2:D4)'),
+ F('In E2, use SUM across the two days, B2 through C2.','在 E2 中，用 SUM 合计 B2 到 C2 两天的数值。','E2','=SUM(B2:C2)'),
+ F('In D7, subtract the SUM of D2:D4 from the funding in B6.','在 D7 中，用资金 B6 减去 D2:D4 的合计。','D7','=B6-SUM(D2:D4)'),
+ F('D2 displays a typed number. Replace it with a formula using B2 and C2.','D2 现在是手输数字。改成引用 B2 和 C2 的公式。','D2','=B2*C2'),
+ S('Predict the cost if B2 becomes 5. Type your prediction below, then change B2 and check D2.','预测 B2 改为 5 时的费用。先写预测，再修改 B2 并查看 D2。',{answer:'35',edit:['B2',5],cell:'B2'}),
+ F('D3 subtracts in the wrong order. Fix it: start with the budget, then subtract spending.','D3 减法顺序相反。用预算减去支出。','D3','=B3-C3'),
+ S('Change the number of helpers in B4 to 6. Why does that not change the pack cost in D2?','把 B4 的帮手人数改为 6。为什么 D2 的费用不变？',{write:true,edit:['B4',6],cell:'B4',hint:T('Which cells does the formula in D2 actually read?','D2 的公式实际引用了哪些单元格？')}),
+ S('Set B2 back to 3. What original cost should D2 display?','把 B2 改回 3。D2 应显示原来的多少？',{answer:'21',edit:['B2',3],cell:'B2'})
+];
+const bank2=[
+ S('Select the starting budget in B5, then find the donation just below it. Enter the donation cell address.','点选 B5 的起始预算，再找下一行的捐款。输入捐款地址。',{answer:'B6',select:'B5'}),
+ Q('Which cells hold the quantities you can change?','哪些单元格储存可修改的数量？',['C2 and C3','D2 and D3','B2 and B3'],2),
+ F('In D2, calculate the cost of game cards using the quantity and price in row 2.','在 D2 中，用第 2 行的数量和单价计算游戏卡费用。','D2','=B2*C2'),
+ F('In D3, calculate the cost of prize packs using row 3.','在 D3 中，用第 3 行的数据计算奖品包费用。','D3','=B3*C3'),
+ F('In D4, use SUM to total the two costs.','在 D4 中，用 SUM 合计两笔费用。','D4','=SUM(D2:D3)'),
+ F('In D7, add starting budget and donation.','在 D7 中，将起始预算和捐款相加。','D7','=B5+B6'),
+ F('In D8, subtract total costs from available funds.','在 D8 中，用可用资金减去总费用。','D8','=D7-D4'),
+ F('In D10, divide the prize packs by the number of teams.','在 D10 中，用奖品包数量除以队数。','D10','=B3/B9'),
+ Q('Before editing: if the prize quantity rises from 6 to 8, what happens to money left?','修改前先预测：奖品包从 6 增至 8，剩余金额会怎样？',['It increases','It decreases','It stays the same'],1),
+ S('Change B3 to 8. Enter the new balance shown by D8 (just the number).','将 B3 改为 8。输入 D8 显示的新余额（只写数字）。',{answer:'8',edit:['B3',8],cell:'B3'}),
+ S('Is the eight-pack plan affordable? Write Yes or No and include the remaining RM as evidence.','买八包是否够钱？写“是”或“否”，并写出剩余金额。',{write:true,hint:T('A positive balance means you still have money left.','余额为正，表示还有剩余。')}),
+ S('Keep eight prize packs and change C3 to RM10. Enter the new balance, including the minus sign if needed.','保持八包，将 C3 改为 RM10。输入新余额，需要时写负号。',{answer:'-8',edit:['C3',10],cell:'C3'}),
+ S('How many more ringgit does the event need at this price and quantity? Enter a positive shortfall.','按这个价格和数量还差多少令吉？输入正数。',{answer:'8'}),
+ S('At RM10 each, try different quantities in B3. Enter the largest number of prize packs you can afford.','每包 RM10，在 B3 尝试不同数量。输入能买的最多包数。',{answer:'7',edit:['B3',7],cell:'B3'}),
+ S('Restore six prize packs at RM8 each. Check D8 and enter the restored balance.','恢复六包、每包 RM8。查看 D8 并输入恢复后的余额。',{answer:'24',edit:['B3',6],edit2:['C3',8],cell:'B3'})
+];
+const extra=[
+ F('A third cost has been added in D4. Repair the total in D5.','D4 新增一笔费用。修正 D5 的合计。','D5','=SUM(D2:D4)'),
+ S('Compare suppliers: change C2 from 7 to 5. How much is saved on 3 packs?','将 C2 的单价从 7 改为 5。三包节省多少？',{answer:'6',edit:['C2',5],cell:'C2'}),
+ S('You have RM50 and packs cost RM7. Test quantities in B2. What is the largest affordable quantity?','预算 RM50，每包 RM7。在 B2 测试最多能买几包。',{answer:'7',edit:['B2',7],cell:'B2'}),
+ S('A budget is RM48 and one pack costs RM6. Change B2 to use the complete budget.','预算 RM48，每包 RM6。更改 B2，正好花完预算。',{answer:'8',edit:['B2',8],cell:'B2'}),
+ F('Spending exceeds the budget. Fix D3 so it shows a negative balance.','支出超过预算。修正 D3，让余额显示为负数。','D3','=B3-C3'),
+ F('D2 looks right but it is a typed answer. Replace it with a formula that updates.','D2 看起来正确，但只是手输数字。改成会更新的公式。','D2','=B2*C2'),
+ F('In D4, calculate the spending in C3 per pupil listed in B4.','在 D4 中，用 C3 的支出除以 B4 的人数。','D4','=C3/B4'),
+ F('D3 refers to row 2. Fix it so it calculates the cost for row 3.','D3 错误引用了第 2 行。修正为第 3 行的费用。','D3','=B3*C3'),
+ F('In D8, add budget and donation, then subtract both item costs using SUM.','在 D8 中，把预算和捐款相加，再用 SUM 减去两项费用。','D8','=B5+B6-SUM(D2:D3)'),
+ S('Design two quantity tests: one under budget and one over budget. Give the predicted balance for each, then try them in the model.','设计两个数量测试：一个不超预算，一个超预算。先预测两种余额，再测试。',{write:true})
+];
+const bit=(n,width)=>n.toString(2).padStart(width,'0');
+const binary=[
+ ...[3,13].map(n=>({type:'decode',bits:bit(n,4),answer:String(n)})),
+ ...[6,11].map(n=>({type:'encode',width:4,n,answer:bit(n,4)})),
+ {...Q('Which is larger?','哪一个更大？',['0111','1000','They are equal / 相等'],1),bits:'0111'},
+ {type:'shift',bits:'1010',p:T('Turn the 4-place on. Enter the new code and total, separated by a space.','将位值 4 设为 1。输入新编码和总值，用空格分开。'),answer:'1110 14'},
+ ...[22,67,144].map(n=>({type:'decode',bits:bit(n,8),answer:String(n)})),
+ ...[19,73,129].map(n=>({type:'encode',width:8,n,answer:bit(n,8)})),
+ {type:'shift',bits:'00110100',p:T('Increase this denary value by 8. Enter the new eight-bit code.','将十进制值加 8。输入新的八位编码。'),answer:'00111100'},
+ {type:'shift',bits:'01001010',p:T('Decrease this denary value by 2. Enter the new eight-bit code.','将十进制值减 2。输入新的八位编码。'),answer:'01001000'},
+ {type:'draw',code:'1011',answer:'1011',p:T('Draw the row 1011.','画出 1011 对应的一行。')},
+ {type:'read',pixels:'1001',answer:'1001',p:T('Encode this picture row.','为这一行像素编码。')},
+ {type:'draw',code:'0110 1001 1111',answer:'011010011111',p:T('Draw the badge, one row at a time.','逐行画出徽章。')},
+ {type:'read',pixels:'1101',answer:'1101',p:T('The recorded code is 1001. Read the picture and type the corrected row.','记录的编码是 1001。看图并输入正确的一行。')},
+ {p:T('A 4 × 4 picture uses one bit per pixel. Enter the number of bits and then bytes, separated by a space.','4 × 4 图片每像素用一位。依次输入比特数和字节数，中间用空格。'),answer:'16 2'},
+ {type:'make',p:T('Draw your own 4 × 4 symbol. Write four binary rows, then compare each bit with the picture.','画出自选的 4 × 4 图案。写出四行二进制编码，逐位与图片核对。')}
+];
+const starter=[
+ {type:'decode',bits:'1010',answer:'10'},
+ {type:'read',pixels:'0101',answer:'0101',p:T('Write the four bits for this picture row.','为这一行图片写出四位编码。')},
+ S('Use this lookup: C = 01000011, D = 01000100. Which letter is 01000100?','查表：C = 01000011，D = 01000100。01000100 是哪个字母？',{answer:'D'}),
+ Q('Which is column D, row 3?','D 列第 3 行的地址是什么？',['3D','D3','C4'],1)
+];
+const exitQs=[
+ {type:'decode',bits:'00101001',answer:'41'},
+ F('Write a formula in D2 to find the cost using B2 and C2.','在 D2 输入公式，用 B2 和 C2 计算费用。','D2','=B2*C2'),
+ Q('If quantity rises and price stays the same, what happens to the formula result?','如果数量增加而单价不变，公式结果会怎样？',['Increases / 增加','Decreases / 减少','Always stays the same / 总是不变'],0)
+];
+const quiz=[
+ Q('Which address is column C, row 4?','C 列第 4 行的地址是什么？',['4C','C4','D3'],1,'The letter is the column. The number is the row.'),
+ Q('What does B2:B5 include?','B2:B5 包括哪些格？',['B2 through B5 / B2 到 B5','B2 and B5 only / 仅 B2 和 B5','B3 and B4 only / 仅 B3 和 B4'],0,'A range includes every cell between the endpoints, including both ends.'),
+ Q('Which formula multiplies quantity in B2 by price in C2?','哪个公式计算 B2 的数量乘以 C2 的单价？',['=B2+C2','=B2xC2','=B2*C2'],2,'Use the asterisk (*) for multiplication.'),
+ Q('Which formula divides the packs in B6 by the teams in B7?','哪个公式用 B6 的包数除以 B7 的队数？',['=B6/B7','=B7/B6','=B6*B7'],0,'Put the total packs first, then divide by the teams.'),
+ Q('Which formula totals all three costs in D2, D3 and D4?','哪个公式合计 D2、D3 和 D4 的三笔费用？',['=SUM(D2:D3)','=SUM(D2:D4)','=D2+D4'],1,'The range must end at D4 to include all three costs.'),
+ Q('Budget is in B1 and costs are in D2:D4. Which formula finds the money left?','预算在 B1，费用在 D2:D4。哪个公式求剩余金额？',['=SUM(D2:D4)-B1','=B1+SUM(D2:D4)','=B1-SUM(D2:D4)'],2,'Start with the budget, then subtract the costs.'),
+ Q('One cell contains 24. Another contains =B2*C2. Which responds to a change in B2?','一格输入 24，另一格输入 =B2*C2。B2 改变时哪格会更新？',['The typed number / 手输数字','The formula / 公式','Both cells / 两格都更新'],1,'Only the formula refers to B2.'),
+ Q('How can you check that a budget model updates?','怎样检查预算模型能否更新？',['Change an input and compare with your prediction / 修改输入并对照预测','Change the font / 改字体','Type the expected answer over the formula / 用答案覆盖公式'],0,'A change test checks whether the formula responds.'),
+ Q('Which is information, rather than a number with no context?','哪项是带有背景说明的信息？',['18','1818','18 tickets sold this morning / 今天上午售出18张票'],2,'The label tells us what was counted and when.'),
+ Q('How many bits make two bytes?','两个字节有多少比特？',['16','8','10'],0,'Each byte has eight bits.'),
+ Q('What number does 1011 represent?','1011 表示哪个十进制数？',['3','13','11'],2,'The 8, 2 and 1 places are on.'),
+ Q('Which eight-bit code represents 34?','哪个八位编码表示 34？',['00010100','00100010','00100100'],1,'Turn on the 32 and 2 places.'),
+ Q('If 1 means filled, which row matches 0110?','若 1 表示填色，哪一行对应 0110？',['□■■□','■□□■','■■□□'],0,'Only the middle two squares are filled.'),
+ Q('A 4 × 4 picture uses one bit per pixel. How many bytes store its pixels?','4 × 4 图片每像素用一比特，需要多少字节？',['4','16','2'],2,'16 bits divided by 8 bits per byte makes two bytes.'),
+ Q('How do you use the lesson’s character table to decode 01000010?','怎样用本课的字符表解码 01000010？',['Count the 1s / 数有几个1','Match all eight bits to one entry / 匹配完整八位','Use only the last four bits / 只看最后四位'],1,'Match the complete eight-bit group in the table.')
+];
+if(typeof module!=='undefined')module.exports={bank1,bank2,extra,binary,quiz,starter,exitQs,data};
+
+</script><script>
+'use strict';
+const $=s=>document.querySelector(s);
+const root=$('#stage');
+const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bi=(en,zh)=>escapeHTML(en)+(zh?'<span class="zh" lang="zh-Hans">'+escapeHTML(zh)+'</span>':'');
+const B=(a)=>bi(...a);
+const stages=['Do Now','Types of Learning','Read First','Main Task 1','Main Task 2','Learning Pit Stop','Extension','Extension 2','Plenary','Quiz'];
+const stageZh=['热身','学习类型','先阅读','主任务一','主任务二','学习反思','提高挑战','二进制与像素挑战','课末小测','复习游戏'];
+const banks={0:starter,3:bank1,4:bank2,6:extra,7:binary,8:exitQs,9:quiz};
+const core1=[0,3,5,7,10,12,15,16],core2=[0,2,3,4,5,6,8,9,10];
+const miniNames=['Find the right cell','Use the four operators','Make totals with SUM','Make it update'];
+const rule=T('1 = filled, 0 = white. Read left to right, starting at the top.','1 表示填色，0 表示留白。从最上面一行开始，从左到右读。');
+const storage='y7-revision-session2-v1';
+let saved={};try{saved=JSON.parse(localStorage.getItem(storage)||'{}')||{}}catch{}
+const state={stage:0,idx:{},pages:{},records:{},reflect:{},zh:false,theme:'paper',...saved};
+const themeNames=['paper','mint','ocean','sunrise','aurora','rainbow'];
+const validTheme=(theme)=>themeNames.includes(theme)?theme:'paper';
+function applyTheme(){
+  document.body.dataset.theme=$('#theme').value=validTheme(state.theme);
+}
+let transient={},sheetView=null;
+function save(){try{localStorage.setItem(storage,JSON.stringify(state))}catch{}}
+function go(stage,i=state.idx[stage]||0){sheetView?.commit();state.stage=stage;state.idx[stage]=i;transient={};save();render();root.querySelector('h1')?.focus()}
+const display=(value)=>typeof value==='number'?String(Number(value.toPrecision(10))):value??'';
+function closeFormulaBrackets(raw){
+  if(!raw.startsWith('='))return raw;
+  let open=0;
+  for(const ch of raw){
+    if(ch==='(')open++;
+    if(ch===')'&&--open<0)return raw;
+  }
+  return raw.length+open<=256?raw+')'.repeat(open):raw;
+}
+const ref=/^([A-H])([1-9]\d*)$/;
+const coords=a=>[a.charCodeAt(0)-65,+a.slice(1)-1];
+const addr=(x,y)=>String.fromCharCode(65+x)+(y+1);
+function range(a,b){let [x,y]=coords(a),[u,v]=coords(b);return [Math.min(x,u),Math.min(y,v),Math.max(x,u),Math.max(y,v)]}
+function shift(raw,dx,dy){return /^\s*=/.test(raw)?raw.replace(/\b([A-H])([1-9]\d*)\b/gi,(m)=>{let [x,y]=coords(m.toUpperCase());x+=dx;y+=dy;return x>=0&&x<8&&y>=0&&y<12?addr(x,y):'#REF!'}):raw}
+const demoSheet={A1:'Practice item',C1:'Quantity',D1:'RM each',E1:'Live cost',F1:'Typed answer',A2:'Notebook',C2:2,D2:9,E2:'=C2*D2',F2:18,A3:'Pens',C3:4,D3:3,E3:'=C3*D3',A4:'Total',E4:'=SUM(E2:E3)'};
+function sheetInfo(s,i){
+  if(s===2)return ['demo',demoSheet,'E2',6,7];
+  if(s===3){const k=['basics','ops','sums','live'][Math.floor(i/5)];return [k,data[k],bank1[i].cell,8,5]}
+  if(s===4)return ['event',data.event,bank2[i].cell,10,5];
+  if(s===8&&i===1)return ['exit',{A1:'Item',B1:'Quantity',C1:'Price',D1:'Cost',A2:'Clips',B2:8,C2:5},'D2',5,5];
+  if(s!==6)return null;
+  const template=[data.sums,{...data.live,D2:'=B2*C2'}, {...data.live,D2:'=B2*C2',D3:'=B3-D2'}, {...data.live,C2:6,B3:48,D2:'=B2*C2',D3:'=B3-D2'}, {...data.live,C3:65},data.live,data.live,data.basics,{...data.event,D2:'=B2*C2',D3:'=B3*C3'}, {...data.event,D2:'=B2*C2',D3:'=B3*C3',D4:'=SUM(D2:D3)',D7:'=B5+B6',D8:'=D7-D4'}][i];
+  return ['extra'+i,template,extra[i].cell,i>=8?10:7,5];
+}
+function mountSheet(info,select){
+  const [key,template,target,rows,cols]=info;
+  const model=state.pages[key]||={cells:{...template},formats:{}};
+  const cells=model.cells; let active='A1',end=active,drag,dirty=false,nextPick=null,ignoreBlur=false,undo=[];
+  const box=$('#sheet'),bar=box.querySelector('input'),grid=box.querySelector('table'),name=box.querySelector('output');
+  grid.innerHTML='<thead><tr><th aria-label="Row"></th>'+Array.from({length:cols},(_,x)=>'<th scope="col">'+addr(x,0)[0]+'</th>').join('')+'</tr></thead><tbody>'+Array.from({length:rows},(_,y)=>'<tr><th scope="row">'+(y+1)+'</th>'+Array.from({length:cols},(_,x)=>{let a=addr(x,y);return '<td tabindex="-1" class="'+(x===0?'label ':'')+(a===target?'target':'')+'" data-cell="'+a+'"><span></span></td>'}).join('')+'</tr>').join('')+'</tbody>';
+  const td=a=>grid.querySelector('[data-cell="'+a+'"]');
+  function showDraft(){
+    const cell=td(active);
+    if(!cell)return;
+    cell.firstElementChild.textContent=bar.value;
+    cell.classList.add('draft');
+    cell.classList.remove('err');
+    cell.title='';
+    cell.setAttribute('aria-label',active+' draft '+bar.value);
+  }
+  function remember(){undo.push(JSON.stringify(model));if(undo.length>30)undo.shift()}
+  function draw(refreshBar=true){
+    const [x,y,u,v]=range(active,end);
+    name.textContent=active===end?active:addr(x,y)+':'+addr(u,v);
+    for(const d of grid.querySelectorAll('td')){
+      const a=d.dataset.cell,[cx,cy]=coords(a), r=SheetEngine.evaluate(cells,a);
+      d.classList.toggle('sel',cx>=x&&cx<=u&&cy>=y&&cy<=v);d.classList.toggle('active',a===active);
+      d.classList.remove('draft');d.classList.toggle('err',!!r.error);d.title=r.error||'';d.tabIndex=a===active?0:-1;
+      d.firstElementChild.textContent=r.error?'#ERROR':display(r.value);
+      d.setAttribute('aria-label',a+' '+(r.error||display(r.value)||'empty'));
+      const f=model.formats[a]||{};
+      d.style.textAlign=f.align||'';d.style.fontWeight=f.bold?'700':'';d.style.fontSize=f.size||'';d.style.border=f.border?'2px solid #242424':'';
+      if(a===end&&!d.querySelector('.handle')){let h=document.createElement('i');h.className='handle';h.title='Drag to fill';d.append(h)}
+      if(a!==end)d.querySelector('.handle')?.remove();
+    }
+    if(refreshBar)bar.value=cells[active]??'';
+    if(dirty)showDraft();
+  }
+  function commit(){if(!dirty)return;remember();cells[active]=closeFormulaBrackets(bar.value.trim().slice(0,256));dirty=false;nextPick=null;draw();save()}
+  function setSelection(a,b=a,focus=false){active=a;end=b;draw();if(focus)td(a)?.focus({preventScroll:true})}
+  function insert(s){bar.focus();const a=bar.selectionStart??bar.value.length,b=bar.selectionEnd??a;bar.setRangeText(s,a,b,'end');dirty=true;showDraft()}
+  function edit(replace){bar.focus();if(replace!=null){bar.value=replace;dirty=true;showDraft()}else bar.select()}
+  function fillTo(a,source=active){
+    if(a===source)return;const [x,y]=coords(source),[u,v]=coords(a),[l,t,r,b]=range(source,a);remember();
+    const raw=cells[source]??'';for(let yy=t;yy<=b;yy++)for(let xx=l;xx<=r;xx++)if(xx!==x||yy!==y)cells[addr(xx,yy)]=shift(String(raw),xx-x,yy-y);
+    end=a;draw();save();
+  }
+  bar.oninput=()=>{dirty=true;nextPick=null;showDraft()};bar.onblur=()=>{if(!ignoreBlur)commit()};
+  bar.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit();td(active)?.focus()}if(e.key==='Escape'){e.preventDefault();dirty=false;nextPick=null;draw();td(active)?.focus()}};
+  box.querySelector('[data-apply]').onclick=()=>{commit();td(active)?.focus()};
+  grid.onpointerdown=e=>{
+    const d=e.target.closest('td');if(!d||e.button!==0)return;
+    e.preventDefault(); const a=d.dataset.cell,pick=(dirty||document.activeElement===bar)&&bar.value.startsWith('=');
+    ignoreBlur=true; grid.setPointerCapture(e.pointerId);
+    if(!pick)commit();
+    drag={a:e.shiftKey?active:a,b:a,pick,fill:e.target.classList.contains('handle'),source:end};
+    if(!pick&&!drag.fill)setSelection(drag.a,a);
+  };
+  grid.onpointermove=e=>{if(!drag)return;const d=document.elementFromPoint(e.clientX,e.clientY)?.closest('td[data-cell]');if(!d||!grid.contains(d))return;drag.b=d.dataset.cell;if(!drag.pick){end=drag.b;draw(false)}else{let [l,t,r,b]=range(drag.a,drag.b);for(const el of grid.querySelectorAll('td')){let [x,y]=coords(el.dataset.cell);el.classList.toggle('sel',x>=l&&x<=r&&y>=t&&y<=b)}}};
+  grid.onpointerup=()=>{if(!drag)return;const {a,b,pick,fill,source}=drag;drag=null;ignoreBlur=false;
+    if(fill){fillTo(b,source);return}
+    if(pick){const [x,y,u,v]=range(a,b);const token=a===b?a:addr(x,y)+':'+addr(u,v);if(nextPick!=null){bar.setSelectionRange(nextPick,bar.selectionEnd)}else{const before=bar.value.slice(0,bar.selectionStart);const previous=before.match(/[A-H][1-9]\d*(?::[A-H][1-9]\d*)?$/i);if(previous)bar.setSelectionRange(before.length-previous[0].length,bar.selectionEnd)}const start=bar.selectionStart;insert(token);nextPick=start;return}
+    setSelection(a,b,true);select?.(active);
+  };
+  grid.onpointercancel=()=>{drag=null;ignoreBlur=false;draw(!dirty)};
+  grid.ondblclick=e=>{if(e.target.closest('td'))edit()};
+  grid.onkeydown=e=>{
+    if(e.ctrlKey||e.metaKey)return;
+    const arrows={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],Tab:[e.shiftKey?-1:1,0]};
+    if(arrows[e.key]){const [dx,dy]=arrows[e.key],[x,y]=coords(e.shiftKey&&e.key!=='Tab'?end:active);const u=x+dx,v=y+dy;if(u<0||u>=cols||v<0||v>=rows)return;e.preventDefault();const a=addr(u,v);setSelection(e.shiftKey&&e.key!=='Tab'?active:a,a,true);td(a)?.scrollIntoView({block:'nearest',inline:'nearest'});select?.(active);return}
+    if(e.key==='Enter'||e.key==='F2'){e.preventDefault();edit();return}
+    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();remember();const [l,t,r,b]=range(active,end);for(let y=t;y<=b;y++)for(let x=l;x<=r;x++)delete cells[addr(x,y)];draw();save();return}
+    if(e.key.length===1){e.preventDefault();edit(e.key)}
+  };
+  grid.addEventListener('paste',e=>{const text=e.clipboardData?.getData('text/plain');if(!text)return;e.preventDefault();remember();const [x,y]=coords(active);text.replace(/\r/g,'').split('\n').forEach((row,j)=>row.split('\t').forEach((v,i)=>{if(x+i<cols&&y+j<rows)cells[addr(x+i,y+j)]=v.slice(0,256)}));draw();save()});
+  for(const btn of box.querySelectorAll('[data-tool]'))btn.onclick=()=>{
+    const tool=btn.dataset.tool;commit();
+    if(tool==='undo'){if(undo.length){let old=JSON.parse(undo.pop());for(let a in cells)delete cells[a];Object.assign(cells,old.cells);model.formats=old.formats;draw();save()}return}
+    if(tool==='reset'){remember();for(let a in cells)delete cells[a];Object.assign(cells,template);model.formats={};setSelection('A1');save();return}
+    if(tool==='edit'){edit();return}
+    if(tool==='sum'){const [x,y,u,v]=range(active,end);const sel=active!==end?addr(x,y)+':'+addr(u,v):'';if(sel&&v+1<rows)setSelection(addr(x,v+1));edit('=SUM('+sel+(sel?')':''));return}
+    remember();const [x,y,u,v]=range(active,end);for(let row=y;row<=v;row++)for(let col=x;col<=u;col++){const f=model.formats[addr(col,row)]||={};if(tool==='bold')f.bold=!f.bold;if(tool==='center')f.align=f.align?'':'center';if(tool==='border')f.border=!f.border;if(tool==='size')f.size=f.size?'':'18px'}draw();save()
+  };
+  for(const btn of box.querySelectorAll('[data-symbol]')){btn.onpointerdown=e=>e.preventDefault();btn.onclick=()=>insert(btn.dataset.symbol)}
+  draw();return {cells,template,commit,active:()=>active,select:setSelection,write(a,v){remember();cells[a]=v;draw();save()}};
+}
+function sheetHTML(){return '<section class="sheetbox" id="sheet" aria-label="Spreadsheet workspace"><div class="tools"><button data-tool="undo" aria-label="Undo">↶</button><button data-tool="edit">'+bi('Edit cell','编辑单元格')+'</button><button data-tool="bold" title="Bold"><b>B</b></button><button data-tool="size" title="Toggle larger text">A+</button><button data-tool="border" title="Borders">▦</button><button data-tool="center" title="Centre align">≡</button><button data-tool="sum" title="AutoSum">Σ SUM</button><button data-tool="reset">'+bi('Reset sheet','重设表格')+'</button></div><div class="formula"><output aria-label="Selected address"></output><b aria-hidden="true">fx</b><input aria-label="Formula bar" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button data-apply>'+bi('Apply','应用')+'</button></div><div class="tools">'+['=','+','-','*','/',':',')'].map(x=>'<button data-symbol="'+x+'">'+x+'</button>').join('')+'</div><div class="sheet-scroll"><table class="grid" aria-label="Spreadsheet cells"></table></div><div class="sheetnote">'+bi('Tap a cell, then Edit cell or use the formula bar. Drag across cells to select; drag the small green square to copy a formula. Keyboard: arrows, Shift + arrows, Enter.','点选单元格后用编辑按钮或公式栏。拖动选择范围；拖动绿色小方块复制公式。也可用方向键、Shift + 方向键和 Enter。')+'</div></section>'}
+const PV=n=>Array.from({length:n},(_,i)=>2**(n-1-i));
+function bitsHTML(bits,interactive=false){const values=PV(bits.length);return '<div class="bits" style="--n:'+bits.length+'">'+[...bits].map((bit,i)=>'<div><b>'+values[i]+'</b>'+(interactive?'<button data-bit="'+i+'" aria-label="Place '+values[i]+', bit '+bit+'" aria-pressed="'+(bit==='1')+'">'+bit+'</button>':'<span>'+bit+'</span>')+'</div>').join('')+'</div>'}
+function pixelsHTML(bits,interactive=false){return '<div class="pixels">'+[...bits].map((b,i)=>interactive?'<button class="pixel '+(b==='1'?'on':'')+'" data-pixel="'+i+'" aria-pressed="'+(b==='1')+'" aria-label="Row '+(Math.floor(i/4)+1)+', column '+(i%4+1)+'"></button>':'<span class="pixel '+(b==='1'?'on':'')+'" role="img" aria-label="'+(b==='1'?'Filled':'White')+'"></span>').join('')+'</div>'}
+function prompt(q){return q.p|| (q.type==='encode'?T('Set the bits to make '+q.n+'.','设置二进制位，使总值等于 '+q.n+'。'):T('What denary number do these bits represent?','这些二进制位表示哪个十进制数？'))}
+const compare=(a,b)=>typeof a==='number'&&typeof b==='number'&&Math.abs(a-b)<1e-8;
+function formulaOK(q,view){
+  const raw=String(view.cells[q.cell]??'').trim();
+  if(!raw.startsWith('='))return T('Put a formula beginning with = in '+q.cell+'. A typed total will not update.','在 '+q.cell+' 输入以 = 开头的公式。手输结果不能自动更新。');
+  const live=SheetEngine.evaluate(view.cells,q.cell);
+  if(live.error)return T(live.error,'检查运算符、括号、引用地址和除数。请查看公式栏。');
+  if(q.f.includes('SUM(')&&!/\bSUM\s*\(/i.test(raw))return T('Use SUM for this step. Check the first and last cells in the range.','此题请使用 SUM，并检查范围的首尾单元格。');
+  const ideal={...view.template,[q.cell]:q.f};
+  if(state.stage===4||state.stage===6&&state.idx[6]===8)Object.assign(ideal,{D2:'=B2*C2',D3:'=B3*C3',D4:'=SUM(D2:D3)',D7:'=B5+B6',[q.cell]:q.f});
+  const overrides=[{},Object.fromEntries(Object.keys(ideal).filter(a=>typeof ideal[a]==='number').map((a,i)=>[a,i+9])),Object.fromEntries(Object.keys(ideal).filter(a=>typeof ideal[a]==='number').map((a,i)=>[a,2*i+13]))];
+  const refCells=Object.keys(ideal).filter(a=>typeof ideal[a]==='number');
+  for(let i=0;i<refCells.length;i++)overrides.push({[refCells[i]]:Number(ideal[refCells[i]])+5+i});
+  const student={...ideal,[q.cell]:raw};
+  if(overrides.some(o=>!compare(SheetEngine.evaluate(student,q.cell,o).value,SheetEngine.evaluate(ideal,q.cell,o).value)))return T('Check the cell references and operation in '+q.cell+'. The formula must work when the numbers change.','检查 '+q.cell+' 的地址和运算符。修改输入后，公式仍需正确。');
+  if(state.stage===4&&['D4','D8'].includes(q.cell)&&(!compare(live.value,SheetEngine.evaluate(ideal,q.cell,Object.fromEntries(refCells.map(a=>[a,Number(view.cells[a])]))).value)))return T('This formula has the right structure. Check the earlier cost or funding cells it depends on.','公式结构正确。请检查它依赖的前面费用或资金单元格。');
+  return null;
+}
+function pageIntro(s){
+  if(s===1)return '<p>'+bi('Learning means getting better at something through practice. Choose what you’ll focus on today.','学习是通过练习变得更熟练。选择今天关注的目标。')+'</p>'+[
+    [T('Knowledge — remember','知识：记住'),T('I can read a cell address.','我能读出单元格地址。'),T('I can recognise the four operators.','我能识别四种运算符。'),T('I can recognise a SUM range.','我能识别 SUM 的范围。')],
+    [T('Skills — practise','技能：练习'),T('Select a range by dragging.','拖动选定范围。'),T('Write a formula using references.','用单元格引用写公式。'),T('Change an input and check the result.','更改输入并检查结果。')],
+    [T('Understanding — explain','理解：解释'),T('Explain why a typed answer stays still.','解释为什么手输结果不会更新。'),T('Explain how a range affects the total.','解释范围如何影响合计。'),T('Explain what a balance tells us.','解释余额代表什么。')]
+  ].map(([head,...opts],i)=>'<fieldset class="panel"><legend>'+B(head)+'</legend>'+opts.map((o,j)=>'<label><input type="radio" name="reflect'+i+'" value="'+j+'" data-ref="'+i+'" '+(state.reflect[i]===String(j)?'checked':'')+'> '+B(o)+'</label><br>').join('')+'</fieldset>').join('');
+  return '<p>'+bi('Which describes your learning right now? Then name a cell or task that shows why.','哪项最符合你现在的学习状态？写一个单元格或任务来说明。')+'</p><div class="choices">'+[T('New learning — I am learning something new','新学习：我正在学新内容'),T('Consolidating — I am getting better','巩固：我越来越熟练'),T('Treading water — I need more challenge','原地踏步：我需要更难的挑战'),T('Drowning — I need help to continue','有困难：我需要帮助才能继续')].map((o,j)=>'<label class="panel"><input type="radio" name="phase" data-ref="phase" value="'+j+'" '+(state.reflect.phase===String(j)?'checked':'')+'> '+B(o)+'</label>').join('')+'</div><label>'+bi('My evidence / next step','我的证据／下一步')+'<textarea class="answer" id="reflectText">'+escapeHTML(state.reflect.note)+'</textarea></label>';
+}
+function visuals(){
+  return '<div class="cards"><article class="panel"><h2>'+bi('1 · Write a formula','1 · 写公式')+'</h2><p>'+bi('Select E2. The cell shows the result. The formula bar shows =C2*D2. = starts the calculation; C2 is the quantity, * means multiply, and D2 is the price.','选中 E2。单元格显示结果，公式栏显示 =C2*D2。= 开始计算，C2 是数量，* 表示乘，D2 是单价。')+'</p></article><article class="panel"><h2>'+bi('2 · Select a range','2 · 选范围')+'</h2><p>'+bi('Drag from E2 to E3. Look for E2:E3 in the address box. Select E4 to see how SUM uses this range.','从 E2 拖到 E3。查看地址框里的 E2:E3。点 E4，看看 SUM 怎样引用这个范围。')+'</p></article><article class="panel"><h2>'+bi('3 · Predict, change, compare','3 · 预测、修改、对比')+'</h2><p>'+bi('Predict the cost of three notebooks. Set C2 to 3. Compare E2 with F2: which one changes?','预测三本笔记本的价格。将 C2 改为 3。比较 E2 与 F2：哪一个会变？')+'</p><button id="demoChange">'+bi('Set quantity to 3','把数量改为 3')+'</button></article></div><details class="panel" id="represent"><summary>'+bi('Worked examples: 4 bits, 8 bits and pixels','四位、八位和像素示例')+'</summary><div class="cards"><article class="visual"><h2>4 bits · 四位</h2>'+bitsHTML('0101')+'<p>'+bi('Add the columns with a 1: 4 + 1 = 5.','相加值为 1 的列：4 + 1 = 5。')+'</p></article><article class="visual"><h2>8 bits · 八位</h2>'+bitsHTML('00010001')+'<p>'+bi('The same rule works: 16 + 1 = 17. Keep the leading zeros.','规则相同：16 + 1 = 17。保留开头的零。')+'</p></article><article class="visual"><h2>'+bi('Check a pixel row','核对像素行')+'</h2>'+pixelsHTML('0011')+'<p>'+bi('Point to each square in order. White, white, filled, filled gives 0011.','依次指向每个方格：白、白、填色、填色，得到 0011。')+'</p></article></div></details>';
+}
+function render(){
+  const s=state.stage,i=state.idx[s]||0,bank=banks[s],q=bank?.[i],id=s+':'+i,info=sheetInfo(s,i);
+  const n=q?.width||q?.bits?.length;
+  const rec=q?(state.records[id]||={}):{};
+  document.body.classList.toggle('bilingual',state.zh);$('#lang').setAttribute('aria-pressed',state.zh);
+  $('#nav').innerHTML=stages.map((x,j)=>'<button data-stage="'+j+'" '+(j===s?'aria-current="step"':'')+'>'+bi(x,stageZh[j])+'</button>').join('');
+  const count=bank?.filter((_,j)=>state.records[s+':'+j]?.status==='done').length||0;
+  let content='';
+  if(q){
+    const pix=q.type==='make'?16:q.code?.replace(/ /g,'').length;
+    rec.bits??=q.type==='encode'?'0'.repeat(n):undefined;rec.pixels??=pix?'0'.repeat(pix):undefined;
+    content='<div class="action"><div class="eyebrow">'+bi('What you need to do','你需要完成的任务')+'</div><h2>'+B(prompt(q))+'</h2></div>';
+    if(q.type==='encode'||q.bits)content+='<div class="visual" id="bits">'+bitsHTML(rec.bits||q.bits,q.type==='encode')+'</div>';
+    if(q.pixels||pix)content+='<p>'+B(rule)+'</p>'+(q.code?'<p><code>'+escapeHTML(q.code)+'</code></p>':'')+'<div class="visual" id="pixels">'+pixelsHTML(rec.pixels||q.pixels,!!pix)+'</div>';
+    if(q.opt)content+='<div class="choices">'+q.opt.map((o,j)=>'<button data-choice="'+j+'" aria-pressed="'+(rec.answer===j)+'">'+escapeHTML(o)+'</button>').join('')+'</div>';
+    else if((q.answer!=null&&!['encode','draw'].includes(q.type))||q.write||q.type==='make')content+='<label>'+bi(q.write?'Your short response':q.type==='make'?'Your four rows':'Your answer',q.write?'简短作答':q.type==='make'?'你的四行编码':'你的答案')+(q.type==='make'||q.write?'<textarea id="response" class="answer">'+escapeHTML(rec.answer)+'</textarea>':'<input id="response" class="answer" autocomplete="off" value="'+escapeHTML(rec.answer)+'">')+'</label>';
+    if(n||q.pixels||pix)content+='<details class="hint"><summary>'+bi('Space for working','草稿区')+'</summary><label>'+bi('Write your sums or rows here, or work on paper.','在这里写算式或每行编码，也可在纸上计算。')+'<textarea class="answer" id="working">'+escapeHTML(rec.working)+'</textarea></label></details>';
+    const hint=q.hint||(q.f?T(q.f.includes('SUM(')?'Use =SUM( and a range such as E2:E3, then close the bracket.':'Start with =. Read the two cell references in the question and choose the operator.','从 = 开始。看题目中的单元格地址，选择运算符或 SUM。'):n?T('Add the place values above the 1s, or choose the values that add to your target.','相加 1 上方的位值，或选择能加成目标的位值。'):T('Read the instruction again and check the named cells or the picture key.','重读任务，检查指定单元格或图片规则。'));
+    content+='<details class="hint"><summary>'+bi('Show a hint','查看提示')+'</summary><p>'+B(hint)+'</p></details><button class="primary" id="check">'+bi('Check my work','检查我的答案')+'</button><div class="feedback" id="feedback" aria-live="polite"></div>';
+  }else if(s===2){content='<div class="action"><h2>'+bi('Watch the sheet work, then try it','观察表格怎样工作，然后试一试')+'</h2><p>'+bi('The notebook model below is an example. Your event budget uses different cells and values.','下面的笔记本表格是示例。你的活动预算使用不同的单元格和值。')+'</p></div>'}
+  else content=pageIntro(s);
+  if(s===4)content='<p>'+bi('Games afternoon: make a budget that still works when you change what you buy.','游戏下午：制作一份更改采购内容后仍能自动更新的预算。')+'</p>'+content;
+  if(s===3||s===4)content='<p><small>'+bi('★ Core task · Try it, check it, then move on.','★ 核心任务：先尝试并检查，再继续。')+'</small></p>'+content;
+  if(s===9)content='<p>'+bi('Finish the lesson with this 15-question review. Your teacher will share any game links separately.','用这 15 道题完成复习。老师会另行分享游戏链接。')+'</p>'+content;
+  root.innerHTML='<section class="panel"><img class="char" src="../year7-revision-practice/assets/characters/illustration-9.png" alt=""><div class="eyebrow">'+bi('Revision studio','复习工作室')+'</div><h1 tabindex="-1">'+bi(stages[s],stageZh[s])+'</h1>'+
+  (bank?'<p>'+bi('Task '+(i+1)+' of '+bank.length+' · '+count+' checked off','第 '+(i+1)+' 题，共 '+bank.length+' 题；已核对 '+count+' 题')+'</p><div class="progress" aria-hidden="true"><i style="width:'+(count/bank.length*100)+'%"></i></div><div class="steps" aria-label="Choose a task">'+bank.map((_,j)=>{let k=state.records[s+':'+j]?.status;return '<button data-task="'+j+'" class="'+(k||'')+'" '+(i===j?'aria-current="step"':'')+'>'+((s===3&&core1.includes(j)||s===4&&core2.includes(j))?'★':'')+(j+1)+(k==='done'?' ✓':k==='tried'?' ·':'')+'</button>'}).join('')+'</div>':'')+'</section>'+
+  (info?'<div class="work"><article class="panel">'+(s===3?'<div class="eyebrow">'+miniNames[Math.floor(i/5)]+'</div>':'')+content+'</article>'+sheetHTML()+'</div>':'<article class="panel">'+content+'</article>')+
+  (s===2?visuals():'')+
+  '<div class="foot"><button id="prev" '+(!s&&!i?'disabled':'')+'>'+bi('← Back','返回')+'</button>'+(q&&i+1<bank.length?'<button id="next">'+bi('Next task →','下一题')+'</button>':'')+(s<9?'<button class="primary" id="advance">'+bi(stages[s+1]+' →',stageZh[s+1])+'</button>':'<button id="advance">'+bi('Return to lesson','返回课程')+'</button>')+'</div>';
+  sheetView=info?mountSheet(info,(a)=>{transient.selection=a}):null;
+  for(const btn of document.querySelectorAll('[data-stage]'))btn.onclick=()=>go(+btn.dataset.stage);
+  for(const btn of root.querySelectorAll('[data-task]'))btn.onclick=()=>go(s,+btn.dataset.task);
+  $('#prev').onclick=()=>i?go(s,i-1):go(Math.max(s-1,0));
+  if($('#next'))$('#next').onclick=()=>go(s,i+1);
+  $('#advance').onclick=()=>go(s<9?s+1:0);
+  for(const el of root.querySelectorAll('[data-ref]'))el.onchange=()=>{state.reflect[el.dataset.ref]=el.value;save()};
+  if($('#reflectText'))$('#reflectText').oninput=e=>{state.reflect.note=e.target.value;save()};
+  if($('#demoChange'))$('#demoChange').onclick=()=>{sheetView.write('C2',3);sheetView.select('E2');const a=display(SheetEngine.evaluate(sheetView.cells,'E2').value)||'—',b=display(SheetEngine.evaluate(sheetView.cells,'F2').value)||'—';$('#demoChange').insertAdjacentHTML('afterend','<p role="status">'+bi('Compare the cells: E2 shows '+a+'; F2 shows '+b+'.','比较单元格：E2 显示 '+a+'；F2 显示 '+b+'。')+'</p>');$('#demoChange').disabled=true};
+  if(!q)return;
+  const setMsg=(m,k)=>{const f=$('#feedback');f.innerHTML=B(m);f.className='feedback '+k};
+  if(rec.status)setMsg(rec.message||T('Saved on this device.','已存到本机。'),rec.status==='done'?'good':'retry');
+  if($('#response'))$('#response').oninput=e=>{rec.answer=e.target.value;save()};
+  if($('#working'))$('#working').oninput=e=>{rec.working=e.target.value;save()};
+  for(const b of root.querySelectorAll('[data-choice]'))b.onclick=()=>{rec.answer=+b.dataset.choice;root.querySelectorAll('[data-choice]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));save()};
+  if($('#bits'))$('#bits').onclick=e=>{const a=e.target.closest('[data-bit]');if(!a)return;let j=+a.dataset.bit;rec.bits=[...rec.bits].map((v,k)=>k===j?(v==='1'?'0':'1'):v).join('');a.textContent=rec.bits[j];a.setAttribute('aria-pressed',rec.bits[j]==='1');a.setAttribute('aria-label','Place '+PV(n)[j]+', bit '+rec.bits[j]);save()};
+  if($('#pixels'))$('#pixels').onclick=e=>{const a=e.target.closest('[data-pixel]');if(!a)return;let j=+a.dataset.pixel;rec.pixels=[...rec.pixels].map((v,k)=>k===j?(v==='1'?'0':'1'):v).join('');a.classList.toggle('on',rec.pixels[j]==='1');a.setAttribute('aria-pressed',rec.pixels[j]==='1');save()};
+  $('#check').onclick=()=>{
+    sheetView?.commit();let error=null;
+    if(q.f)error=formulaOK(q,sheetView);
+    if(!error&&q.select&&sheetView.active()!==q.select)error=T('Select the requested cell on the grid before checking.','请先在表格中选定题目要求的单元格。');
+    for(const edit of [q.edit,q.edit2])if(!error&&edit&&String(sheetView.cells[edit[0]])!==String(edit[1]))error=T('Change '+edit[0]+' to '+edit[1]+' and apply the edit first.','请先把 '+edit[0]+' 改为 '+edit[1]+' 并应用。');
+    const norm=x=>String(x??'').trim().toUpperCase().replace(/\s+/g,' ');
+    const answer=q.type==='encode'?rec.bits:q.type==='draw'?rec.pixels:rec.answer;
+    if(!error&&q.type==='make'&&(!/^(?:[01]{4}\s+){3}[01]{4}$/.test(String(answer||'').trim())||String(answer).replace(/\s/g,'')!==rec.pixels))error=T('Write four groups of four bits, with a space or new line between groups. Compare each row with your picture.','写四组四位编码，组间用空格或换行，再逐行核对。');
+    if(!error&&q.write&&!norm(answer))error=T('Add a short response before checking.','请先写下简短答案。');
+    if(!error&&q.answer!=null&&(typeof q.answer==='number'?answer!==q.answer:norm(answer)!==norm(q.answer)))error=q.why?T(q.why,'再试一次：对照提示检查你的选择。'):q.type==='draw'?T('Compare each square to its bit. Start at the left of the first row.','逐格对照比特，从第一行左边开始。'):T('Not quite. Check the instruction and use the hint. You can try again or continue.','还不对。请看提示；你可以重试或继续。');
+    rec.attempts=(rec.attempts||0)+1;rec.status=error?'tried':'done';
+    rec.message=error||(q.write?T('Response saved for review.','已保存作答，待核对。'):T('That works. Your progress is saved on this device.','正确。进度已保存到本机。'));
+    save();const b=root.querySelector('[data-task="'+i+'"]');if(b){b.classList.remove('done','tried');b.classList.add(rec.status);b.textContent=b.textContent.replace(/ [✓·]$/,'')+(error?' ·':' ✓')}
+    const total=bank.filter((_,j)=>state.records[s+':'+j]?.status==='done').length;
+    root.querySelector('.progress i').style.width=total/bank.length*100+'%';
+    root.querySelector('.progress').previousElementSibling.innerHTML=bi('Task '+(i+1)+' of '+bank.length+' · '+total+' checked off','第 '+(i+1)+' 题，共 '+bank.length+' 题；已核对 '+total+' 题');
+    setMsg(rec.message,error?'retry':'good');
+  };
+}
+$('#lang').onclick=()=>{sheetView?.commit();state.zh=!state.zh;save();render()};
+$('#theme').onchange=e=>{state.theme=validTheme(e.target.value);applyTheme();save()};
+applyTheme();
+render();
+
+</script></html>
