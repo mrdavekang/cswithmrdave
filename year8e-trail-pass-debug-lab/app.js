@@ -6,7 +6,7 @@ if(preview&&location.protocol!=='file:'&&!['localhost','127.0.0.1','[::1]'].incl
   return;
 }
 const {cards,drills,help,listModel,model,caseOf}=TrailData;
-const {norm,prepare,judge,method,errorHint}=TrailChecks;
+const {norm,casesFor,judge,errorHint}=TrailChecks;
 const groups=(p,n)=>Array.from({length:n},(_,i)=>p+(i+1));
 const sections=[['Briefing',['brief']],['Do Now',['D1','D2','D3','warm']],['Types of Learning',['types']],['List Syntax Sprint',['lists-0','lists-1']],['Main Task 1 · Lists',groups('A',20)],['Decision Syntax Sprint',['decisions-0','decisions-1']],['Main Task 2 · Decisions',groups('B',15)],['Independent Check',['C1','C2']],['Go Further',groups('E',10)],['Learning Pit Stop',['pit']],['Plenary',['P1','P2','P3','finish']],['After Plenary',['review-quiz']]];
 const flow=sections.flatMap(s=>s[1]);
@@ -20,9 +20,6 @@ const fresh=()=>({id:'brief',started:preview,language:'en',answers:{},work:{},do
 let state=fresh(), persistent=true;
 if(!preview)try{const saved=JSON.parse(localStorage.getItem(storeKey)||'null');if(saved?.started&&flow.includes(saved.id)){
   state={...state,...saved,gateVersion:2};
-  if(saved.gateVersion!==2)for(const id of ['A2','A3','A4','A5','A6','B3','B4'])if(state.done[id]){
-    state.gates[id]={legacy:true}; delete state.done[id];
-  }
 }}catch{persistent=false;}
 let current=state.id, opened=false, expandedVariant=false, variantMsg='', note=null, runData=null, interactive=null, epoch=0, active=null, sprintTimer=0, goalRun=false, consoleEcho=null;
 let tracker=null,syncStatus='pending';
@@ -66,9 +63,14 @@ function syncPanel(){
   if(!state.started)return;
   node.innerHTML=state.sync?`<strong>School tracking</strong><p id="sync-status" role="status">${syncWords[syncStatus]}</p>${button('Sync now','sync-flush','plain')}`:`<strong>School tracking is off</strong><details><summary>Sync this practice</summary><form id="enable-sync">${syncDisclosure()}<label>Classroom name or nickname <input type="text" id="sync-name" maxlength="70" required value="${esc(state.name)}"></label><p class="under">This also sends the work already saved for this practice.</p><button class="plain" type="submit">Start school sync</button></form></details>`;
 }
-const hintCriteria={A2:'Read index 2 from the list, including when the value changes.',A3:'Replace just the second value. The other entries and the length must stay the same.',A4:'Use .append(). Check that it adds a fourth value without deleting any earlier stops.',A5:'Print the last place by reading the list. It must still work if the place name changes.',A6:'Print Camp, then use len() to print the count.',B2:'Predict an outcome for each input: below, exactly at, and above 120.',B3:'Pass the height tests and read both messages from the list, even after they change.',B4:'Identify the boundary input and make all three tests pass.'};
+const hintCriteria={A2:'Print the place at index 2.',A3:'Print the route with just the second stop replaced.',A4:'Print the route with Camp added at the end.',A5:'Print just Camp.',A6:'Print Camp on line 1 and the number of stops on line 2.',B2:'Predict an outcome for each input: below, exactly at, and above 120.',B3:'Check the output for 119, 120 and 121.',B4:'Match all three expected outputs, including the one for exactly 120.'};
 function done(id=current){state.done[id]=true;if(state.gates[id]){delete state.gates[id].parked;delete state.gates[id].legacy;}save();updateMap();updateProgress();updateCheckpoint();}
 function edited(id){
+  if(cards[id]?.type==='lab'&&runData?.tests){
+    delete runData.tests;
+    if(el('results'))el('results').innerHTML=casesTable(cards[id]);
+    setNote('pending','<p><b>Code changed.</b> Check the new output when you’re ready.</p>');
+  }
   if(!required(id)||!state.done[id])return;
   delete state.done[id];save();updateMap();updateProgress();updateCheckpoint();
   setNote('pending','<p><b>Work changed.</b> Check it again before continuing.</p>'+translation('gate'));
@@ -172,7 +174,8 @@ function readingExample(c){
   let graphic=lessonVisual[c.id]?visual(lessonVisual[c.id]):'';
   if(c.id==='A2')graphic=`<div class="chips" aria-label="Route slots: index 0 Pine, index 1 Lake, index 2 Ridge">${['Pine','Lake','Ridge'].map((v,i)=>`<span><small>Index ${i}</small>${v}</span>`).join('')}</div>`;
   const example=c.source||((c.type==='lab'&&c.id.startsWith('B')&&c.id!=='B4')?help[c.help]?.code:null);
-  return `<p class="reading">${keyWords(c.read)}</p>${graphic}${example?`<span class="label">${c.type==='lab'?'Read this before editing':'Read this before answering'}</span>${code(example)}`:''}`;
+  const names=c.group==='route'&&example?.includes('markers')?`<p class="example-names"><strong>Example only:</strong> <code>markers</code> is the list in this example. In <strong>Your Code</strong>, the starter list is called <code>stops</code>.</p>${i18(['markers 是示例列表。你的代码中，初始列表名叫 stops。','markers는 예시 리스트입니다. 내 코드의 시작 리스트 이름은 stops입니다.'])}`:'';
+  return `<p class="reading">${keyWords(c.read)}</p>${graphic}${example?`<span class="label">${c.type==='lab'?'Read this before editing':'Read this before answering'}</span>${code(example)}${names}`:''}`;
 }
 const taskText=c=>`<div class="task"><p><strong>${esc(c.prompt)}</strong></p>${i18(TrailSupport.a[c.id])}</div>`;
 function options(list,which,kind='answer'){
@@ -200,15 +203,22 @@ function carryId(c){return c.group==='route'?({A4:'A3',A5:'A4',A6:'A5'}[c.id]):c
 function fallbackCode(c){const last=carryId(c);return last&&(parked(last)||(preview&&c.id==='B4'&&!state.work[last]))?cards[last].solution:undefined;}
 function editor(c){const last=carryId(c);return state.work[c.id]??fallbackCode(c)??state.work[last]??c.starter??'';}
 function casesTable(c,result){
-  const use=(result?.length?result:c.cases.map(t=>({test:t})));
-  return `<div class="table-wrap"><table><thead><tr><th scope="col">Test input</th><th scope="col">Expected output</th>${result?.length?'<th scope="col">Your result</th>':''}</tr></thead><tbody>${use.map(({test:t,verdict:v,raw})=>`<tr><td>${esc((t.label?t.label+' · ':'')+(t.input.length?t.input.join(', '):t.label?'No typed input':'—'))}</td><td><pre>${esc(t.output)}</pre></td>${result?.length?`<td><small class="${v?.pass?'test-pass':'test-fail'}">${v?.pass?'✓ Match':'! Check this case'}</small><pre>${esc(v?.error||v?.output||raw||'No output')}</pre>${v&&!v.stored&&!v.error?'<small>The stored list is not correct yet.</small>':''}</td>`:''}</tr>`).join('')}</tbody></table></div>`;
+  const use=result?.length?result:casesFor(c.cases).map(t=>({test:t}));
+  return `<div class="table-wrap"><table><thead><tr><th scope="col">Test input</th><th scope="col">Expected output</th><th scope="col">Your result</th></tr></thead><tbody>${use.map(({test:t,verdict:v})=>`<tr><td>${esc(t.input.length?t.input.join(', '):'None')}</td><td><pre>${esc(t.output)}</pre></td><td>${v?`<strong class="test-badge ${v.pass?'test-pass':'test-fail'}">${v.pass?'✓ Matches':v.error?'! Python error':'! Different output'}</strong><pre>${esc(v.error||v.output||'No output')}</pre>`:'<span class="under">Not checked yet</span>'}</td></tr>`).join('')}</tbody></table></div>`;
 }
-const edgeQuestion=()=>`<fieldset class="chunk"><legend>Which input checks the exact cutoff?</legend>${translation('edge')}${options(['119','120','121'],state.answers[current+'-boundary'],'edge')}</fieldset>`;
+function optionalCases(c){
+  const cases=c.cases.filter(t=>t.edit);
+  if(!cases.length)return '';
+  return `<details class="chunk"><summary>Try changed data (optional)</summary><p>Try this with <strong>Run Python</strong>. Restore the original data before checking the task.</p><ul>${cases.map(t=>`<li><strong>${esc(t.label||'Changed data')}</strong>: change <code>${esc(t.edit[0])}</code> to <code>${esc(t.edit[1])}</code>.${t.input.length?` Input: <code>${esc(t.input.join(', '))}</code>.`:''} Expected: <code class="variant-output">${esc(t.output)}</code></li>`).join('')}</ul></details>`;
+}
+const edgeFeedback=value=>value===undefined?'':value===1?'Correct. 120 tests equality because it is exactly the cutoff.':'Try the number that is neither below nor above the cutoff.';
+const edgeQuestion=()=>`<fieldset class="chunk"><legend>Quick self-check (optional): Which input is exactly at the cutoff?</legend>${translation('edge')}${options(['119','120','121'],state.answers[current+'-boundary'],'edge')}<p id="edge-feedback" role="status">${edgeFeedback(state.answers[current+'-boundary'])}</p></fieldset>`;
 function lab(c){
   const answer=state.answers[current+'-prediction'];
-  const checked=required(c.id), checkLabel=checked?'Run checkpoint tests':c.cases.length>1?'Run test cases':'Check task';
+  const checked=required(c.id), checkLabel=checked?'Run checkpoint tests':'Check output';
   const sampleNotice=!Object.hasOwn(state.work,c.id)&&fallbackCode(c)?`<p class="under"><strong>Starting code supplied:</strong> ${preview?'A sample decision is loaded so you can demonstrate the boundary tests.':'Your flagged draft is still saved on the previous card.'}</p>`:'';
-  return `${heading(c.title)}<div class="grid"><div>${readingExample(c)}${taskText(c)}<div class="chunk"><h2>${c.id==='B4'?'Boundary test targets':'What a good run shows'}</h2><div id="results">${casesTable(c,runData?.tests)}</div></div>${c.cases.some(t=>t.edit)?'<p class="under">For changed-data tests, the checker swaps the supplied data in a temporary copy. Your own code is not changed.</p>':''}${c.explainEdge?edgeQuestion():''}${c.id==='A2'?`<label class="field">My prediction <input data-field="prediction" type="text" value="${esc(answer)}"></label>`:''}</div><div>${sampleNotice}<div class="editor-shell"><label class="label" for="code">1 · YOUR CODE — type and edit here</label><textarea id="code" class="editor" data-field="code" aria-label="Your Python code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off">${esc(editor(c))}</textarea><div class="row editor-actions">${button('▶ Run Python','run','secondary')}${button(checkLabel,'test','primary')}${button('Stop','stop','plain','id="stop" disabled')}${button('Indent 4 spaces','indent','plain')}</div><div class="terminal"><div class="label">2 · YOUR OUTPUT</div><pre id="output" aria-live="polite">${esc(runData?.output||'Your output appears here.')}</pre><div id="inline-input"></div></div></div><p class="under">${c.cases.some(t=>t.input.length)?'Run Python to try your own input. ':'Run Python to see your output. '}<strong>${checkLabel}</strong> compares the result with the target${checked&&!preview?' and unlocks the next card when passed':''}.</p>${c.cases.some(t=>t.input.length)?translation('console'):''}<div class="row">${helpButton(c)}</div>${feedback()}${helpHtml(c)}</div></div>`;
+  const cleanStart=carryId(c)&&c.id!=='B4'?`<details class="chunk"><summary>Need the starting code for this card?</summary><p>If your last solution looks different, you can use this starter. Your draft on the previous card stays saved.</p>${code(c.starter)}</details>`:'';
+  return `${heading(c.title)}<div class="grid"><div>${readingExample(c)}${taskText(c)}${c.id==='A2'?`<label class="field">My prediction <input data-field="prediction" type="text" value="${esc(answer)}"></label>`:''}${c.explainEdge?edgeQuestion():''}${cleanStart}${optionalCases(c)}</div><div>${sampleNotice}<div class="editor-shell"><label class="label" for="code">1 · YOUR CODE — type and edit here</label><textarea id="code" class="editor" data-field="code" aria-label="Your Python code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off">${esc(editor(c))}</textarea><div class="row editor-actions">${button(checkLabel,'test','primary')}${button('▶ Run Python','run','secondary')}${button('Stop','stop','plain','id="stop" disabled')}${button('Indent 4 spaces','indent','plain')}</div></div><section class="chunk output-check" aria-labelledby="output-check-title"><h2 id="output-check-title">2 · Expected output &amp; test results</h2><p>Match the outputs shown below. The checker runs your code as written.</p>${i18(['输出与下表一致即可通过。检查器不会修改你的代码。','아래 표와 출력이 같으면 통과합니다. 검사기는 코드를 바꾸지 않습니다.'])}${feedback()}<div id="results">${casesTable(c,runData?.tests)}</div></section><div class="terminal"><div class="label">3 · PYTHON CONSOLE</div><pre id="output" aria-live="polite">${esc(runData?.output||'Your output appears here.')}</pre><div id="inline-input"></div></div><p class="under">Use <strong>Run Python</strong> to try a run yourself. Use <strong>${checkLabel}</strong> to check the listed results.</p>${c.cases.some(t=>t.input.length)?translation('console'):''}<div class="row">${helpButton(c)}</div>${helpHtml(c)}</div></div>`;
 }
 function sprintStats(d){
   const s=state.stats[current]||{}, typed=String(state.answers[current]||'');
@@ -302,42 +312,37 @@ async function testRun(c,d){
   const token=++epoch;const original=d?(d.prefix||'')+(state.answers[current]||''):editor(c);
   const boundary=state.answers[current+'-boundary'];
   if(d&&!state.answers[current]?.trim()){setNote('try','<p>Type the model in the editor first.</p>'+translation('type'));return;}
-  const cases=d?(d.tests||[caseOf([],d.output)]):c.cases;let results=[];
+  const cases=d?(d.tests||[caseOf([],d.output)]):casesFor(c.cases);let results=[];
   setBusy(true);
   if(el('output'))el('output').textContent='Running…';
   for(const t of cases){
     if(token!==epoch)return;
-    const src=prepare(original,t);
-    if(src==null){results.push({test:t,raw:'Could not vary the supplied data line. Keep that line and change the code below it.'});continue;}
-    let used=0;const r=runSprintPython(src,{input:()=>{if(used>=t.input.length)throw Error('Extra input requested. Use only the inputs listed for this case.');return t.input[used++];}});active=r;
+    let used=0;const r=runSprintPython(original,{input:()=>{if(used>=t.input.length)throw Error('Extra input requested. Use only the inputs listed for this case.');return t.input[used++];}});active=r;
     const result=await r.result;if(token!==epoch)return;
-    results.push({test:t,verdict:judge(result,t,used)});
+    results.push({test:t,verdict:judge(result,t)});
   }
   active=null;setBusy(false);
-  if(!d&&(editor(c)!==original||(c.explainEdge&&boundary!==state.answers[current+'-boundary']))){
+  if(d?(d.prefix||'')+(state.answers[current]||'')!==original:editor(c)!==original){
     if(el('output'))el('output').textContent='Work changed during the test.';
     setNote('pending','<p>Run checkpoint tests again to check the current draft.</p>'+translation('tests'));return;
   }
-  const methodError=c?method(c,original):'', error=results.find(x=>x.verdict?.error)?.verdict.error;
-  const matched=results.every(x=>x.verdict?.pass), exact=!d||state.answers[current]===d.model;
-  const decision=c?.explainEdge, edgeCorrect=!decision||boundary===1;
+  const error=results.find(x=>x.verdict?.error)?.verdict.error;
   const atEdge=results.length>=3&&results[0].test.input[0]==='119'&&results[1].test.input[0]==='120'&&results[2].test.input[0]==='121'&&results[0].verdict?.pass&&!results[1].verdict?.pass&&results[2].verdict?.pass;
-  const passed=matched&&!methodError&&exact&&edgeCorrect;
+  const passed=results.every(x=>x.verdict?.pass);
   const outText=results.map(({test:t,verdict:v,raw})=>[t.label||'',t.input.length?'Input: '+t.input.join(', '):''].filter(Boolean).map(s=>s+'\n').join('')+(v?.error||v?.output||raw||'No output')).join('\n\n');
   runData={output:outText,tests:results};
   state.runs[current]={at:new Date().toISOString(),matched:passed,results:results.map(x=>({case:x.test.label||null,input:x.test.input,expected:x.test.output,actual:x.verdict?.output??'',error:x.verdict?.error??x.raw??null,matched:Boolean(x.verdict?.pass)}))};save();
   trackEvent('python-check',{code:original,boundary:boundary??null,matched:passed,results:state.runs[current].results});
   if(el('output'))el('output').textContent=outText;
-  if(el('results'))el('results').innerHTML=casesTable(c,results);
-  if(passed){if(c)state.work[current]=original;done();setNote('ok','<p><b>'+ (d?'The model runs.':decision?'All three tests match and you identified the exact boundary.':'All listed checks match.')+'</b></p>'+translation('good'));}
+  if(c&&el('results'))el('results').innerHTML=casesTable(c,results);
+  if(passed){if(c)state.work[current]=original;done();setNote('ok','<p><b>✓ '+ (d?'Output matches.':results.length===3?'All three tests match.':'Output matches the target.')+'</b></p>'+translation('good'));}
   else{
     const unavailable=Boolean(error&&/Python could not load/.test(error));
-    if(c&&original.trim()&&(!matched||methodError||!decision||boundary!==undefined))failCheckpoint([original.trim(),boundary],unavailable);
-    const messageError=matched&&!edgeCorrect?'All three test outputs match. '+(boundary===undefined?'Choose the input that is exactly at the cutoff.':'Recheck your choice: which number is neither below nor above the cutoff?'):'';
-    const dataError=results.find(x=>x.raw)?.raw;
-    const msg=unavailable?'The Python runner could not load. Flag this checkpoint for help and keep your draft.':error?errorHint(error):dataError||((matched&&methodError)||messageError)||(atEdge?'119 and 121 work. At exactly 120, check whether your comparison includes equality.':matched&&!exact?'It runs. Now compare your typing with the model; the drill is about matching the syntax.':c?.hint||'Compare the result with the typed model.');
+    if(c&&original.trim())failCheckpoint(original.trim(),unavailable);
+    const msg=unavailable?'The Python runner could not load. Flag this checkpoint for help and keep your draft.':error?errorHint(error):atEdge?'119 and 121 work. At exactly 120, check whether your comparison includes equality.':c?.hint||'Compare your output with the model.';
     setNote('try','<p><b>Try one adjustment.</b> '+esc(msg)+'</p>'+topic(c?.help)+translation('again'));
   }
+  if(c)el('output-check-title')?.scrollIntoView?.({block:'nearest'});
 }
 function download(){
   if(preview)return;
@@ -362,7 +367,8 @@ function onInput(event){
   }
   if(f==='answer'||f==='variant'||f==='edge'){
     const key=f==='answer'?current:f==='edge'?current+'-boundary':current+'-variant', value=node.type==='radio'?Number(node.value):node.value;
-    const changed=state.answers[key]!==value;setAnswer(key,value);if(changed&&f!=='variant')edited(current);
+    const changed=state.answers[key]!==value;setAnswer(key,value);if(changed&&f==='answer')edited(current);
+    if(f==='edge'&&el('edge-feedback'))el('edge-feedback').textContent=edgeFeedback(value);
   }
   if(f==='prediction')setAnswer(current+'-prediction',node.value);
   if(f==='grid'){const a=state.answers[current]||[],i=Number(node.dataset.idx),changed=a[i]!==node.value;a[i]=node.value;setAnswer(current,a);if(changed)edited(current);}

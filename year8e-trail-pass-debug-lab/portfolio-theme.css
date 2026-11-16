@@ -72,6 +72,18 @@ input[type=text],textarea,select,.secondary,.plain {border-color:#888}
 .checkpoint .support {margin:.35rem 0 0}
 .checkpoint-actions:not(:empty) {margin:.5rem 0 0}
 .footer-status {font-weight:650}
+.example-names {padding:.65rem .8rem;background:var(--portfolio-blue-soft,#eef5ff);border-radius:.45rem}
+.output-check {margin:.7rem 0;border-top:.25rem solid var(--portfolio-blue)}
+.output-check h2 {margin-bottom:.35rem}
+.output-check .notice:not(:empty) {margin:.6rem 0}
+.output-check table {width:100%;font-size:.92rem}
+.output-check th,.output-check td {padding:.5rem;vertical-align:top}
+.output-check td pre {white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.4}
+.test-badge {display:inline-block;padding:.15rem .45rem;border-radius:.35rem;margin-bottom:.3rem}
+.test-badge.test-pass {background:#dcf5e5;color:#125131}
+.test-badge.test-fail {background:#ffebe4;color:#8c2314}
+.variant-output {white-space:pre-wrap}
+.terminal>.label {display:block;color:#cee2d3;margin:0 0 .4rem}
 .preview-label {background:#fff;color:#111;border:1px solid var(--portfolio-ochre);font-weight:800;border-radius:.4rem;padding:.3rem .55rem}
 .preview-tools {display:flex;gap:.5rem .8rem;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:.65rem clamp(.85rem,3vw,2rem);background:#fff}
 .preview-tools>label {color:var(--portfolio-blue-ink);font-weight:800}

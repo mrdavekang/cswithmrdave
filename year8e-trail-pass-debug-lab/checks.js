@@ -1,35 +1,21 @@
 (() => {
   const norm=s=>String(s).replace(/\r/g,'').trim().split('\n').map(l=>l.trimEnd()).join('\n');
-  function editForTest(code,[before,after]) {
-    // Vary the stored data, not a matching hard-coded print line.
-    const tokenize=s=>s.match(/"[^"\n]*"|'[^'\n]*'|\w+|[^\s]/g)||[];
-    const normalizeToken=s=>/^["']/.test(s)?'"'+s.slice(1,-1)+'"':s;
-    const key=s=>tokenize(s).map(normalizeToken).join('\0');
-    const lines=code.split('\n');
-    const at=lines.findIndex(line=>!/^\s/.test(line)&&key(line.split(/\s+#/)[0])===key(before));
-    if(at<0)return null;
-    lines[at]=after;
-    return lines.join('\n');
+  const casesFor=cases=>cases.filter(t=>!t.edit);
+  const items=/(?:'([^'\\]*)'|"([^"\\]*)")/g;
+  function matchingLine(actual,expected){
+    if(actual===expected)return true;
+    // Allow ordinary quote and separator spacing differences for flat text lists.
+    const list=/^\[\s*(?:(?:'[^'\\]*'|"[^"\\]*")(?:\s*,\s*(?:'[^'\\]*'|"[^"\\]*"))*\s*,?)?\s*\]$/;
+    if(!list.test(actual)||!list.test(expected))return false;
+    const values=line=>JSON.stringify(Array.from(line.matchAll(items),m=>m[1]??m[2]));
+    return values(actual)===values(expected);
   }
-  function method(card,code) {
-    const clean=code.split('\n').map(l=>l.replace(/("[^"\n]*"|'[^'\n]*')|#.*$/g,(_,value)=>value??'')).join('\n');
-    const match={reverse:/\bif\s+height\s*<\s*120\s*:/,cutoff:/\bif\s+height\s*>=\s*cutoff\s*:/,reordered:/\bstatus\s*=\s*\[\s*['"]Ride open['"]\s*,\s*['"]Ask an adult['"]\s*\]/};
-    if(card.criterion==='appendStop'&&!/\bstops\s*\.\s*append\s*\(/.test(clean))return 'Your output matches. Now use .append() to add Camp to the existing list.';
-    if(card.criterion==='routeLength'&&!/\blen\s*\(\s*stops\s*\)/.test(clean.replace(/"[^"\n]*"|'[^'\n]*'/g,'')))return 'Your output matches. Calculate the count with len(stops) instead of printing a fixed 4.';
-    if(card.criterion==='decisionBranches'&&(!/^\s*if\s/m.test(clean)||!/^\s*else\s*:/m.test(clean)))return 'Your output matches. Write an if and an else so both decision paths are visible.';
-    if(match[card.criterion]&&!match[card.criterion].test(clean))return 'Check the requested method as well as the output.';
-    return '';
-  }
-  function prepare(code,test) {
-    if(test.edit){ code=editForTest(code,test.edit);if(code==null)return null; }
-    if(test.probe)code+='\nprint("__trail_probe_ok__" if '+test.probe+' == '+JSON.stringify(test.value)+' else "__trail_probe_bad__")\n';
-    return code;
-  }
-  function judge(data,test,used) {
-    let output=norm(data.stdout),stored=true;
-    if(test.probe){ const parts=output.split('\n');stored=parts.at(-1)==='__trail_probe_ok__';if(/^__trail_probe_(ok|bad)__$/.test(parts.at(-1)))parts.pop();output=parts.join('\n'); }
-    const pass=!data.error&&stored&&used===test.input.length&&norm(test.output)===output;
-    return {pass,output,error:data.error,stored,used};
+  function judge(data,test) {
+    const output=norm(data.stdout??'');
+    const lines=s=>norm(s).split('\n').map(l=>l.trim()).filter(Boolean);
+    const actual=lines(output),expected=lines(test.output);
+    const pass=!data.error&&actual.length===expected.length&&actual.every((line,i)=>matchingLine(line,expected[i]));
+    return {pass,output,error:data.error};
   }
   function errorHint(error) {
     if(!error)return '';
@@ -41,5 +27,5 @@
     if(/ValueError/.test(error))return 'For int(), type a whole number such as 120.';
     return 'Check the error and try one small change.';
   }
-  window.TrailChecks={norm,prepare,judge,method,errorHint};
+  window.TrailChecks={norm,casesFor,judge,errorHint};
 })();
