@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://qejimegoysblonawsoza.supabase.co; worker-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Teacher desk | Year 8 Python Assessment</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./connection.js"></script>
+  <script defer src="./dialog.js"></script>
+  <script defer src="./teacher.js"></script>
+</head>
+<body>
+  <header class="top"><div class="brand"><span class="brand-mark" aria-hidden="true">Py</span><div><span>TEACHER ONLY</span><strong>Python Assessment · Teacher desk</strong></div></div></header>
+  <div class="layout desk">
+    <main id="main" tabindex="-1">
+      <section class="card" id="access">
+        <h1>Teacher desk</h1>
+        <form id="unlock-form">
+          <label class="field">Teacher access key<input id="teacher-key" type="password" required autocomplete="off" spellcheck="false"></label>
+          <button id="unlock" class="primary" type="submit">Open teacher desk</button>
+        </form>
+        <p id="access-status" role="status"></p>
+      </section>
+      <section class="card" id="controls" hidden>
+        <p class="eyebrow">TERM 1.2 · YEAR 8</p>
+        <h1>Run a sitting</h1>
+        <p>Choose the class, share its student link and select <strong>Start test</strong> when ready. Students enter their name and start at Question 1. The whole class uses the same 40-minute timer.</p>
+        <div class="toolbar"><button id="a" class="primary" aria-pressed="true">Form A · 8T</button><button id="b" class="secondary" aria-pressed="false">Form B · 8E</button><button id="refresh" class="secondary">Refresh</button><button id="lock" class="secondary">Lock desk</button></div>
+        <p id="teacher-status" role="status"></p>
+      </section>
+      <div id="sitting"></div>
+      <section id="attempt" class="card" hidden></section>
+    </main>
+  </div>
+</body>
+</html>
