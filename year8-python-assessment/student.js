@@ -402,4 +402,8 @@ document.addEventListener("click",async e=>{
 });
 window.addEventListener("online",()=>void refresh());
 window.addEventListener("pagehide",saveLocal);
+document.querySelector(".skip").addEventListener("click",event=>{
+  event.preventDefault();
+  main.focus();
+});
 if(classReady){void refresh();setInterval(()=>void refresh(),8000);setInterval(tick,500);}else render();
