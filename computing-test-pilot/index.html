@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://qejimegoysblonawsoza.supabase.co; worker-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Computing Test</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="top"><div><strong>Computing</strong><span id="class-label" hidden></span></div></header>
+  <main>
+    <header class="intro">
+      <p class="pill" id="demo-label" hidden>Demo test</p>
+      <h1 id="title" tabindex="-1">Computing Test</h1>
+      <p id="description"></p>
+    </header>
+    <section class="card" id="start">
+      <p id="loading" role="status">Checking your test link…</p>
+      <button type="button" id="retry-link" hidden>Try again</button>
+      <form id="identity" hidden>
+        <label for="name" id="name-label">Your name</label>
+        <input id="name" name="name" minlength="2" maxlength="80" required>
+        <button class="primary" type="submit">Start test</button>
+      </form>
+    </section>
+    <form id="attempt" hidden>
+      <div id="questions"></div>
+      <section class="card submission" aria-labelledby="submit-title">
+        <div><h2 id="submit-title">Submit your test</h2><p id="status" role="status" aria-live="polite"></p></div>
+        <button class="primary" id="submit" type="submit">Submit answers</button>
+      </section>
+    </form>
+    <section class="card" id="receipt" hidden>
+      <h2 id="receipt-title" tabindex="-1">Answers submitted</h2>
+      <p id="receipt-context"></p>
+      <p>Receipt <code id="receipt-id"></code></p>
+    </section>
+  </main>
+</body>
+</html>
