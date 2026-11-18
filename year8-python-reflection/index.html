@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Open your private Year 8 Python Checkpoint Lab lesson file.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; style-src 'unsafe-inline'; worker-src blob:; img-src data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'">
 <title>Python Checkpoint Lab | CS with Mr Dave</title>
   <style>:root{
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -96,6 +96,11 @@ input[type=search],input[type=text],select{max-width:540px}
 .choice:has(input:checked){border-color:#694096;background:#f1e8fb}
 .choice input{margin-top:.23rem;width:19px;height:19px;flex:none;accent-color:var(--purple)}
 .choice span{white-space:pre-wrap;overflow-wrap:anywhere}
+.feedback-steps{max-width:68ch;padding-left:1.5rem;margin:1rem 0}
+.feedback-steps li+li{margin-top:.5rem}
+.feedback-confirm{display:flex;align-items:flex-start;gap:.7rem;max-width:700px;padding:.8rem 1rem;min-height:44px;border:1px solid var(--line);border-radius:12px;background:#f6f1fa;font-weight:700;cursor:pointer}
+.feedback-confirm input{accent-color:var(--purple);width:1.25rem;height:1.25rem;flex:none;margin:.15rem 0 0}
+.feedback-confirm:has(input:checked){border-color:var(--purple)}
 .choice-col small{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
 .wordbank{margin:14px 0;white-space:normal}
 .wordbank ul{padding-left:20px;margin:5px 0 0}
@@ -205,7 +210,17 @@ dialog::backdrop{background:#180d27aa}
   .rag-chip{justify-self:start}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-</style>
+.active-pupil{display:block;margin-top:3px;font-size:.82rem;font-weight:760;line-height:1.2;color:#e6f8bc;overflow-wrap:anywhere}
+.active-pupil[hidden]{display:none}
+@media (max-width:500px){.active-pupil{font-size:.7rem}}
+.coach-options{display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;margin:.8rem 0 1.1rem}
+.coach-options details{padding:.7rem .9rem;margin:0;background:#faf7ff}
+.coach-options ul{padding-left:1.25rem;margin:.55rem 0 .1rem;line-height:1.5}
+.coach-options li+li{margin-top:.45rem}
+.coach-examples li{border-left:3px solid #b9a5db;padding-left:.6rem;list-style:none}
+.coach-focus{display:inline-block;margin:.3rem 0 .55rem;padding:.35rem .65rem;border-radius:.5rem;background:#ece3f8;color:#49307d;font-weight:720;max-width:100%;overflow-wrap:anywhere}
+
+.topbar-actions{display:none}</style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the task</a>
@@ -231,954 +246,154 @@ dialog::backdrop{background:#180d27aa}
   <dialog id="teacher-dialog" aria-labelledby="teacher-heading">
     <div class="dialog-box" id="teacher-content"></div>
   </dialog>
-  <script>window.CHECKPOINT_HOSTED=true;window.DEMO_LESSON={"mode":"demo","className":"8T","date":"","sessionId":"preview-python-checkpoint-lab","names":[{"id":"preview","name":"Sample pupil"}],"profile":{"id":"preview","name":"Sample pupil","route":"review","language":"en","rag":[{"title":"Show output","status":"Developing","description":"Use print() to show a message."}]},"cards":[{"id":"preview-plan","type":"rag","phase":"Reflect","title":"Choose a skill to work on","body":"This is a preview with made-up data. Pick a practice topic."},{"id":"preview-type","type":"type","phase":"Practice","title":"Type one print command","body":"Type the line just as it appears.","sample":"print(\"Hello\")"},{"id":"preview-run","type":"code","phase":"Build","title":"Run one short program","body":"Write code to show Launch on the screen.","starter":"# Add one line below.\n","sample":"print(\"Launch\")","tests":[{"input":"","output":"Launch"}]},{"id":"preview-finish","type":"finish","phase":"Show","title":"Show one thing you can do","body":"Explain what your code displays."}]};</script>
-  <script>window.__HOSTED_SKULPT_SYS__="var $builtinmodule=function(){var b,a=Math.pow,c={},d=[],e=Sk.getSysArgv();for(b=0;b\u003ce.length;++b)d.push(new Sk.builtin.str(e[b]));return c.argv=new Sk.builtins.list(d),c.copyright=new Sk.builtin.str(\"Copyright 2009-2010 Scott Graham.\\nAll Rights Reserved.\\n\"),Sk.__future__.python3?(c.version=\"3.7(ish) [Skulpt]\",c.version_info=new Sk.builtin.tuple([new Sk.builtin.int_(3),new Sk.builtin.int_(7)])):(c.version=\"2.7(ish) [Skulpt]\",c.version_info=new Sk.builtin.tuple([new Sk.builtin.int_(2),new Sk.builtin.int_(7)])),c.maxint=new Sk.builtin.int_(a(2,53)-1),c.maxsize=new Sk.builtin.int_(a(2,53)-1),c.modules=Sk.sysmodules,c.path=Sk.realsyspath,c.getExecutionLimit=new Sk.builtin.func(function(){return null===Sk.execLimit?Sk.builtin.none.none$:new Sk.builtin.int_(Sk.execLimit)}),c.setExecutionLimit=new Sk.builtin.func(function(a){if(null===Sk.execLimit)throw new Sk.builtin.NotImplementedError(\"Execution limiting is not enabled\");void 0!==a&&(Sk.execLimit=Sk.builtin.asnum$(a))}),c.resetTimeout=new Sk.builtin.func(function(){Sk.execStart=new Date}),c.getYieldLimit=new Sk.builtin.func(function(){return null===Sk.yieldLimit?Sk.builtin.none.none$:new Sk.builtin.int_(Sk.yieldLimit)}),c.setYieldLimit=new Sk.builtin.func(function(a){if(null===Sk.yieldLimit)throw new Sk.builtin.NotImplementedError(\"Yielding is not enabled\");void 0!==a&&(Sk.yieldLimit=Sk.builtin.asnum$(a))}),c.debug=new Sk.builtin.func(function(){return Sk.builtin.none.none$}),c.__stdout__=new Sk.builtin.file(new Sk.builtin.str(\"/dev/stdout\"),new Sk.builtin.str(\"w\")),c.__stdin__=new Sk.builtin.file(new Sk.builtin.str(\"/dev/stdin\"),new Sk.builtin.str(\"r\")),c.stdout=c.__stdout__,c.stdin=c.__stdin__,c};";
-(() => {
-  const originalSkulpt = window.__BUNDLED_SKULPT__;
-  const hostedSys = window.__HOSTED_SKULPT_SYS__;
-  if (typeof originalSkulpt !== "string" && typeof hostedSys !== "string") return;
-  delete window.__BUNDLED_SKULPT__;
-  delete window.__HOSTED_SKULPT_SYS__;
-  const program = String.raw`
-    self.onmessage = async ({data}) => {
-      let output = "";
-      const inputs = data.input === "" ? [] : data.input.split(/\r?\n/);
-      let next = 0;
-      try {
-        self.Sk.configure({
-          __future__: self.Sk.python3, execLimit: 1500, yieldLimit: 35,
-          read: file => {
-            if (file === "src/builtin/sys.js") return self.Sk.builtinFiles.files[file];
-            throw Error("Imports are not needed in this lesson.");
-          },
-          output: text => { if ((output += text).length > 2500) throw Error("Too much output."); },
-          inputfunTakesPrompt: true, inputfun: prompt => {
-            if (output.length + String(prompt || "").length > 2500) throw Error("Too much output.");
-            if (prompt) output += String(prompt);
-            if (next >= inputs.length) throw Error("No more test input is available.");
-            return inputs[next++];
-          },
-        });
-        await self.Sk.misceval.asyncToPromise(() => self.Sk.importMainWithBody("<your code>", false, data.code, true));
-        self.postMessage({output});
-      } catch (error) { self.postMessage({output: output.slice(0,2500), error: String(error).slice(0,500)}); }
-    };
-  `;
-  const workerFrom = library => new Blob([library, "\n", program], {type:"text/javascript"});
-  const workerAsset = typeof originalSkulpt === "string" ? Promise.resolve(workerFrom(originalSkulpt)) :
-    fetch("./vendor/skulpt.min.js", {credentials:"omit", redirect:"error", referrerPolicy:"no-referrer"})
-      .then(r => { if (!r.ok) throw new Error("Python is not available yet."); return r.text(); })
-      .then(library => workerFrom(library+"\nSk.builtinFiles="+JSON.stringify({files:{"src/builtin/sys.js":hostedSys}})+";"), () => null)
-      .catch(() => null);
-  async function execute(code,input) {
-    const asset = await workerAsset;
-    if (!asset) return {output:"",error:"Python did not load. Reopen this page, or use the private HTML lesson offline."};
-    const url = URL.createObjectURL(asset);
-    try {
-      return await new Promise(resolve => {
-        let w;
-        try { w = new Worker(url); }
-        catch { resolve({output:"",error:"This viewer cannot run Python. Download this file and open it in a supported browser."}); return; }
-        let timeout;
-        const finish = result => { clearTimeout(timeout); w.terminate(); resolve(result); };
-        timeout = setTimeout(()=>finish({output:"",error:"This run took too long. Try a shorter program."}),2800);
-        w.onmessage = event => finish(event.data);
-        w.onerror = () => finish({output:"",error:"Could not start Python. Open the downloaded lesson in Chrome, Edge or Safari."});
-        w.postMessage({code,input});
-      });
-    } finally { URL.revokeObjectURL(url); }
-  }
-  const clean = text => String(text ?? "").replace(/\r\n/g,"\n").replace(/[ \t]+$/gm,"").trim();
-  window.runPython = async (code, tests) => {
-    if (String(code).length > 8000) return {passed:false,results:[{output:"",expected:"",error:"Please use a short program.",passed:false}]};
-    const results = [];
-    for (const {input = "", output: expected = ""} of tests.slice(0,4)) {
-      const result = await execute(code,input);
-      results.push({input,expected,...result,passed:!result.error&&clean(result.output)===clean(expected)});
-    }
-    return {passed:results.length>0&&results.every(r=>r.passed),results};
-  };
-})();
-
-</script>
-  <script>window.startCheckpointLesson = (providedLesson, options) => {
-  "use strict";
-  options = options || {};
-
-  const DEMO = {
-    mode: "demo", className: "8T", sessionId: "reflection-demo",
-    names: [{id:"demo",name:"Alex"}], profile: {id:"demo",name:"Alex",route:"review",language:"en",rag:[]},
-    cards: [
-      {id:"demo-type",type:"type",phase:"Sample practice",title:"Try the typing screen",body:"This is a demonstration. No student assessment information is included.",sample:'print("Hello")'},
-      {id:"demo-reflect",type:"reflect",phase:"Sample reflection",title:"Explain your example",body:"What does this line of Python do?",prompts:["It displays …"]},
-      {id:"demo-end",type:"finish",title:"Show your learning",body:"Review your work before showing your teacher."}
-    ]
-  };
-
-  const lesson = providedLesson || DEMO;
-  const hosted = options.hosted === true;
-  const profile = lesson.profile || {};
-  const cards = Array.isArray(lesson.cards) ? lesson.cards.filter(c => c && typeof c.id === "string") : [];
-  const className = lesson.className || "8T";
-  const sessionId = lesson.sessionId || lesson.id || ("python-reflection-"+(lesson.date || "daily"));
-  const sessionDate = lesson.date || lesson.sessionDate || null;
-  const key = ["year8-python-reflection-v1", sessionId, className, profile.id || "demo"].join(":");
-  const validStatuses = ["correct","recorded","help","attempted"];
-  const activeStatuses = ["correct","recorded","help"];
-  const checkTypes = ["type","mc","blank","code"];
-  const reflectiveTypes = ["reflect","peer","rag","compare"];
-  const peerChoices = [
-    {label:"Clear and correct", description:"My partner gave a clear explanation and an example."},
-    {label:"Nearly there", description:"My partner has the main idea but needs one more detail."},
-    {label:"Try again together", description:"A short example or another explanation would help."}
-  ];
-  const i18n = {
-    "Choose your class":"选择你的班级", "Find your first name":"查找你的名字",
-    "Check":"检查", "Run Python":"运行 Python", "Save my answer":"保存答案",
-    "Next":"下一步", "Back":"返回", "Show my teacher":"给老师看",
-    "My explanation":"我的解释", "Practice on this device":"在本设备上练习"
-  };
-  const $ = id => document.getElementById(id);
-  const cardHost = $("card");
-  const teacherDialog = $("teacher-dialog");
-  const teacherOpen = $("teacher-open");
-  let state = {index:0,responses:{}};
-  let stage = "class";
-  let selectedClass = "";
-  let active = false;
-  let searchTerm = "";
-  let storageOkay = !hosted;
-  let resumed = false;
-  let currentWidget = null;
-  const typeClocks = new Map();
-
-  function element(tag, text, className, attrs) {
-    const e = document.createElement(tag);
-    if (text !== null && text !== undefined) e.textContent = String(text);
-    if (className) e.className = className;
-    for (const [name, value] of Object.entries(attrs || {})) {
-      if (value !== null && value !== undefined) e.setAttribute(name, String(value));
-    }
-    return e;
-  }
-  const append = (target, ...children) => {
-    for (const item of children) if (item) target.append(item);
-    return target;
-  };
-  function label(text) {
-    return profile.language === "zh" && Object.hasOwn(i18n,text) ? text+" · "+i18n[text] : text;
-  }
-  function button(text, fn, cls, attrs) {
-    const e = element("button", text, "btn"+(cls?" "+cls:""), {type:"button",...attrs});
-    if (fn) e.addEventListener("click", fn);
-    return e;
-  }
-  function asText(x) {
-    return Array.isArray(x) ? x.map(asText).join("\n") : x == null ? "" : String(x);
-  }
-  const nonempty = v => typeof v === "number" || typeof v === "string" && v.trim().length > 0;
-
-  function loadProgress() {
-    if (hosted) return;
-    try {
-      const saved = JSON.parse(localStorage.getItem(key) || "null");
-      if (!saved || !saved.responses || typeof saved.responses !== "object") return;
-      for (const c of cards) {
-        if (!Object.hasOwn(saved.responses,c.id)) continue;
-        const old = saved.responses[c.id];
-        if (!old || typeof old!=="object") continue;
-        const rec = {};
-        if (typeof old.answer === "string") rec.answer = old.answer.slice(0,9000);
-        if (typeof old.answer === "number" && Number.isInteger(old.answer)) rec.answer = old.answer;
-        if (c.type==="code" && typeof old.checkedCode==="string") rec.checkedCode=old.checkedCode.slice(0,3000);
-        if (peerChoices.some(option=>option.label===old.peerRating)) rec.peerRating=old.peerRating;
-        if (typeof old.peerNote==="string") rec.peerNote=old.peerNote.slice(0,240);
-        if (validStatuses.includes(old.status)) rec.status = old.status;
-        for (const attr of ["attempts","accuracy","wpm","typeCorrect","typeInputs","typeEdits","checkedAt"]) {
-          if (Number.isFinite(old[attr]) && old[attr]>=0) rec[attr] = Math.max(0, Math.min(Number.MAX_SAFE_INTEGER,old[attr]));
-        }
-        state.responses[c.id] = rec;
-      }
-      if (Number.isInteger(saved.index)) state.index = Math.min(Math.max(0,saved.index), Math.max(0,cards.length-1));
-      resumed = Object.keys(state.responses).length > 0;
-    } catch {
-      storageOkay = false;
-    }
-  }
-
-  function updateProgress() {
-    $("progress").hidden = !active;
-    teacherOpen.hidden = !active;
-    if (!active) return;
-    const current = cards[state.index];
-    const total = cards.length;
-    const count = cards.filter(c=>activeStatuses.includes(state.responses[c.id]?.status)).length;
-    $("step-label").textContent = "Card "+(state.index+1)+" of "+total+(current?.phase || current?.section ? " · "+asText(current.phase || current.section) : "");
-    $("progress-label").textContent = count+" of "+total+" done";
-    $("progress-track").value = Math.round(100*count/(total||1));
-    const note = $("save-note");
-    note.textContent = hosted ? "Keep this page open. Download your summary before closing." :
-      storageOkay ? "Saved on this device" : "This browser may not save after closing. Use Show my teacher → Download summary.";
-    note.classList.toggle("warning",!storageOkay);
-  }
-
-  function save() {
-    if (storageOkay && active) {
-      try { localStorage.setItem(key,JSON.stringify(state)); }
-      catch { storageOkay = false; }
-    }
-    updateProgress();
-  }
-
-  function setResponse(c,next) {
-    state.responses[c.id] = {...(state.responses[c.id] || {}),...next};
-    save();
-    return state.responses[c.id];
-  }
-
-  function tick() {
-    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB",
-      {timeZone:"Asia/Kuala_Lumpur",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).filter(x=>x.type!=="literal").map(x=>[x.type,x.value]));
-    const localDate = parts.year+"-"+parts.month+"-"+parts.day;
-    const parse = (text, fallback) => /^\d{1,2}:\d{2}$/.test(text||"") ? text.split(":").reduce((a,v)=>a*60+Number(v),0)*60 : fallback;
-    const now = 3600*Number(parts.hour)+60*Number(parts.minute)+Number(parts.second);
-    const from = parse(lesson.sessionStart,14*3600);
-    const to = parse(lesson.sessionEnd,15*3600);
-    const main = $("clock-value");
-    const note = $("clock-note");
-    if ((!sessionDate || sessionDate===localDate) && now>=from && now<to) {
-      const remaining=to-now;
-      main.textContent = Math.floor(remaining/60)+":"+String(remaining%60).padStart(2,"0")+" left";
-      note.textContent = remaining<=300 ? "Finish your current step" : "Class time remaining";
-      main.parentElement.classList.toggle("soon",remaining<=300);
-    } else {
-      main.parentElement.classList.remove("soon");
-      if ((sessionDate && localDate<sessionDate) || ((!sessionDate || localDate===sessionDate) && now<from)) {
-        main.textContent = "Class starts at 2:00 pm";
-        note.textContent = "You can practise now";
-      } else {
-        main.textContent = "Class time is over";
-        note.textContent = "You can still save your work";
-      }
-    }
-  }
-
-  function shell(title, eyebrow, text) {
-    cardHost.replaceChildren();
-    if (eyebrow) cardHost.append(element("p",eyebrow,"eyebrow"));
-    const h=element("h1",title,null,{id:"card-title",tabindex:"-1"});
-    append(cardHost,h,text ? element("p",text,"card-copy") : null);
-    cardHost.classList.remove("is-fresh");
-    void cardHost.offsetWidth;
-    cardHost.classList.add("is-fresh");
-    return h;
-  }
-  function focusHeading() { $("card-title")?.focus({preventScroll:true}); window.scrollTo({top:0,behavior:"auto"}); }
-
-  function drawClass(focus) {
-    stage="class"; active=false; currentWidget=null; updateProgress();
-    shell(label("Choose your class"), lesson.mode==="demo"?"PREVIEW · SAMPLE ONLY":"START HERE","Choose your Computer Science class.");
-    const choices=element("div",null,"class-choices");
-    for (const option of ["8T","8E"]) {
-      const b=element("button",null,"class-tile",{type:"button"});
-      append(b,element("strong",option),element("span","Year "+option));
-      b.addEventListener("click",()=>{
-        selectedClass=option;
-        drawName(true);
-      });
-      choices.append(b);
-    }
-    cardHost.append(choices);
-    $("footer-note").textContent = hosted ? "Only this lesson file’s own profile can open." : "For personal feedback, open the private file your teacher gave you.";
-    if (focus) focusHeading();
-  }
-
-  function namesForClass() {
-    if (selectedClass !== className || lesson.mode==="unreleased") return [];
-    const items = Array.isArray(lesson.names) ? lesson.names : Array.isArray(lesson.roster) ? lesson.roster : [];
-    const choices = items.map(item => ({
-      id:asText(item.id), name:asText(item.firstName || item.name)
-    })).filter(item => item.id && item.name);
-    if (!choices.length && profile.id && (profile.firstName || profile.name)) {
-      choices.push({id:String(profile.id),name:asText(profile.firstName||profile.name)});
-    }
-    return choices;
-  }
-
-  function drawName(focus) {
-    stage="name"; active=false; updateProgress();
-    const available = namesForClass();
-    searchTerm="";
-    const isReady = available.length>0;
-    shell(isReady ? label("Find your first name") : "This class is not available in this file",selectedClass+" · START HERE",
-      isReady ? "Use the dropdown or search. This file opens only the feedback it was issued for."
-      : selectedClass==="8E" ? "There is no Year 8E feedback in this release. Check with your teacher for your class’s next step."
-        : "Open the Year 8T file that your teacher shared with you.");
-    if (isReady) {
-      const wrap = element("div",null,"name-fields");
-      const search=element("input",null,null,{id:"name-search",type:"search",placeholder:"Type a first name",autocomplete:"off"});
-      const searchButton=button("Search",()=>filter(true));
-      const row=append(element("div",null,"search-row"),search,searchButton);
-      const labelSearch = element("label","Search by first name","form-label",{for:"name-search"});
-      const select=element("select",null,null,{id:"name-choice"});
-      const status=element("p",null,"status",{role:"status"});
-      const start=button("Open my cards",()=>{
-        if (select.value!==String(profile.id||"") || !cards.length) {
-          notice(status,"This is not your file. Open your own private lesson file from Teams.","warning");
-          return;
-        }
-        if (lesson.mode==="private" && typeof profile.id!=="string") {
-          notice(status,"This file could not verify a pupil profile. Ask your teacher for your own file.","warning");
-          return;
-        }
-        active=true; stage="lesson"; loadProgress(); drawCard(true);
-      },"primary");
-      function filter(choose) {
-        searchTerm=search.value.toLowerCase().trim();
-        const matches=available.filter(item=>item.name.toLowerCase().includes(searchTerm));
-        const previous=select.value;
-        const options=[element("option",matches.length?"Select your first name":"No names found",null,{value:""})];
-        for (const m of matches) options.push(element("option",m.name,null,{value:m.id}));
-        select.replaceChildren(...options);
-        if (choose && matches.length===1) select.value=matches[0].id;
-        else if (matches.some(x=>x.id===previous)) select.value=previous;
-        start.disabled=!select.value;
-        notice(status,matches.length ? choose ? matches.length+" "+(matches.length===1?"match":"matches") : "" : "No matches. Try a shorter first name.","neutral");
-      }
-      search.addEventListener("input",()=>filter(false));
-      search.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();filter(true);}});
-      select.addEventListener("change",()=>{start.disabled=!select.value;notice(status,"","neutral");});
-      append(wrap,labelSearch,row,element("label","First name","form-label",{for:"name-choice"}),select,status,
-        append(element("div",null,"card-actions"),button(label("Back"),()=>drawClass(true)),start));
-      cardHost.append(wrap); filter(false);
-    } else {
-      cardHost.append(append(element("div",null,"card-actions"),button("Choose a different class",()=>drawClass(true),"primary")));
-    }
-    if (focus) focusHeading();
-  }
-
-  function notice(e,message,tone) {
-    e.textContent=message;
-    e.dataset.tone=tone || "neutral";
-  }
-
-  function details(title, content) {
-    if (!asText(content).trim()) return null;
-    return append(element("details"),element("summary",title),element("div",asText(content),"context-note"));
-  }
-
-  function renderPrompts(c, root) {
-    const prompts = Array.isArray(c.prompts) ? c.prompts : c.prompts ? [c.prompts] : [];
-    if (prompts.length) {
-      const list=element("ul");
-      prompts.forEach(item=>list.append(element("li",asText(item))));
-      root.append(append(element("div",null,"wordbank"),element("strong","Sentence starters / key words","cue-label"),list));
-    }
-  }
-
-  function notes(c,root) {
-    if (profile.language==="zh" && c.zh) root.append(details("中文提示 · Mandarin support",c.zh));
-    if (c.help) root.append(details("Show a hint",c.help));
-  }
-
-  function renderText(c, root, saved, onEdit) {
-    if (c.prompt) root.append(element("p",asText(c.prompt),"primary-prompt",{id:"task-prompt"}));
-    renderPrompts(c,root);
-    const t=element("textarea",null,null,{id:"current-response",rows:4,maxlength:1500,placeholder:c.placeholder || "Write your answer here"});
-    if (c.prompt) t.setAttribute("aria-describedby","task-prompt");
-    t.value=asText(saved.answer);
-    t.addEventListener("input",()=>onEdit(t.value));
-    return append(root,element("label",label(c.answerLabel || (c.type==="compare"?"My explanation":"Your answer")),"form-label",{for:"current-response"}),t);
-  }
-
-  const statusName = s => {
-    const k = asText(s).trim().toLowerCase();
-    if (/green|secure|strong|confident|achieved/.test(k)) return ["Secure","secure"];
-    if (/amber|yellow|develop|partial|some/.test(k)) return ["Developing","developing"];
-    if (/red|revisit|needs support/.test(k)) return ["Revisit","revisit"];
-    return ["No evidence","none"];
-  };
-
-  function renderRag(c, root, saved, onEdit) {
-    const values = Array.isArray(profile.rag) ? profile.rag : [];
-    if (!values.length) { renderText(c,root,saved,onEdit); return; }
-    const group = element("fieldset",null,"choice-list",{id:"rag-choices", "aria-label":"Choose one topic to practise today"});
-    const rows = element("div",null,"rag-list");
-    for (const value of values) {
-      const title=asText(value.title||value.topic);
-      const [word,tone]=statusName(value.status);
-      const input = element("input",null,null,{type:"radio",name:"rag-focus",value:title});
-      input.checked=saved.answer===title;
-      input.addEventListener("change",()=>{if(input.checked)onEdit(title);});
-      const caption=append(element("span"),element("strong",title),value.description?element("small",asText(value.description),"small"):null,
-        profile.language==="zh" && (value.zhTitle || value.zhDescription)?element("small",asText([value.zhTitle,value.zhDescription].filter(Boolean).join(" · ")),"small",{lang:"zh-Hans"}):null);
-      rows.append(append(element("label",null,"rag-row"),append(element("span",null,"rag-control"),input,caption),element("span",word,"rag-chip",{"data-status":tone})));
-    }
-    root.append(append(group,rows));
-  }
-
-  function renderChoices(c,root,saved,onEdit) {
-    renderPrompts(c,root);
-    const peer=(c.type==="peer");
-    const options=peer?peerChoices:c.choices || [];
-    const fieldset=element("fieldset",null,"choice-list",{"aria-label":peer?"Peer rating":"Answer choices"});
-    let rating = saved.peerRating || (options.some(x=>x?.label===saved.answer)?saved.answer:"");
-    let note = saved.peerNote || "";
-    function updatePeer() {
-      const response=[rating,note.trim()].filter(Boolean).join(" — ");
-      onEdit(response,{peerRating:rating,peerNote:note});
-    }
-    options.forEach((opt,i)=>{
-      const val=peer?opt.label:i;
-      const input=element("input",null,null,{type:"radio",name:"multiple-choice",value:val});
-      input.checked=(peer ? rating : saved.answer)===val;
-      input.addEventListener("change",()=>{if(input.checked) { if(peer){ rating=val;updatePeer(); } else onEdit(val); }});
-      fieldset.append(append(element("label",null,"choice"),input,
-        append(element("span",peer?opt.label:asText(opt),peer?"choice-col":""),
-          peer?element("small",opt.description):null)));
-    });
-    root.append(fieldset);
-    if (peer) {
-      const input=element("input",null,null,{id:"peer-note",type:"text",maxlength:"240",placeholder:"I understood … / One thing to add is …"});
-      input.value=note;
-      input.addEventListener("input",()=>{note=input.value;updatePeer();});
-      append(root,element("label",profile.language==="zh"?"Partner: type a short reason · 同伴：写一句理由":"Partner: type a short reason","form-label",{for:"peer-note"}),input,
-        element("p","Say what was clear or give one thing to add. No names needed.","helper-copy"));
-    }
-  }
-
-  function useTyping(c,root,saved,onEdit) {
-    const target=asText(c.sample).replace(/\r\n/g,"\n");
-    const board=element("div",null,"type-board",{"aria-label":"Code to type"});
-    const exact=element("span",target,"sr-only");
-    const visual=element("div",null,"type-target",{"aria-hidden":"true"});
-    board.append(exact,visual);
-    const stats=element("div",null,"type-stats",{"aria-label":"Typing statistics"});
-    const counters=[];
-    for (const [initial,word] of [["—","Words / min"],["—","Accuracy"],["0%","Characters matched"]]) {
-      const value=element("strong",initial);
-      counters.push(value);
-      stats.append(append(element("div",null,"stat"),value,element("span",word)));
-    }
-    const t=element("textarea",null,"type-input"+(!target.includes("\n")?" one-line":""),{id:"current-response",rows:target.includes("\n")?3:1,maxlength:1500,spellcheck:"false",autocapitalize:"off",autocomplete:"off",autocorrect:"off",placeholder:"Start typing the code you see"});
-    t.value=asText(saved.answer);
-    function snapshot(typing, refresh=false) {
-      const letters=Array.from(target);
-      const typed=Array.from(typing);
-      const elapsed=typeClocks.has(c.id)?(performance.now()-typeClocks.get(c.id))/60000:0;
-      let correct=0;
-      letters.forEach((v,i)=>{if(v===typed[i])correct++;});
-      const accuracy = typed.length ? Math.round(100*correct/typed.length) : null;
-      const completion = letters.length ? Math.min(100,Math.round(100*correct/letters.length)) : 0;
-      const wpm = elapsed>1/60 ? Math.round((correct/5)/elapsed) : null;
-      if (refresh) {
-        const spans=letters.map((v,i)=>element("span",v, i===typed.length ? "current" : i<typed.length ? typed[i]===v?"typed-ok":"typed-wrong" : ""));
-        if(typed.length>letters.length)spans.push(element("span",typed.slice(letters.length).join(""),"extra"));
-        visual.replaceChildren(...spans);
-        [wpm===null?"—":String(wpm),accuracy===null?"—":accuracy+"%",completion+"%"].forEach((v,i)=>{
-          const node=counters[i];if(node.textContent!==v){node.textContent=v;node.classList.remove("bump");void node.offsetWidth;node.classList.add("bump");}
-        });
-      }
-      return {accuracy,wpm,typeCorrect:correct,typeInputs:typed.length};
-    }
-    t.addEventListener("input",()=>{
-      if(!typeClocks.has(c.id))typeClocks.set(c.id,performance.now());
-      onEdit(t.value,snapshot(t.value,true));
-    });
-    append(root,board,stats,element("label","Type the code","form-label",{for:"current-response"}),t,
-      target.includes("\n") ? indentControl(t) : null,
-      element("p","Accuracy matters more than speed.","helper-copy"));
-    snapshot(t.value,true);
-    return {snapshot,target,input:t};
-  }
-
-  function codePanel(title,text) {
-    return append(element("div",null,"code-panel"),element("div",title,"code-header"),element("pre",asText(text) || "No code was submitted."));
-  }
-  function indentControl(input) {
-    return append(element("div",null,"editor-tools"),button("Insert 4 spaces",()=>{
-      input.setRangeText("    ",input.selectionStart,input.selectionEnd,"end");
-      input.dispatchEvent(new Event("input",{bubbles:true}));
-      input.focus();
-    }));
-  }
-
-  function drawCard(focus) {
-    if (!active || !cards.length) return drawClass(focus);
-    const c=cards[state.index];
-    if(!c) return drawClass(focus);
-    const saved=state.responses[c.id] || {};
-    const eyebrow=asText(c.phase || c.section || "PYTHON PRACTICE");
-    shell(asText(c.title) || "Your next step",eyebrow,asText(c.body));
-    currentWidget=null;
-    $("footer-note").textContent = "You can show your work to your teacher at any time.";
-    if (resumed) {
-      cardHost.append(element("p","Your last saved card and answers have been restored.","helper-copy"));
-      resumed=false;
-    }
-    if (c.type==="finish") {
-      if (!activeStatuses.includes(saved.status)) setResponse(c,{status:"recorded"});
-      notes(c,cardHost);
-      drawFinish(c);
-      if(focus)focusHeading();
-      updateProgress();
-      return;
-    }
-    const root=element("div",null,"response");
-    const status=element("p",null,"status",{role:"status","aria-live":"polite"});
-    const runOutput=element("div",null,"code-result",{"aria-live":"polite"});
-    runOutput.hidden=true;
-    let busy=false;
-    let check, next, needHelp;
-    const rec=()=>state.responses[c.id] || {};
-    const peerReady=()=>c.type!=="peer" || (nonempty(rec().peerRating) && nonempty(rec().peerNote));
-    const updateControls=()=>{
-      if (check) check.disabled=busy || !peerReady() || (c.type!=="code"&&!nonempty(rec().answer)) || (activeStatuses.includes(rec().status) && rec().status!=="help");
-      if (next) next.disabled=busy || (c.type!=="instruction" && !activeStatuses.includes(rec().status));
-      if (needHelp) needHelp.disabled=busy || rec().status==="help";
-    };
-    function edit(answer,meta={}) {
-      const old=rec();
-      const originally=old.status || "attempted";
-      const changed=answer!==old.answer;
-      setResponse(c,{answer,...meta,status:changed?"attempted":originally});
-      if (changed) {
-        notice(status,"","neutral");
-        if (c.type==="code")runOutput.hidden=true;
-      }
-      updateControls();
-    }
-
-    if (c.type==="rag") renderRag(c,root,saved,edit);
-    else if (["mc","peer"].includes(c.type)) renderChoices(c,root,saved,edit);
-    else if (c.type==="type") currentWidget=useTyping(c,root,saved,edit);
-    else if (c.type==="blank") {
-      const field=element("input",null,"mono",{type:"text",id:"current-response",maxlength:420,spellcheck:"false",autocapitalize:"off",autocorrect:"off",placeholder:c.placeholder || "Type the missing code"});
-      field.value=asText(saved.answer);
-      field.addEventListener("input",()=>edit(field.value));
-      append(root,element("label","Your missing code","form-label",{for:"current-response"}),field);
-    } else if (c.type==="compare") {
-      append(root,append(element("div",null,"compare-grid"),codePanel("Your assessment code",c.submitted),codePanel("Worked example",c.model)));
-      if (c.feedback) root.append(details("Show marking feedback",c.feedback));
-      renderText(c,root,saved,edit);
-    } else if (c.type==="code") {
-      if (c.sample) root.append(details("Show a worked example",c.sample));
-      const input=element("textarea",null,"code-editor",{id:"current-response",rows:6,maxlength:3000,spellcheck:"false",autocapitalize:"off",autocorrect:"off",autocomplete:"off","aria-label":"Python practice editor"});
-      input.value=typeof saved.answer==="string" ? saved.answer : asText(c.starter);
-      append(root,append(element("div",null,"code-panel"),element("label","Python editor","code-header",{for:"current-response"}),input),indentControl(input),element("p","Run Python to check your answer.","helper-copy"),runOutput);
-      input.addEventListener("input",()=>edit(input.value));
-      input.addEventListener("keydown",e=>{
-        if (e.key==="Enter" && (e.ctrlKey||e.metaKey)){e.preventDefault();performCheck();}
-      });
-      currentWidget={input};
-    } else if (c.type!=="instruction") renderText(c,root,saved,edit);
-
-    notes(c,root);
-    append(cardHost,root,status);
-
-    async function performCheck() {
-      if (busy || (rec().status && rec().status!=="help" && activeStatuses.includes(rec().status))) return;
-      const {answer}=rec();
-      const checked=checkTypes.includes(c.type);
-      let ok=false;
-      let detail="";
-      if (c.type==="code") {
-        const code=currentWidget?.input.value || "";
-        if (!code.trim()) { notice(status,"Write a line of Python before running it.","warning"); return; }
-        if (!Array.isArray(c.tests)||!c.tests.length || typeof window.runPython!=="function") {
-          notice(status,"The Python runner is unavailable for this card. Save your work and mark it for help.","warning"); return;
-        }
-        busy=true;
-        updateControls();
-        notice(status,"Running Python…","neutral");
-        try {
-          const result=await window.runPython(code,c.tests);
-          if (!result || typeof result.passed!=="boolean") throw new Error("No Python result");
-          ok=result.passed;
-          detail=ok?"Your output matches the expected result.":"Compare the output with the expected result. Then edit and run again.";
-          runOutput.replaceChildren();
-          (result.results || []).slice(0,4).forEach((row,i)=>{
-            const p=element("p",(result.results.length>1?"Test "+(i+1)+" · ":"")+(row.passed?"Matches":"Needs another try"));
-            const out=row.error?"Python message: "+asText(row.error):"Output: "+(asText(row.output)||"(nothing printed)")+"\nExpected: "+asText(row.expected);
-            append(runOutput,p,element("pre",out));
-          });
-          runOutput.hidden=!runOutput.childElementCount;
-        } catch (e) {
-          detail="Python could not run. Try a smaller change, or mark this card for help.";
-          if (e instanceof Error && e.message) append(runOutput,element("pre",e.message));
-          runOutput.hidden=!runOutput.childElementCount;
-        } finally {
-          busy=false;
-        }
-        setResponse(c,{answer:code,checkedCode:code.slice(0,3000),checkedAt:Date.now(),status:ok?"correct":"attempted",attempts:(rec().attempts||0)+1});
-      } else {
-        if (!nonempty(answer) || !peerReady()) {
-          notice(status,c.type==="peer"?"Ask your partner to choose a rating and type a reason.":"Add a response first, or mark the card for help.","warning");
-          return;
-        }
-        if (c.type==="type") {
-          const normalized=asText(answer).replace(/\r\n/g,"\n");
-          ok=normalized===currentWidget.target;
-          detail=ok?"Exact match. Nice work!":"Look at the target again. Check spaces, brackets, quotes and capital letters.";
-          setResponse(c,currentWidget.snapshot(asText(answer),true));
-        } else if (c.type==="mc") {
-          ok=Number(answer)===Number(c.correct);
-          detail=ok?"That’s right.":"Not quite. Read the example again or open the hint.";
-        } else if (c.type==="blank") {
-          const clean=x=>asText(x).replace(/\r\n/g,"\n").trim();
-          ok=(Array.isArray(c.answers)?c.answers:[c.answer]).some(x=>x!=null&&clean(x)===clean(answer));
-          detail=ok?"Correct.":"Not yet. Check the exact Python spelling and punctuation.";
-        } else {
-          ok=true;detail=c.type==="peer"?"Peer rating saved.":"Saved.";
-        }
-        const keyedFeedback=ok?c.correctFeedback || c.feedbackOk:c.incorrectFeedback || c.feedbackWrong;
-        if (keyedFeedback) detail=asText(keyedFeedback);
-        else if (c.type==="mc" && ok && typeof c.feedback==="string") detail+=" "+c.feedback;
-        setResponse(c,{status:ok?(checked?"correct":"recorded"):"attempted",attempts:(rec().attempts||0)+1});
-      }
-      notice(status,detail,ok?"positive":"warning");
-      updateControls();
-    }
-
-    function move(delta) {
-      if (busy) return;
-      if (delta>0 && c.type==="instruction") setResponse(c,{status:"recorded"});
-      state.index=Math.max(0,Math.min(cards.length-1,state.index+delta));
-      save();
-      drawCard(true);
-    }
-
-    const back=button(label("Back"),()=>{
-      if(busy)return;
-      if(state.index>0)move(-1);
-      else drawName(true);
-    },"",{id:"go-back"});
-    const actions=element("div",null,"actions-right");
-    if (c.type!=="instruction") {
-      const action= c.type==="code"?"Run Python":checkTypes.includes(c.type)?"Check":"Save my answer";
-      check=button(label(action),performCheck,"",{id:"check-answer"});
-      const isShort = c.type==="type" || c.type==="blank";
-      if (isShort) root.addEventListener("keydown",e=>{
-        if(e.key==="Enter" && (e.ctrlKey||e.metaKey)) { e.preventDefault(); performCheck(); }
-      });
-      needHelp=button("Mark for help and continue",()=>{
-        if(busy)return;
-        setResponse(c,{status:"help"});
-        move(1);
-      },"subtle",{id:"mark-help"});
-      append(actions,needHelp,check);
-    }
-    next=button(label("Next")+" →",()=>move(1),"primary",{id:"go-next"});
-    append(actions,next);
-    append(cardHost,append(element("div",null,"card-actions"),back,actions));
-    if (saved.status==="correct") notice(status,"Checked and correct.","positive");
-    if (saved.status==="recorded") notice(status,"Saved.","positive");
-    if (saved.status==="help") notice(status,"Marked for help. You can still try again.","warning");
-    if (saved.status==="attempted" && saved.attempts>0) notice(status,"Your previous answer is saved. You can check again or mark for help.","neutral");
-    updateControls(); updateProgress();
-    if(focus)focusHeading();
-  }
-
-  function encodeProgress() {
-    const rows=cards.filter(c=>c.type!=="finish").map(c=>{
-      const rec=state.responses[c.id]||{};
-      const row={id:c.id,title:asText(c.title),topic:asText(c.topic||c.phase||c.section),type:c.type,status:rec.status||"unvisited"};
-      if (rec.attempts>0)row.attempts=rec.attempts;
-      if (reflectiveTypes.includes(c.type) && nonempty(rec.answer)) row.answer=asText(rec.answer).slice(0,1500);
-      if (c.type==="type" && Number.isFinite(rec.accuracy)) row.accuracy=rec.accuracy;
-      if (c.type==="type" && Number.isFinite(rec.wpm)) row.wpm=rec.wpm;
-      return row;
-    });
-    const count=s=>rows.filter(r=>r.status===s).length;
-    return {
-      schema:"year8-python-reflection/v1",sessionId,sessionDate,className,
-      pupil:{id:String(profile.id||"demo"),firstName:asText(profile.firstName||profile.name),route:asText(profile.route)},
-      createdAt:new Date().toISOString(),
-      summary:{total:rows.length,completed:count("correct")+count("recorded")+count("help"),correct:count("correct"),recorded:count("recorded"),needsHelp:count("help"),unvisited:count("unvisited")},
-      cards:rows
-    };
-  }
-
-  function detailsSummary(root, pack, compact) {
-    const m=pack.summary;
-    const box=element("div",null,"summary-counters");
-    for (const [value,body] of [[m.completed+"/"+m.total,"Cards completed"],[m.correct,"Checked correct"],[m.needsHelp,"Marked for help"],[m.unvisited,"Still to try"]]) {
-      append(box,append(element("div",null,"summary-count"),element("strong",value),element("span",body)));
-    }
-    root.append(box);
-    const practice=cards.filter(c=>c.type==="code" && asText(state.responses[c.id]?.checkedCode).trim())
-      .sort((a,b)=>(state.responses[b.id].checkedAt||0)-(state.responses[a.id].checkedAt||0))[0];
-    if (practice) {
-      const dt=element("details");
-      dt.append(element("summary","My most recent practice program"));
-      dt.append(codePanel(practice.title,state.responses[practice.id].checkedCode));
-      dt.append(element("p","Tell your teacher what this program does and why you used one line.","helper-copy"));
-      root.append(dt);
-    }
-    const reflections=pack.cards.filter(x=>reflectiveTypes.includes(x.type)&& nonempty(x.answer));
-    const flags=pack.cards.filter(x=>x.status==="help");
-    if (flags.length) {
-      const dt=element("details");
-      if (!compact)dt.open=true;
-      dt.append(element("summary","Where I asked for help ("+flags.length+")"));
-      const list=element("ul");
-      for (const f of flags)list.append(element("li",f.title));
-      dt.append(list);
-      root.append(dt);
-    }
-    if (reflections.length) {
-      const dt=element("details");
-      dt.open=true;
-      dt.append(element("summary","My reflections and peer checks"));
-      for (const row of reflections) {
-        append(dt,append(element("div",null,"summary-answer"),
-          element("strong",row.title),
-          element("span",row.status==="recorded"?"Saved":"Draft","summary-chip",{"data-status":row.status}),
-          element("p",row.answer)));
-      }
-      root.append(dt);
-    } else root.append(element("p","No reflections have been entered yet.","helper-copy"));
-  }
-
-  function download() {
-    const data=encodeProgress();
-    const safe=(data.pupil.firstName||data.pupil.id).replace(/[^\p{L}\p{N}_-]+/gu,"-").slice(0,40)||"student";
-    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
-    const a=element("a",null,null,{href:url,download:className+"-"+safe+"-reflection.json"});
-    a.hidden=true;
-    document.body.append(a);
-    a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),60000);
-  }
-
-  function displayTeacher() {
-    if (!active) return;
-    const pack=encodeProgress(), root=$("teacher-content");
-    root.replaceChildren();
-    append(root,element("h2","My lesson summary",null,{id:"teacher-heading"}),element("p","Show one example to your teacher. Explain what your Python line does and why you used it.","card-copy"));
-    detailsSummary(root,pack,true);
-    append(root,
-      append(element("div",null,"button-row"),button("Download summary",download,"primary"),button("Back to my card",()=>teacherDialog.close())));
-    if (typeof teacherDialog.showModal==="function") teacherDialog.showModal();
-    else teacherDialog.setAttribute("open","");
-  }
-
-  function drawFinish(c) {
-    const m=encodeProgress();
-    const root=element("div",null,"review-layout");
-    root.append(element("p",m.summary.needsHelp?"Show one challenge you can explain and one place you want help.":"Choose one example. Tell your teacher what it does and why you used that syntax.","card-copy"));
-    renderPrompts(c,root);
-    detailsSummary(root,m,false);
-    cardHost.append(root);
-    append(cardHost,append(element("div",null,"card-actions"),
-      button(label("Back"),()=>{state.index=Math.max(0,state.index-1);save();drawCard(true);}), 
-      append(element("div",null,"actions-right"),button("Download summary",download),button(label("Show my teacher"),displayTeacher,"primary"))));
-  }
-
-  teacherOpen.addEventListener("click",displayTeacher);
-  if (profile.language==="zh") teacherOpen.textContent=label("Show my teacher");
-  if (options.initialClass === className) { selectedClass = className; drawName(true); }
-  else drawClass(false);
-  tick();
-  setInterval(tick,1000);
-};
-if (!window.CHECKPOINT_HOSTED) window.startCheckpointLesson(window.LESSON);
-</script><script>(() => {
+  <script>window.CHECKPOINT_PRIVATE_FILE_PREVIEW=true;window.CHECKPOINT_CURATED_PICKER=true;window.PRACTICE_GROUPS={"8T":[{"id":"a2d8b7989d364ac786ae54b82930eb84","name":"Noah","file":"lessons/lesson-a2d8b7989d364ac786ae54b82930eb84.html"},{"id":"f7e29e77c6c447218fdbd06b5535173c","name":"Jia Xin","file":"lessons/lesson-f7e29e77c6c447218fdbd06b5535173c.html"},{"id":"323fcb35ef954045bb8e6fc60430d165","name":"Chee Yee","file":"lessons/lesson-323fcb35ef954045bb8e6fc60430d165.html"},{"id":"973257594316448281bb8409542f136e","name":"Idzarra","file":"lessons/lesson-973257594316448281bb8409542f136e.html"},{"id":"fd01f063485b4a8d9b8fa3bfca225919","name":"Celeste","file":"lessons/lesson-fd01f063485b4a8d9b8fa3bfca225919.html"},{"id":"ba5a9bf648b5402ca85e62160cadc06c","name":"Chan Min","file":"lessons/lesson-ba5a9bf648b5402ca85e62160cadc06c.html"},{"id":"5ac8bb9e42cc4fd1a9d88353d1f250cc","name":"Kingston","file":"lessons/lesson-5ac8bb9e42cc4fd1a9d88353d1f250cc.html"},{"id":"8089c438749248dab5af4ce91bfa7d91","name":"Jason","file":"lessons/lesson-8089c438749248dab5af4ce91bfa7d91.html"},{"id":"8193103de50545d5b4b9c391e47c19a5","name":"Ken Shahin","file":"lessons/lesson-8193103de50545d5b4b9c391e47c19a5.html"},{"id":"a6ed704b555246b3ad603f6118d577e4","name":"Nakula","file":"lessons/lesson-a6ed704b555246b3ad603f6118d577e4.html"},{"id":"494d24fd7aeb4c80a795a7d93a173d98","name":"Justin","file":"lessons/lesson-494d24fd7aeb4c80a795a7d93a173d98.html"},{"id":"a1c8e9e44c824fad9ff0e7a42bc8c8a8","name":"Sihoo","file":"lessons/lesson-a1c8e9e44c824fad9ff0e7a42bc8c8a8.html"},{"id":"364ac33ad1c14a23a24f66d02aebd10a","name":"Khesav","file":"lessons/lesson-364ac33ad1c14a23a24f66d02aebd10a.html"},{"id":"0a0f4d298db34a26a954b769bb132df0","name":"Nevaan","file":"lessons/lesson-0a0f4d298db34a26a954b769bb132df0.html"},{"id":"d424fa94413c4de490bc1b2153ea4793","name":"Cora","file":"lessons/lesson-d424fa94413c4de490bc1b2153ea4793.html"},{"id":"13d915ef6d5d4500bee5b7188f77cdaf","name":"Shaayanaa","file":"lessons/lesson-13d915ef6d5d4500bee5b7188f77cdaf.html"},{"id":"7d3cbe3503c04722861301a53bb9a92f","name":"Daryan","file":"lessons/lesson-7d3cbe3503c04722861301a53bb9a92f.html"},{"id":"5159bce6e1df4cdab6466a45b4f76fa7","name":"Aleeya","file":"lessons/lesson-5159bce6e1df4cdab6466a45b4f76fa7.html"},{"id":"6dc8ab5e114b459b8d19a94c7840070b","name":"Bryson","file":"lessons/lesson-6dc8ab5e114b459b8d19a94c7840070b.html"},{"id":"6d4f2b7c2a01469c8f10a0d8de271889","name":"Ee Ther","file":"lessons/lesson-6d4f2b7c2a01469c8f10a0d8de271889.html"},{"id":"a5fd6e58c59d46388e5f0068cf74ec99","name":"Janyll","file":"lessons/lesson-a5fd6e58c59d46388e5f0068cf74ec99.html"}]};</script>
+  
+  <script>(function () {
   "use strict";
 
-  const MAX_FILE_BYTES = 2_000_000;
-  const MAX_PAYLOAD = 325_000;
-  const MARKER = "<script>window.LESSON=";
-  const END = ";<\/script>";
-  const CLASSES = ["8T", "8E"];
-  const CARD_TYPES = ["type", "mc", "blank", "code", "reflect", "peer", "rag", "compare", "finish", "instruction"];
-  const STATUS = ["Secure", "Developing", "Revisit", "No evidence"];
-  const IDENTIFIER = /^[a-z0-9][a-z0-9-]{0,63}$/i;
-  const DISPLAY_NAME = /^[\p{L}\p{M}][\p{L}\p{M}'’ .-]{0,69}$/u;
-  const DATE = /^\d{4}-\d{2}-\d{2}$/;
-  const CLOCK = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-  const fail = () => { throw new Error("That isn’t a private Python Checkpoint Lab pupil file. Choose the original HTML file from your teacher."); };
-  const object = x => x !== null && typeof x === "object" && !Array.isArray(x);
-  const text = (x, max = 3000) => typeof x === "string" && x.length <= max && !x.includes("\u0000");
-  const id = x => text(x, 64) && IDENTIFIER.test(x) && !Object.hasOwn(Object.prototype, x) && x !== "prototype";
-  const inList = (v, options) => options.includes(v);
-  const textList = (x, limit, max) => Array.isArray(x) && x.length > 0 && x.length <= limit && x.every(v => text(v, max));
-  function day(value) {
-    if (typeof value !== "string" || !DATE.test(value)) return false;
-    const t = Date.parse(value+"T00:00:00.000Z");
-    return Number.isFinite(t) && new Date(t).toISOString().startsWith(value+"T");
-  }
-
-  function cleanCard(x) {
-    if (!object(x) || !id(x.id) || !inList(x.type, CARD_TYPES) || !text(x.title, 160) || !x.title.trim()) fail();
-    const result = {id:x.id, type:x.type, title:x.title};
-    for (const key of ["body","topic","phase","section","help","zh","prompt","answerLabel","placeholder",
-      "sample","starter","submitted","model","feedback","correctFeedback","incorrectFeedback","feedbackOk","feedbackWrong","answer"]) {
-      if (!Object.hasOwn(x, key) || x[key] === undefined) continue;
-      if (!text(x[key])) fail();
-      result[key] = x[key];
-    }
-    for (const [key, limit] of [["choices",8],["answers",12],["prompts",8]]) {
-      if (!Object.hasOwn(x,key)) continue;
-      if (!textList(x[key],limit,1000)) fail();
-      result[key]=x[key].slice();
-    }
-    if (x.type === "mc") {
-      if (!result.choices || result.choices.length < 2 || !Number.isInteger(x.correct) || x.correct < 0 || x.correct >= result.choices.length) fail();
-      result.correct=x.correct;
-    }
-    if (x.type === "blank" && !result.answers) fail();
-    if (x.type === "type" && !result.sample?.trim()) fail();
-    if (x.type === "compare" && !result.model?.trim()) fail();
-    if (x.type === "code") {
-      if (!Array.isArray(x.tests) || x.tests.length === 0 || x.tests.length > 12) fail();
-      result.tests=x.tests.map(t => {
-        if (!object(t) || !text(t.input) || !text(t.output)) fail();
-        return {input:t.input,output:t.output};
-      });
-    }
-    return result;
-  }
-
-  function decode(html) {
-    if (!text(html, MAX_FILE_BYTES)) fail();
-    const start=html.indexOf(MARKER);
-    if (start < 0 || html.indexOf(MARKER,start + MARKER.length) !== -1) fail();
-    const a=start + MARKER.length, z=html.indexOf(END,a);
-    if (z < 0 || z-a > MAX_PAYLOAD || z-a < 20) fail();
-    const encoded=html.slice(a,z);
-    let x;
-    try { x=JSON.parse(encoded); } catch { fail(); }
-    if (!object(x) || x.mode !== "private" || !inList(x.className,CLASSES) || !day(x.sessionDate) ||
-        (x.date !== undefined && x.date !== x.sessionDate) || x.sessionId !== "8-python-reflection-"+x.sessionDate ||
-        !CLOCK.test(x.sessionStart || "") || !CLOCK.test(x.sessionEnd || "") || x.sessionStart >= x.sessionEnd) fail();
-    if (!Array.isArray(x.names) || x.names.length === 0 || x.names.length > 70) fail();
-    const names=x.names.map(n => {
-      if (!object(n) || !id(n.id) || !text(n.name,70) || !DISPLAY_NAME.test(n.name)) fail();
-      return {id:n.id,name:n.name};
-    });
-    if (new Set(names.map(n => n.id)).size !== names.length) fail();
-    const p=x.profile;
-    if (!object(p) || !id(p.id) || !names.some(n => n.id === p.id && n.name === p.name) ||
-        !inList(p.route,["foundation","review"]) || !inList(p.language,["en","zh"]) ||
-        !Array.isArray(p.rag) || p.rag.length === 0 || p.rag.length > 24) fail();
-    const rag=p.rag.map(r => {
-      if (!object(r) || !text(r.title,180) || !r.title.trim() || !text(r.description,650) || !inList(r.status,STATUS)) fail();
-      const item={title:r.title,description:r.description,status:r.status};
-      for (const key of ["zhTitle","zhDescription"]) {
-        if (r[key] === undefined) continue;
-        if (!text(r[key],650)) fail();
-        item[key]=r[key];
-      }
-      return item;
-    });
-    if (!Array.isArray(x.cards) || x.cards.length === 0 || x.cards.length > 140) fail();
-    const cards=x.cards.map(cleanCard);
-    if (new Set(cards.map(c => c.id)).size !== cards.length) fail();
-    return {
-      encoded,
-      lesson:{
-        mode:"private",className:x.className,sessionId:x.sessionId,sessionDate:x.sessionDate,
-        date:x.sessionDate,sessionStart:x.sessionStart,sessionEnd:x.sessionEnd,
-        names,profile:{id:p.id,name:p.name,route:p.route,language:p.language,rag},cards
-      }
-    };
-  }
-  async function identity(encoded) {
-    if (!window.crypto?.subtle) return null;
-    const bytes=new TextEncoder().encode(encoded);
-    const digest=new Uint8Array(await window.crypto.subtle.digest("SHA-256",bytes));
-    return Array.from(digest,b => b.toString(16).padStart(2,"0")).join("");
-  }
-  // The importer can be exercised with fictional fixtures without reading a real pupil file.
-  window.decodeCheckpointPupilFile=decode;
-
-  const card=document.getElementById("card");
+  const card = document.getElementById("card");
   if (!card) return;
-  const footer=document.getElementById("footer-note");
-  let selectedClass=null, generation=0;
-  function element(tag,value,css,attrs) {
-    const node=document.createElement(tag);
-    if (value != null) node.textContent=String(value);
-    if (css) node.className=css;
-    for (const [name,value] of Object.entries(attrs || {})) node.setAttribute(name,String(value));
+
+  const footer = document.getElementById("footer-note");
+  const groups = window.PRACTICE_GROUPS || {};
+  const localFilePreview = window.CHECKPOINT_PRIVATE_FILE_PREVIEW === true;
+  const curatedPicker = window.CHECKPOINT_CURATED_PICKER === true;
+  const classes = localFilePreview ? Object.keys(groups) : ["8T", "8E"];
+  let screen = 0;
+
+  function el(tag, text, className, attributes = {}) {
+    const node = document.createElement(tag);
+    if (text != null) node.textContent = text;
+    if (className) node.className = className;
+    for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
     return node;
   }
-  function button(value,handler,css="btn") {
-    const n=element("button",value,css,{type:"button"});
-    n.addEventListener("click",handler);
-    return n;
+
+  function button(text, handler, className = "btn") {
+    const node = el("button", text, className, {type: "button"});
+    node.addEventListener("click", handler);
+    return node;
   }
-  function screen(title,tag,body,focus) {
-    card.replaceChildren(
-      element("p",tag,"eyebrow"),
-      element("h1",title,null,{id:"card-title",tabindex:"-1"}),
-      element("p",body,"card-copy")
-    );
-    if (footer) footer.textContent="No pupil records are stored on this website.";
-    if (focus) card.querySelector("h1").focus();
+
+  function render(title, eyebrow, copy, focus) {
+    const heading = el("h1", title, "", {id: "card-title", tabindex: "-1"});
+    card.replaceChildren(el("p", eyebrow, "eyebrow"), heading, el("p", copy, "card-copy"));
+    if (footer) footer.textContent = curatedPicker
+      ? "This opens your practice. Read your own scores and teacher comments in Teams."
+      : localFilePreview
+      ? "Teacher-only local preview. Name selection is not a sign-in. Do not publish or share this folder."
+      : "This page opens practice activities, not your assessment record.";
+    if (focus) heading.focus();
+    return heading;
   }
-  function trySample() {
-    if (!window.DEMO_LESSON || typeof window.startCheckpointLesson !== "function") return;
-    generation++;
-    window.startCheckpointLesson(window.DEMO_LESSON,{initialClass:window.DEMO_LESSON.className, hosted:true});
-  }
-  function chooseClass(focus=false) {
-    generation++;
-    selectedClass=null;
-    screen("Choose your class","START HERE","Pick your Computer Science class. You’ll need the private lesson file from your teacher.",focus);
-    const choices=element("div",null,"class-choices");
-    for (const className of CLASSES) {
-      const tile=button(null,() => chooseFile(className),"class-tile");
-      tile.append(element("strong",className),element("span","Year "+className));
+
+  function chooseClass(focus = false) {
+    screen++;
+    render("Choose your class", "START HERE", "Choose your Computer Science class.", focus);
+    const choices = el("div", "", "class-choices");
+    for (const className of classes) {
+      const tile = button(null, () => chooseName(className), "class-tile");
+      tile.append(el("strong", className), el("span", "Year " + className));
       choices.append(tile);
     }
     card.append(choices);
-    if (window.DEMO_LESSON) {
-      const actions=element("div",null,"card-actions");
-      actions.append(button("Try a sample",trySample,"btn subtle"));
-      card.append(actions);
+  }
+
+  function chooseName(className) {
+    const screenId = ++screen;
+    const entries = Array.isArray(groups[className]) ? groups[className] : [];
+    const names = entries.filter(entry =>
+      entry && typeof entry.id === "string" && entry.id && typeof entry.name === "string" && entry.name.trim()
+    ).slice().sort((a, b) => a.name.localeCompare(b.name, "en", {sensitivity: "base"}));
+
+    if (!names.length) {
+      render("Year " + className + " is not open yet", className + " · PRACTICE",
+        "Ask your teacher when your class can start.", true);
+      const row = el("div", "", "card-actions");
+      row.append(button("Back to classes", () => chooseClass(true)));
+      card.append(row);
+      return;
     }
-  }
-  function chooseFile(className) {
-    selectedClass=className;
-    const thisScreen=++generation;
-    const note=className === "8E"
-      ? "There is no 8E pupil pack for the current release. When your teacher gives you your own file, you can open it here."
-      : "Choose the HTML lesson file your teacher sent just to you. Your work and feedback stay in this browser.";
-    screen("Open your private lesson file",className+" · NEXT STEP",note,true);
-    const input=element("input",null,null,{
-      id:"pupil-file",type:"file",accept:".html,.htm,text/html",hidden:"hidden"
+
+    render("Choose your first name", className + " · START HERE",
+      "Choose your name from the list, then press Next to open your course.", true);
+
+    const form = el("div", "", "name-fields");
+    const select = el("select", "", "", {id: "name-choice", "aria-describedby": "name-status"});
+    const search = el("input", null, "", {
+      id: "name-search", type: "search", placeholder: "Type a first name",
+      autocomplete: "off", "aria-controls": "name-choice"
     });
-    const status=element("p",null,"helper-copy",{id:"pupil-file-status",role:"status","aria-live":"polite"});
-    const open=button("Choose my lesson file",() => input.click(),"btn primary");
-    const row=element("div",null,"upload-actions");
-    row.append(open, input, button("Back to classes",() => chooseClass(true),"btn"));
-    card.append(row,status);
-    input.addEventListener("change",async () => {
-      const file=input.files?.[0];
-      input.value="";
-      if (!file) return;
-      status.textContent="Reading the file on this device…";
-      open.disabled=true;
+    const status = el("p", "", "status", {id: "name-status", role: "status", "aria-live": "polite"});
+    const next = button("Next", start, "btn primary");
+    const searchButton = button("Search", () => filter(true));
+    const searchRow = el("div", "", "search-row");
+    const actions = el("div", "", "card-actions");
+    const back = button("Back to classes", () => chooseClass(true));
+    searchRow.append(search, searchButton);
+    actions.append(back, next);
+    form.append(el("label", "Search by first name (optional)", "form-label", {for: "name-search"}), searchRow,
+      el("label", "First name", "form-label", {for: "name-choice"}), select, status, actions);
+    card.append(form);
+
+    function setStatus(message, warning = false) {
+      status.textContent = message;
+      status.dataset.tone = warning ? "warning" : "neutral";
+    }
+
+    function selection() {
+      return names.find(entry => entry.id === select.value);
+    }
+
+    function normalize(s) {
+      return s.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    function filter(commit) {
+      const query = normalize(search.value);
+      const matches = names.filter(entry => normalize(entry.name).includes(query));
+      const previous = select.value;
+      select.replaceChildren(el("option", matches.length ? "Select your first name" : "No names found", "", {value: ""}),
+        ...matches.map(entry => el("option", entry.name, "", {value: entry.id})));
+      if (commit && matches.length === 1) select.value = matches[0].id;
+      else if (matches.some(entry => entry.id === previous)) select.value = previous;
+      next.disabled = !selection();
+      if (!matches.length) setStatus("No matches. Clear the search to see all names.", true);
+      else if (commit) setStatus(matches.length === 1 ? matches[0].name + " selected." : matches.length + " names found.");
+      else setStatus("");
+    }
+
+    async function start() {
+      const selected = selection();
+      if (!selected || next.disabled || screenId !== screen) return;
+      next.disabled = true;
+      setStatus("Opening your course…");
       try {
-        if (file.size > MAX_FILE_BYTES) fail();
-        const {encoded,lesson}=decode(await file.text());
-        if (lesson.className !== className) {
-          throw new Error("That file is for "+lesson.className+". Go back and choose that class.");
+        if (localFilePreview) {
+          if (!/^lessons\/lesson-[a-f0-9]{32}\.html$/.test(selected.file)) throw new Error();
+          window.location.assign(selected.file + (curatedPicker ? "" : "#preview-start"));
+          return;
         }
-        if (typeof window.startCheckpointLesson !== "function") throw new Error("The lesson couldn’t start. Refresh this page and try again.");
-        let fileIdentity=null;
-        try { fileIdentity=await identity(encoded); } catch { /* An older browser may not hash locally. */ }
-        if (generation !== thisScreen || selectedClass !== className) return;
-        window.startCheckpointLesson(lesson,{initialClass:className,hosted:true,fileIdentity});
-      } catch(error) {
-        if (generation !== thisScreen) return;
-        status.textContent=error instanceof Error ? error.message : "The file could not be opened.";
-        open.disabled=false;
+        if (typeof window.practiceLessonFor !== "function" || typeof window.startCheckpointLesson !== "function") throw new Error();
+        const lesson = await window.practiceLessonFor(className, selected.id);
+        if (screenId !== screen) return;
+        if (!lesson || !Array.isArray(lesson.cards) || !lesson.cards.length) throw new Error();
+        window.startCheckpointLesson(lesson, {initialClass: className, hosted: true, beginDirect: true, selfSelected: true});
+      } catch {
+        if (screenId !== screen) return;
+        next.disabled = !selection();
+        setStatus("The course did not open. Try Next again, or ask your teacher.", true);
       }
+    }
+
+    search.addEventListener("input", () => filter(false));
+    search.addEventListener("keydown", event => {
+      if (event.key === "Enter") { event.preventDefault(); filter(true); }
     });
+    select.addEventListener("change", () => { next.disabled = !selection(); setStatus(""); });
+    filter(false);
   }
+
   chooseClass();
 })();
 
