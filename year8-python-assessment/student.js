@@ -139,6 +139,10 @@ function htmlCode(value){return '<pre><code>'+esc(value)+'</code></pre>';}
 const caption=list=>esc(list[0])+(language?' <span class="translation-label" lang="'+(language===1?"zh-Hans":"ko")+'">'+word(list)+'</span>':"");
 function exampleHtml(q){
   if(!q.exampleRuns?.length)return "";
+  if(q.showExpectedOutput){
+    return '<section class="example-run" aria-labelledby="example-heading"><h3 id="example-heading">'+caption(copy.output)+'</h3>'+
+      '<div class="example-io">'+htmlCode(q.exampleRuns[0].output)+'</div></section>';
+  }
   const cell=(name,value)=>'<div><dt>'+caption(name)+'</dt><dd>'+htmlCode(value)+'</dd></div>';
   return '<section class="example-run" aria-labelledby="example-heading"><h3 id="example-heading">'+caption(q.exampleRuns.length===1?copy.example:copy.examples)+'</h3>'+
     (q.exampleContext?instruction(q.exampleContext):"")+q.exampleRuns.map(run=>'<dl class="example-io">'+
