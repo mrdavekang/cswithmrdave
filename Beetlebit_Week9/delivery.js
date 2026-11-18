@@ -262,7 +262,7 @@ function deliveryContent(kind) {
     case 'evidence':
       return `<label class="field">Where did each run stop?<textarea id="delivery-evidence" maxlength="240" placeholder="Example: Run 1 stopped short. Run 2 landed inside the bay.">${esc(delivery.evidence)}</textarea></label>`;
     case 'debrief':
-      return `<p class="instruction">${delivery.evidence?esc(delivery.evidence):'Tell Mr Kang one thing you learned from the test.'}</p><div class="support-links">${link(DELIVERY_CHAPTER,'Cytron · Chapter 6','')}${btn('Save & pack','data-view="pack"')}</div>`;
+      return `<p class="instruction">${delivery.evidence?esc(delivery.evidence):'Tell Mr Kang one thing you learned from the test.'}</p><div class="support-links">${link(DELIVERY_CHAPTER,'Cytron · Chapter 6','')}${btn('Next Mission: Sensor Stop','data-sensor-start')}${btn('Save & pack','data-view="pack"')}</div>`;
     case 'sensor':
       return deliveryArt('sensor')+deliverySource('sensor');
     case 'sensorCheck':
