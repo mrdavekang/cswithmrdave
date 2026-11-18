@@ -35,6 +35,10 @@ const copy={
   parsons:["Put the blocks in order from top to bottom. Each block already has its indentation.","把代码块从上到下排好。每块都已设置缩进。","코드 블록을 위에서 아래로 배열하세요. 각 블록에는 이미 들여쓰기가 적용되어 있습니다."],
   reorder:["Drag the dotted handle and drop at the blue line. You can also use Up and Down.","拖动点状手柄，在蓝线处放下。也可以使用 Up（上移）和 Down（下移）。","점 모양 손잡이를 끌어 파란 선에 놓으세요. Up(위)과 Down(아래) 버튼을 사용해도 됩니다."],
   code:["The starter code runs first. Type only your additions in Your Python code. Select Run Python to check your output. Running does not submit your answer.","起始代码会先运行。请只在“Your Python code”中填写你添加的代码。点击“Run Python”查看输出；运行不等于提交。","시작 코드가 먼저 실행됩니다. ‘Your Python code’에 추가할 코드만 쓰세요. ‘Run Python’을 눌러 출력을 확인하세요. 실행해도 답안은 제출되지 않습니다."],
+  consoleInput:["When you select Run Python, the console asks you to type a test value. The starter code stores that value in entry for your code to use.","点击“Run Python”后，控制台会请你输入测试值。起始代码会将该值存入 entry，供你的代码使用。","‘Run Python’을 누르면 콘솔에 테스트 값을 입력할 수 있습니다. 시작 코드는 입력한 값을 entry에 저장합니다."],
+  inputLabel:["Program input","程序输入","프로그램 입력"],
+  sendInput:["Send input","发送输入","입력 보내기"],
+  waitingForInput:["Waiting for your input…","正在等待输入…","입력을 기다리는 중…"],
   requirements:["What your program must do","程序要求","프로그램 요구 사항"],
   example:["Example run","运行示例","실행 예시"],
   examples:["Example runs","运行示例","실행 예시"],
@@ -54,6 +58,7 @@ const t=v=>Array.isArray(v)?v:[v];
 let language=0, session=null, question="1", fromReview=false, draft={answers:{},flags:[]}, revision=0, offset=0, orderDrag=null, reviewPage=0;
 let nextDeadlineCheck=0;
 let version=0, savedVersion=0, warning="", uploading=false, polling=false, timeout=0, runner=null, runGeneration=0, localWorks=true, conflicted=false;
+let pendingProgramInput=null;
 try{language=Number(localStorage.getItem("y8test-language")||0);}catch{localWorks=false;}
 if(![0,1,2].includes(language))language=0;
 el("language").value=language;
@@ -198,11 +203,14 @@ function questionHtml(q){
   if(q.kind==="blank")body='<label class="field">Your answer<input id="blank" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" maxlength="100" value="'+esc(draft.answers[q.id])+'"></label>';
   if(q.kind==="parsons")body=exampleHtml(q)+orderHtml(q);
   if(q.kind==="code")body='<section class="requirements" aria-labelledby="requirements-heading"><h3 id="requirements-heading">'+caption(copy.requirements)+'</h3><ul class="questions-list">'+q.instructions.map(s=>'<li>'+instruction(s)+'</li>').join("")+'</ul>'+(q.requirementNote?instruction(q.requirementNote):"")+'</section>'+exampleHtml(q)+
-    '<p class="starter-label">Starter code · read only</p>'+htmlCode(q.starter)+instruction(copy.code)+
+    '<p class="starter-label">Starter code · runs automatically</p>'+htmlCode(q.starter)+instruction(copy.code)+
+    (q.sample!==undefined?instruction(copy.consoleInput):"")+
     '<label class="field">Your Python code<textarea id="editor" class="editor" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" maxlength="6000" placeholder="Type your code here">'+esc(draft.answers[q.id])+'</textarea></label>'+
-    (q.sample?'<label class="field small-field">Test input<input id="test-input" inputmode="numeric" maxlength="30" value="'+esc(q.sample)+'"></label>':'')+
     '<div class="toolbar"><button class="secondary run-action" data-act="run">Run Python</button><button class="secondary" data-act="stop">Stop</button><button class="secondary" data-act="indent">Indent 4 spaces</button></div>'+
-    '<div class="console"><span class="output-label">YOUR OUTPUT</span><pre id="run-output" role="status">Your output appears here.</pre></div>';
+    '<div class="console"><span class="output-label">PYTHON CONSOLE</span><pre id="run-output" role="status" tabindex="-1">Your output appears here.</pre>'+
+    '<form id="program-input-form" hidden><label for="program-input" id="program-input-label">'+word(copy.inputLabel)+'</label>'+
+    '<div class="program-input-row"><input id="program-input" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="1000"'+
+    (q.sample!==undefined?' placeholder="'+esc(q.sample)+'"':'')+'><button class="secondary" type="submit">'+word(copy.sendInput)+'</button></div></form></div>';
   return common+body+'<div class="action-footer between"><div class="toolbar">'+
     (q.id!=="1"?'<button class="secondary" data-go="'+(Number(q.id)-1)+'">Previous</button>':'')+flagButton(q)+
     '</div><button class="primary" data-go="'+(q.id==="20"||fromReview?"review":Number(q.id)+1)+'">'+(q.id==="20"||fromReview?"Review & submit":"Next question")+
@@ -274,25 +282,58 @@ function tick(){
   const warningText=secs===0?copy.timeUp[language]:secs<=300?copy.timeShort[language]:"";
   if(timerWarning.textContent!==warningText)timerWarning.textContent=warningText;
   if(secs===0&&session.questions){
+    if(runner)stopRun();
     main.querySelectorAll("input,textarea,button:not([data-act=download])").forEach(n=>{n.disabled=true;});
     note("Time is up. Waiting for the host to confirm your submission.",false);
     if(Date.now()>=nextDeadlineCheck){nextDeadlineCheck=Date.now()+3000;void refresh();}
   }
 }
-function stopRun(){runGeneration++;runner?.stop();runner=null;}
+function finishProgramInput(value){
+  const finish=pendingProgramInput;
+  pendingProgramInput=null;
+  finish?.(value);
+}
+function stopRun(){
+  runGeneration++;
+  runner?.stop();
+  runner=null;
+  finishProgramInput();
+}
 async function run(){
   stopRun();const generation=runGeneration, output=el("run-output");
   if(!output)return; output.textContent="Running…";
-  const q=session?.questions?.find(x=>x.id===question), data=el("test-input")?.value;
+  const q=session.questions.find(x=>x.id===question);
+  const inputForm=el("program-input-form"), field=el("program-input"), label=el("program-input-label");
   const code=q.starter+"\n"+(draft.answers[question]||"");
-  let asked=false;
-  runner=runSprintPython(code,{input:()=>{
-    if(data===undefined||asked)throw Error("No additional input is available.");
-    asked=true;return data;
-  }});
+  let transcript="";
+  function append(text){
+    transcript=(transcript+text).slice(-12000);
+    output.textContent=transcript;
+  }
+  runner=runSprintPython(code,{
+    output:append,
+    input:prompt=>new Promise(resolve=>{
+      const waiting=t(copy.waitingForInput)[language];
+      output.textContent=transcript||waiting;
+      label.textContent=prompt.trim()||t(copy.inputLabel)[language];
+      field.value="";
+      inputForm.hidden=false;
+      field.focus();
+      pendingProgramInput=value=>{
+        inputForm.hidden=true;
+        if(value!==undefined){
+          append((transcript&&!transcript.endsWith("\n")?"\n":"")+(prompt.trim()?prompt.trimEnd()+" ":"> ")+value+"\n");
+          output.focus({preventScroll:true});
+        }
+        resolve(value);
+      };
+    })
+  });
   const r=await runner.result;
   if(generation!==runGeneration)return;
-  runner=null;output.textContent=[r.stdout,r.error].filter(Boolean).join("\n").trim()||"No output.";
+  runner=null;
+  finishProgramInput();
+  output.textContent=[transcript.trimEnd(),r.error].filter(Boolean).join("\n")||"No output.";
 }
 function download(){
   const url=URL.createObjectURL(new Blob([JSON.stringify({attempt:session.id,form:session.form,draft},null,2)],{type:"application/json"}));
@@ -302,6 +343,11 @@ el("language").addEventListener("change",e=>{
   language=Number(e.target.value);try{localStorage.setItem("y8test-language",String(language));}catch{} stopRun();render();
 });
 main.addEventListener("submit",async e=>{
+  if(e.target.id==="program-input-form"){
+    e.preventDefault();
+    if(session?.questions&&!session.submitted&&Date.now()+offset<session.end)finishProgramInput(el("program-input").value);
+    return;
+  }
   if(e.target.id!=="join-form")return;e.preventDefault();
   const data=new FormData(e.target), b=e.target.querySelector("button");b.disabled=true;
   try{warning="";takeSession(await api("join",{form,name:data.get("name")}));}
