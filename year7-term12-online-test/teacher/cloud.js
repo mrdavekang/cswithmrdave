@@ -36,6 +36,8 @@
     await refreshing;return requireToken();
   }
   window.ExamCloud={
+    nameEntry:config.nameEntry===true,
+    joinName(name,device){return rpc('join_name',{p_name:name,p_device:device});},
     pupil(action,body={},code){return rpc('pupil',{p_action:action,p_code:code?.toLowerCase(),p_draft:body.draft??null,p_stamp:body.stamp??null});},
     hasTeacher:()=>!!teacherSession,
     async signIn(email,password){

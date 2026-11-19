@@ -10,6 +10,8 @@
   let zh=!!storage.get('ecofair-language'), mode='demo', screen='loading', content, attempt, draft, selected, savedAt, error='', online=true, localOK=true, dirty=false, stamp=0, confirmedStamp=-1, writer, sending=false, finished, expired=false, recovery=null;
   const storagePrefix=window.ExamCloud?'ecofair-live-v4-':'ecofair-v4-', sessionKey=storagePrefix+'session';
   let session=storage.get(sessionKey,true);
+  const nameEntry=window.ExamCloud?.nameEntry===true, deviceKey=storagePrefix+'named-device';
+  let typedName='';
   const calcState={}, calcOpen={}, workingOn=new Set(['B3','C3']), expandedSheets=new Set();
   let formulaMode=storage.get('ecofair-formula-mode')||(matchMedia('(pointer: coarse)').matches?'tap':'type');
   let tapKeyboard;
@@ -128,18 +130,26 @@
       '<h1 tabindex="-1">'+bi('Year 7 Computing assessment','七年级计算机科学测验')+'</h1>'+
       '<div class="start-facts"><span class="badge">'+btxt('45 minutes','45 分钟')+'</span><span class="badge">'+btxt('40 marks','40 分')+'</span><span class="badge">'+btxt('21 questions','21 道题')+'</span></div>'+
       '<p class="intro">'+bi('Read each question and answer in the space provided. Use Next and Back to move between questions. Review your answers before you submit. No other app is needed.','阅读每道题，在指定的位置作答。用“下一题”和“上一题”切换题目。提交前检查答案。不需要使用其他应用。')+'</p>'+
-      (window.ExamCloud?'<p class="message">'+bi('Wait for your teacher to start the shared 45-minute timer. Then enter your own private code.','请等老师启动全班共用的 45 分钟计时器，再输入你自己的测验代码。')+'</p>':'')+
+      (window.ExamCloud?'<p class="message">'+(nameEntry?bi('Wait for your teacher to start the shared 45-minute timer. Then enter your full name. Keep this browser tab open until you submit.','请等老师启动全班共用的 45 分钟计时器，再输入你的全名。提交前请保持此浏览器标签页打开。'):bi('Wait for your teacher to start the shared 45-minute timer. Then enter your own private code.','请等老师启动全班共用的 45 分钟计时器，再输入你自己的测验代码。'))+'</p>':'')+
       (mode==='demo'?banner('Local preview only. This build does not send answers to a teacher.','仅供本地预览。这个版本不会把答案发送给老师。'):'')+
-      (error?banner(error,'请检查测验代码或告诉老师。'):'')+
-      '<form id="entry-form">'+(mode==='secure'?'<div class="field"><label for="entry-code">'+bi('Your teacher-issued test code','老师发给你的测验代码')+'</label><input id="entry-code" class="textbox" type="password" required maxlength="64" autocapitalize="off" autocomplete="off" spellcheck="false"></div>':'')+
+      (error?banner(error,nameEntry?'请确认你的全名，并等老师开始测验。如有问题，请举手。':'请检查测验代码或告诉老师。'):'')+
+      '<form id="entry-form">'+(mode==='secure'?(nameEntry?'<div class="field"><label for="entry-name">'+bi('Your full name','你的全名')+'</label><input id="entry-name" class="textbox" required maxlength="100" autocapitalize="words" autocomplete="off" spellcheck="false" value="'+esc(typedName)+'"></div>':'<div class="field"><label for="entry-code">'+bi('Your teacher-issued test code','老师发给你的测验代码')+'</label><input id="entry-code" class="textbox" type="password" required maxlength="64" autocapitalize="off" autocomplete="off" spellcheck="false"></div>'):'')+
       '<div class="actions"><div class="left">'+btn('try-controls','Try the controls','试用操作','')+'</div><div class="right"><button class="btn primary" type="submit">'+btxt(mode==='demo'?(canContinue?'Resume preview':'Start preview'):'Start test',mode==='demo'?(canContinue?'继续预览':'开始预览'):'开始测验')+'</button></div></div></form>'));
     $('#try-controls').onclick=()=>{screen='try';render();};
     $('#entry-form').onsubmit=async e=>{
       e.preventDefault();if(sending)return;sending=true;error='';const button=e.currentTarget.querySelector('button[type=submit]');button.disabled=true;
       try {
         if(mode==='secure'){
-          const code=$('#entry-code').value.trim();
-          const data=await api('enter',{},code);
+          let code, data;
+          if(nameEntry){
+            typedName=$('#entry-name').value.trim();
+            code=storage.get(deviceKey,true)||crypto.randomUUID().replaceAll('-','');
+            if(!storage.put(deviceKey,code,true))throw Error('This browser cannot keep your attempt in this tab. Raise your hand.');
+            data=await ExamCloud.joinName(typedName,code);
+          }else{
+            code=$('#entry-code').value.trim();
+            data=await api('enter',{},code);
+          }
           session={code,data};enter(data,session);
         } else {
           const data=await localContent();
