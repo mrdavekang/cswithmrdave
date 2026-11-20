@@ -10,7 +10,50 @@ function get(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch{ret
 function put(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}}
 const state=Object.assign({done:{},drafts:{},scores:{},jamChecks:{},last:null,platform:'Scratch',explanations:{}},get(key)||{});
 let zh=Boolean(get('y9-cover-zh')), closeArt,stopWork,interval;
-const save=()=>put(key,state);
+// Merge changed answers into the current record when the lesson is open in two tabs.
+let snapshot=JSON.parse(JSON.stringify(state));
+function save(){
+ const latest=get(key)||{};
+ for(const [name,value] of Object.entries(state)){
+   if(JSON.stringify(value)===JSON.stringify(snapshot[name]))continue;
+   if(['drafts','done','scores','explanations','jamChecks','jamNeed','jamBenefit','answers'].includes(name)){
+     const merged={...latest[name]};
+     for(const [id,answer] of Object.entries(value)){
+       if(JSON.stringify(answer)!==JSON.stringify(snapshot[name]?.[id]))merged[id]=answer;
+     }
+     latest[name]=merged;
+   }else latest[name]=value;
+ }
+ if(put(key,latest)){snapshot=JSON.parse(JSON.stringify(state));return true;}
+ let warning=document.getElementById('storage-warning');
+ if(!warning){warning=document.createElement('p');warning.id='storage-warning';warning.setAttribute('role','status');warning.className='sample';document.querySelector('header').after(warning);}
+ warning.textContent='This browser could not save your progress. Keep this tab open and save your code or proposal separately. 本浏览器无法保存进度。请保留此页面，并另存程序或提案。';
+ return false;
+}
+state.answers=state.answers||{};
+function savedRoute(record){
+ if(!record)return '';
+ const last=record.last;
+ if(record.track==='jam'||(!last&&(record.jamTool||record.jamNeed||Object.values(record.jamChecks||{}).some(Boolean))))return '#jam';
+ if(last&&['core','bank'].includes(last.mode)&&Number.isInteger(last.i)&&last.i>=0&&last.i<56)return '#'+last.mode+'/'+last.i;
+ return record.track==='python'?'#python':'';
+}
+function resumeUrl(number){const prefix=number===day?'':'../year9-cover-day'+number+'/';return prefix+'#resume';}
+function resumeHeading(number,record){
+ const path=savedRoute(record);
+ if(!path)return pair('Open Day '+number, '打开第 '+number+' 天');
+ return path==='#jam'?pair('Continue Day '+number+' · Coding Jam','继续第 '+number+' 天的 Coding Jam'):pair('Continue Day '+number+' · Python','继续第 '+number+' 天的 Python');
+}
+function continuePanel(){
+ const first=day===1?state:get('y9-cover-arcade-v1-day1');
+ const same=savedRoute(state);
+ if(day===1&&!same&&!window.coverDay2Open())return '';
+ let buttons='';
+ if(day===2||same) buttons+='<a class="btn primary" href="'+resumeUrl(1)+'">'+resumeHeading(1,first)+'</a>';
+ if(day===2&&same) buttons+='<a class="btn" href="#resume">'+resumeHeading(2,state)+'</a>';
+ if(day===1&&window.coverDay2Open())buttons+='<a class="btn" href="../year9-cover-day2/">'+pair('Open Day 2','进入第二天')+'</a>';
+ return '<section class="panel"><h2>'+pair(day===2?'Still finishing Day 1?':'Pick up your work',day===2?'还在完成第一天的任务吗？':'继续之前的学习')+'</h2><p>'+pair('Use the same device and browser profile to return to your saved work. On a different device, use your saved Python file or shared slide deck.','使用同一台设备和同一个浏览器配置，才能恢复本机进度。换设备时，请打开自己保存的 Python 文件或共享幻灯片。')+'</p><div class="actions">'+buttons+'</div></section>';
+}
 const main=document.getElementById('main');
 const q=sel=>main.querySelector(sel);
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
@@ -31,6 +74,7 @@ function nextCore(){return core.find(i=>!state.done[i])??core[core.length-1]}
 function home(){
   const jamTitle=day===1?'Pitch an app in Canva':'Build a working prototype';
   main.innerHTML='<section class="hero"><div class="words"><p class="kicker">Year 9 / Cover studio / Day '+day+'</p><h1>'+story+'</h1><p>'+pair(day===1?'Your first play starts here. Choose your lesson.':'Welcome back. Choose the project you’re continuing.',day===1?'选择今天的学习任务。':'欢迎回来，选择你要继续的项目。')+'</p></div><div class="visual"><canvas aria-label="Illustrated arcade scene" role="img"></canvas></div></section><div class="grid"><section class="route"><p class="kicker"><span class="glyph" aria-hidden="true">&lt;/&gt;</span>Python arcade</p><h2>'+ (day===1?'Code the entry gate':'Unlock five levels')+'</h2><p>'+pair(...goal)+'</p>'+link('#python',state.last===null?'Start Python':'Open Python',true)+'</section><section class="route jam"><p class="kicker"><span class="glyph" aria-hidden="true">✦</span>Coding Jam</p><h2>'+jamTitle+'</h2><p>'+pair(day===1?'Pitch one idea for your school or community. Open a copy of the team slide template.':'Use slide 4 of your proposal. Bring one tap and its result to life with your partner.',day===1?'向大家介绍一个帮助学校或社区的想法。打开团队幻灯片模板的副本。':'用提案第 4 页，和同伴做出一个点击后能显示结果的原型。')+'</p>'+link('#jam',day===1?'Open proposal studio':'Open prototype studio',true)+'</section></div><p class="sub">'+pair('Coding Jam pairs work together. Everyone else may choose either route. If your teacher assigned the catch-up test, open that assignment in Teams first.','Coding Jam 的同伴一起做；其他同学可任选路线。如老师安排了补测，请先在 Teams 打开补测作业。')+'</p>';
+  main.querySelector('.hero').insertAdjacentHTML('afterend',continuePanel());
   art(.16);
 }
 function overview(){
@@ -51,27 +95,29 @@ function shuffled(n){const a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i
 function card(mode,i){
   const c=cards[i], isCore=mode==='core', list=isCore?core:cards.map((_,n)=>n), pos=list.indexOf(i), total=list.length;
   if(pos<0){location.hash='python';return}
-  state.last={mode,i};save();
+  state.track='python';state.last={mode,i};save();
   const next=pos+1===total?'#finish':'#'+mode+'/'+list[pos+1],nextText=pos+1===total?'Finish and save':'Next card';
   main.innerHTML='<div class="toolbar">'+link(isCore?'#python':'#library',isCore?'Guided route':'Practice library')+link('#finish','Save & finish')+'</div><section class="panel"><div class="row"><p class="kicker">'+names[types.indexOf(c.type)]+'</p><span class="sub">'+(isCore?'Guided route':'Practice bank')+' · '+(pos+1)+' / '+total+'</span></div><progress class="progress" max="'+total+'" value="'+(pos+1)+'"></progress><h1>'+esc(c.title)+'</h1><p>'+pair(c.prompt,c.zh)+'</p><div id="activity"></div><details><summary>'+pair('Give me a hint','给我一点提示')+'</summary><p>'+pair(c.hint,c.hintZh)+'</p></details><div id="feedback" class="feedback" role="status"></div><div class="actions lower">'+(pos?link('#'+mode+'/'+list[pos-1],'Previous'):'')+'<span id="next">'+(state.done[i]?link(next,nextText,true):'')+'</span><span class="sub" id="saved">'+(state.done[i]?'✓ Completed on this device':'')+'</span></div></section>';
   const complete=(en,mandarin)=>{state.done[i]=true;save();q('#next').innerHTML=link(next,nextText,true);q('#saved').textContent='✓ Completed on this device';setFeedback(en+(zh&&mandarin?'\n'+mandarin:''),true)};
   const a=q('#activity');
   if(c.type==='typing')typing(c,i,a,complete);
   if(c.type==='mcq'||c.type==='blank'){
-    let choice=null;const order=shuffled(c.options.length);
-    a.innerHTML=(c.code?pre(c.code):'')+order.map(n=>'<button data-opt="'+n+'" class="opt" aria-pressed="false">'+esc(c.options[n])+'</button>').join('')+button('check','Check answer',true);
-    a.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>{choice=Number(b.dataset.opt);a.querySelectorAll('[data-opt]').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));setFeedback('')});
+    const answer=state.answers[i]||{};
+    let choice=answer.choice??null;const order=answer.order||shuffled(c.options.length);
+    a.innerHTML=(c.code?pre(c.code):'')+order.map(n=>'<button data-opt="'+n+'" class="opt" aria-pressed="'+(n===choice)+'">'+esc(c.options[n])+'</button>').join('')+button('check','Check answer',true);
+    a.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>{choice=Number(b.dataset.opt);state.answers[i]={choice,order};save();a.querySelectorAll('[data-opt]').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));setFeedback('')});
     q('#check').onclick=()=>choice===c.correct?complete('Correct. '+(c.type==='blank'?'The missing part is '+c.options[choice]+'.':'You can move on.'),'正确，可以继续。'):setFeedback(choice===null?'Choose one answer first.':c.hint+(zh?'\n'+c.hintZh:''));
   }
   if(c.type==='parsons'){
-    let order=shuffled(c.lines.length);if(order.every((v,n)=>v===n))order.reverse();let chosen=[];
+    let order=state.answers[i]?.order||shuffled(c.lines.length);if(order.every((v,n)=>v===n))order.reverse();let chosen=state.answers[i]?.chosen||[];
+    function keepOrder(){state.answers[i]={order,chosen:[...chosen]};save();}
     function lines(){a.innerHTML='<p>'+pair('Tap a line to add it below. Tap an added line to put it back. Keep the indentation you see.','按顺序点选代码行。点已选的行可将其放回。保留显示的缩进。')+'</p><div id="bankLines"></div><strong>Your program</strong><div class="ordered" id="ordered"></div><div class="actions">'+button('check','Check order',true)+button('clear','Start again')+'</div>';
       function line(n,to){return '<button class="line" data-n="'+n+'" data-to="'+to+'">'+esc(c.lines[n])+'</button>'}
       q('#bankLines').innerHTML=order.filter(n=>!chosen.includes(n)).map(n=>line(n,'add')).join('');
       q('#ordered').innerHTML=chosen.map(n=>line(n,'remove')).join('')||'<span class="sub">Your first line goes here.</span>';
-      a.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;chosen=b.dataset.to==='add'?[...chosen,n]:chosen.filter(x=>x!==n);lines();setFeedback('')});
+      a.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;chosen=b.dataset.to==='add'?[...chosen,n]:chosen.filter(x=>x!==n);keepOrder();lines();setFeedback('')});
       q('#check').onclick=()=>chosen.length===c.lines.length&&chosen.every((n,k)=>n===k)?complete('Your lines are in the right order.','顺序正确。'):setFeedback(chosen.length<c.lines.length?'Choose all the lines first.':c.hint+(zh?'\n'+c.hintZh:''));
-      q('#clear').onclick=()=>{chosen=[];lines();setFeedback('')};
+      q('#clear').onclick=()=>{chosen=[];keepOrder();lines();setFeedback('')};
     }lines();
   }
   if(c.type==='explain'){
@@ -143,11 +189,21 @@ function typing(c, i, activity, complete) {
   }
   const end = glyph('\u200b');
   let started = 0, elapsed = 0, previous = '', prefix = 0, finished = false;
-  let attempts = 0, correctAttempts = 0, keyAnimation;
+  const attempt=state.answers[i]||{};
+  let carried=attempt.elapsed||0;
+  let attempts=attempt.attempts||0, correctAttempts=attempt.correctAttempts||0, keyAnimation;
+  previous=input.value=attempt.text||'';
+  speed.checked=attempt.speed!==false;
+  finished=previous===target;
+  while(prefix<previous.length&&prefix<target.length&&previous[prefix]===target[prefix])prefix++;
+  elapsed=carried;input.readOnly=finished;
+  pad.classList.toggle('is-finished',finished);
+  if(indentButton)indentButton.disabled=finished;
+  function storeAttempt(){state.answers[i]={text:input.value,elapsed,attempts,correctAttempts,speed:speed.checked};save();}
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   function updateMeter() {
-    const ms = finished ? elapsed : performance.now() - started;
-    const wpm = started ? Math.round(prefix * 12000 / Math.max(ms, 750)) : 0;
+    const ms = finished || !started ? elapsed : carried + performance.now() - started;
+    const wpm = ms > 0 ? Math.round(prefix * 12000 / Math.max(ms, 750)) : 0;
     const accuracy = attempts ? Math.round(100 * correctAttempts / attempts) + '%' : '—';
     dial.hidden = !speed.checked;
     liveWpm.textContent = wpm;
@@ -206,7 +262,8 @@ function typing(c, i, activity, complete) {
     prefix = 0;
     while (prefix < value.length && prefix < target.length && value[prefix] === target[prefix]) prefix++;
     finished = value === target;
-    elapsed = now - started;
+    elapsed = carried + now - started;
+    storeAttempt();
     paint();
     art(prefix / target.length, true, finished);
     if (!reducedMotion.matches && keycap.animate) {
@@ -226,12 +283,12 @@ function typing(c, i, activity, complete) {
     }
   }
   function reset() {
-    started = elapsed = prefix = attempts = correctAttempts = 0;
+    started = carried = elapsed = prefix = attempts = correctAttempts = 0;
     previous = '';
     finished = false;
     input.readOnly = false;
     if (indentButton) indentButton.disabled = false;
-    input.value = '';
+    input.value = '';storeAttempt();
     pad.classList.remove('is-finished');
     setFeedback('');
     paint();
@@ -271,7 +328,7 @@ function typing(c, i, activity, complete) {
   interval = setInterval(() => { if (started && !finished && speed.checked) updateMeter(); }, 350);
   paint();
   updateMeter();
-  art(0, true);
+  art(prefix/target.length,true,finished);
 }
 function editor(c,i,a,complete){
  const jump=day===2&&(i===53||i===55);
@@ -332,12 +389,37 @@ function editor(c,i,a,complete){
  q('#run').onclick=()=>run(false);q('#test').onclick=()=>run(true);
 }
 function render(){
- resetView();const [route,arg]=location.hash.slice(1).split('/');const lang=document.getElementById('lang');lang.setAttribute('aria-pressed',String(zh));lang.textContent=zh?'English only':'English + 中文';
+ resetView();let [route,arg]=location.hash.slice(1).split('/');
+ const resuming=route==='resume';
+ if(resuming){
+   const destination=savedRoute(state)||'#home';
+   history.replaceState(null,'',destination);
+   [route,arg]=destination.slice(1).split('/');
+ }
+ if(route==='jam'||route==='python'){state.track=route;save();}
+const lang=document.getElementById('lang');lang.setAttribute('aria-pressed',String(zh));lang.textContent=zh?'English only':'English + 中文';
  if(route==='python')overview();else if(route==='library')library();else if(route==='finish')finish();else if(route==='jam')window.coverJam({day,state,save,esc,pair,main,zh,button,localLink:link});
  else if((route==='core'||route==='bank')&&/^\d+$/.test(arg||'')&&cards[Number(arg)])card(route,Number(arg));else home();
+ if(route==='jam'&&resuming&&Number.isInteger(state.jamSection)){
+   const section=main.querySelectorAll('section.panel')[state.jamSection];
+   if(section)requestAnimationFrame(()=>section.scrollIntoView({block:'start'}));
+ }
+ if(day===1&&window.coverDay2Open()&&['jam','finish'].includes(route)){
+   main.insertAdjacentHTML('beforeend','<div class="actions"><a class="btn" href="../year9-cover-day2/">'+pair('Ready for Day 2? Open the next lesson','准备好了吗？打开第二天的课程')+'</a></div>');
+ }
 }
+function rememberJamSection(e){
+ if(location.hash!=='#jam')return;
+ const sections=[...main.querySelectorAll('section.panel')];
+ const section=e.target.closest?.('section.panel');
+ const index=sections.indexOf(section);
+ if(index>=0&&state.jamSection!==index){state.jamSection=index;save();}
+}
+main.addEventListener('focusin',rememberJamSection);
+main.addEventListener('click',rememberJamSection);
 document.getElementById('lang').onclick=()=>{zh=!zh;put('y9-cover-zh',zh);render()};
 document.getElementById('home').onclick=()=>location.hash='home';
 window.addEventListener('hashchange',()=>{render();scrollTo(0,0);main.focus({preventScroll:true})});
+window.addEventListener('pageshow',e=>{if(e.persisted)location.reload()});
 render();
 })();

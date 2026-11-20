@@ -89,14 +89,14 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
     const select=main.querySelector('#jam-user');
     function refreshSummary(){const summary=main.querySelector('#jam-need-summary');if(summary)summary.innerHTML=briefSummary()}
     select.onchange=()=>{
-      need.role=select.value;state.jamNeed={...need};save();
+      need.role=select.value;state.jamNeed={...state.jamNeed,role:need.role};save();
       const panel=main.querySelector('#jam-user-example');
       panel.innerHTML=example(need.role);panel.hidden=!viewpoints[need.role];refreshSummary();
     };
     main.querySelectorAll('[data-note]').forEach(input=>{
       input.oninput=()=>{
         const key=input.dataset.note;
-        if(input.dataset.group==='need'){need[key]=input.value;state.jamNeed={...need};refreshSummary()}
+        if(input.dataset.group==='need'){need[key]=input.value;state.jamNeed={...state.jamNeed,[key]:input.value};refreshSummary()}
         else{benefit[key]=input.value;state.jamBenefit=benefit}
         save();
       };
