@@ -1,4 +1,13 @@
 window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
+  const visuals=window.coverJamGuides(pair,zh);
+    const research = [
+      ['Scratch','Boat Race','Steer a boat to the island. Watch what happens when it hits an obstacle.','把船开到岛上，观察撞到障碍物时会发生什么。','Could a player guide a new pupil safely through a school map?','能否用这种操作，让玩家带新同学走过校园地图？','https://projects.raspberrypi.org/en/projects/boat-race'],
+      ['MIT App Inventor','PaintPot','Choose a colour, then drag across the canvas. The app draws where your finger moves.','选颜色，再在画布上拖动。线条会随着手指移动。','Could a visitor mark a meeting spot on a map?','能否让访客在地图上标出集合点？','https://appinventor.mit.edu/explore/ai2/paintpot-part1'],
+      ['MakeCode / micro:bit','Step counter','A shake adds one to a counter and shows the new number. The tutorial includes a simulator option.','摇动一次，计数加一并显示新数字。教程也提供模拟器选项。','Could a team track activity breaks using the same counter?','能否用相同的计数功能记录活动休息次数？','https://microbit.org/projects/make-it-code-it/step-counter/'],
+      ['HTML / JavaScript','Dynamic shopping list','Type an item and add it. Look for the new row and the button that removes it.','输入物品并添加，看看新出现的一行和删除按钮。','Could a teacher build a kit list and remove each item as it is packed?','老师能否制作器材清单，每装好一件就移除一项？','https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting#creating_a_dynamic_shopping_list']
+    ];
+  const exampleCards=()=>research.map(([tool,name,en,cn,idea,ideaZh,url],i)=>'<article class="jam-example"><span class="kicker">'+esc(tool)+'</span><h3>'+esc(name)+'</h3>'+visuals.research(i)+'<p>'+pair(en,cn)+'</p><p>'+pair(idea,ideaZh)+'</p>'+external(url,zh?'研究项目 / Explore':'Explore project')+'</article>').join('');
+
   const template='https://canva.link/x9kt12ms14w77us';
   let prior;
   if(day===2){try{prior=JSON.parse(localStorage.getItem('y9-cover-arcade-v1-day1')||'null')}catch{}}
@@ -99,12 +108,6 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
   if(day===1){
     const paragraph = (en, cn) => '<p>'+pair(en,cn)+'</p>';
     const task = (n, title, titleZh, body) => wrap(pair('Slide '+n+' · '+title,'第 '+n+' 页 · '+titleZh),body);
-    const research = [
-      ['Scratch','Boat Race','Steer a boat to the island. Watch what happens when it hits an obstacle.','把船开到岛上，观察撞到障碍物时会发生什么。','Could a player guide a new pupil safely through a school map?','能否用这种操作，让玩家带新同学走过校园地图？','https://projects.raspberrypi.org/en/projects/boat-race'],
-      ['MIT App Inventor','PaintPot','Choose a colour, then drag across the canvas. The app draws where your finger moves.','选颜色，再在画布上拖动。线条会随着手指移动。','Could a visitor mark a meeting spot on a map?','能否让访客在地图上标出集合点？','https://appinventor.mit.edu/explore/ai2/paintpot-part1'],
-      ['MakeCode / micro:bit','Step counter','A shake adds one to a counter and shows the new number. The tutorial includes a simulator option.','摇动一次，计数加一并显示新数字。教程也提供模拟器选项。','Could a team track activity breaks using the same counter?','能否用相同的计数功能记录活动休息次数？','https://microbit.org/projects/make-it-code-it/step-counter/']
-    ];
-    const examples=research.map(([tool,name,en,cn,idea,ideaZh,url])=>'<article class="jam-example"><span class="kicker">'+esc(tool)+'</span><h3>'+esc(name)+'</h3>'+paragraph(en,cn)+paragraph(idea,ideaZh)+external(url,zh?'研究项目 / Explore':'Explore project')+'</article>').join('');
     main.innerHTML+=wrap(pair('What happens at the Coding Jam?','Coding Jam 当天要做什么？'),
       '<ul class="jam-brief"><li>'+pair('Work in a team of 2–3. Build a digital solution that helps people at school or in the community. Choose a school-approved platform.','每组 2–3 人，用学校认可的平台制作能帮助学校或社区的数字作品。')+'</li><li>'+pair('On the day, the organisers give you a problem, a constraint and a time limit. Later they announce a plot twist. Be ready to change one part of your idea.','活动当天才公布问题、限制和时限。之后还会公布新变化，要能调整设计。')+'</li><li>'+pair('At the science-fair-style judging, let someone see the prototype work. Explain who it helps, what the user does and what happens.','在展览式评审中演示原型，说明它帮助谁、用户怎样操作，以及结果是什么。')+'</li></ul>'+
       '<p class="sub">'+pair('Find the school briefing in Teams → Year 9E → General → “AIMS Coding Jam 2026” (13 November). The organiser will confirm event-day AI guidance and judging details.','学校说明在 Teams → Year 9E → General → “AIMS Coding Jam 2026”（11 月 13 日）。活动当天的 AI 规则和评审细节以主办方通知为准。')+'</p>');
@@ -113,19 +116,19 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
       '<div class="actions">'+external(template,'Use the Canva template')+file('Year9_App_Proposal_Template.pptx','Download editable slides')+'</div>');
     main.innerHTML+=task(1,'Whose day could you make easier?','你能让谁的一天轻松一点？',
       paragraph('Tell your partner about the last time someone got stuck at school or at home. What did they try first? What happened because it was difficult? Use a real observation if you have one. If you are guessing, say what you would ask that person.', '和同伴聊一聊最近有人在学校或家里遇到的困难。对方先试了什么？这个困难造成了什么影响？有真实观察就用它；如果只是猜测，说说你会向当事人问什么。')+
-      teamPlan()+
+      visuals.scenes()+teamPlan()+visuals.prompt('idea')+
       '<details><summary>'+pair('Would our idea really help?','我们的想法真的有用吗？')+'</summary>'+paragraph('Would a sign, a checklist or one clearer message already solve it? What does your app add? Who would have to enter or update the information? If it creates extra work for someone else, change one part of the idea.', '一张标牌、一份清单或一条更清楚的通知能解决吗？应用能多帮什么忙？谁负责输入或更新资料？如果给别人增加了负担，就改一处设计。')+'</details>'+
       paragraph('Add your before-and-after idea to slide 1. Put the action on slide 4 and the sign you will check on slide 6. These notes stay in this browser.', '把改善前后的想法写在第 1 页，操作画在第 4 页，可观察的成功标志放在第 6 页。这里的笔记保存在本浏览器。'));
     main.innerHTML+=task(2,'Compare two real projects','比较两个真实项目',
       paragraph('Choose two examples below. Open each project and look for one action and its result. On slide 2, record both links, one feature from each and which feature would help your user more.','从下方选两个项目。打开项目，找出一个操作及其结果。在第 2 页记录两个链接、各自的一个功能，再解释哪一个更适合你们的用户。')+
-      '<div class="jam-research">'+examples+'</div>');
+      '<div class="jam-research">'+exampleCards()+'</div>');
     const platforms=['Scratch','MIT App Inventor','MakeCode / micro:bit','Python','HTML / CSS / JavaScript','Another school-approved platform'];
     main.innerHTML+=task(3,'Commit to one platform','确定一个制作平台',
       paragraph('On slide 3, name your platform, the feature it lets you build and the device or simulator you can test on. Pick one action you can finish. Name one extra you can drop.','在第 3 页写出平台、能用它制作的功能，以及可供测试的设备或模拟器。选一个能完成的操作，并写出时间不足时可删去的额外功能。')+
       '<label for="jam-tool">'+pair('Remember our platform on this device for Day 2','在这台设备上记住平台，供第二天使用')+'</label><div class="jam-choice"><select id="jam-tool"><option value="">'+(zh?'选择平台 / Choose a platform':'Choose a platform')+'</option>'+platforms.map(p=>'<option>'+esc(p)+'</option>').join('')+'</select><label id="other-tool-label" hidden>'+pair('Platform name','平台名称')+'<input id="other-tool" type="text" maxlength="70"></label></div>');
     main.innerHTML+=task(4,'Show what happens after one action','展示一个操作会带来什么结果',
       paragraph('Sketch on paper and photograph it, draw digitally, or ask a school-approved AI tool to help you explain or picture the idea. Put the start, result and reset on slide 4. Label the control. Explain one thing your team chose or changed and why.','可在纸上画并拍照、用电子设备绘图，或用学校认可的 AI 工具帮助解释或构思画面。在第 4 页展示初始状态、操作结果和重置；标出控件，并用自己的话解释团队的一项选择或改动。')+
-      '<details><summary>'+pair('Try a prompt for your concept','试用一个构思提示词')+'</summary>'+paragraph('“Our user is __. They need __. We can build __ in __. Describe two simple screens before and after one tap. Which part could we simplify?” Add your own labels or ask for a mock-up. Tell your team which suggestion you kept.','“我们的用户是__，需要__。我们会用__制作__。请描述点击前后的两个简单界面。哪里可以简化？”加上自己的标签，或请它生成概念图，并说明采用了哪条建议。')+'</details>'+
+      visuals.storyboard()+visuals.prompt('mock')+
       '<p class="sub">'+pair('AI is optional for this classroom proposal. Check the organiser’s guidance before using it at the event.','本次课堂提案可自愿使用 AI。活动当天请先查看主办方的 AI 指引。')+'</p>');
     main.innerHTML+=task(5,'What can each person actually build?','每个人现在能做什么？',
       paragraph('Each teammate gives one piece of evidence from class, takes one job and names one skill to practise. How will your partner tell you are ready?','每位组员举一个课堂实例，认领一项任务，并写出一项需要练习的技能。同伴怎样判断你已经会了？')+
@@ -160,19 +163,22 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
       '<p>'+pair('Read your team’s idea aloud. Give your partner one job to do as that person. Build the smallest feature that could make that job easier.', '大声读出团队的想法。请同伴扮演那位用户，给对方一个具体任务。制作能让这个任务变容易的最小功能。')+'</p>'+
       '<div id="jam-need-summary">'+briefSummary()+'</div>'+
       '<details id="jam-need-editor" '+(hasNeed?'':'open')+'><summary>'+pair(hasNeed?'Edit your team’s idea':'Bring in your idea from slide 1, or start here','查看或填写团队想法')+'</summary>'+teamPlan()+'</details>');
-    main.innerHTML+=wrap('Try one action','<p>'+pair('This starter helps a visitor find water. Try its button. For your own prototype, replace the action and result with the ones on your sketch.','这个示例帮助访客找饮水处。试试按钮，再把操作和结果换成自己草图里的设计。')+'</p><div class="phone"><div class="drop" aria-hidden="true">💧</div><strong>Refill Finder</strong><p id="demoResult" aria-live="polite">Where can I fill my bottle?</p><button id="demoTap" class="primary">Find water</button><button id="demoReset">Reset</button></div>');
-    main.innerHTML+=wrap('Choose your platform',(planned?'<p class="sample">'+pair('Your Day 1 platform on this device: '+planned,'这台设备记住的第一天平台：'+planned)+'</p>':'')+'<p>'+pair('Choose one. The guide below changes to match your tool. If you missed Day 1, name one user, one button and one result before you start.','选一个平台，下方说明会随之更换。若错过第一天，先决定用户、一个按钮和一个结果。')+'</p><div class="pills">'+['Scratch','MIT','Other'].map(p=>'<button data-platform="'+p+'" aria-pressed="'+(p===platform)+'" class="'+(p===platform?'primary':'')+'">'+({Scratch:'Scratch',MIT:'MIT App Inventor',Other:'Another platform'})[p]+'</button>').join('')+'</div><div class="actions">'+(platform==='Scratch'?file('RefillFinder.sb3','Download Scratch starter')+external('https://scratch.mit.edu/projects/editor/','Open Scratch'):platform==='MIT'?file('RefillFinder.aia','Download MIT starter')+external('https://ai2.appinventor.mit.edu/','Open MIT App Inventor'):'')+'</div>');
-    main.innerHTML+=wrap('Build and check your prototype','<div class="checks">'+steps[platform].map(([a,b,e,z],i)=>'<label><input type="checkbox" data-check="'+platform+i+'" '+(state.jamChecks[platform+i]?'checked':'')+'><span><strong>'+pair((i+1)+'. '+a,b)+'</strong>'+pair(e,z)+'</span></label>').join('')+'</div>');
+    main.innerHTML+='<details class="panel"><summary>'+pair('Revisit the four project examples','回顾四个项目示例')+'</summary><div class="jam-research">'+exampleCards()+'</div></details>';
+    main.innerHTML+=wrap(pair('Try one action','试用一个操作'),'<p>'+pair('This starter helps a visitor find water. Try its button. For your own prototype, replace the action and result with the ones on your sketch.','这个示例帮助访客找饮水处。试试按钮，再把操作和结果换成自己草图里的设计。')+'</p><div class="phone"><div class="drop" aria-hidden="true">💧</div><strong>Refill Finder</strong><p id="demoResult" aria-live="polite">'+pair('Tap Find a refill.','点击 Find a refill。')+'</p><button id="demoTap" class="primary">Find a refill</button><button id="demoReset">Reset</button></div>');
+    main.innerHTML+=wrap(pair('Choose your platform','选择平台'),(planned?'<p class="sample">'+pair('Your Day 1 platform on this device: '+planned,'这台设备记住的第一天平台：'+planned)+'</p>':'')+'<p>'+pair('Choose one. The guide below changes to match your tool. If you missed Day 1, name one user, one button and one result before you start.','选一个平台，下方说明会随之更换。若错过第一天，先决定用户、一个按钮和一个结果。')+'</p><div class="pills">'+['Scratch','MIT','Other'].map(p=>'<button data-platform="'+p+'" aria-pressed="'+(p===platform)+'" class="'+(p===platform?'primary':'')+'">'+({Scratch:'Scratch',MIT:'MIT App Inventor',Other:'Another platform'})[p]+'</button>').join('')+'</div><div class="actions">'+(platform==='Scratch'?file('RefillFinder.sb3','Download Scratch starter')+external('https://scratch.mit.edu/projects/editor/','Open Scratch'):platform==='MIT'?file('RefillFinder.aia','Download MIT starter')+external('https://ai2.appinventor.mit.edu/','Open MIT App Inventor'):'')+'</div>');
+    main.innerHTML+=wrap(pair('Build and check your prototype','制作并检查原型'),'<div class="checks">'+steps[platform].map(([a,b,e,z],i)=>'<div class="jg-build-step"><label><input type="checkbox" data-check="'+platform+i+'" '+(state.jamChecks[platform+i]?'checked':'')+'><span><strong>'+pair((i+1)+'. '+a,b)+'</strong>'+pair(e,z)+'</span></label>'+visuals.guide(platform,i)+'</div>').join('')+'</div>');
+    main.innerHTML+=visuals.prompt('build');
     main.innerHTML+=wrap(pair('Did it make the job easier?','做这件事真的更容易了吗？'),
       '<p>'+pair('During partner testing, use the same everyday task twice. First let your partner try the usual way, using a simple example such as a notice or list. Then reset the prototype and hand it over. Give the goal only and let them find their own way.', '同伴测试时，用两种方法做同一件日常小事。先请同伴用原来的方法，例如查看一条通知或清单；再重置原型交给对方。只说明目标，让对方自己找方法。')+'</p>'+
-      noteField('benefit','result','What actually happened each time? Compare the sign you chose on Day 1.','两次实际发生了什么？比较第一天选定的成功标志。',benefit.result)+
+      visuals.testStrip()+noteField('benefit','result','What actually happened each time? Compare the sign you chose on Day 1.','两次实际发生了什么？比较第一天选定的成功标志。',benefit.result)+
       noteField('benefit','revision','Where did your partner hesitate? Change one thing and try again. What happened?','同伴在哪里犹豫了？改一处再试，结果怎样？',benefit.revision)+
       '<p>'+pair('If you could only test one version today, say which one you tried and what still needs checking.','如果今天只能测试一种方法，写清试了哪一种、还需要验证什么。')+'</p>');
     main.innerHTML+=wrap(pair('Show your result','展示你的成果'),'<p>'+pair('In your demo, show the user’s task and the working action. Finish with one honest observation: “Our tester could … We still need to check … with a real user.” Add this evidence to slide 6. Save the editable prototype with the proposal for Mr Dave.', '展示用户任务和可运行的操作。最后说出真实观察：“测试同伴能……我们还要请真实用户验证……”把证据加在第 6 页。把可编辑原型和提案一起保存给老师。')+'</p>');
-    document.querySelector('#demoTap').onclick=()=>document.querySelector('#demoResult').textContent=zh?'Library entrance · 图书馆入口':'Library entrance';
-    document.querySelector('#demoReset').onclick=()=>document.querySelector('#demoResult').textContent='Where can I fill my bottle?';
+    document.querySelector('#demoTap').onclick=()=>document.querySelector('#demoResult').textContent=zh?'Try the refill station beside the hall. · 试试礼堂旁的饮水点。':'Try the refill station beside the hall.';
+    document.querySelector('#demoReset').onclick=()=>document.querySelector('#demoResult').textContent=zh?'Tap Find a refill. · 点击 Find a refill。':'Tap Find a refill.';
     main.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{state.platform=b.dataset.platform;state.jamGuideChosen=true;save();window.coverJam({day,state,save,esc,pair,main,zh,button,localLink});});
   }
+  visuals.bind(main);
   connectNotes();
   main.querySelectorAll('[data-check]').forEach(b=>b.onchange=()=>{state.jamChecks[b.dataset.check]=b.checked;save()});
 };
