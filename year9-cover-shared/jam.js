@@ -8,7 +8,7 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
   const external=(url,label)=>'<a class="btn primary" target="_blank" rel="noopener" href="'+url+'">'+label+' ↗</a>';
   const file=(url,label)=>'<a class="btn" href="'+url+'" download>'+label+'</a>';
   const title=day===1?'Pitch your app':'Build your first prototype';
-  const intro=day===1?['Make one shared slide deck with your partner. Choose a real school or community problem. Your proposal is due Wednesday 25 November.','和同伴共用一份幻灯片。选一个学校或社区中的真实问题。提案请于 11 月 25 日星期三前提交。']:['Open slides 3 and 4 of your Day 1 proposal. Use your chosen platform and concept. Build one action a user can try. Your partner should be able to reset it and try again.','打开第一天提案的第 3、4 页，使用已选的平台和设计。做出用户能试用的一个操作，让同伴能重置并再试一次。'];
+  const intro=day===1?['Make one shared slide deck with your partner. Choose a real school or community problem. Your proposal is due Wednesday 25 November.','和同伴共用一份幻灯片。选一个学校或社区中的真实问题。提案请于 11 月 25 日星期三前提交。']:['Bring slides 1, 3 and 4 of your Day 1 proposal. Use your chosen platform and concept. Build one action a user can try. Your partner should be able to reset it and try again.','打开第一天提案的第 1、3、4 页，使用已选的平台和设计。做出用户能试用的一个操作，让同伴能重置并再试一次。'];
   const steps={
     Scratch:[
       ['Import your copy','导入自己的副本','Download RefillFinder.sb3. Open the Scratch editor. Choose File → Load from your computer. Select the downloaded file.','下载 RefillFinder.sb3。打开 Scratch 编辑器，点 File（文件）→ Load from your computer（从电脑中上传），选刚下载的文件。'],
@@ -30,6 +30,69 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
   };
   function wrap(title,body){return '<section class="panel"><h2>'+title+'</h2>'+body+'</section>'}
   function checklist(items,key){return '<div class="checks">'+items.map(([en,cn],i)=>'<label><input type="checkbox" data-check="'+key+i+'" '+(state.jamChecks[key+i]?'checked':'')+'><span>'+pair(en,cn)+'</span></label>').join('')+'</div>'}
+  const viewpoints = {
+    student: {
+      name:['Student','学生'],
+      moment:['A new pupil finds the art club on a poster, walks to the room, then discovers it has moved. What information did they need before they set off?','新同学在海报上找到美术社，走到教室才发现地点换了。出发前，他们需要知道什么？'],
+      check:['Give a partner a poster and a sample update. Can they find the correct room? Then try your prototype. Check the room they choose and whether they need a hint.','给同伴一张海报和一条示例更新，请对方找出正确教室；再用原型试一次。记录选择的教室及是否需要提示。']
+    },
+    teacher: {
+      name:['Teacher','老师'],
+      moment:['A teacher setting up a practical finds an empty equipment tray. They check three cupboards while the class waits. What would help them decide what to do next?','老师准备实践课时发现器材盘空了。全班等着，老师要查看三个柜子。什么信息能帮助老师决定下一步？'],
+      check:['Give a partner a sample kit list with one item missing. Can they spot what to replace before the lesson? Try the same job in your prototype. Who would keep that list up to date?','给同伴一份缺少一件器材的清单，看能否在上课前找出缺什么。再用原型完成相同任务。谁负责更新清单？']
+    },
+    parent: {
+      name:['Parent or carer','家长或照护者'],
+      moment:['A parent has two messages about a trip. One gives the original pickup time. The other changes the gate. Which details could they easily mix up?','家长收到两条校外活动通知：一条写原定接送时间，另一条更改校门。哪些信息容易混淆？'],
+      check:['Make two fictional notices. Ask a partner to tell you when and where to collect a child. Try again with the prototype. Did they get both details right?','编两条虚构通知，让同伴说出接送时间和地点。用原型再试一次。两项都答对了吗？']
+    },
+    other: {
+      name:['Someone else','其他人'],
+      moment:['Think of a person you have seen asking for help. What were they trying to finish? At which step did they stop?','想想你见过的一位求助者。对方想完成什么事？卡在哪一步？'],
+      check:['Give your partner the same goal before and after. What observable action would show that your idea helped?','请同伴用原方法和原型分别完成同一目标。哪一个看得见的动作能说明设计有帮助？']
+    }
+  };
+  const need = {...(day===2 ? prior?.jamNeed : {}), ...state.jamNeed};
+  const benefit = state.jamBenefit || {};
+  function noteField(group,key,en,cn,value){
+    return '<label class="jam-note">'+pair(en,cn)+'<textarea rows="2" maxlength="750" data-group="'+group+'" data-note="'+key+'">'+esc(value||'')+'</textarea></label>';
+  }
+  function example(role){
+    const v=viewpoints[role];
+    if(!v)return '';
+    return '<strong>'+pair('One possible situation','一个可参考的情境')+'</strong><p>'+pair(...v.moment)+'</p><strong>'+pair('One way to check','一种测试方法')+'</strong><p>'+pair(...v.check)+'</p>';
+  }
+  function teamPlan(){
+    const options=Object.entries(viewpoints).map(([key,v])=>'<option value="'+key+'" '+(key===need.role?'selected':'')+'>'+esc(zh?v.name.join(' / '):v.name[0])+'</option>').join('');
+    return '<label class="jam-note">'+pair('Who will you design for?','你们想帮助谁？')+'<select id="jam-user"><option value="">'+(zh?'请选择 / Choose':'Choose a user')+'</option>'+options+'</select></label>'+
+      '<div id="jam-user-example" class="jam-user-example" '+(viewpoints[need.role]?'':'hidden')+'>'+example(need.role)+'</div>'+
+      noteField('need','today','What do they do today? Describe the moment and where it gets difficult.','他们现在怎样做？写出具体情境，以及卡在哪一步。',need.today)+
+      noteField('need','change','Which one action in your app would help? What will they see or be able to do next?','应用里的哪个操作能帮忙？之后他们会看到什么，或能做什么？',need.change)+
+      noteField('need','proof','What will you watch for? Choose one sign: a correct answer, fewer steps, or finishing without a hint.','要观察什么？选一个迹象：答对、步骤变少，或不靠提示完成。',need.proof);
+  }
+  function briefSummary(){
+    const rows=[['Today','现状',need.today],['Our change','设计的改变',need.change],['Watch for','观察什么',need.proof]];
+    if(viewpoints[need.role])rows.unshift(['User','用户',zh?viewpoints[need.role].name.join(' / '):viewpoints[need.role].name[0]]);
+    const items=rows.filter(row=>row[2]).map(([en,cn,value])=>'<dt>'+pair(en,cn)+'</dt><dd>'+esc(value)+'</dd>').join('');
+    return items?'<dl class="jam-brief-summary">'+items+'</dl>':'';
+  }
+  function connectNotes(){
+    const select=main.querySelector('#jam-user');
+    function refreshSummary(){const summary=main.querySelector('#jam-need-summary');if(summary)summary.innerHTML=briefSummary()}
+    select.onchange=()=>{
+      need.role=select.value;state.jamNeed={...need};save();
+      const panel=main.querySelector('#jam-user-example');
+      panel.innerHTML=example(need.role);panel.hidden=!viewpoints[need.role];refreshSummary();
+    };
+    main.querySelectorAll('[data-note]').forEach(input=>{
+      input.oninput=()=>{
+        const key=input.dataset.note;
+        if(input.dataset.group==='need'){need[key]=input.value;state.jamNeed={...need};refreshSummary()}
+        else{benefit[key]=input.value;state.jamBenefit=benefit}
+        save();
+      };
+    });
+  }
   const schedule=day===1?'5 min brief and user · 12 min research · 8 min choose a platform · 12 min concept · 8 min team skills · 10 min build plan · 5 min review and save':'5 min reopen the proposal · 10 min try a starter · 25 min build one action · 15 min partner test and improve · 5 min save';
   const scheduleZh=day===1?'5 分钟读题和选用户 · 12 分钟研究 · 8 分钟选平台 · 12 分钟设计 · 8 分钟技能盘点 · 10 分钟计划 · 5 分钟检查保存':'5 分钟看提案 · 10 分钟试模板 · 25 分钟制作 · 15 分钟测试改进 · 5 分钟保存';
   main.innerHTML='<div class="toolbar">'+localLink('#home','Lesson home')+'</div><section class="panel"><p class="kicker">Day '+day+' / Coding Jam</p><h1>'+title+'</h1><p>'+pair(...intro)+'</p><details><summary>60-minute plan</summary>'+pair(schedule,scheduleZh)+'</details></section>';
@@ -48,8 +111,11 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
     main.innerHTML+=wrap(pair('Open one shared proposal','打开一份团队共用的提案'),
       paragraph('One partner opens the template, signs in, makes a copy and shares it with the team. Write straight into the six slides. Already started? Keep your deck and add the missing decisions below.','一位同伴打开模板、登录、创建副本并共享。直接把答案填在六页幻灯片中。若已开始，可保留原稿并补充下方要点。')+
       '<div class="actions">'+external(template,'Use the Canva template')+file('Year9_App_Proposal_Template.pptx','Download editable slides')+'</div>');
-    main.innerHTML+=task(1,'Who needs your app?','谁需要你们的应用？',
-      paragraph('Name one user and one real moment when they need help. Example: a new pupil leaves lunch and cannot find the art club. What would success look like for that pupil? Choose a problem your team cares about.','选一类用户，描述他们需要帮助的具体时刻。例如，新同学午饭后找不到美术社团。怎样才算帮到对方？请选自己团队关心的问题。'));
+    main.innerHTML+=task(1,'Whose day could you make easier?','你能让谁的一天轻松一点？',
+      paragraph('Tell your partner about the last time someone got stuck at school or at home. What did they try first? What happened because it was difficult? Use a real observation if you have one. If you are guessing, say what you would ask that person.', '和同伴聊一聊最近有人在学校或家里遇到的困难。对方先试了什么？这个困难造成了什么影响？有真实观察就用它；如果只是猜测，说说你会向当事人问什么。')+
+      teamPlan()+
+      '<details><summary>'+pair('Would our idea really help?','我们的想法真的有用吗？')+'</summary>'+paragraph('Would a sign, a checklist or one clearer message already solve it? What does your app add? Who would have to enter or update the information? If it creates extra work for someone else, change one part of the idea.', '一张标牌、一份清单或一条更清楚的通知能解决吗？应用能多帮什么忙？谁负责输入或更新资料？如果给别人增加了负担，就改一处设计。')+'</details>'+
+      paragraph('Add your before-and-after idea to slide 1. Put the action on slide 4 and the sign you will check on slide 6. These notes stay in this browser.', '把改善前后的想法写在第 1 页，操作画在第 4 页，可观察的成功标志放在第 6 页。这里的笔记保存在本浏览器。'));
     main.innerHTML+=task(2,'Compare two real projects','比较两个真实项目',
       paragraph('Choose two examples below. Open each project and look for one action and its result. On slide 2, record both links, one feature from each and which feature would help your user more.','从下方选两个项目。打开项目，找出一个操作及其结果。在第 2 页记录两个链接、各自的一个功能，再解释哪一个更适合你们的用户。')+
       '<div class="jam-research">'+examples+'</div>');
@@ -82,20 +148,31 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
         ['Our concept shows one action, its result and how to try again.','我们的设计展示了一个操作、结果，以及如何再试。'],
         ['Each partner gives evidence of a skill and a next practice step.','每位组员都给出了技能证据及下一步练习。'],
         ['Our 120-minute plan names owners, a working demo and one feature to drop.','我们的 120 分钟计划写明负责人、可演示成果及可以删减的功能。']
-      ],'pitchV2')+paragraph('Give your partner a 30-second pitch. Point to the concept and explain who uses it, what changes after one action, and which part you can have working in two hours. Swap speakers.','和同伴轮流做 30 秒介绍。指着概念图说明谁会用、操作后怎样变化，以及两小时内哪一部分能实际运行。')+paragraph('Check that Mr Dave can open your Canva link or PowerPoint. Submit one team proposal by Wednesday 25 November. For Day 2, bring slide 3 (your tool) and slide 4 (your design).','确认老师能打开 Canva 链接或 PowerPoint。请在 11 月 25 日星期三前交一份团队提案。第二天带上第 3 页（工具）和第 4 页（设计）。'));
+      ],'pitchV2')+paragraph('Give your partner a 30-second pitch. Point to the concept and explain who uses it, what changes after one action, and which part you can have working in two hours. Swap speakers.','和同伴轮流做 30 秒介绍。指着概念图说明谁会用、操作后怎样变化，以及两小时内哪一部分能实际运行。')+paragraph('Check that Mr Dave can open your Canva link or PowerPoint. Submit one team proposal by Wednesday 25 November. For Day 2, bring slides 1, 3 and 4 so your team can test its idea.','确认老师能打开 Canva 链接或 PowerPoint。请在 11 月 25 日星期三前交一份团队提案。第二天带上第 1、3、4 页，供团队测试想法。'));
     const select=main.querySelector('#jam-tool'),other=main.querySelector('#other-tool'),otherLabel=main.querySelector('#other-tool-label');
     select.value=state.jamTool||'';other.value=state.jamOtherTool||'';
     function updateChoice(){otherLabel.hidden=select.value!==platforms[platforms.length-1];state.jamTool=select.value;state.jamOtherTool=other.value;save()}
     otherLabel.hidden=select.value!==platforms[platforms.length-1];
     select.onchange=updateChoice;other.oninput=updateChoice;
   }else{
+    const hasNeed=Boolean(need.today||need.change||need.proof);
+    main.innerHTML+=wrap(pair('Build for the person you chose','为你们选定的用户制作原型'),
+      '<p>'+pair('Read your team’s idea aloud. Give your partner one job to do as that person. Build the smallest feature that could make that job easier.', '大声读出团队的想法。请同伴扮演那位用户，给对方一个具体任务。制作能让这个任务变容易的最小功能。')+'</p>'+
+      '<div id="jam-need-summary">'+briefSummary()+'</div>'+
+      '<details id="jam-need-editor" '+(hasNeed?'':'open')+'><summary>'+pair(hasNeed?'Edit your team’s idea':'Bring in your idea from slide 1, or start here','查看或填写团队想法')+'</summary>'+teamPlan()+'</details>');
     main.innerHTML+=wrap('Try one action','<p>'+pair('This starter helps a visitor find water. Try its button. For your own prototype, replace the action and result with the ones on your sketch.','这个示例帮助访客找饮水处。试试按钮，再把操作和结果换成自己草图里的设计。')+'</p><div class="phone"><div class="drop" aria-hidden="true">💧</div><strong>Refill Finder</strong><p id="demoResult" aria-live="polite">Where can I fill my bottle?</p><button id="demoTap" class="primary">Find water</button><button id="demoReset">Reset</button></div>');
     main.innerHTML+=wrap('Choose your platform',(planned?'<p class="sample">'+pair('Your Day 1 platform on this device: '+planned,'这台设备记住的第一天平台：'+planned)+'</p>':'')+'<p>'+pair('Choose one. The guide below changes to match your tool. If you missed Day 1, name one user, one button and one result before you start.','选一个平台，下方说明会随之更换。若错过第一天，先决定用户、一个按钮和一个结果。')+'</p><div class="pills">'+['Scratch','MIT','Other'].map(p=>'<button data-platform="'+p+'" aria-pressed="'+(p===platform)+'" class="'+(p===platform?'primary':'')+'">'+({Scratch:'Scratch',MIT:'MIT App Inventor',Other:'Another platform'})[p]+'</button>').join('')+'</div><div class="actions">'+(platform==='Scratch'?file('RefillFinder.sb3','Download Scratch starter')+external('https://scratch.mit.edu/projects/editor/','Open Scratch'):platform==='MIT'?file('RefillFinder.aia','Download MIT starter')+external('https://ai2.appinventor.mit.edu/','Open MIT App Inventor'):'')+'</div>');
     main.innerHTML+=wrap('Build and check your prototype','<div class="checks">'+steps[platform].map(([a,b,e,z],i)=>'<label><input type="checkbox" data-check="'+platform+i+'" '+(state.jamChecks[platform+i]?'checked':'')+'><span><strong>'+pair((i+1)+'. '+a,b)+'</strong>'+pair(e,z)+'</span></label>').join('')+'</div>');
-    main.innerHTML+=wrap('Show your result','<p>'+pair('Give your partner the controls. Can they find the button and get the result twice? Keep your editable project or link beside the proposal for Mr Dave. If the class hand-in is available, attach your file or share the link there.','让同伴自己操作。能找到按钮并两次得到结果吗？把可编辑项目或链接与提案一起保存给老师。如果班级提交处已开放，就在那里提交。')+'</p>');
+    main.innerHTML+=wrap(pair('Did it make the job easier?','做这件事真的更容易了吗？'),
+      '<p>'+pair('During partner testing, use the same everyday task twice. First let your partner try the usual way, using a simple example such as a notice or list. Then reset the prototype and hand it over. Give the goal only and let them find their own way.', '同伴测试时，用两种方法做同一件日常小事。先请同伴用原来的方法，例如查看一条通知或清单；再重置原型交给对方。只说明目标，让对方自己找方法。')+'</p>'+
+      noteField('benefit','result','What actually happened each time? Compare the sign you chose on Day 1.','两次实际发生了什么？比较第一天选定的成功标志。',benefit.result)+
+      noteField('benefit','revision','Where did your partner hesitate? Change one thing and try again. What happened?','同伴在哪里犹豫了？改一处再试，结果怎样？',benefit.revision)+
+      '<p>'+pair('If you could only test one version today, say which one you tried and what still needs checking.','如果今天只能测试一种方法，写清试了哪一种、还需要验证什么。')+'</p>');
+    main.innerHTML+=wrap(pair('Show your result','展示你的成果'),'<p>'+pair('In your demo, show the user’s task and the working action. Finish with one honest observation: “Our tester could … We still need to check … with a real user.” Add this evidence to slide 6. Save the editable prototype with the proposal for Mr Dave.', '展示用户任务和可运行的操作。最后说出真实观察：“测试同伴能……我们还要请真实用户验证……”把证据加在第 6 页。把可编辑原型和提案一起保存给老师。')+'</p>');
     document.querySelector('#demoTap').onclick=()=>document.querySelector('#demoResult').textContent=zh?'Library entrance · 图书馆入口':'Library entrance';
     document.querySelector('#demoReset').onclick=()=>document.querySelector('#demoResult').textContent='Where can I fill my bottle?';
     main.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{state.platform=b.dataset.platform;state.jamGuideChosen=true;save();window.coverJam({day,state,save,esc,pair,main,zh,button,localLink});});
   }
+  connectNotes();
   main.querySelectorAll('[data-check]').forEach(b=>b.onchange=()=>{state.jamChecks[b.dataset.check]=b.checked;save()});
 };
