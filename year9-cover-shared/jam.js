@@ -1,17 +1,14 @@
 window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
-  const template='https://canva.link/52rfbx2ym420wo9';
-  const platform=state.platform||'Scratch';
+  const template='https://canva.link/x9kt12ms14w77us';
+  let prior;
+  if(day===2){try{prior=JSON.parse(localStorage.getItem('y9-cover-arcade-v1-day1')||'null')}catch{}}
+  const planned=prior?.jamTool==='Another school-approved platform'?prior.jamOtherTool:prior?.jamTool;
+  const plannedGuide=planned==='MIT App Inventor'?'MIT':planned==='Scratch'?'Scratch':'Other';
+  const platform=state.jamGuideChosen ? state.platform : planned ? plannedGuide : state.platform||'Scratch';
   const external=(url,label)=>'<a class="btn primary" target="_blank" rel="noopener" href="'+url+'">'+label+' ↗</a>';
   const file=(url,label)=>'<a class="btn" href="'+url+'" download>'+label+'</a>';
   const title=day===1?'Pitch your app':'Build your first prototype';
-  const intro=day===1?['Make one shared slide deck with your partner. Choose a real school or community problem. Your proposal is due Wednesday 25 November.','和同伴共用一份幻灯片。选一个学校或社区中的真实问题。提案请于 11 月 25 日星期三前提交。']:['Open your Day 1 proposal at slide 4. Build one action a user can try. Your partner should be able to reset it and try again.','打开第一天提案的第 4 页。做出用户能试用的一个操作，让同伴能重置并再试一次。'];
-  const slideSteps=[
-    ['Name your app and the people it helps.','写出应用名称和它能帮助的人。'],
-    ['Describe one tricky moment for your user. What takes too long or is hard to find?','写出用户遇到困难的一个时刻。什么事太费时或难找到？'],
-    ['Choose one action. Finish “When the user …, the app shows …”.','选一个操作，补全“当用户……时，应用显示……”。'],
-    ['Sketch the starting screen, the result and the reset. Label the button your user taps.','画出初始界面、操作结果和重置后的界面。标出用户要点的按钮。'],
-    ['Choose your tool, divide the jobs and give two checks with the results you expect.','选工具、分工，写出两项测试和预期结果。'],
-    ['Imagine a new constraint. Say how you could adapt and which part you would keep.','设想一种新限制。说明如何调整，以及要保留哪个功能。']];
+  const intro=day===1?['Make one shared slide deck with your partner. Choose a real school or community problem. Your proposal is due Wednesday 25 November.','和同伴共用一份幻灯片。选一个学校或社区中的真实问题。提案请于 11 月 25 日星期三前提交。']:['Open slides 3 and 4 of your Day 1 proposal. Use your chosen platform and concept. Build one action a user can try. Your partner should be able to reset it and try again.','打开第一天提案的第 3、4 页，使用已选的平台和设计。做出用户能试用的一个操作，让同伴能重置并再试一次。'];
   const steps={
     Scratch:[
       ['Import your copy','导入自己的副本','Download RefillFinder.sb3. Open the Scratch editor. Choose File → Load from your computer. Select the downloaded file.','下载 RefillFinder.sb3。打开 Scratch 编辑器，点 File（文件）→ Load from your computer（从电脑中上传），选刚下载的文件。'],
@@ -33,21 +30,72 @@ window.coverJam = function({day,state,save,esc,pair,main,zh,button,localLink}) {
   };
   function wrap(title,body){return '<section class="panel"><h2>'+title+'</h2>'+body+'</section>'}
   function checklist(items,key){return '<div class="checks">'+items.map(([en,cn],i)=>'<label><input type="checkbox" data-check="'+key+i+'" '+(state.jamChecks[key+i]?'checked':'')+'><span>'+pair(en,cn)+'</span></label>').join('')+'</div>'}
-  const schedule=day===1?'5 min choose a user · 15 min agree on one feature · 25 min sketch and complete slides · 10 min partner review · 5 min save':'5 min reopen the proposal · 10 min try a starter · 25 min build one action · 15 min partner test and improve · 5 min save';
-  const scheduleZh=day===1?'5 分钟选用户 · 15 分钟商定功能 · 25 分钟画草图并完成幻灯片 · 10 分钟同伴检查 · 5 分钟保存':'5 分钟看提案 · 10 分钟试模板 · 25 分钟制作 · 15 分钟测试改进 · 5 分钟保存';
+  const schedule=day===1?'5 min brief and user · 12 min research · 8 min choose a platform · 12 min concept · 8 min team skills · 10 min build plan · 5 min review and save':'5 min reopen the proposal · 10 min try a starter · 25 min build one action · 15 min partner test and improve · 5 min save';
+  const scheduleZh=day===1?'5 分钟读题和选用户 · 12 分钟研究 · 8 分钟选平台 · 12 分钟设计 · 8 分钟技能盘点 · 10 分钟计划 · 5 分钟检查保存':'5 分钟看提案 · 10 分钟试模板 · 25 分钟制作 · 15 分钟测试改进 · 5 分钟保存';
   main.innerHTML='<div class="toolbar">'+localLink('#home','Lesson home')+'</div><section class="panel"><p class="kicker">Day '+day+' / Coding Jam</p><h1>'+title+'</h1><p>'+pair(...intro)+'</p><details><summary>60-minute plan</summary>'+pair(schedule,scheduleZh)+'</details></section>';
   if(day===1){
-    main.innerHTML+=wrap('Open your team’s template','<p>'+pair('One partner opens the Canva template and signs in. Choose to use the template, rename your copy with your team’s app name, then share that copy with your partner.','一位同伴打开 Canva 模板并登录，选择使用模板，用应用名重命名自己的副本，再共享给同伴。')+'</p><div class="actions">'+external(template,'Use the Canva template')+' '+file('Year9_App_Proposal_Template.pptx','Download editable slides')+'</div><p class="sub">'+pair('If Canva sign-in is unavailable, download the slides and open them in PowerPoint.','若无法登录 Canva，下载幻灯片并用 PowerPoint 打开。')+'</p>');
-    main.innerHTML+=wrap('Complete your six slides',checklist(slideSteps.map(([e,z],i)=>['Slide '+(i+1)+' · '+e,'第 '+(i+1)+' 页 · '+z]),'slide'));
-    main.innerHTML+=wrap('Ready for Mr Dave?', '<p>'+pair('Swap with your partner. Ask them to point to the user, the button and what changes. Save one shared deck. Give Mr Dave your viewable copy or the PowerPoint file in your class’s cover hand-in. Keep slide 4 for Day 2.','请同伴指出用户、按钮和点击后的变化。保存一份团队提案，在班级代课提交处给老师可查看的链接或 PowerPoint 文件。保留第 4 页供第二天使用。')+'</p>');
+    const paragraph = (en, cn) => '<p>'+pair(en,cn)+'</p>';
+    const task = (n, title, titleZh, body) => wrap(pair('Slide '+n+' · '+title,'第 '+n+' 页 · '+titleZh),body);
+    const research = [
+      ['Scratch','Boat Race','Steer a boat to the island. Watch what happens when it hits an obstacle.','把船开到岛上，观察撞到障碍物时会发生什么。','Could a player guide a new pupil safely through a school map?','能否用这种操作，让玩家带新同学走过校园地图？','https://projects.raspberrypi.org/en/projects/boat-race'],
+      ['MIT App Inventor','PaintPot','Choose a colour, then drag across the canvas. The app draws where your finger moves.','选颜色，再在画布上拖动。线条会随着手指移动。','Could a visitor mark a meeting spot on a map?','能否让访客在地图上标出集合点？','https://appinventor.mit.edu/explore/ai2/paintpot-part1'],
+      ['MakeCode / micro:bit','Step counter','A shake adds one to a counter and shows the new number. The tutorial includes a simulator option.','摇动一次，计数加一并显示新数字。教程也提供模拟器选项。','Could a team track activity breaks using the same counter?','能否用相同的计数功能记录活动休息次数？','https://microbit.org/projects/make-it-code-it/step-counter/']
+    ];
+    const examples=research.map(([tool,name,en,cn,idea,ideaZh,url])=>'<article class="jam-example"><span class="kicker">'+esc(tool)+'</span><h3>'+esc(name)+'</h3>'+paragraph(en,cn)+paragraph(idea,ideaZh)+external(url,zh?'研究项目 / Explore':'Explore project')+'</article>').join('');
+    main.innerHTML+=wrap(pair('What happens at the Coding Jam?','Coding Jam 当天要做什么？'),
+      '<ul class="jam-brief"><li>'+pair('Work in a team of 2–3. Build a digital solution that helps people at school or in the community. Choose a school-approved platform.','每组 2–3 人，用学校认可的平台制作能帮助学校或社区的数字作品。')+'</li><li>'+pair('On the day, the organisers give you a problem, a constraint and a time limit. Later they announce a plot twist. Be ready to change one part of your idea.','活动当天才公布问题、限制和时限。之后还会公布新变化，要能调整设计。')+'</li><li>'+pair('At the science-fair-style judging, let someone see the prototype work. Explain who it helps, what the user does and what happens.','在展览式评审中演示原型，说明它帮助谁、用户怎样操作，以及结果是什么。')+'</li></ul>'+
+      '<p class="sub">'+pair('Find the school briefing in Teams → Year 9E → General → “AIMS Coding Jam 2026” (13 November). The organiser will confirm event-day AI guidance and judging details.','学校说明在 Teams → Year 9E → General → “AIMS Coding Jam 2026”（11 月 13 日）。活动当天的 AI 规则和评审细节以主办方通知为准。')+'</p>');
+    main.innerHTML+=wrap(pair('Open one shared proposal','打开一份团队共用的提案'),
+      paragraph('One partner opens the template, signs in, makes a copy and shares it with the team. Write straight into the six slides. Already started? Keep your deck and add the missing decisions below.','一位同伴打开模板、登录、创建副本并共享。直接把答案填在六页幻灯片中。若已开始，可保留原稿并补充下方要点。')+
+      '<div class="actions">'+external(template,'Use the Canva template')+file('Year9_App_Proposal_Template.pptx','Download editable slides')+'</div>');
+    main.innerHTML+=task(1,'Who needs your app?','谁需要你们的应用？',
+      paragraph('Name one user and one real moment when they need help. Example: a new pupil leaves lunch and cannot find the art club. What would success look like for that pupil? Choose a problem your team cares about.','选一类用户，描述他们需要帮助的具体时刻。例如，新同学午饭后找不到美术社团。怎样才算帮到对方？请选自己团队关心的问题。'));
+    main.innerHTML+=task(2,'Compare two real projects','比较两个真实项目',
+      paragraph('Choose two examples below. Open each project and look for one action and its result. On slide 2, record both links, one feature from each and which feature would help your user more.','从下方选两个项目。打开项目，找出一个操作及其结果。在第 2 页记录两个链接、各自的一个功能，再解释哪一个更适合你们的用户。')+
+      '<div class="jam-research">'+examples+'</div>');
+    const platforms=['Scratch','MIT App Inventor','MakeCode / micro:bit','Python','HTML / CSS / JavaScript','Another school-approved platform'];
+    main.innerHTML+=task(3,'Commit to one platform','确定一个制作平台',
+      paragraph('On slide 3, name your platform, the feature it lets you build and the device or simulator you can test on. Pick one action you can finish. Name one extra you can drop.','在第 3 页写出平台、能用它制作的功能，以及可供测试的设备或模拟器。选一个能完成的操作，并写出时间不足时可删去的额外功能。')+
+      '<label for="jam-tool">'+pair('Remember our platform on this device for Day 2','在这台设备上记住平台，供第二天使用')+'</label><div class="jam-choice"><select id="jam-tool"><option value="">'+(zh?'选择平台 / Choose a platform':'Choose a platform')+'</option>'+platforms.map(p=>'<option>'+esc(p)+'</option>').join('')+'</select><label id="other-tool-label" hidden>'+pair('Platform name','平台名称')+'<input id="other-tool" type="text" maxlength="70"></label></div>');
+    main.innerHTML+=task(4,'Show what happens after one action','展示一个操作会带来什么结果',
+      paragraph('Sketch on paper and photograph it, draw digitally, or ask a school-approved AI tool to help you explain or picture the idea. Put the start, result and reset on slide 4. Label the control. Explain one thing your team chose or changed and why.','可在纸上画并拍照、用电子设备绘图，或用学校认可的 AI 工具帮助解释或构思画面。在第 4 页展示初始状态、操作结果和重置；标出控件，并用自己的话解释团队的一项选择或改动。')+
+      '<details><summary>'+pair('Try a prompt for your concept','试用一个构思提示词')+'</summary>'+paragraph('“Our user is __. They need __. We can build __ in __. Describe two simple screens before and after one tap. Which part could we simplify?” Add your own labels or ask for a mock-up. Tell your team which suggestion you kept.','“我们的用户是__，需要__。我们会用__制作__。请描述点击前后的两个简单界面。哪里可以简化？”加上自己的标签，或请它生成概念图，并说明采用了哪条建议。')+'</details>'+
+      '<p class="sub">'+pair('AI is optional for this classroom proposal. Check the organiser’s guidance before using it at the event.','本次课堂提案可自愿使用 AI。活动当天请先查看主办方的 AI 指引。')+'</p>');
+    main.innerHTML+=task(5,'What can each person actually build?','每个人现在能做什么？',
+      paragraph('Each teammate gives one piece of evidence from class, takes one job and names one skill to practise. How will your partner tell you are ready?','每位组员举一个课堂实例，认领一项任务，并写出一项需要练习的技能。同伴怎样判断你已经会了？')+
+      '<div class="sample">'+pair('“I made a button change a label last week. I can build the result screen. I still need to learn Reset. I’ll practise restoring the first message, then ask my partner to tap, reset and tap again.”','“我上周做过点击按钮改变文字。我能制作结果界面，但还要学会重置。我会练习恢复第一条提示，再请同伴点击、重置、再点一次。”')+'</div>');
+    const checkpoints=[
+      ['0–10','Read the brief. Agree who needs help and what counts as success.','读题，确定用户和成功条件。'],
+      ['10–25','Sketch the action and result. Try opening your tool on the test device.','画操作前后界面，在测试设备打开平台。'],
+      ['25–65','Build the smallest working feature. By minute 65, a partner should be able to try it.','制作最小可用功能。第 65 分钟前，让同伴能够试用。'],
+      ['65–85','Test the action, reset and repeat. Fix the first thing that stops the user.','测试操作、重置、再试，先修复妨碍使用的问题。'],
+      ['85–105','Practise a twist: what if sound is unavailable? Adapt one part and retest.','模拟要求变化：若不能播放声音怎么办？修改一处并重测。'],
+      ['105–120','Save a working copy. Rehearse a short demo showing the user, action and benefit.','保存可用副本，演练简短展示，说明用户、操作和好处。']
+    ];
+    main.innerHTML+=task(6,'What will be working after two hours?','两小时后要展示什么？',
+      paragraph('Use 120 minutes as your practice budget. On slide 6, give each stage an owner and something another person can see or try. Change the split to suit your idea, but keep the total at 120. Use the organiser’s actual timings on event day.','以下是 120 分钟练习预算。第 6 页每个阶段写一位负责人和可见或可测试的成果。时间可调整，但总计 120 分钟。正式活动按主办方当天的安排。')+
+      '<ol class="jam-timeline">'+checkpoints.map(([m,e,z])=>'<li><b>'+m+' min</b><span>'+pair(e,z)+'</span></li>').join('')+'</ol>'+
+      '<div class="sample">'+pair('A checkable milestone: “By minute 65, Sam can tap Art Club and see Room 12. If we fall behind, we keep the room lookup and drop the animated map.” Write your own version.','可验证的例子：“到第 65 分钟，Sam 点美术社就能看见 12 号教室。如果落后，保留查询教室，删去地图动画。”请换成自己的计划。')+'</div>');
+    main.innerHTML+=wrap(pair('Ready for Mr Dave?','准备好给老师查看了吗？'),
+      checklist([
+        ['We compared two linked projects and committed to one platform.','我们比较了两个有链接的项目，并确定了一个制作平台。'],
+        ['Our concept shows one action, its result and how to try again.','我们的设计展示了一个操作、结果，以及如何再试。'],
+        ['Each partner gives evidence of a skill and a next practice step.','每位组员都给出了技能证据及下一步练习。'],
+        ['Our 120-minute plan names owners, a working demo and one feature to drop.','我们的 120 分钟计划写明负责人、可演示成果及可以删减的功能。']
+      ],'pitchV2')+paragraph('Give your partner a 30-second pitch. Point to the concept and explain who uses it, what changes after one action, and which part you can have working in two hours. Swap speakers.','和同伴轮流做 30 秒介绍。指着概念图说明谁会用、操作后怎样变化，以及两小时内哪一部分能实际运行。')+paragraph('Check that Mr Dave can open your Canva link or PowerPoint. Submit one team proposal by Wednesday 25 November. For Day 2, bring slide 3 (your tool) and slide 4 (your design).','确认老师能打开 Canva 链接或 PowerPoint。请在 11 月 25 日星期三前交一份团队提案。第二天带上第 3 页（工具）和第 4 页（设计）。'));
+    const select=main.querySelector('#jam-tool'),other=main.querySelector('#other-tool'),otherLabel=main.querySelector('#other-tool-label');
+    select.value=state.jamTool||'';other.value=state.jamOtherTool||'';
+    function updateChoice(){otherLabel.hidden=select.value!==platforms[platforms.length-1];state.jamTool=select.value;state.jamOtherTool=other.value;save()}
+    otherLabel.hidden=select.value!==platforms[platforms.length-1];
+    select.onchange=updateChoice;other.oninput=updateChoice;
   }else{
     main.innerHTML+=wrap('Try one action','<p>'+pair('This starter helps a visitor find water. Try its button. For your own prototype, replace the action and result with the ones on your sketch.','这个示例帮助访客找饮水处。试试按钮，再把操作和结果换成自己草图里的设计。')+'</p><div class="phone"><div class="drop" aria-hidden="true">💧</div><strong>Refill Finder</strong><p id="demoResult" aria-live="polite">Where can I fill my bottle?</p><button id="demoTap" class="primary">Find water</button><button id="demoReset">Reset</button></div>');
-    main.innerHTML+=wrap('Choose your platform','<p>'+pair('Choose one. The guide below changes to match your tool. If you missed Day 1, name one user, one button and one result before you start.','选一个平台，下方说明会随之更换。若错过第一天，先决定用户、一个按钮和一个结果。')+'</p><div class="pills">'+['Scratch','MIT','Other'].map(p=>'<button data-platform="'+p+'" aria-pressed="'+(p===platform)+'" class="'+(p===platform?'primary':'')+'">'+({Scratch:'Scratch',MIT:'MIT App Inventor',Other:'Another platform'})[p]+'</button>').join('')+'</div><div class="actions">'+(platform==='Scratch'?file('RefillFinder.sb3','Download Scratch starter')+external('https://scratch.mit.edu/projects/editor/','Open Scratch'):platform==='MIT'?file('RefillFinder.aia','Download MIT starter')+external('https://ai2.appinventor.mit.edu/','Open MIT App Inventor'):'')+'</div>');
+    main.innerHTML+=wrap('Choose your platform',(planned?'<p class="sample">'+pair('Your Day 1 platform on this device: '+planned,'这台设备记住的第一天平台：'+planned)+'</p>':'')+'<p>'+pair('Choose one. The guide below changes to match your tool. If you missed Day 1, name one user, one button and one result before you start.','选一个平台，下方说明会随之更换。若错过第一天，先决定用户、一个按钮和一个结果。')+'</p><div class="pills">'+['Scratch','MIT','Other'].map(p=>'<button data-platform="'+p+'" aria-pressed="'+(p===platform)+'" class="'+(p===platform?'primary':'')+'">'+({Scratch:'Scratch',MIT:'MIT App Inventor',Other:'Another platform'})[p]+'</button>').join('')+'</div><div class="actions">'+(platform==='Scratch'?file('RefillFinder.sb3','Download Scratch starter')+external('https://scratch.mit.edu/projects/editor/','Open Scratch'):platform==='MIT'?file('RefillFinder.aia','Download MIT starter')+external('https://ai2.appinventor.mit.edu/','Open MIT App Inventor'):'')+'</div>');
     main.innerHTML+=wrap('Build and check your prototype','<div class="checks">'+steps[platform].map(([a,b,e,z],i)=>'<label><input type="checkbox" data-check="'+platform+i+'" '+(state.jamChecks[platform+i]?'checked':'')+'><span><strong>'+pair((i+1)+'. '+a,b)+'</strong>'+pair(e,z)+'</span></label>').join('')+'</div>');
     main.innerHTML+=wrap('Show your result','<p>'+pair('Give your partner the controls. Can they find the button and get the result twice? Keep your editable project or link beside the proposal for Mr Dave. If the class hand-in is available, attach your file or share the link there.','让同伴自己操作。能找到按钮并两次得到结果吗？把可编辑项目或链接与提案一起保存给老师。如果班级提交处已开放，就在那里提交。')+'</p>');
     document.querySelector('#demoTap').onclick=()=>document.querySelector('#demoResult').textContent=zh?'Library entrance · 图书馆入口':'Library entrance';
     document.querySelector('#demoReset').onclick=()=>document.querySelector('#demoResult').textContent='Where can I fill my bottle?';
-    main.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{state.platform=b.dataset.platform;save();window.coverJam({day,state,save,esc,pair,main,zh,button,localLink});});
+    main.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{state.platform=b.dataset.platform;state.jamGuideChosen=true;save();window.coverJam({day,state,save,esc,pair,main,zh,button,localLink});});
   }
   main.querySelectorAll('[data-check]').forEach(b=>b.onchange=()=>{state.jamChecks[b.dataset.check]=b.checked;save()});
 };

@@ -72,3 +72,14 @@ body[data-day="2"] .type-deck{--type-light:#8ae6ff;background:#1b2945}
 .type-actions{justify-content:flex-start}
 @keyframes wpm-flow{to{background-position:200% 0}}
 @media(prefers-reduced-motion:reduce){.dial-fill{transition:none}.neon-wpm.is-running::after{animation:none}}
+
+.jam-brief li{margin:.5rem 0}
+.jam-research{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));gap:.8rem}
+.jam-example{border:1px solid var(--line);border-radius:16px;padding:1rem;background:linear-gradient(145deg,#f5efff,#fff)}
+.jam-example:nth-child(2){background:linear-gradient(145deg,#ffedeb,#fff)}
+.jam-example:nth-child(3){background:linear-gradient(145deg,#e6f6ff,#fff)}
+.jam-example h3{margin-top:.55rem}.jam-example .btn{display:inline-flex;align-items:center}
+.jam-choice{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.6rem}
+.jam-choice select{max-width:100%}.jam-choice [hidden]{display:none}
+.jam-timeline{list-style:none;padding:0}.jam-timeline li{display:grid;grid-template-columns:7rem 1fr;gap:.5rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+@media(max-width:460px){.jam-timeline li{grid-template-columns:1fr}}
