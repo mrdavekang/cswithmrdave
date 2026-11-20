@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" data-theme="plum"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#20123d">
+<meta name="description" content="Respond to a new constraint without breaking what already works. Then retest and show the difference.">
+<title>Coding Jam Day 3: Adapt and demo</title>
+<style>:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#191736;background:#f7f7ff;line-height:1.55;--ink:#191736;--muted:#57536c;--page:#f7f7ff;--accent:#273bc8;--strong:#1d2cad;--soft:#eaf0ff;--secondary:#f1e9ff;--coral:#ff6960;--peach:#ffe5de;--line:#dfdcef;--deep:#171335;--shadow:0 18px 48px #2314400c;--r:20px}
+:root[data-theme=purple]{--accent:#5c29b7;--strong:#4c239b;--soft:#f1e9ff;--secondary:#eaf0ff;--deep:#20123d}
+:root[data-theme=plum]{--accent:#6b24ab;--strong:#552087;--soft:#f5eaff;--secondary:#ffe8f2;--deep:#241436}
+*{box-sizing:border-box}body{margin:0;min-width:300px}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--strong)}img,svg{max-width:100%}[hidden]{display:none!important}
+.shell{width:min(100% - 40px,1300px);margin-inline:auto}.skip{position:absolute;left:1rem;z-index:10;padding:.7rem 1rem;background:#fff;transform:translateY(-150%)}.skip:focus{transform:translateY(0)}:focus-visible{outline:3px solid #9b49e3;outline-offset:4px}
+.topbar{background:white;border-bottom:1px solid var(--line)}.topbar .shell{min-height:4.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.75rem 0}.brand{display:flex;align-items:center;gap:.72rem;font-weight:850;line-height:1.2}.brand-mark{width:2rem;height:2rem;display:grid;place-items:center;border-radius:9px;background:var(--coral);color:var(--ink);font:800 .94rem ui-monospace,monospace}.brand small{display:block;color:var(--muted);font-size:.8rem;font-weight:650;margin-top:.2rem}.actions,.foot-actions{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.64rem .9rem;min-height:44px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);font-size:.91rem;font-weight:750;text-decoration:none}.btn:hover{background:var(--soft);border-color:#9890b0}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn.primary:hover{background:var(--strong)}.btn:disabled{cursor:not-allowed;opacity:.46}.btn[data-copied]{border-color:var(--accent);color:var(--strong)}
+.hero{position:relative;isolation:isolate;overflow:hidden;background:var(--deep);color:white;padding:clamp(2rem,5vw,4.4rem) 0 2.5rem}.hero::before{content:"";position:absolute;inset:0 0 0 48%;background:radial-gradient(ellipse at 87% 13%,#a66bcc49,transparent 46%),radial-gradient(ellipse at 65% 87%,#644dd453,transparent 58%);z-index:-1;pointer-events:none}.hero::after{content:"";position:absolute;inset:0 0 0 62%;background-image:radial-gradient(#ffffff26 1px,transparent 1px);background-size:20px 20px;z-index:-1;mask-image:linear-gradient(90deg,transparent,#000);pointer-events:none}.hero-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(20px,5vw,72px);align-items:center}.badge{display:inline-flex;gap:.55rem;align-items:center;border-radius:100px;padding:.4rem .8rem;background:#fff2;color:#fff;font-size:.9rem;font-weight:800;letter-spacing:.025em}.badge b{color:#ffaca4}.hero h1{font-size:clamp(2.65rem,5.25vw,4.95rem);line-height:.99;letter-spacing:-.062em;margin:.9rem 0 1rem;max-width:15ch}.hero .lede{margin:0;color:#e5e0fb;font-size:clamp(1.02rem,1.4vw,1.22rem);max-width:50ch}.hero side{display:block}.mission{background:#fff;color:var(--ink);padding:1.3rem 1.45rem;border-top:6px solid var(--coral);border-radius:var(--r);box-shadow:0 14px 35px #08051949}.mission dl{margin:0}.mission dl>div+div{border-top:1px solid var(--line);margin-top:.77rem;padding-top:.77rem}.mission dt{font-size:.83rem;letter-spacing:.05em;font-weight:900;text-transform:uppercase;color:var(--strong)}.mission dd{margin:.22rem 0 0;font-weight:650}.hero-meta{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;font-size:.9rem;color:#e5e0fb;margin-top:1.2rem}.hero-meta strong{color:white}
+.layout{display:grid;grid-template-columns:minmax(220px,275px) minmax(0,1fr);gap:clamp(1rem,3vw,2rem);align-items:start;padding-block:1.8rem 3rem}.rail{position:sticky;top:1rem;min-width:0;border-radius:var(--r);background:white;border:1px solid var(--line);padding:1rem;box-shadow:var(--shadow)}.rail h2{font-size:1.08rem;margin:0 0 .65rem}.rail nav{display:grid;gap:.4rem}.stage-nav{display:grid;grid-template-columns:2.12rem 1fr;gap:.55rem;align-items:center;text-align:left;background:white;color:var(--ink);border:1px solid transparent;border-radius:11px;padding:.55rem .5rem}.stage-nav:hover{background:var(--soft)}.stage-nav[aria-current=step]{background:var(--soft);border-color:#a5a1de}.stage-nav[aria-current=step] .step-number{background:var(--accent);color:white}.stage-nav[data-complete=true]:not([aria-current=step]) .step-number{background:var(--secondary);color:var(--strong)}.step-number{display:grid;place-items:center;width:2.12rem;height:2.12rem;border-radius:50%;font-weight:850;color:var(--strong);background:#f2effa;font-variant-numeric:tabular-nums}.stage-nav strong{display:block;font-size:.9rem;line-height:1.25}.stage-nav small{display:block;font-size:.8rem;color:var(--muted);margin-top:.12rem}.meter{padding:.72rem 0 1rem;border-bottom:1px solid var(--line);margin-bottom:.7rem}.meter p{margin:0 0 .38rem;color:var(--muted);font-size:.9rem;font-weight:700}.meter progress{width:100%;height:.6rem;border:0;border-radius:1rem;overflow:hidden;appearance:none;display:block;background:#ece9f6}.meter progress::-webkit-progress-bar{background:#ece9f6}.meter progress::-webkit-progress-value{background:var(--accent)}.meter progress::-moz-progress-bar{background:var(--accent)}.device-note{margin:.85rem 0 .1rem;color:var(--muted);font-size:.85rem}
+.workspace{min-width:0;background:white;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}.stage-head{padding:clamp(1.15rem,3.3vw,2rem);background:linear-gradient(115deg,var(--soft),#fff 88%);border-bottom:1px solid var(--line)}.eyebrow{font-size:.83rem;font-weight:850;color:var(--strong);letter-spacing:.075em;text-transform:uppercase;margin:0 0 .42rem}.stage-head h2{font-size:clamp(1.7rem,3.25vw,2.7rem);line-height:1.13;margin:0;letter-spacing:-.045em}.stage-head p:last-child{margin:.68rem 0 0;max-width:69ch}.stage-content{padding:clamp(1.15rem,3.3vw,2rem);display:grid;gap:1.18rem}.stage-content h3{line-height:1.25;margin:0 0 .5rem;font-size:1.15rem}.stage-content p{margin:.3rem 0}.callout{border-left:4px solid var(--accent);border-radius:0 12px 12px 0;background:var(--soft);padding:.85rem 1rem}.callout.coral{border-color:#d94842;background:var(--peach)}.callout p{max-width:72ch}.frame-grid{display:grid;gap:.7rem;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}.frame{min-width:0;padding:.93rem 1.05rem;background:var(--soft);border:1px solid transparent;border-radius:13px}.frame:nth-child(2n){background:var(--secondary)}.frame:nth-child(3n){background:#fce9f0}.frame strong{display:block;font-size:1rem;color:var(--strong);line-height:1.24}.frame p{margin:.45rem 0 0;color:var(--ink);font-size:.95rem}.field-grid{display:grid;gap:1rem;grid-template-columns:repeat(var(--cols,1),minmax(0,1fr));align-items:start}.field{min-width:0}.field label{display:block;font-weight:800;line-height:1.2;margin:0 0 .35rem;color:var(--ink)}.field .hint{display:block;color:var(--muted);font-size:.9rem;margin:0 0 .38rem}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid #bcb7d3;border-radius:10px;padding:.66rem .72rem;background:#fff;color:var(--ink)}.field input,.field select{min-height:46px}.field select{appearance:none;padding-right:2.6rem;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='%23413a62' stroke-width='1.5' d='m5 7 5 5 5-5'/%3E%3C/svg%3E") no-repeat right .7rem center/20px}.field textarea{display:block;resize:vertical;min-height:5.15rem}.field input::placeholder{color:#746d88}
+.resource-grid{display:grid;gap:.72rem;grid-template-columns:repeat(2,minmax(0,1fr))}.resource{padding:.85rem 1rem;border:1px solid var(--line);border-radius:13px}.resource a{font-weight:800;text-underline-offset:.17em}.resource p{color:var(--muted);margin:.38rem 0 0;font-size:.93rem}.resource .chip{font-size:.8rem;color:var(--strong);font-weight:850;display:block;margin-bottom:.21rem}.fold{border:1px solid var(--line);border-radius:12px;background:#fdfcff;padding:.77rem 1rem}.fold summary{font-weight:800;color:var(--strong);cursor:pointer;min-height:1.55rem}.fold[open] summary{margin-bottom:.55rem}.prompt-copy{margin-top:.65rem}.prompt-text{margin:0;background:var(--soft);border-radius:9px;padding:.85rem;white-space:pre-wrap;overflow-wrap:anywhere}.flowline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.48rem}.flowline>div{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:.65rem;line-height:1.3;font-size:.87rem;min-height:4rem}.flowline b{display:block;color:var(--strong);font-size:.91rem;margin-bottom:.24rem}.flowline .checkpoint{background:var(--accent);border-color:var(--accent);color:white}.flowline .checkpoint b{color:white}.story-visual{border:1px solid var(--line);padding:1rem;border-radius:14px}.story-visual .frame{padding:0;overflow:hidden}.story-visual .frame strong{padding:.65rem 1rem;background:var(--soft)}.mock{padding:.8rem 1rem 1rem;min-height:6.4rem;display:grid;align-content:start;gap:.45rem}.mock b{font-size:.92rem}.mock span{width:max-content;max-width:100%;padding:.22rem .6rem;border-radius:7px;background:white;border:1px solid var(--line);font-size:.9rem}.mock span.selected{background:var(--accent);color:white}.mock p{font-size:.9rem}.code-window{border-radius:10px;overflow:auto;background:#1a172c;color:#f5f2ff;padding:.8rem 1rem;line-height:1.55;tab-size:4;font:1rem/1.55 ui-monospace,monospace}.code-window code{white-space:pre}.check-list{padding-left:1.25rem;margin:.25rem 0 0}.check-list li+li{margin-top:.35rem}.transfer-box,.twist-card{border:1px solid var(--line);border-radius:12px;padding:1rem;background:var(--soft)}.transfer-box p,.twist-card p{max-width:69ch}.transfer-actions{margin-top:.65rem;display:flex;gap:.4rem;flex-wrap:wrap}.twist-pick{margin:.7rem 0}.twist-pick select{padding:.45rem;max-width:100%;background:white;border:1px solid #bcb7d3;border-radius:8px;min-height:44px}.twist-card{background:var(--peach);margin-top:.8rem}.twist-card:focus{outline:0}.twist-card strong{color:#813328}
+.stage-footer{border-top:1px solid var(--line);padding:1rem clamp(1.15rem,3.3vw,2rem);background:#fdfcff;display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}.done-label{display:flex;align-items:center;gap:.5rem;font-weight:750;min-height:44px}.done-label input{width:1.2rem;height:1.2rem;accent-color:var(--accent)}.notice{min-height:1.6em;padding:0;margin:.6rem 0 0;color:var(--strong);font-size:.9rem;font-weight:730}.notice[data-error=true]{color:#9a2234}.bottom-note{margin:-1rem 0 2rem;color:var(--muted);font-size:.87rem}.print-summary{display:none}.only-screen{display:block}
+@media(max-width:880px){.hero-grid{grid-template-columns:1fr;gap:1.3rem}.hero h1{max-width:19ch}.mission{max-width:680px}.layout{grid-template-columns:1fr}.rail{position:static}.rail nav{grid-template-columns:repeat(2,minmax(0,1fr))}.field-grid[style*="--cols:3"]{grid-template-columns:1fr}.flowline{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:570px){.shell{width:calc(100% - 24px)}.topbar .shell{align-items:flex-start}.actions .btn{padding-inline:.62rem}.frame-grid,.field-grid,.resource-grid{grid-template-columns:1fr}.stage-footer{justify-content:flex-start}.foot-actions{width:100%}.rail nav{grid-template-columns:1fr}.hero-meta{display:block}.hero-meta span{display:block}.flowline{grid-template-columns:repeat(2,minmax(0,1fr))}.hero h1{font-size:2.62rem}}
+@media print{@page{size:A4;margin:15mm}:root,body{background:#fff;color:#141422;font-size:11pt}.only-screen{display:none!important}.print-summary{display:block}.print-summary h1{font-size:24pt;margin:0 0 .2cm}.print-summary h2{font-size:14pt;margin:.45cm 0 .2cm}.print-summary .print-box{break-inside:avoid;border-bottom:1px solid #9c96b3;padding:.18cm 0}.print-summary .print-box p{margin:.08cm 0;white-space:pre-wrap;overflow-wrap:anywhere}.print-summary .print-box strong{color:#311880}.print-summary .print-empty{border:1px solid #aaa;padding:.25cm}.print-summary .print-detail{font-size:10pt;color:#454259}}
+</style></head><body>
+<div id="site" class="only-screen"><noscript><main class="shell"><h1>Keep the core. Face the twist.</h1><p>Respond to a new constraint without breaking what already works. Then retest and show the difference.</p><p>Enable JavaScript to use the lesson stages and save your notes.</p></main></noscript></div>
+<article id="paper" class="print-summary" aria-label="Printable team notes"></article>
+<script>window.codingJam={"lesson":{"day":3,"key":"Coding_Jam_Day3_Twist_Demo","theme":"plum","label":"Adapt and demo","headline":"Keep the core. Face the twist.","summary":"Respond to a new constraint without breaking what already works. Then retest and show the difference.","wagba":"Getting better at adapting a working prototype and using test evidence to explain our decisions.","challenge":"Keep your core feature working after the twist and show the evidence.","deliverable":"A working demo with evidence from the original and twist tests","sections":[{"id":"do-now-show-what-worked","title":"Do Now: Show what worked","minutes":"0–7 min","intro":"Run your original prototype. Look up your Day 2 test. Save a working copy before making changes. If the core still doesn’t work, fix it before adding a twist.","blocks":[{"type":"carry"},{"type":"fields","columns":3,"fields":[{"type":"text","id":"team","label":"Team name","hint":"Use a team label. You don’t need to enter names.","lines":1},{"type":"text","id":"project","label":"Project name","hint":"Keep it short. You can change it later.","lines":1},{"type":"select","id":"teamSize","label":"Team size","hint":"Each group needs 2 or 3 people.","choices":["2","3"]}]},{"type":"area","id":"core","label":"What must still work?","hint":"The user must still be able to ___.","lines":3},{"type":"area","id":"baseline","label":"What worked before","hint":"Add one observed result from Day 2, or run a quick baseline test now.","lines":3},{"type":"frames","title":"What type of learning are we doing?","cards":[["Knowledge","Identify which requirement changed and which stayed the same."],["Skills","Make one change, then run the original and twist tests."],["Understanding","Use the results to explain whether the change really helped."]]}]},{"id":"reveal-the-twist","title":"Reveal the twist","minutes":"7–12 min","intro":"Wait for your teacher’s signal. Take one relevant card or enter the twist your teacher gives your group.","blocks":[{"type":"twist"},{"type":"area","id":"twist","label":"Our twist","hint":"Write the new requirement in one sentence.","lines":3},{"type":"fields","columns":3,"fields":[{"type":"area","id":"keep","label":"Keep","hint":"What still needs to work?","lines":3},{"type":"area","id":"changePlan","label":"Change","hint":"What is the smallest useful change?","lines":3},{"type":"area","id":"cut","label":"Cut","hint":"What can you leave out to protect the core?","lines":3}]},{"type":"callout","title":"Two-minute team decision","body":"Tell your teacher or buddy team what you will keep and what you will change before opening the code.","tone":"coral"}]},{"id":"main-task-1-adapt-one-feature","title":"Main task 1: Adapt one feature","minutes":"12–32 min","intro":"One person drives and one checks the change against the user’s need. If there’s a third person, they prepare the test. Swap halfway.","blocks":[{"type":"frames","title":"Keep the change small","cards":[["Before","Run a known input and check the original result."],["Change","Edit one rule, control or output."],["After","Run the known input again before testing the twist."]]},{"type":"area","id":"actualChange","label":"What we changed","hint":"Name the rule, button, display or behaviour you changed.","lines":3},{"type":"list","title":"Before you hand it to a tester","items":["The original task is still possible.","You can show an input or action that exercises the new requirement.","You have saved a working copy."]}]},{"id":"main-task-2-retest","title":"Main task 2: Retest","minutes":"32–42 min","intro":"Ask a partner team to try the original task and the task affected by the twist. Give them the goal without explaining where to click.","blocks":[{"type":"fields","columns":2,"fields":[{"type":"area","id":"originalExpected","label":"Original task and expected result","hint":"What should still work?","lines":3},{"type":"area","id":"twistExpected","label":"Twist task and expected result","hint":"What should the new or changed case do?","lines":3}]},{"type":"fields","columns":2,"fields":[{"type":"area","id":"originalActual","label":"Original task: what actually happened","hint":"Record the tester’s action and the outcome.","lines":3},{"type":"area","id":"twistActual","label":"Twist task: what actually happened","hint":"Include what still fails. Don’t coach the tester.","lines":3}]},{"type":"area","id":"retest","label":"What the retest showed","hint":"What did you learn about the user or the change? What would you fix next?","lines":3},{"type":"fold","title":"Just returned from the trip?","body":"Try a partner team’s prototype as a fresh tester. You don’t need to know its intended solution. Read only the test goal and report what actually happens."}]},{"id":"science-fair-demo-and-plenary","title":"Science-fair demo and plenary","minutes":"42–60 min","intro":"Use 42–55 minutes for demos, then 55–60 for the Learning Pitstop. In the two-minute demo, everyone speaks.","blocks":[{"type":"frames","title":"Four boxes for your demo","cards":[["What worked before","Name the user and show the core action."],["The twist","Say what changed for the user."],["What we changed","Name one deliberate code or design change."],["What the retest showed","Point to one actual test result."]]},{"type":"area","id":"peerFeedback","label":"One useful question or suggestion","hint":"What did the visiting team ask?","lines":3},{"type":"frames","title":"Pick your current phase","cards":[["New Learning","I’m learning to adapt a feature without breaking the original."],["Consolidating","I can use a test to check my existing code after a change."],["Treading Water","The twist felt easy. I’ll test a more demanding case."],["Drowning","I’m blocked. I’ll show which test fails and ask for help with one change."]]},{"type":"select","id":"phase","label":"My learning phase","hint":"Pick the one that matches what happened today.","choices":["New Learning","Consolidating","Treading Water","Drowning"]},{"type":"fields","columns":2,"fields":[{"type":"area","id":"evidence","label":"Evidence from today","hint":"Point to something you did, saw or changed.","lines":3},{"type":"area","id":"nextStep","label":"One next action","hint":"Name a specific action you can take before the next session.","lines":3}]},{"type":"area","id":"transfer","label":"One technique I can reuse at the real Jam","hint":"What can you use when the actual problem and constraint are new?","lines":3}]}]},"resources":[],"twists":[["Parent notice reader","The user is somewhere quiet and can’t play audio. Can they find the action and deadline without help?"],["Student catch-up guide","The lesson they missed isn’t in the sample list. Can they find a useful next step without the program guessing or leaving them stuck?"],["Teacher help queue","Two requests arrive, but one group is completely blocked. Can the teacher see which group needs help first and why?"]],"timeline":[]};
+(() => {
+  'use strict';
+  const { lesson,resources,twists,timeline } = window.codingJam;
+  const title=`Coding Jam Day ${lesson.day}: ${lesson.label}`;
+  const key=`cswithmrdave:coding-jam:day-${lesson.day}:v1`;
+  const MAX=3200, BACKUP_MAX=150000;
+  const esc=(x)=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const stageFields=s=>s.blocks.flatMap(b=>b.type==='fields'?b.fields:('id' in b?[b]:[]));
+  const fields=lesson.sections.flatMap(stageFields);
+  const definitions=new Map(fields.map(d=>[d.id,d]));
+  const phaseText=lesson.sections.map(s=>s.id);
+  const blank=()=>({answers:Object.create(null),done:[],current:phaseText[0],twist:0,carryFrom:0});
+  let storage=true;
+  const validText=(d,value)=>typeof value==='string' ? (d.choices ? (d.choices.includes(value)?value:'') : value.slice(0,d.type==='text'?130:MAX)) : '';
+  function clean(x){
+    const out=blank();
+    if(!x||typeof x!=='object')return out;
+    for(const [id,d] of definitions){const val=validText(d,x.answers?.[id]);if(val)out.answers[id]=val;}
+    if(Array.isArray(x.done))out.done=phaseText.filter(v=>x.done.includes(v));
+    if(phaseText.includes(x.current))out.current=x.current;
+    if(lesson.day===3&&Number.isInteger(x.twist)&&x.twist>=0&&x.twist<=twists.length)out.twist=x.twist;
+    if(lesson.day>1&&x.carryFrom===lesson.day-1)out.carryFrom=x.carryFrom;
+    return out;
+  }
+  let state=blank();
+  try{const saved=localStorage.getItem(key);if(saved)state=clean(JSON.parse(saved));}catch{storage=false;}
+  const $=(id)=>document.getElementById(id);
+  const introText=`Your responses stay on this device. Save a backup to move them to a different device or to another day.`;
+  const stateText=()=>storage?'Progress saves in this browser.':'Browser saving is unavailable. Use Save backup.';
+  function persist(){
+    try{localStorage.setItem(key,JSON.stringify(state));storage=true;}catch{storage=false;}
+    if($('device-status'))$('device-status').textContent=stateText();
+  }
+  function note(message,error=false){
+    const n=$('notice');n.dataset.error=String(error);n.textContent=message;
+  }
+  function frameGrid(label,cards){
+    return `<div><h3>${esc(label)}</h3><div class="frame-grid" style="--cols:${cards.length===2||cards.length===4?2:3}">${cards.map(([t,d])=>`<div class="frame"><strong>${esc(t)}</strong><p>${esc(d)}</p></div>`).join('')}</div></div>`;
+  }
+  function editField(d){
+    const id=`answer-${d.id}`, a=`id="${id}" data-field="${esc(d.id)}" ${d.hint?`aria-describedby="${id}-hint"`:''}`;
+    return `<div class="field"><label for="${id}">${esc(d.label)}</label>${d.hint?`<small id="${id}-hint" class="hint">${esc(d.hint)}</small>`:''}${d.type==='select'?`<select ${a}><option value="">Choose one</option>${d.choices.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select>`:d.type==='text'?`<input ${a} type="text" maxlength="130" autocomplete="off">`:`<textarea ${a} rows="${d.lines}" maxlength="${MAX}"></textarea>`}</div>`;
+  }
+  const sampleCode=`notice = input("Choose 1 for the library notice: ")
+if notice == "1":
+    print("Action: Return your book")
+    print("Deadline: Friday")
+else:
+    print("That choice isn't available. Try 1.")`;
+  function renderBlock(b){
+    switch(b.type){
+    case 'text':case 'area':case 'select':return editField(b);
+    case 'fields':return `<div class="field-grid" style="--cols:${b.columns}">${b.fields.map(editField).join('')}</div>`;
+    case 'frames':return frameGrid(b.title,b.cards);
+    case 'callout':return `<aside class="callout ${b.tone==='coral'?'coral':''}"><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p></aside>`;
+    case 'list':return `<div><h3>${esc(b.title)}</h3><ul class="check-list">${b.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    case 'fold':return `<details class="fold"><summary>${esc(b.title)}</summary><p>${esc(b.body)}</p></details>`;
+    case 'prompt':return `<details class="fold"><summary>${esc(b.title)}</summary><p class="prompt-text">${esc(b.text)}</p><button type="button" class="btn prompt-copy" data-copy>Copy prompt</button></details>`;
+    case 'resources':return `<div class="resource-grid" aria-label="Project research examples">${resources.map(([tool,name,url,d])=>`<article class="resource"><span class="chip">${esc(tool)}</span><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(name)}</a><p>${esc(d)}</p></article>`).join('')}</div>`;
+    case 'storyboard':return `<figure class="story-visual" style="margin:0"><h3>Worked sketch: finding a deadline</h3><div class="frame-grid" style="--cols:2"><div class="frame"><strong>What the user does</strong><div class="mock"><b>Choose a notice</b><span class="selected">Library notice</span><span>Trip notice</span></div></div><div class="frame"><strong>What the user gets back</strong><div class="mock"><b>Library notice</b><p><b>Action:</b> Return your book<br><b>Deadline:</b> Friday</p></div></div></div><figcaption class="hint">Fictional example. A short notice might be enough. Test before deciding you need an app.</figcaption></figure>`;
+    case 'timeline':return `<div><h3>Two-hour rehearsal timeline</h3><div class="flowline">${timeline.map(([t,what],i)=>`<div class="${i===2?'checkpoint':''}"><b>${esc(t)} min</b>${esc(what)}</div>`).join('')}</div></div>`;
+    case 'codeExample':return `<details class="fold"><summary>A short Python example: input, rule and output</summary><p>Use this as a pattern, not your finished program. Predict the result for <code>1</code> and <code>x</code>, then try both in your IDE.</p><pre class="code-window"><code>${esc(sampleCode)}</code></pre><button type="button" class="btn prompt-copy" data-copy>Copy Python example</button></details>`;
+    case 'carry':return `<div class="transfer-box"><h3>Bring your Day ${lesson.day-1} notes</h3><p>Import your previous backup to fill in only blank fields. No file? Carry on and enter the key points yourself.</p><div class="transfer-actions"><button type="button" class="btn" data-import>Import Day ${lesson.day-1} notes</button></div><p id="carry-status" class="notice" role="status"></p></div>`;
+    case 'twist':return `<div class="field twist-pick"><label for="twist-select">Choose a practice card</label><small class="hint">Use the card your teacher chooses, or enter their custom twist below.</small><select id="twist-select"><option value="0">Choose a card</option>${twists.map(([t],i)=>`<option value="${i+1}">${esc(t)}</option>`).join('')}</select><button type="button" class="btn primary" data-reveal style="margin-top:.55rem">Reveal card</button><div id="twist-result" class="twist-card" hidden tabindex="-1"></div><button type="button" class="btn" id="use-twist" data-use-twist style="margin-top:.55rem" hidden>Use this card in our notes</button></div>`;
+    default:return '';
+    }
+  }
+  $('site').innerHTML=`
+ <a class="skip" href="#main-content">Skip to lesson</a>
+ <header class="topbar"><div class="shell"><div class="brand"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><div>Coding Jam Lab<small>Year 11 · Day ${lesson.day}</small></div></div><div class="actions"><button type="button" class="btn" data-import>Import notes</button><button type="button" class="btn" data-export>Save backup</button><button type="button" class="btn primary" data-print>Save as PDF / Print</button></div></div></header>
+ <section class="hero"><div class="shell hero-grid"><div><div class="badge"><b>DAY ${lesson.day} / 3</b>${esc(lesson.label)}</div><h1>${esc(lesson.headline)}</h1><p class="lede">${esc(lesson.summary)}</p><div class="hero-meta"><span><strong>60 minutes</strong> of rehearsal</span><span><strong>Teams of 2–3</strong></span></div></div><aside class="mission" aria-label="Lesson goals"><dl><div><dt>WAGBA</dt><dd>${esc(lesson.wagba)}</dd></div><div><dt>Challenge</dt><dd>${esc(lesson.challenge)}</dd></div><div><dt>By the end</dt><dd>${esc(lesson.deliverable)}</dd></div></dl></aside></div></section>
+ <main class="shell layout" id="main-content"><aside class="rail"><h2>Lesson path</h2><div class="meter"><p id="meter-label"></p><progress id="meter" max="${lesson.sections.length}" value="0" aria-labelledby="meter-label"></progress></div><nav aria-label="Lesson stages">${lesson.sections.map((s,i)=>`<button type="button" class="stage-nav" data-stage="${esc(s.id)}"><span class="step-number" aria-hidden="true">${i+1}</span><span><strong>${esc(s.title)}</strong><small>${esc(s.minutes)}</small></span></button>`).join('')}</nav><p class="device-note" id="device-status"></p><p class="notice" id="notice" role="status"></p></aside><article class="workspace" id="work"></article></main>
+ <footer class="shell bottom-note">${esc(introText)} No server collects your responses.</footer>
+ <input type="file" accept=".json,application/json" id="backup-input" hidden>
+ `;
+
+  function reflect(){
+    $('meter-label').textContent=`${state.done.length} of ${lesson.sections.length} stages done`;
+    $('meter').value=state.done.length;
+    for(const n of document.querySelectorAll('[data-stage]')){
+      const selected=n.dataset.stage===state.current,done=state.done.includes(n.dataset.stage);
+      n.setAttribute('aria-current',selected?'step':'false');n.dataset.complete=String(done);
+      const i=phaseText.indexOf(n.dataset.stage);n.querySelector('.step-number').textContent=done?'✓':String(i+1);
+      n.setAttribute('aria-label',`${lesson.sections[i].title}, ${lesson.sections[i].minutes}${done?', done':''}`);
+    }
+    $('device-status').textContent=stateText();
+    if($('carry-status'))$('carry-status').textContent=state.carryFrom?`Day ${state.carryFrom} notes were brought into this lesson.`:'';
+  }
+  function fillInputs(){
+    for(const n of $('work').querySelectorAll('[data-field]'))n.value=state.answers[n.dataset.field]||'';
+    if($('twist-select'))$('twist-select').value=String(state.twist);
+  }
+  function showTwist(focus=false){
+    const n=$('twist-result'), use=$('use-twist');if(!n||!use)return;
+    const v=twists[state.twist-1]; n.hidden=!v;use.hidden=!v;
+    if(v){n.innerHTML=`<strong>${esc(v[0])}</strong><p>${esc(v[1])}</p>`;if(focus)n.focus();}
+    else n.textContent='';
+  }
+  function showStage(to,{focus=false,hash=true}={}){
+    const i=phaseText.indexOf(to);if(i<0)return;
+    state.current=to;
+    const s=lesson.sections[i], end=i===lesson.sections.length-1;
+    $('work').innerHTML=`<div class="stage-head"><p class="eyebrow">Stage ${i+1} of ${lesson.sections.length} · ${esc(s.minutes)}</p><h2 id="stage-heading" tabindex="-1">${esc(s.title)}</h2><p>${esc(s.intro)}</p></div><div class="stage-content">${s.blocks.map(renderBlock).join('')}</div><div class="stage-footer"><label class="done-label"><input type="checkbox" id="done-stage" ${state.done.includes(to)?'checked':''}> Mark this stage done</label><div class="foot-actions"><button type="button" class="btn" data-move="prev" ${i?'':'disabled'}>Previous stage</button>${end?'<button type="button" class="btn primary" data-export>Save team backup</button>':'<button type="button" class="btn primary" data-move="next">Next stage</button>'}</div></div>`;
+    fillInputs();showTwist();reflect();persist();
+    if(hash&&window.location.hash!==`#${to}`){try{history.replaceState(null,'',`#${to}`);}catch{window.location.hash=to;}}
+    if(focus){$('stage-heading').focus({preventScroll:true});$('work').scrollIntoView({block:'start'});}
+  }
+  function exportBackup(){
+    const payload={app:'coding-jam-lab',version:1,day:lesson.day,state};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const tag=(state.answers.team||'team').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,35)||'team';
+    const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`coding-jam-day-${lesson.day}-${tag}.json`;
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1200);
+    note(`Day ${lesson.day} backup created. Keep it with your project files.`);
+  }
+  function importText(str){
+    const data=JSON.parse(str);
+    if(!data||data.app!=='coding-jam-lab'||data.version!==1||![1,2,3].includes(data.day)||!data.state?.answers||typeof data.state.answers!=='object'||Array.isArray(data.state.answers))throw Error('Choose a Coding Jam Lab JSON backup.');
+    if(data.day!==lesson.day&&data.day!==lesson.day-1)throw Error(`This app accepts Day ${lesson.day} backups${lesson.day>1?` or notes from Day ${lesson.day-1}`:''}.`);
+    const before=state, incoming=data.state, a=incoming.answers;
+    if(data.day===lesson.day){
+      const src=clean(incoming);
+      for(const [id,val] of Object.entries(src.answers))if(!before.answers[id]?.trim())state.answers[id]=val;
+      state.done=phaseText.filter(s=>state.done.includes(s)||src.done.includes(s));
+      if(!state.twist)state.twist=src.twist;
+      if(!state.carryFrom)state.carryFrom=src.carryFrom;
+      note(`Day ${lesson.day} notes restored into blank fields. Your current answers were kept.`);
+    }else{
+      const proposed={team:a.team,project:a.project,teamSize:a.teamSize,core:a.core};
+      if(lesson.day===2)Object.assign(proposed,{platform:a.platform,input:a.input,output:a.output,invalid:a.invalid,expected:a.expected});
+      if(lesson.day===3){
+        const lines=[a.retest,a.observed,a.normalTest].filter(s=>typeof s==='string'&&s.trim()).slice(0,2);
+        if(lines.length)proposed.baseline=lines.join('\n');
+      }
+      for(const [id,val] of Object.entries(proposed))if(!state.answers[id]?.trim()){
+        const d=definitions.get(id);if(d){const norm=validText(d,val);if(norm)state.answers[id]=norm;}
+      }
+      state.carryFrom=data.day;
+      note(`Day ${data.day} notes copied into blank fields. Your current answers were kept.`);
+    }
+    showStage(state.current,{hash:false});
+  }
+  function printPlan(){
+    const selected=lesson.sections.map(s=>({title:s.title,items:stageFields(s).map(d=>[d.label,state.answers[d.id]]).filter(([,v])=>v?.trim())})).filter(s=>s.items.length);
+    $('paper').innerHTML=`<h1>${esc(title)}</h1><p class="print-detail">${esc(lesson.wagba)}</p>${selected.length?selected.map(s=>`<h2>${esc(s.title)}</h2>${s.items.map(([label,v])=>`<div class="print-box"><strong>${esc(label)}</strong><p>${esc(v)}</p></div>`).join('')}`).join(''):'<p class="print-empty">You haven’t entered any notes yet.</p>'}`;
+  }
+  async function copyCode(btn){
+    const value=btn.closest('details').querySelector('.prompt-text,.code-window code')?.textContent;
+    if(!value)return;
+    let copied=false;
+    try{if(navigator.clipboard){await navigator.clipboard.writeText(value);copied=true;}}catch{}
+    if(!copied){const b=document.createElement('textarea');b.value=value;b.style.position='fixed';b.style.opacity='0';document.body.append(b);b.select();try{copied=document.execCommand('copy');}catch{}b.remove();btn.focus();}
+    const label=btn.textContent;btn.textContent=copied?'Copied':'Select and copy the text';if(copied)btn.dataset.copied='';
+    setTimeout(()=>{if(btn.isConnected){btn.textContent=label;delete btn.dataset.copied;}},1800);
+  }
+  document.addEventListener('input',e=>{
+    const id=e.target.dataset.field;if(!definitions.has(id))return;
+    state.answers[id]=validText(definitions.get(id),e.target.value);persist();
+  });
+  document.addEventListener('change',e=>{
+    if(e.target.id==='done-stage'){
+      if(e.target.checked&&!state.done.includes(state.current))state.done.push(state.current);
+      if(!e.target.checked)state.done=state.done.filter(v=>v!==state.current);
+      persist();reflect();
+    }
+    if(e.target.tagName==='SELECT'&&definitions.has(e.target.dataset.field)){
+      const id=e.target.dataset.field;state.answers[id]=validText(definitions.get(id),e.target.value);persist();
+    }
+  });
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const data=b.dataset;
+    if(data.stage){showStage(data.stage,{focus:true});return;}
+    if(data.move){showStage(phaseText[phaseText.indexOf(state.current)+(data.move==='prev'?-1:1)],{focus:true});return;}
+    if('export' in data){exportBackup();return;}
+    if('import' in data){$('backup-input').click();return;}
+    if('print' in data){printPlan();window.print();return;}
+    if('copy' in data){copyCode(b);return;}
+    if('reveal' in data){state.twist=Number($('twist-select').value)||0;showTwist(true);persist();if(!state.twist)note('Choose a practice card first.',true);return;}
+    if('useTwist' in data){const v=twists[state.twist-1], n=$('answer-twist');if(v&&!n.value.trim()){n.value=v[1];state.answers.twist=v[1];persist();n.focus();}else if(v){note('Your team already has a written twist. Your text was kept.');n.focus();}}
+  });
+  $('backup-input').addEventListener('change',async e=>{
+    const f=e.target.files?.[0];e.target.value='';if(!f)return;
+    try{if(f.size>BACKUP_MAX)throw Error('That file is too large to be a Coding Jam backup.');importText(await f.text());}
+    catch(err){note(err instanceof SyntaxError?'That isn’t a readable Coding Jam backup.':err.message,true);}
+  });
+  window.addEventListener('beforeprint',printPlan);
+  window.addEventListener('hashchange',()=>{const h=window.location.hash.slice(1);if(phaseText.includes(h)&&h!==state.current)showStage(h,{focus:true,hash:false});});
+  const h=window.location.hash.slice(1);showStage(phaseText.includes(h)?h:state.current,{hash:false});
+})();
+
+</script>
+</body></html>
