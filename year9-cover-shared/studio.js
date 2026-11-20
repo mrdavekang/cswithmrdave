@@ -81,16 +81,31 @@ function card(mode,i){
   }
   if(c.type==='debug'||c.type==='challenge')editor(c,i,a,complete);
 }
+function insertIndent(input) {
+  input.setRangeText('    ', input.selectionStart, input.selectionEnd, 'end');
+  input.dispatchEvent(new Event('input', {bubbles:true}));
+}
+
 function typing(c, i, activity, complete) {
   const target = c.code;
   activity.innerHTML = `
     <div class="type-controls">
-      <label for="typed">${pair('Tap the code and type over it. A dot means Space, and ↵ means Enter.',
-                                '点代码开始输入。圆点表示空格，↵ 表示回车。')}</label>
+      <label for="typed">${pair('Tap the code to type. Use Space for · and Enter for ↵.',
+                                '点代码开始输入。· 表示空格，↵ 表示回车。')}</label>
       <label class="type-mode"><input type="checkbox" id="speed" checked> WPM mode</label>
     </div>
     <div class="type-deck">
       <div class="type-status">
+        <div class="neon-wpm">
+          <div class="neon-dial" aria-hidden="true">
+            <svg viewBox="0 0 96 70" focusable="false">
+              <defs><linearGradient id="speed-spectrum"><stop stop-color="#38f9fe"/><stop offset=".52" stop-color="#a88aff"/><stop offset="1" stop-color="#ff68d5"/></linearGradient></defs>
+              <path class="dial-track" d="M12 58 A38 38 0 1 1 84 58" pathLength="100"/>
+              <path class="dial-fill" d="M12 58 A38 38 0 1 1 84 58" pathLength="100" stroke="url(#speed-spectrum)"/>
+            </svg>
+          </div>
+          <div class="speed-value"><strong id="live-wpm">0</strong> <span>WPM</span></div>
+        </div>
         <div class="type-readout" id="meter"></div>
         <div class="type-next" aria-hidden="true"><span>${zh?'Next key / 下一键':'Next key'}</span> <kbd></kbd></div>
       </div>
@@ -98,15 +113,23 @@ function typing(c, i, activity, complete) {
         <pre class="type-sr" id="type-target">${esc(target)}</pre>
         <div class="type-track" aria-hidden="true"></div>
         <i class="type-caret" aria-hidden="true"></i>
-        <textarea id="typed" aria-label="Type the Python code" aria-describedby="type-target"
+        <textarea id="typed" aria-label="Type the Python code" aria-describedby="type-target type-keys"
           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" rows="1"></textarea>
       </div>
       <canvas class="type-scene" aria-hidden="true"></canvas>
     </div>
-    <div class="type-actions">${button('retry','Restart typing')}</div>`;
+    <div class="type-actions">
+      ${target.includes('\n') ? button('type-indent',zh?'Tab · 缩进四格':'Tab · Indent 4 spaces') : ''}
+      ${button('retry','Restart typing')}
+    </div>
+    <p class="sub" id="type-keys">${pair('Tab inserts four spaces. Press Esc to leave the typing area.', '按 Tab 缩进四个空格。按 Esc 离开输入区。')}</p>`;
 
   const input = q('#typed'), speed = q('#speed'), track = q('.type-track');
   const pad = q('.type-pad'), caret = q('.type-caret'), keycap = q('.type-next kbd');
+  const dial = q('.neon-wpm');
+  const dialFill = q('.dial-fill');
+  const liveWpm = q('#live-wpm');
+  const indentButton = q('#type-indent');
   const glyphs = [];
   function glyph(char) {
     const s = document.createElement('span');
@@ -126,7 +149,13 @@ function typing(c, i, activity, complete) {
     const ms = finished ? elapsed : performance.now() - started;
     const wpm = started ? Math.round(prefix * 12000 / Math.max(ms, 750)) : 0;
     const accuracy = attempts ? Math.round(100 * correctAttempts / attempts) + '%' : '—';
-    q('#meter').textContent = [speed.checked ? wpm + ' WPM' : null,
+    dial.hidden = !speed.checked;
+    liveWpm.textContent = wpm;
+    // The arc approaches full scale smoothly and the number gives the exact rate.
+    dialFill.style.strokeDashoffset = String(100 - 100 * wpm / (wpm + 40));
+    dial.classList.toggle('is-running', Boolean(started && !finished));
+    dial.classList.toggle('is-complete', finished);
+    q('#meter').textContent = [
       accuracy + (zh ? ' 准确率' : ' accuracy'), prefix + ' / ' + target.length,
       speed.checked && state.scores[i] ? (zh?'最佳 ':'Best ') + state.scores[i] + ' WPM' : null].filter(Boolean).join('   ·   ');
     return wpm;
@@ -140,8 +169,10 @@ function typing(c, i, activity, complete) {
     input.style.left = x + 'px';
     input.style.top = y + 'px';
     const char = target[pos];
+    const lineStart = target.lastIndexOf('\n', pos - 1) + 1;
+    const indentAhead = /^ *$/.test(target.slice(lineStart, pos)) && target.startsWith('    ', pos);
     keycap.textContent = finished ? '✓' : prefix < input.value.length && input.selectionEnd === input.value.length
-      ? 'Backspace' : ({' ':'Space','\n':'Enter'})[char] || char || 'Backspace';
+      ? 'Backspace' : indentAhead ? 'Tab' : ({' ':'Space','\n':'Enter'})[char] || char || 'Backspace';
     const lo = input.selectionStart, hi = input.selectionEnd;
     glyphs.forEach((g, n) => g.classList.toggle('in-selection', n >= lo && n < hi));
   }
@@ -185,6 +216,7 @@ function typing(c, i, activity, complete) {
     const wpm = updateMeter();
     if (finished) {
       input.readOnly = true;
+      if (indentButton) indentButton.disabled = true;
       pad.classList.add('is-finished');
       if (speed.checked) state.scores[i] = Math.max(state.scores[i] || 0, wpm);
       complete(speed.checked ? 'Code matched. ' + wpm + ' WPM.' : 'Code matched.', '输入正确。');
@@ -198,6 +230,7 @@ function typing(c, i, activity, complete) {
     previous = '';
     finished = false;
     input.readOnly = false;
+    if (indentButton) indentButton.disabled = false;
     input.value = '';
     pad.classList.remove('is-finished');
     setFeedback('');
@@ -207,6 +240,20 @@ function typing(c, i, activity, complete) {
     input.focus({preventScroll:true});
   }
   pad.addEventListener('click', () => input.focus({preventScroll:true}));
+  input.onkeydown = e => {
+    if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      q('#retry').focus();
+    } else if (e.key === 'Tab' && !input.readOnly) {
+      e.preventDefault();
+      insertIndent(input);
+    }
+  };
+  if (indentButton) indentButton.onclick = () => {
+    input.focus({preventScroll:true});
+    insertIndent(input);
+  };
   input.onpaste = e => {
     if (!speed.checked) return;
     e.preventDefault();
@@ -234,10 +281,11 @@ function editor(c,i,a,complete){
  const retain=()=>{state.drafts[i]=src.value;save()};
  src.oninput=retain;
  src.onkeydown=e=>{if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
-   if(e.key==='Tab'&&!e.shiftKey&&document.getElementById('indent').checked){e.preventDefault();src.setRangeText('    ',src.selectionStart,src.selectionEnd,'end');retain()}
+   if(e.key==='Tab'&&!e.shiftKey&&document.getElementById('indent').checked){e.preventDefault();insertIndent(src)}
+   if(e.key==='Escape'){e.preventDefault();q('#indent').focus();return}
    if(e.key==='Enter'){e.preventDefault();const line=src.value.slice(0,src.selectionStart).split('\n').pop();const indent=(line.match(/^ */)||[''])[0]+(line.trimEnd().endsWith(':')?'    ':'');src.setRangeText('\n'+indent,src.selectionStart,src.selectionEnd,'end');retain()}
  };
- src.insertAdjacentHTML('afterend','<label class="sub"><input id="indent" type="checkbox"> Use Tab to indent</label>');
+ src.insertAdjacentHTML('afterend','<label class="sub"><input id="indent" type="checkbox" checked> Use Tab to indent · Esc to leave the editor</label>');
  function loadCode(value){src.value=value;retain();setFeedback('Your program is in the editor. Make your changes, then check the code.')}
  if(jump){
   q('#loadFile').onchange=async(e)=>{const f=e.target.files[0];if(f&&f.size<250000)loadCode(await f.text());else setFeedback('Choose a small Python .py file.')};
