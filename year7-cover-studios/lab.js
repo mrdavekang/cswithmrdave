@@ -1,13 +1,13 @@
 // Shared spreadsheet evaluator is the unmodified Term 1.2 assessment engine.
 const baseSheet={A1:'Item',B1:'Packs',C1:'RM / pack',D1:'Cost (RM)',A2:'Stickers',B2:'4',C2:'3',D2:'=B2*C2',A3:'Ribbons',B3:'18',C3:'2',D3:'=B3*C3',A4:'Badges',B4:'3',C4:'4',D4:'=B4*C4',A5:'Total cost',D5:'=SUM(D2:D4)',A6:'Budget / balance',B6:'80',D6:'=B6+B9-D5',A7:'Teams',B7:'3',A8:'Packs per team',A9:'Donation',B9:'10'};
 const labels={'Item':'商品','Packs':'包数','RM / pack':'每包令吉','Cost (RM)':'费用（令吉）','Stickers':'贴纸','Ribbons':'丝带','Badges':'徽章','Total cost':'总费用','Budget / balance':'预算 / 余额','Teams':'队伍','Packs per team':'每队包数','Donation':'捐款'};
-function starter(id){let d={...baseSheet};if(id===17)d.C2='7';if(id===18||id===19||id===30)d.D2='';if(id===23)d.D5='';if(id===24)d.D6='';if(id===28)d.D2='=B2*3';if(id===30){d.B2='5';d.C2='4'}return d}
+function starter(id){if(id>=46)return {...extra[id][1]};let d={...baseSheet};if(id===17)d.C2='7';if(id===18||id===19||id===30)d.D2='';if(id===23)d.D5='';if(id===24)d.D6='';if(id===28)d.D2='=B2*3';if(id===30){d.B2='5';d.C2='4'}return d}
 const target={18:'D2',19:'D2',20:'B2',22:'B8',23:'D5',24:'D6',26:'B4',28:'D2',30:'D2'};
 const sheetRows={16:[1,2,3],17:[1,2],18:[1,2],19:[1,2],20:[1,2],21:[1,2,3,4],22:[1,3,7,8],23:[1,2,3,4,5],24:[1,5,6,9],26:[1,4,5,6,9],28:[1,2],30:[1,2]};
 function cells(id,a){return {...starter(id),...a.applied}}
 const val=(c,k)=>ExamSheet.result(c,k).value,fmt=(c,k)=>ExamSheet.fmt(ExamSheet.result(c,k));
 function editAddr(id,a){return id===30&&a.phase?'B2':target[id]}
-function isFormula(id,a){return ['D2','B8','D5','D6'].includes(editAddr(id,a))}
+function isFormula(id,a){return id>=46||['D2','B8','D5','D6'].includes(editAddr(id,a))}
 function strDraft(id,a){let k=editAddr(id,a);return a.raw?.[k]??cells(id,a)[k]??''}
 function currentMode(){return model.mode||(matchMedia('(pointer:coarse)').matches?'tap':'type')}
 function sheetwork(id,a){
