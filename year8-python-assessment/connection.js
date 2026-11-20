@@ -1,5 +1,6 @@
 "use strict";
-const assessmentUrl = "https://qejimegoysblonawsoza.supabase.co/functions/v1/year8-assessment";
+const replacementMode = new URLSearchParams(location.search).get("replacement")==="1";
+const assessmentUrl = "https://qejimegoysblonawsoza.supabase.co/functions/v1/" + (replacementMode?"year8-replacement":"year8-assessment");
 const assessmentPublishableKey = "sb_publishable_bWHlzeJJdgepYefUsc16zQ_93_TEYes";
 
 async function assessmentRequest(payload) {

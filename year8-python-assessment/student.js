@@ -103,7 +103,7 @@ function takeSession(s){
       return;
     }
     session=s;
-    if(!el("join-form"))render();else updateEntry();
+    if(!el("join-form")||replacementMode)render();else updateEntry();
     return;
   }
   const firstRunning=!previous?.questions&&s.questions;
@@ -152,6 +152,7 @@ const flagButton=q=>'<button class="secondary" type="button" data-act="flag" ari
 const saveStatus=()=>version===savedVersion?"Saved to the test host":uploading?"Saving…":localWorks?"Saved on this device · waiting to sync":"Not yet saved to the host";
 const alert=()=>'<p class="notice" id="notice" role="status">'+esc(warning)+'</p>';
 function joinScreen(){
+  if(replacementMode) return '<section class="card"><p class="eyebrow">YEAR '+className+' · TERM 1.2</p><h1>Self-paced replacement test</h1><h2>'+esc(session?.name||'')+'</h2>'+instruction(["There is no countdown. Work through 20 questions at your own pace. Your answers save as you go.","本次补考不倒计时。按自己的节奏完成20题，答案会自动保存。","시간 제한이 없습니다. 20문제를 자신의 속도로 풀면 답이 자동 저장됩니다."])+instruction(["Look for “Saved to the test host” before you close this tab. Open the same private Teams link to continue. When you finish, review and submit once.","关闭前请确认答案已保存。重新打开 Teams 私人链接可以继续。完成后请检查并提交。","저장됨을 확인한 후 닫으세요. 같은 Teams 링크에서 이어 풀고 마지막에 제출하세요."])+'<form id="join-form"><button class="primary" id="start-test" '+(!session?.name?'disabled':'')+'>Start my replacement test</button></form>'+alert()+'</section>';
   return '<section class="card"><p class="eyebrow">YEAR '+className+' · TERM 1.2</p><h1>'+copy.welcome[0]+'</h1>'+support(copy.welcome)+
     '<p class="pill">'+word(copy.rules)+'</p><div id="entry-status" class="waiting-status" role="status"></div>'+
     '<ol class="waiting-steps">'+[copy.prepName,copy.prepStart].map(step=>'<li>'+instruction(step)+'</li>').join("")+'</ol>'+
@@ -233,11 +234,12 @@ function review(){
 function render(){
   cancelOrderDrag();
   const active=!!session?.questions&&!session.submitted;
-  timer.hidden=!active;
+  timer.hidden=!active||replacementMode;
   if(!classReady){main.innerHTML='<section class="card"><h1>Open your class link</h1><p>Use the full Year 8 Python Assessment link your teacher shared.</p></section>';return;}
   if(!session?.connected){
     const existing=el("join-form")?.elements.namedItem("name")?.value;
     main.innerHTML=joinScreen();if(existing)el("join-form").elements.namedItem("name").value=existing;
+    if(replacementMode)return;
     window.Year8QuickReview.mount(el("waiting-review"),{lang:language,page:reviewPage,onPage:i=>{reviewPage=i;}});
     updateEntry();return;
   }
@@ -254,7 +256,7 @@ function go(id){
   stopRun();question=id;saveLocal();render();el("heading")?.focus();window.scrollTo(0,0);
 }
 function edit(){
-  if(!session?.questions||session.submitted||Date.now()+offset>=session.end)return;
+  if(!session?.questions||session.submitted||(!replacementMode&&Date.now()+offset>=session.end))return;
   version++;saveLocal();
   const n=el("save-state");if(n)n.textContent=saveStatus();
   clearTimeout(timeout);timeout=setTimeout(()=>void sync(),550);
@@ -279,7 +281,7 @@ async function sync(submit=false){
   }
 }
 function tick(){
-  if(session?.status!=="running"||session.submitted)return;
+  if(replacementMode||session?.status!=="running"||session.submitted)return;
   const secs=Math.max(0,Math.ceil((session.end-Date.now()-offset)/1000));
   clock.textContent=Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0");
   timer.classList.toggle("urgent",secs<=300);
@@ -349,7 +351,7 @@ el("language").addEventListener("change",e=>{
 main.addEventListener("submit",async e=>{
   if(e.target.id==="program-input-form"){
     e.preventDefault();
-    if(session?.questions&&!session.submitted&&Date.now()+offset<session.end)finishProgramInput(el("program-input").value);
+    if(session?.questions&&!session.submitted&&(replacementMode||Date.now()+offset<session.end))finishProgramInput(el("program-input").value);
     return;
   }
   if(e.target.id!=="join-form")return;e.preventDefault();
@@ -374,7 +376,7 @@ function cancelOrderDrag(){
   clearDropMarker(d);d.row.classList.remove("drag-source");d.list.classList.remove("is-sorting");
   if(d.list.hasPointerCapture(d.id))d.list.releasePointerCapture(d.id);
 }
-const canReorder=()=>session?.status==="running"&&session.questions&&!session.submitted&&Date.now()+offset<session.end;
+const canReorder=()=>session?.status==="running"&&session.questions&&!session.submitted&&(replacementMode||Date.now()+offset<session.end);
 function dropSlot(d,x,y){
   const box=d.list.getBoundingClientRect();
   if(x<box.left-16||x>box.right+16||y<box.top-24||y>box.bottom+24)return -1;
@@ -420,7 +422,7 @@ document.addEventListener("click",async e=>{
   if(b.dataset.go)return go(b.dataset.go);
   const act=b.dataset.act;
   if(act==="download")return download();
-  if(!session?.questions||session.submitted||Date.now()+offset>=session.end)return;
+  if(!session?.questions||session.submitted||(!replacementMode&&Date.now()+offset>=session.end))return;
   const q=session.questions.find(x=>x.id===question);
   if(act==="flag"){
     draft.flags=draft.flags.includes(question)?draft.flags.filter(x=>x!==question):[...draft.flags,question];edit();
