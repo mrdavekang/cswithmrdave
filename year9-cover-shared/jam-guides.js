@@ -8,7 +8,7 @@ window.coverJamGuides = function (pair, zh) {
   ];
   function scenes() {
     return '<div class="jg-scenes">' + situations.map(([img,en,cn,q,z]) =>
-      '<figure><img loading="lazy" src="'+media+img+'.webp" alt=""><figcaption><strong>'+pair(en,cn)+'</strong>'+p(q,z)+'</figcaption></figure>').join('')+'</div>';
+      '<figure><img loading="lazy" src="'+media+img+'.svg" alt=""><figcaption><strong>'+pair(en,cn)+'</strong>'+p(q,z)+'</figcaption></figure>').join('')+'</div>';
   }
   const prompts = {
     idea:['Find a problem worth solving','找出值得解决的问题',
@@ -37,22 +37,23 @@ window.coverJamGuides = function (pair, zh) {
       '<div class="jg-frames" data-style="paper">'+frames.map(([en,z,title,tz,word,wz,note,nz],i)=>'<figure><b>'+pair(en,z)+'</b><div class="jg-screen"><span aria-hidden="true" class="jg-speaker"></span><strong>'+pair(title,tz)+'</strong><span class="jg-screen-label">'+pair(word,wz)+'</span>'+(i===1?'<small>'+pair('↶ Reset','↶ 重置')+'</small>':'')+'</div><figcaption>'+pair(note,nz)+'</figcaption></figure>').join('')+'</div>'+
       p('Your turn on slide 4. Use your own user and labels. A photo of three pencil boxes with arrows works just as well as a digital mock-up.','轮到你了。在第 4 页使用自己的用户和标签。纸上画三个方框，加箭头后拍照，就能清楚展示设计，也可以使用电子原型。')+'</div>';
   }
+  const iconGraphic = id => '<svg class="jg-icon" aria-hidden="true" focusable="false"><use href="'+media+'research-icons.svg#'+id+'"></use></svg>';
   const researchParts=[
-    ['⛵','Steer','驾驶','Reach the island','抵达小岛'],
-    ['🖌️','Drag','拖动','Draw a line','画出线条'],
-    ['▦','Shake','摇动','7 → 8','7 → 8'],
-    ['☷','Add an item','添加物品','List gains a row','清单多一行']
+    ['boat','Steer','驾驶','Reach the island','抵达小岛'],
+    ['brush','Drag','拖动','Draw a line','画出线条'],
+    ['counter','Shake','摇动','7 → 8','7 → 8'],
+    ['list','Add an item','添加物品','List gains a row','清单多一行']
   ];
   function research(i){
     const [icon,a,b,c,d]=researchParts[i];
     const label=(en,cn)=>zh?en+' / '+cn:en;
     const previews=[
-      '<div class="jg-course"><span data-boat>⛵</span><span>🏝️</span></div><button type="button" data-steer>'+pair('Steer towards island','向小岛行驶')+'</button>',
+      '<div class="jg-course"><span data-boat>'+iconGraphic('boat')+'</span><span>'+iconGraphic('island')+'</span></div><button type="button" data-steer>'+pair('Steer towards island','向小岛行驶')+'</button>',
       '<canvas class="jg-pad" width="440" height="104" aria-label="'+label('Try drawing a line','试着画线')+'"></canvas><button type="button" data-stroke>'+pair('Try a stroke','试画一笔')+'</button> <button type="button" data-wipe>'+pair('Wipe','擦除')+'</button>',
       '<output class="jg-led">7</output><button type="button" data-shake>'+pair('Simulate a shake','模拟摇动')+'</button>',
       '<div class="jg-list"><input type="text" maxlength="30" aria-label="'+label('Item to add','要添加的物品')+'" value="'+label('Cable','线缆')+'"><button type="button" data-add>'+pair('Add','添加')+'</button></div><ul data-items></ul>'
     ];
-    return '<div class="jg-research r'+i+'"><span aria-hidden="true">'+icon+'</span><b>'+pair(a,b)+'</b><i aria-hidden="true">→</i><strong>'+pair(c,d)+'</strong></div><div class="jg-preview"><small>'+pair('Try the idea here','在这里试试这个功能')+'</small>'+previews[i]+'<span role="status" class="jg-status"></span></div>';
+    return '<div class="jg-research r'+i+'"><span aria-hidden="true">'+iconGraphic(icon)+'</span><b>'+pair(a,b)+'</b><i aria-hidden="true">→</i><strong>'+pair(c,d)+'</strong></div><div class="jg-preview"><small>'+pair('Try the idea here','在这里试试这个功能')+'</small>'+previews[i]+'<span role="status" class="jg-status"></span></div>';
   }
   function photo(img,en,cn){return '<figure class="jg-photo"><a target="_blank" rel="noopener" href="'+media+img+'.webp"><img loading="lazy" src="'+media+img+'.webp" alt="'+(zh?cn:en)+'"></a><figcaption>'+pair(en,cn)+'</figcaption></figure>';}
   function guide(platform,step){

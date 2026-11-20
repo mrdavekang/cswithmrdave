@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 248" fill="none">
+<title>Equipment tray with a ruler, an empty flask slot and a magnifier</title>
+<rect width="420" height="248" fill="#d8eee8"/>
+<rect x="30" y="44" width="361" height="174" rx="20" fill="#93b8b2"/>
+<rect x="25" y="36" width="368" height="174" rx="20" fill="#ecf9f4" stroke="#253e43" stroke-width="4"/>
+<rect x="36" y="48" width="346" height="149" rx="13" fill="#bfdcd4" stroke="#769c93" stroke-width="2"/>
+<g transform="rotate(9 102 123)"><rect x="82" y="65" width="38" height="118" rx="4" fill="#f6c365" stroke="#253e43" stroke-width="3"/>
+<path d="M83 79h15m-15 11h9m-9 11h15m-15 11h9m-9 11h15m-15 11h9m-9 11h15m-15 11h9m-9 11h15" stroke="#5e493a" stroke-width="2.5"/></g>
+<path d="M182 71h40v12h-6v30l26 44q7 13-7 13h-66q-14 0-7-13l26-44V83h-6z" fill="#e6f3ed" stroke="#3b7067" stroke-width="3" stroke-dasharray="6 5" stroke-linejoin="round"/>
+<g transform="rotate(-32 305 121)"><rect x="297" y="127" width="16" height="54" rx="7" fill="#eb8668" stroke="#253e43" stroke-width="3"/><circle cx="305" cy="99" r="31" fill="#57847e" stroke="#253e43" stroke-width="3"/><circle cx="305" cy="99" r="22" fill="#e5f8f4" stroke="#253e43" stroke-width="2"/><path d="M292 99q1-11 12-13" stroke="#fff" stroke-width="4" stroke-linecap="round"/></g>
+</svg>
