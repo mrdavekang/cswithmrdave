@@ -1,0 +1,160 @@
+(() => {
+'use strict';
+const day=Number(document.body.dataset.day), cards=window.COVER_CARDS[day];
+const core=day===1?[0,3,9,11,19,21,24,28,34,35,44,45,54,55]:[1,2,11,13,18,23,24,28,32,37,40,44,53,55];
+const types=['typing','mcq','blank','parsons','debug','explain','challenge'];
+const names=['Type to play','Quick quiz','Fill the gap','Order the code','Fix the bug','Explain it','Programming challenge'];
+const cn=['打字游戏','小测验','选择填空','代码排序','修正错误','解释代码','编程挑战'];
+const key='y9-cover-arcade-v1-day'+day;
+function get(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}}
+function put(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}}
+const state=Object.assign({done:{},drafts:{},scores:{},jamChecks:{},last:null,platform:'Scratch',explanations:{}},get(key)||{});
+let zh=Boolean(get('y9-cover-zh')), closeArt,stopWork,interval;
+const save=()=>put(key,state);
+const main=document.getElementById('main');
+const q=sel=>main.querySelector(sel);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
+const pair=(en,mandarin)=>esc(en)+(zh&&mandarin?'<span class="zh" lang="zh-Hans">'+esc(mandarin)+'</span>':'');
+const link=(target,label,primary=false)=>'<a class="btn '+(primary?'primary':'')+'" href="'+target+'">'+esc(label)+'</a>';
+const button=(id,label,primary=false)=>'<button id="'+id+'" class="'+(primary?'primary':'')+'">'+esc(label)+'</button>';
+const pre=code=>'<pre class="code">'+esc(code)+'</pre>';
+const story=day===1?'Arcade Pass':'Level Runner';
+const goal=day===1?['Build an arcade pass that greets a player and opens the gate when they have five coins.','制作街机通行证：问候玩家，金币达到五枚就开门。']:['Upgrade your Arcade Pass. Give the player five named levels when the gate opens.','升级第一天的街机通行证。闸门开启后显示五个带游戏名的关卡。'];
+function resetView(){if(closeArt)closeArt();closeArt=null;if(stopWork)stopWork();stopWork=null;clearInterval(interval);}
+function art(progress=0,active=false,complete=false){const canvas=q('canvas');if(canvas)closeArt=window.drawCoverArcade(canvas,day,progress,{active,complete})}
+function download(file,text){const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=file;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+function nextCore(){return core.find(i=>!state.done[i])??core[core.length-1]}
+function home(){
+  const jamTitle=day===1?'Pitch an app in Canva':'Build a working prototype';
+  main.innerHTML='<section class="hero"><div class="words"><p class="kicker">Year 9 / Cover studio / Day '+day+'</p><h1>'+story+'</h1><p>'+pair(day===1?'Your first play starts here. Choose your lesson.':'Welcome back. Choose the project you’re continuing.',day===1?'选择今天的学习任务。':'欢迎回来，选择你要继续的项目。')+'</p></div><div class="visual"><canvas aria-label="Illustrated arcade scene" role="img"></canvas></div></section><div class="grid"><section class="route"><p class="kicker"><span class="glyph" aria-hidden="true">&lt;/&gt;</span>Python arcade</p><h2>'+ (day===1?'Code the entry gate':'Unlock five levels')+'</h2><p>'+pair(...goal)+'</p>'+link('#python',state.last===null?'Start Python':'Open Python',true)+'</section><section class="route jam"><p class="kicker"><span class="glyph" aria-hidden="true">✦</span>Coding Jam</p><h2>'+jamTitle+'</h2><p>'+pair(day===1?'Pitch one idea for your school or community. Open a copy of the team slide template.':'Use slide 4 of your proposal. Bring one tap and its result to life with your partner.',day===1?'向大家介绍一个帮助学校或社区的想法。打开团队幻灯片模板的副本。':'用提案第 4 页，和同伴做出一个点击后能显示结果的原型。')+'</p>'+link('#jam',day===1?'Open proposal studio':'Open prototype studio',true)+'</section></div><p class="sub">'+pair('Coding Jam pairs work together. Everyone else may choose either route. If your teacher assigned the catch-up test, open that assignment in Teams first.','Coding Jam 的同伴一起做；其他同学可任选路线。如老师安排了补测，请先在 Teams 打开补测作业。')+'</p>';
+  art(.16);
+}
+function overview(){
+  const completed=core.filter(i=>state.done[i]).length, last=state.last;
+  main.innerHTML='<section class="panel"><p class="kicker">Python arcade / Day '+day+'</p><h1>'+story+'</h1><p>'+pair(...goal)+'</p><div class="sample"><strong>What your program will show</strong>'+pre(day===1?'Welcome Alex\nGame: Maze\nPass unlocked':'Game: Maze\nPass unlocked\nMaze - Level 1\nMaze - Level 2\n…\nMaze - Level 5')+'</div><div class="actions">'+link(completed===14?'#finish':'#core/'+nextCore(),completed===14?'View my finish screen':completed?'Continue the guided route':'Start the guided route',true)+link('#library','Explore all 56 cards')+(last&&last.mode==='bank'?link('#bank/'+last.i,'Resume practice card'):'')+'</div><p class="sub">'+pair(completed+' of 14 guided cards complete. Try two of each activity, then choose extra practice if you have time.', '核心路线已完成 '+completed+'/14。每类做两题，有时间可再加练。')+'</p><progress class="progress" max="14" value="'+completed+'"></progress></section><details><summary>How to use your 60 minutes</summary><p>'+pair('Allow 5 minutes to start, 10 for typing and quiz, 10 for gaps and code ordering, 15 for debugging and explaining, 15 to build, and 5 to save your .py file.','用 5 分钟准备，10 分钟打字和小测，10 分钟填空排序，15 分钟调试与解释，15 分钟编程，最后 5 分钟保存 .py。')+'</p></details>';
+}
+function library(){
+  main.innerHTML='<div class="toolbar">'+link('#python','Python home')+link('#core/'+nextCore(),'Guided route')+'</div><section class="panel"><h1>Practice library</h1><p>'+pair('Choose a skill. Each shelf has eight cards, from a first try to a bigger challenge. A tick marks a card you have completed on this device.','选择一项技能。每组八题，由浅入深。打勾的题已在此设备上完成。')+'</p>'+types.map((type,g)=>'<details><summary>'+pair(names[g]+' · '+cards.filter((c,i)=>c.type===type&&state.done[i]).length+'/8',cn[g])+'</summary><div class="cardlist">'+cards.map((c,i)=>c.type===type?'<a href="#bank/'+i+'">'+(state.done[i]?'✓ ':'')+esc(c.title)+'</a>':'').join('')+'</div></details>').join('')+'</section>';
+}
+function finish(){
+  const count=core.filter(i=>state.done[i]).length;
+  main.innerHTML='<section class="panel"><p class="kicker">Python arcade / Save your work</p><h1>'+ (count===14?'Guided route complete':'Your session so far')+'</h1><p>'+pair(count+' of 14 guided cards complete. Your answers stay in this browser. Download your best program and a progress record before leaving a shared device.','核心路线已完成 '+count+'/14。答案保存在本浏览器中。离开公用设备前，请下载程序和进度记录。')+'</p><div class="actions">'+(state.drafts[55]?button('getpy','Download arcade_pass.py',true):link('#core/55','Open the final program',true))+button('record','Download my progress')+link('#library','More practice')+'</div><p>'+pair('Keep the .py file for the next lesson. Attach it to the cover assignment if your teacher has opened one.','保留 .py 文件供下次使用。若老师已开放代课作业，可在那里提交。')+'</p></section>';
+  if(q('#getpy'))q('#getpy').onclick=()=>download('arcade_pass.py',state.drafts[55]);
+  q('#record').onclick=()=>download('day'+day+'-arcade-progress.txt',['Day '+day+' • '+story,count+'/14 on the guided route',...cards.flatMap((c,i)=>state.done[i]?[names[types.indexOf(c.type)]+' | '+c.title+(state.scores[i]?' | '+state.scores[i]+' WPM':'')+(c.type==='explain'?' | '+(state.explanations[i]||''):'')]:[])].join('\n'));
+}
+function setFeedback(text,ok=false){const el=q('#feedback');el.className='feedback'+(ok?' good':'');el.textContent=text}
+function shuffled(n){const a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function card(mode,i){
+  const c=cards[i], isCore=mode==='core', list=isCore?core:cards.map((_,n)=>n), pos=list.indexOf(i), total=list.length;
+  if(pos<0){location.hash='python';return}
+  state.last={mode,i};save();
+  const next=pos+1===total?'#finish':'#'+mode+'/'+list[pos+1],nextText=pos+1===total?'Finish and save':'Next card';
+  main.innerHTML='<div class="toolbar">'+link(isCore?'#python':'#library',isCore?'Guided route':'Practice library')+link('#finish','Save & finish')+'</div><section class="panel"><div class="row"><p class="kicker">'+names[types.indexOf(c.type)]+'</p><span class="sub">'+(isCore?'Guided route':'Practice bank')+' · '+(pos+1)+' / '+total+'</span></div><progress class="progress" max="'+total+'" value="'+(pos+1)+'"></progress><h1>'+esc(c.title)+'</h1><p>'+pair(c.prompt,c.zh)+'</p><div id="activity"></div><details><summary>'+pair('Give me a hint','给我一点提示')+'</summary><p>'+pair(c.hint,c.hintZh)+'</p></details><div id="feedback" class="feedback" role="status"></div><div class="actions lower">'+(pos?link('#'+mode+'/'+list[pos-1],'Previous'):'')+'<span id="next">'+(state.done[i]?link(next,nextText,true):'')+'</span><span class="sub" id="saved">'+(state.done[i]?'✓ Completed on this device':'')+'</span></div></section>';
+  const complete=(en,mandarin)=>{state.done[i]=true;save();q('#next').innerHTML=link(next,nextText,true);q('#saved').textContent='✓ Completed on this device';setFeedback(en+(zh&&mandarin?'\n'+mandarin:''),true)};
+  const a=q('#activity');
+  if(c.type==='typing')typing(c,i,a,complete);
+  if(c.type==='mcq'||c.type==='blank'){
+    let choice=null;const order=shuffled(c.options.length);
+    a.innerHTML=(c.code?pre(c.code):'')+order.map(n=>'<button data-opt="'+n+'" class="opt" aria-pressed="false">'+esc(c.options[n])+'</button>').join('')+button('check','Check answer',true);
+    a.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>{choice=Number(b.dataset.opt);a.querySelectorAll('[data-opt]').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));setFeedback('')});
+    q('#check').onclick=()=>choice===c.correct?complete('Correct. '+(c.type==='blank'?'The missing part is '+c.options[choice]+'.':'You can move on.'),'正确，可以继续。'):setFeedback(choice===null?'Choose one answer first.':c.hint+(zh?'\n'+c.hintZh:''));
+  }
+  if(c.type==='parsons'){
+    let order=shuffled(c.lines.length);if(order.every((v,n)=>v===n))order.reverse();let chosen=[];
+    function lines(){a.innerHTML='<p>'+pair('Tap a line to add it below. Tap an added line to put it back. Keep the indentation you see.','按顺序点选代码行。点已选的行可将其放回。保留显示的缩进。')+'</p><div id="bankLines"></div><strong>Your program</strong><div class="ordered" id="ordered"></div><div class="actions">'+button('check','Check order',true)+button('clear','Start again')+'</div>';
+      function line(n,to){return '<button class="line" data-n="'+n+'" data-to="'+to+'">'+esc(c.lines[n])+'</button>'}
+      q('#bankLines').innerHTML=order.filter(n=>!chosen.includes(n)).map(n=>line(n,'add')).join('');
+      q('#ordered').innerHTML=chosen.map(n=>line(n,'remove')).join('')||'<span class="sub">Your first line goes here.</span>';
+      a.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;chosen=b.dataset.to==='add'?[...chosen,n]:chosen.filter(x=>x!==n);lines();setFeedback('')});
+      q('#check').onclick=()=>chosen.length===c.lines.length&&chosen.every((n,k)=>n===k)?complete('Your lines are in the right order.','顺序正确。'):setFeedback(chosen.length<c.lines.length?'Choose all the lines first.':c.hint+(zh?'\n'+c.hintZh:''));
+      q('#clear').onclick=()=>{chosen=[];lines();setFeedback('')};
+    }lines();
+  }
+  if(c.type==='explain'){
+    a.innerHTML=(c.code?pre(c.code):'')+'<label class="label" for="explain">'+pair('Explain in your own words. Short phrases in English or Mandarin are welcome.','用自己的话解释，可用中文或英文写短语。')+'</label><textarea id="explain" rows="3"></textarea><div class="actions">'+button('compare','Compare with an example',true)+'</div><div id="sample"></div>';
+    q('#explain').value=state.explanations[i]||'';q('#explain').oninput=e=>{state.explanations[i]=e.target.value;save();q('#sample').innerHTML=''};
+    q('#compare').onclick=()=>{if(!q('#explain').value.trim()){setFeedback('Write your idea first.');return}setFeedback('');q('#sample').innerHTML='<div class="sample"><strong>One possible explanation</strong><p>'+pair(c.sample,c.sampleZh)+'</p><p>'+pair('Compare the computing idea. If something is missing, edit your answer above and compare again.','对照编程要点；如有遗漏，在上方修改后再比较。')+'</p>'+button('self','I compared my explanation',true)+'</div>';q('#self').onclick=()=>complete('Self-check recorded.','已记录自评。')};
+  }
+  if(c.type==='debug'||c.type==='challenge')editor(c,i,a,complete);
+}
+function typing(c,i,a,complete){
+  a.innerHTML='<canvas class="stage" role="img" aria-label="Arcade runner moves as your code matches"></canvas>'+pre(c.code)+'<div class="row"><label class="label" for="typed">'+pair('Type the code exactly. Enter starts a new line.','照样输入代码，按回车换行。')+'</label><label><input type="checkbox" id="speed" checked> WPM mode</label></div><textarea id="typed" class="editor" autocomplete="off" autocapitalize="off" spellcheck="false" rows="3"></textarea><p class="stats" id="meter">0 WPM · 0 / '+c.code.length+'</p>'+button('retry','Restart typing');
+  const input=q('#typed'),speed=q('#speed');let start=0,finished=false,matches=0,elapsed=0;
+  function update(){const t=start?(finished?elapsed:performance.now()-start):0;const wpm=t?Math.round(matches*12000/Math.max(t,750)):0;q('#meter').textContent=(speed.checked?wpm+' WPM · ':'')+matches+' / '+c.code.length+' characters'+(state.scores[i]?' · Best '+state.scores[i]+' WPM':'');return wpm}
+  function reset(){start=0;elapsed=0;finished=false;matches=0;input.value='';input.readOnly=false;setFeedback('');art(0);update();input.focus()}
+  input.onpaste=e=>{if(speed.checked){e.preventDefault();setFeedback('WPM measures your typing. Type the code, or turn WPM mode off to practise.')}};
+  input.onbeforeinput=e=>{if(!start&&e.inputType?.startsWith('insert'))start=performance.now()};
+  input.oninput=()=>{if(!start)start=performance.now();const value=input.value;matches=0;while(matches<value.length&&matches<c.code.length&&value[matches]===c.code[matches])matches++;
+    art(matches/c.code.length,true,value===c.code);
+    if(value===c.code){finished=true;elapsed=performance.now()-start;input.readOnly=true;const w=update();if(speed.checked)state.scores[i]=Math.max(state.scores[i]||0,w);update();complete(speed.checked?'Code matched. '+w+' WPM.':'Code matched.','输入正确。')}
+    else{setFeedback(matches<value.length?'Check character '+(matches+1)+'. Compare spaces, capitals and punctuation.':'');update()}
+  };
+  speed.onchange=reset;q('#retry').onclick=reset;interval=setInterval(update,400);art(0);
+}
+function editor(c,i,a,complete){
+ const jump=day===2&&(i===53||i===55);
+ a.innerHTML='<label for="src" class="label">Python editor</label><textarea id="src" class="editor" rows="'+Math.min(19,Math.max(5,c.starter.split('\n').length+2))+'" autocapitalize="off" autocomplete="off" spellcheck="false"></textarea><div class="actions">'+button('run','▶ Run')+button('stop','Stop')+button('test','Check my code',true)+button('py','Save .py')+'</div><div class="log"><strong class="label">Console</strong><pre class="console" id="out" role="log"></pre><form id="inputForm" hidden><label class="label" for="reply" id="prompt">Your input</label><div class="actions"><input type="text" autocomplete="off" id="reply"><button>Send input</button></div></form></div><details><summary>'+pair('See the check inputs and expected output','查看测试输入和预期输出')+'</summary>'+c.tests.map((t,n)=>'<strong>Check '+(n+1)+'</strong><p>Inputs · '+esc(t.inputs.join(' / ')||'none')+'</p>'+pre(t.expected.join('\n'))).join('')+'</details>'+(jump?'<details><summary>'+pair('Continue your saved Arcade Pass','继续之前保存的通行证程序')+'</summary><p>'+pair('Load your own .py file or use your last saved code from this browser. Keep the coin gate. Inside the unlocked branch, add a for loop for levels 1 to 3 on “Add levels”; for the final challenge use 1 to 5 and print the game name on each line.','可导入自己的 .py 文件，或载入浏览器中保存的程序。保留金币判断，在解锁分支内加循环：“Add levels”显示 1 至 3 关；最后挑战显示 1 至 5 关，每行带游戏名。')+'</p><label class="label" for="loadFile">Open my .py</label><input type="file" accept=".py,text/plain" id="loadFile">'+button('loadLocal','Load saved Arcade Pass')+'</details>':'');
+ const src=q('#src'),out=q('#out'),form=q('#inputForm'),reply=q('#reply');let worker=null,alarm,stopReject;
+ src.value=state.drafts[i]??c.starter;
+ const retain=()=>{state.drafts[i]=src.value;save()};
+ src.oninput=retain;
+ src.onkeydown=e=>{if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
+   if(e.key==='Tab'&&!e.shiftKey&&document.getElementById('indent').checked){e.preventDefault();src.setRangeText('    ',src.selectionStart,src.selectionEnd,'end');retain()}
+   if(e.key==='Enter'){e.preventDefault();const line=src.value.slice(0,src.selectionStart).split('\n').pop();const indent=(line.match(/^ */)||[''])[0]+(line.trimEnd().endsWith(':')?'    ':'');src.setRangeText('\n'+indent,src.selectionStart,src.selectionEnd,'end');retain()}
+ };
+ src.insertAdjacentHTML('afterend','<label class="sub"><input id="indent" type="checkbox"> Use Tab to indent</label>');
+ function loadCode(value){src.value=value;retain();setFeedback('Your program is in the editor. Make your changes, then check the code.')}
+ if(jump){
+  q('#loadFile').onchange=async(e)=>{const f=e.target.files[0];if(f&&f.size<250000)loadCode(await f.text());else setFeedback('Choose a small Python .py file.')};
+  q('#loadLocal').onclick=()=>{const prior=(i===55&&state.drafts[54])||(i===55&&state.drafts[53])||get('y9-cover-arcade-v1-day1')?.drafts?.[55];if(prior)loadCode(prior);else setFeedback('No saved Arcade Pass was found here. Open your .py file or use the starter in the editor.')};
+ }
+ q('#py').onclick=()=>{retain();download(c.type==='challenge'&&i>=53?'arcade_pass.py':'day'+day+'-'+(i+1)+'.py',src.value);setFeedback('Python file downloaded.')};
+ function busy(on){q('#run').disabled=on;q('#test').disabled=on;q('#stop').disabled=!on}
+ busy(false);
+ function cancel(message){clearTimeout(alarm);if(worker)worker.terminate();worker=null;form.hidden=true;const reject=stopReject;stopReject=null;if(reject)reject(Error(message||'Stopped'))}
+ stopWork=()=>cancel();q('#stop').onclick=()=>cancel('Program stopped.');
+ function execute(code,inputs){
+   return new Promise((resolve,reject)=>{
+    stopReject=reject;
+    try{worker=new Worker('../year9-cover-shared/python-worker.js')}catch(error){stopReject=null;reject(error);return}
+    const limit=()=>{clearTimeout(alarm);alarm=setTimeout(()=>cancel('Stopped after 6 seconds. Check that your loop can finish.'),6000)};
+    function finish(ok,result){clearTimeout(alarm);worker?.terminate();worker=null;stopReject=null;form.hidden=true;if(ok)resolve(result);else reject(Error(result))}
+    worker.onerror=()=>finish(false,'Could not load the Python runner. Open the public lesson link in your browser and try again.');
+    worker.onmessage=({data})=>{switch(data.kind){
+     case 'write':out.textContent+=data.value;out.scrollTop=out.scrollHeight;break;
+     case 'prompt':clearTimeout(alarm);form.hidden=false;q('#prompt').textContent=data.value||'Your input';reply.value='';reply.focus();break;
+     case 'done':finish(true,data.output);break;
+     case 'error':finish(false,data.value);break;
+    }};
+    form.onsubmit=e=>{e.preventDefault();if(!worker)return;out.textContent+=q('#prompt').textContent+reply.value+'\n';form.hidden=true;worker.postMessage({kind:'answer',value:reply.value});limit()};
+    worker.postMessage({code,inputs});limit();
+   });
+ }
+ const alive=()=>document.contains(src);
+ async function run(test){
+  retain();busy(true);out.textContent='';setFeedback('');const code=src.value;
+  try{
+   if(!test){await execute(code,null);if(alive())setFeedback('Run finished. Use “Check my code” to compare the results.');return}
+   let passed=true;
+   for(const [n,t] of c.tests.entries()){
+     const raw=await execute(code,t.inputs);if(!alive())return;
+     const actual=raw.replace(/\r/g,'').replace(/\n$/,'');const expected=t.expected.join('\n');const ok=actual===expected;passed=passed&&ok;
+     out.textContent+='Check '+(n+1)+' · '+(ok?'Passed':'Try again')+'\n';
+     if(!ok)out.textContent+='Inputs: '+(t.inputs.join(', ')||'none')+'\nExpected:\n'+expected+'\nYour output:\n'+(actual||'(no output)')+'\n';
+   }
+   if(passed)complete('All code checks passed. Save your program or continue.','通过所有代码测试。可以保存程序或继续。');
+   else setFeedback('Compare the expected output with yours in the console. '+c.hint+(zh?'\n'+c.hintZh:''));
+  }catch(e){if(alive()){out.textContent+='\n'+e.message;setFeedback('Read the last message in the console, then try again.')}}finally{if(alive())busy(false)}
+ }
+ q('#run').onclick=()=>run(false);q('#test').onclick=()=>run(true);
+}
+function render(){
+ resetView();const [route,arg]=location.hash.slice(1).split('/');const lang=document.getElementById('lang');lang.setAttribute('aria-pressed',String(zh));lang.textContent=zh?'English only':'English + 中文';
+ if(route==='python')overview();else if(route==='library')library();else if(route==='finish')finish();else if(route==='jam')window.coverJam({day,state,save,esc,pair,main,zh,button,localLink:link});
+ else if((route==='core'||route==='bank')&&/^\d+$/.test(arg||'')&&cards[Number(arg)])card(route,Number(arg));else home();
+}
+document.getElementById('lang').onclick=()=>{zh=!zh;put('y9-cover-zh',zh);render()};
+document.getElementById('home').onclick=()=>location.hash='home';
+window.addEventListener('hashchange',()=>{render();scrollTo(0,0);main.focus({preventScroll:true})});
+render();
+})();
