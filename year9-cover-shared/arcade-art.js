@@ -124,7 +124,8 @@
     const g=canvas.getContext('2d');if(!g)return ()=>{};
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
     let closed=false,id=0,last=-1,stale=true;
-    const fraction=Math.min(1,Math.max(0,Number(progress)||0));
+    let goal=Math.min(1,Math.max(0,Number(progress)||0));
+    let fraction=goal;
     const scene=Number(day)===1?roller:orbit;
     function frame(now){
       if(closed)return;
@@ -135,7 +136,10 @@
       if(stale||now-last>=33){
         if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
         g.setTransform(height/240,0,0,height/240,0,0);g.lineCap='round';g.lineJoin='round';
-        scene(g,width*240/height,motion.matches?0:now/1000,fraction,active,complete);
+        const dt=last<0?33:Math.max(0,now-last);
+        fraction=motion.matches?goal:goal+(fraction-goal)*Math.exp(-dt/85);
+        if(Math.abs(fraction-goal)<.001)fraction=goal;
+        scene(g,width*240/height,motion.matches?0:now/1000,fraction,active,complete && fraction===goal);
         last=now;stale=false;
       }
       if(!motion.matches&&!document.hidden)id=requestAnimationFrame(frame);
@@ -146,6 +150,12 @@
       motion.removeEventListener('change',refresh);document.removeEventListener('visibilitychange',refresh);
       if(live.get(canvas)===cleanup)live.delete(canvas);
     }
+    cleanup.updateProgress = (value, isActive, isComplete) => {
+      goal = Math.max(0, Math.min(1, value));
+      active = isActive;
+      complete = isComplete;
+      if (motion.matches) refresh();
+    };
     const ro=typeof ResizeObserver==='function'?new ResizeObserver(refresh):null;
     ro?.observe(canvas);motion.addEventListener('change',refresh);document.addEventListener('visibilitychange',refresh);
     canvas.style.imageRendering='auto';live.set(canvas,cleanup);refresh();return cleanup;

@@ -21,7 +21,11 @@ const pre=code=>'<pre class="code">'+esc(code)+'</pre>';
 const story=day===1?'Arcade Pass':'Level Runner';
 const goal=day===1?['Build an arcade pass that greets a player and opens the gate when they have five coins.','制作街机通行证：问候玩家，金币达到五枚就开门。']:['Upgrade your Arcade Pass. Give the player five named levels when the gate opens.','升级第一天的街机通行证。闸门开启后显示五个带游戏名的关卡。'];
 function resetView(){if(closeArt)closeArt();closeArt=null;if(stopWork)stopWork();stopWork=null;clearInterval(interval);}
-function art(progress=0,active=false,complete=false){const canvas=q('canvas');if(canvas)closeArt=window.drawCoverArcade(canvas,day,progress,{active,complete})}
+function art(progress=0,active=false,complete=false){
+  if(closeArt?.updateProgress){closeArt.updateProgress(progress,active,complete);return}
+  const canvas=q('canvas');
+  if(canvas)closeArt=window.drawCoverArcade(canvas,day,progress,{active,complete});
+}
 function download(file,text){const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=file;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function nextCore(){return core.find(i=>!state.done[i])??core[core.length-1]}
 function home(){
@@ -77,19 +81,150 @@ function card(mode,i){
   }
   if(c.type==='debug'||c.type==='challenge')editor(c,i,a,complete);
 }
-function typing(c,i,a,complete){
-  a.innerHTML='<canvas class="stage" role="img" aria-label="Arcade runner moves as your code matches"></canvas>'+pre(c.code)+'<div class="row"><label class="label" for="typed">'+pair('Type the code exactly. Enter starts a new line.','照样输入代码，按回车换行。')+'</label><label><input type="checkbox" id="speed" checked> WPM mode</label></div><textarea id="typed" class="editor" autocomplete="off" autocapitalize="off" spellcheck="false" rows="3"></textarea><p class="stats" id="meter">0 WPM · 0 / '+c.code.length+'</p>'+button('retry','Restart typing');
-  const input=q('#typed'),speed=q('#speed');let start=0,finished=false,matches=0,elapsed=0;
-  function update(){const t=start?(finished?elapsed:performance.now()-start):0;const wpm=t?Math.round(matches*12000/Math.max(t,750)):0;q('#meter').textContent=(speed.checked?wpm+' WPM · ':'')+matches+' / '+c.code.length+' characters'+(state.scores[i]?' · Best '+state.scores[i]+' WPM':'');return wpm}
-  function reset(){start=0;elapsed=0;finished=false;matches=0;input.value='';input.readOnly=false;setFeedback('');art(0);update();input.focus()}
-  input.onpaste=e=>{if(speed.checked){e.preventDefault();setFeedback('WPM measures your typing. Type the code, or turn WPM mode off to practise.')}};
-  input.onbeforeinput=e=>{if(!start&&e.inputType?.startsWith('insert'))start=performance.now()};
-  input.oninput=()=>{if(!start)start=performance.now();const value=input.value;matches=0;while(matches<value.length&&matches<c.code.length&&value[matches]===c.code[matches])matches++;
-    art(matches/c.code.length,true,value===c.code);
-    if(value===c.code){finished=true;elapsed=performance.now()-start;input.readOnly=true;const w=update();if(speed.checked)state.scores[i]=Math.max(state.scores[i]||0,w);update();complete(speed.checked?'Code matched. '+w+' WPM.':'Code matched.','输入正确。')}
-    else{setFeedback(matches<value.length?'Check character '+(matches+1)+'. Compare spaces, capitals and punctuation.':'');update()}
+function typing(c, i, activity, complete) {
+  const target = c.code;
+  activity.innerHTML = `
+    <div class="type-controls">
+      <label for="typed">${pair('Tap the code and type over it. A dot means Space, and ↵ means Enter.',
+                                '点代码开始输入。圆点表示空格，↵ 表示回车。')}</label>
+      <label class="type-mode"><input type="checkbox" id="speed" checked> WPM mode</label>
+    </div>
+    <div class="type-deck">
+      <div class="type-status">
+        <div class="type-readout" id="meter"></div>
+        <div class="type-next" aria-hidden="true"><span>${zh?'Next key / 下一键':'Next key'}</span> <kbd></kbd></div>
+      </div>
+      <div class="type-pad">
+        <pre class="type-sr" id="type-target">${esc(target)}</pre>
+        <div class="type-track" aria-hidden="true"></div>
+        <i class="type-caret" aria-hidden="true"></i>
+        <textarea id="typed" aria-label="Type the Python code" aria-describedby="type-target"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" rows="1"></textarea>
+      </div>
+      <canvas class="type-scene" aria-hidden="true"></canvas>
+    </div>
+    <div class="type-actions">${button('retry','Restart typing')}</div>`;
+
+  const input = q('#typed'), speed = q('#speed'), track = q('.type-track');
+  const pad = q('.type-pad'), caret = q('.type-caret'), keycap = q('.type-next kbd');
+  const glyphs = [];
+  function glyph(char) {
+    const s = document.createElement('span');
+    s.textContent = char === ' ' ? '·' : char === '\n' ? '↵' : char;
+    track.append(s);
+    return s;
+  }
+  for (const char of target) {
+    glyphs.push(glyph(char));
+    if (char === '\n') track.append(document.createElement('br'));
+  }
+  const end = glyph('\u200b');
+  let started = 0, elapsed = 0, previous = '', prefix = 0, finished = false;
+  let attempts = 0, correctAttempts = 0, keyAnimation;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  function updateMeter() {
+    const ms = finished ? elapsed : performance.now() - started;
+    const wpm = started ? Math.round(prefix * 12000 / Math.max(ms, 750)) : 0;
+    const accuracy = attempts ? Math.round(100 * correctAttempts / attempts) + '%' : '—';
+    q('#meter').textContent = [speed.checked ? wpm + ' WPM' : null,
+      accuracy + (zh ? ' 准确率' : ' accuracy'), prefix + ' / ' + target.length,
+      speed.checked && state.scores[i] ? (zh?'最佳 ':'Best ') + state.scores[i] + ' WPM' : null].filter(Boolean).join('   ·   ');
+    return wpm;
+  }
+  function positionCaret() {
+    const pos = Math.min(input.selectionEnd, target.length);
+    const current = glyphs[pos] || end;
+    const x = track.offsetLeft + current.offsetLeft;
+    const y = track.offsetTop + current.offsetTop;
+    caret.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    input.style.left = x + 'px';
+    input.style.top = y + 'px';
+    const char = target[pos];
+    keycap.textContent = finished ? '✓' : prefix < input.value.length && input.selectionEnd === input.value.length
+      ? 'Backspace' : ({' ':'Space','\n':'Enter'})[char] || char || 'Backspace';
+    const lo = input.selectionStart, hi = input.selectionEnd;
+    glyphs.forEach((g, n) => g.classList.toggle('in-selection', n >= lo && n < hi));
+  }
+  function paint() {
+    const value = input.value;
+    glyphs.forEach((g, n) => {
+      g.className = n < value.length ? (value[n] === target[n] ? 'hit' : 'miss') : '';
+    });
+    end.textContent = value.slice(target.length) || '\u200b';
+    end.className = value.length > target.length ? 'miss extra' : '';
+    positionCaret();
+  }
+  function countNewCharacters(value) {
+    let from = 0;
+    while (from < previous.length && from < value.length && previous[from] === value[from]) from++;
+    let oldEnd = previous.length, newEnd = value.length;
+    while (oldEnd > from && newEnd > from && previous[oldEnd-1] === value[newEnd-1]) {
+      oldEnd--; newEnd--;
+    }
+    for (let n = from; n < newEnd; n++) {
+      attempts++;
+      if (value[n] === target[n]) correctAttempts++;
+    }
+  }
+  function onInput() {
+    if (finished || input.value === previous) return;
+    const now = performance.now(), value = input.value;
+    if (!started) started = now;
+    countNewCharacters(value);
+    previous = value;
+    prefix = 0;
+    while (prefix < value.length && prefix < target.length && value[prefix] === target[prefix]) prefix++;
+    finished = value === target;
+    elapsed = now - started;
+    paint();
+    art(prefix / target.length, true, finished);
+    if (!reducedMotion.matches && keycap.animate) {
+      keyAnimation?.cancel();
+      keyAnimation = keycap.animate([{transform:'translateY(2px) scale(.94)'},{transform:'none'}], {duration:140});
+    }
+    const wpm = updateMeter();
+    if (finished) {
+      input.readOnly = true;
+      pad.classList.add('is-finished');
+      if (speed.checked) state.scores[i] = Math.max(state.scores[i] || 0, wpm);
+      complete(speed.checked ? 'Code matched. ' + wpm + ' WPM.' : 'Code matched.', '输入正确。');
+    } else {
+      const wrong = prefix < value.length;
+      setFeedback(wrong ? (zh ? '用退格键修改有下划线的字符。' : 'Use Backspace to correct the underlined character.') : '');
+    }
+  }
+  function reset() {
+    started = elapsed = prefix = attempts = correctAttempts = 0;
+    previous = '';
+    finished = false;
+    input.readOnly = false;
+    input.value = '';
+    pad.classList.remove('is-finished');
+    setFeedback('');
+    paint();
+    updateMeter();
+    art(0, true);
+    input.focus({preventScroll:true});
+  }
+  pad.addEventListener('click', () => input.focus({preventScroll:true}));
+  input.onpaste = e => {
+    if (!speed.checked) return;
+    e.preventDefault();
+    setFeedback(zh ? '速度模式需要逐键输入。' : 'Type each key for a WPM score.');
   };
-  speed.onchange=reset;q('#retry').onclick=reset;interval=setInterval(update,400);art(0);
+  input.oninput = e => { if (!e.isComposing) onInput(); };
+  input.oncompositionend = onInput;
+  input.onselect = input.onkeyup = input.onclick = positionCaret;
+  input.onfocus = positionCaret;
+  q('#retry').onclick = reset;
+  speed.onchange = reset;
+  const resize = new ResizeObserver(positionCaret);
+  resize.observe(track);
+  stopWork = () => { resize.disconnect(); keyAnimation?.cancel(); };
+  interval = setInterval(() => { if (started && !finished && speed.checked) updateMeter(); }, 350);
+  paint();
+  updateMeter();
+  art(0, true);
 }
 function editor(c,i,a,complete){
  const jump=day===2&&(i===53||i===55);
